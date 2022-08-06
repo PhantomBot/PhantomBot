@@ -17,6 +17,7 @@
 package tv.phantombot.httpserver;
 
 import com.gmt2001.PathValidator;
+import com.gmt2001.Reflect;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -104,7 +105,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         try {
             Path p = Paths.get(".", path);
 
-            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./logs"))) {
+            if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./logs"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return;

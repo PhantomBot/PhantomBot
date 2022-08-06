@@ -19,6 +19,7 @@ package tv.phantombot.console;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
+import com.gmt2001.Reflect;
 import com.gmt2001.TwitchAPIv5;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -865,6 +866,14 @@ public final class ConsoleEventHandler implements Listener {
             }
         }
 
+        /**
+         * @consolecommand dumpheap - Creates a heap dump
+         */
+        if (message.equalsIgnoreCase("dumpheap")) {
+            Reflect.dumpHeap();
+            com.gmt2001.Console.out.println("Heap Dump Completed");
+        }
+
         // Check to see if any settings have been changed.
         if (changed) {
             transaction.commit();
@@ -880,13 +889,15 @@ public final class ConsoleEventHandler implements Listener {
 
         String botname;
 
-        if (PhantomBot.instance() != null && PhantomBot.instance().getBotName() != null) {
-            botname = PhantomBot.instance().getBotName();
-        } else {
-            botname = "__NOINSTANCE";
-        }
+        if (PhantomBot.instance() != null) {
+            if (PhantomBot.instance().getBotName() != null) {
+                botname = PhantomBot.instance().getBotName();
+            } else {
+                botname = "__NOBOTNAME";
+            }
 
-        // Handle any other commands.
-        PhantomBot.instance().handleCommand(botname, event.getMessage());
+            // Handle any other commands.
+            PhantomBot.instance().handleCommand(botname, event.getMessage());
+        }
     }
 }

@@ -19,6 +19,7 @@ package tv.phantombot;
 import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.PathValidator;
+import com.gmt2001.Reflect;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
@@ -46,7 +47,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -381,10 +381,9 @@ public final class PhantomBot implements Listener {
         /* Check if the OS is Linux. */
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
-                java.lang.management.RuntimeMXBean runtime = java.lang.management.ManagementFactory.getRuntimeMXBean();
-                int pid = Integer.parseInt(runtime.getName().split("@")[0]);
+                int pid = Reflect.pid();
 
-                Files.write(Paths.get(GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"), Integer.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
+                Files.write(Paths.get(Reflect.GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"), Integer.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
                         StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             } catch (IOException | NumberFormatException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -490,16 +489,6 @@ public final class PhantomBot implements Listener {
         this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
 
         EventBus.instance().postAsync(new PropertiesReloadedEvent());
-    }
-
-    public static String GetExecutionPath() {
-        try {
-            return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toAbsolutePath().toRealPath().toString();
-        } catch (IOException | URISyntaxException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-
-        return ".";
     }
 
     /**
@@ -1032,7 +1021,7 @@ public final class PhantomBot implements Listener {
 
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
-                Files.deleteIfExists(Paths.get(GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"));
+                Files.deleteIfExists(Paths.get(Reflect.GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"));
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -1207,7 +1196,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Print the user dir */
-        com.gmt2001.Console.out.println("The working directory is: " + GetExecutionPath());
+        com.gmt2001.Console.out.println("The working directory is: " + Reflect.GetExecutionPath());
 
         com.gmt2001.Console.out.println("Detected Java " + System.getProperty("java.version") + " running on "
                 + System.getProperty("os.name") + " " + System.getProperty("os.version")

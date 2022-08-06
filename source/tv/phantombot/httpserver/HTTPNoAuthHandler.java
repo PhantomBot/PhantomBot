@@ -17,6 +17,7 @@
 package tv.phantombot.httpserver;
 
 import com.gmt2001.PathValidator;
+import com.gmt2001.Reflect;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -172,15 +172,15 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 p = Paths.get(start, path);
             }
 
-            if (!PathValidator.isValidPathWeb(p.toString()) || (!p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./addons"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/audio-hooks"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./config/gif-alerts")))
-                    || (p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/vendors"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/css"))
-                    && !p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/panel/login")))
-                    || p.toAbsolutePath().startsWith(Paths.get(PhantomBot.GetExecutionPath(), "./web/ytplayer"))) {
+            if (!PathValidator.isValidPathWeb(p.toString()) || (!p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./addons"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./config/audio-hooks"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./config/gif-alerts")))
+                    || (p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel/vendors"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel/css"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel/login")))
+                    || p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/ytplayer"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
                 return;
