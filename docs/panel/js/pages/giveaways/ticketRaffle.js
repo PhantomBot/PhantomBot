@@ -17,7 +17,7 @@
 
 $(run = function () {
     socket.getDBValues('traffle_module_status_toggle', {
-        tables: ['modules', 'traffleSettings', 'traffleState'],
+        tables: ['modules', 'traffleState', 'traffleState'],
         keys: ['./systems/ticketraffleSystem.js', 'isActive', 'hasDrawn']
     }, true, function (e) {
         if (!helpers.handleModuleLoadUp(['ticketRaffleListModule', 'ticketRaffleModal'], e['./systems/ticketraffleSystem.js'], 'ticketRaffleModuleToggle')) {
@@ -43,8 +43,10 @@ $(run = function () {
                         'html': results[i].key
                     }));
 
+                    let ticketJSON = JSON.parse(results[i].value);
+
                     tr.append($('<td/>', {
-                        'html': results[i].value
+                        'html': (ticketJSON[0] + ' (+' + ticketJSON[1] + ')')
                     }));
 
                     table.append(tr);
@@ -56,7 +58,7 @@ $(run = function () {
          * @function Loads the raffle winners.
          */
         helpers.temp.loadWinners = function () {
-            socket.getDBValue('get_traffle_list', 'traffleresults', 'winner', function (results) {
+            socket.getDBValue('get_traffle_winner_list', 'traffleresults', 'winner', function (results) {
                 const table = $('#ticket-raffle-table');
 
                 $('#traffle-list-title').text("Ticket Raffle Winners");
@@ -218,7 +220,7 @@ $(function () {
             'class': 'fa fa-unlock-alt'
         })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
 
-        $('#traffle-list-title').val("Ticket Raffle List");
+        $('#traffle-list-title').val('Ticket Raffle List');
 
         // Close raffle but don't pick a winner.
         socket.sendCommand('reset_traffle_cmd', 'traffle reset', function () {
@@ -229,8 +231,8 @@ $(function () {
     // Raffle settings button.
     $('#ticket-raffle-settings').on('click', function () {
         socket.getDBValues('get_traffle_settings', {
-            tables: ['settings', 'settings', 'settings', 'settings'],
-            keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'tRaffleLimiter']
+            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
         }, true, function (e) {
             helpers.getModal('traffle-settings-modal', 'Ticket Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -255,10 +257,10 @@ $(function () {
                 'role': 'form'
             })
             // Add toggle for warning messages.
-            .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['tRaffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+            .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
             // Add toggle for the limiter.
-            .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['tRaffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+            .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['traffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'ON: Limit the total amount of tickets (bought tickets + bonus tickets) to the set limit. OFF: Limit only the amount of bought tickets.'))))),
             function () {
                 let raffleTimer = $('#msg-timer'),
@@ -272,8 +274,8 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_traffle_settings_2', {
-                            tables: ['settings', 'settings', 'settings', 'settings'],
-                            keys: ['tRaffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'tRaffleLimiter'],
+                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+                            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
                             values: [warningMsg, raffleMessage.val(), raffleTimer.val(), limiter]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {
