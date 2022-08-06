@@ -42,7 +42,7 @@
     };
 
     function reloadTRaffle() {
-        msgToggle = $.getIniDbBoolean('traffleSettings', 'traffleMSGToggle');
+        msgToggle = $.inidb.GetBoolean('traffleSettings', '', 'traffleMSGToggle');
         raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage');
         messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval');
         limiter = $.inidb.GetBoolean('traffleSettings', '', 'traffleLimiter');
@@ -131,7 +131,7 @@
         maxEntries = parseInt($.inidb.get('traffleState', 'maxEntries'));
         totalEntries = parseInt($.inidb.get('traffleState', 'totalEntries'));
         totalTickets = parseInt($.inidb.get('traffleState', 'totalTickets'));
-        hasDrawn = $.inidb.HasKey('traffleState', '', 'uniqueEntries');
+        hasDrawn = $.inidb.GetBoolean('traffleState', '', 'hasDrawn');
         followers = $.inidb.GetBoolean('traffleState', '', 'followers');
         raffleStatus = $.inidb.GetBoolean('traffleState', '', 'isActive');
 
@@ -163,7 +163,7 @@
         $.inidb.set('traffleState', 'totalEntries', totalEntries);
         $.inidb.set('traffleState', 'totalTickets', totalTickets);
         $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
-        $.inidb.set('traffleState', 'hasDrawn', hasDrawn);
+        $.inidb.SetBoolean('traffleState', 'hasDrawn', hasDrawn);
     }
 
     function closeRaffle() {
@@ -198,7 +198,7 @@
         }
 
         hasDrawn = true;
-        $.inidb.set('traffleState', 'hasDrawn', hasDrawn);
+        $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
 
         if (raffleStatus) {
             closeRaffle(); //Close the raffle if it's open. Why draw a winner when new users can still enter?
