@@ -520,4 +520,33 @@
         $.consoleLn('PhantomBot update 3.6.4 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
     }
+
+    /* version 3.6.5 updates */
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5')) {
+        $.consoleLn('Starting PhantomBot update 3.6.5 updates...');
+
+        if ($.inidb.FileExists('traffleState')) {
+            var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
+
+            $.inidb.SetBoolean('traffleState', '', 'followers', (bools[0] === 'true'));
+            $.inidb.RemoveKey('traffleState', '', 'bools');
+
+            if ($.inidb.FileExists('traffleSettings')) {
+                $.inidb.set('traffleState', 'isActive', $.inidb.get('traffleSettings', 'isActive'));
+                $.inidb.RemoveKey('traffleSettings', '', 'isActive');
+            }
+        }
+
+        $.inidb.set('traffleSettings', 'traffleMSGToggle', $.inidb.get('settings', 'tRaffleMSGToggle'));
+        $.inidb.set('traffleSettings', 'traffleMessage', $.inidb.get('settings', 'traffleMessage'));
+        $.inidb.set('traffleSettings', 'traffleMessageInterval', $.inidb.get('settings', 'traffleMessageInterval'));
+        $.inidb.set('traffleSettings', 'traffleLimiter', $.inidb.get('settings', 'tRaffleLimiter'));
+        $.inidb.RemoveKey('settings', '', 'traffleMSGToggle');
+        $.inidb.RemoveKey('settings', '', 'traffleMessage');
+        $.inidb.RemoveKey('settings', '', 'traffleMessageInterval');
+        $.inidb.RemoveKey('settings', '', 'traffleLimiter');
+
+        $.consoleLn('PhantomBot update 3.6.5 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.5', true);
+    }
 })();
