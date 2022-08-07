@@ -270,22 +270,6 @@ exit - Shuts down the bot.
 
 &nbsp;
 
-### apioauth
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-apioauth - Updates the API (Caster) oauth.
-
-&nbsp;
-
-### oauth
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-oauth - Updates the Chat (Bot) oauth.
-
-&nbsp;
-
 ### mysqlsetup
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
