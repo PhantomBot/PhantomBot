@@ -1150,7 +1150,7 @@ $(function () {
                             'You can grab your own copy of nightly build ' + version.slice(8) + ' of PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.dev/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                             ' on how to properly update PhantomBot.</b>';
                 } else {
                     html = 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
@@ -1159,7 +1159,7 @@ $(function () {
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.dev/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                             ' on how to properly update PhantomBot.</b>';
                 }
 
