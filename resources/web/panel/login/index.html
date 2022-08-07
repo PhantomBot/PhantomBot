@@ -121,7 +121,7 @@
             + '• If you are getting an SSL error that can not be bypassed, try shutting down the bot and deleting <i>selfkey.jks</i> in '
             + 'the <i>config</i> folder<br /><br />'
             + 'For further instructions on setting up SSL, please see '
-            + '<a href="https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/twitchembeds" target="guide">this guide</a>';
+            + '<a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds" target="guide">this guide</a>';
 
             function doLogin(hostname, port, username, password, remember) {
                 let webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));

@@ -274,14 +274,14 @@ public class ConfigurationManager {
                 com.gmt2001.Console.out.print("we recommend using ouroboros: https://github.com/gmt2001/ouroboros\r\n");
             } else if (SystemUtils.IS_OS_WINDOWS) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows");
+                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.dev/guides/#guide=content/setupbot/windows");
             } else if (SystemUtils.IS_OS_LINUX) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos");
+                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu\r\n");
+                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
             } else if (SystemUtils.IS_OS_MAC) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos");
+                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.dev/guides/#guide=content/setupbot/macos");
             } else if (SystemUtils.IS_OS_FREE_BSD || SystemUtils.IS_OS_NET_BSD || SystemUtils.IS_OS_OPEN_BSD) {
                 com.gmt2001.Console.out.print("PhantomBot has detected that your device is running BSD.\r\n");
                 com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
