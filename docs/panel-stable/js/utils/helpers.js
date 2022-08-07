@@ -986,7 +986,7 @@ $(function () {
         socket.getDBTableValues('permissions_get_all_groups', 'groups', function(results){
             permGroups;
             for (let i = 0; i < results.length; i++) {
-                permGroups[i] = results[i].value
+                permGroups[i] = results[i].value;
                 permGroupNames[i] =  i.toString() + ' (' + results[i].value + ')';
             }
         });
@@ -1150,7 +1150,7 @@ $(function () {
                             'You can grab your own copy of nightly build ' + version.slice(8) + ' of PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.dev/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                             ' on how to properly update PhantomBot.</b>';
                 } else {
                     html = 'Version ' + version + ' of PhantomBot is now available to download! <br>' +
@@ -1159,7 +1159,7 @@ $(function () {
                             'You can grab your own copy of version ' + version + ' of PhantomBot ' +
                             $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', downloadLink).append('here.')[0].outerHTML + ' <br>' +
                             '<b>Please check ' +
-                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
+                            $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', 'https://phantombot.dev/guides/#guide=content/setupbot/updatebot').append('this guide')[0].outerHTML +
                             ' on how to properly update PhantomBot.</b>';
                 }
 
@@ -1324,6 +1324,29 @@ $(function () {
 
     helpers.isLocalPanel = function () {
         return helpers.getBotHost() === window.location.host;
+    };
+
+    // Takes an object {} and an array [] of keys.
+    // Foreach key in keys:
+    //   If obj has the key, and its value is typeof string that starts with '{',
+    //   attempts to parse the value as JSON. On success, the string value is replaced
+    //   with the resulting object. On failure info is sent to debug, the value is left unchanged,
+    //   and the next key is processed.
+    // Does not return anything, the original object will be changed.
+    helpers.parseJSONValues = function (obj, keys) {
+        for (let key in keys) {
+            key = keys[key];
+            if (obj.hasOwnProperty(key)) {
+                try {
+                    if (typeof obj[key] === 'string' && obj[key].startsWith('{')) {
+                        let tmp = JSON.parse(obj[key]);
+                        obj[key] = tmp;
+                    }
+                } catch (e) {
+                    helpers.logError(key + ': "' + obj[key] + '" -> ' + e, helpers.LOG_TYPE.DEBUG);
+                }
+            }
+        }
     };
 
     // Export.
