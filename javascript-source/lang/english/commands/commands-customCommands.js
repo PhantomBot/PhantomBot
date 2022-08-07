@@ -90,4 +90,4 @@ $.lang.register('customcommands.teamapi.team.404', 'you\'re not part of team "$1
 $.lang.register('customcommands.teamapi.member.404', 'member "$1" is not in team "$2"');
 $.lang.register('customcommands.botcommands', 'Commands: $1');
 $.lang.register('customcommands.botcommands.error', 'Provide a number to find a page.');
-$.lang.register('customcommands.botcommands.total', 'Total Pages: $1 [See also: https://phantombot.github.io/PhantomBot/guides/#guide=content/commands/commands]');
+$.lang.register('customcommands.botcommands.total', 'Total Pages: $1 [See also: https://phantombot.dev/guides/#guide=content/commands/commands]');

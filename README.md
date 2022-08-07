@@ -1,5 +1,5 @@
 
-# <img alt="PhantomBot" src="https://phantombot.github.io/PhantomBot/common/images/brand.png" width="600px"/>
+# <img alt="PhantomBot" src="https://phantombot.dev/common/images/brand.png" width="600px"/>
 
 ![Java CI](https://github.com/PhantomBot/PhantomBot/workflows/Java%20CI/badge.svg)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/e78b35af8f2442d7a8c5040c41164739)](https://www.codacy.com/gh/PhantomBot/PhantomBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PhantomBot/PhantomBot&amp;utm_campaign=Badge_Grade)
@@ -7,11 +7,11 @@
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/PhantomBot/PhantomBot?sort=semver)](https://github.com/PhantomBot/PhantomBot/releases/latest)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/YKvMd78)
 
-[**PhantomBot**](https://phantombot.github.io/PhantomBot) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more. PhantomBot can also be integrated with many services such as [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) and [StreamElements](https://streamelements.com)!
+[**PhantomBot**](https://phantombot.dev) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more. PhantomBot can also be integrated with many services such as [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) and [StreamElements](https://streamelements.com)!
 
 Additional functionality is enabled through the use of third-party modules.
 
-* [Get PhantomBot](https://phantombot.github.io/PhantomBot/ "PhantomBot Guides and OAuth")
+* [Get PhantomBot](https://phantombot.dev "PhantomBot Guides and OAuth")
 * [Security Policy](https://github.com/PhantomBot/PhantomBot/blob/master/SECURITY.md)
 
 ## How can I follow along/contribute?
@@ -33,11 +33,11 @@ x86_64 (64-bit) architectures
 
 ## Installation
 Please refer to platform-specific installation documentation.
-* [Windows](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/windows)
+* [Windows](https://phantombot.dev/guides/#guide=content/setupbot/windows)
 * Linux:
-  * [Ubuntu 16.04](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/ubuntu)
-  * [CentOS 7](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/centos)
-* [macOS](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/macos)
+  * [Ubuntu 16.04](https://phantombot.dev/guides/#guide=content/setupbot/ubuntu)
+  * [CentOS 7](https://phantombot.dev/guides/#guide=content/setupbot/centos)
+* [macOS](https://phantombot.dev/guides/#guide=content/setupbot/macos)
 
 ### Docker
 PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
@@ -47,7 +47,7 @@ PhantomBot publishes official builds to Docker Hub and GitHub Container Registry
 
 ## Upgrading PhantomBot
 
-Detailed upgrade instructions are listed on our [documentation](https://phantombot.github.io/PhantomBot/guides/#guide=content/setupbot/updatebot).
+Detailed upgrade instructions are listed on our [documentation](https://phantombot.dev/guides/#guide=content/setupbot/updatebot).
 
 ## License
 

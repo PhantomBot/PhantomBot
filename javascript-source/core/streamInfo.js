@@ -452,7 +452,7 @@
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.log.error('Failed to change the game. Make sure you have your api oauth code set. https://phantombot.github.io/PhantomBot/oauth/');
+            $.log.error('Failed to change the game. Make sure you have your api oauth code set to the caster.');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     }
@@ -481,7 +481,7 @@
                 $.log.error(http.getString('message'));
             }
         } else {
-            $.log.error('Failed to change the status. Make sure you have your api oauth code set. https://phantombot.github.io/PhantomBot/oauth/');
+            $.log.error('Failed to change the status. Make sure you have your api oauth code set to the caster.');
             $.log.error(http.getString('_exception') + ' ' + http.getString('_exceptionMessage'));
         }
     }

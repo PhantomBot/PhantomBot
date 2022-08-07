@@ -228,7 +228,7 @@ public final class PhantomBot implements Listener {
      * @return bot website
      */
     public String getWebSite() {
-        return "https://phantombot.github.io/PhantomBot/";
+        return "https://phantombot.dev/";
     }
 
     /**

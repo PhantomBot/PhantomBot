@@ -132,7 +132,7 @@ public class WsYTHandler implements WsFrameHandler {
 
                 if (!hasYTKey) {
                     com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions in the guides at "
-                            + "https://phantombot.github.io/PhantomBot/");
+                            + "https://phantombot.dev/");
                     return;
                 }
 

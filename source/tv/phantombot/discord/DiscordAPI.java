@@ -350,7 +350,7 @@ public class DiscordAPI extends DiscordUtil {
                 } else if (event.getStatus().getCode() == 4004) {
                     com.gmt2001.Console.err.println("Discord rejected bot token (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + ")...");
                     com.gmt2001.Console.err.println("Discord connection is now being disabled. Please stop the bot, put a new Discord bot token into botlogin.txt, then start the bot again to use Discord features...");
-                    com.gmt2001.Console.err.println("https://phantombot.github.io/PhantomBot/guides/#guide=content/integrations/discordintegrationsetup");
+                    com.gmt2001.Console.err.println("https://phantombot.dev/guides/#guide=content/integrations/discordintegrationsetup");
                     DiscordAPI.gateway.logout();
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;

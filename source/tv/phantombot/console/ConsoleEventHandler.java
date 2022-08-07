@@ -633,30 +633,6 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand apioauth - Updates the API (Caster) oauth.
-         */
-        if (message.equalsIgnoreCase("apioauth")) {
-            System.out.print("Please enter your oauth token that you generated from https://phantombot.github.io/PhantomBot/oauth/ while logged as the caster: ");
-
-            String apiOAuth = System.console().readLine().trim();
-
-            transaction.setProperty("apioauth", apiOAuth);
-            changed = true;
-        }
-
-        /**
-         * @consolecommand oauth - Updates the Chat (Bot) oauth.
-         */
-        if (message.equalsIgnoreCase("oauth")) {
-            System.out.print("Please enter your oauth token that you generated from https://phantombot.github.io/PhantomBot/oauth/ while logged as the bot: ");
-
-            String apiOAuth = System.console().readLine().trim();
-
-            transaction.setProperty("oauth", apiOAuth);
-            changed = true;
-        }
-
-        /**
          * @consolecommand mysqlsetup - Sets up MySQL.
          */
         if (message.equalsIgnoreCase("mysqlsetup")) {
