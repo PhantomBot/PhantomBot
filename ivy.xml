@@ -50,6 +50,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="org.mozilla" name="rhino" rev="1.7.14"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
         <dependency org="io.github.redouane59.twitter" name="twittered" rev="2.15" />
-        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.36.0.3"/>
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.39.2.0"/>
     </dependencies>
 </ivy-module>
