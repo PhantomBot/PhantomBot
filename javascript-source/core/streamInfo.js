@@ -411,7 +411,7 @@
      * @return {number} count
      */
     function getSubscriberCount() {
-        var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, 0, true);
+        var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, null);
 
         if (jsonObject.getInt('_http') !== 200) {
             return 0;

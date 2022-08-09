@@ -42,6 +42,7 @@ import tv.phantombot.twitch.api.Helix;
  * @author gmt2001
  * @author illusionaryone
  */
+@Deprecated
 public class TwitchAPIv5 {
 
     private static final TwitchAPIv5 instance = new TwitchAPIv5();
