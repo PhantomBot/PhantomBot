@@ -65,18 +65,12 @@ $(run = function () {
                     //Update Buttons
                     if (e['isActive'] === '0' || e['isActive'] === 'false') {
                         $('#open-or-close-raffle').html($('<i/>', {
-                            'class': 'fa fa-lock'
-                        })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
-                        $('#open-or-close-raffle').html($('<i/>', {
                             'class': 'fa fa-unlock-alt'
                         })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
                     } else if (e['isActive'] === '1' || e['isActive'] === 'true') {
                         $('#open-or-close-raffle').html($('<i/>', {
-                            'class': 'fa fa-unlock-alt'
-                        })).append('&nbsp; Close').removeClass('btn-warning').addClass('btn-success');
-                        $('#open-or-close-raffle').html($('<i/>', {
                             'class': 'fa fa-lock'
-                        })).append('&nbsp; Open').removeClass('btn-success').addClass('btn-warning');
+                        })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
                     }
 
                     // Remove current data content.
@@ -180,12 +174,12 @@ $(function () {
             socket.sendCommandSync('close_raffle_cmd', 'raffle close', function () {
                 // Alert the user.
                 toastr.success('Successfully closed the raffle!');
-                // Reload to remove the winner.
-                helpers.temp.loadRaffleList();
                 // Update the button.
                 $('#open-or-close-raffle').html($('<i/>', {
                     'class': 'fa fa-unlock-alt'
                 })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                // Reload to remove the winner.
+                helpers.temp.loadRaffleList();
             });
         }
     });
