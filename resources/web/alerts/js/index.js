@@ -358,7 +358,6 @@ $(function () {
             if (gifFile.match(/\.(webm|mp4|ogg|ogv)$/) !== null) {
                 htmlObj = $('<video/>', {
                     'src': defaultPath + gifFile,
-                    'autoplay': 'false',
                     'style': gifCss,
                     'preload': 'auto'
                 });
