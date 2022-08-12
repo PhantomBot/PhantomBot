@@ -40,8 +40,8 @@
         interval, timeout, followMessage = '',
         saveStateInterval,
         timerMessage = '',
-        lastWinners,
-        hasDrawn;
+        lastWinners = [],
+        hasDrawn = false;
 
     /**
      * @function reloadRaffle
@@ -70,8 +70,8 @@
             tempKeyword,
             tempFollowMessage = '',
             tempUsePoints,
-            tempFollowers,
-            tempSubscribers,
+            tempFollowers = false,
+            tempSubscribers = false,
             tempEntryFee;
 
         /* Check if there's a raffle already opened */
@@ -112,6 +112,7 @@
             } else {
                 tempEntryFee = (parseInt(args[i]) * 60);
             }
+
             i++;
         }
 
@@ -144,7 +145,6 @@
         subscribers = tempSubscribers;
         entryFee = tempEntryFee;
 
-
         /* Check if the caster wants a auto close timer */
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
             timerTime = parseInt(args[i]);
@@ -153,7 +153,6 @@
             }, (timerTime * 6e4));
             timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
         }
-        
 
         /* Say in chat that the raffle is now opened. */
         if (!usePoints && usePoints !== null) {
@@ -172,13 +171,11 @@
 
         startTime = $.systemTime();
         saveStateInterval = setInterval(function() {
-           saveState();
+            saveState();
         }, 5 * 6e4);
 
         /* Mark the raffle as opened */
         $.raffleCommand = keyword;
-        // Mark the raffle as on for the panel.
-        $.inidb.set('raffleSettings', 'isActive', 'true');
         status = true;
 
         saveState();
@@ -187,7 +184,8 @@
     function reopen() {
         if (!$.inidb.FileExists('raffleState') || !$.inidb.HasKey('raffleState', '', 'entries') || !$.inidb.HasKey('raffleState', '', 'entered')
                  || !$.inidb.HasKey('raffleState', '', 'keyword') || !$.inidb.HasKey('raffleState', '', 'entryFee') || !$.inidb.HasKey('raffleState', '', 'timerTime')
-                  || !$.inidb.HasKey('raffleState', '', 'startTime') || !$.inidb.HasKey('raffleState', '', 'bools')) {
+                  || !$.inidb.HasKey('raffleState', '', 'startTime') || !$.inidb.HasKey('raffleState', '', 'isFollowersOnly') || !$.inidb.HasKey('raffleState', '', 'isSubscribersOnly')
+                  || !$.inidb.HasKey('raffleState', '', 'usePoints') || !$.inidb.HasKey('raffleState', '', 'isActive')) {
             return;
         }
 
@@ -197,23 +195,23 @@
         entryFee = parseInt($.inidb.get('raffleState', 'entryFee'));
         timerTime = parseInt($.inidb.get('raffleState', 'timerTime'));
         startTime = parseInt($.inidb.get('raffleState', 'startTime'));
-        var bools = JSON.parse($.inidb.get('raffleState', 'bools'));
-        followers = bools[0];
-        subscribers = bools[1];
-        usePoints = bools[2];
-        status = bools[3];
+        followers = $.inidb.GetBoolean('raffleState', '', 'isFollowersOnly');
+        subscribers = $.inidb.GetBoolean('raffleState', '', 'isSubscribersOnly');
+        usePoints = $.inidb.GetBoolean('raffleState', '', 'usePoints');
+        status = $.inidb.GetBoolean('raffleState', '', 'isActive');
         lastWinners = [];
-        if ($.inidb.HasKey('raffleresults', '', 'winner')) { //Consider raffles saved before this change
+        if ($.inidb.HasKey('raffleresults', '', 'winner')) { //Consider raffles saved before winner was a key
             var temp = $.inidb.get('raffleresults', 'winner');
             if (temp !== undefined && !temp.equalsIgnoreCase('undefined')) {
                 lastWinners = JSON.parse(temp); //lastWinners found
             }
         }
 
-        hasDrawn = bools.length !== 5 ? false : bools[4]; //Consider raffles saved before this change
+        if ($.inidb.HasKey('raffleState', '', 'hasDrawn')) { //Consider raffles saved before hasDrawn was implemented
+            hasDrawn = $.inidb.GetBoolean('raffleState', '', 'hasDrawn');
+        }
 
         if (status === true) {
-            $.inidb.set('raffleSettings', 'isActive', 'true');
             if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
                 $.say($.lang.get('rafflesystem.open.keyword-exists', keyword));
                 close();
@@ -253,7 +251,11 @@
         $.inidb.set('raffleState', 'entryFee', entryFee);
         $.inidb.set('raffleState', 'timerTime', timerTime);
         $.inidb.set('raffleState', 'startTime', startTime);
-        $.inidb.set('raffleState', 'bools', JSON.stringify([followers, subscribers, usePoints, status, hasDrawn]));
+        $.inidb.SetBoolean('raffleState', '', 'isActive', status);
+        $.inidb.SetBoolean('raffleState', '', 'isFollowersOnly', followers);
+        $.inidb.SetBoolean('raffleState', '', 'isSubscribersOnly', subscribers);
+        $.inidb.SetBoolean('raffleState', '', 'usePoints', usePoints);
+        $.inidb.SetBoolean('raffleState', '', 'hasDrawn', hasDrawn);
         if (lastWinners.length >= 0){
             $.inidb.set('raffleresults', 'winner', JSON.stringify(lastWinners));
         } else if ($.inidb.HasKey('raffleresults', '', 'winner')) { //No winners but key present - we have to remove it
@@ -274,23 +276,23 @@
         clearInterval(saveStateInterval);
 
         /* Check if there's a raffle opened */
-        if (!status) {
+        if (!status && username !== undefined) {
             $.say($.whisperPrefix(username) + $.lang.get('rafflesystem.close.error.closed'));
             return;
         }
 
         status = false;
 
-        $.say($.lang.get('rafflesystem.close.success'));
+        if (!hasDrawn) {
+            $.say($.lang.get('rafflesystem.close.success'));
+        }
 
-        // Mark the raffle as off for the panel.
-        $.inidb.set('raffleSettings', 'isActive', 'false');
         saveState();
     }
 
     /**
-     * @function winner
-     * @info chooses a winner for the raffle
+     * @function draw
+     * @info draws a winner
      */
     function draw(amount) {
         var entriesLen = entries.length;
@@ -307,9 +309,9 @@
 
         // Thanks https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
         // Faster than calling $.randElement() over and over
-        var newWinners = [];
-        
-        var taken = [];
+        var newWinners = [],
+            taken = [];
+
         while (amount--) {
             var rnd = Math.floor(Math.random() * entriesLen);
             newWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
@@ -319,7 +321,6 @@
         lastWinners = lastWinners.concat(newWinners);
 
         winningMsg(newWinners);
-        hasDrawn = true;
 
         /* whisper the winner if the toggle is on */
         if (whisperWinner) {
@@ -344,12 +345,14 @@
             }
         }
 
+        close(undefined);
+        hasDrawn = true;
         saveState();
     }
 
     /**
      * @function winningMsg
-     * 
+     *
      * @info Builds the winning message
      * @param {Array} winners the new winners drawn
      */
@@ -371,7 +374,7 @@
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
             var i = msg.substring(0, 500).lastIndexOf(",");
             $.say(msg.substring(0, i));
-            $.say(msg.substring(i+1, msg.length));
+            $.say(msg.substring(i + 1, msg.length));
         } else {
             $.say(msg);
         }
@@ -379,14 +382,14 @@
 
     /**
      * @function winningMsg
-     * 
+     *
      * @info Awards the winners
      * @param {Number} amount
      * @param {Number} prize
      */
     function awardWinners(amount, prize) {
 
-        for (var i = (lastWinners.length-amount); i < lastWinners.length; i++) {
+        for (var i = (lastWinners.length - amount); i < lastWinners.length; i++) {
             $.inidb.incr('points', lastWinners[i], prize);
         }
 
@@ -404,9 +407,9 @@
      * @param {string} username
      * @param {string} message
      */
-    function message(username, message) {
+    function message(username, msg) {
         if (sendMessages) {
-            $.say($.whisperPrefix(username) + message);
+            $.say($.whisperPrefix(username) + msg);
         }
     }
 
@@ -445,11 +448,9 @@
                 }
 
                 $.inidb.decr('points', username, entryFee);
-            } else {
-                if (entryFee > $.getUserTime(username)) {
-                    message(username, $.lang.get('rafflesystem.enter.time'));
-                    return;
-                }
+            } else if (entryFee > $.getUserTime(username)) {
+                message(username, $.lang.get('rafflesystem.enter.time'));
+                return;
             }
         }
 
@@ -468,8 +469,8 @@
         }
 
         /* Push the panel stats */
-            $.inidb.set('raffleList', username, true);
-            $.inidb.set('raffleresults', 'raffleEntries', Object.keys(entered).length);
+        $.inidb.set('raffleList', username, true);
+        $.inidb.set('raffleresults', 'raffleEntries', Object.keys(entered).length);
     }
 
     /**
@@ -497,8 +498,6 @@
         hasDrawn = false;
         $.inidb.RemoveFile('raffleList');
         $.inidb.set('raffleresults', 'raffleEntries', 0);
-        // Mark the raffle as off for the panel.
-        $.inidb.set('raffleSettings', 'isActive', 'false');
         saveState();
     }
 
@@ -552,20 +551,19 @@
              * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points 
              */
             if (action.equalsIgnoreCase('draw')) {
-                
                 var amount = 1;
-                if(args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
+                if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
                     return;
                 }
-                
+
                 if (args[1] !== undefined) {
                     amount = parseInt(args[1]);
                 }
 
                 draw(amount);
 
-                if(args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
+                if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(amount, parseInt(args[2]));
                 }
 
@@ -575,10 +573,10 @@
             /**
              * @commandpath raffle lastWinners - Prints the last raffle winners
              */
-             if (action.equalsIgnoreCase('lastWinners')) {
+            if (action.equalsIgnoreCase('lastWinners')) {
                 winningMsg(lastWinners);
                 return;
-             }
+            }
 
             /**
              * @commandpath raffle reset - Resets the raffle.
@@ -609,6 +607,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.subbonus.usage'));
                     return;
                 }
+
                 subscriberBonus = parseInt(subAction);
                 $.inidb.set('raffleSettings', 'subscriberBonusRaffle', subscriberBonus);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.subbonus.set', subscriberBonus));
@@ -623,6 +622,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.regbonus.usage'));
                     return;
                 }
+
                 regularBonus = parseInt(subAction);
                 $.inidb.set('raffleSettings', 'regularBonusRaffle', regularBonus);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.regbonus.set', regularBonus));
@@ -717,7 +717,7 @@
      * @event Shutdown
      */
     $.bind('Shutdown', function() {
-       saveState();
+        saveState();
     });
 
     $.reloadRaffle = reloadRaffle;

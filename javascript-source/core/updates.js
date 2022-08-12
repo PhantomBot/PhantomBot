@@ -436,21 +436,21 @@
         $.consoleLn('Starting PhantomBot update 3.6.4 updates...');
         if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4')) {
             var subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
-                    primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
-                    reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
-                    giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
-                    giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An anonymous viewer gifted (recipient) a subscription!'),
-                    massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
-                    massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An anonymous viewer gifted (amount) subscriptions to random viewers!'),
-                    subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward', 0),
-                    reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
-                    giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward', 0),
-                    massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
-                    customEmote = $.getIniDbString('subscribeHandler', 'resubEmote', ''),
-                    subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
-                    subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
-                    subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
-                    subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime', 'Prime');
+                primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
+                reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
+                giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
+                giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An anonymous viewer gifted (recipient) a subscription!'),
+                massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
+                massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An anonymous viewer gifted (amount) subscriptions to random viewers!'),
+                subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward', 0),
+                reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
+                giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward', 0),
+                massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
+                customEmote = $.getIniDbString('subscribeHandler', 'resubEmote', ''),
+                subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
+                subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
+                subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
+                subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime', 'Prime');
 
             var createSingleJson = function (val) {
                 return JSON.stringify({
@@ -571,5 +571,27 @@
         $.consoleLn('PhantomBot update 3.6.4 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
         $.inidb.SetBoolean('updates', '', 'installedv3.6.4-1', true);
+    }
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4.2')) {
+        $.consoleLn('Starting PhantomBot update 3.6.4.2 updates...');
+        if ($.inidb.FileExists('raffleState')) {
+            var bools = JSON.parse($.inidb.get('raffleState', 'bools'));
+
+            $.inidb.SetBoolean('raffleState', '', 'isFollowersOnly', (bools[0] === 'true'));
+            $.inidb.SetBoolean('raffleState', '', 'isSubscribersOnly', (bools[1] === 'true'));
+            $.inidb.SetBoolean('raffleState', '', 'usePoints', (bools[2] === 'true'));
+            //bools[3] Is the old status we won't be using anymore ([followers, subscribers, usePoints, status, hasDrawn])
+            $.inidb.SetBoolean('raffleState', '', 'hasDrawn', (bools[4] === 'true'));
+            $.inidb.RemoveKey('raffleState', '', 'bools');
+
+            if ($.inidb.FileExists('raffleSettings')) {
+                $.inidb.set('raffleState', 'isActive', $.inidb.get('raffleSettings', 'isActive'));
+                $.inidb.RemoveKey('raffleSettings', '', 'isActive');
+            }
+        }
+
+        $.consoleLn('PhantomBot update 3.6.4.2 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.4.2', true);
     }
 })();
