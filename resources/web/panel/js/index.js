@@ -205,7 +205,7 @@ $(function () {
 
     socket.getDiscordChannelList = function (callback_id, callback) {
         // Genetate a callback.
-        socket.addListener(callback_id, callback);
+        generateCallBack(callback_id, [], false, true, callback);
 
         // Send event.
         sendToSocket({
