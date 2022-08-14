@@ -610,13 +610,13 @@ $(function () {
                     o.attr('value', roles[i].value);
                 }
 
-                if (roles[i].selected !== undefined && roles[i].selected === true) {
+                if (roles[i].selected !== undefined && (roles[i].selected === true || roles[i].selected === 'true')) {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
                 }
 
-                if (roles[i].disabled !== undefined && roles[i].disabled === true) {
+                if (roles[i].disabled !== undefined && (roles[i].disabled === true || roles[i].disabled === 'true')) {
                     o.attr('disabled', 'disabled');
                 }
 
@@ -677,10 +677,18 @@ $(function () {
                     'id': roles[i]._id
                 });
 
-                if (roles[i].selected !== undefined && roles[i].selected === 'true') {
+                if (roles[i].value !== undefined) {
+                    o.attr('value', roles[i].value);
+                }
+
+                if (roles[i].selected !== undefined && (roles[i].selected === true || roles[i].selected === 'true')) {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
+                }
+
+                if (roles[i].disabled !== undefined && (roles[i].disabled === true || roles[i].disabled === 'true')) {
+                    o.attr('disabled', 'disabled');
                 }
 
                 group.append(o);
@@ -726,9 +734,19 @@ $(function () {
                 'html': option.name,
                 'id': option._id
             });
-            if (option.selected !== undefined && option.selected === 'true') {
+
+            if (option.value !== undefined) {
+                o.attr('value', option.value);
+            }
+
+            if (option.selected !== undefined && (option.selected === true || option.selected === 'true')) {
                 o.attr('selected', 'selected');
             }
+
+            if (option.disabled !== undefined && (option.disabled === true || option.disabled === 'true')) {
+                o.attr('disabled', 'disabled');
+            }
+
             return o;
         }))));
     };
@@ -959,7 +977,7 @@ $(function () {
      * @return {Number}
      */
     helpers.getGroupIdByName = function (name, asString) {
-        let idx =  permGroupNames.indexOf(name);
+        let idx = permGroupNames.indexOf(name);
         return (asString ? idx.toString() : parseInt(idx));
     };
 
@@ -983,11 +1001,11 @@ $(function () {
     };
 
     let updatePermGroups = function () {
-        socket.getDBTableValues('permissions_get_all_groups', 'groups', function(results){
+        socket.getDBTableValues('permissions_get_all_groups', 'groups', function (results) {
             permGroups;
             for (let i = 0; i < results.length; i++) {
                 permGroups[i] = results[i].value;
-                permGroupNames[i] =  i.toString() + ' (' + results[i].value + ')';
+                permGroupNames[i] = i.toString() + ' (' + results[i].value + ')';
             }
         });
     };
