@@ -1334,6 +1334,8 @@ $(function () {
         return new Promise(startPoll);
     };
 
+    helpers.sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
     helpers.toggleDebug = function () {
         localStorage.setItem('phantombot_debug_state', localStorage.getItem('phantombot_debug_state') !== '1' ? '1' : '0');
         helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
