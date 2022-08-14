@@ -131,8 +131,6 @@
         for (var i = 0; i < ranksTimeTable.length; i++) {
             if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
                 userLevel = i;
-            } else {
-                i = ranksTimeTable.length;
             }
         }
         if (userLevel != -1) {
