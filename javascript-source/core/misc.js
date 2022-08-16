@@ -822,15 +822,15 @@
 
         var spl = str.split(new RegExp('([^' + sep + '"\']+|"[^"]*"|\'[^\']*\')'));
         var parts = [];
-        for (let i = 0; i < spl.length; i++) {
+        for (var i = 0; i < spl.length; i++) {
             if (spl[i].trim().length > 0 && spl[i] !== sep) {
                 parts.push(spl[i]);
             }
         }
 
         var ret = [];
-        for (let i = 0; i < parts.length; i++) {
-            let b = 0;
+        for (var i = 0; i < parts.length; i++) {
+            var b = 0;
             if (i + 1 < parts.length) {
                 while (parts[i].endsWith('\\"') || (parts[i].endsWith('\\') && parts[i + b + 1].startsWith('"'))
                         || parts[i].endsWith('\\\'') || (parts[i].endsWith('\\') && parts[i + b + 1].startsWith('\''))) {
@@ -851,7 +851,7 @@
             i += b;
         }
 
-        for (let i in ret) {
+        for (var i in ret) {
             ret[i] = ret[i].trim().replace(/^"([^"]*)"$/, '$1').replace(/^'([^']*)'$/, '$1');
         }
 
