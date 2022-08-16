@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * Script  : clipHandler.js
  * Purpose : Configures the automatic display of clips in chat and captures the events from Twitch.
@@ -47,7 +49,7 @@
                 s = message;
 
         /* Even though the Core won't even query the API if this is false, we still check here. */
-        if (announce === false || toggle === false || url === undefined || url === null) {
+        if (announce === false || toggle === false || url === undefined || url === null || channelName === '') {
             return;
         }
 

@@ -136,7 +136,7 @@
      * @event twitchReSubscriber
      */
     $.bind('twitchReSubscriber', function(event) {
-        var subscriber = event.getReSubscriber(),
+        var subscriber = event.getUsername(),
             months = event.getMonths(),
             s = resubMessage;
 

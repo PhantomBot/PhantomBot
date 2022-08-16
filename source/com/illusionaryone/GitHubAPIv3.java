@@ -99,6 +99,11 @@ public final class GitHubAPIv3 {
         String os = PhantomBot.getOsSuffix();
 
         JSONArray assetsArray = jsonObject.getJSONArray("assets");
+
+        if (assetsArray.isEmpty()) {
+            return null;
+        }
+
         Pattern p = Pattern.compile(".*PhantomBot-([0-9]+\\.?)+" + os + "\\.zip", Pattern.CASE_INSENSITIVE);
         int i;
         boolean found = false;

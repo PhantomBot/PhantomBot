@@ -75,9 +75,9 @@
      */
     function writefile(args) {
         var fileName;
-        if ((match = args.match(/^ (.+), (.+), (.+)$/))) {
-            fileName = './addons/' + $.replace(match[1], '..', '');
-            $.writeToFile(match[3], fileName, match[2] === 'true');
+        if ((match = $.splitArgs(args, ',', 3))) {
+            fileName = './addons/' + $.replace(match[0], '..', '');
+            $.writeToFile(match[2], fileName, match[1] === 'true');
             return {
                 result: '',
                 cache: false
