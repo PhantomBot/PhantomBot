@@ -1756,20 +1756,6 @@ Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### keywordHandler.js
-
-Defined in script: _./javascript-source/handlers/keywordHandler.js_
-
-#### Hook: ircChannelMessage
-
-Global&nbsp;&nbsp; | Local
--------|-------
-Yes&nbsp;&nbsp; | No
-
-**Labels Used:** twitch commandevent keywordevent noevent
-
-&nbsp;
-
 ### subscribeHandler.js
 
 Defined in script: _./javascript-source/handlers/subscribeHandler.js_
@@ -1821,3 +1807,17 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | Yes
 
 **Labels Used:** global twitch noevent
+
+&nbsp;
+
+### keywordHandler.js
+
+Defined in script: _./javascript-source/handlers/keywordHandler.js_
+
+#### Hook: ircChannelMessage
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch commandevent keywordevent noevent
