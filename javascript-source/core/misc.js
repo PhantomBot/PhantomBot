@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java, Packages */
+
 (function () {
     var currentHostTarget = '',
             respond = getSetIniDbBoolean('settings', 'response_@chat', true),
@@ -83,7 +85,7 @@
      * @returns {string}
      */
     function sanitize(username) {
-        return (username == null ? username : String(username).replace(/\W/g, '').toLowerCase());
+        return (username === null ? username : String(username).replace(/\W/g, '').toLowerCase());
     }
 
     /**
@@ -99,7 +101,7 @@
             return true;
         } else {
             userFollowsCheck = $.twitch.GetUserFollowsChannel(username.toLowerCase(), $.channelName.toLowerCase());
-            if (userFollowsCheck.getInt('_http') == 200) {
+            if (userFollowsCheck.getInt('_http') === 200) {
                 $.inidb.set('followed', username.toLowerCase(), true);
                 return true;
             }
@@ -123,7 +125,7 @@
      * @returns {Number}
      */
     function strlen(str) {
-        if (str == null) {
+        if (str === null) {
             return 0;
         }
 
@@ -134,7 +136,7 @@
                 return str.length;
             }
         } else {
-            if ((typeof str.length) == 'number') {
+            if ((typeof str.length) === 'number') {
                 return str.length;
             } else {
                 return str.length;
@@ -147,7 +149,7 @@
             return str1.equalsIgnoreCase(str2);
         } catch (e) {
             try {
-                return str1.toLowerCase() == str2.toLowerCase();
+                return str1.toLowerCase() === str2.toLowerCase();
             } catch (e) {
                 return false;
             }
@@ -227,7 +229,7 @@
      * @returns {Number}
      */
     function rand(max) {
-        if (max == 0) {
+        if (max === 0) {
             return max;
         }
         return (Math.abs(secureRandom.nextInt()) % max);
@@ -241,7 +243,7 @@
      * @returns {Number}
      */
     function randRange(min, max) {
-        if (min == max) {
+        if (min === max) {
             return min;
         }
         return parseInt(rand(max - min + 1) + min);
@@ -254,7 +256,7 @@
      * @returns {*}
      */
     function randElement(array) {
-        if (array == null) {
+        if (array === null) {
             return null;
         }
         return array[randRange(0, array.length - 1)];
@@ -294,7 +296,7 @@
      * @returns {Number}
      */
     function trueRandRange(min, max) {
-        if (min == max) {
+        if (min === max) {
             return min;
         }
 
@@ -341,7 +343,7 @@
                     return data.getInt(0);
                 }
             } else {
-                if (request.httpCode == 0) {
+                if (request.httpCode === 0) {
                     $.log.error('Failed to use random.org: ' + request.exception);
                 } else {
                     $.log.error('Failed to use random.org: HTTP' + request.httpCode + ' ' + request.content);
@@ -361,7 +363,7 @@
      * @returns {*}
      */
     function trueRandElement(array) {
-        if (array == null) {
+        if (array === null) {
             return null;
         }
         return array[trueRand(array.length - 1)];
@@ -421,8 +423,8 @@
      * @returns {boolean}
      */
     function getIniDbBoolean(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
-            return ($.inidb.get(fileName, key) == 'true');
+        if ($.inidb.exists(fileName, key) === true) {
+            return ($.inidb.get(fileName, key) === 'true');
         } else {
             return (defaultValue);
         }
@@ -437,8 +439,8 @@
      * @returns {boolean}
      */
     function getSetIniDbBoolean(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
-            return ($.inidb.get(fileName, key) == 'true');
+        if ($.inidb.exists(fileName, key) === true) {
+            return ($.inidb.get(fileName, key) === 'true');
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
             return (defaultValue);
@@ -465,7 +467,7 @@
      * @param {string}
      */
     function getIniDbString(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
+        if ($.inidb.exists(fileName, key) === true) {
             return ($.inidb.get(fileName, key) + '');
         } else {
             return (defaultValue);
@@ -480,7 +482,7 @@
      * @param {string}
      */
     function getSetIniDbString(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
+        if ($.inidb.exists(fileName, key) === true) {
             return ($.inidb.get(fileName, key) + '');
         } else {
             $.inidb.set(fileName, key, defaultValue);
@@ -507,7 +509,7 @@
      * @param {number}
      */
     function getIniDbNumber(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
+        if ($.inidb.exists(fileName, key) === true) {
             return parseInt($.inidb.get(fileName, key));
         } else {
             return defaultValue;
@@ -522,7 +524,7 @@
      * @param {number}
      */
     function getSetIniDbNumber(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
+        if ($.inidb.exists(fileName, key) === true) {
             return parseInt($.inidb.get(fileName, key));
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
@@ -549,7 +551,7 @@
      * @param {number}
      */
     function getIniDbFloat(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
+        if ($.inidb.exists(fileName, key) === true) {
             return parseFloat($.inidb.get(fileName, key));
         } else {
             return defaultValue;
@@ -564,7 +566,7 @@
      * @param {number}
      */
     function getSetIniDbFloat(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) == true) {
+        if ($.inidb.exists(fileName, key) === true) {
             return parseFloat($.inidb.get(fileName, key));
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
@@ -795,6 +797,71 @@
         }
     }
 
+    function splitArgs(str, sep, limit) {
+        if (str === undefined || str === null) {
+            throw 'Invalid str (undefined, null)';
+        }
+
+        if (sep === undefined || sep === null || $.jsString(sep).length === 0) {
+            sep = ',';
+        }
+
+        if (limit !== undefined && limit !== null && (isNaN(limit) || (limit <= 0 && limit !== -1))) {
+            throw 'Invalid limit (NaN or <= 0)';
+        } else if (limit === undefined && limit === null) {
+            limit = -1;
+        }
+
+        str = $.jsString(str);
+        sep = $.jsString(sep);
+        limit = parseInt(limit);
+
+        if (str.replaceAll(sep, '').trim().length === 0) {
+            return null;
+        }
+
+        var spl = str.split(new RegExp('([^' + sep + '"\']+|"[^"]*"|\'[^\']*\')'));
+        var parts = [];
+        for (let i = 0; i < spl.length; i++) {
+            if (spl[i].trim().length > 0 && spl[i] !== sep) {
+                parts.push(spl[i]);
+            }
+        }
+
+        var ret = [];
+        for (let i = 0; i < parts.length; i++) {
+            let b = 0;
+            if (i + 1 < parts.length) {
+                while (parts[i].endsWith('\\"') || (parts[i].endsWith('\\') && parts[i + b + 1].startsWith('"'))
+                        || parts[i].endsWith('\\\'') || (parts[i].endsWith('\\') && parts[i + b + 1].startsWith('\''))) {
+                    if (i + b + 1 < parts.length) {
+                        parts[i] += parts[i + b + 1];
+                        b++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (limit === -1 || ret.length < limit) {
+                ret.push(parts[i]);
+            } else {
+                ret[limit - 1] += sep + parts[i];
+            }
+
+            i += b;
+        }
+
+        for (let i in ret) {
+            ret[i] = ret[i].trim().replace(/^"([^"]*)"$/, '$1').replace(/^'([^']*)'$/, '$1');
+        }
+
+        if (ret.length === 0) {
+            return null;
+        }
+
+        return ret;
+    }
+
     function usernameResolveIgnoreEx(user) {
         try {
             return $.username.resolve(user);
@@ -853,5 +920,6 @@
     $.equalsIgnoreCase = equalsIgnoreCase;
     $.javaString = javaString;
     $.jsString = jsString;
+    $.splitArgs = splitArgs;
     $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
 })();
