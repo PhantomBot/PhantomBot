@@ -102,15 +102,14 @@ $(run = function () {
         }, 5e3);
 
         // Update the open button to close if the raffle is active.
-        // For some reason $.inidb.SetBoolean actually saves an integer...
-        if (e['isActive'] === '1') {
+        if (e['isActive'] === '1' || e['isActive'] === 'true') {
             $('#ticket-open-or-close-raffle').html($('<i/>', {
                 'class': 'fa fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
         // Raffle is over, winners were already drawn
-        if (e['hasDrawn'] === 'true' && e['isActive'] === '0') {
+        if ((e['hasDrawn'] === 'true' || e['hasDrawn'] === '1') && (e['isActive'] === '0' || e['isActive'] === 'false')) {
             helpers.clearTimers();
             //We're zooming wait till the table is ready
             $('#ticket-raffle-table').ready(function(){
