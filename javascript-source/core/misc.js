@@ -424,7 +424,7 @@
      */
     function getIniDbBoolean(fileName, key, defaultValue) {
         if ($.inidb.exists(fileName, key) === true) {
-            return ($.inidb.get(fileName, key) === 'true');
+            return $.inidb.GetBoolean(fileName, '', key);
         } else {
             return (defaultValue);
         }
@@ -440,7 +440,7 @@
      */
     function getSetIniDbBoolean(fileName, key, defaultValue) {
         if ($.inidb.exists(fileName, key) === true) {
-            return ($.inidb.get(fileName, key) === 'true');
+            return $.inidb.GetBoolean(fileName, '', key)
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
             return (defaultValue);
