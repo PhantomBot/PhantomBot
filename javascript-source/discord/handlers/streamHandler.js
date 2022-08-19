@@ -61,7 +61,7 @@
     function getTrimmedGameName() {
         var game = $.jsString($.twitchcache.getGameTitle());
 
-        return (game.length > 15 ? game.slice(0, 15) + '...' : game);
+        return (game.length > 45 ? game.slice(0, 45) + '...' : game);
     }
 
     function sanitizeTitle(s) {
