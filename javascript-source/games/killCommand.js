@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * killCommand.js
  *
@@ -52,17 +54,18 @@
     function selfKill(sender) {
         do {
             rand = $.randRange(1, selfMessageCount);
-        } while (rand == lastRandom);
+        } while (rand === lastRandom);
         $.say($.lang.get('killcommand.self.' + rand, $.resolveRank(sender)));
         lastRandom = rand;
     };
 
     function kill(sender, user) {
+        user = $.user.sanitize(user);
         var tries = 0;
         do {
             tries++;
             rand = $.randRange(1, otherMessageCount);
-        } while (rand == lastRandom && tries < 5);
+        } while (rand === lastRandom && tries < 5);
         lang = $.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user), jailTimeout, $.botName);
         if (lang.startsWith('(jail)')) {
             lang = $.replace(lang, '(jail)', '');
@@ -90,7 +93,7 @@
          * @commandpath kill [username] - Kill a fellow viewer (not for real!), omit the username to kill yourself
          */
         if (command.equalsIgnoreCase('kill')) {
-            if (args.length <= 0 || args[0].toLowerCase() == sender) {
+            if (args.length <= 0 || args[0].toLowerCase() === sender) {
                 selfKill(sender);
             } else {
                 kill(sender, args[0]);
@@ -101,7 +104,7 @@
          * @commandpath jailtimeouttime [amount in seconds] - Set the timeout time for jail time on the kill command.
          */
         if (command.equalsIgnoreCase('jailtimeouttime')) {
-            if (args.length == 0) {
+            if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('killcommand.jail.timeout.usage'));
                 return;
             }
@@ -116,7 +119,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if (selfMessageCount == 0 && otherMessageCount == 0) {
+        if (selfMessageCount === 0 && otherMessageCount === 0) {
             loadResponses();
         }
 

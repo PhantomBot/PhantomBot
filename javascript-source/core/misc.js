@@ -440,7 +440,7 @@
      */
     function getSetIniDbBoolean(fileName, key, defaultValue) {
         if ($.inidb.exists(fileName, key) === true) {
-            return $.inidb.GetBoolean(fileName, '', key)
+            return $.inidb.GetBoolean(fileName, '', key);
         } else {
             $.inidb.set(fileName, key, defaultValue.toString());
             return (defaultValue);
@@ -816,7 +816,7 @@
         sep = $.jsString(sep);
         limit = parseInt(limit);
 
-        if (str.replaceAll(sep, '').trim().length === 0) {
+        if ($.replace(str, sep, '').trim().length === 0) {
             return null;
         }
 
