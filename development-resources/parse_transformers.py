@@ -377,7 +377,7 @@ if len(usestransformers) > 0:
     lines.append('\n')
     lines.append("_Indicates whether the hooks in each script use transformers that are global, local, or both_" + '\n')
     lines.append('\n')
-    for usestransformer in usestransformers:
+    for usestransformer in sorted(usestransformers, key=lambda x: x["script"]):
         lines.extend(output_usestransformer(usestransformer, 3))
     lines = lines[:len(lines) - 3]
 
