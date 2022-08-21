@@ -268,19 +268,20 @@ public class YouTubeAPIv3 {
 
                     JSONObject cd = i.getJSONObject("contentDetails");
 
+                    com.gmt2001.Console.debug.println(cd.getString("duration"));
                     Duration d = Duration.parse(cd.getString("duration"));
 
                     if (cd.getString("duration").equalsIgnoreCase("PT0S")) {
                         com.gmt2001.Console.debug.println("Videos API: Live Stream Detected");
-                        return new int[]{123, 456, 7899};
+                        return new int[]{0, 123, 456, 7899};
                     }
 
-                    com.gmt2001.Console.debug.println("Videos API Success");
+                    com.gmt2001.Console.debug.println("Videos API Success " + (int) d.toSeconds() + "TS " + (int) d.toHours() + "D " + d.toMinutesPart() + "M " + d.toSecondsPart() + "S");
 
-                    return new int[]{(int) d.toHours(), d.toMinutesPart(), d.toSecondsPart()};
+                    return new int[]{(int) d.toSeconds(), (int) d.toHours(), d.toMinutesPart(), d.toSecondsPart()};
                 } else {
                     com.gmt2001.Console.debug.println("Videos API Fail: Length == 0");
-                    return new int[]{0, 0, 0};
+                    return new int[]{0, 0, 0, 0};
                 }
             } else if (j.getInt("_http") == 403 && !isRetry) {
                 com.gmt2001.Console.out.println("Detected 403, trying again in 5 seconds...");
@@ -288,12 +289,12 @@ public class YouTubeAPIv3 {
                 return this.GetVideoLength(id, true);
             } else {
                 com.gmt2001.Console.debug.println("Videos API Fail: HTTP Code " + j.getInt("_http"));
-                return new int[]{0, 0, 0};
+                return new int[]{0, 0, 0, 0};
             }
         }
         com.gmt2001.Console.debug.println("Videos API Fatal Error");
 
-        return new int[]{0, 0, 0};
+        return new int[]{0, 0, 0, 0};
     }
 
     public int[] GetVideoInfo(String id) throws JSONException {

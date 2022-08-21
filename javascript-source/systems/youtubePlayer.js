@@ -178,21 +178,21 @@
 
             var lengthData = $.youtube.GetVideoLength(videoId);
 
-            if (lengthData[0] == 123 && lengthData[1] == 456 && lengthData[2] === 7899) {
+            if (lengthData[1] == 123 && lengthData[2] == 456 && lengthData[3] === 7899) {
                 throw 'Live Stream Detected';
             }
             // only try 2 times.
             // No point in spamming the API, we'll hit the limit.
             // If we try more than 2 times, that's 2 times on each song.
-            while (lengthData[0] == 0 && lengthData[1] == 0 && lengthData[2] == 0 && attempts <= 2) {
+            while (lengthData[0] == 0 && attempts <= 2) {
                 lengthData = $.youtube.GetVideoLength(videoId);
                 attempts++;
             }
-            if (lengthData[0] == 0 && lengthData[1] == 0 && lengthData[2] == 0) {
+            if (lengthData[0] == 0) {
                 return 0;
             }
-            videoLength = lengthData[2];
-            return lengthData[2];
+            videoLength = lengthData[0];
+            return lengthData[0];
         };
 
         /**
