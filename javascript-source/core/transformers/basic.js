@@ -66,7 +66,7 @@
                     };
                 }
                 return {
-                    result: ($.equalsIgnoreCase(match[1], '=') ? '(' : '') + escapeTags(match[2]) + ($.equalsIgnoreCase(match[1], '=') ? ')' : ''),
+                    result: ($.equalsIgnoreCase(match[1], '=') ? '(' : '') + $.transformers.escapeTags(match[2]) + ($.equalsIgnoreCase(match[1], '=') ? ')' : ''),
                     raw: $.equalsIgnoreCase(match[1], '='),
                     cache: true
                 };
