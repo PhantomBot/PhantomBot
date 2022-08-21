@@ -45,7 +45,7 @@ import tv.phantombot.CaselessProperties;
 public final class HttpClient {
 
     private static final String DEFAULT_USER_AGENT = "PhantomBot/2022";
-    private static final int TIMEOUT_TIME = 10000;
+    private static final int TIMEOUT_TIME = 10;
 
     /**
      * Hide the Constructor
@@ -100,7 +100,7 @@ public final class HttpClient {
             return sender.send(ByteBufFlux.fromString(Mono.just(_requestBody)))
                     .responseSingle((res, buf) -> buf.asByteArray().map(content -> new HttpClientResponse(null, requestBody, content, url, res))
                     .defaultIfEmpty(new HttpClientResponse(null, requestBody, new byte[0], url, res)))
-                    .toFuture().get(TIMEOUT_TIME, TimeUnit.MILLISECONDS);
+                    .toFuture().get(CaselessProperties.instance().getPropertyAsInt("httpclienttimeout", TIMEOUT_TIME), TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             return new HttpClientResponse(ex, false, method, requestBody, ex.getClass().getName().getBytes(Charset.forName("UTF-8")), requestHeaders, null, null, url);
         }
