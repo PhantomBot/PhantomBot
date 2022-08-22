@@ -516,28 +516,26 @@
     // Interval for auto level to regular
     inter = setInterval(function () {
         var username,
-                i;
+            i;
 
         if (levelWithTime) {
             for (i in $.users) {
                 if ($.users[i] !== null) {
                     username = $.users[i].toLowerCase();
-                    if (!$.checkUserPermission(username, undefined, $.PERMISSION.Mod)
-                        && !$.checkUserPermission(username, undefined, $.PERMISSION.Admin)
-                        && !$.checkUserPermission(username, undefined, $.PERMISSION.Sub)
-                        && !$.checkUserPermission(username, undefined, $.PERMISSION.VIP)
+                    // Only level viewers to regulars and ignore TwitchBots
+                    if (!$.isTwitchBot(username)
+                        && (!$.hasPermissionLevel(username) || $.isViewer(username)) //Assume users without permissions level are viewers, if they are too new the check will fail in the next condition
                         && $.inidb.exists('time', username)
-                        && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp
-                        && $.checkUserPermission(username, undefined, $.getLowestIDSubVIP())) {
-                        if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
+                        && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp) {
+                        if (!$.hasModList(username) && !$.hasModeO(username)) { // Added a second check here to be 100% sure the user is not a mod.
                             $.setUserGroupById(username, $.PERMISSION.Regular);
                             if (timeLevelWarning) {
                                 $.say($.lang.get(
-                                        'timesystem.autolevel.promoted',
-                                        $.username.resolve(username),
-                                        $.getGroupNameById($.PERMISSION.Regular).toLowerCase(),
-                                        hoursForLevelUp
-                                        )); //No whisper mode needed here.
+                                    'timesystem.autolevel.promoted',
+                                    $.username.resolve(username),
+                                    $.getGroupNameById($.PERMISSION.Regular).toLowerCase(),
+                                    hoursForLevelUp
+                                )); //No whisper mode needed here.
                             }
                         }
                     }

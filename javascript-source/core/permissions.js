@@ -359,6 +359,26 @@
     }
 
     /**
+     * @function isViewer
+     * @export $
+     * @param {string} username
+     * @returns {boolean}
+     */
+    function isViewer(username) {
+        return queryDBPermission(username.toLowerCase()) === PERMISSION.Viewer;
+    }
+
+    /**
+     * @function hasPermissionLevel
+     * @export $
+     * @param {string} username
+     * @returns {boolean}
+     */
+    function hasPermissionLevel(username) {
+        return queryDBPermission(username.toLowerCase()) !== PERMISSION.None;
+    }
+
+    /**
      * @function hasModeO
      * @export $
      * @param {string} username
@@ -1388,6 +1408,8 @@
     $.isDonator = isDonator;
     $.isVIP = isVIP;
     $.isRegular = isRegular;
+    $.isViewer = isViewer;
+    $.hasPermissionLevel = hasPermissionLevel;
     $.hasModeO = hasModeO;
     $.hasModList = hasModList;
     $.getUserGroupId = getUserGroupId;
