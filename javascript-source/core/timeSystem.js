@@ -527,7 +527,7 @@
                         && (!$.hasPermissionLevel(username) || $.isViewer(username)) //Assume users without permissions level are viewers, if they are too new the check will fail in the next condition
                         && $.inidb.exists('time', username)
                         && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp) {
-                        if (!$.hasModList(username)) { // Added a second check here to be 100% sure the user is not a mod.
+                        if (!$.hasModList(username) && !$.hasModeO(username)) { // Added a second check here to be 100% sure the user is not a mod.
                             $.setUserGroupById(username, $.PERMISSION.Regular);
                             if (timeLevelWarning) {
                                 $.say($.lang.get(
