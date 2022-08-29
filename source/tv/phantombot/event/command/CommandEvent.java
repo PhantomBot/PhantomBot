@@ -42,7 +42,7 @@ public class CommandEvent extends Event {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        this.args = parse();
+        this.args = this.parse();
         this.tags = new HashMap<>();
     }
 
@@ -58,38 +58,60 @@ public class CommandEvent extends Event {
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
-        this.args = parse();
+        this.args = this.parse();
         this.tags = (tags == null ? new HashMap<>() : tags);
     }
 
-    /**
-     * Method that parses the command arguments.
-     *
-     * @return
-     */
     private String[] parse() {
+        return parseArgs(this.arguments, ' ', -1, false).toArray(String[]::new);
+    }
+
+    /**
+     * Method that parses the command arguments. Double quotes can be used to prevent an argument containing the delimiter from splitting. Double
+     * quotes that are literals can be escaped with backslash. Backslash requires escaping with another backslash.
+     *
+     * @param arguments The arguments as a single string
+     * @param delimiter The delimiter by which arguments are split. Can be any char except double-quote or backslash
+     * @param limit The maximum number of arguments to return. -1 indicates unlimited. Once limit is reached, the delimiter is automatically escaped
+     * @param limitNoEscape If set true and limit &gt; 0, the argument at position limit is treated as a literal string, as if all quotes,
+     * backslashes, and delimiters are already escaped
+     *
+     * @return A List&lt;String&gt; of arguments
+     */
+    public static List<String> parseArgs(String arguments, char delimiter, int limit, boolean limitNoEscape) {
+        if (delimiter == '"' || delimiter == '\\') {
+            throw new IllegalArgumentException("Can not use double-quote(\") or backslash(\\) as a delimiter");
+        }
+
         List<String> tmpArgs = new LinkedList<>();
         boolean inquote = false;
-        String tmpStr = "";
+        boolean escape = false;
+        StringBuilder tmpStr = new StringBuilder();
+        if (limit > 0) {
+            limit--;
+        }
 
         for (char c : arguments.toCharArray()) {
-            if (c == '"') {
+            if (c == '\\' && !escape && (limit == -1 || tmpArgs.size() < limit || !limitNoEscape)) {
+                escape = true;
+            } else if (c == '"' && !escape && (limit == -1 || tmpArgs.size() < limit || !limitNoEscape)) {
                 inquote = !inquote;
-            } else if (!inquote && c == ' ') {
+            } else if (!inquote && c == delimiter && (limit == -1 || tmpArgs.size() < limit)) {
                 if (tmpStr.length() > 0) {
-                    tmpArgs.add(tmpStr);
-                    tmpStr = "";
+                    tmpArgs.add(tmpStr.toString());
+                    tmpStr.setLength(0);
                 }
             } else {
-                tmpStr += c;
+                tmpStr.append(c);
+                escape = false;
             }
         }
 
         if (tmpStr.length() > 0) {
-            tmpArgs.add(tmpStr);
+            tmpArgs.add(tmpStr.toString());
         }
 
-        return tmpArgs.toArray(String[]::new);
+        return tmpArgs;
     }
 
     /**

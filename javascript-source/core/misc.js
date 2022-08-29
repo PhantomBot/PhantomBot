@@ -797,62 +797,31 @@
         }
     }
 
-    function splitArgs(str, sep, limit) {
+    function parseArgs(str, sep, limit, limitNoEscape) {
         if (str === undefined || str === null) {
             throw 'Invalid str (undefined, null)';
         }
 
-        if (sep === undefined || sep === null || $.jsString(sep).length === 0) {
+        if (sep === undefined || sep === null || $.jsString(sep).length !== 1) {
             sep = ',';
         }
 
         if (limit !== undefined && limit !== null && (isNaN(limit) || (limit <= 0 && limit !== -1))) {
             throw 'Invalid limit (NaN or <= 0)';
-        } else if (limit === undefined && limit === null) {
+        } else if (limit === undefined || limit === null) {
             limit = -1;
         }
 
-        str = $.jsString(str);
-        sep = $.jsString(sep);
-        limit = parseInt(limit);
-
-        if ($.replace(str, sep, '').trim().length === 0) {
-            return null;
+        if (limitNoEscape === undefined || limitNoEscape === null) {
+            limitNoEscape = false;
         }
-
-        var spl = str.split(new RegExp('([^' + sep + '"\']+|"[^"]*"|\'[^\']*\')'));
-        var parts = [];
-        for (var i = 0; i < spl.length; i++) {
-            if (spl[i].trim().length > 0 && spl[i] !== sep) {
-                parts.push(spl[i]);
-            }
-        }
+        $.consoleDebug(str);
+        var retl = Packages.tv.phantombot.event.command.CommandEvent.parseArgs(str, sep, limit, limitNoEscape);
 
         var ret = [];
-        for (var i = 0; i < parts.length; i++) {
-            var b = 0;
-            if (i + 1 < parts.length) {
-                while (parts[i].endsWith('\\"') || (parts[i].endsWith('\\') && parts[i + b + 1].startsWith('"'))
-                        || parts[i].endsWith('\\\'') || (parts[i].endsWith('\\') && parts[i + b + 1].startsWith('\''))) {
-                    if (i + b + 1 < parts.length) {
-                        parts[i] += parts[i + b + 1];
-                        b++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            if (limit === -1 || ret.length < limit) {
-                ret.push(parts[i]);
-            } else {
-                ret[limit - 1] += sep + parts[i];
-            }
 
-            i += b;
-        }
-
-        for (var i in ret) {
-            ret[i] = ret[i].trim().replace(/^"([^"]*)"$/, '$1').replace(/^'([^']*)'$/, '$1');
+        for (var i = 0; i < retl.size(); i++) {
+            ret.push($.jsString(retl.get(i)).trim());
         }
 
         if (ret.length === 0) {
@@ -920,6 +889,6 @@
     $.equalsIgnoreCase = equalsIgnoreCase;
     $.javaString = javaString;
     $.jsString = jsString;
-    $.splitArgs = splitArgs;
+    $.parseArgs = parseArgs;
     $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
 })();
