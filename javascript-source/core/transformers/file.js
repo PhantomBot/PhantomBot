@@ -75,7 +75,7 @@
      */
     function writefile(args) {
         var fileName;
-        if ((match = $.splitArgs(args, ',', 3))) {
+        if ((match = $.parseArgs(args, ',', 3, true))) {
             fileName = './addons/' + $.replace(match[0], '..', '');
             $.writeToFile(match[2], fileName, match[1] === 'true');
             return {

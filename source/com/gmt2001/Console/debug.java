@@ -115,6 +115,25 @@ public final class debug {
         }
     }
 
+    public static String getStackTrace(Throwable e) {
+        if (e == null) {
+            return null;
+        }
+
+        try ( Writer trace = new StringWriter()) {
+            try ( PrintWriter ptrace = new PrintWriter(trace)) {
+
+                e.printStackTrace(ptrace);
+
+                return trace.toString();
+            }
+        } catch (IOException ex) {
+            err.printStackTrace(ex);
+        }
+
+        return null;
+    }
+
     public static void printStackTrace(Throwable e) {
         printStackTrace(e, "");
     }

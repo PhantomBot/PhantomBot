@@ -22,6 +22,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 
 /**
  * The request parameters and response data from a HttpClient request
@@ -77,6 +79,8 @@ public final class HttpClientResponse {
 
         this.json = jsonT;
         this.jsonException = jsonExceptionT;
+
+        this.debug();
     }
 
     /**
@@ -130,6 +134,39 @@ public final class HttpClientResponse {
 
         this.json = jsonT;
         this.jsonException = jsonExceptionT;
+
+        this.debug();
+    }
+
+    private void debug() {
+        if (PhantomBot.getEnableDebugging() && CaselessProperties.instance().getPropertyAsBoolean("httpclientdebug", false)) {
+            JSONObject jso = new JSONObject();
+            jso.put("isSuccess", this.isSuccess);
+            jso.put("method", this.method);
+            jso.put("url", this.url.toString());
+            jso.put("requestHeaders", this.requestHeaders);
+            jso.put("responseCode", this.responseCode.toString());
+            jso.put("responseHeaders", this.responseHeaders);
+            jso.put("responseBody", new String(this.responseBody, StandardCharsets.UTF_8));
+            String exs = com.gmt2001.Console.debug.getStackTrace(this.exception);
+            String[] ex;
+            if (exs != null) {
+                ex = exs.replace("\t", "    ").split("\r\n");
+            } else {
+                ex = null;
+            }
+            jso.put("exception", ex);
+            jso.put("json", this.json);
+            String jxs = com.gmt2001.Console.debug.getStackTrace(this.jsonException);
+            String[] jx;
+            if (jxs != null) {
+                jx = jxs.replace("\t", "    ").split("\r\n");
+            } else {
+                jx = null;
+            }
+            jso.put("jsonException", jx);
+            com.gmt2001.Console.debug.println(jso.toString(4));
+        }
     }
 
     /**
