@@ -16,6 +16,7 @@
  */
 package com.gmt2001.wsclient;
 
+import com.gmt2001.httpwsserver.HTTPWSServer;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -64,6 +65,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         this.client.handler.handleFrame(ctx, frame);
+        HTTPWSServer.releaseObj(frame);
     }
 
     /**
@@ -168,7 +170,11 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
-        ch.writeAndFlush(resframe);
+        try {
+            ch.writeAndFlush(resframe);
+        } finally {
+            HTTPWSServer.releaseObj(resframe);
+        }
     }
 
     /**

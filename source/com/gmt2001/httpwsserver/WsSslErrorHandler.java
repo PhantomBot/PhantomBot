@@ -44,7 +44,7 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
      * Handles incoming WebSocket frames and passes them to the appropriate {@link WsFrameHandler}
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param req The {@link WebSocketFrame} containing the request frame
+     * @param frame The {@link WebSocketFrame} containing the request frame
      * @throws Exception Passes any thrown exceptions up the stack
      */
     @Override

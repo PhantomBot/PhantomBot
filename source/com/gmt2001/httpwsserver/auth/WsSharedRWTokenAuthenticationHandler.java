@@ -77,8 +77,8 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check
-     * @return, this method will also reply with the appropriate
-     * frames to continue the authentication sequence, or an {@code Unauthorized} frame if authentication has been fully attempted and failed
+     * @return, this method will also reply with the appropriate frames to continue the authentication sequence, or an {@code Unauthorized} frame if
+     * authentication has been fully attempted and failed
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
@@ -128,7 +128,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(authType).endObject();
 
         com.gmt2001.Console.debug.println("AuthResult [" + ctx.channel().remoteAddress().toString() + "] " + jsonObject.toString());
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, new TextWebSocketFrame(jsonObject.toString()));
 
         if (!ctx.channel().attr(ATTR_AUTHENTICATED).get()) {
             com.gmt2001.Console.debug.println("wsauthfail");

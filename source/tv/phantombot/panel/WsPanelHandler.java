@@ -16,6 +16,7 @@
  */
 package tv.phantombot.panel;
 
+import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
@@ -319,10 +320,16 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("results").array();
             try ( InputStream inputStream = Files.newInputStream(Paths.get("./web/panel/img/logo.jpeg"))) {
                 ByteBuf buf = Unpooled.copiedBuffer(inputStream.readAllBytes());
-                ByteBuf buf2 = Base64.encode(buf);
-                jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();
-                buf2.release();
-                buf.release();
+                try {
+                    ByteBuf buf2 = Base64.encode(buf);
+                    try {
+                        jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();
+                    } finally {
+                        HTTPWSServer.releaseObj(buf2);
+                    }
+                } finally {
+                    HTTPWSServer.releaseObj(buf);
+                }
             } catch (IOException ex) {
                 jsonObject.object().key("errors").array().object()
                         .key("status").value("500")
