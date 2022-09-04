@@ -17,6 +17,7 @@
 package com.gmt2001.eventsub;
 
 import com.gmt2001.HMAC;
+import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -57,19 +58,26 @@ final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandl
 
         if (!authenticated) {
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FORBIDDEN, Unpooled.buffer());
-            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-            res.content().writeBytes(buf);
-            buf.release();
-            HttpUtil.setContentLength(res, res.content().readableBytes());
+            try {
+                ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
+                try {
+                    res.content().writeBytes(buf);
+                } finally {
+                    HTTPWSServer.releaseObj(buf);
+                }
+                HttpUtil.setContentLength(res, res.content().readableBytes());
 
-            if (PhantomBot.getEnableDebugging()) {
-                com.gmt2001.Console.debug.println("403");
-                com.gmt2001.Console.debug.println("Expected: >" + signature + "<");
-                com.gmt2001.Console.debug.println("Got: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
+                if (PhantomBot.getEnableDebugging()) {
+                    com.gmt2001.Console.debug.println("403");
+                    com.gmt2001.Console.debug.println("Expected: >" + signature + "<");
+                    com.gmt2001.Console.debug.println("Got: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
+                }
+
+                res.headers().set(CONNECTION, CLOSE);
+                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            } finally {
+                HTTPWSServer.releaseObj(res);
             }
-
-            res.headers().set(CONNECTION, CLOSE);
-            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
         }
 
         return authenticated;

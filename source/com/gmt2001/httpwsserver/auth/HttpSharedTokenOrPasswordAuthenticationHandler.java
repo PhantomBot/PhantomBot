@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver.auth;
 
+import com.gmt2001.httpwsserver.HTTPWSServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
@@ -73,8 +74,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} to check
-     * @return, this method will also reply with
-     * {@code 401 Unauthorized} and then close the channel
+     * @return, this method will also reply with {@code 401 Unauthorized} and then close the channel
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
@@ -91,18 +91,25 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
         }
 
         DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
-        ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-        res.content().writeBytes(buf);
-        buf.release();
-        HttpUtil.setContentLength(res, res.content().readableBytes());
+        try {
+            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
+            try {
+                res.content().writeBytes(buf);
+            } finally {
+                HTTPWSServer.releaseObj(buf);
+            }
+            HttpUtil.setContentLength(res, res.content().readableBytes());
 
-        com.gmt2001.Console.debug.println("401");
-        com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
-        com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
-        com.gmt2001.Console.debug.println("Got: >" + astr + "<");
+            com.gmt2001.Console.debug.println("401");
+            com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
+            com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
+            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
 
-        res.headers().set(CONNECTION, CLOSE);
-        ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            res.headers().set(CONNECTION, CLOSE);
+            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+        } finally {
+            HTTPWSServer.releaseObj(res);
+        }
 
         return false;
     }

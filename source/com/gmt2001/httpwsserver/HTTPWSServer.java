@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver;
 
+import com.gmt2001.Console.err;
 import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -24,6 +25,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ReferenceCounted;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -62,6 +65,21 @@ public final class HTTPWSServer {
      * An instance of {@link HTTPWSServer}
      */
     private static HTTPWSServer INSTANCE;
+
+    /**
+     * Releases a {@link ReferenceCounted} object
+     *
+     * @param obj The object to release
+     */
+    public static void releaseObj(ReferenceCounted obj) {
+        try {
+            if (obj != null && obj.refCnt() > 0) {
+                obj.release();
+            }
+        } catch (IllegalReferenceCountException ex) {
+            err.printStackTrace(ex);
+        }
+    }
     /**
      * The server's {@link EventLoopGroup}
      */

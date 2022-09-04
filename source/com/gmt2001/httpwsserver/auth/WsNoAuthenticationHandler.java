@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver.auth;
 
+import com.gmt2001.httpwsserver.HTTPWSServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
@@ -70,8 +71,12 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
         if (!ctx.channel().attr(ATTR_SENT_AUTH_REPLY).get()) {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("authresult").value("true").key("authtype").value("read").endObject();
-
-            ctx.channel().writeAndFlush(new TextWebSocketFrame(jsonObject.toString()));
+            WebSocketFrame res = new TextWebSocketFrame(jsonObject.toString());
+            try {
+                ctx.channel().writeAndFlush(res);
+            } finally {
+                HTTPWSServer.releaseObj(res);
+            }
 
             ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
         }

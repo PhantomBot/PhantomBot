@@ -86,8 +86,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param frame The {@link FullHttpRequest} to check
-     * @return, this method will also reply with
-     * {@code 401 Unauthorized} and then close the channel
+     * @return, this method will also reply with {@code 401 Unauthorized} and then close the channel
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
@@ -119,47 +118,57 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
         if (this.loginUri == null || this.loginUri.isBlank()) {
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
-            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-            res.content().writeBytes(buf);
-            buf.release();
-            HttpUtil.setContentLength(res, res.content().readableBytes());
+            try {
+                ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
+                try {
+                    res.content().writeBytes(buf);
+                } finally {
+                    HTTPWSServer.releaseObj(buf);
+                }
+                HttpUtil.setContentLength(res, res.content().readableBytes());
 
-            if (auth == null) {
-                com.gmt2001.Console.debug.println("WWW-Authenticate");
-                res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
+                if (auth == null) {
+                    com.gmt2001.Console.debug.println("WWW-Authenticate");
+                    res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
+                }
+
+                com.gmt2001.Console.debug.println("401");
+                com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
+                if (auth != null) {
+                    com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
+                }
+
+                res.headers().set(CONNECTION, CLOSE);
+                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            } finally {
+                HTTPWSServer.releaseObj(res);
             }
-
-            com.gmt2001.Console.debug.println("401");
-            com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
-            if (auth != null) {
-                com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
-            }
-
-            res.headers().set(CONNECTION, CLOSE);
-            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
         } else {
             DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.SEE_OTHER, Unpooled.buffer());
+            try {
+                String host = req.headers().get(HttpHeaderNames.HOST);
 
-            String host = req.headers().get(HttpHeaderNames.HOST);
+                if (host == null) {
+                    host = "";
+                } else if (HTTPWSServer.instance().isSsl()) {
+                    host = "https://" + host;
+                } else {
+                    host = "http://" + host;
+                }
 
-            if (host == null) {
-                host = "";
-            } else if (HTTPWSServer.instance().isSsl()) {
-                host = "https://" + host;
-            } else {
-                host = "http://" + host;
+                res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + "?kickback=" + req.uri());
+
+                com.gmt2001.Console.debug.println("303");
+                com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
+                if (auth != null) {
+                    com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
+                }
+
+                res.headers().set(CONNECTION, CLOSE);
+                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            } finally {
+                HTTPWSServer.releaseObj(res);
             }
-
-            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + "?kickback=" + req.uri());
-
-            com.gmt2001.Console.debug.println("303");
-            com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
-            if (auth != null) {
-                com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
-            }
-
-            res.headers().set(CONNECTION, CLOSE);
-            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
         }
 
         return false;

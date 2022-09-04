@@ -93,6 +93,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             com.gmt2001.Console.debug.println("404 " + req.method().asciiName() + ": " + qsd.path());
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
         }
+
+        HTTPWSServer.releaseObj(req);
     }
 
     /**
@@ -237,16 +239,25 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
         if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
             ByteBuf buf = Unpooled.copiedBuffer(res.status().toString() + "<br /><br />", CharsetUtil.UTF_8);
-            ByteBuf bcontent = Unpooled.copiedBuffer(content);
-            res.content().writeBytes(buf).writeBytes(bcontent);
-            buf.release();
-            bcontent.release();
+            try {
+                ByteBuf bcontent = Unpooled.copiedBuffer(content);
+                try {
+                    res.content().writeBytes(buf).writeBytes(bcontent);
+                } finally {
+                    HTTPWSServer.releaseObj(bcontent);
+                }
+            } finally {
+                HTTPWSServer.releaseObj(buf);
+            }
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType("html"));
             HttpUtil.setContentLength(res, res.content().readableBytes());
         } else {
             ByteBuf bcontent = Unpooled.copiedBuffer(content);
-            res.content().writeBytes(bcontent);
-            bcontent.release();
+            try {
+                res.content().writeBytes(bcontent);
+            } finally {
+                HTTPWSServer.releaseObj(bcontent);
+            }
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType(fileNameOrType));
             HttpUtil.setContentLength(res, res.content().readableBytes());
         }
@@ -265,15 +276,35 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param res The {@link FullHttpResponse} to transmit
      */
     public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
-        if (!HttpUtil.isKeepAlive(req) || res.status().code() != 200) {
-            res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-        } else {
-            if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
-                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-            }
+        sendHttpResponse(ctx, req, res, false);
+    }
 
-            ctx.writeAndFlush(res);
+    /**
+     * Transmits a {@link FullHttpResponse} back to the client
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param res The {@link FullHttpResponse} to transmit
+     * @param retainreq If false, the req is released
+     */
+    public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res, boolean retainreq) {
+        try {
+            if (!HttpUtil.isKeepAlive(req) || res.status().code() != 200) {
+                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
+            } else {
+                if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
+                    res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+                }
+
+                ctx.writeAndFlush(res);
+            }
+        } finally {
+            HTTPWSServer.releaseObj(res);
+
+            if (!retainreq) {
+                HTTPWSServer.releaseObj(req);
+            }
         }
     }
 
@@ -309,8 +340,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param p The {@link Path} to the file or directory to check
      * @param directoryAllowed Indicates if directories are allowed. If set to {@code false}, will cause a {@code 403 FORBIDDEN} if {@code p} is a
      * directory
-     * @return
-     * and passed the same tests. {@code false} otherwise
+     * @return and passed the same tests. {@code false} otherwise
      */
     public static boolean checkFilePermissions(ChannelHandlerContext ctx, FullHttpRequest req, Path p, boolean directoryAllowed) {
         if (!Files.exists(p)) {
@@ -358,7 +388,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     /**
      * Parses out cookies and converts them to a Map
      *
-     * @param req The {@link FullHttpRequest} containing the request
+     * @param headers The {@link FullHttpRequest} containing the request
      * @return A Map of cookies
      */
     public static Map<String, String> parseCookies(HttpHeaders headers) {

@@ -463,7 +463,7 @@
                 biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
             }
             $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
-                    .withThumbnail('http://iotv.me/i/followontwitch.jpg')
+                    .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/followontwitch.jpg')
                     .withTitle('https://twitch.tv/' + twitchName)
                     .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))
                     .withColor(31, 158, 242)
