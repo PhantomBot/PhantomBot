@@ -17,6 +17,7 @@
 package tv.phantombot.event.ytplayer;
 
 public class YTPlayerCurrentIdEvent extends YTPlayerEvent {
+
     private final String id;
 
     /**

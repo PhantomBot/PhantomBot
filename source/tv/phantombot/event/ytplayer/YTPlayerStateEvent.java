@@ -19,6 +19,7 @@ package tv.phantombot.event.ytplayer;
 import tv.phantombot.ytplayer.YTPlayerState;
 
 public class YTPlayerStateEvent extends YTPlayerEvent {
+
     private final YTPlayerState state;
 
     /**

@@ -17,6 +17,7 @@
 package tv.phantombot.event.ytplayer;
 
 public class YTPlayerSongRequestEvent extends YTPlayerEvent {
+
     private final String search;
 
     /**

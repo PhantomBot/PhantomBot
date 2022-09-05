@@ -53,7 +53,7 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         if (!req.decoderResult().isSuccess()) {
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
             return;
         }
 
@@ -73,7 +73,7 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
 
             com.gmt2001.Console.debug.println("301: " + uri);
 
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MOVED_PERMANENTLY, null, null);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.MOVED_PERMANENTLY);
 
             res.headers().set(HttpHeaderNames.LOCATION, uri);
 

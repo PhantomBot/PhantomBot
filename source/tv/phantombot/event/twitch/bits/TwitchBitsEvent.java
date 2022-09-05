@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.twitch.bits;
 
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchBitsEvent extends TwitchEvent {
+
     private final String username;
     private final String bits;
     private final String message;
@@ -55,7 +55,8 @@ public class TwitchBitsEvent extends TwitchEvent {
         return this.bits;
     }
 
-    /***
+    /**
+     * *
      * Method that returns the message that was sent as part of the Bits tag.
      *
      * @return message

@@ -17,20 +17,12 @@
 package com.gmt2001.eventsub;
 
 import com.gmt2001.HMAC;
-import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
-import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import io.netty.util.CharsetUtil;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import tv.phantombot.PhantomBot;
@@ -57,27 +49,15 @@ final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandl
         }
 
         if (!authenticated) {
-            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FORBIDDEN, Unpooled.buffer());
-            try {
-                ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-                try {
-                    res.content().writeBytes(buf);
-                } finally {
-                    HTTPWSServer.releaseObj(buf);
-                }
-                HttpUtil.setContentLength(res, res.content().readableBytes());
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN);
 
-                if (PhantomBot.getEnableDebugging()) {
-                    com.gmt2001.Console.debug.println("403");
-                    com.gmt2001.Console.debug.println("Expected: >" + signature + "<");
-                    com.gmt2001.Console.debug.println("Got: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
-                }
-
-                res.headers().set(CONNECTION, CLOSE);
-                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-            } finally {
-                HTTPWSServer.releaseObj(res);
+            if (PhantomBot.getEnableDebugging()) {
+                com.gmt2001.Console.debug.println("403");
+                com.gmt2001.Console.debug.println("Expected: >" + signature + "<");
+                com.gmt2001.Console.debug.println("Got: >" + HMAC.calcHmacSha256(EventSub.getSecret(), id + timestamp + body) + "<");
             }
+
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         }
 
         return authenticated;

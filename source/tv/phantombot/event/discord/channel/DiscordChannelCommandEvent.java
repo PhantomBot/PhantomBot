@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.discord.channel;
 
 import discord4j.core.object.entity.Message;
@@ -24,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DiscordChannelCommandEvent extends DiscordChannelEvent {
+
     private final String arguments;
     private final boolean isAdmin;
     private final String[] args;
@@ -32,11 +32,11 @@ public class DiscordChannelCommandEvent extends DiscordChannelEvent {
     /**
      * Class constructor for this event.
      *
-     * @param    user
+     * @param user
      * @param channel
-     * @param   command
-     * @param   arguments
-     * @param  isAdmin
+     * @param command
+     * @param arguments
+     * @param isAdmin
      */
     public DiscordChannelCommandEvent(User user, Channel channel, Message message, String command, String arguments, boolean isAdmin) {
         super(user, channel, message);

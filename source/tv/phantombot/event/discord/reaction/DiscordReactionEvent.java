@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.discord.reaction;
 
 import discord4j.core.object.entity.User;
@@ -26,7 +25,7 @@ import tv.phantombot.event.discord.DiscordEvent;
  * @author ScaniaTV
  */
 public abstract class DiscordReactionEvent extends DiscordEvent {
-    
+
     /**
      * Abstract constructor.
      *
@@ -39,7 +38,7 @@ public abstract class DiscordReactionEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param    user
+     * @param user
      * @param channel
      */
     protected DiscordReactionEvent(User user, Channel channel) {

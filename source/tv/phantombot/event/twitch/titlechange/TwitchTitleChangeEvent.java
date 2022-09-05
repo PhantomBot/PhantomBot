@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.titlechange;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchTitleChangeEvent extends TwitchEvent {
+
     private final String streamTitle;
 
     /**

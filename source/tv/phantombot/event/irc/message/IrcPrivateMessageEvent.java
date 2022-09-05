@@ -29,8 +29,8 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent {
      * Class constructor.
      *
      * @param session
-     * @param  sender
-     * @param  message
+     * @param sender
+     * @param message
      */
     public IrcPrivateMessageEvent(TwitchSession session, String sender, String message) {
         super(session, sender, message);
@@ -40,9 +40,9 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent {
      * Class constructor.
      *
      * @param session
-     * @param  sender
-     * @param  message
-     * @param     tags
+     * @param sender
+     * @param message
+     * @param tags
      */
     public IrcPrivateMessageEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session, sender, message, tags);

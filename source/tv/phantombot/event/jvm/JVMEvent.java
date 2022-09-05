@@ -19,6 +19,7 @@ package tv.phantombot.event.jvm;
 import tv.phantombot.event.Event;
 
 public abstract class JVMEvent extends Event {
+
     /**
      * Class constructor
      */

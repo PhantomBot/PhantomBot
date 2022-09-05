@@ -19,6 +19,7 @@ package tv.phantombot.event.streamelements.donate;
 import tv.phantombot.event.streamelements.StreamElementsEvent;
 
 public abstract class StreamElementsDonateEvent extends StreamElementsEvent {
+
     private final String jsonString;
 
     /**

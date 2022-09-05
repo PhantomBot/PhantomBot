@@ -20,6 +20,7 @@ import tv.phantombot.event.irc.IrcEvent;
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcClearchatEvent extends IrcEvent {
+
     private final String username;
     private final String reason;
     private final String duration;
@@ -28,9 +29,9 @@ public class IrcClearchatEvent extends IrcEvent {
      * Class constructor
      *
      * @param session
-     * @param  username
-     * @param  reason
-     * @param  duration
+     * @param username
+     * @param reason
+     * @param duration
      */
     public IrcClearchatEvent(TwitchSession session, String username, String reason, String duration) {
         super(session);

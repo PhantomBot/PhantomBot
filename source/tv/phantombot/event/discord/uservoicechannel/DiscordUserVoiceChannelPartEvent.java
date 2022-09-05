@@ -33,7 +33,7 @@ public class DiscordUserVoiceChannelPartEvent extends DiscordUserVoiceChannelEve
     /**
      * Class constructor.
      *
-     * @param    user
+     * @param user
      * @param voicechannel
      */
     public DiscordUserVoiceChannelPartEvent(User user, VoiceChannel voicechannel) {

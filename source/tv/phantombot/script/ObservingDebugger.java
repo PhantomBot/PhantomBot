@@ -75,7 +75,7 @@ class ObservingDebugFrame implements DebugFrame {
 
     @Override
     public void onEnter(Context cx, Scriptable activation,
-                        Scriptable thisObj, Object[] args) {
+            Scriptable thisObj, Object[] args) {
     }
 
     @Override
@@ -91,7 +91,7 @@ class ObservingDebugFrame implements DebugFrame {
 
     @Override
     public void onExit(Context cx, boolean byThrow,
-                       Object resultOrException) {
+            Object resultOrException) {
     }
 
     @Override

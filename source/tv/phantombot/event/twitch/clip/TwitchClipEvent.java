@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchClipEvent extends TwitchEvent {
+
     private final String clipURL;
     private final String creator;
     private final String clipTitle;
@@ -28,9 +29,9 @@ public class TwitchClipEvent extends TwitchEvent {
     /**
      * Class constructor.
      *
-     * @param     clipURL
-     * @param     creator
-     * @param     clipTitle
+     * @param clipURL
+     * @param creator
+     * @param clipTitle
      * @param thumbnailObj
      */
     public TwitchClipEvent(String clipURL, String creator, String clipTitle, JSONObject thumbnailObj) {

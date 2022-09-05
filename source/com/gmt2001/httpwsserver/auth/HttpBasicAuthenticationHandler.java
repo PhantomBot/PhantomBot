@@ -18,20 +18,12 @@ package com.gmt2001.httpwsserver.auth;
 
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import io.netty.util.CharsetUtil;
 import java.util.Base64;
 import java.util.Map;
 
@@ -117,58 +109,41 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         }
 
         if (this.loginUri == null || this.loginUri.isBlank()) {
-            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
-            try {
-                ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-                try {
-                    res.content().writeBytes(buf);
-                } finally {
-                    HTTPWSServer.releaseObj(buf);
-                }
-                HttpUtil.setContentLength(res, res.content().readableBytes());
-
-                if (auth == null) {
-                    com.gmt2001.Console.debug.println("WWW-Authenticate");
-                    res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
-                }
-
-                com.gmt2001.Console.debug.println("401");
-                com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
-                if (auth != null) {
-                    com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
-                }
-
-                res.headers().set(CONNECTION, CLOSE);
-                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-            } finally {
-                HTTPWSServer.releaseObj(res);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
+            if (auth == null) {
+                com.gmt2001.Console.debug.println("WWW-Authenticate");
+                res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
             }
+
+            com.gmt2001.Console.debug.println("401");
+            com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
+            if (auth != null) {
+                com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
+            }
+
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         } else {
-            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.SEE_OTHER, Unpooled.buffer());
-            try {
-                String host = req.headers().get(HttpHeaderNames.HOST);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
-                if (host == null) {
-                    host = "";
-                } else if (HTTPWSServer.instance().isSsl()) {
-                    host = "https://" + host;
-                } else {
-                    host = "http://" + host;
-                }
+            String host = req.headers().get(HttpHeaderNames.HOST);
 
-                res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + "?kickback=" + req.uri());
-
-                com.gmt2001.Console.debug.println("303");
-                com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
-                if (auth != null) {
-                    com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
-                }
-
-                res.headers().set(CONNECTION, CLOSE);
-                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-            } finally {
-                HTTPWSServer.releaseObj(res);
+            if (host == null) {
+                host = "";
+            } else if (HTTPWSServer.instance().isSsl()) {
+                host = "https://" + host;
+            } else {
+                host = "http://" + host;
             }
+
+            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + "?kickback=" + req.uri());
+
+            com.gmt2001.Console.debug.println("303");
+            com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
+            if (auth != null) {
+                com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
+            }
+
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         }
 
         return false;

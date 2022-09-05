@@ -19,6 +19,7 @@ package tv.phantombot.event.pubsub.moderation;
 import tv.phantombot.event.pubsub.PubSubEvent;
 
 public abstract class PubSubModerationEvent extends PubSubEvent {
+
     private final String username;
     private final String creator;
     private final String message;

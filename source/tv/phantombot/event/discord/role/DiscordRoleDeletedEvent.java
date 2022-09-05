@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.discord.role;
 
 import discord4j.core.object.entity.Role;
@@ -24,9 +23,10 @@ import discord4j.core.object.entity.Role;
  * @author ScaniaTV
  */
 public class DiscordRoleDeletedEvent extends DiscordRoleEvent {
+
     /**
      * Class constructor.
-     * 
+     *
      * @param role
      */
     public DiscordRoleDeletedEvent(Role role) {

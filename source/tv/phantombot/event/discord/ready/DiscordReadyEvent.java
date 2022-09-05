@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.discord.ready;
 
 import tv.phantombot.event.Event;
@@ -24,10 +23,11 @@ import tv.phantombot.event.Event;
  * @author ScaniaTV
  */
 public class DiscordReadyEvent extends Event {
+
     /**
      * Class constructor.
      */
     public DiscordReadyEvent() {
-        
+
     }
 }

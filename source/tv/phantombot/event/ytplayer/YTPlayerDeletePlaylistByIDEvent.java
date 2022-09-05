@@ -17,6 +17,7 @@
 package tv.phantombot.event.ytplayer;
 
 public class YTPlayerDeletePlaylistByIDEvent extends YTPlayerEvent {
+
     private final String youTubeID;
 
     /**

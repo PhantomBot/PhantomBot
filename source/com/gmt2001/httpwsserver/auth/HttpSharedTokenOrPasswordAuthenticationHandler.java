@@ -16,21 +16,13 @@
  */
 package com.gmt2001.httpwsserver.auth;
 
-import com.gmt2001.httpwsserver.HTTPWSServer;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
+import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
-import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.util.CharsetUtil;
 import java.util.List;
 
 /**
@@ -90,26 +82,14 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
             return true;
         }
 
-        DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.UNAUTHORIZED, Unpooled.buffer());
-        try {
-            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-            try {
-                res.content().writeBytes(buf);
-            } finally {
-                HTTPWSServer.releaseObj(buf);
-            }
-            HttpUtil.setContentLength(res, res.content().readableBytes());
+        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
 
-            com.gmt2001.Console.debug.println("401");
-            com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
-            com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
-            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
+        com.gmt2001.Console.debug.println("401");
+        com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
+        com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
+        com.gmt2001.Console.debug.println("Got: >" + astr + "<");
 
-            res.headers().set(CONNECTION, CLOSE);
-            ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-        } finally {
-            HTTPWSServer.releaseObj(res);
-        }
+        HttpServerPageHandler.sendHttpResponse(ctx, req, res);
 
         return false;
     }

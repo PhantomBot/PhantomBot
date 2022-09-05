@@ -78,8 +78,6 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         if (h.getAuthHandler().checkAuthorization(ctx, frame)) {
             h.handleFrame(ctx, frame);
         }
-
-        HTTPWSServer.releaseObj(frame);
     }
 
     /**
@@ -177,6 +175,16 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     }
 
     /**
+     * Creates and prepares a text-type {@link WebSocketFrame} for transmission from a {@link JSONStringer}
+     *
+     * @param json The {@link JSONStringer} to send
+     * @return A {@link WebSocketFrame} that is ready to transmit
+     */
+    public static WebSocketFrame prepareTextWebSocketResponse(JSONStringer json) {
+        return new TextWebSocketFrame(json.toString());
+    }
+
+    /**
      * Creates and prepares a binary-type {@link WebSocketFrame} for transmission
      *
      * @param content The binary content to send
@@ -213,21 +221,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param reqframe The {@link WebSocketFrame} containing the request
      * @param resframe The {@link WebSocketFrame} to transmit
-     * @param retainreq If false, the reqframe is released
-     */
-    public static void sendWsFrame(ChannelHandlerContext ctx, WebSocketFrame reqframe, WebSocketFrame resframe, boolean retainreq) {
-        sendWsFrame(ctx.channel(), reqframe, resframe, retainreq);
-    }
-
-    /**
-     * Transmits a {@link WebSocketFrame} back to the client
-     *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param reqframe The {@link WebSocketFrame} containing the request
-     * @param resframe The {@link WebSocketFrame} to transmit
      */
     public static void sendWsFrame(ChannelHandlerContext ctx, WebSocketFrame reqframe, WebSocketFrame resframe) {
-        sendWsFrame(ctx.channel(), reqframe, resframe, false);
+        sendWsFrame(ctx.channel(), reqframe, resframe);
     }
 
     /**
@@ -236,18 +232,11 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * @param ch The {@link Channel} of the connection
      * @param reqframe The {@link WebSocketFrame} containing the request
      * @param resframe The {@link WebSocketFrame} to transmit
-     * @param retainreq If false, the reqframe is released
      */
-    public static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe, boolean retainreq) {
-        try {
-            ch.writeAndFlush(resframe);
-        } finally {
+    public static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
+        ch.writeAndFlush(resframe).addListener((p) -> {
             HTTPWSServer.releaseObj(resframe);
-
-            if (!retainreq) {
-                HTTPWSServer.releaseObj(reqframe);
-            }
-        }
+        });
     }
 
     /**
@@ -258,7 +247,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     public static void broadcastWsFrame(WebSocketFrame resframe) {
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get()) {
-                sendWsFrame(c, null, resframe.copy(), false);
+                sendWsFrame(c, null, resframe.copy());
             }
         });
 
@@ -276,7 +265,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         WS_SESSIONS.forEach((c) -> {
             if (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() && c.attr(ATTR_URI).get().equals(uri)) {
                 com.gmt2001.Console.debug.println("Broadcast to client [" + c.remoteAddress().toString() + "]");
-                sendWsFrame(c, null, resframe.copy(), false);
+                sendWsFrame(c, null, resframe.copy());
             } else {
                 com.gmt2001.Console.debug.println("Did not broadcast to client [" + c.remoteAddress().toString() + "] Authenticated: " + (c.attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).get() ? "t" : "f") + "   Uri: " + c.attr(ATTR_URI).get() + "   Uri match: " + (c.attr(ATTR_URI).get().equals(uri) ? "t" : "f"));
             }
@@ -288,7 +277,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     static void closeAllWsSessions() {
         WebSocketFrame resframe = WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.ENDPOINT_UNAVAILABLE);
         WS_SESSIONS.forEach((c) -> {
-            sendWsFrame(c, null, resframe.copy(), false);
+            sendWsFrame(c, null, resframe.copy());
             c.close();
         });
 

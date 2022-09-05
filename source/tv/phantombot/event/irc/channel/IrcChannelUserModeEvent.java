@@ -19,6 +19,7 @@ package tv.phantombot.event.irc.channel;
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcChannelUserModeEvent extends IrcChannelEvent {
+
     private final String user;
     private final String mode;
     private final boolean add;
@@ -27,8 +28,8 @@ public class IrcChannelUserModeEvent extends IrcChannelEvent {
      * Class constructor
      *
      * @param session
-     * @param  user
-     * @param  mode
+     * @param user
+     * @param mode
      * @param add
      */
     public IrcChannelUserModeEvent(TwitchSession session, String user, String mode, boolean add) {

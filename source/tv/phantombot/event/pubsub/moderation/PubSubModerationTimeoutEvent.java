@@ -17,6 +17,7 @@
 package tv.phantombot.event.pubsub.moderation;
 
 public class PubSubModerationTimeoutEvent extends PubSubModerationEvent {
+
     private final String reason;
     private final String time;
 
