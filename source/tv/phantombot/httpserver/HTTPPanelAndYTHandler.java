@@ -62,12 +62,12 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (!req.method().equals(HttpMethod.GET) && !req.uri().startsWith("/oauth")) {
             com.gmt2001.Console.debug.println("403");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
             return;
         }
 
         if (req.uri().startsWith("/panel/checklogin")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT, null, null);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
             res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
@@ -91,7 +91,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
             if (!PathValidator.isValidPathWebAuth(p.toString()) || !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
                 return;
             }
 
@@ -104,7 +104,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }
     }
 

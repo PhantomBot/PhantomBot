@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.follower;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public abstract class TwitchFollowerEvent extends TwitchEvent {
+
     private final String follower;
     private final String date;
 

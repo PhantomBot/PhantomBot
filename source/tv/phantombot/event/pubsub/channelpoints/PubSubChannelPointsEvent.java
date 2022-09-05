@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.pubsub.channelpoints;
+
 import tv.phantombot.event.pubsub.PubSubEvent;
 
 public class PubSubChannelPointsEvent extends PubSubEvent {
+
     private final String redemptionID;
     private final String rewardID;
     private final String userID;

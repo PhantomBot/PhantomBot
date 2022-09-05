@@ -19,6 +19,7 @@ package tv.phantombot.event.emotes;
 import org.json.JSONObject;
 
 public class EmotesGetEvent extends EmotesEvent {
+
     private final JSONObject twitchEmotes;
     private final JSONObject bttvEmotes;
     private final JSONObject bttvLocalEmotes;

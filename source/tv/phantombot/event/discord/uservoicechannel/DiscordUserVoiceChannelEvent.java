@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package tv.phantombot.event.discord.uservoicechannel;
 
 import discord4j.core.object.entity.User;
@@ -35,7 +34,7 @@ public abstract class DiscordUserVoiceChannelEvent extends DiscordEvent {
     /**
      * Abstract constructor.
      *
-     * @param    user
+     * @param user
      * @param voicechannel
      */
     protected DiscordUserVoiceChannelEvent(User user, VoiceChannel voicechannel) {

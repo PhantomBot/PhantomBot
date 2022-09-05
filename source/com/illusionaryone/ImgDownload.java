@@ -1,6 +1,6 @@
 /* astyle --style=java --indent=spaces=4 */
 
-/*
+ /*
  * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ public class ImgDownload {
         try {
             URL url = new URL(urlString);
             ByteArrayOutputStream outputStream;
-            try (InputStream inputStream = new BufferedInputStream(url.openStream())) {
+            try ( InputStream inputStream = new BufferedInputStream(url.openStream())) {
                 outputStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
                 int n = 0;
@@ -55,17 +55,17 @@ public class ImgDownload {
             }
             byte[] imgData = outputStream.toByteArray();
 
-            if (!new File (location.substring(0, location.lastIndexOf("/"))).exists()) {
-                new File (location.substring(0, location.lastIndexOf("/"))).mkdirs();
+            if (!new File(location.substring(0, location.lastIndexOf("/"))).exists()) {
+                new File(location.substring(0, location.lastIndexOf("/"))).mkdirs();
             }
 
-            try (FileOutputStream fileOutputStream = new FileOutputStream(location)) {
+            try ( FileOutputStream fileOutputStream = new FileOutputStream(location)) {
                 fileOutputStream.write(imgData);
             }
             return new String("true");
         } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("ImgDownload::downloadHTTP(" + urlString + ", " + location + ") failed: " +
-                                            ex.getMessage());
+            com.gmt2001.Console.debug.println("ImgDownload::downloadHTTP(" + urlString + ", " + location + ") failed: "
+                    + ex.getMessage());
             return new String("false");
         }
     }

@@ -19,6 +19,7 @@ package tv.phantombot.event.tipeeestream.donate;
 import tv.phantombot.event.tipeeestream.TipeeeStreamEvent;
 
 public abstract class TipeeeStreamDonateEvent extends TipeeeStreamEvent {
+
     private final String jsonString;
 
     /**

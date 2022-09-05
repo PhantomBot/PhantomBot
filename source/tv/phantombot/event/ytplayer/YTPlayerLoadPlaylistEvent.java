@@ -17,6 +17,7 @@
 package tv.phantombot.event.ytplayer;
 
 public class YTPlayerLoadPlaylistEvent extends YTPlayerEvent {
+
     private final String playlist;
 
     /**

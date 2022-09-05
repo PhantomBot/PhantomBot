@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ScriptFileWatcher implements Runnable {
+
     private static ScriptFileWatcher instance;
     private final List<Script> scripts = new CopyOnWriteArrayList<>();
     private final Thread thread;
@@ -35,7 +36,7 @@ public class ScriptFileWatcher implements Runnable {
     public static synchronized ScriptFileWatcher instance() {
         if (instance == null) {
             instance = new ScriptFileWatcher();
-        } 
+        }
         return instance;
     }
 

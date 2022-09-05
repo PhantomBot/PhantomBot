@@ -82,13 +82,13 @@ public class WsYTHandler implements WsFrameHandler {
 
             channels.forEach((c) -> {
                 if (c.attr(ATTR_LAST_PONG).get().isBefore(valid)) {
-                    WebSocketFrameHandler.sendWsFrame(c, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION), false);
+                    WebSocketFrameHandler.sendWsFrame(c, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                     c.close();
                 } else {
                     JSONStringer jsonObject = new JSONStringer();
 
                     jsonObject.object().key("ping").value("ping").endObject();
-                    WebSocketFrameHandler.sendWsFrame(c, null, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()), false);
+                    WebSocketFrameHandler.sendWsFrame(c, null, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
                 }
             });
         }, 3, 3, TimeUnit.SECONDS);

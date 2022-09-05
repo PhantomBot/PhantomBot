@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.raid;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchRaidEvent extends TwitchEvent {
+
     private final String username;
     private final String viewers;
 

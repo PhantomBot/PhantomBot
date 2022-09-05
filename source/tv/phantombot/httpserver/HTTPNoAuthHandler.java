@@ -85,7 +85,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
 
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
             String host = req.headers().get(HttpHeaderNames.HOST);
 
@@ -118,7 +118,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 kickback = post.getOrDefault("kickback", "");
             }
 
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER, null, null);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
             if (req.uri().contains("logout=true")) {
                 res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "")
@@ -151,7 +151,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.HEAD)) {
             com.gmt2001.Console.debug.println("403");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
             return;
         }
 
@@ -182,7 +182,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                     && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel/login")))
                     || p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/ytplayer"))) {
                 com.gmt2001.Console.debug.println("403 " + req.method().asciiName() + ": " + p.toString());
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
                 return;
             }
 
@@ -199,7 +199,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -254,7 +254,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         } catch (NumberFormatException | IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }
     }
 

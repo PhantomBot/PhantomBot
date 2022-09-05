@@ -22,6 +22,7 @@ import tv.phantombot.event.irc.IrcEvent;
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public abstract class IrcMessageEvent extends IrcEvent {
+
     private final String sender;
     private final String message;
     private final Map<String, String> tags;
@@ -30,8 +31,8 @@ public abstract class IrcMessageEvent extends IrcEvent {
      * Class constructor.
      *
      * @param session
-     * @param  sender
-     * @param  message
+     * @param sender
+     * @param message
      */
     protected IrcMessageEvent(TwitchSession session, String sender, String message) {
         super(session);
@@ -45,9 +46,9 @@ public abstract class IrcMessageEvent extends IrcEvent {
      * Class constructor.
      *
      * @param session
-     * @param  sender
-     * @param  message
-     * @param     tags
+     * @param sender
+     * @param message
+     * @param tags
      */
     protected IrcMessageEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session);

@@ -19,24 +19,15 @@ package com.gmt2001.eventsub;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
-import static io.netty.handler.codec.http.HttpHeaderNames.CONNECTION;
-import static io.netty.handler.codec.http.HttpHeaderValues.CLOSE;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import io.netty.util.CharsetUtil;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -134,90 +125,44 @@ public final class EventSub implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
-        try {
-            if (!req.headers().contains("Twitch-Eventsub-Message-Type")) {
-                DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.BAD_REQUEST, Unpooled.buffer());
-                try {
-                    ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-                    try {
-                        res.content().writeBytes(buf);
-                    } finally {
-                        HTTPWSServer.releaseObj(buf);
-                    }
-                    HttpUtil.setContentLength(res, res.content().readableBytes());
+        if (!req.headers().contains("Twitch-Eventsub-Message-Type")) {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST);
 
-                    com.gmt2001.Console.debug.println("400");
+            com.gmt2001.Console.debug.println("400");
 
-                    res.headers().set(CONNECTION, CLOSE);
-                    ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-                } finally {
-                    HTTPWSServer.releaseObj(res);
-                }
-                return;
-            } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("notification")) {
-                EventBus.instance().postAsync(new EventSubInternalNotificationEvent(req));
-            } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("revocation")) {
-                EventSubInternalRevocationEvent event = new EventSubInternalRevocationEvent(req);
-                this.updateSubscription(event.getSubscription());
-                EventBus.instance().postAsync(event);
-            } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("webhook_callback_verification")) {
-                EventSubInternalVerificationEvent event = new EventSubInternalVerificationEvent(req);
-                this.updateSubscription(event.getSubscription());
-                EventBus.instance().postAsync(event);
-                DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.OK, Unpooled.buffer());
-                try {
-                    ByteBuf buf = Unpooled.copiedBuffer(event.getChallenge(), CharsetUtil.UTF_8);
-                    try {
-                        res.content().writeBytes(buf);
-                    } finally {
-                        HTTPWSServer.releaseObj(buf);
-                    }
-                    HttpUtil.setContentLength(res, res.content().readableBytes());
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("notification")) {
+            EventBus.instance().postAsync(new EventSubInternalNotificationEvent(req));
+        } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("revocation")) {
+            EventSubInternalRevocationEvent event = new EventSubInternalRevocationEvent(req);
+            this.updateSubscription(event.getSubscription());
+            EventBus.instance().postAsync(event);
+        } else if (req.headers().get("Twitch-Eventsub-Message-Type").equals("webhook_callback_verification")) {
+            EventSubInternalVerificationEvent event = new EventSubInternalVerificationEvent(req);
+            this.updateSubscription(event.getSubscription());
+            EventBus.instance().postAsync(event);
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, event.getChallenge());
 
-                    com.gmt2001.Console.debug.println("200");
+            com.gmt2001.Console.debug.println("200");
 
-                    res.headers().set(CONNECTION, CLOSE);
-                    ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-                    this.updateSubscription(event.getSubscription(), EventSubSubscription.SubscriptionStatus.ENABLED);
-                } finally {
-                    HTTPWSServer.releaseObj(res);
-                }
-                return;
-            } else {
-                DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.NOT_FOUND, Unpooled.buffer());
-                try {
-                    ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);
-                    try {
-                        res.content().writeBytes(buf);
-                    } finally {
-                        HTTPWSServer.releaseObj(buf);
-                    }
-                    HttpUtil.setContentLength(res, res.content().readableBytes());
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res, true);
+            this.updateSubscription(event.getSubscription(), EventSubSubscription.SubscriptionStatus.ENABLED);
+            return;
+        } else {
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND);
 
-                    com.gmt2001.Console.debug.println("404");
+            com.gmt2001.Console.debug.println("404");
 
-                    res.headers().set(CONNECTION, CLOSE);
-                    ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-                } finally {
-                    HTTPWSServer.releaseObj(res);
-                }
-                return;
-            }
-
-            DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.NO_CONTENT, Unpooled.buffer());
-            try {
-                HttpUtil.setContentLength(res, 0);
-
-                com.gmt2001.Console.debug.println("204");
-
-                res.headers().set(CONNECTION, CLOSE);
-                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-            } finally {
-                HTTPWSServer.releaseObj(res);
-            }
-        } finally {
-            HTTPWSServer.releaseObj(req);
+            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
         }
+
+        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT);
+
+        com.gmt2001.Console.debug.println("204");
+
+        HttpServerPageHandler.sendHttpResponse(ctx, req, res, true);
     }
 
     /**

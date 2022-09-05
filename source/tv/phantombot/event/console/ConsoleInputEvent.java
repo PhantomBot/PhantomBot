@@ -17,6 +17,7 @@
 package tv.phantombot.event.console;
 
 public class ConsoleInputEvent extends ConsoleEvent {
+
     private final String message;
 
     /**

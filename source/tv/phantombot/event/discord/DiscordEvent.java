@@ -112,7 +112,7 @@ public abstract class DiscordEvent extends Event {
         this.message = null;
         this.channelName = DiscordUtil.channelName(channel);
         this.channelId = DiscordUtil.channelIdAsString(channel);
-        
+
         if (user != null) {
             this.username = user.getUsername();
             this.discrim = user.getDiscriminator();

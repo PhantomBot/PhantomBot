@@ -31,7 +31,7 @@ public class TwitchHostedEvent extends TwitchHostEvent {
      * Class constructor.
      *
      * @param hoster
-     * @param    users
+     * @param users
      */
     public TwitchHostedEvent(String hoster, int users) {
         super(hoster, users);

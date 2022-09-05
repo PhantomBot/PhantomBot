@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.gamechange;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public class TwitchGameChangeEvent extends TwitchEvent {
+
     private final String gameTitle;
 
     /**

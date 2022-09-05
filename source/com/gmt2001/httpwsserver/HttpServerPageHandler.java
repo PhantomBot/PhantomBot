@@ -78,7 +78,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         if (!req.decoderResult().isSuccess()) {
-            sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, null, null));
+            sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
             return;
         }
 
@@ -91,10 +91,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             }
         } else {
             com.gmt2001.Console.debug.println("404 " + req.method().asciiName() + ": " + qsd.path());
-            sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
+            sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.NOT_FOUND));
         }
-
-        HTTPWSServer.releaseObj(req);
     }
 
     /**
@@ -211,6 +209,54 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     /**
+     * Creates and prepares a {@link FullHttpResponse} for transmission of a status code only
+     *
+     * If the value of {@code status} is in the {@code CLIENT ERROR 4xx}, {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
+     * status code is appended to the beginning of the HTML response
+     *
+     * @param status The {@link HttpResponseStatus} to return
+     * @return A {@link FullHttpRequest} that is ready to transmit
+     */
+    public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status) {
+        return prepareHttpResponse(status, (byte[]) null, null);
+    }
+
+    /**
+     * Creates and prepares a {@link FullHttpResponse} for transmission as text/plain
+     *
+     * This method automatically sets the {@code Content-Type} and {@code Content-Length} headers
+     *
+     * If the value of {@code status} is in the {@code CLIENT ERROR 4xx}, {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
+     * status code is appended to the beginning of the HTML response, along with 2 line breaks and the MIME type is set to {@code text/html}, unless
+     * {@code fileNameOrType} ends with {@code json} or {@code xml}
+     *
+     * @param status The {@link HttpResponseStatus} to return
+     * @param content The content to send
+     * @return A {@link FullHttpRequest} that is ready to transmit
+     */
+    public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, String content) {
+        return prepareHttpResponse(status, content.getBytes(CharsetUtil.UTF_8), null);
+    }
+
+    /**
+     * Creates and prepares a {@link FullHttpResponse} for transmission
+     *
+     * This method automatically sets the {@code Content-Type} and {@code Content-Length} headers
+     *
+     * If the value of {@code status} is in the {@code CLIENT ERROR 4xx}, {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
+     * status code is appended to the beginning of the HTML response, along with 2 line breaks and the MIME type is set to {@code text/html}, unless
+     * {@code fileNameOrType} ends with {@code json} or {@code xml}
+     *
+     * @param status The {@link HttpResponseStatus} to return
+     * @param content The content to send
+     * @param fileNameOrType The filename or type extension for MIME type detection
+     * @return A {@link FullHttpRequest} that is ready to transmit
+     */
+    public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, String content, String fileNameOrType) {
+        return prepareHttpResponse(status, content.getBytes(CharsetUtil.UTF_8), fileNameOrType);
+    }
+
+    /**
      * Creates and prepares a {@link FullHttpResponse} for transmission
      *
      * This method automatically sets the {@code Content-Type} and {@code Content-Length} headers
@@ -238,7 +284,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status, Unpooled.buffer());
 
         if (isError && !fileNameOrType.endsWith("json") && !fileNameOrType.endsWith("xml")) {
-            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString() + "<br /><br />", CharsetUtil.UTF_8);
+            ByteBuf buf = Unpooled.copiedBuffer(res.status().toString() + (content.length > 0 ? "<br /><br />" : ""), CharsetUtil.UTF_8);
             try {
                 ByteBuf bcontent = Unpooled.copiedBuffer(content);
                 try {
@@ -285,26 +331,24 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} containing the request
      * @param res The {@link FullHttpResponse} to transmit
-     * @param retainreq If false, the req is released
+     * @param forceclose If true, connection is closed regardless of status code; otherwise, only errors or unknown status codes will explicitly close
+     * the connection
      */
-    public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res, boolean retainreq) {
-        try {
-            if (!HttpUtil.isKeepAlive(req) || res.status().code() != 200) {
-                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-                ctx.writeAndFlush(res).addListener(ChannelFutureListener.CLOSE);
-            } else {
-                if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
-                    res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-                }
-
-                ctx.writeAndFlush(res);
+    public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res, boolean forceclose) {
+        boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR || res.status().codeClass() == HttpStatusClass.SERVER_ERROR || res.status().codeClass() == HttpStatusClass.UNKNOWN;
+        if (!HttpUtil.isKeepAlive(req) || isError || forceclose) {
+            res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+            ctx.writeAndFlush(res).addListeners((p) -> {
+                HTTPWSServer.releaseObj(res);
+            }, ChannelFutureListener.CLOSE);
+        } else {
+            if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
+                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             }
-        } finally {
-            HTTPWSServer.releaseObj(res);
 
-            if (!retainreq) {
-                HTTPWSServer.releaseObj(req);
-            }
+            ctx.writeAndFlush(res).addListener((p) -> {
+                HTTPWSServer.releaseObj(res);
+            });
         }
     }
 
@@ -326,7 +370,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500: " + p.toString());
             com.gmt2001.Console.debug.printStackTrace(ex);
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -345,11 +389,11 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     public static boolean checkFilePermissions(ChannelHandlerContext ctx, FullHttpRequest req, Path p, boolean directoryAllowed) {
         if (!Files.exists(p)) {
             com.gmt2001.Console.debug.println("404: " + p.toString());
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NOT_FOUND));
             return false;
         } else if (!PathValidator.isValidPathWebAuth(p.toString()) || (Files.isDirectory(p) && !directoryAllowed)) {
             com.gmt2001.Console.debug.println("403: " + p.toString());
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN, null, null));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
             return false;
         }
 

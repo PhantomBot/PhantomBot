@@ -19,6 +19,7 @@ package tv.phantombot.event.twitch.host;
 import tv.phantombot.event.twitch.TwitchEvent;
 
 public abstract class TwitchHostEvent extends TwitchEvent {
+
     private final String hoster;
     private final int users;
 
@@ -36,7 +37,7 @@ public abstract class TwitchHostEvent extends TwitchEvent {
      * Abstract constructor.
      *
      * @param hoster
-     * @param    users
+     * @param users
      */
     protected TwitchHostEvent(String hoster, int users) {
         this.hoster = hoster;

@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 /**
  * Processes WebSocket frames and passes successful ones to the final handler
@@ -65,7 +66,6 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         this.client.handler.handleFrame(ctx, frame);
-        HTTPWSServer.releaseObj(frame);
     }
 
     /**
@@ -121,6 +121,16 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     /**
+     * Creates and prepares a text-type {@link WebSocketFrame} for transmission from a {@link JSONStringer}
+     *
+     * @param json The {@link JSONStringer} to send
+     * @return A {@link WebSocketFrame} that is ready to transmit
+     */
+    static WebSocketFrame prepareTextWebSocketResponse(JSONStringer json) {
+        return new TextWebSocketFrame(json.toString());
+    }
+
+    /**
      * Creates and prepares a binary-type {@link WebSocketFrame} for transmission
      *
      * @param content The binary content to send
@@ -170,11 +180,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
-        try {
-            ch.writeAndFlush(resframe);
-        } finally {
+        ch.writeAndFlush(resframe).addListener((p) -> {
             HTTPWSServer.releaseObj(resframe);
-        }
+        });
     }
 
     /**
