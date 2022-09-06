@@ -18,6 +18,8 @@
 /**
  * This module is to handle hosts notifications.
  */
+// https://help.twitch.tv/s/article/how-to-use-host-mode#faq
+// @Deprecated
 (function() {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'hostToggle', false),
         hostMessage = $.getSetIniDbString('discordSettings', 'hostMessage', '(name) just hosted for (viewers) viewers!'),
