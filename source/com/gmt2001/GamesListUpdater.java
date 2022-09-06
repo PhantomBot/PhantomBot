@@ -67,7 +67,7 @@ public final class GamesListUpdater {
 
         LocalDateTime lastCheck = LocalDateTime.ofEpochSecond(PhantomBot.instance().getDataStore().GetLong("settings", "", "gamesList-lastCheck"), 0, ZoneOffset.UTC);
 
-        com.gmt2001.Console.debug.println("Last Update: " + lastCheck.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        com.gmt2001.Console.debug.println("Last Update: " + lastCheck.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
         if (!force && lastCheck.plusDays(UPDATE_INTERVAL_DAYS).isAfter(LocalDateTime.now())) {
             com.gmt2001.Console.debug.println("Skipping update, interval has not expired...");

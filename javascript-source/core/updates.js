@@ -604,4 +604,14 @@
         $.consoleLn('PhantomBot update 3.6.4.5 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.4.5', true);
     }
+
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0')) {
+        $.consoleLn('Starting PhantomBot update 3.6.5.0 updates...');
+
+        $.inidb.RemoveKey('settings', '', 'gamesList-lastCheck');
+
+        $.consoleLn('PhantomBot update 3.6.5.0 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0', true);
+    }
 })();
