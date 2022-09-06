@@ -162,7 +162,14 @@ public class DiscordAPI extends DiscordUtil {
             }
 
             if (Instant.now().isBefore(this.nextReconnect)) {
-                Mono.delay(Duration.between(Instant.now(), this.nextReconnect).abs()).block();
+                Duration duration = Duration.between(Instant.now(), this.nextReconnect).abs();
+
+                com.gmt2001.Console.out.println("Next connect delayed by " + duration.toSeconds() + " seconds...");
+
+                Mono.delay(duration).doOnNext(l -> {
+                    this.connect();
+                }).subscribe();
+                return;
             }
 
             this.connectionState = ConnectionState.CONNECTING;
@@ -344,6 +351,11 @@ public class DiscordAPI extends DiscordUtil {
                     com.gmt2001.Console.err.println("Discord rejected privileged intents (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + "). Trying without them...");
                     com.gmt2001.Console.err.println("https://discord.com/developers/docs/topics/gateway#privileged-intents");
                     DiscordAPI.instance().connectIntents = IntentSet.of(Intent.GUILDS, Intent.GUILD_VOICE_STATES, Intent.GUILD_MESSAGES, Intent.GUILD_MESSAGE_REACTIONS, Intent.DIRECT_MESSAGES);
+
+                    synchronized (DiscordAPI.instance().mutex) {
+                        DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(5);
+                    }
+
                     Mono.delay(Duration.ofMillis(500)).doOnNext(l -> {
                         DiscordAPI.instance().connect();
                     }).subscribe();
