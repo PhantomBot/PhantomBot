@@ -75,18 +75,18 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC::pingTimer");
             Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
+            if (this.connecting) {
+                com.gmt2001.Console.warn.println("Reconnecting since TMI never sent 001.");
+                this.session.reconnect();
+                return;
+            }
+
             if (!this.connected) {
                 if (this.client.connected()) {
                     this.connected = true;
                 } else {
                     return;
                 }
-            }
-
-            if (this.connecting) {
-                com.gmt2001.Console.warn.println("Reconnecting since TMI never sent 001.");
-                this.session.reconnect();
-                return;
             }
 
             // if we sent a ping longer than 3 minutes ago, send another one.
