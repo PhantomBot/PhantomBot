@@ -404,7 +404,6 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
 
         // Send the moderation event.
         EventBus.instance().postAsync(new IrcModerationEvent(session, username, message, tags));
-        //EventBus.instance().postAsync(new IrcModerationEvent(session, username, message, tags));
 
         // Check to see if the user is a channel subscriber.
         if (tags.containsKey("subscriber") && tags.get("subscriber").equals("1")) {
@@ -595,10 +594,11 @@ public class TwitchWSIRCParser extends SubmissionPublisher<Map<String, String>> 
                 bulkSubscriberGifters.put(tags.get("login"), new SubscriberBulkGifter(tags.get("login"), Integer.parseInt(tags.get("msg-param-mass-gift-count")), true));
 
                 EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
-            } else {
-                if (tags.get("msg-id").equalsIgnoreCase("raid")) {
-                    EventBus.instance().postAsync(new TwitchRaidEvent(tags.get("login"), tags.get("msg-param-viewerCount")));
-                }
+            } else if (tags.get("msg-id").equalsIgnoreCase("raid")) {
+                EventBus.instance().postAsync(new TwitchRaidEvent(tags.get("login"), tags.get("msg-param-viewerCount")));
+            } else if (tags.get("msg-id").equalsIgnoreCase("announcement")) {
+                com.gmt2001.Console.out.println("[ANNOUNCEMENT (" + tags.get("msg-param-color") + ")] " + tags.get("display-name") + ": " + message);
+                EventBus.instance().postAsync(new IrcChannelMessageEvent(session, tags.get("login"), message, tags));
             }
         }
     }
