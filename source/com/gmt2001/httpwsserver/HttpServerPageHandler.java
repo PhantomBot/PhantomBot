@@ -334,6 +334,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param forceclose If true, connection is closed regardless of status code; otherwise, only errors or unknown status codes will explicitly close
      * the connection
      */
+    @SuppressWarnings("unchecked")
     public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res, boolean forceclose) {
         boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR || res.status().codeClass() == HttpStatusClass.SERVER_ERROR || res.status().codeClass() == HttpStatusClass.UNKNOWN;
         if (!HttpUtil.isKeepAlive(req) || isError || forceclose) {

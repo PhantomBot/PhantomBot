@@ -42,6 +42,8 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.host.TwitchHostsInitializedEvent;
 
+// https://help.twitch.tv/s/article/how-to-use-host-mode#faq
+@Deprecated
 public class TwitchWSHostIRC {
 
     private final String twitchIRCWSS = "wss://irc-ws.chat.twitch.tv";

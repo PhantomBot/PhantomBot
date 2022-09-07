@@ -21,6 +21,8 @@
  * Register and announce (un)host events.
  * Optionally supports rewarding points for a host (Only every 6 hours!)
  */
+// https://help.twitch.tv/s/article/how-to-use-host-mode#faq
+// @Deprecated
 (function () {
     var hostReward = $.getSetIniDbNumber('settings', 'hostReward', 0),
             hostMinViewerCount = $.getSetIniDbNumber('settings', 'hostMinViewerCount', 0),

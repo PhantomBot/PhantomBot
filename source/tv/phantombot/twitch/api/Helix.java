@@ -1203,6 +1203,117 @@ public class Helix {
         });
     }
 
+    /**
+     * Colors to be used with {@link sendChatAnnouncement}
+     */
+    public enum AnnouncementColors {
+        PRIMARY,
+        BLUE,
+        GREEN,
+        ORANGE,
+        PURPLE;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+    }
+
+    /**
+     * Sends an announcement to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
+     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * longer than 500 characters are truncated.
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendChatAnnouncement(String broadcaster_id, String message, String color)
+            throws JSONException, IllegalArgumentException {
+        return this.sendChatAnnouncementAsync(broadcaster_id, message, color).block();
+    }
+
+    /**
+     * Sends an announcement to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
+     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * longer than 500 characters are truncated.
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendChatAnnouncementAsync(String broadcaster_id, String message, String color)
+            throws JSONException, IllegalArgumentException {
+        AnnouncementColors ecolor;
+        try {
+            ecolor = AnnouncementColors.valueOf(color.toUpperCase().trim());
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            ecolor = AnnouncementColors.PRIMARY;
+        }
+
+        return this.sendChatAnnouncementAsync(broadcaster_id, message, ecolor);
+    }
+
+    /**
+     * Sends an announcement to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
+     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * longer than 500 characters are truncated.
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendChatAnnouncement(String broadcaster_id, String message, AnnouncementColors color)
+            throws JSONException, IllegalArgumentException {
+        return this.sendChatAnnouncementAsync(broadcaster_id, message, color).block();
+    }
+
+    /**
+     * Sends an announcement to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
+     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * longer than 500 characters are truncated.
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendChatAnnouncementAsync(String broadcaster_id, String message, AnnouncementColors color)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("message");
+        }
+
+        if (color == null) {
+            throw new IllegalArgumentException("color");
+        }
+
+        JSONStringer js = new JSONStringer();
+
+        js.object().key("message").value(message).key("color").value(color.toString()).endObject();
+
+        String endpoint = "/chat/announcements?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+        });
+    }
+
     private class CallRequest {
 
         private final Instant expires;

@@ -18,6 +18,8 @@ package tv.phantombot.event.twitch.host;
 
 import tv.phantombot.event.twitch.TwitchEvent;
 
+// https://help.twitch.tv/s/article/how-to-use-host-mode#faq
+@Deprecated
 public class TwitchHostsInitializedEvent extends TwitchEvent {
 
     /**
