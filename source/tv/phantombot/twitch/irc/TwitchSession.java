@@ -26,6 +26,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.UsernameCache;
+import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.chat.utils.Message;
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
@@ -81,6 +83,28 @@ public class TwitchSession extends MessageQueue {
      */
     public String getBotName() {
         return this.botName;
+    }
+
+    @Override
+    public void say(String message) {
+        if (message.toLowerCase().startsWith("/announce")) {
+            String color = "";
+            if (message.indexOf(' ') > 9) {
+                color = message.substring(9, message.indexOf(' '));
+            }
+
+            message = message.substring(message.indexOf(' ') + 1);
+
+            Helix.instance().sendChatAnnouncementAsync(UsernameCache.instance().getID(this.channelName), message, color)
+                    .doOnSuccess(jso -> {
+                        if (jso.getInt("status") != 204) {
+                            com.gmt2001.Console.err.println("Failed to send an /announce: " + jso.toString());
+                        }
+                    })
+                    .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+        } else {
+            super.say(message);
+        }
     }
 
     /**
