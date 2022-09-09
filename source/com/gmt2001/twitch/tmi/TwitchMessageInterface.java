@@ -17,6 +17,7 @@
 package com.gmt2001.twitch.tmi;
 
 import com.gmt2001.Reflect;
+import com.gmt2001.ratelimiters.WindowedRateLimiter;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
 import com.gmt2001.twitch.tmi.processors.AbstractTMIProcessor;
 import com.gmt2001.wsclient.WSClient;
@@ -45,6 +46,7 @@ import tv.phantombot.twitch.api.Helix;
 public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage> implements WsClientFrameHandler {
 
     private static final String TMI_URI = "wss://irc-ws.chat.twitch.tv:443";
+    private final WindowedRateLimiter rateLimiter = new WindowedRateLimiter(30000L, 100);
     private boolean closing = false;
     private WSClient client;
 
@@ -86,7 +88,18 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     }
 
     /**
-     * Sends an IRC PRIVMSG command with the {@code /me ACTION} specifier
+     * Returns the {@link WindowedRateLimiter} used to prevent PRIVMSG spam
+     *
+     * @return The rate limiter
+     */
+    public WindowedRateLimiter rateLimiter() {
+        return this.rateLimiter;
+    }
+
+    /**
+     * Sends an IRC PRIVMSG command with the {@code /me ACTION} specifier.
+     *
+     * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
      *
      * @param channel The channel to send to
      * @param message The chat message
@@ -97,7 +110,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
 
     /**
      * Sends an IRC PRIVMSG command. If the message starts with {@code /me}, then it is passed to
-     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String)} instead
+     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String)} instead.
+     *
+     * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
      *
      * @param channel The channel to send to
      * @param message The chat message
@@ -111,7 +126,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     }
 
     /**
-     * Redirects slash and dot commands other than {@code /me} from PRIVMSG to the appropriate {@link Helix} call, otherwise sends the PRIVMSG
+     * Redirects slash and dot commands other than {@code /me} from PRIVMSG to the appropriate {@link Helix} call, otherwise sends the PRIVMSG.
+     *
+     * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
      *
      * @param channelThe channel to send to
      * @param message The chat message to process
@@ -133,7 +150,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
                         }
                     })
                     .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        } else {
+        } else if (this.rateLimiter.takeToken()) {
             this.sendChannelCommand("PRIVMSG", channel, message);
         }
     }

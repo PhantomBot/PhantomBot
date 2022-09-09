@@ -88,7 +88,6 @@ import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
-import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.jvm.ShutdownEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
@@ -1035,9 +1034,6 @@ public final class PhantomBot implements Listener {
      */
     @Handler
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
-        /* Check if the bot already joined once. */
-        this.session.getModerationStatus();
-
         if (this.joined) {
             com.gmt2001.Console.debug.println("ircJoinComplete::joined::" + this.getChannelName());
             return;
@@ -1082,36 +1078,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
-    }
-
-    /**
-     * Get private messages from Twitch.
-     *
-     * @param event
-     */
-    @Handler
-    public void ircPrivateMessage(IrcPrivateMessageEvent event) {
-        String sender = event.getSender();
-        String message = event.getMessage();
-
-        /* Check to see if the sender is jtv */
-        if (sender.equalsIgnoreCase("jtv")) {
-            /* Splice the mod list so we can get all the mods */
-            String searchStr = "The moderators of this channel are: ";
-            if (message.startsWith(searchStr)) {
-                String[] moderators = message.substring(searchStr.length()).split(", ");
-
-                /* Check to see if the bot is a moderator */
-                for (String moderator : moderators) {
-                    if (moderator.equalsIgnoreCase(this.getBotName())) {
-                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.session.getBotName(), "O", true));
-                        /* Allow the bot to sends message to this session */
-                        event.getSession().setAllowSendMessages(true);
-                        com.gmt2001.Console.debug.println("Allowing messages to be sent due to .mods response +O");
-                    }
-                }
-            }
-        }
     }
 
     /**

@@ -19,7 +19,6 @@ package tv.phantombot.twitch.irc.chat.utils;
 public class Message {
 
     private final String message;
-    private final boolean hasPriority;
 
     /**
      * Class constructor.
@@ -28,18 +27,6 @@ public class Message {
      */
     public Message(String message) {
         this.message = message;
-        this.hasPriority = false;
-    }
-
-    /**
-     * Class constructor.
-     *
-     * @param message
-     * @param hasPriority
-     */
-    public Message(String message, boolean hasPriority) {
-        this.message = message;
-        this.hasPriority = hasPriority;
     }
 
     /**
@@ -49,14 +36,5 @@ public class Message {
      */
     public String getMessage() {
         return this.message;
-    }
-
-    /**
-     * Method that returns if the message has priority.
-     *
-     * @return hasPriority
-     */
-    public boolean hasPriority() {
-        return this.hasPriority;
     }
 }
