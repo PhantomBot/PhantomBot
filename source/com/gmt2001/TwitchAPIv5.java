@@ -506,8 +506,8 @@ public class TwitchAPIv5 {
             JSONObject udata = null;
 
             for (int b = 0; b < userData.getJSONArray("data").length(); b++) {
-                if (userData.getJSONArray("data").getJSONObject(i).optString("id").equals(data.optString("user_id"))) {
-                    udata = userData.getJSONArray("data").getJSONObject(i);
+                if (userData.getJSONArray("data").getJSONObject(b).optString("id").equals(data.optString("user_id"))) {
+                    udata = userData.getJSONArray("data").getJSONObject(b);
                     break;
                 }
             }
