@@ -40,7 +40,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
-    private boolean connecting = true;
+    private boolean connecting = false;
     private boolean connected = false;
     private final URI uri;
     private final WSClient client;
@@ -77,6 +77,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
 
             if (this.connecting) {
                 com.gmt2001.Console.warn.println("Reconnecting since TMI never sent 001.");
+                this.connecting = false;
                 this.session.reconnect();
                 return;
             }
@@ -186,7 +187,6 @@ public class TwitchWSIRC implements WsClientFrameHandler {
                 com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
                 com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
-                this.connecting = true;
                 this.session.reconnect();
             }
         } else {
