@@ -426,7 +426,7 @@ public final class PhantomBot implements Listener {
             this.initAPIsWebConfigs();
             this.initScripts();
             /* Start a session instance and then connect to WS-IRC @ Twitch. */
-            this.session = new TwitchSession(this.getChannelName(), this.getBotName(), CaselessProperties.instance().getProperty("oauth")).connect();
+            this.session = new TwitchSession(this.getChannelName(), this.getBotName());
             this.session.doSubscribe();
 
             this.tmi = new TwitchMessageInterface();
@@ -473,9 +473,6 @@ public final class PhantomBot implements Listener {
 
     public void reloadProperties() {
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
-        if (this.session != null) {
-            this.session.setOAuth(CaselessProperties.instance().getProperty("oauth"));
-        }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }

@@ -17,8 +17,6 @@
 package tv.phantombot.twitch.irc;
 
 import com.gmt2001.ratelimiters.ExponentialBackoff;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;
 import java.time.Duration;
 import java.time.Instant;
@@ -26,8 +24,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.cache.UsernameCache;
-import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.chat.utils.Message;
 import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
@@ -35,8 +31,6 @@ import tv.phantombot.twitch.irc.chat.utils.MessageQueue;
 public class TwitchSession extends MessageQueue {
 
     private final String botName;
-    private String oAuth;
-    private TwitchWSIRC twitchWSIRC;
     private final ReentrantLock reconnectLock = new ReentrantLock();
     private final ExponentialBackoff backoff = new ExponentialBackoff(1000L, 900000L);
     private boolean lastConnectSuccess = false;
@@ -46,12 +40,10 @@ public class TwitchSession extends MessageQueue {
      *
      * @param channelName
      * @param botName
-     * @param oAuth
      */
-    public TwitchSession(String channelName, String botName, String oAuth) {
+    public TwitchSession(String channelName, String botName) {
         super(channelName);
         this.botName = botName;
-        this.oAuth = oAuth;
     }
 
     public void doSubscribe() {
@@ -67,13 +59,8 @@ public class TwitchSession extends MessageQueue {
         return this.channelName;
     }
 
-    public void setOAuth(String oAuth) {
-        this.oAuth = oAuth;
-        this.twitchWSIRC.setOAuth(oAuth);
-
-        if (!this.twitchWSIRC.connected()) {
-            this.connect();
-        }
+    public void connectSuccess() {
+        this.lastConnectSuccess = true;
     }
 
     /**
@@ -85,48 +72,17 @@ public class TwitchSession extends MessageQueue {
         return this.botName;
     }
 
-    @Override
-    public void say(String message) {
-        if (message.toLowerCase().startsWith("/announce")) {
-            String color = "";
-            if (message.indexOf(' ') > 9) {
-                color = message.substring(9, message.indexOf(' '));
-            }
-
-            message = message.substring(message.indexOf(' ') + 1);
-
-            Helix.instance().sendChatAnnouncementAsync(UsernameCache.instance().getID(this.channelName), message, color)
-                    .doOnSuccess(jso -> {
-                        if (jso.getInt("status") != 204) {
-                            com.gmt2001.Console.err.println("Failed to send an /announce: " + jso.toString());
-                        }
-                    })
-                    .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        } else {
-            super.say(message);
-        }
-    }
-
-    /**
-     * Method that sends a raw message to the socket.
-     *
-     * @param message
-     */
-    public void sendRaw(String message) {
-        this.sendRaw(message, false);
-    }
-
-    private void sendRaw(String message, boolean isretry) {
+    private void send(String message, boolean isretry) {
         try {
-            if (this.twitchWSIRC.connected()) {
-                this.twitchWSIRC.send(message);
+            if (PhantomBot.instance().getTMI().connected()) {
+                PhantomBot.instance().getTMI().sendPrivMessage(this.getChannelName(), message);
                 this.backoff.ResetIn(Duration.ofSeconds(30));
             } else {
                 if (!isretry) {
                     try {
                         com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
                         Thread.sleep(5000);
-                        this.sendRaw(message, true);
+                        this.send(message, true);
                     } catch (InterruptedException ex2) {
                     }
                 }
@@ -136,7 +92,7 @@ public class TwitchSession extends MessageQueue {
                 try {
                     com.gmt2001.Console.warn.println("Tried to send message before connecting to Twitch, trying again in 5 seconds...");
                     Thread.sleep(5000);
-                    this.sendRaw(message, true);
+                    this.send(message, true);
                     return;
                 } catch (InterruptedException ex2) {
                 }
@@ -153,7 +109,7 @@ public class TwitchSession extends MessageQueue {
      * @param message
      */
     public void send(String message) {
-        this.sendRaw("PRIVMSG #" + this.getChannelName() + " :" + message);
+        this.send(message, false);
     }
 
     /**
@@ -161,33 +117,6 @@ public class TwitchSession extends MessageQueue {
      */
     public void getModerationStatus() {
         this.send(".mods");
-    }
-
-    /**
-     * Method that creates a connection with Twitch.
-     *
-     * @return
-     */
-    public TwitchSession connect() {
-        // Connect to Twitch.
-        try {
-            this.twitchWSIRC = new TwitchWSIRC(new URI("wss://irc-ws.chat.twitch.tv"), this.channelName, this.botName, this.oAuth, this);
-            if (!this.twitchWSIRC.connectWSS()) {
-                this.lastConnectSuccess = false;
-                com.gmt2001.Console.err.println("Error when connecting to Twitch.");
-            } else {
-                this.lastConnectSuccess = true;
-            }
-        } catch (URISyntaxException ex) {
-            this.lastConnectSuccess = false;
-            com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.err.println("TwitchWSIRC URI Failed");
-        }
-        return this;
-    }
-
-    protected void got001() {
-        this.twitchWSIRC.got001();
     }
 
     /**
@@ -200,6 +129,8 @@ public class TwitchSession extends MessageQueue {
             return;
         }
 
+        this.lastConnectSuccess = false;
+
         if (this.reconnectLock.tryLock()) {
             try {
                 if (!this.backoff.GetIsBackingOff()) {
@@ -209,7 +140,7 @@ public class TwitchSession extends MessageQueue {
                     com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.BackoffAsync(() -> {
                         try {
-                            this.connect();
+                            PhantomBot.instance().getTMI().reconnect();
                             Thread.sleep(500);
                         } catch (InterruptedException ex) {
                             com.gmt2001.Console.err.printStackTrace(ex);
@@ -251,7 +182,7 @@ public class TwitchSession extends MessageQueue {
                 }
 
                 // Send the message.
-                this.sendRaw("PRIVMSG #" + this.channelName + " :" + message.getMessage());
+                this.send(message.getMessage());
                 com.gmt2001.Console.out.println("[CHAT] " + message.getMessage());
             }
 
@@ -280,21 +211,14 @@ public class TwitchSession extends MessageQueue {
     }
 
     public void quitIRC() {
-        // Send quit command to Twitch to exit correctly.
-        this.sendRaw("QUIT");
-
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException ex) {
-        }
-        // Close connection.
-        this.twitchWSIRC.close(1000, "bye");
+        PhantomBot.instance().getTMI().shutdown();
     }
 
     /**
      * Method that stops everything for TwitchWSIRC, there's no going back after this.
      */
     @Override
+    @SuppressWarnings("ConvertToTryWithResources")
     public void close() {
         // Kill the message queue.
         this.kill();

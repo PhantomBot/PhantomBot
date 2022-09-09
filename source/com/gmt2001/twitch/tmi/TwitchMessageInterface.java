@@ -181,7 +181,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     public void reconnect() {
         if (this.client.connected()) {
-            this.client.close(1000, "bye");
+            this.shutdown();
         }
 
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
@@ -281,6 +281,13 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * Closes the connection normally
      */
     public void shutdown() {
+        this.send("QUIT");
+
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException ex) {
+        }
+
         this.close(1000, "bye");
     }
 }
