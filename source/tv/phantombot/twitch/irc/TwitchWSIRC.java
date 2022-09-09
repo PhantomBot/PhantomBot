@@ -23,6 +23,7 @@ import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.net.URI;
+import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -40,11 +41,12 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     private TwitchWSIRCParser twitchWSIRCParser;
     private long lastPong = System.currentTimeMillis();
     private long lastPing = 0l;
-    private boolean connecting = false;
+    private Instant connecting = null;
     private boolean connected = false;
     private final URI uri;
     private final WSClient client;
     private final ExecutorService ircParseExecutorService = Executors.newCachedThreadPool();
+    private static final long AUTH_TIMEOUT_SECS = 15;
 
     /**
      * Constructor
@@ -75,9 +77,9 @@ public class TwitchWSIRC implements WsClientFrameHandler {
             Thread.currentThread().setName("tv.phantombot.chat.twitchwsirc.TwitchWSIRC::pingTimer");
             Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
-            if (this.connecting) {
+            if (this.connecting != null && Instant.now().isAfter(this.connecting)) {
                 com.gmt2001.Console.warn.println("Reconnecting since TMI never sent 001.");
-                this.connecting = false;
+                this.connecting = null;
                 this.session.reconnect();
                 return;
             }
@@ -105,7 +107,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
     }
 
     protected void got001() {
-        this.connecting = false;
+        this.connecting = null;
     }
 
     /**
@@ -126,7 +128,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
         try {
             com.gmt2001.Console.out.println("Connecting to Twitch WS-IRC Server (SSL) [" + this.uri.getHost() + "]");
             this.connected = false;
-            this.connecting = true;
+            this.connecting = Instant.now().plusSeconds(AUTH_TIMEOUT_SECS);
             this.lastPing = System.currentTimeMillis();
             this.lastPong = System.currentTimeMillis();
             return this.client.connect();
@@ -168,6 +170,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
         this.client.send("PASS " + this.oAuth);
         // Send the bot name.
         this.send("NICK " + this.botName);
+        this.connecting = Instant.now().plusSeconds(AUTH_TIMEOUT_SECS);
 
         // Send an event saying that we are connected to Twitch.
         EventBus.instance().postAsync(new IrcConnectCompleteEvent(this.session));
@@ -183,7 +186,7 @@ public class TwitchWSIRC implements WsClientFrameHandler {
         this.connected = false;
         // Reconnect if the bot isn't shutting down.
         if (!reason.equals("bye")) {
-            if (!this.connecting) {
+            if (this.connecting == null) {
                 com.gmt2001.Console.warn.println("Lost connection with Twitch, caused by: ");
                 com.gmt2001.Console.warn.println("Code [" + code + "] Reason [" + reason + "]");
 
