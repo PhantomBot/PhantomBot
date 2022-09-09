@@ -16,7 +16,7 @@
  */
 package tv.phantombot.twitch.irc;
 
-import com.gmt2001.ExponentialBackoff;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.channels.NotYetConnectedException;

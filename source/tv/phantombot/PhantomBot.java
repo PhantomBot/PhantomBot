@@ -16,15 +16,15 @@
  */
 package tv.phantombot;
 
-import com.gmt2001.ExponentialBackoff;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.PathValidator;
 import com.gmt2001.Reflect;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.TwitchAuthorizationCodeFlow;
-import com.gmt2001.TwitchClientCredentialsFlow;
+import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;

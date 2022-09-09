@@ -21,7 +21,7 @@
  */
 package tv.phantombot.twitch.pubsub;
 
-import com.gmt2001.ExponentialBackoff;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.Reflect;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.wsclient.WSClient;

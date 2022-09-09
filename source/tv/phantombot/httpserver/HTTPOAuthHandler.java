@@ -18,7 +18,7 @@ package tv.phantombot.httpserver;
 
 import com.gmt2001.PathValidator;
 import com.gmt2001.Reflect;
-import com.gmt2001.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;

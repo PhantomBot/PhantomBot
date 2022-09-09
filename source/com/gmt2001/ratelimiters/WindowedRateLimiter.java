@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.ratelimiters;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

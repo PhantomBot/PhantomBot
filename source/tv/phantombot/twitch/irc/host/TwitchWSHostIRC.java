@@ -21,7 +21,7 @@
  */
 package tv.phantombot.twitch.irc.host;
 
-import com.gmt2001.ExponentialBackoff;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
