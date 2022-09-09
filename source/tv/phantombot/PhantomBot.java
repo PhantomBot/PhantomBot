@@ -16,15 +16,12 @@
  */
 package tv.phantombot;
 
-import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.PathValidator;
 import com.gmt2001.Reflect;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
-import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
@@ -34,6 +31,10 @@ import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchClientCredentialsFlow;
+import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
@@ -104,7 +105,6 @@ import tv.phantombot.script.ScriptManager;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
-import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
 import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.ytplayer.WsYTHandler;
 
@@ -149,7 +149,7 @@ public final class PhantomBot implements Listener {
     private TwitchSession session;
     private SecureRandom random;
     private boolean joined = false;
-    private TwitchWSHostIRC wsHostIRC;
+    private TwitchMessageInterface tmi;
     private TwitchPubSub pubSubEdge;
 
     // Error codes
@@ -429,10 +429,7 @@ public final class PhantomBot implements Listener {
             this.session = new TwitchSession(this.getChannelName(), this.getBotName(), CaselessProperties.instance().getProperty("oauth")).connect();
             this.session.doSubscribe();
 
-            /* Start a host checking instance. */
-            if (!CaselessProperties.instance().getProperty("apioauth", "").isBlank()) {
-                this.wsHostIRC = new TwitchWSHostIRC(this.getChannelName(), CaselessProperties.instance().getProperty("apioauth", ""));
-            }
+            this.tmi = new TwitchMessageInterface();
         }
     }
 
@@ -466,8 +463,8 @@ public final class PhantomBot implements Listener {
         if (this.session != null) {
             this.session.reconnect();
         }
-        if (this.wsHostIRC != null) {
-            this.wsHostIRC.reconnect();
+        if (this.tmi != null) {
+            this.tmi.reconnect();
         }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.reconnect();
@@ -478,9 +475,6 @@ public final class PhantomBot implements Listener {
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         if (this.session != null) {
             this.session.setOAuth(CaselessProperties.instance().getProperty("oauth"));
-        }
-        if (this.wsHostIRC != null) {
-            this.wsHostIRC.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
@@ -574,6 +568,13 @@ public final class PhantomBot implements Listener {
      */
     public TwitchSession getSession() {
         return this.session;
+    }
+
+    /**
+     * @return The {@link TwitchMessageInterface} for the IRC connection
+     */
+    public TwitchMessageInterface getTMI() {
+        return this.tmi;
     }
 
     /**
@@ -955,8 +956,8 @@ public final class PhantomBot implements Listener {
             this.getSession().close();
         }
 
-        if (this.wsHostIRC != null) {
-            this.wsHostIRC.shutdown();
+        if (this.tmi != null) {
+            this.tmi.shutdown();
         }
 
         if (this.pubSubEdge != null) {
@@ -1520,10 +1521,6 @@ public final class PhantomBot implements Listener {
 
     public void setPubSub(TwitchPubSub pubSub) {
         this.pubSubEdge = pubSub;
-    }
-
-    public void setHostIRC(TwitchWSHostIRC hostIrc) {
-        this.wsHostIRC = hostIrc;
     }
 
     public void setSession(TwitchSession session) {

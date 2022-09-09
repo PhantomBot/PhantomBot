@@ -35,7 +35,7 @@ public final class TMIMessage {
      */
     public enum TMIMessageType {
         /**
-         * The connection has been opened and is ready to join a channel
+         * The connection has been opened and is ready to start the authentication and capabilities flows
          */
         OPEN,
         /**

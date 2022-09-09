@@ -47,7 +47,7 @@ public class WindowedRateLimiter {
     }
 
     /**
-     * @return true if there is a token available
+     * @return {@code true} if there is a token available
      */
     public boolean isAvailable() {
         this.reset();
@@ -83,7 +83,7 @@ public class WindowedRateLimiter {
     /**
      * Attempts to take a token, and starts a new window if the bucket was full
      *
-     * @return true on success; false if no tokens are available
+     * @return {@code true} on success; {@code false} if no tokens are available
      */
     public boolean takeToken() {
         this.reset();
