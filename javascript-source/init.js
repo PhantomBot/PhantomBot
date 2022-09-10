@@ -504,7 +504,7 @@
             }
 
             // Check if commands are paused but allow for the pausecommand to be run
-            if ($.commandPause.isPaused && !command.equalsIgnoreCase('pausecommands')){
+            if ($.commandPause.isPaused() && !command.equalsIgnoreCase('pausecommands')){
                 return;
             }
 
