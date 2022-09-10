@@ -503,6 +503,11 @@
                 return;
             }
 
+            // Check if commands are paused but allow for the pausecommand to be run
+            if ($.commandPause.isPaused && !command.equalsIgnoreCase('pausecommands')){
+                return;
+            }
+
             // Check if the command has an alias.
             if ($.aliasExists(command)) {
                 var alias = $.getIniDbString('aliases', command),
