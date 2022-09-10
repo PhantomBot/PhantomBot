@@ -35,6 +35,7 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
 
@@ -135,7 +136,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     private void redirectSlashCommandsAndSendPrivMessage(String channel, String message) {
         String lmessage = message.toLowerCase();
-        if (lmessage.startsWith("/announce") || lmessage.startsWith(".announce")) {
+        if (lmessage.startsWith("/mods") || lmessage.startsWith(".mods")) {
+            PhantomBot.instance().getSession().getModerationStatus();
+        } else if (lmessage.startsWith("/announce") || lmessage.startsWith(".announce")) {
             String color = "";
             if (message.indexOf(' ') > 9) {
                 color = message.substring(9, message.indexOf(' '));

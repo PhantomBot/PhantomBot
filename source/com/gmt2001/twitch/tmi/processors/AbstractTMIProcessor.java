@@ -17,11 +17,14 @@
 package com.gmt2001.twitch.tmi.processors;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
+import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Flow;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.irc.TwitchSession;
 
 /**
  * An abstract processor of TMI messages
@@ -188,4 +191,41 @@ public abstract class AbstractTMIProcessor implements Flow.Subscriber<TMIMessage
      * @param item The {@link TMIMessage} that was received
      */
     protected abstract void onMessage(TMIMessage item);
+
+    /**
+     * Shortcut to get the instance of {@link CaselessProperties}
+     *
+     * @return
+     */
+    protected CaselessProperties properties() {
+        return CaselessProperties.instance();
+    }
+
+    /**
+     * Shortcut to {@link CaselessProperties#getProperty(java.lang.String)}
+     *
+     * @param key
+     * @return
+     */
+    protected String property(String key) {
+        return CaselessProperties.instance().getProperty(key);
+    }
+
+    /**
+     * Shortcut to get the instance of {@link TwitchMessageInterface}
+     *
+     * @return
+     */
+    protected TwitchMessageInterface tmi() {
+        return PhantomBot.instance().getTMI();
+    }
+
+    /**
+     * Shortcut to get the instance of {@link TwitchSession}
+     *
+     * @return
+     */
+    protected TwitchSession session() {
+        return PhantomBot.instance().getSession();
+    }
 }
