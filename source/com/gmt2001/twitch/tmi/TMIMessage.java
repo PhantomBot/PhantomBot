@@ -163,6 +163,8 @@ public final class TMIMessage {
 
             if (rcommand.equals("CAP")) {
                 rcommand += " " + commandParts[2];
+            } else if (rcommand.equals("353")) {
+                rchannel = commandParts[3];
             }
         } else {
             rcommand = rawCommandComponent;
