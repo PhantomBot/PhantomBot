@@ -17,28 +17,21 @@
 package com.gmt2001.twitch.tmi.processors;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
-import tv.phantombot.event.EventBus;
-import tv.phantombot.event.irc.channel.IrcChannelLeaveEvent;
 
 /**
- * Handles the PART IRC command
+ * Handles the IRC PING command
  *
  * @author gmt2001
  */
-public final class PartTMIProcessor extends AbstractTMIProcessor {
+public class PingTMIProcessor extends AbstractTMIProcessor {
 
-    public PartTMIProcessor() {
-        super("PART");
+    public PingTMIProcessor() {
+        super("PING");
     }
 
     @Override
     protected void onMessage(TMIMessage item) {
-        if (item.nick().equalsIgnoreCase(this.property("user"))) {
-            com.gmt2001.Console.out.println("Left #" + this.property("channel"));
-        }
-
-        EventBus.instance().postAsync(new IrcChannelLeaveEvent(this.session(), item.nick()));
-        com.gmt2001.Console.debug.println("User Left Channel [" + item.nick() + " -> " + this.property("channel") + "]");
+        this.tmi().sendCommand("PONG", item.parameters());
     }
 
 }
