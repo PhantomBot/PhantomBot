@@ -30,6 +30,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
@@ -106,7 +108,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param message The chat message
      */
     public void sendActionPrivMessage(String channel, String message) {
-        this.sendPrivMessage(channel, (char) 1 + "ACTION " + message + (char) 1);
+        this.sendActionPrivMessage(channel, message, null);
     }
 
     /**
@@ -119,10 +121,37 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param message The chat message
      */
     public void sendPrivMessage(String channel, String message) {
+        this.sendPrivMessage(channel, message, null);
+    }
+
+    /**
+     * Sends an IRC PRIVMSG command with the {@code /me ACTION} specifier.
+     *
+     * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
+     *
+     * @param channel The channel to send to
+     * @param message The chat message
+     * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to
+     */
+    public void sendActionPrivMessage(String channel, String message, String replyToId) {
+        this.sendPrivMessage(channel, (char) 1 + "ACTION " + message + (char) 1, replyToId);
+    }
+
+    /**
+     * Sends an IRC PRIVMSG command as a reply to another message. If the message starts with {@code /me}, then it is passed to
+     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String)} instead.
+     *
+     * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
+     *
+     * @param channel The channel to send to
+     * @param message The chat message
+     * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to
+     */
+    public void sendPrivMessage(String channel, String message, String replyToId) {
         if (message.toLowerCase().startsWith("/me ")) {
-            this.sendActionPrivMessage(channel, message.substring(4));
+            this.sendActionPrivMessage(channel, message.substring(4), replyToId);
         } else {
-            this.redirectSlashCommandsAndSendPrivMessage(channel, message);
+            this.redirectSlashCommandsAndSendPrivMessage(channel, message, replyToId);
         }
     }
 
@@ -133,8 +162,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      *
      * @param channelThe channel to send to
      * @param message The chat message to process
+     * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to, if sending a reply
      */
-    private void redirectSlashCommandsAndSendPrivMessage(String channel, String message) {
+    private void redirectSlashCommandsAndSendPrivMessage(String channel, String message, String replyToId) {
         String lmessage = message.toLowerCase();
         if (lmessage.startsWith("/mods") || lmessage.startsWith(".mods")) {
             PhantomBot.instance().getSession().getModerationStatus();
@@ -154,8 +184,29 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
                     })
                     .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
         } else if (this.rateLimiter.takeToken()) {
-            this.sendChannelCommand("PRIVMSG", channel, message);
+            this.sendFullCommand(replyToId == null ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
         }
+    }
+
+    /**
+     * Sends an IRC command with parameter component
+     *
+     * @param command The IRC command
+     * @param parameter The IRC parameter
+     */
+    public void sendCommand(String command, String parameter) {
+        this.sendCommand(null, command, parameter);
+    }
+
+    /**
+     * Sends an IRC command with tags and parameter component
+     *
+     * @param tags The IRCv3 tags
+     * @param command The IRC command
+     * @param parameter The IRC parameter
+     */
+    public void sendCommand(Map<String, String> tags, String command, String parameter) {
+        this.sendFullCommand(tags, command, null, parameter);
     }
 
     /**
@@ -166,17 +217,55 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param parameter The IRC parameter
      */
     public void sendChannelCommand(String command, String channel, String parameter) {
-        this.send(command + " " + channel + " :" + parameter);
+        this.sendFullCommand(null, command, channel, parameter);
     }
 
     /**
-     * Sends an IRC command with parameter component
+     * Sends an IRC command with tags, channel, and parameter components
      *
+     * @param tags The IRCv3 tags. If {@code null} or empty, the tags component is not included
      * @param command The IRC command
-     * @param parameter The IRC parameter
+     * @param channel The channel to send to. If {@code null}, empty, or blank, the channel component of the command is not included
+     * @param parameter The IRC parameters. If {@code null}, the parameter component is not included
      */
-    public void sendCommand(String command, String parameter) {
-        this.send(command + " :" + parameter);
+    public void sendFullCommand(Map<String, String> tags, String command, String channel, String parameter) {
+        if (command == null || command.isBlank()) {
+            throw new IllegalArgumentException("command");
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        if (tags != null && !tags.isEmpty()) {
+            sb.append('@');
+            boolean first = true;
+
+            for (Map.Entry<String, String> kvp : tags.entrySet()) {
+                if (!first) {
+                    sb.append(';');
+                }
+
+                first = false;
+                sb.append(kvp.getKey());
+
+                if (kvp.getValue() != null) {
+                    sb.append('=').append(kvp.getValue());
+                }
+            }
+
+            sb.append(' ');
+        }
+
+        sb.append(command);
+
+        if (channel != null && !channel.isBlank()) {
+            sb.append(' ').append(channel);
+        }
+
+        if (parameter != null) {
+            sb.append(' ').append(':').append(parameter);
+        }
+
+        this.sendRaw(sb.toString());
     }
 
     /**
@@ -184,7 +273,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      *
      * @param message The message to send
      */
-    public void send(String message) {
+    public void sendRaw(String message) {
         if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
             if (message.startsWith("PASS")) {
                 com.gmt2001.Console.debug.println("<PASS ****");
@@ -301,7 +390,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * Closes the connection normally
      */
     public void shutdown() {
-        this.send("QUIT");
+        this.sendRaw("QUIT");
 
         try {
             Thread.sleep(250);

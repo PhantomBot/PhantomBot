@@ -66,7 +66,7 @@ public final class CapabilityTMIProcessor extends AbstractTMIProcessor {
         }
 
         this.tmi().sendCommand("CAP REQ", "twitch.tv/commands twitch.tv/membership twitch.tv/tags");
-        this.tmi().send("PASS " + pass);
-        this.tmi().send("NICK " + this.property("user"));
+        this.tmi().sendRaw("PASS " + pass);
+        this.tmi().sendRaw("NICK " + this.property("user"));
     }
 }
