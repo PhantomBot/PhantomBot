@@ -188,7 +188,7 @@ public final class TMIMessage {
 
         for (String tagPart : tagParts) {
             String[] tagSpl = tagPart.split("=");
-            rtags.putIfAbsent(tagSpl[0], tagSpl.length > 1 ? tagSpl[1] : "");
+            rtags.putIfAbsent(tagSpl[0], tagSpl.length > 1 ? tagSpl[1].replaceAll("\\\\s", " ").replaceAll("\\\\", "\\").replaceAll("\\:", ";") : "");
 
             if (tagSpl[0].equals("badges")) {
                 Map<String, String> rbadges = parseLegacyBadges(tagSpl[1]);
