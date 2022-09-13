@@ -43,7 +43,6 @@ import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
-import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
@@ -515,25 +514,6 @@ public final class ConsoleEventHandler implements Listener {
                     new org.json.JSONObject("{\"medium\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-480x272.jpg\", "
                             + "\"small\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-260x147.jpg\", "
                             + "\"tiny\": \"https://clips-media-assets.twitch.tv/vod-107049351-offset-26-preview-86x45.jpg\"}")));
-            return;
-        }
-
-        /**
-         * @consolecommand hosttest (userName) (numViewers) - Sends a fake host event.
-         */
-        if (message.equalsIgnoreCase("hosttest")) {
-            String randomUser = PhantomBot.generateRandomString(10);
-            int users = 5;
-            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
-                randomUser = argument[0];
-            }
-            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
-                users = Integer.parseInt(argument[1]);
-            }
-
-            com.gmt2001.Console.out.println("[CONSOLE] Executing hosttest (User: " + randomUser + ", viewers: " + users + ")");
-
-            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser, users));
             return;
         }
 

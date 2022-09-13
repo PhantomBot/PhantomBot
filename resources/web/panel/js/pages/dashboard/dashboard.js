@@ -349,9 +349,6 @@ $(function () {
             case 'raid':
                 command = 'raid ' + username;
                 break;
-            case 'host':
-                command = 'host ' + username;
-                break;
         }
 
         // Run the command.
