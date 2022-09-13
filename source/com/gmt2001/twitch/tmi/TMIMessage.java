@@ -217,18 +217,22 @@ public final class TMIMessage {
     private Map<String, String> parseBadges(String rawBadges, String rawBadgeInfo) {
         Map<String, String> rbadges = new HashMap<>();
 
-        String[] badgeParts = rawBadges.split(",");
+        if (!rawBadges.isBlank()) {
+            String[] badgeParts = rawBadges.split(",");
 
-        for (String badgePart : badgeParts) {
-            String[] badge = badgePart.split("/");
-            rbadges.putIfAbsent(badge[0], badge[1]);
+            for (String badgePart : badgeParts) {
+                String[] badge = badgePart.split("/");
+                rbadges.putIfAbsent(badge[0], badge[1]);
+            }
         }
 
-        badgeParts = rawBadgeInfo.split(",");
+        if (!rawBadgeInfo.isBlank()) {
+            String[] badgeParts = rawBadgeInfo.split(",");
 
-        for (String badgePart : badgeParts) {
-            String[] badge = badgePart.split("/");
-            rbadges.putIfAbsent(badge[0], badge[1]);
+            for (String badgePart : badgeParts) {
+                String[] badge = badgePart.split("/");
+                rbadges.putIfAbsent(badge[0], badge[1]);
+            }
         }
 
         return rbadges;
@@ -246,19 +250,21 @@ public final class TMIMessage {
     private Map<String, List<EmoteLocation>> parseEmotes(String rawEmotes) {
         Map<String, List<EmoteLocation>> remotes = new HashMap<>();
 
-        String[] emotesParts = rawEmotes.split("/");
+        if (!rawEmotes.isBlank()) {
+            String[] emotesParts = rawEmotes.split("/");
 
-        for (String emote : emotesParts) {
-            String[] emoteParts = emote.split(":");
-            List<EmoteLocation> emoteLocations = new ArrayList<>();
-            String[] positions = emoteParts[1].split(",");
+            for (String emote : emotesParts) {
+                String[] emoteParts = emote.split(":");
+                List<EmoteLocation> emoteLocations = new ArrayList<>();
+                String[] positions = emoteParts[1].split(",");
 
-            for (String position : positions) {
-                String[] positionParts = position.split("-");
-                emoteLocations.add(new EmoteLocation(positionParts[0], positionParts[1]));
+                for (String position : positions) {
+                    String[] positionParts = position.split("-");
+                    emoteLocations.add(new EmoteLocation(positionParts[0], positionParts[1]));
+                }
+
+                remotes.putIfAbsent(emoteParts[0], Collections.unmodifiableList(emoteLocations));
             }
-
-            remotes.putIfAbsent(emoteParts[0], Collections.unmodifiableList(emoteLocations));
         }
 
         return remotes;
@@ -284,6 +290,10 @@ public final class TMIMessage {
      */
     private Map<String, String> parseLegacyBadges(String rawBadges) {
         Map<String, String> rbadges = new HashMap<>();
+
+        if (rawBadges.isBlank()) {
+            return rbadges;
+        }
 
         // Add default values.
         rbadges.put("user-type", "");
