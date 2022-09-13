@@ -41,7 +41,7 @@ public final class JoinTMIProcessor extends AbstractTMIProcessor {
         }
 
         EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session(), item.nick()));
-        com.gmt2001.Console.debug.println("User Joined Channel [" + item.nick() + " -> " + this.property("channel") + "]");
+        com.gmt2001.Console.debug.println("User Joined Channel [" + item.nick() + " -> #" + this.property("channel") + "]");
     }
 
 }

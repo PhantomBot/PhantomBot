@@ -38,7 +38,7 @@ public final class PartTMIProcessor extends AbstractTMIProcessor {
         }
 
         EventBus.instance().postAsync(new IrcChannelLeaveEvent(this.session(), item.nick()));
-        com.gmt2001.Console.debug.println("User Left Channel [" + item.nick() + " -> " + this.property("channel") + "]");
+        com.gmt2001.Console.debug.println("User Left Channel [" + item.nick() + " -> #" + this.property("channel") + "]");
     }
 
 }
