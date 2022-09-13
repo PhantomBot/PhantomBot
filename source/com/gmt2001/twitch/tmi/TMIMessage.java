@@ -184,6 +184,11 @@ public final class TMIMessage {
      */
     private Map<String, String> parseTags(String sTags) {
         Map<String, String> rtags = new HashMap<>();
+
+        if (sTags == null) {
+            return rtags;
+        }
+
         String[] tagParts = sTags.split(";");
 
         for (String tagPart : tagParts) {
