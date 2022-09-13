@@ -17,6 +17,7 @@
 package com.gmt2001.twitch.tmi.processors;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
+import java.util.Arrays;
 import java.util.Map;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
@@ -31,11 +32,18 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
     private boolean isModerator = false;
 
     public UserStateTMIProcessor() {
-        super("USERSTATE");
+        super(Arrays.asList("USERSTATE", "PART"));
     }
 
     @Override
     protected void onMessage(TMIMessage item) {
+        if (item.command().equals("PART")) {
+            if (item.nick().equalsIgnoreCase(this.property("user"))) {
+                this.isModerator = false;
+            }
+            return;
+        }
+
         Map<String, String> tags = item.tags();
 
         if (this.property("channel").equalsIgnoreCase(this.property("user")) || tags.get("mod").equals("1") || !tags.get("user-type").isEmpty()) {
