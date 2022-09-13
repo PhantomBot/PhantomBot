@@ -129,7 +129,7 @@
      * @param {String} sender
      */
     function logfile(filePrefix, message, sender) {
-        if (logs.file === false || message.indexOf('.mods') !== -1) {
+        if (logs.file === false) {
             return;
         }
 
@@ -259,10 +259,6 @@
 
         if (message.startsWith('specialuser')) {
             return;
-        }
-
-        if (message.indexOf('the moderators if this room') === -1) {
-            logfile('private-messages', '' + sender + ': ' + message);
         }
 
         if (sender.equalsIgnoreCase('jtv')) {

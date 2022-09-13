@@ -1049,63 +1049,12 @@
     $.bind('ircPrivateMessage', function(event) {
         var sender = event.getSender().toLowerCase(),
             message = event.getMessage().toLowerCase().trim(),
-            modMessageStart = 'the moderators of this channel are: ',
-            vipMessageStart = 'vips for this channel are: ',
-            novipMessageStart = 'this channel does not have any vips',
-            keys = $.inidb.GetKeyList('group', ''),
             subsTxtList = [],
             spl,
-            val,
             i;
 
         if (sender.equalsIgnoreCase('jtv')) {
-            if (message.indexOf(modMessageStart) > -1) {
-                spl = message.replace(modMessageStart, '').split(', ');
-                modListUsers = [];
-
-                for (i in keys) {
-                    val = queryDBPermission(keys[i]);
-                    if (val === PERMISSION.None || val === PERMISSION.Mod) {
-                        $.inidb.del('group', keys[i]);
-                    }
-                }
-
-                for (i in spl) {
-                    modListUsers.push(spl[i]);
-                    if (!isAdmin(spl[i]) && !isBot(spl[i])) {
-                        setUserGroupById(spl[i], PERMISSION.Mod);
-                    }
-                }
-
-                $.saveArray(modListUsers, './addons/mods.txt', false);
-            } else if (message.indexOf(vipMessageStart) > -1) {
-                spl = message.replace(vipMessageStart, '').split(', ');
-                vipUsers = [];
-
-                for (i in keys) {
-                    val = queryDBPermission(keys[i]);
-                    if (val === PERMISSION.None || val === PERMISSION.VIP) {
-                        $.inidb.del('group', keys[i]);
-                    }
-                }
-
-                for (i in spl) {
-                    vipUsers.push(spl[i]);
-                    if (!isMod(spl[i]) && !isAdmin(spl[i]) && !isBot(spl[i])) {
-                        setUserGroupById(spl[i], PERMISSION.VIP);
-                    }
-                }
-
-                $.saveArray(vipUsers, './addons/vips.txt', false);
-            } else if (message.indexOf(novipMessageStart) > -1) {
-                for (i in keys) {
-                    if (queryDBPermission(keys[i]) === PERMISSION.VIP) {
-                        $.inidb.del('group', keys[i]);
-                    }
-                }
-
-                $.deleteFile('./addons/vips.txt', true);
-            } else if (message.indexOf('specialuser') > -1) {
+            if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
                     if (!subUsers.contains(spl[1].toLowerCase())) {
