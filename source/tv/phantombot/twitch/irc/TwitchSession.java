@@ -125,12 +125,12 @@ public class TwitchSession extends MessageQueue {
      */
     public void getModerationStatus() {
         this.setAllowSendMessages(false);
-        PhantomBot.instance().getTMI().sendRaw("PART " + this.getChannelName());
+        PhantomBot.instance().getTMI().sendRaw("PART #" + this.getChannelName());
         try {
-            Thread.sleep(250);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
         }
-        PhantomBot.instance().getTMI().sendRaw("JOIN " + this.getChannelName());
+        PhantomBot.instance().getTMI().sendRaw("JOIN #" + this.getChannelName());
     }
 
     /**
