@@ -50,7 +50,7 @@
             }
 
             /*
-             * @commandpath botName reconnect - Reconnects the bot to TMI, Host TMI, and PubSub.
+             * @commandpath botName reconnect - Reconnects the bot to TMI and PubSub.
              */
             if (action.equalsIgnoreCase('reconnect')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect'));

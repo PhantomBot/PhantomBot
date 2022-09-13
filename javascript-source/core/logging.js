@@ -278,16 +278,6 @@
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.start'));
             } else if (message.indexOf('no longer in r9k') !== -1) {
                 logfile('private-messages', '' + $.lang.get('console.received.r9k.end'));
-            } else if (message.indexOf('hosting') !== -1) {
-                var target = String(message).replace(/now hosting /ig, '').replace(/\./ig, '');
-
-                if (target.equalsIgnoreCase('-')) {
-                    $.bot.channelIsHosting = null;
-                    logfile('private-messages', '' + $.lang.get('console.received.host.end'));
-                } else {
-                    $.bot.channelIsHosting = target;
-                    logfile('private-messages', '' + $.lang.get('console.received.host.start', target));
-                }
             } else {
                 logfile('private-messages', '' + sender + ': ' + message);
             }

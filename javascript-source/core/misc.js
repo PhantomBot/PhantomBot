@@ -18,8 +18,7 @@
 /* global java, Packages */
 
 (function () {
-    var currentHostTarget = '',
-            respond = getSetIniDbBoolean('settings', 'response_@chat', true),
+    var respond = getSetIniDbBoolean('settings', 'response_@chat', true),
             action = getSetIniDbBoolean('settings', 'response_action', false),
             secureRandom = new java.security.SecureRandom(),
             reg = new RegExp(/^@\w+,\s?$/),
@@ -107,15 +106,6 @@
             }
         }
         return false;
-    }
-
-    /**
-     * @function getCurrentHostTarget
-     * @export $
-     * @returns {string}
-     */
-    function getCurrentHostTarget() {
-        return currentHostTarget.toLowerCase();
     }
 
     /**
@@ -847,7 +837,6 @@
     };
 
     $.arrayShuffle = arrayShuffle;
-    $.getCurrentHostTarget = getCurrentHostTarget;
     $.getIniDbBoolean = getIniDbBoolean;
     $.getIniDbString = getIniDbString;
     $.getIniDbNumber = getIniDbNumber;
