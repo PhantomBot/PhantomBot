@@ -195,7 +195,7 @@ public final class TMIMessage {
             String[] tagSpl = tagPart.split("=");
             rtags.putIfAbsent(tagSpl[0], tagSpl.length > 1 ? tagSpl[1].replaceAll("\\\\s", " ").replaceAll("\\\\", "\\").replaceAll("\\:", ";") : "");
 
-            if (tagSpl[0].equals("badges")) {
+            if (tagSpl[0].equals("badges") && tagSpl.length > 1) {
                 Map<String, String> rbadges = parseLegacyBadges(tagSpl[1]);
 
                 for (Map.Entry<String, String> badge : rbadges.entrySet()) {
@@ -222,7 +222,7 @@ public final class TMIMessage {
 
             for (String badgePart : badgeParts) {
                 String[] badge = badgePart.split("/");
-                rbadges.putIfAbsent(badge[0], badge[1]);
+                rbadges.putIfAbsent(badge[0], badge.length > 1 ? badge[1] : "");
             }
         }
 
@@ -231,7 +231,7 @@ public final class TMIMessage {
 
             for (String badgePart : badgeParts) {
                 String[] badge = badgePart.split("/");
-                rbadges.putIfAbsent(badge[0], badge[1]);
+                rbadges.putIfAbsent(badge[0], badge.length > 1 ? badge[1] : "");
             }
         }
 
@@ -255,15 +255,20 @@ public final class TMIMessage {
 
             for (String emote : emotesParts) {
                 String[] emoteParts = emote.split(":");
-                List<EmoteLocation> emoteLocations = new ArrayList<>();
-                String[] positions = emoteParts[1].split(",");
 
-                for (String position : positions) {
-                    String[] positionParts = position.split("-");
-                    emoteLocations.add(new EmoteLocation(positionParts[0], positionParts[1]));
+                if (emoteParts.length == 2) {
+                    List<EmoteLocation> emoteLocations = new ArrayList<>();
+                    String[] positions = emoteParts[1].split(",");
+
+                    for (String position : positions) {
+                        String[] positionParts = position.split("-");
+                        if (positionParts.length == 2) {
+                            emoteLocations.add(new EmoteLocation(positionParts[0], positionParts[1]));
+                        }
+                    }
+
+                    remotes.putIfAbsent(emoteParts[0], Collections.unmodifiableList(emoteLocations));
                 }
-
-                remotes.putIfAbsent(emoteParts[0], Collections.unmodifiableList(emoteLocations));
             }
         }
 
@@ -306,7 +311,11 @@ public final class TMIMessage {
             String badgeParts[] = rawBadges.split(",");
 
             for (String badge : badgeParts) {
-                badge = badge.substring(0, badge.indexOf('/'));
+                int idx = badge.indexOf('/');
+                if (idx == -1) {
+                    idx = badge.length();
+                }
+                badge = badge.substring(0, idx);
 
                 switch (badge) {
                     case "staff":
