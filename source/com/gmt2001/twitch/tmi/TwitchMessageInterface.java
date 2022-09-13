@@ -341,7 +341,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
         this.submit(new TMIMessage(TMIMessageType.CLOSE));
 
         if (!this.closing) {
-            this.reconnect();
+            PhantomBot.instance().getSession().reconnect();
         }
     }
 
@@ -387,16 +387,22 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     }
 
     /**
-     * Closes the connection normally
+     * Closes the connection normally. Exceptions are discarded
      */
     public void shutdown() {
-        this.sendRaw("QUIT");
+        try {
+            this.sendRaw("QUIT");
+        } catch (Exception e) {
+        }
 
         try {
             Thread.sleep(250);
         } catch (InterruptedException ex) {
         }
 
-        this.close(1000, "bye");
+        try {
+            this.close(1000, "bye");
+        } catch (Exception e) {
+        }
     }
 }
