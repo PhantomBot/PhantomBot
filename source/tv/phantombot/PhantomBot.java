@@ -85,7 +85,6 @@ import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
-import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.jvm.PropertiesReloadedEvent;
@@ -1078,23 +1077,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
-    }
-
-    /**
-     * user modes from twitch
-     *
-     * @param event
-     */
-    @Handler
-    public void ircUserMode(IrcChannelUserModeEvent event) {
-        /* Check to see if Twitch sent a mode event for the bot name */
-        if (event.getUser().equalsIgnoreCase(this.getBotName()) && event.getMode().equalsIgnoreCase("o")) {
-            if (!event.getAdd()) {
-                event.getSession().getModerationStatus();
-            }
-            /* Allow the bot to sends message to this session */
-            event.getSession().setAllowSendMessages(event.getAdd());
-        }
     }
 
     /**

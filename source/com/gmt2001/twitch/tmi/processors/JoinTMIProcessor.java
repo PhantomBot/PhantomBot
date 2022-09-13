@@ -19,6 +19,7 @@ package com.gmt2001.twitch.tmi.processors;
 import com.gmt2001.twitch.tmi.TMIMessage;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
+import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 
 /**
  * Handles the JOIN IRC command
@@ -36,6 +37,7 @@ public final class JoinTMIProcessor extends AbstractTMIProcessor {
         if (item.nick().equalsIgnoreCase(this.property("user"))) {
             com.gmt2001.Console.out.println("Joined #" + this.property("channel"));
             this.session().joinSuccess();
+            EventBus.instance().postAsync(new IrcJoinCompleteEvent(this.session()));
         }
 
         EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session(), item.nick()));
