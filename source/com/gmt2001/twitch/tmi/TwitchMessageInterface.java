@@ -184,6 +184,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
                     })
                     .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
         } else if (this.rateLimiter.takeToken()) {
+            if (!channel.startsWith("#")) {
+                channel = "#" + channel;
+            }
             this.sendFullCommand(replyToId == null ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
         }
     }
