@@ -80,6 +80,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             });
 
             try {
+                com.gmt2001.Console.out.println("Connecting to TMI...");
                 if (!this.client.connect()) {
                     com.gmt2001.Console.err.println("Failed to start connection to TMI");
                 }
@@ -308,6 +309,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             try {
                 this.closing = false;
 
+                com.gmt2001.Console.out.println("Connecting to TMI...");
                 if (!this.client.connect()) {
                     com.gmt2001.Console.err.println("Failed to start connection to TMI");
                 }
