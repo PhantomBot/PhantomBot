@@ -68,4 +68,9 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
         }
     }
 
+    @Override
+    protected void onClose() {
+        this.isModerator = false;
+    }
+
 }
