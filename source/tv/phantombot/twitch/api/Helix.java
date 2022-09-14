@@ -189,11 +189,12 @@ public class Helix {
      * @param type
      * @param url
      * @param data
+     * @param oauth
      * @return
      */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, String oauth) throws JSONException {
         try {
-            return this.handleRequest(type, endPoint, data, false);
+            return this.handleRequest(type, endPoint, data, false, oauth);
         } catch (Throwable ex) {
             if (ex.getCause() != null && ex.getMessage().startsWith("{")) {
                 com.gmt2001.Console.err.printStackTrace(ex.getCause());
@@ -215,16 +216,17 @@ public class Helix {
      * @param url
      * @param data
      * @param isRetry
+     * @param oauth
      * @return
      */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException, Throwable {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry, String oauth) throws JSONException, Throwable {
         JSONObject returnObject = new JSONObject();
         int responseCode = 0;
 
         this.checkRateLimit();
 
         try {
-            if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
+            if ((this.oAuthToken == null || this.oAuthToken.isBlank()) && (oauth == null || oauth.isBlank())) {
                 throw new IllegalArgumentException("apioauth is required");
             }
 
@@ -233,9 +235,8 @@ public class Helix {
             }
 
             HttpHeaders headers = HttpClient.createHeaders(type, true);
-            headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
-                    ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
-            headers.add("Authorization", "Bearer " + this.oAuthToken);
+            headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", TwitchValidate.instance().getAPIClientID()));
+            headers.add("Authorization", "Bearer " + (oauth != null && !oauth.isBlank() ? oauth : this.oAuthToken));
             HttpClientResponse response = HttpClient.request(type, URI.create(BASE_URL + endPoint), headers, data);
 
             responseCode = response.responseCode().code();
@@ -288,7 +289,7 @@ public class Helix {
 
         if (!isRetry && (responseCode == 401 || (returnObject.has("status") && returnObject.getInt("status") == 401)) && PhantomBot.instance() != null) {
             PhantomBot.instance().getAuthFlow().refresh(false, true);
-            return this.handleRequest(type, endPoint, data, true);
+            return this.handleRequest(type, endPoint, data, true, oauth);
         }
 
         return returnObject;
@@ -302,7 +303,19 @@ public class Helix {
      * @return
      */
     private JSONObject handleRequest(HttpMethod type, String endPoint) throws JSONException {
-        return this.handleRequest(type, endPoint, "");
+        return this.handleRequest(type, endPoint, "", null);
+    }
+
+    /**
+     * Method that handles a request without any data being passed.
+     *
+     * @param type
+     * @param endPoint
+     * @param oauth
+     * @return
+     */
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String oauth) throws JSONException {
+        return this.handleRequest(type, endPoint, "", oauth);
     }
 
     private Mono<JSONObject> handleQueryAsync(String callid, Supplier<JSONObject> action) {
@@ -1699,6 +1712,76 @@ public class Helix {
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Sends a whisper message to the specified user.
+     *
+     * NOTE: uses the Bot (Chat) username and OAuth to send the whisper.
+     *
+     * NOTE: The user sending the whisper must have a verified phone number.
+     *
+     * NOTE: The API may silently drop whispers that it suspects of violating Twitch policies. (The API does not indicate that it dropped the whisper;
+     * it returns a 204 status code as if it succeeded).
+     *
+     * Rate Limits: You may whisper to a maximum of 40 unique recipients per day. Within the per day limit, you may whisper a maximum of 3 whispers
+     * per second and a maximum of 100 whispers per minute.
+     *
+     * The maximum message lengths are: 500 characters if the user you're sending the message to hasn't whispered you before. 10,000 characters if the
+     * user you're sending the message to has whispered you before. Messages that exceed the maximum length are truncated.
+     *
+     * @param to_user_id The ID of the user to receive the whisper.
+     * @param message The whisper message to send. The message must not be empty.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendWhisper(String to_user_id, String message)
+            throws JSONException, IllegalArgumentException {
+        return this.sendWhisperAsync(to_user_id, message).block();
+    }
+
+    /**
+     * Sends a whisper message to the specified user.
+     *
+     * NOTE: uses the Bot (Chat) username and OAuth to send the whisper.
+     *
+     * NOTE: The user sending the whisper must have a verified phone number.
+     *
+     * NOTE: The API may silently drop whispers that it suspects of violating Twitch policies. (The API does not indicate that it dropped the whisper;
+     * it returns a 204 status code as if it succeeded).
+     *
+     * Rate Limits: You may whisper to a maximum of 40 unique recipients per day. Within the per day limit, you may whisper a maximum of 3 whispers
+     * per second and a maximum of 100 whispers per minute.
+     *
+     * The maximum message lengths are: 500 characters if the user you're sending the message to hasn't whispered you before. 10,000 characters if the
+     * user you're sending the message to has whispered you before. Messages that exceed the maximum length are truncated.
+     *
+     * @param to_user_id The ID of the user to receive the whisper.
+     * @param message The whisper message to send. The message must not be empty.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendWhisperAsync(String to_user_id, String message)
+            throws JSONException, IllegalArgumentException {
+        if (to_user_id == null || to_user_id.isBlank()) {
+            throw new IllegalArgumentException("to_user_id");
+        }
+
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("message");
+        }
+
+        JSONStringer js = new JSONStringer();
+
+        js.object().key("message").value(message).endObject();
+
+        String endpoint = "/whispers?" + this.qspValid("from_user_id", TwitchValidate.instance().getChatUserID()) + this.qspValid("&to_user_id", to_user_id);
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), CaselessProperties.instance().getProperty("oauth"));
         });
     }
 

@@ -78,7 +78,58 @@ final class TMISlashCommands {
             case ".unraid":
                 unraid(channel);
                 break;
-            case ""//follow, sub, r9k, slow
+            case "/followers":
+            case ".followers":
+                followers(channel, message);
+                break;
+            case "/followersoff":
+            case ".followersoff":
+                followersoff(channel);
+                break;
+            case "/emoteonly":
+            case ".emoteonly":
+                emoteonly(channel);
+                break;
+            case "/emoteonlyoff":
+            case ".emoteonlyoff":
+                emoteonlyoff(channel);
+                break;
+            case "/slow":
+            case ".slow":
+                slow(channel, message);
+                break;
+            case "/slowoff":
+            case ".slowoff":
+                slowoff(channel);
+                break;
+            case "/subscribers":
+            case ".subscribers":
+                subscribers(channel);
+                break;
+            case "/subscribersoff":
+            case ".subscribersoff":
+                subscribersoff(channel);
+                break;
+            case "/uniquechat":
+            case ".uniquechat":
+            case "/r9kbeta":
+            case ".r9kbeta":
+                uniquechat(channel);
+                break;
+            case "/uniquechatoff":
+            case ".uniquechatoff":
+            case "/r9kbetaoff":
+            case ".r9kbetaoff":
+                uniquechatoff(channel);
+                break;
+            case "/commercial":
+            case ".commercial":
+                commercial(channel, message);
+                break;
+            case "/w":
+            case ".w":
+                whisper(message);
+                break;
             default:
                 return false;
         }
@@ -87,14 +138,19 @@ final class TMISlashCommands {
     }
 
     private static void announce(String channel, String message) {
-        String color = "";
-        if (message.indexOf(' ') > 9) {
-            color = message.substring(9, message.indexOf(' '));
+        String[] params = message.split(" ", 2);
+
+        if (params.length < 2) {
+            com.gmt2001.Console.err.println("Failed to /announce due to missing param");
+            return;
         }
 
-        message = message.substring(message.indexOf(' ') + 1);
+        String color = "";
+        if (params[0].length() > 9) {
+            color = params[0].substring(9);
+        }
 
-        Helix.instance().sendChatAnnouncementAsync(UsernameCache.instance().getID(channel), message, color)
+        Helix.instance().sendChatAnnouncementAsync(UsernameCache.instance().getID(channel), params[1], color)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("status") != 204) {
                         com.gmt2001.Console.err.println("Failed to send an /announce: " + jso.toString());
@@ -244,6 +300,185 @@ final class TMISlashCommands {
                 .doOnSuccess(jso -> {
                     if (jso.getInt("status") != 204) {
                         com.gmt2001.Console.err.println("Failed to /unraid: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void followers(String channel, String message) {
+        String[] params = message.split(" ", 2);
+
+        int duration;
+        if (params.length < 2) {
+            duration = 0;
+        } else {
+            try {
+                duration = Integer.parseInt(params[1]);
+            } catch (NumberFormatException ex) {
+                com.gmt2001.Console.err.println("Failed to convert " + params[1] + " to an integer, using default /followers duration");
+                com.gmt2001.Console.err.printStackTrace(ex, false, true);
+                duration = 0;
+            }
+        }
+
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, true, duration, null, null, null, null, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /followers: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void followersoff(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, false, null, null, null, null, null, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /followersoff: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void emoteonly(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), true, null, null, null, null, null, null, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /emoteonly: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void emoteonlyoff(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), false, null, null, null, null, null, null, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /emoteonlyoff: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void slow(String channel, String message) {
+        String[] params = message.split(" ", 2);
+
+        int duration;
+        if (params.length < 2) {
+            duration = 30;
+        } else {
+            try {
+                duration = Integer.parseInt(params[1]);
+            } catch (NumberFormatException ex) {
+                com.gmt2001.Console.err.println("Failed to convert " + params[1] + " to an integer, using default /slow duration");
+                com.gmt2001.Console.err.printStackTrace(ex, false, true);
+                duration = 30;
+            }
+        }
+
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, true, duration, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /slow: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void slowoff(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, false, null, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /slowoff: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void subscribers(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, true, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /subscribers: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void subscribersoff(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, false, null)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /subscribersoff: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void uniquechat(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, null, true)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /uniquechat: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void uniquechatoff(String channel) {
+        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, null, false)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /uniquechatoff: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void commercial(String channel, String message) {
+        String[] params = message.split(" ", 2);
+
+        int duration;
+        if (params.length < 2) {
+            duration = 30;
+        } else {
+            try {
+                duration = Integer.parseInt(params[1]);
+            } catch (NumberFormatException ex) {
+                com.gmt2001.Console.err.println("Failed to convert " + params[1] + " to an integer, using default /commercial duration");
+                com.gmt2001.Console.err.printStackTrace(ex, false, true);
+                duration = 30;
+            }
+        }
+
+        Helix.instance().startCommercialAsync(UsernameCache.instance().getID(channel), duration)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /commercial: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void whisper(String message) {
+        String[] params = message.split(" ", 3);
+
+        if (params.length < 3) {
+            com.gmt2001.Console.err.println("Failed to /w due to missing param");
+            return;
+        }
+
+        String user_id = UsernameCache.instance().getID(params[1], true);
+
+        if (user_id.equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /w");
+            return;
+        }
+
+        Helix.instance().sendWhisperAsync(user_id, params[2])
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("status") != 204) {
+                        com.gmt2001.Console.err.println("Failed to /w " + params[1] + ": " + jso.toString());
                     }
                 })
                 .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
