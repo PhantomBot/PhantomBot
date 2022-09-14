@@ -151,11 +151,15 @@ public class UsernameCache {
     }
 
     public String getID(String userName) {
+        return this.getID(userName, false);
+    }
+
+    public String getID(String userName, boolean forceIfMissing) {
         String lusername = userName.toLowerCase();
         if (hasUser(lusername)) {
             return cache.get(lusername).getUserID();
         } else {
-            if (Instant.now().isBefore(timeoutExpire)) {
+            if (Instant.now().isBefore(timeoutExpire) && !forceIfMissing) {
                 return "0";
             }
             lookupUserData(lusername);

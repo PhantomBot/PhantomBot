@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
 
 /**
@@ -166,25 +165,8 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to, if sending a reply
      */
     private void redirectSlashCommandsAndSendPrivMessage(String channel, String message, String replyToId) {
-        String lmessage = message.toLowerCase();
-        if (lmessage.startsWith("/mods") || lmessage.startsWith(".mods")) {
-            PhantomBot.instance().getSession().getModerationStatus();
-        } else if (lmessage.startsWith("/announce") || lmessage.startsWith(".announce")) {
-            String color = "";
-            if (message.indexOf(' ') > 9) {
-                color = message.substring(9, message.indexOf(' '));
-            }
-
-            message = message.substring(message.indexOf(' ') + 1);
-
-            Helix.instance().sendChatAnnouncementAsync(UsernameCache.instance().getID(channel), message, color)
-                    .doOnSuccess(jso -> {
-                        if (jso.getInt("status") != 204) {
-                            com.gmt2001.Console.err.println("Failed to send an /announce: " + jso.toString());
-                        }
-                    })
-                    .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
-        } else if (this.rateLimiter.takeToken()) {
+        if ((!message.startsWith("/") || !message.startsWith(".") || !TMISlashCommands.checkAndProcessCommands(channel, message))
+                && this.rateLimiter.takeToken()) {
             if (!channel.startsWith("#")) {
                 channel = "#" + channel;
             }
