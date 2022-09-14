@@ -170,7 +170,7 @@ public final class TMIMessage {
             rcommand = rawCommandComponent;
         }
 
-        return new String[]{rawTagsComponent, rnick == null ? (rhost == null ? "jtv" : rhost) : rnick, rhost, rcommand, rchannel, rawParametersComponent};
+        return new String[]{rawTagsComponent, rnick == null ? rhost : rnick, rhost, rcommand, rchannel, rawParametersComponent};
     }
 
     /**
