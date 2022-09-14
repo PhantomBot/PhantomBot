@@ -553,10 +553,10 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand reconnect - Reconnects to TMI, Host TMI, and PubSub.
+         * @consolecommand reconnect - Reconnects to TMI and PubSub.
          */
         if (message.equalsIgnoreCase("reconnect")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI, Host TMI, and PubSub reconnect");
+            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI and PubSub reconnect");
 
             PhantomBot.instance().reconnect();
             return;

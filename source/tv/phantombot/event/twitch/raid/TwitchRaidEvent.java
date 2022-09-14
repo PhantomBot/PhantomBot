@@ -35,7 +35,7 @@ public class TwitchRaidEvent extends TwitchEvent {
     }
 
     /**
-     * Method that returns the username who hosted.
+     * Method that returns the username who raided.
      *
      * @return username
      */
