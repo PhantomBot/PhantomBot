@@ -296,6 +296,14 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             this.shutdown();
         }
 
+        try {
+            this.client = new WSClient(new URI(TMI_URI), this);
+        } catch (URISyntaxException | SSLException | IllegalArgumentException ex) {
+            com.gmt2001.Console.err.println("Failed to create WSClient for TMI [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return;
+        }
+
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             try {
                 this.closing = false;
