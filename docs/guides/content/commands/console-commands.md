@@ -198,14 +198,6 @@ cliptest - Sends a fake clip event.
 
 &nbsp;
 
-### hosttest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-hosttest (userName) (numViewers) - Sends a fake host event.
-
-&nbsp;
-
 ### bitstest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
@@ -226,7 +218,7 @@ discordreconnect - Reconnects to Discord.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-reconnect - Reconnects to TMI, Host TMI, and PubSub.
+reconnect - Reconnects to TMI and PubSub.
 
 &nbsp;
 
