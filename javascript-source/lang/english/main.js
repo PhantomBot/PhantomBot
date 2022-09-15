@@ -279,6 +279,7 @@ $.lang.register('commandlist.nocommands', 'There are currently no commands avail
 $.lang.register('commandlist.nopage', 'page $1 does not exist!');
 $.lang.register('commandlist.progress', 'Exporting commands... $1%');
 $.lang.register('commandpause.ended', 'All commands are enabled again.');
+$.lang.register('commandpause.notactive', 'All commands are already enabled.');
 $.lang.register('commandpause.initiated', 'All commands are disabled for $1.');
 $.lang.register('commandpause.isactive', 'All commands are currently disabled.');
 $.lang.register('common.disabled', 'disabled');

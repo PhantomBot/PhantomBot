@@ -23,7 +23,7 @@
 (function() {
     var isActive = $.getSetIniDbBoolean('commandPause', 'commandsPaused', false),
         defaultTime = $.getSetIniDbNumber('commandPause', 'defaultTime', 300),
-        timerId = -1;
+        timerId;
 
     /**
      * @function pause
@@ -31,18 +31,19 @@
      * @param {Number} [seconds]
      */
     function pause(seconds) {
-        seconds = (seconds ? seconds : defaultTime);
+        seconds = (seconds !== undefined ? seconds : defaultTime);
         if (isActive) {
             clearTimeout(timerId);
         } else {
             $.setIniDbBoolean('commandPause', 'commandsPaused', true);
             isActive = true;
         }
+
         timerId = setTimeout(function() {
             unPause();
         }, seconds * 1e3);
         $.say($.lang.get('commandpause.initiated', $.getTimeString(seconds)));
-    };
+    }
 
     /**
      * @function isPaused
@@ -51,21 +52,23 @@
      */
     function isPaused() {
         return isActive;
-    };
+    }
 
     /**
      * @function clear
      * @export $.commandPause
      */
     function unPause() {
-        if (timerId > -1) {
+        if (timerId !== undefined) {
             clearTimeout(timerId);
             $.setIniDbBoolean('commandPause', 'commandsPaused', false);
             isActive = false;
-            timerId = -1;
+            timerId = undefined;
             $.say($.lang.get('commandpause.ended'));
+        } else {
+            $.say($.lang.get('commandpause.notactive'));
         }
-    };
+    }
 
     /**
      * @event event
@@ -76,7 +79,7 @@
 
         /**
          * @commandpath pausecommands [seconds] - Pause all command usage for the given amount of time. If [seconds] is not present, uses a default value
-         * @commandpath pausecommands clear - Unpause commands 
+         * @commandpath pausecommands clear - Unpause commands
          */
         if (command.equalsIgnoreCase('pausecommands')) {
             if (args[0] !== undefined || args[0] !== null) {
@@ -100,9 +103,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if ($.bot.isModuleEnabled('./core/commandPause.js')) {
-            $.registerChatCommand('./core/commandPause.js', 'pausecommands', $.PERMISSION.Mod);
-        }
+        $.registerChatCommand('./core/commandPause.js', 'pausecommands', $.PERMISSION.Mod);
     });
 
     /** Export functions to API */
