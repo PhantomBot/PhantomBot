@@ -165,8 +165,12 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to, if sending a reply
      */
     private void redirectSlashCommandsAndSendPrivMessage(String channel, String message, String replyToId) {
-        if ((!message.startsWith("/") || !message.startsWith(".") || !TMISlashCommands.checkAndProcessCommands(channel, message))
-                && this.rateLimiter.takeToken()) {
+        boolean res = false;
+        if (message.startsWith("/") || message.startsWith(".")) {
+            res = TMISlashCommands.checkAndProcessCommands(channel, message);
+        }
+
+        if (!res && this.rateLimiter.takeToken()) {
             if (!channel.startsWith("#")) {
                 channel = "#" + channel;
             }

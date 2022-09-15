@@ -296,6 +296,19 @@ public class Helix {
     }
 
     /**
+     * Method that handles data for Helix.
+     *
+     * @param type
+     * @param url
+     * @param data
+     * @param oauth
+     * @return
+     */
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
+        return this.handleRequest(type, endPoint, data, null);
+    }
+
+    /**
      * Method that handles a request without any data being passed.
      *
      * @param type
@@ -304,18 +317,6 @@ public class Helix {
      */
     private JSONObject handleRequest(HttpMethod type, String endPoint) throws JSONException {
         return this.handleRequest(type, endPoint, "", null);
-    }
-
-    /**
-     * Method that handles a request without any data being passed.
-     *
-     * @param type
-     * @param endPoint
-     * @param oauth
-     * @return
-     */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String oauth) throws JSONException {
-        return this.handleRequest(type, endPoint, "", oauth);
     }
 
     private Mono<JSONObject> handleQueryAsync(String callid, Supplier<JSONObject> action) {
@@ -1708,7 +1709,7 @@ public class Helix {
             throw new IllegalArgumentException("Must provide at least one setting to update");
         }
 
-        String endpoint = "/chat/settings?" + this.qspValid("broadcaster_id", broadcaster_id);
+        String endpoint = "/chat/settings?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
@@ -1781,7 +1782,7 @@ public class Helix {
         String endpoint = "/whispers?" + this.qspValid("from_user_id", TwitchValidate.instance().getChatUserID()) + this.qspValid("&to_user_id", to_user_id);
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), CaselessProperties.instance().getProperty("oauth"));
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), CaselessProperties.instance().getProperty("oauth").replaceFirst("oauth:", ""));
         });
     }
 

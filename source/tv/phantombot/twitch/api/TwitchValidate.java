@@ -312,8 +312,8 @@ public class TwitchValidate {
             com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit but API (apioauth) does. OAuth tokens may be reversed");
         } else if (!this.hasChatScope("chat:edit")) {
             com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit. Bot may be unable to respond");
-        } else if (!this.hasChatScope("channel:moderate")) {
-            com.gmt2001.Console.warn.println("CHAT (oauth) does not have channel:moderate. Bot may be unable to purge/timeout/ban");
+        } else if (!this.hasAPIScope("moderator:manage:banned_users")) {
+            com.gmt2001.Console.warn.println("API (apioauth) does not have moderator:manage:banned_users. Bot may be unable to purge/timeout/ban");
         }
 
         if (this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName)) {
@@ -346,7 +346,7 @@ public class TwitchValidate {
             }
         }
 
-        return !this.hasChatScope("chat:edit") || !this.hasChatScope("channel:moderate") || !this.getChatLogin().equalsIgnoreCase(botName)
+        return !this.hasChatScope("chat:edit") || !this.hasAPIScope("moderator:manage:banned_users") || !this.getChatLogin().equalsIgnoreCase(botName)
                 || !this.getAPILogin().equalsIgnoreCase(channelName);
     }
 
