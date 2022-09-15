@@ -19,8 +19,8 @@
 $(function () {
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
-        keys: ['./discord/handlers/followHandler.js', './discord/handlers/subscribeHandler.js', './discord/handlers/hostHandler.js',
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        keys: ['./discord/handlers/followHandler.js', './discord/handlers/subscribeHandler.js',
             './discord/handlers/bitsHandler.js', './discord/handlers/clipHandler.js', './discord/systems/greetingsSystem.js', './discord/handlers/streamlabsHandler.js',
             './discord/handlers/raidHandler.js', './discord/handlers/tipeeeStreamHandler.js', './discord/handlers/streamElementsHandler.js',
             './discord/handlers/twitterHandler.js', './discord/handlers/streamHandler.js']
@@ -284,63 +284,6 @@ $(function () {
                 refreshChannels(function () {
                     if (discordChannels !== null) {
                         $('#channel-alert').select2({templateResult: discordChannelTemplate});
-                    }
-                });
-            }).modal('toggle');
-        });
-    });
-
-    // Host settings button.
-    $('#discordHostHandlerSettings').on('click', function () {
-        socket.getDBValues('alerts_get_host_settings', {
-            tables: ['discordSettings', 'discordSettings', 'discordSettings'],
-            keys: ['hostToggle', 'hostMessage', 'hostChannel']
-        }, true, function (e) {
-            helpers.getModal('host-alert', 'Host Alert Settings', 'Save', $('<form/>', {
-                'role': 'form'
-            })
-                    // Add the div for the col boxes.
-                    .append($('<div/>', {
-                        'class': 'panel-group',
-                        'id': 'accordion'
-                    })
-                            // Add the toggle for host alerts.
-                            .append(helpers.getDropdownGroup('host-toggle', 'Enable Host Alerts', (e.hostToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                                    'If a message should be said in the channel when someone follows.'))
-                            // Add the the text area for the host message.
-                            .append(helpers.getTextAreaGroup('host-message', 'text', 'Host Message', '', e.hostMessage,
-                                    'Message said when someone hosts the channel. Tag: (name) and (viewers)', false))
-                            // Add the the box for the reward.
-                            .append(getChannelSelector('host-channel', 'Alert Channel', '#alerts', e.hostChannel,
-                                    'Channel where all alerts should go to.', allowedChannelTypes))),
-                    function () { // Callback once the user clicks save.
-                        let hostToggle = $('#host-toggle').find(':selected').text() === 'Yes',
-                                hostMsg = $('#host-message'),
-                                hostChannel = $('#host-channel');
-
-                        // Make sure the user has someone in each box.
-                        switch (false) {
-                            case helpers.handleInputString(hostMsg):
-                                break;
-                            default:
-                                socket.updateDBValues('alerts_update_host_settings', {
-                                    tables: ['discordSettings', 'discordSettings', 'discordSettings'],
-                                    keys: ['hostToggle', 'hostMessage', 'hostChannel'],
-                                    values: [hostToggle, hostMsg.val(), hostChannel.val()]
-                                }, function () {
-                                    socket.wsEvent('discord', './discord/handlers/hostHandler.js', '', [], function () {
-                                        // Close the modal.
-                                        $('#host-alert').modal('toggle');
-                                        // Alert the user.
-                                        toastr.success('Successfully updated host alert settings!');
-                                    });
-                                });
-                        }
-
-                    }).on('shown.bs.modal', function (e) {
-                refreshChannels(function () {
-                    if (discordChannels !== null) {
-                        $('#host-channel').select2({templateResult: discordChannelTemplate});
                     }
                 });
             }).modal('toggle');

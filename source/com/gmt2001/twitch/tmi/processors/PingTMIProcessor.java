@@ -14,28 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.twitch.host;
+package com.gmt2001.twitch.tmi.processors;
 
-// https://help.twitch.tv/s/article/how-to-use-host-mode#faq
-@Deprecated
-public class TwitchHostedEvent extends TwitchHostEvent {
+import com.gmt2001.twitch.tmi.TMIMessage;
 
-    /**
-     * Class constructor.
-     *
-     * @param hoster
-     */
-    public TwitchHostedEvent(String hoster) {
-        super(hoster);
+/**
+ * Handles the IRC PING command
+ *
+ * @author gmt2001
+ */
+public class PingTMIProcessor extends AbstractTMIProcessor {
+
+    public PingTMIProcessor() {
+        super("PING");
     }
 
-    /**
-     * Class constructor.
-     *
-     * @param hoster
-     * @param users
-     */
-    public TwitchHostedEvent(String hoster, int users) {
-        super(hoster, users);
+    @Override
+    protected void onMessage(TMIMessage item) {
+        this.tmi().sendCommand("PONG", item.parameters());
     }
+
 }

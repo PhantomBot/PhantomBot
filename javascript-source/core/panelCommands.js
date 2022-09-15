@@ -354,17 +354,6 @@
         }
 
         /*
-         * Reloads the host variables.
-         */
-        if (command.equalsIgnoreCase('reloadhost')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            $.updateHost();
-            return;
-        }
-
-        /*
          * Reloads the subscriber variables.
          */
         if (command.equalsIgnoreCase('subscriberpanelupdate')) {
@@ -534,7 +523,6 @@
             $.registerChatCommand('./core/panelCommands.js', 'reloadbits', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'donationpanelupdate', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'followerpanelupdate', $.PERMISSION.Panel);
-            $.registerChatCommand('./core/panelCommands.js', 'reloadhost', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'subscriberpanelupdate', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'greetingspanelupdate', $.PERMISSION.Panel);
             $.registerChatCommand('./core/panelCommands.js', 'reloadnotice', $.PERMISSION.Panel);

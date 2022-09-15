@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.ratelimiters;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -47,9 +47,23 @@ public class WindowedRateLimiter {
     }
 
     /**
-     * @return true if there is a token available
+     * @return The maximum number of tokens available during the window
      */
-    public boolean isAvailable() {
+    public int limit() {
+        return this.limit;
+    }
+
+    /**
+     * @return The length of the window, in milliseconds
+     */
+    public long windowMS() {
+        return this.windowMS;
+    }
+
+    /**
+     * @return {@code true} if there is a token available
+     */
+    public boolean isTokenAvailable() {
         this.reset();
         return this.currentTokens > 0;
     }
@@ -83,7 +97,7 @@ public class WindowedRateLimiter {
     /**
      * Attempts to take a token, and starts a new window if the bucket was full
      *
-     * @return true on success; false if no tokens are available
+     * @return {@code true} on success; {@code false} if no tokens are available
      */
     public boolean takeToken() {
         this.reset();
@@ -113,6 +127,23 @@ public class WindowedRateLimiter {
             ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
             service.schedule(() -> {
                 this.waitAndTakeToken(command);
+            }, Instant.now().until(this.nextReset, ChronoUnit.MILLIS), TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * Runs the specified command when a token is available, but does not take the token. If a token is not available, waits until the next reset,
+     * then tries again
+     *
+     * @param command The command to run on success
+     */
+    public void waitAndRun(Runnable command) {
+        if (this.isTokenAvailable()) {
+            command.run();
+        } else {
+            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+            service.schedule(() -> {
+                this.waitAndRun(command);
             }, Instant.now().until(this.nextReset, ChronoUnit.MILLIS), TimeUnit.MILLISECONDS);
         }
     }

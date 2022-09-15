@@ -54,7 +54,7 @@ public final class debug {
         for (StackTraceElement st1 : st) {
             if (st1.getClassName().startsWith(myClassName)) {
                 foundme = st1;
-            } else if (foundme != null && !st1.getClassName().startsWith("reactor.")) {
+            } else if (foundme != null && !st1.getMethodName().startsWith("getStackTrace") && !st1.getClassName().startsWith("reactor.")) {
                 return st1;
             }
         }

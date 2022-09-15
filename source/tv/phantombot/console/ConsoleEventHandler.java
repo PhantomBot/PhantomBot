@@ -43,7 +43,6 @@ import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
-import tv.phantombot.event.twitch.host.TwitchHostedEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
 import tv.phantombot.event.twitch.online.TwitchOnlineEvent;
 import tv.phantombot.event.twitch.raid.TwitchRaidEvent;
@@ -519,25 +518,6 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand hosttest (userName) (numViewers) - Sends a fake host event.
-         */
-        if (message.equalsIgnoreCase("hosttest")) {
-            String randomUser = PhantomBot.generateRandomString(10);
-            int users = 5;
-            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
-                randomUser = argument[0];
-            }
-            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
-                users = Integer.parseInt(argument[1]);
-            }
-
-            com.gmt2001.Console.out.println("[CONSOLE] Executing hosttest (User: " + randomUser + ", viewers: " + users + ")");
-
-            EventBus.instance().postAsync(new TwitchHostedEvent(randomUser, users));
-            return;
-        }
-
-        /**
          * @consolecommand bitstest (user) (amount) (message) - Sends a fake bits event.
          */
         if (message.equalsIgnoreCase("bitstest")) {
@@ -573,10 +553,10 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand reconnect - Reconnects to TMI, Host TMI, and PubSub.
+         * @consolecommand reconnect - Reconnects to TMI and PubSub.
          */
         if (message.equalsIgnoreCase("reconnect")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI, Host TMI, and PubSub reconnect");
+            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI and PubSub reconnect");
 
             PhantomBot.instance().reconnect();
             return;

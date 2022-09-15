@@ -127,7 +127,7 @@ $(function () {
                 return (event.username + ' just followed!');
             case 'bits':
                 return (event.username + ' just cheered ' + event.amount + ' bits!');
-            case 'host':
+            case 'host': //@deprecated
                 return (event.username + ' just hosted with ' + event.viewers + ' viewers!');
             case 'tip':
                 return (event.username + ' just tipped ' + event.amount + ' ' + event.currency + '!');
@@ -165,7 +165,7 @@ $(function () {
                 return 'background-color: #c62828;';
             case 'bits':
                 return 'background-color: #6441a5;';
-            case 'host':
+            case 'host': //@deprecated
                 return 'background-color: #ed4c1c;';
             case 'tip':
                 return 'background-color: #846195;';

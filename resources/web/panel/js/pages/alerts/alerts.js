@@ -21,8 +21,8 @@
 $(function() {
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
-        keys: ['./handlers/followHandler.js', './handlers/subscribeHandler.js', './handlers/hostHandler.js', './handlers/bitsHandler.js', './handlers/clipHandler.js',
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        keys: ['./handlers/followHandler.js', './handlers/subscribeHandler.js', './handlers/bitsHandler.js', './handlers/clipHandler.js',
                './systems/greetingSystem.js', './systems/welcomeSystem.js', './handlers/donationHandler.js', './handlers/raidHandler.js', './handlers/tipeeeStreamHandler.js',
                './handlers/streamElementsHandler.js', './handlers/twitterHandler.js']
     }, true, function(e) {
@@ -404,82 +404,6 @@ $(function() {
                             });
                         });
                 }
-            }).modal('toggle');
-        });
-    });
-
-    // Host settings button.
-    $('#hostHandlerSettings').on('click', function() {
-        socket.getDBValues('alerts_get_host_settings', {
-            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
-            keys: ['hostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage', 'hostHistory', 'hostToggle']
-        }, true, function(e) {
-            helpers.getModal('host-alert', 'Host Alert Settings', 'Save', $('<form/>', {
-                'role': 'form'
-            })
-            // Add the div for the col boxes.
-            .append($('<div/>', {
-                'class': 'panel-group',
-                'id': 'accordion'
-            })
-            // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Host Settings', $('<form/>', {
-                    'role': 'form'
-                })
-                // Add toggle for normal hosts
-                .append(helpers.getDropdownGroup('host-toggle', 'Enable Host Alerts', (e.hostToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If a message should be said in the channel when someone hosts the channel.'))
-                // Append message box for the message
-                .append(helpers.getTextAreaGroup('host-msg', 'text', 'Host Message', '', e.hostMessage,
-                    'Message said when someone Hosts the channel. Tags: (name), (alert), (playsound), (reward), and (viewers)', false))
-                // Appen the reward box
-                .append(helpers.getInputGroup('host-reward', 'number', 'Host Reward', '', e.hostReward,
-                    'Reward given to the user when they hosts to the channel.'))))
-            // Append third collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-3', 'Extra Settings', $('<form/>', {
-                    'role': 'form'
-                })
-                // Add toggle for host history.
-                .append(helpers.getDropdownGroup('host-history', 'Enable Host History', (e.hostHistory === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                    'If all hosts should be logged for future viewing.'))
-                // Min host box reward.
-                .append(helpers.getInputGroup('host-minpoint', 'number', 'Minimum Viewers for Host Reward', '', e.hostMinViewerCount,
-                    'Minimum amount of viewers the users has to host with to get a reward.'))
-                // Min host box alert.
-                .append(helpers.getInputGroup('host-minalert', 'number', 'Minimum Viewers for Host Alert', '', e.hostMinCount,
-                    'Minimum amount of viewers the users has to host with to trigger the alert.'))))),
-            function() { // Callback once the user clicks save.
-                let hostToggle = $('#host-toggle').find(':selected').text() === 'Yes',
-                    hostMsg = $('#host-msg'),
-                    hostReward = $('#host-reward'),
-                    hostHistory = $('#host-history').find(':selected').text() === 'Yes',
-                    hostMinPoints = $('#host-minpoint'),
-                    hostMinAlert = $('#host-minalert');
-
-                // Make sure the user has someone in each box.
-                switch (false) {
-                    case helpers.handleInputString(hostMsg):
-                    case helpers.handleInputNumber(hostReward, 0):
-                    case helpers.handleInputNumber(hostMinPoints, 0):
-                    case helpers.handleInputNumber(hostMinAlert, 0):
-                        break;
-                    default:
-                        socket.updateDBValues('alerts_update_host_settings', {
-                            tables: ['settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
-                            keys: ['hostReward', 'hostMinViewerCount', 'hostMinCount', 'hostMessage',
-                                'hostHistory', 'hostToggle'],
-                            values: [hostReward.val(), hostMinPoints.val(), hostMinAlert.val(),
-                                hostMsg.val(), hostHistory, hostToggle]
-                        }, function() {
-                            socket.sendCommand('alerts_update_host_settings_cmd', 'reloadhost', function() {
-                                // Close the modal.
-                                $('#host-alert').modal('toggle');
-                                // Alert the user.
-                                toastr.success('Successfully updated host alert settings!');
-                            });
-                        });
-                }
-
             }).modal('toggle');
         });
     });

@@ -14,11 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.gmt2001.twitch.tmi.processors;
 
-$.lang.register('discord.hosthandler.usage', 'Usage: !hosthandler [toggle / hostmessage / channel]');
-$.lang.register('discord.hosthandler.host.toggle', 'Hosts announcements have been $1.');
-$.lang.register('discord.hosthandler.host.message.usage', 'Usage: !hosthandler hostmessage [message] - Tags: (name) (viewers)');
-$.lang.register('discord.hosthandler.host.message.set', 'Host message set to: $1');
-$.lang.register('discord.hosthandler.channel.usage', 'Usage: !hosthandler channel [channel name]');
-$.lang.register('discord.hosthandler.channel.set', 'Host announcements will now be made in channel $1');
-$.lang.register('discord.hosthandler.host.embedtitle', 'New Host!');
+import com.gmt2001.twitch.tmi.TMIMessage;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
+
+/**
+ * Handles the GLOBALUSERSTATE TMI Command
+ *
+ * @author gmt2001
+ */
+public class GlobalUserStateTMIProcessor extends AbstractTMIProcessor {
+
+    public GlobalUserStateTMIProcessor() {
+        super("GLOBALUSERSTATE");
+    }
+
+    @Override
+    protected void onMessage(TMIMessage item) {
+        EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv", item.parameters(), item.tags()));
+    }
+
+}

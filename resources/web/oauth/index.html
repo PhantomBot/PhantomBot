@@ -240,18 +240,6 @@
                     'use strict';
                     $(function () {
                         var scopesBot = {
-                            "channel_editor": {
-                                "desc": "Write channel metadata (game, status, etc).",
-                                "tooltip": "Used start/end raids and hosting."
-                            },
-                            "channel:manage:broadcast": {
-                                "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
-                                "tooltip": "Used by custom scripts to start raids."
-                            },
-                            "channel:moderate": {
-                                "desc": "Perform moderation actions in a channel.",
-                                "tooltip": "Used to perform moderation actions (purge, timeout, ban)."
-                            },
                             "chat:edit": {
                                 "desc": "Send live Stream Chat and Rooms messages.",
                                 "tooltip": "Used to send responses in chat."
@@ -260,8 +248,8 @@
                                 "desc": "View live Stream Chat and Rooms messages.",
                                 "tooltip": "Used to login to chat and read messages."
                             },
-                            "whispers:edit": {
-                                "desc": "Send whisper messages.",
+                            "user:manage:whispers": {
+                                "desc": "Read whispers that you send and receive, and send whispers on your behalf.",
                                 "tooltip": "Used to send whispers from the bot."
                             },
                             "whispers:read": {
@@ -283,21 +271,25 @@
                                 "desc": "Run commercials on a channel.",
                                 "tooltip": "Used to run commercials."
                             },
+                            "channel:manage:raids": {
+                                "desc": "Manage a channel raiding another channel.",
+                                "tooltip": "Used to start or cancel raids."
+                            },
                             "channel:moderate": {
                                 "desc": "Perform moderation actions in a channel.",
                                 "tooltip": "Used to watch for moderation actions in PubSub."
                             },
                             "channel:read:hype_train": {
-                                "desc": "Fetch information about current/past hype trains",
-                                "tooltip": "Used to watch for hype train notifications in EventSub"
+                                "desc": "Fetch information about current/past hype trains.",
+                                "tooltip": "Used to watch for hype train notifications in EventSub."
                             },
                             "channel:read:polls": {
-                                "desc": "Fetch information about current/past polls",
-                                "tooltip": "Used to watch for Twitch poll notifications in EventSub"
+                                "desc": "Fetch information about current/past polls.",
+                                "tooltip": "Used to watch for Twitch poll notifications in EventSub."
                             },
                             "channel:read:predictions": {
-                                "desc": "Fetch information about current/past predictions",
-                                "tooltip": "Used to watch for Twitch prediction notifications in EventSub"
+                                "desc": "Fetch information about current/past predictions.",
+                                "tooltip": "Used to watch for Twitch prediction notifications in EventSub."
                             },
                             "channel:read:redemptions": {
                                 "desc": "View your channel points custom reward redemptions.",
@@ -307,17 +299,25 @@
                                 "desc": "View a list of all subscribers to a channel and check if a user is subscribed to a channel.",
                                 "tooltip": "Used to watch for new subscribers that haven't shared with chat."
                             },
-                            "chat:read": {
-                                "desc": "View live Stream Chat and Rooms messages.",
-                                "tooltip": "Used by the second chat connection to watch for host notifications."
-                            },
                             "moderation:read": {
-                                "desc": "Read the list of channel moderators",
-                                "tooltip": "Used to watch for moderator add/remove events in EventSub"
+                                "desc": "Read the list of channel moderators.",
+                                "tooltip": "Used to watch for moderator add/remove events in EventSub."
                             },
                             "moderator:manage:announcements": {
-                                "desc": "Send announcements in channels where you have the moderator role",
-                                "tooltip": "Used to send announcements with color via the API"
+                                "desc": "Send announcements in channels where you have the moderator role.",
+                                "tooltip": "Used to send announcements."
+                            },
+                            "moderator:manage:banned_users": {
+                                "desc": "Ban and unban users.",
+                                "tooltip": "Used to ban, timeout, and unban users."
+                            },
+                            "moderator:manage:chat_messages": {
+                                "desc": "Delete chat messages in channels where you have the moderator role.",
+                                "tooltip": "Used to delete individual messages or clear the entire chat."
+                            },
+                            "moderator:manage:chat_settings": {
+                                "desc": "Manage a broadcaster's chat room settings.",
+                                "tooltip": "Used to enable/disable emote-only, follower-only, slow, subscriber-only, and unique (r9k) chat modes."
                             }
                         };
 

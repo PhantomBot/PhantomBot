@@ -149,18 +149,6 @@
     });
 
     /*
-     * @event twitchHosted
-     */
-    $.bind('twitchHosted', function (event) {
-        addObjectToArray('panelData', 'data', 'Host', {
-            'username': event.getHoster(),
-            'viewers': event.getUsers(),
-            'date': $.systemTime(),
-            'isAuto': false
-        });
-    });
-
-    /*
      * @event twitchSubscriber
      */
     $.bind('twitchSubscriber', function (event) {

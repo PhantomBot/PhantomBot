@@ -16,7 +16,7 @@
  */
 package tv.phantombot.discord.util;
 
-import com.gmt2001.ExponentialBackoff;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.PathValidator;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Guild;
