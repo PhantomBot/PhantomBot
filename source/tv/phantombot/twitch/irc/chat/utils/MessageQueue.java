@@ -27,12 +27,9 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
 
     protected final String channelName;
     protected boolean isAllowedToSend = false;
-    protected int writes = 0;
     protected Instant nextReminder = Instant.now();
     protected static final long REMINDER_INTERVAL = 300000L;
     protected Subscription subscription;
-    protected long lastWrite = System.currentTimeMillis();
-    protected long nextWrite = System.currentTimeMillis();
 
     /**
      * Class constructor.
@@ -66,15 +63,6 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     }
 
     /**
-     * Method that returns the amount of messages we've sent in 30 seconds.
-     *
-     * @return writes
-     */
-    public int getWrites() {
-        return this.writes;
-    }
-
-    /**
      * Attempts to enqueue a message, timing out after 5 seconds.
      *
      * @param message
@@ -98,8 +86,8 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     public void sayNow(String message) {
         message = message.replace('\r', ' ');
         String[] spl = message.split("\n");
-        for (int i = spl.length; i > 0; i--) {
-            this.submit(new Message(spl[i - 1], spl[i - 1].startsWith(".")));
+        for (String str : spl) {
+            this.submit(new Message(str));
         }
     }
 

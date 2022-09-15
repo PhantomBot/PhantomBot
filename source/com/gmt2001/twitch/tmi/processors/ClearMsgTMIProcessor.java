@@ -14,27 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitch.irc.chat.utils;
+package com.gmt2001.twitch.tmi.processors;
 
-public class Message {
+import com.gmt2001.twitch.tmi.TMIMessage;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.clearchat.IrcClearmessageEvent;
 
-    private final String message;
+/**
+ * Handles the CLEARMSG TMI Command
+ *
+ * @author gmt2001
+ */
+public class ClearMsgTMIProcessor extends AbstractTMIProcessor {
 
-    /**
-     * Class constructor.
-     *
-     * @param message
-     */
-    public Message(String message) {
-        this.message = message;
+    public ClearMsgTMIProcessor() {
+        super("CLEARMSG");
     }
 
-    /**
-     * Method that returns the message.
-     *
-     * @return message
-     */
-    public String getMessage() {
-        return this.message;
+    @Override
+    protected void onMessage(TMIMessage item) {
+        EventBus.instance().postAsync(new IrcClearmessageEvent(this.session(), item.tags().getOrDefault("login", ""), item.parameters(),
+                item.tags().getOrDefault("target-msg-id", "")));
     }
+
 }

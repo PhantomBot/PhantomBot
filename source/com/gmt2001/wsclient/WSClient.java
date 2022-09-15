@@ -150,7 +150,7 @@ public class WSClient {
     }
 
     /**
-     * Indicates if the socket is connected
+     * Indicates if the socket is connected.
      *
      * NOTE: Only indicates that the socket is ready to send/receive frames. Does not indicate authentication status or anything else
      *

@@ -14,18 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.twitch.host;
+package com.gmt2001.twitch.tmi.processors;
 
-import tv.phantombot.event.twitch.TwitchEvent;
+import com.gmt2001.twitch.tmi.TMIMessage;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 
-// https://help.twitch.tv/s/article/how-to-use-host-mode#faq
-@Deprecated
-public class TwitchHostsInitializedEvent extends TwitchEvent {
+/**
+ * Handles the WHISPER TMI Command
+ *
+ * @author gmt2001
+ */
+public class WhisperTMIProcessor extends AbstractTMIProcessor {
 
-    /**
-     * Class constructor.
-     */
-    public TwitchHostsInitializedEvent() {
-
+    public WhisperTMIProcessor() {
+        super("WHISPER");
     }
+
+    @Override
+    protected void onMessage(TMIMessage item) {
+        com.gmt2001.Console.out.println("[WHISPER] " + item.nick() + ": " + item.parameters());
+        EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), item.nick(), item.parameters(), item.tags()));
+    }
+
 }

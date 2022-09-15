@@ -14,27 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.twitch.irc.chat.utils;
+package com.gmt2001.twitch.tmi.processors;
 
-public class Message {
+import com.gmt2001.twitch.tmi.TMIMessage;
 
-    private final String message;
+/**
+ * Handles the TMI RECONNECT command
+ *
+ * @author gmt2001
+ */
+public class ReconnectTMIProcessor extends AbstractTMIProcessor {
 
-    /**
-     * Class constructor.
-     *
-     * @param message
-     */
-    public Message(String message) {
-        this.message = message;
+    public ReconnectTMIProcessor() {
+        super("RECONNECT");
     }
 
-    /**
-     * Method that returns the message.
-     *
-     * @return message
-     */
-    public String getMessage() {
-        return this.message;
+    @Override
+    protected void onMessage(TMIMessage item) {
+        this.session().reconnect();
     }
+
 }

@@ -14,28 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.twitch.raid;
+package tv.phantombot.event.irc.clearchat;
 
-import tv.phantombot.event.twitch.TwitchEvent;
+import tv.phantombot.event.irc.IrcEvent;
+import tv.phantombot.twitch.irc.TwitchSession;
 
-public class TwitchRaidEvent extends TwitchEvent {
+public class IrcClearmessageEvent extends IrcEvent {
 
     private final String username;
-    private final String viewers;
+    private final String message;
+    private final String msgId;
 
     /**
-     * Class constructor.
+     * Class constructor
      *
+     * @param session
      * @param username
-     * @param viewers
+     * @param message
+     * @param msgId
      */
-    public TwitchRaidEvent(String username, String viewers) {
+    public IrcClearmessageEvent(TwitchSession session, String username, String message, String msgId) {
+        super(session);
+
         this.username = username;
-        this.viewers = viewers;
+        this.message = message;
+        this.msgId = msgId;
     }
 
     /**
-     * Method that returns the username who raided.
+     * Method that returns the user who sent the deleted message
      *
      * @return username
      */
@@ -44,11 +51,20 @@ public class TwitchRaidEvent extends TwitchEvent {
     }
 
     /**
-     * Method that returns the amount of users who raided.
+     * Method that returns the message that was deleted
      *
-     * @return viewers
+     * @return message
      */
-    public String getViewers() {
-        return this.viewers;
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Method that returns the message id that was deleted
+     *
+     * @return msgId
+     */
+    public String getMsgId() {
+        return this.msgId;
     }
 }

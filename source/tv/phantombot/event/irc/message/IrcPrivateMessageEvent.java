@@ -33,7 +33,7 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent {
      * @param message
      */
     public IrcPrivateMessageEvent(TwitchSession session, String sender, String message) {
-        super(session, sender, message);
+        super(session, sender == null ? "tmi" : sender, message == null ? "" : message);
     }
 
     /**
@@ -45,6 +45,6 @@ public class IrcPrivateMessageEvent extends IrcMessageEvent {
      * @param tags
      */
     public IrcPrivateMessageEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
-        super(session, sender, message, tags);
+        super(session, sender == null ? "tmi" : sender, message == null ? "" : message, tags);
     }
 }

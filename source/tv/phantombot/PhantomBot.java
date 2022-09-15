@@ -16,15 +16,12 @@
  */
 package tv.phantombot;
 
-import com.gmt2001.ExponentialBackoff;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.PathValidator;
 import com.gmt2001.Reflect;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.TwitchAuthorizationCodeFlow;
-import com.gmt2001.TwitchClientCredentialsFlow;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
@@ -34,6 +31,10 @@ import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchClientCredentialsFlow;
+import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
 import com.illusionaryone.TwitterAPI;
@@ -84,10 +85,8 @@ import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
-import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
-import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.jvm.ShutdownEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
@@ -104,7 +103,6 @@ import tv.phantombot.script.ScriptManager;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
-import tv.phantombot.twitch.irc.host.TwitchWSHostIRC;
 import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.ytplayer.WsYTHandler;
 
@@ -149,7 +147,7 @@ public final class PhantomBot implements Listener {
     private TwitchSession session;
     private SecureRandom random;
     private boolean joined = false;
-    private TwitchWSHostIRC wsHostIRC;
+    private TwitchMessageInterface tmi;
     private TwitchPubSub pubSubEdge;
 
     // Error codes
@@ -426,13 +424,10 @@ public final class PhantomBot implements Listener {
             this.initAPIsWebConfigs();
             this.initScripts();
             /* Start a session instance and then connect to WS-IRC @ Twitch. */
-            this.session = new TwitchSession(this.getChannelName(), this.getBotName(), CaselessProperties.instance().getProperty("oauth")).connect();
+            this.session = new TwitchSession(this.getChannelName(), this.getBotName());
             this.session.doSubscribe();
 
-            /* Start a host checking instance. */
-            if (!CaselessProperties.instance().getProperty("apioauth", "").isBlank()) {
-                this.wsHostIRC = new TwitchWSHostIRC(this.getChannelName(), CaselessProperties.instance().getProperty("apioauth", ""));
-            }
+            this.tmi = new TwitchMessageInterface();
         }
     }
 
@@ -466,8 +461,8 @@ public final class PhantomBot implements Listener {
         if (this.session != null) {
             this.session.reconnect();
         }
-        if (this.wsHostIRC != null) {
-            this.wsHostIRC.reconnect();
+        if (this.tmi != null) {
+            this.tmi.reconnect();
         }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.reconnect();
@@ -476,12 +471,6 @@ public final class PhantomBot implements Listener {
 
     public void reloadProperties() {
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
-        if (this.session != null) {
-            this.session.setOAuth(CaselessProperties.instance().getProperty("oauth"));
-        }
-        if (this.wsHostIRC != null) {
-            this.wsHostIRC.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
-        }
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }
@@ -574,6 +563,13 @@ public final class PhantomBot implements Listener {
      */
     public TwitchSession getSession() {
         return this.session;
+    }
+
+    /**
+     * @return The {@link TwitchMessageInterface} for the IRC connection
+     */
+    public TwitchMessageInterface getTMI() {
+        return this.tmi;
     }
 
     /**
@@ -955,8 +951,8 @@ public final class PhantomBot implements Listener {
             this.getSession().close();
         }
 
-        if (this.wsHostIRC != null) {
-            this.wsHostIRC.shutdown();
+        if (this.tmi != null) {
+            this.tmi.shutdown();
         }
 
         if (this.pubSubEdge != null) {
@@ -1037,9 +1033,6 @@ public final class PhantomBot implements Listener {
      */
     @Handler
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
-        /* Check if the bot already joined once. */
-        this.session.getModerationStatus();
-
         if (this.joined) {
             com.gmt2001.Console.debug.println("ircJoinComplete::joined::" + this.getChannelName());
             return;
@@ -1084,53 +1077,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
-    }
-
-    /**
-     * Get private messages from Twitch.
-     *
-     * @param event
-     */
-    @Handler
-    public void ircPrivateMessage(IrcPrivateMessageEvent event) {
-        String sender = event.getSender();
-        String message = event.getMessage();
-
-        /* Check to see if the sender is jtv */
-        if (sender.equalsIgnoreCase("jtv")) {
-            /* Splice the mod list so we can get all the mods */
-            String searchStr = "The moderators of this channel are: ";
-            if (message.startsWith(searchStr)) {
-                String[] moderators = message.substring(searchStr.length()).split(", ");
-
-                /* Check to see if the bot is a moderator */
-                for (String moderator : moderators) {
-                    if (moderator.equalsIgnoreCase(this.getBotName())) {
-                        EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session, this.session.getBotName(), "O", true));
-                        /* Allow the bot to sends message to this session */
-                        event.getSession().setAllowSendMessages(true);
-                        com.gmt2001.Console.debug.println("Allowing messages to be sent due to .mods response +O");
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * user modes from twitch
-     *
-     * @param event
-     */
-    @Handler
-    public void ircUserMode(IrcChannelUserModeEvent event) {
-        /* Check to see if Twitch sent a mode event for the bot name */
-        if (event.getUser().equalsIgnoreCase(this.getBotName()) && event.getMode().equalsIgnoreCase("o")) {
-            if (!event.getAdd()) {
-                event.getSession().getModerationStatus();
-            }
-            /* Allow the bot to sends message to this session */
-            event.getSession().setAllowSendMessages(event.getAdd());
-        }
     }
 
     /**
@@ -1520,10 +1466,6 @@ public final class PhantomBot implements Listener {
 
     public void setPubSub(TwitchPubSub pubSub) {
         this.pubSubEdge = pubSub;
-    }
-
-    public void setHostIRC(TwitchWSHostIRC hostIrc) {
-        this.wsHostIRC = hostIrc;
     }
 
     public void setSession(TwitchSession session) {

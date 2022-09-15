@@ -189,11 +189,12 @@ public class Helix {
      * @param type
      * @param url
      * @param data
+     * @param oauth
      * @return
      */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, String oauth) throws JSONException {
         try {
-            return this.handleRequest(type, endPoint, data, false);
+            return this.handleRequest(type, endPoint, data, false, oauth);
         } catch (Throwable ex) {
             if (ex.getCause() != null && ex.getMessage().startsWith("{")) {
                 com.gmt2001.Console.err.printStackTrace(ex.getCause());
@@ -215,16 +216,17 @@ public class Helix {
      * @param url
      * @param data
      * @param isRetry
+     * @param oauth
      * @return
      */
-    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry) throws JSONException, Throwable {
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data, boolean isRetry, String oauth) throws JSONException, Throwable {
         JSONObject returnObject = new JSONObject();
         int responseCode = 0;
 
         this.checkRateLimit();
 
         try {
-            if (this.oAuthToken == null || this.oAuthToken.isBlank()) {
+            if ((this.oAuthToken == null || this.oAuthToken.isBlank()) && (oauth == null || oauth.isBlank())) {
                 throw new IllegalArgumentException("apioauth is required");
             }
 
@@ -233,9 +235,8 @@ public class Helix {
             }
 
             HttpHeaders headers = HttpClient.createHeaders(type, true);
-            headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", (TwitchValidate.instance().getAPIClientID().isBlank()
-                    ? "7wpchwtqz7pvivc3qbdn1kajz42tdmb" : TwitchValidate.instance().getAPIClientID())));
-            headers.add("Authorization", "Bearer " + this.oAuthToken);
+            headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", TwitchValidate.instance().getAPIClientID()));
+            headers.add("Authorization", "Bearer " + (oauth != null && !oauth.isBlank() ? oauth : this.oAuthToken));
             HttpClientResponse response = HttpClient.request(type, URI.create(BASE_URL + endPoint), headers, data);
 
             responseCode = response.responseCode().code();
@@ -288,10 +289,23 @@ public class Helix {
 
         if (!isRetry && (responseCode == 401 || (returnObject.has("status") && returnObject.getInt("status") == 401)) && PhantomBot.instance() != null) {
             PhantomBot.instance().getAuthFlow().refresh(false, true);
-            return this.handleRequest(type, endPoint, data, true);
+            return this.handleRequest(type, endPoint, data, true, oauth);
         }
 
         return returnObject;
+    }
+
+    /**
+     * Method that handles data for Helix.
+     *
+     * @param type
+     * @param url
+     * @param data
+     * @param oauth
+     * @return
+     */
+    private JSONObject handleRequest(HttpMethod type, String endPoint, String data) throws JSONException {
+        return this.handleRequest(type, endPoint, data, null);
     }
 
     /**
@@ -302,7 +316,7 @@ public class Helix {
      * @return
      */
     private JSONObject handleRequest(HttpMethod type, String endPoint) throws JSONException {
-        return this.handleRequest(type, endPoint, "");
+        return this.handleRequest(type, endPoint, "", null);
     }
 
     private Mono<JSONObject> handleQueryAsync(String callid, Supplier<JSONObject> action) {
@@ -1220,12 +1234,12 @@ public class Helix {
     }
 
     /**
-     * Sends an announcement to the broadcaster’s chat room.
+     * Sends an announcement to the broadcaster's chat room.
      *
      * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
-     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * @param message The announcement to make in the broadcaster's chat room. Announcements are limited to a maximum of 500 characters; announcements
      * longer than 500 characters are truncated.
-     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
      * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
      * @return
      * @throws JSONException
@@ -1237,12 +1251,12 @@ public class Helix {
     }
 
     /**
-     * Sends an announcement to the broadcaster’s chat room.
+     * Sends an announcement to the broadcaster's chat room.
      *
      * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
-     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * @param message The announcement to make in the broadcaster's chat room. Announcements are limited to a maximum of 500 characters; announcements
      * longer than 500 characters are truncated.
-     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
      * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
      * @return
      * @throws JSONException
@@ -1261,12 +1275,12 @@ public class Helix {
     }
 
     /**
-     * Sends an announcement to the broadcaster’s chat room.
+     * Sends an announcement to the broadcaster's chat room.
      *
      * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
-     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * @param message The announcement to make in the broadcaster's chat room. Announcements are limited to a maximum of 500 characters; announcements
      * longer than 500 characters are truncated.
-     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
      * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
      * @return
      * @throws JSONException
@@ -1278,12 +1292,12 @@ public class Helix {
     }
 
     /**
-     * Sends an announcement to the broadcaster’s chat room.
+     * Sends an announcement to the broadcaster's chat room.
      *
      * @param broadcaster_id The ID of the broadcaster that owns the chat room to send the announcement to.
-     * @param message The announcement to make in the broadcaster’s chat room. Announcements are limited to a maximum of 500 characters; announcements
+     * @param message The announcement to make in the broadcaster's chat room. Announcements are limited to a maximum of 500 characters; announcements
      * longer than 500 characters are truncated.
-     * @param color The color used to highlight the announcement. If color is set to primary, the channel’s accent color is used to highlight the
+     * @param color The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
      * announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).
      * @return
      * @throws JSONException
@@ -1311,6 +1325,464 @@ public class Helix {
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Bans a user from participating in a broadcaster's chat room, or puts them in a timeout.
+     *
+     * If the user is currently in a timeout, you can call this endpoint to change the duration of the timeout or ban them altogether. If the user is
+     * currently banned, you cannot call this method to put them in a timeout instead.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose chat room the user is being banned from.
+     * @param user_id The ID of the user to ban or put in a timeout.
+     * @param reason The reason the user is being banned or put in a timeout. The text is user defined and limited to a maximum of 500 characters.
+     * @param duration To ban a user indefinitely, specify this value as {@code 0}. To put a user in a timeout, specify the timeout period, in
+     * seconds. The minimum timeout is 1 second and the maximum is 1,209,600 seconds (2 weeks).
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject banUser(String broadcaster_id, String user_id, @Nullable String reason, int duration)
+            throws JSONException, IllegalArgumentException {
+        return this.banUserAsync(broadcaster_id, user_id, reason, duration).block();
+    }
+
+    /**
+     * Bans a user from participating in a broadcaster's chat room, or puts them in a timeout.
+     *
+     * If the user is currently in a timeout, you can call this endpoint to change the duration of the timeout or ban them altogether. If the user is
+     * currently banned, you cannot call this method to put them in a timeout instead.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose chat room the user is being banned from.
+     * @param user_id The ID of the user to ban or put in a timeout.
+     * @param reason The reason the user is being banned or put in a timeout. The text is user defined and limited to a maximum of 500 characters.
+     * @param duration To ban a user indefinitely, specify this value as {@code 0}. To put a user in a timeout, specify the timeout period, in
+     * seconds. The minimum timeout is 1 second and the maximum is 1,209,600 seconds (2 weeks).
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> banUserAsync(String broadcaster_id, String user_id, @Nullable String reason, int duration)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        if (reason == null) {
+            reason = "No reason given (PhantomBot)";
+        }
+
+        if (reason.length() > 500) {
+            reason = reason.substring(0, 497) + "...";
+        }
+
+        duration = Math.max(0, Math.min(1209600, duration));
+
+        JSONStringer js = new JSONStringer();
+
+        js.object().key("data").object();
+
+        if (duration > 0) {
+            js.key("duration").value(duration);
+        }
+
+        js.key("reason").value(reason).key("user_id").value(user_id).endObject().endObject();
+
+        String endpoint = "/moderation/bans?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Removes the ban or timeout that was placed on the specified user.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose chat room the user is banned from chatting in.
+     * @param user_id The ID of the user to remove the ban or timeout from.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject unbanUser(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.unbanUserAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Removes the ban or timeout that was placed on the specified user.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose chat room the user is banned from chatting in.
+     * @param user_id The ID of the user to remove the ban or timeout from.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> unbanUserAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/moderation/bans?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint);
+        });
+    }
+
+    /**
+     * Removes a single chat message or all chat messages from the broadcaster's chat room.
+     *
+     * Restrictions when specifying a {@code message_id}: The message must have been created within the last 6 hours. The message must not belong to
+     * the broadcaster.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room to remove messages from.
+     * @param message_id The ID of the message to remove. The id tag in the PRIVMSG contains the message's ID. If {@code null}, the request removes
+     * all messages in the broadcaster's chat room.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject deleteChatMessages(String broadcaster_id, @Nullable String message_id)
+            throws JSONException, IllegalArgumentException {
+        return this.deleteChatMessagesAsync(broadcaster_id, message_id).block();
+    }
+
+    /**
+     * Removes a single chat message or all chat messages from the broadcaster's chat room.
+     *
+     * Restrictions when specifying a {@code message_id}: The message must have been created within the last 6 hours. The message must not belong to
+     * the broadcaster.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room to remove messages from.
+     * @param message_id The ID of the message to remove. The id tag in the PRIVMSG contains the message's ID. If {@code null}, the request removes
+     * all messages in the broadcaster's chat room.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> deleteChatMessagesAsync(String broadcaster_id, @Nullable String message_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        String endpoint = "/moderation/chat?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&message_id", message_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint);
+        });
+    }
+
+    /**
+     * Raid another channel by sending the broadcaster's viewers to the targeted channel.
+     *
+     * Requires the API OAuth to belong to {@code from_broadcaster_id}.
+     *
+     * Rate Limit: The limit is 10 requests within a 10-minute window.
+     *
+     * @param from_broadcaster_id The ID of the broadcaster that's sending the raiding party.
+     * @param to_broadcaster_id The ID of the broadcaster to raid.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject startRaid(String from_broadcaster_id, String to_broadcaster_id)
+            throws JSONException, IllegalArgumentException {
+        return this.startRaidAsync(from_broadcaster_id, to_broadcaster_id).block();
+    }
+
+    /**
+     * Raid another channel by sending the broadcaster's viewers to the targeted channel.
+     *
+     * Requires the API OAuth to belong to {@code from_broadcaster_id}.
+     *
+     * Rate Limit: The limit is 10 requests within a 10-minute window.
+     *
+     * @param from_broadcaster_id The ID of the broadcaster that's sending the raiding party.
+     * @param to_broadcaster_id The ID of the broadcaster to raid.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> startRaidAsync(String from_broadcaster_id, String to_broadcaster_id)
+            throws JSONException, IllegalArgumentException {
+        if (from_broadcaster_id == null || from_broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("from_broadcaster_id");
+        }
+
+        if (to_broadcaster_id == null || to_broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("to_broadcaster_id");
+        }
+
+        String endpoint = "/raids?" + this.qspValid("from_broadcaster_id", from_broadcaster_id) + this.qspValid("&to_broadcaster_id", to_broadcaster_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint);
+        });
+    }
+
+    /**
+     * Cancel a pending raid.
+     *
+     * Requires the API OAuth to belong to {@code broadcaster_id}.
+     *
+     * Rate Limit: The limit is 10 requests within a 10-minute window.
+     *
+     * @param broadcaster_id The ID of the broadcaster that sent the raiding party.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject cancelRaid(String broadcaster_id)
+            throws JSONException, IllegalArgumentException {
+        return this.cancelRaidAsync(broadcaster_id).block();
+    }
+
+    /**
+     * Cancel a pending raid.
+     *
+     * Requires the API OAuth to belong to {@code broadcaster_id}.
+     *
+     * Rate Limit: The limit is 10 requests within a 10-minute window.
+     *
+     * @param broadcaster_id The ID of the broadcaster that sent the raiding party.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> cancelRaidAsync(String broadcaster_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        String endpoint = "/raids?" + this.qspValid("broadcaster_id", broadcaster_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint);
+        });
+    }
+
+    /**
+     * Updates the broadcaster's chat settings.
+     *
+     * Only supply a value for settings that are to be updated. All values that are to be unchanged must be set to {@code null}.
+     *
+     * Requires the API OAuth to belong to {@code broadcaster_id}.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose chat settings you want to update.
+     * @param emote_mode A Boolean value that determines whether chat messages must contain only emotes.
+     * @param follower_mode A Boolean value that determines whether the broadcaster restricts the chat room to followers only, based on how long
+     * they've followed.
+     * @param follower_mode_duration The length of time, in minutes, that the followers must have followed the broadcaster to participate in the chat
+     * room. You may specify a value in the range: 0 (no restriction) through 129600 (3 months).
+     * @param non_moderator_chat_delay A Boolean value that determines whether the broadcaster adds a short delay before chat messages appear in the
+     * chat room. This gives chat moderators and bots a chance to remove them before viewers can see the message.
+     * @param non_moderator_chat_delay_duration The amount of time, in seconds, that messages are delayed from appearing in chat. Must be one of: 2,
+     * 4, 6.
+     * @param slow_mode A Boolean value that determines whether the broadcaster limits how often users in the chat room are allowed to send messages.
+     * @param slow_mode_wait_time The amount of time, in seconds, that users need to wait between sending messages. You may specify a value in the
+     * range: 3 (3 second delay) through 120 (2 minute delay).
+     * @param subscriber_mode A Boolean value that determines whether only users that subscribe to the broadcaster's channel can talk in the chat
+     * room.
+     * @param unique_chat_mode A Boolean value that determines whether the broadcaster requires users to post only unique messages in the chat room.
+     * Formerly known as r9k beta.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject updateChatSettings(String broadcaster_id, @Nullable Boolean emote_mode, @Nullable Boolean follower_mode,
+            @Nullable Integer follower_mode_duration, @Nullable Boolean non_moderator_chat_delay, @Nullable Integer non_moderator_chat_delay_duration,
+            @Nullable Boolean slow_mode, @Nullable Integer slow_mode_wait_time, @Nullable Boolean subscriber_mode, @Nullable Boolean unique_chat_mode)
+            throws JSONException, IllegalArgumentException {
+        return this.updateChatSettingsAsync(broadcaster_id, emote_mode, follower_mode, follower_mode_duration, non_moderator_chat_delay,
+                non_moderator_chat_delay_duration, slow_mode, slow_mode_wait_time, subscriber_mode, unique_chat_mode).block();
+    }
+
+    /**
+     * Updates the broadcaster's chat settings.
+     *
+     * Only supply a value for settings that are to be updated. All values that are to be unchanged must be set to {@code null}.
+     *
+     * Requires the API OAuth to belong to {@code broadcaster_id}.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose chat settings you want to update.
+     * @param emote_mode A Boolean value that determines whether chat messages must contain only emotes.
+     * @param follower_mode A Boolean value that determines whether the broadcaster restricts the chat room to followers only, based on how long
+     * they've followed.
+     * @param follower_mode_duration The length of time, in minutes, that the followers must have followed the broadcaster to participate in the chat
+     * room. You may specify a value in the range: 0 (no restriction) through 129600 (3 months).
+     * @param non_moderator_chat_delay A Boolean value that determines whether the broadcaster adds a short delay before chat messages appear in the
+     * chat room. This gives chat moderators and bots a chance to remove them before viewers can see the message.
+     * @param non_moderator_chat_delay_duration The amount of time, in seconds, that messages are delayed from appearing in chat. Must be one of: 2,
+     * 4, 6.
+     * @param slow_mode A Boolean value that determines whether the broadcaster limits how often users in the chat room are allowed to send messages.
+     * @param slow_mode_wait_time The amount of time, in seconds, that users need to wait between sending messages. You may specify a value in the
+     * range: 3 (3 second delay) through 120 (2 minute delay).
+     * @param subscriber_mode A Boolean value that determines whether only users that subscribe to the broadcaster's channel can talk in the chat
+     * room.
+     * @param unique_chat_mode A Boolean value that determines whether the broadcaster requires users to post only unique messages in the chat room.
+     * Formerly known as r9k beta.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> updateChatSettingsAsync(String broadcaster_id, @Nullable Boolean emote_mode, @Nullable Boolean follower_mode,
+            @Nullable Integer follower_mode_duration, @Nullable Boolean non_moderator_chat_delay, @Nullable Integer non_moderator_chat_delay_duration,
+            @Nullable Boolean slow_mode, @Nullable Integer slow_mode_wait_time, @Nullable Boolean subscriber_mode, @Nullable Boolean unique_chat_mode)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        boolean hasValues = false;
+
+        JSONStringer js = new JSONStringer();
+
+        js.object();
+
+        if (emote_mode != null) {
+            hasValues = true;
+            js.key("emote_mode").value(emote_mode);
+        }
+
+        if (follower_mode != null) {
+            hasValues = true;
+            js.key("follower_mode").value(follower_mode);
+        }
+
+        if (follower_mode_duration != null) {
+            hasValues = true;
+            follower_mode_duration = Math.max(0, Math.min(129600, follower_mode_duration));
+            js.key("follower_mode_duration").value(follower_mode_duration);
+        }
+
+        if (non_moderator_chat_delay != null) {
+            hasValues = true;
+            js.key("non_moderator_chat_delay").value(non_moderator_chat_delay);
+        }
+
+        if (non_moderator_chat_delay_duration != null) {
+            if (non_moderator_chat_delay_duration != 2 && non_moderator_chat_delay_duration != 4 && non_moderator_chat_delay_duration != 6) {
+                throw new IllegalArgumentException("non_moderator_chat_delay_duration");
+            }
+
+            hasValues = true;
+            js.key("non_moderator_chat_delay_duration").value(non_moderator_chat_delay_duration);
+        }
+
+        if (slow_mode != null) {
+            hasValues = true;
+            js.key("slow_mode").value(slow_mode);
+        }
+
+        if (slow_mode_wait_time != null) {
+            hasValues = true;
+            slow_mode_wait_time = Math.max(3, Math.min(120, slow_mode_wait_time));
+            js.key("slow_mode_wait_time").value(slow_mode_wait_time);
+        }
+
+        if (subscriber_mode != null) {
+            hasValues = true;
+            js.key("subscriber_mode").value(subscriber_mode);
+        }
+
+        if (unique_chat_mode != null) {
+            hasValues = true;
+            js.key("unique_chat_mode").value(unique_chat_mode);
+        }
+
+        js.endObject();
+
+        if (!hasValues) {
+            throw new IllegalArgumentException("Must provide at least one setting to update");
+        }
+
+        String endpoint = "/chat/settings?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Sends a whisper message to the specified user.
+     *
+     * NOTE: uses the Bot (Chat) username and OAuth to send the whisper.
+     *
+     * NOTE: The user sending the whisper must have a verified phone number.
+     *
+     * NOTE: The API may silently drop whispers that it suspects of violating Twitch policies. (The API does not indicate that it dropped the whisper;
+     * it returns a 204 status code as if it succeeded).
+     *
+     * Rate Limits: You may whisper to a maximum of 40 unique recipients per day. Within the per day limit, you may whisper a maximum of 3 whispers
+     * per second and a maximum of 100 whispers per minute.
+     *
+     * The maximum message lengths are: 500 characters if the user you're sending the message to hasn't whispered you before. 10,000 characters if the
+     * user you're sending the message to has whispered you before. Messages that exceed the maximum length are truncated.
+     *
+     * @param to_user_id The ID of the user to receive the whisper.
+     * @param message The whisper message to send. The message must not be empty.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendWhisper(String to_user_id, String message)
+            throws JSONException, IllegalArgumentException {
+        return this.sendWhisperAsync(to_user_id, message).block();
+    }
+
+    /**
+     * Sends a whisper message to the specified user.
+     *
+     * NOTE: uses the Bot (Chat) username and OAuth to send the whisper.
+     *
+     * NOTE: The user sending the whisper must have a verified phone number.
+     *
+     * NOTE: The API may silently drop whispers that it suspects of violating Twitch policies. (The API does not indicate that it dropped the whisper;
+     * it returns a 204 status code as if it succeeded).
+     *
+     * Rate Limits: You may whisper to a maximum of 40 unique recipients per day. Within the per day limit, you may whisper a maximum of 3 whispers
+     * per second and a maximum of 100 whispers per minute.
+     *
+     * The maximum message lengths are: 500 characters if the user you're sending the message to hasn't whispered you before. 10,000 characters if the
+     * user you're sending the message to has whispered you before. Messages that exceed the maximum length are truncated.
+     *
+     * @param to_user_id The ID of the user to receive the whisper.
+     * @param message The whisper message to send. The message must not be empty.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendWhisperAsync(String to_user_id, String message)
+            throws JSONException, IllegalArgumentException {
+        if (to_user_id == null || to_user_id.isBlank()) {
+            throw new IllegalArgumentException("to_user_id");
+        }
+
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("message");
+        }
+
+        JSONStringer js = new JSONStringer();
+
+        js.object().key("message").value(message).endObject();
+
+        String endpoint = "/whispers?" + this.qspValid("from_user_id", TwitchValidate.instance().getChatUserID()) + this.qspValid("&to_user_id", to_user_id);
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), CaselessProperties.instance().getProperty("oauth").replaceFirst("oauth:", ""));
         });
     }
 
