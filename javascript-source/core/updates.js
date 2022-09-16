@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * updater.js
  *
@@ -604,12 +606,24 @@
     }
 
 
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0')) {
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0') || !$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0-2')) {
         $.consoleLn('Starting PhantomBot update 3.6.5.0 updates...');
 
-        $.inidb.RemoveKey('settings', '', 'gamesList-lastCheck');
+        if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0')) {
+            $.inidb.RemoveKey('settings', '', 'gamesList-lastCheck');
+        }
+
+        if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0-2')) {
+            Packages.com.gmt2001.Console.warn.println('');
+            Packages.com.gmt2001.Console.warn.println('');
+            Packages.com.gmt2001.Console.warn.println('New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot');
+            Packages.com.gmt2001.Console.warn.println('Please visit the OAuth page on the panel and re-auth the Broadcaster');
+            Packages.com.gmt2001.Console.warn.println('');
+            Packages.com.gmt2001.Console.warn.println('');
+        }
 
         $.consoleLn('PhantomBot update 3.6.5.0 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0', true);
+        $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0-2', true);
     }
 })();
