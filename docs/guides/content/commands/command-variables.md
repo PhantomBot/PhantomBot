@@ -1,6 +1,6 @@
-## Custom Commands Tag Guideline:
+## Custom Command Tags
 
-**These command variables can be used in any  custom command.**
+**These command variables can be used in any custom command.**
 
 &nbsp;
 
