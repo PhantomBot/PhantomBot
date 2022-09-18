@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord;
 
+import com.gmt2001.dns.CompositeAddressResolverGroup;
 import discord4j.common.ReactorResources;
 import discord4j.common.sinks.EmissionStrategy;
 import discord4j.common.util.Snowflake;
@@ -532,7 +533,8 @@ public class DiscordAPI extends DiscordUtil {
                     CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)
                     ? GatewayReactorResources.builder().httpClient(GatewayReactorResources.DEFAULT_HTTP_CLIENT.get()
                             .resolver(DefaultAddressResolverGroup.INSTANCE)).build()
-                    : parent.getReactorResources(),
+                    : GatewayReactorResources.builder().httpClient(GatewayReactorResources.DEFAULT_HTTP_CLIENT.get()
+                            .resolver(CompositeAddressResolverGroup.INSTANCE)).build(),
                     parent.getPayloadReader(),
                     parent.getPayloadWriter(), parent.getReconnectOptions(), parent.getIdentifyOptions(),
                     parent.getInitialObserver(), parent.getIdentifyLimiter(), parent.getMaxMissedHeartbeatAck(),

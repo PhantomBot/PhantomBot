@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpclient;
 
+import com.gmt2001.dns.CompositeAddressResolverGroup;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -70,6 +71,8 @@ public final class HttpClient {
 
         if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
             client = client.resolver(DefaultAddressResolverGroup.INSTANCE);
+        } else {
+            client = client.resolver(CompositeAddressResolverGroup.INSTANCE);
         }
 
         client = client.headers(h -> {
