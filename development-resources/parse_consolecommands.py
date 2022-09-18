@@ -71,7 +71,7 @@ for subdir, dirs, files in os.walk("./source"):
 
 lines = []
 
-lines.append("## Console Commands:" + '\n')
+lines.append("## Console Commands" + '\n')
 lines.append('\n')
 lines.append("**These console commands are available directly in the bot console when not running as a service.**" + '\n')
 lines.append('\n')

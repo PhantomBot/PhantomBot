@@ -195,6 +195,9 @@ public class TwitterAPI {
             return false;
         }
 
+        /**
+         * @botproperty twitterallowmentions - If `true`, outbound tweets are allowed to @mention and #hashtag. Default `false`
+         */
         if (!CaselessProperties.instance().getPropertyAsBoolean("twitterallowmentions", false)) {
             statusString = statusString.replaceAll("@", "").replaceAll("#", "");
         }
@@ -364,6 +367,12 @@ public class TwitterAPI {
             if (following != null && !following.getData().isEmpty()) {
                 List<TweetData> alltweets = new ArrayList<>();
 
+                /**
+                 * @botproperty twittertimelinelimit - The maximum number of tweets to retrieve with a latest tweets request. Default `15`
+                 */
+                /**
+                 * @botproperty twittertimelineextendedlimit - The maximum number of tweets to retrieve with a sinceId. Default `30`
+                 */
                 AdditionalParametersBuilder apb = AdditionalParameters.builder()
                         .maxResults(sinceId != null && sinceId.isBlank()
                                 ? CaselessProperties.instance().getPropertyAsInt("twittertimelinelimit", 15)
@@ -482,6 +491,9 @@ public class TwitterAPI {
             if (following != null && !following.getData().isEmpty()) {
                 List<TweetData> alltweets = new ArrayList<>();
 
+                /**
+                 * @botproperty twitterusertimelinelimit - The maximum number of tweets to retrieve per follower, when grabbing retweets. Default `15`
+                 */
                 AdditionalParametersBuilder ap = AdditionalParameters.builder()
                         .maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15))
                         .startTime(LocalDateTime.now().minusDays(1));

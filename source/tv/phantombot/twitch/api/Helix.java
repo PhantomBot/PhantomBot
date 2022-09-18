@@ -198,6 +198,9 @@ public class Helix {
         } catch (Throwable ex) {
             if (ex.getCause() != null && ex.getMessage().startsWith("{")) {
                 com.gmt2001.Console.err.printStackTrace(ex.getCause());
+                /**
+                 * @botproperty helixdebug - If `true`, debugging info for Twitch Helix API requests are sent to the debug log. Default `false`
+                 */
                 if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
                     com.gmt2001.Console.debug.println(ex.getMessage());
                 }

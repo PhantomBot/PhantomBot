@@ -85,6 +85,9 @@ public final class RestartRunner implements Listener {
      * @return
      */
     public boolean canRestart() {
+        /**
+         * @botproperty restartcmd - A command that can be used to restart the bot, if it is running as a service
+         */
         return CaselessProperties.instance().containsKey("restartcmd")
                 && !CaselessProperties.instance().getProperty("restartcmd").isBlank();
     }

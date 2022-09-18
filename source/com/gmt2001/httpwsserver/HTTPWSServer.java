@@ -201,6 +201,9 @@ public final class HTTPWSServer {
     }
 
     public boolean isSsl() {
+        /**
+         * @botproperty proxybypasshttps - If `true`, the HTTP server reports SSL is enabled, even if `usessl` is `false`. Default `true`
+         */
         return this.sslEnabled || CaselessProperties.instance().getPropertyAsBoolean("proxybypasshttps", false);
     }
 

@@ -2,6 +2,7 @@
     "subfolders": {
     },
     "pages": {
+        "properties": "Properties for botlogin.txt",
         "windows": "Windows",
         "centos": "CentOS",
         "ubuntu": "Ubuntu",

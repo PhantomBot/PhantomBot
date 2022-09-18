@@ -33,7 +33,6 @@ public class ConfigurationManager {
     public static final String PROP_BASEPORT = "baseport";
     public static final String PROP_USEHTTPS = "usehttps";
     public static final String PROP_WEBENABLE = "webenable";
-    public static final String PROP_MSGLIMIT30 = "msglimit30";
     public static final String PROP_MUSICENABLE = "musicenable";
     public static final String PROP_OAUTH = "oauth";
     public static final String PROP_CHANNEL = "channel";
@@ -159,7 +158,6 @@ public class ConfigurationManager {
         changed |= setDefaultIfMissing(startProperties, PROP_BASEPORT, "25000", "Set default baseport");
         changed |= setDefaultIfMissing(startProperties, PROP_USEHTTPS, "true", "Set default usehttps");
         changed |= setDefaultIfMissing(startProperties, PROP_WEBENABLE, "true", "Set default webenable");
-        changed |= setDefaultIfMissing(startProperties, PROP_MSGLIMIT30, "19.0", "Set default msglimit30");
         changed |= setDefaultIfMissing(startProperties, PROP_MUSICENABLE, "true", "Set default musicenable");
 
         changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "true", "Enabled Rollbar");

@@ -86,6 +86,9 @@ public abstract class EventSubSubscriptionType implements Listener {
      * @return
      */
     protected EventSubTransport proposeTransport() {
+        /**
+         * @botproperty eventsubcallbackurl - The URL which will receive EventSub notifications
+         */
         return new EventSubTransport("webhook", CaselessProperties.instance().getProperty("eventsubcallbackurl"), EventSub.getSecret());
     }
 
