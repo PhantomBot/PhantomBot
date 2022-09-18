@@ -16,6 +16,7 @@
  */
 package com.gmt2001.wsclient;
 
+import com.gmt2001.dns.CompositeAddressResolverGroup;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -135,6 +136,8 @@ public class WSClient {
 
             if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
                 b.resolver(DefaultAddressResolverGroup.INSTANCE);
+            } else {
+                b.resolver(CompositeAddressResolverGroup.INSTANCE);
             }
 
             b.channel(NioSocketChannel.class)
