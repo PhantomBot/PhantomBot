@@ -32,6 +32,9 @@ ignoreproperties = [
     "appsecret",
     "apptoken",
     "apptokenexpires",
+    "backupsqliteauto",
+    "backupsqlitehourfrequency",
+    "backupsqlitekeepdays",
     "newsetup",
     "oauth",
     "oauthexpires",
@@ -59,13 +62,26 @@ def parse_file(lines):
             state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
+            if line.startswith("@botpropertytype"):
+                line = line[17:].strip()
+                prop_pos = line.find(" ")
+                if prop_pos == -1:
+                    prop_pos = len(line)
+                prop = line[0:prop_pos].strip().lower()
+                type = line[prop_pos + 1:].strip()
+                if not prop in ignoreproperties:
+                    idx = findprop(prop)
+                    if idx == -1:
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type})
+                    else:
+                        botproperties[idx]["type"] = type
             if line.startswith("@botproperty"):
                 line = line[13:].strip()
                 prop_pos = line.find(" ")
                 if prop_pos == -1:
                     prop_pos = len(line)
-                prop = line[0:prop_pos].strip()
-                if not prop.lower() in ignoreproperties:
+                prop = line[0:prop_pos].strip().lower()
+                if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
                         botproperties.append({"botproperty": prop, "definition": line, "type": "String"})
@@ -84,8 +100,8 @@ def parse_file(lines):
                 type = line[2:idx4]
             prop_pos = line.find("\"", idx4 + 2)
             if prop_pos != -1:
-                prop = line[idx4 + 2:prop_pos].strip()
-                if not prop.lower() in ignoreproperties:
+                prop = line[idx4 + 2:prop_pos].strip().lower()
+                if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
                         botproperties.append({"botproperty": prop, "definition": "No definition", "type": type})
@@ -94,7 +110,7 @@ def parse_file(lines):
 
 def findprop(prop):
     for i in range(len(botproperties)):
-        if botproperties[i]["botproperty"] == prop.lower():
+        if botproperties[i]["botproperty"] == prop:
             return i
     return -1
 
@@ -124,11 +140,16 @@ lines = []
 
 lines.append("## Bot Properties" + '\n')
 lines.append('\n')
-lines.append("**These properties can be defined in botlogin.txt**" + '\n')
+lines.append("**These properties can be defined in _botlogin.txt_**" + '\n')
 lines.append('\n')
 lines.append("Docker can also define them as ENV variables by converting to uppercase and adding the _PHANTOMBOT\__ prefix" + '\n')
 lines.append('\n')
 lines.append("NOTE: If the property exists in botlogin.txt, the ENV variable is ignored unless _PHANTOMBOT\_ENVOVERRIDE: \"true\"_ is set" + '\n')
+lines.append('\n')
+lines.append("NOTE: If the property does not list a default value, then the default value is not set/disabled" + '\n')
+lines.append('\n')
+lines.append('\n')
+lines.append("NOTE: _botlogin.txt_ can **not** be edited while the bot is running" + '\n')
 lines.append('\n')
 lines.append("&nbsp;" + '\n')
 lines.append('\n')

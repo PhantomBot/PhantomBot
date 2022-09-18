@@ -160,6 +160,9 @@ public final class PathValidator {
             String executionPath = Reflect.GetExecutionPath();
             Path p = Paths.get(pathToFile).toAbsolutePath();
 
+            /**
+             * @botproperty pathvalidatedebug - If `true`, prints debug information for the path validator to the debug log. Default `false`
+             */
             if (CaselessProperties.instance().getPropertyAsBoolean("pathvalidatedebug", false)) {
                 com.gmt2001.Console.debug.println("orig=" + p.toString());
             }
