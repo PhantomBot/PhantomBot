@@ -323,9 +323,9 @@ for subdir, dirs, files in os.walk("./javascript-source"):
 
 lines = []
 
-lines.append("## Custom Commands Tag Guideline:" + '\n')
+lines.append("## Custom Command Tags" + '\n')
 lines.append('\n')
-lines.append("**These command variables can be used in any  custom command.**" + '\n')
+lines.append("**These command variables can be used in any custom command.**" + '\n')
 lines.append('\n')
 lines.append("&nbsp;" + '\n')
 lines.append('\n')
