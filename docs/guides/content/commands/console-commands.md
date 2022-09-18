@@ -1,4 +1,4 @@
-## Console Commands:
+## Console Commands
 
 **These console commands are available directly in the bot console when not running as a service.**
 
