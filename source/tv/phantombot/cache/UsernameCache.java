@@ -72,7 +72,7 @@ public class UsernameCache {
     private Mono lookupUserDataAsync(List<String> usernames) {
         return Mono.create(emitter -> {
             Helix.instance().getUsersAsync(null, usernames).doOnNext(jso -> {
-                if (jso != null && !jso.has("error")) {
+                if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                     for (int i = 0; i < jso.getJSONArray("data").length(); i++) {
                         JSONObject user = jso.getJSONArray("data").getJSONObject(i);
                         this.cache.put(user.getString("login"), new UserData(user.getString("display_name").replaceAll("\\\\s", " "), user.getString("id")));
