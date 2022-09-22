@@ -109,15 +109,23 @@ public final class TwitchCache {
                 this.streamTitle = streamTitlen;
             }
             this.executorService.scheduleAtFixedRate(() -> {
-                Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
                 Thread.currentThread().setName("TwitchCache::updateCache");
-                this.updateCache();
-            }, 30, 30, TimeUnit.SECONDS);
+                com.gmt2001.Console.debug.println("TwitchCache::updateCache");
+                try {
+                    this.updateCache();
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }, 0, 30, TimeUnit.SECONDS);
             this.executorService.scheduleAtFixedRate(() -> {
-                Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
                 Thread.currentThread().setName("TwitchCache::updateClips");
-                this.updateClips();
-            }, 1, 1, TimeUnit.MINUTES);
+                com.gmt2001.Console.debug.println("TwitchCache::updateClips");
+                try {
+                    this.updateClips();
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }, 0, 1, TimeUnit.MINUTES);
         } else {
             this.executorService.schedule(this::startup, 1, TimeUnit.SECONDS);
         }
@@ -140,7 +148,7 @@ public final class TwitchCache {
         }
 
         ZonedDateTime start = this.latestClip;
-        Duration timeSinceLast = Duration.between(start, Instant.now());
+        Duration timeSinceLast = Duration.between(start, ZonedDateTime.now());
         if (!timeSinceLast.abs().minusDays(1).isNegative()) {
             start = ZonedDateTime.ofInstant(Instant.now().minus(1, ChronoUnit.DAYS), ZoneId.systemDefault());
         }
@@ -278,11 +286,11 @@ public final class TwitchCache {
                             this.streamCreatedAt = "";
                             this.viewerCount = 0;
                         }
+                    }
 
-                        if (!PhantomBot.twitchCacheReady) {
-                            com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
-                            PhantomBot.instance().setTwitchCacheReady(true);
-                        }
+                    if (!PhantomBot.twitchCacheReady) {
+                        com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
+                        PhantomBot.instance().setTwitchCacheReady(true);
                     }
                 }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
 

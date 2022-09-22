@@ -163,7 +163,7 @@ public class UsernameCache {
     }
 
     public String getIDCaster() {
-        return this.getID(CaselessProperties.instance().getProperty("caster").toLowerCase());
+        return this.getID(CaselessProperties.instance().getProperty("channel").toLowerCase());
     }
 
     public String getID(String userName) {
