@@ -123,7 +123,7 @@ public final class PhantomBot implements Listener {
     private TipeeeStreamCache tipeeeStreamCache;
     private ViewerListCache viewerListCache;
     private StreamElementsCache streamElementCache;
-    public static String twitchCacheReady = "false";
+    public static boolean twitchCacheReady = false;
 
     /* Sockets */
     private WsAlertsPollsHandler alertsPollsHandler;
@@ -336,7 +336,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* twitch cache */
-        PhantomBot.twitchCacheReady = "false";
+        PhantomBot.twitchCacheReady = false;
 
         /* Load up a new SecureRandom for the scripts to use */
         this.random = new SecureRandom();
@@ -1435,7 +1435,7 @@ public final class PhantomBot implements Listener {
      *
      * @param twitchCacheReady
      */
-    public void setTwitchCacheReady(String twitchCacheReady) {
+    public void setTwitchCacheReady(boolean twitchCacheReady) {
         PhantomBot.twitchCacheReady = twitchCacheReady;
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
     }

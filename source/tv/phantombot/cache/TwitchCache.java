@@ -142,7 +142,7 @@ public final class TwitchCache {
         start = start.withSecond(0);
 
         Helix.instance().getClipsAsync(null, UsernameCache.instance().getIDCaster(), null, 100, null, null, start, start.plusDays(1))
-                .doOnNext(jso -> {
+                .doOnSuccess(jso -> {
                     if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                         ZonedDateTime newLatestClip = this.latestClip;
                         String newLatestClipURL = null;
@@ -190,7 +190,7 @@ public final class TwitchCache {
     /**
      * Polls the Twitch API and updates the database cache with information. This method also sends events when appropriate.
      */
-    private void updateCache() throws Exception {
+    private void updateCache() {
         boolean success = true;
         boolean sentTwitchOnlineEvent = false;
 
@@ -356,9 +356,9 @@ public final class TwitchCache {
             com.gmt2001.Console.debug.println(ex);
         }
 
-        if (PhantomBot.twitchCacheReady.equals("false") && success) {
+        if (!PhantomBot.twitchCacheReady && success) {
             com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
-            PhantomBot.instance().setTwitchCacheReady("true");
+            PhantomBot.instance().setTwitchCacheReady(true);
         }
     }
 
@@ -377,10 +377,7 @@ public final class TwitchCache {
      * @return
      */
     public String isStreamOnlineString() {
-        if (this.isStreamOnline()) {
-            return "true";
-        }
-        return "false";
+        return this.isStreamOnline() ? "true" : "false";
     }
 
     /**
@@ -593,9 +590,7 @@ public final class TwitchCache {
      * @param isFromPubSubEvent
      */
     public void syncStreamStatus(boolean isFromPubSubEvent) {
-        String userid = UsernameCache.instance().getIDCaster();
-        List<String> userids = List.of(userid);
-        Helix.instance().getStreamsAsync(20, null, null, userids, null, null, null).doOnSuccess(streams -> {
+        Helix.instance().getStreamsAsync(20, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null).doOnSuccess(streams -> {
             if (streams != null && streams.has("data")) {
                 if (streams.getJSONArray("data").length() > 0) {
                     JSONObject stream = streams.getJSONArray("data").getJSONObject(0);
@@ -648,10 +643,14 @@ public final class TwitchCache {
      * @param sendEvent
      */
     public void updateGame(boolean sendEvent) {
-        JSONObject channelInfo = Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).block();
+        Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).doOnSuccess(jso -> {
+            if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
+                JSONArray data = jso.getJSONArray("data");
 
-        if (channelInfo != null && channelInfo.has("data") && channelInfo.getJSONArray("data").length() > 0) {
-            this.setGameTitle(channelInfo.getJSONArray("data").getJSONObject(0).optString("game_name"), sendEvent);
-        }
+                if (data.length() > 0) {
+                    this.setGameTitle(data.getJSONObject(0).optString("game_name"), sendEvent);
+                }
+            }
+        }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
     }
 }
