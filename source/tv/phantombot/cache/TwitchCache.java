@@ -22,10 +22,14 @@
  */
 package tv.phantombot.cache;
 
-import com.gmt2001.TwitchAPIv5;
-import com.illusionaryone.ImgDownload;
-import java.io.File;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -76,6 +80,8 @@ public final class TwitchCache {
     private Instant offlineDelay = null;
     private Instant offlineTimeout = Instant.MIN;
     private ZonedDateTime latestClip = null;
+    private ZonedDateTime latestLogo = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
+    private Instant nextLogoCheck = Instant.EPOCH;
 
     public static TwitchCache instance() {
         return INSTANCE;
@@ -191,175 +197,134 @@ public final class TwitchCache {
      * Polls the Twitch API and updates the database cache with information. This method also sends events when appropriate.
      */
     private void updateCache() {
-        boolean success = true;
-        boolean sentTwitchOnlineEvent = false;
+        Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null)
+                .doOnSuccess(jso -> {
+                    if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
+                        boolean isOnlinen = jso.getJSONArray("data").length() > 0;
+                        boolean sentTwitchOnlineEvent = false;
 
-        com.gmt2001.Console.debug.println("TwitchCache::updateCache");
+                        if (!this.isOnline && isOnlinen) {
+                            if (Instant.now().isAfter(this.offlineTimeout)) {
+                                this.isOnline = true;
+                                this.offlineDelay = null;
+                                EventBus.instance().postAsync(new TwitchOnlineEvent());
+                                sentTwitchOnlineEvent = true;
+                            }
+                        } else if (this.isOnline && !isOnlinen) {
+                            if (this.offlineDelay == null) {
+                                /**
+                                 * @botproperty offlinedelay - The delay, in seconds, before the `channel` is confirmed to be offline. Default `30`
+                                 */
+                                this.offlineDelay = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinedelay", 30));
+                            } else if (Instant.now().isAfter(this.offlineDelay)) {
+                                this.offlineDelay = null;
+                                this.isOnline = false;
+                                /**
+                                 * @botproperty offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online.
+                                 * Default `300`
+                                 */
+                                this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
+                                EventBus.instance().postAsync(new TwitchOfflineEvent());
+                            }
+                        }
 
-        /* Retrieve Stream Information */
-        try {
-            JSONObject streamObj = TwitchAPIv5.instance().GetStream(this.channel);
+                        if (this.isOnline && isOnlinen) {
+                            JSONObject data = jso.getJSONArray("data").getJSONObject(0);
+                            /* Calculate the stream uptime in seconds. */
+                            this.streamUptime = ZonedDateTime.parse(data.getString("started_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+                            this.streamCreatedAt = data.getString("started_at");
 
-            if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
+                            /* Determine the preview link. */
+                            this.previewLink = data.getString("thumbnail_url").replace("{width}", "1920").replace("{height}", "1080");
 
-                /* Determine if the stream is online or not */
-                boolean isOnlinen = !streamObj.isNull("stream");
+                            /* Get the viewer count. */
+                            this.viewerCount = data.getInt("viewer_count");
 
-                if (!this.isOnline && isOnlinen) {
-                    if (Instant.now().isAfter(this.offlineTimeout)) {
-                        this.isOnline = true;
-                        this.offlineDelay = null;
-                        EventBus.instance().postAsync(new TwitchOnlineEvent());
-                        sentTwitchOnlineEvent = true;
-                    }
-                } else if (this.isOnline && !isOnlinen) {
-                    if (this.offlineDelay == null) {
-                        /**
-                         * @botproperty offlinedelay - The delay, in seconds, before the `channel` is confirmed to be offline. Default `30`
-                         */
-                        this.offlineDelay = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinedelay", 30));
-                    } else if (Instant.now().isAfter(this.offlineDelay)) {
-                        this.offlineDelay = null;
-                        this.isOnline = false;
-                        /**
-                         * @botproperty offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online. Default `300`
-                         */
-                        this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
-                        EventBus.instance().postAsync(new TwitchOfflineEvent());
-                    }
-                }
+                            String gameTitlen = data.getString("game_name");
 
-                if (this.isOnline && isOnlinen) {
-                    /* Calculate the stream uptime in seconds. */
-                    try {
-                        this.streamUptime = ZonedDateTime.parse(streamObj.getJSONObject("stream").getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                        this.streamCreatedAt = streamObj.getJSONObject("stream").getString("created_at");
-                    } catch (DateTimeParseException | JSONException ex) {
-                        success = false;
-                        com.gmt2001.Console.err.println("TwitchCache::updateCache: Bad date from Twitch, cannot convert for stream uptime (" + streamObj.getJSONObject("stream").getString("created_at") + ")");
-                        com.gmt2001.Console.err.printStackTrace(ex);
-                    }
-
-                    /* Determine the preview link. */
-                    this.previewLink = streamObj.getJSONObject("stream").getJSONObject("preview").getString("template").replace("{width}", "1920").replace("{height}", "1080");
-
-                    /* Get the viewer count. */
-                    this.viewerCount = streamObj.getJSONObject("stream").getInt("viewers");
-                } else if (!this.isOnline && !isOnlinen) {
-                    this.streamUptime = null;
-                    this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
-                    this.streamCreatedAt = "";
-                    this.viewerCount = 0;
-                }
-            } else {
-                success = false;
-                if (streamObj.has("message")) {
-                    com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
-                } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
-                    com.gmt2001.Console.debug.println(streamObj.toString());
-                }
-            }
-        } catch (JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            success = false;
-        }
-
-        // Wait a bit here.
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println(ex);
-        }
-
-        try {
-            JSONObject streamObj = TwitchAPIv5.instance().GetChannel(this.channel);
-
-            if (streamObj.getBoolean("_success") && streamObj.getInt("_http") == 200) {
-
-                /* Get the game being streamed. */
-                if (streamObj.has("game")) {
-                    if (!streamObj.isNull("game")) {
-                        String gameTitlen = streamObj.getString("game");
-                        if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitlen)) {
-                            setDBString("game", gameTitlen);
-                            /* Send an event if we did not just send a TwitchOnlineEvent. */
-                            if (!sentTwitchOnlineEvent) {
+                            if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitlen)) {
+                                setDBString("game", gameTitlen);
+                                /* Send an event if we did not just send a TwitchOnlineEvent. */
+                                if (!sentTwitchOnlineEvent) {
+                                    this.gameTitle = gameTitlen;
+                                    EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitlen));
+                                }
                                 this.gameTitle = gameTitlen;
-                                EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitlen));
                             }
-                            this.gameTitle = gameTitlen;
-                        }
 
-                        if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitlen)) {
-                            forcedGameTitleUpdate = false;
-                        }
-                    }
-                } else {
-                    success = false;
-                }
+                            if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitlen)) {
+                                forcedGameTitleUpdate = false;
+                            }
 
-                if (streamObj.has("views")) {
-                    /* Get the view count. */
-                    this.views = streamObj.getInt("views");
-                }
+                            String streamTitlen = data.getString("title");
 
-
-                /* Get the logo */
-                if (streamObj.has("logo") && !streamObj.isNull("logo")) {
-                    String logoLinkn = streamObj.getString("logo");
-                    this.logoLink = logoLinkn;
-                    if (new File("./web/panel").isDirectory()) {
-                        ImgDownload.downloadHTTPTo(logoLinkn, "./web/panel/img/logo.jpeg");
-                    }
-                }
-
-                /* Get the title. */
-                if (streamObj.has("status")) {
-                    if (!streamObj.isNull("status")) {
-                        String streamTitlen = streamObj.getString("status");
-
-                        if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitlen)) {
-                            setDBString("title", streamTitlen);
-                            this.streamTitle = streamTitlen;
-                            /* Send an event if we did not just send a TwitchOnlineEvent. */
-                            if (!sentTwitchOnlineEvent) {
+                            if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitlen)) {
+                                setDBString("title", streamTitlen);
                                 this.streamTitle = streamTitlen;
-                                EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitlen));
+                                /* Send an event if we did not just send a TwitchOnlineEvent. */
+                                if (!sentTwitchOnlineEvent) {
+                                    this.streamTitle = streamTitlen;
+                                    EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitlen));
+                                }
+                                this.streamTitle = streamTitlen;
                             }
-                            this.streamTitle = streamTitlen;
+
+                            if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitlen)) {
+                                forcedStreamTitleUpdate = false;
+                            }
+                        } else if (!this.isOnline && !isOnlinen) {
+                            this.streamUptime = null;
+                            this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
+                            this.streamCreatedAt = "";
+                            this.viewerCount = 0;
                         }
-                        if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitlen)) {
-                            forcedStreamTitleUpdate = false;
+
+                        if (!PhantomBot.twitchCacheReady) {
+                            com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
+                            PhantomBot.instance().setTwitchCacheReady(true);
                         }
                     }
-                } else {
-                    success = false;
-                }
-            } else {
-                success = false;
-                if (streamObj.has("message")) {
-                    com.gmt2001.Console.err.println("TwitchCache::updateCache: " + streamObj.getString("message"));
-                } else {
-                    com.gmt2001.Console.debug.println("TwitchCache::updateCache: Failed to update.");
-                }
-            }
-        } catch (IOException | JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            success = false;
-        }
+                }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
 
-        // Wait a bit here.
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println(ex);
-        }
+        Helix.instance().getUsersAsync(List.of(UsernameCache.instance().getIDCaster()), null)
+                .doOnSuccess(jso -> {
+                    if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
+                        if (jso.getJSONArray("data").length() > 0) {
+                            JSONObject data = jso.getJSONArray("data").getJSONObject(0);
+                            this.views = data.getInt("view_count");
 
-        if (!PhantomBot.twitchCacheReady && success) {
-            com.gmt2001.Console.debug.println("TwitchCache::setTwitchCacheReady(true)");
-            PhantomBot.instance().setTwitchCacheReady(true);
-        }
+                            String oldLogoLink = this.logoLink;
+                            this.logoLink = data.getString("profile_image_url");
+
+                            if (Instant.now().isAfter(this.nextLogoCheck)) {
+                                this.nextLogoCheck = Instant.now().plus(1, ChronoUnit.HOURS);
+                                HttpClientResponse headResponse = HttpClient.head(URI.create(data.getString("profile_image_url")));
+
+                                if (headResponse.isSuccess()) {
+                                    ZonedDateTime lastModified = ZonedDateTime.parse(headResponse.responseHeaders().get("last-modified"), DateTimeFormatter.RFC_1123_DATE_TIME);
+
+                                    if (lastModified.isAfter(this.latestLogo) || !oldLogoLink.equals(data.getString("profile_image_url"))) {
+                                        HttpClientResponse logoResponse = HttpClient.get(URI.create(data.getString("profile_image_url")));
+
+                                        if (logoResponse.isSuccess()) {
+                                            Path logoPath = Paths.get("./web/panel/img/logo.jpeg");
+
+                                            try {
+                                                Files.createDirectories(logoPath.getParent());
+
+                                                Files.write(logoPath, logoResponse.rawResponseBody(), StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+
+                                                this.latestLogo = lastModified;
+                                            } catch (IOException ex) {
+                                                com.gmt2001.Console.err.printStackTrace(ex);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
     }
 
     /**
