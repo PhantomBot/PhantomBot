@@ -1044,6 +1044,12 @@ public final class PhantomBot implements Listener {
         }
 
         /* Shutdown all caches */
+        if (this.twitchCache != null) {
+            this.print("Terminating the Twitch online/clips cache...");
+            TwitchCache.instance().kill();
+        }
+
+        /* Shutdown all caches */
         if (this.followersCache != null) {
             this.print("Terminating the Twitch channel follower cache...");
             FollowersCache.killall();
@@ -1135,7 +1141,7 @@ public final class PhantomBot implements Listener {
         }
 
         /* Load the caches for each channels */
-        this.twitchCache = TwitchCache.instance(this.getChannelName());
+        this.twitchCache = TwitchCache.instance();
         this.twitchTeamCache = TwitchTeamsCache.instance(this.getChannelName());
         this.emotesCache = EmotesCache.instance(this.getChannelName());
         this.followersCache = FollowersCache.instance(this.getChannelName());

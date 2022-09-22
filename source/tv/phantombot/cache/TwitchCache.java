@@ -26,17 +26,17 @@ import com.gmt2001.TwitchAPIv5;
 import com.illusionaryone.ImgDownload;
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.io.FileUtils;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,12 +56,10 @@ import tv.phantombot.twitch.api.Helix;
  * This class keeps track of certain Twitch information such as if the channel is online or not and sends events to the JS side to indicate when the
  * channel has gone off or online.
  */
-public final class TwitchCache implements Runnable {
+public final class TwitchCache {
 
-    private static final Map<String, TwitchCache> instances = new ConcurrentHashMap<>();
-    private final String channel;
-    private final Thread updateThread;
-    private boolean killed = false;
+    private static final TwitchCache INSTANCE = new TwitchCache();
+    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     /* Cached data */
     private boolean isOnline = false;
@@ -75,28 +73,12 @@ public final class TwitchCache implements Runnable {
     private ZonedDateTime streamUptime = null;
     private int viewerCount = 0;
     private int views = 0;
-    private String displayName;
     private Instant offlineDelay = null;
     private Instant offlineTimeout = Instant.MIN;
-
-    /**
-     * Creates an instance for a channel.
-     *
-     * @param channel Name of the Twitch Channel for which this instance is created.
-     * @return TwitchCache The new TwitchCache instance object.
-     */
-    public static TwitchCache instance(String channel) {
-        TwitchCache instance = instances.get(channel);
-        if (instance == null) {
-            instance = new TwitchCache(channel);
-            instances.put(channel, instance);
-            return instance;
-        }
-        return instance;
-    }
+    private ZonedDateTime latestClip = null;
 
     public static TwitchCache instance() {
-        return instance(PhantomBot.instance().getChannelName());
+        return INSTANCE;
     }
 
     /**
@@ -105,75 +87,33 @@ public final class TwitchCache implements Runnable {
      * @param channel Name of the Twitch Channel for which this object is created.
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private TwitchCache(String channel) {
-        if (channel.startsWith("#")) {
-            channel = channel.substring(1);
-        }
-
-        this.channel = channel;
-        this.displayName = channel;
-        this.updateThread = new Thread(this, "tv.phantombot.cache.TwitchCache");
-
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
-        updateThread.start();
+    private TwitchCache() {
+        this.executorService.schedule(this::startup, 1, TimeUnit.SECONDS);
     }
 
-    /**
-     * Thread run instance. This is the main loop for the thread that is created to manage retrieving data from the Twitch API. This loop runs every
-     * 30 seconds, querying data from Twitch.
-     */
-    @Override
-    @SuppressWarnings("SleepWhileInLoop")
-    public void run() {
-        // If this cache starts before the database, we need to wait.
-        while (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
-            com.gmt2001.Console.debug.println("TwitchCache::run::failed:database:null");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+    private void startup() {
+        if (PhantomBot.instance() != null && PhantomBot.instance().getDataStore() != null) {
+            String gameTitlen = getDBString("game");
+            String streamTitlen = getDBString("title");
+
+            if (gameTitlen != null) {
+                this.gameTitle = gameTitlen;
             }
-        }
-
-        /* Update the clips every other loop. */
-        boolean doUpdateClips = false;
-
-        /* Check the DB for a previous Game and Stream Title */
-        String gameTitlen = getDBString("game");
-        String streamTitlen = getDBString("title");
-
-        if (gameTitlen != null) {
-            this.gameTitle = gameTitlen;
-        }
-        if (streamTitlen != null) {
-            this.streamTitle = streamTitlen;
-        }
-
-        while (!killed) {
-            try {
+            if (streamTitlen != null) {
+                this.streamTitle = streamTitlen;
+            }
+            this.executorService.scheduleAtFixedRate(() -> {
+                Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+                Thread.currentThread().setName("TwitchCache::updateCache");
                 this.updateCache();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-
-            if (doUpdateClips) {
-                doUpdateClips = false;
-                try {
-                    updateClips();
-                } catch (ParseException | JSONException ex) {
-                    com.gmt2001.Console.err.logStackTrace(ex);
-                }
-            } else {
-                doUpdateClips = true;
-            }
-
-            try {
-                Thread.sleep(30 * 1000);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.err.println("TwitchCache::run: Failed to execute sleep [InterruptedException]: " + ex.getMessage());
-            }
+            }, 30, 30, TimeUnit.SECONDS);
+            this.executorService.scheduleAtFixedRate(() -> {
+                Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+                Thread.currentThread().setName("TwitchCache::updateClips");
+                this.updateClips();
+            }, 1, 1, TimeUnit.MINUTES);
+        } else {
+            this.executorService.schedule(this::startup, 1, TimeUnit.SECONDS);
         }
     }
 
@@ -183,50 +123,68 @@ public final class TwitchCache implements Runnable {
      *
      * We do not throw an exception because this is not a critical function unlike the gathering of data via the updateCache() method.
      */
-    private void updateClips() throws JSONException, ParseException {
-        String doCheckClips = PhantomBot.instance().getDataStore().GetString("clipsSettings", "", "toggle");
-        String discordDoClipsCheck = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "clipsToggle");
-        if ((doCheckClips == null || doCheckClips.equals("false")) && (discordDoClipsCheck == null || discordDoClipsCheck.equals("false"))) {
-            return;
-        }
-
-        JSONObject clipsObj = TwitchAPIv5.instance().getClipsToday(this.channel);
-
-        String clipURL = "";
-        String creator = "";
-        String title = "";
-        JSONObject thumbnailObj = new JSONObject();
-        ZonedDateTime latestClip = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
-
-        if (clipsObj.has("clips")) {
-            JSONArray clipsData = clipsObj.getJSONArray("clips");
-            if (clipsData.length() > 0) {
-                setDBString("most_viewed_clip_url", "https://clips.twitch.tv/" + clipsData.getJSONObject(0).getString("slug"));
-                String lastDateStr = getDBString("last_clips_tracking_date");
-                if (lastDateStr != null && !lastDateStr.isBlank()) {
-                    latestClip = ZonedDateTime.parse(lastDateStr, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                }
-                for (int i = 0; i < clipsData.length(); i++) {
-                    JSONObject clipData = clipsData.getJSONObject(i);
-                    if (clipData.has("created_at")) {
-                        ZonedDateTime clipDate = ZonedDateTime.parse(clipData.getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-                        if (clipDate.isAfter(latestClip)) {
-                            latestClip = clipDate;
-                            clipURL = "https://clips.twitch.tv/" + clipData.getString("slug");
-                            creator = clipData.getJSONObject("curator").getString("display_name");
-                            thumbnailObj = clipData.getJSONObject("thumbnails");
-                            title = clipData.getString("title");
-                        }
-                    }
-                }
+    private void updateClips() {
+        if (this.latestClip == null) {
+            String lastDateStr = getDBString("last_clips_tracking_date");
+            if (lastDateStr != null && !lastDateStr.isBlank()) {
+                this.latestClip = ZonedDateTime.parse(lastDateStr, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            } else {
+                this.latestClip = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
             }
         }
 
-        if (clipURL.length() > 0) {
-            setDBString("last_clips_tracking_date", latestClip.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-            setDBString("last_clip_url", clipURL);
-            EventBus.instance().postAsync(new TwitchClipEvent(clipURL, creator, title, thumbnailObj));
+        ZonedDateTime start = this.latestClip;
+        Duration timeSinceLast = Duration.between(start, Instant.now());
+        if (!timeSinceLast.abs().minusDays(1).isNegative()) {
+            start = ZonedDateTime.ofInstant(Instant.now().minus(1, ChronoUnit.DAYS), ZoneId.systemDefault());
         }
+
+        start = start.withSecond(0);
+
+        Helix.instance().getClipsAsync(null, UsernameCache.instance().getIDCaster(), null, 100, null, null, start, start.plusDays(1))
+                .doOnNext(jso -> {
+                    if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
+                        ZonedDateTime newLatestClip = this.latestClip;
+                        String newLatestClipURL = null;
+                        final JSONArray data = jso.getJSONArray("data");
+
+                        if (data.length() > 0) {
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject clip = data.getJSONObject(i);
+
+                                try {
+                                    if (i == 0) {
+                                        this.setDBString("most_viewed_clip_url", clip.getString("url"));
+                                    }
+
+                                    ZonedDateTime clipDate = ZonedDateTime.parse(clip.getString("created_at"), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+                                    if (clipDate.isAfter(this.latestClip)) {
+                                        if (clipDate.isAfter(newLatestClip)) {
+                                            newLatestClip = clipDate;
+                                            newLatestClipURL = clip.getString("url");
+                                        }
+
+                                        JSONObject thumbnails = new JSONObject();
+                                        thumbnails.put("medium", clip.getString("thumbnail_url"));
+                                        thumbnails.put("small", clip.getString("thumbnail_url"));
+                                        thumbnails.put("tiny", clip.getString("thumbnail_url"));
+
+                                        EventBus.instance().postAsync(new TwitchClipEvent(clip.getString("url"), clip.getString("creator_name"),
+                                                clip.getString("title"), thumbnails));
+                                    }
+                                } catch (NullPointerException | JSONException | DateTimeParseException ex) {
+                                }
+                            }
+
+                            if (newLatestClipURL != null) {
+                                this.latestClip = newLatestClip;
+                                setDBString("last_clips_tracking_date", newLatestClip.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                                setDBString("last_clip_url", newLatestClipURL);
+                            }
+                        }
+                    }
+                }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
     }
 
     /**
@@ -353,22 +311,6 @@ public final class TwitchCache implements Runnable {
                     this.logoLink = logoLinkn;
                     if (new File("./web/panel").isDirectory()) {
                         ImgDownload.downloadHTTPTo(logoLinkn, "./web/panel/img/logo.jpeg");
-                    }
-                }
-
-                // Get the display name.
-                if (streamObj.has("display_name") && !streamObj.isNull("display_name")) {
-                    this.displayName = streamObj.getString("display_name");
-                    if (new File("./web/panel").isDirectory()) {
-                        File file = new File("./web/panel/js/utils/panelConfig.js");
-                        if (file.exists()) {
-                            // Read the file.
-                            String fileContent = FileUtils.readFileToString(file, "utf-8");
-                            // Replace the name.
-                            fileContent = fileContent.replace("@DISPLAY_NAME@", streamObj.getString("display_name"));
-                            // Write the new stuff.
-                            FileUtils.writeStringToFile(file, fileContent, "utf-8");
-                        }
                     }
                 }
 
@@ -537,7 +479,7 @@ public final class TwitchCache implements Runnable {
      * @return
      */
     public String getDisplayName() {
-        return this.displayName;
+        return UsernameCache.instance().resolveCaster();
     }
 
     /**
@@ -580,16 +522,7 @@ public final class TwitchCache implements Runnable {
      * Destroys the current instance of the TwitchCache object.
      */
     public void kill() {
-        killed = true;
-    }
-
-    /**
-     * Destroys all instances of the TwitchCache object.
-     */
-    public static void killall() {
-        instances.entrySet().forEach(instance -> {
-            instance.getValue().kill();
-        });
+        this.executorService.shutdown();
     }
 
     /**
@@ -660,7 +593,7 @@ public final class TwitchCache implements Runnable {
      * @param isFromPubSubEvent
      */
     public void syncStreamStatus(boolean isFromPubSubEvent) {
-        String userid = UsernameCache.instance().getID(this.channel);
+        String userid = UsernameCache.instance().getIDCaster();
         List<String> userids = List.of(userid);
         Helix.instance().getStreamsAsync(20, null, null, userids, null, null, null).doOnSuccess(streams -> {
             if (streams != null && streams.has("data")) {
@@ -715,7 +648,7 @@ public final class TwitchCache implements Runnable {
      * @param sendEvent
      */
     public void updateGame(boolean sendEvent) {
-        JSONObject channelInfo = Helix.instance().getChannelInformationAsync(UsernameCache.instance().getID(this.channel)).block();
+        JSONObject channelInfo = Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).block();
 
         if (channelInfo != null && channelInfo.has("data") && channelInfo.getJSONArray("data").length() > 0) {
             this.setGameTitle(channelInfo.getJSONArray("data").getJSONObject(0).optString("game_name"), sendEvent);
