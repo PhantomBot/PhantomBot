@@ -72,7 +72,7 @@ public class UsernameCache {
 
     private Mono lookupUserDataAsync(List<String> usernames) {
         return Mono.create(emitter -> {
-            Helix.instance().getUsersAsync(null, usernames).doOnNext(jso -> {
+            Helix.instance().getUsersAsync(null, usernames).doOnSuccess(jso -> {
                 if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                     final JSONArray data = jso.getJSONArray("data");
 
