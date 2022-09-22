@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
@@ -73,9 +74,13 @@ public class UsernameCache {
         return Mono.create(emitter -> {
             Helix.instance().getUsersAsync(null, usernames).doOnNext(jso -> {
                 if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
-                    for (int i = 0; i < jso.getJSONArray("data").length(); i++) {
-                        JSONObject user = jso.getJSONArray("data").getJSONObject(i);
-                        this.cache.put(user.getString("login"), new UserData(user.getString("display_name").replaceAll("\\\\s", " "), user.getString("id")));
+                    final JSONArray data = jso.getJSONArray("data");
+
+                    if (data.length() > 0) {
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject user = data.getJSONObject(i);
+                            this.cache.put(user.getString("login"), new UserData(user.getString("display_name").replaceAll("\\\\s", " "), user.getString("id")));
+                        }
                     }
                 }
                 emitter.success();
