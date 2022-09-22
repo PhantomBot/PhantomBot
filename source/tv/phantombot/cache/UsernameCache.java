@@ -82,7 +82,7 @@ public class UsernameCache {
             }).doOnError(ex -> {
                 com.gmt2001.Console.err.printStackTrace(ex, "[lookupUserDataAsync] Exception parsing getUsersAsync");
                 emitter.error(ex);
-            });
+            }).subscribe();
         });
     }
 
