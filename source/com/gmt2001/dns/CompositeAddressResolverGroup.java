@@ -21,6 +21,7 @@ import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.kqueue.KQueueDatagramChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
+import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.resolver.AddressResolver;
@@ -45,14 +46,6 @@ public final class CompositeAddressResolverGroup extends AddressResolverGroup<In
     private CompositeAddressResolverGroup() {
         DnsNameResolverBuilder idnsResolverBuilder = new DnsNameResolverBuilder().nameServerProvider(DnsServerAddressStreamProviders.platformDefault());
 
-        if (EventLoopDetector.ISEPOLLAVAILABLE) {
-            idnsResolverBuilder = idnsResolverBuilder.channelType(EpollDatagramChannel.class).socketChannelType(EpollSocketChannel.class);
-        } else if (EventLoopDetector.ISKQUEUEAVAILABLE) {
-            idnsResolverBuilder = idnsResolverBuilder.channelType(KQueueDatagramChannel.class).socketChannelType(KQueueSocketChannel.class);
-        } else {
-            idnsResolverBuilder = idnsResolverBuilder.channelType(NioDatagramChannel.class).socketChannelType(NioSocketChannel.class);
-        }
-
         this.dnsResolverBuilder = idnsResolverBuilder;
     }
 
@@ -64,6 +57,16 @@ public final class CompositeAddressResolverGroup extends AddressResolverGroup<In
                     + " (expected: " + StringUtil.simpleClassName(EventLoop.class));
         }
 
-        return new CompositeInetNameResolver(executor, this.dnsResolverBuilder.copy().eventLoop((EventLoop) executor).build(), new DefaultNameResolver(executor)).asAddressResolver();
+        DnsNameResolverBuilder odnsResolverBuilder = this.dnsResolverBuilder.copy();
+
+        if (executor instanceof NioEventLoop) {
+            odnsResolverBuilder = odnsResolverBuilder.channelType(NioDatagramChannel.class).socketChannelType(NioSocketChannel.class);
+        } else if (EventLoopDetector.ISEPOLLAVAILABLE) {
+            odnsResolverBuilder = odnsResolverBuilder.channelType(EpollDatagramChannel.class).socketChannelType(EpollSocketChannel.class);
+        } else if (EventLoopDetector.ISKQUEUEAVAILABLE) {
+            odnsResolverBuilder = odnsResolverBuilder.channelType(KQueueDatagramChannel.class).socketChannelType(KQueueSocketChannel.class);
+        }
+
+        return new CompositeInetNameResolver(executor, odnsResolverBuilder.eventLoop((EventLoop) executor).build(), new DefaultNameResolver(executor)).asAddressResolver();
     }
 }
