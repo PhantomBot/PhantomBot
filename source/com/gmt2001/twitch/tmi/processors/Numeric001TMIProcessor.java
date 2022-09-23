@@ -35,6 +35,6 @@ public final class Numeric001TMIProcessor extends AbstractTMIProcessor {
     protected void onMessage(TMIMessage item) {
         com.gmt2001.Console.out.println("Authenticated as " + item.channel() + "!" + this.property("user") + "@" + this.property("user") + ".tmi.twitch.tv");
         EventBus.instance().postAsync(new IrcConnectCompleteEvent(this.session()));
-        this.tmi().sendRaw("JOIN #" + this.property("channel"));
+        this.tmi().sendRaw("JOIN #" + this.property("channel").toLowerCase());
     }
 }

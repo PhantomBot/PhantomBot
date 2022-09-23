@@ -35,13 +35,13 @@ public final class JoinTMIProcessor extends AbstractTMIProcessor {
     @Override
     protected void onMessage(TMIMessage item) {
         if (item.nick().equalsIgnoreCase(this.property("user"))) {
-            com.gmt2001.Console.out.println("Joined #" + this.property("channel"));
+            com.gmt2001.Console.out.println("Joined #" + this.property("channel").toLowerCase());
             this.session().joinSuccess();
             EventBus.instance().postAsync(new IrcJoinCompleteEvent(this.session()));
         }
 
         EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session(), item.nick()));
-        com.gmt2001.Console.debug.println("User Joined Channel [" + item.nick() + " -> #" + this.property("channel") + "]");
+        com.gmt2001.Console.debug.println("User Joined Channel [" + item.nick() + " -> #" + this.property("channel").toLowerCase() + "]");
     }
 
 }
