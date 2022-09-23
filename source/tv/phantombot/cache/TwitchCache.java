@@ -204,6 +204,12 @@ public final class TwitchCache {
     /**
      * Polls the Twitch API and updates the database cache with information. This method also sends events when appropriate.
      */
+    /**
+     * @botproperty offlinedelay - The delay, in seconds, before the `channel` is confirmed to be offline. Default `30`
+     */
+    /**
+     * @botproperty offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online. Default `300`
+     */
     private void updateCache() {
         Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null)
                 .doOnSuccess(jso -> {
@@ -220,17 +226,10 @@ public final class TwitchCache {
                             }
                         } else if (this.isOnline && !isOnlinen) {
                             if (this.offlineDelay == null) {
-                                /**
-                                 * @botproperty offlinedelay - The delay, in seconds, before the `channel` is confirmed to be offline. Default `30`
-                                 */
                                 this.offlineDelay = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinedelay", 30));
                             } else if (Instant.now().isAfter(this.offlineDelay)) {
                                 this.offlineDelay = null;
                                 this.isOnline = false;
-                                /**
-                                 * @botproperty offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online.
-                                 * Default `300`
-                                 */
                                 this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
                                 EventBus.instance().postAsync(new TwitchOfflineEvent());
                             }
