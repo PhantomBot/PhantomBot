@@ -170,7 +170,7 @@ final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1], true);
+        String user_id = UsernameCache.instance().getID(params[1]);
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /timeout");
@@ -207,7 +207,7 @@ final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1], true);
+        String user_id = UsernameCache.instance().getID(params[1]);
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /ban");
@@ -231,7 +231,7 @@ final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1], true);
+        String user_id = UsernameCache.instance().getID(params[1]);
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /unban");
@@ -282,7 +282,7 @@ final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1], true);
+        String user_id = UsernameCache.instance().getID(params[1]);
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /raid");
@@ -471,7 +471,7 @@ final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1], true);
+        String user_id = UsernameCache.instance().getID(params[1]);
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /w");

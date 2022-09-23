@@ -204,10 +204,14 @@ public class Helix {
                 if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
                     com.gmt2001.Console.debug.println(ex.getMessage());
                 }
-                return new JSONObject(ex.getMessage());
+                JSONObject jso = new JSONObject(ex.getMessage());
+                jso.put("error", "Exception");
+                return jso;
             } else {
                 com.gmt2001.Console.err.printStackTrace(ex);
-                return new JSONObject();
+                JSONObject jso = new JSONObject();
+                jso.put("error", "Exception");
+                return jso;
             }
         }
     }
