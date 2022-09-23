@@ -34,11 +34,11 @@ public final class PartTMIProcessor extends AbstractTMIProcessor {
     @Override
     protected void onMessage(TMIMessage item) {
         if (item.nick().equalsIgnoreCase(this.property("user"))) {
-            com.gmt2001.Console.out.println("Left #" + this.property("channel"));
+            com.gmt2001.Console.out.println("Left #" + this.property("channel").toLowerCase());
         }
 
         EventBus.instance().postAsync(new IrcChannelLeaveEvent(this.session(), item.nick()));
-        com.gmt2001.Console.debug.println("User Left Channel [" + item.nick() + " -> #" + this.property("channel") + "]");
+        com.gmt2001.Console.debug.println("User Left Channel [" + item.nick() + " -> #" + this.property("channel").toLowerCase() + "]");
     }
 
 }
