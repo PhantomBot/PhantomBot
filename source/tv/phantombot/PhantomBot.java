@@ -769,7 +769,7 @@ public final class PhantomBot implements Listener {
 
         /* Is the music toggled on? */
         /**
-         * @botproperty musicenable - If `true`, enables the websocket handler for the Son Request/YouTube player. Default `true`
+         * @botproperty musicenable - If `true`, enables the websocket handler for the Song Request/YouTube player. Default `true`
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("musicenable", true)) {
             this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).register();
