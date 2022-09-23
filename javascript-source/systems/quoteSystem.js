@@ -326,7 +326,7 @@
                 return;
             }
             var searchString = args.join(' ');
-            if (searchString.length < 5) {
+            if (searchString.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.usage'));
                 return;
             }
