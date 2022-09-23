@@ -17,6 +17,10 @@
 package com.gmt2001.dns;
 
 import io.netty.channel.EventLoop;
+import io.netty.channel.epoll.EpollDatagramChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
+import io.netty.channel.kqueue.KQueueDatagramChannel;
+import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.resolver.AddressResolver;
@@ -39,8 +43,17 @@ public final class CompositeAddressResolverGroup extends AddressResolverGroup<In
     private final DnsNameResolverBuilder dnsResolverBuilder;
 
     private CompositeAddressResolverGroup() {
-        this.dnsResolverBuilder = new DnsNameResolverBuilder().channelType(NioDatagramChannel.class).socketChannelType(NioSocketChannel.class)
-                .nameServerProvider(DnsServerAddressStreamProviders.platformDefault());
+        DnsNameResolverBuilder idnsResolverBuilder = new DnsNameResolverBuilder().nameServerProvider(DnsServerAddressStreamProviders.platformDefault());
+
+        if (EventLoopDetector.ISEPOLLAVAILABLE) {
+            idnsResolverBuilder = idnsResolverBuilder.channelType(EpollDatagramChannel.class).socketChannelType(EpollSocketChannel.class);
+        } else if (EventLoopDetector.ISKQUEUEAVAILABLE) {
+            idnsResolverBuilder = idnsResolverBuilder.channelType(KQueueDatagramChannel.class).socketChannelType(KQueueSocketChannel.class);
+        } else {
+            idnsResolverBuilder = idnsResolverBuilder.channelType(NioDatagramChannel.class).socketChannelType(NioSocketChannel.class);
+        }
+
+        this.dnsResolverBuilder = idnsResolverBuilder;
     }
 
     @Override

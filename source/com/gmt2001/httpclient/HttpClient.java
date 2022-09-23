@@ -116,6 +116,27 @@ public final class HttpClient {
     }
 
     /**
+     * Shortcut to perform a HEAD with the default headers
+     *
+     * @param url The URL to request
+     * @return A HttpClientResponse with the results
+     */
+    public static HttpClientResponse head(URI url) {
+        return head(url, createHeaders());
+    }
+
+    /**
+     * Shortcut to perform a HEAD with the specified headers
+     *
+     * @param url The URL to request
+     * @param requestHeaders The headers to send
+     * @return A HttpClientResponse with the results
+     */
+    public static HttpClientResponse head(URI url, HttpHeaders requestHeaders) {
+        return request(HttpMethod.HEAD, url, requestHeaders, null);
+    }
+
+    /**
      * Shortcut to perform a GET with the default headers
      *
      * @param url The URL to request

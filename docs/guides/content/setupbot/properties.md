@@ -264,7 +264,7 @@ offlinedelay - The delay, in seconds, before the `channel` is confirmed to be of
 
 Data Type: _Int_
 
-offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online. Default `300`
+offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online.
 
 &nbsp;
 
