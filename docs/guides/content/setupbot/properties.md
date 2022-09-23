@@ -208,7 +208,7 @@ logtimezone - The timezone for timestamps in the log. Must be a valid IANA Time 
 
 Data Type: _Boolean_
 
-musicenable - If `true`, enables the websocket handler for the Son Request/YouTube player. Default `true`
+musicenable - If `true`, enables the websocket handler for the Song Request/YouTube player. Default `true`
 
 &nbsp;
 
