@@ -145,30 +145,4 @@ $(function () {
             }, 3e4);
         }
     });
-
-    socket.getBotVersion('get_autorefresh', function (e) {
-        if (e['autorefreshoauth'] !== null && e['autorefreshoauth'] !== undefined && !e['autorefreshoauth']) {
-            let html = 'It appears you may not have automatically refreshing OAuth tokens setup. It is strongly reccomended to set this up to '
-                    + 'enjoy the latest features and avoid the expiration of your current token. You can set it up ' +
-                    $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', '../oauth/').append('here')[0].outerHTML + '.';
-            toastr.warning('Automatically refreshing OAuth tokens may not be setup!', {
-                'timeOut': 2000
-            });
-            helpers.addNotification($('<a/>', {
-                'href': 'javascript:void(0);',
-                'click': function () {
-                    helpers.getModal('pb-oauth', 'PhantomBot OAuth Tokens', 'Ok', $('<form/>', {
-                        'role': 'form'
-                    })
-                            .append($('<p/>', {
-                                'html': html
-                            })), function () {
-                        $('#pb-oauth').modal('toggle');
-                    }).modal('toggle');
-                }
-            }).append($('<i/>', {
-                'class': 'fa fa-warning text-yellow'
-            })).append('OAuth Tokens Don\'t Refresh'));
-        }
-    });
 });

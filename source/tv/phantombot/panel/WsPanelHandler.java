@@ -48,6 +48,7 @@ import tv.phantombot.RepoVersion;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 /**
@@ -61,7 +62,9 @@ public class WsPanelHandler implements WsFrameHandler {
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
-        this.authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10);
+        this.authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10, () -> {
+            EventBus.instance().postAsync(new WebPanelSocketConnectEvent());
+        });
     }
 
     @Override
@@ -302,7 +305,6 @@ public class WsPanelHandler implements WsFrameHandler {
         jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion()).endObject();
         jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
         jsonObject.key("os-version").value(System.getProperty("os.name"));
-        jsonObject.key("autorefreshoauth").value(CaselessProperties.instance().getProperty("clientsecret") != null && !CaselessProperties.instance().getProperty("clientsecret").isBlank());
         jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
