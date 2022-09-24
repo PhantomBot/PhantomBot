@@ -20,6 +20,36 @@
 // Script that handles all of the global things.
 
 $(function () {
+    socket.addListener('notification', function (e) {
+        let options = {};
+
+        if (e.timeout !== undefined && e.timeout !== null && !isNaN(e.timeout) && e.timeout > 0) {
+            options.timeOut = e.timeout;
+        }
+
+        if (e.extendedTimeout !== undefined && e.extendedTimeout !== null && !isNaN(e.extendedTimeout) && e.extendedTimeout > 0) {
+            options.extendedTimeOut = e.extendedTimeout;
+        }
+
+        if (e.progressBar !== undefined && e.progressBar !== null) {
+            options.progressBar = e.progressBar;
+        }
+
+        switch (e.type) {
+            case 'success':
+                toastr.success(e.message, e.title, options);
+                break;
+            case 'warning':
+                toastr.warning(e.message, e.title, options);
+                break;
+            case 'error':
+                toastr.error(e.message, e.title, options);
+                break
+            default:
+                toastr.info(e.message, e.title, options);
+        }
+    });
+
     // Dark mode toggle.
     $('#dark-mode-toggle').on('click', function () {
         // Update the toggle.

@@ -557,16 +557,6 @@ public class WsPanelHandler implements WsFrameHandler {
         }
     }
 
-    public void triggerAudioPanel(String audioHook) {
-        try {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
-            sendJSONToAll(jsonObject.toString());
-        } catch (JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
     public void doAudioHooksUpdate() {
         try {
             JSONObject jso = new JSONObject();
@@ -580,13 +570,32 @@ public class WsPanelHandler implements WsFrameHandler {
         }
     }
 
-    public void alertImage(String imageInfo) {
-        try {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("alert_image").value(imageInfo).endObject();
-            sendJSONToAll(jsonObject.toString());
-        } catch (JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+    public void panelNotification(String type, String message) {
+        this.panelNotification(type, message, null);
+    }
+
+    public void panelNotification(String type, String message, String title) {
+        this.panelNotification(type, message, title, null);
+    }
+
+    public void panelNotification(String type, String message, String title, Integer timeout) {
+        this.panelNotification(type, message, title, null, null);
+    }
+
+    public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout) {
+        this.panelNotification(type, message, title, null, null, null);
+    }
+
+    public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout, Boolean progressBar) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value("notification").key("results").object()
+                .key("type").value(type)
+                .key("message").value(message)
+                .key("title").value(title)
+                .key("timeout").value(timeout)
+                .key("extendedTimeout").value(extendedTimeout)
+                .key("progressBar").value(progressBar)
+                .endObject().endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 }
