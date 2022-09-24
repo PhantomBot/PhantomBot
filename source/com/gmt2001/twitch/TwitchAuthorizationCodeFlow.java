@@ -267,6 +267,8 @@ public class TwitchAuthorizationCodeFlow {
                     }
 
                     newTransaction.commit();
+                    TwitchValidate.instance().updateChatToken(CaselessProperties.instance().getProperty("oauth"));
+                    TwitchValidate.instance().updateAPIToken(CaselessProperties.instance().getProperty("apioauth"));
                     PhantomBot.instance().reconnect();
 
                     if (qsd.parameters().get("type").get(0).equals("bot")) {

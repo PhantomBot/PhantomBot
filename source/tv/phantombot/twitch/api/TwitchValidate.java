@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
@@ -43,21 +44,21 @@ public class TwitchValidate {
     private static final String BASE_URL = "https://id.twitch.tv/oauth2/validate";
     private static final long REFRESH_INTERVAL = 3600000L;
     private static final long TIMEOUT_TIME = 5000L;
-    private final List<String> scopesC = new ArrayList<>();
+    private final List<String> scopesC = new CopyOnWriteArrayList<>();
     private String clientidC = "";
     private String loginC = "";
     private String useridC = "";
     public boolean validC = false;
     private Thread validateC = null;
     private ValidateRunnable validaterC = null;
-    private final List<String> scopesA = new ArrayList<>();
+    private final List<String> scopesA = new CopyOnWriteArrayList<>();
     private String clientidA = "";
     private String loginA = "";
     private String useridA = "";
     public boolean validA = false;
     private Thread validateA = null;
     private ValidateRunnable validaterA = null;
-    private final List<String> scopesT = new ArrayList<>();
+    private final List<String> scopesT = new CopyOnWriteArrayList<>();
     private String clientidT = "";
     private String loginT = "";
     private String useridT = "";
@@ -161,7 +162,6 @@ public class TwitchValidate {
      */
     public void validateAPI(String oAuthToken, String type) {
         try {
-            scopesA.clear();
             validaterA = new ValidateRunnable(oAuthToken, type, 0);
             validateA = new Thread(validaterA, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
             validateA.start();
@@ -172,7 +172,6 @@ public class TwitchValidate {
 
     public void validateChat(String oAuthToken, String type) {
         try {
-            scopesC.clear();
             validaterC = new ValidateRunnable(oAuthToken, type, 1);
             validateC = new Thread(validaterC, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
             validateC.start();
@@ -183,7 +182,6 @@ public class TwitchValidate {
 
     public void validateApp(String oAuthToken, String type) {
         try {
-            scopesT.clear();
             validaterT = new ValidateRunnable(oAuthToken, type, 2);
             validateT = new Thread(validaterT, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
             validateT.start();
