@@ -588,6 +588,20 @@ public class WsPanelHandler implements WsFrameHandler {
         this.panelNotification(type, message, title, null, null, null);
     }
 
+    /**
+     * Sends a toastr notification to everyone currently authenticated to the panel
+     *
+     * @param type The type of notification to show. Valid values: {@code success}, {@code error}, {@code warning}, {@code info}. Invalid values are
+     * treated as {@code info}
+     * @param message The message content of the notification
+     * @param title The title of the notification. {@code null} or empty string for no title
+     * @param timeout The timeout before the notification automatically closes. {@code null} for default; {@code 0} to not close until the {@code X}
+     * is clicked
+     * @param extendedTimeout The timeout before the notification automatically closes, if the user hover over it with their mouse. This should be
+     * longer than {@code timeout} because the timer is shared. {@code null} for default; {@code 0} to not close until the {@code X} is clicked
+     * @param progressBar {@code true} to show a progress bar indicating the time remaining in {@code timeout} until the notification closes
+     * automatically; {@code false} to explicitly disable the progress bar on this notification; {@code null} for default
+     */
     public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout, Boolean progressBar) {
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("query_id").value("notification").key("results").object()
