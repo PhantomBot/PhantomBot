@@ -627,10 +627,12 @@
     }
 
     $.bind('webPanelSocketConnect', function (event) {
-        if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope('moderator:manage:banned_users')) {
-            $.panelsocketserver.panelNotification('warning', 'New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot'
-                    + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Broadcaster',
-                    'OAuth Scope Change', 0, 0, false);
-        }
+        setTimeout(function() {
+            if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope('moderator:manage:banned_users')) {
+                $.panelsocketserver.panelNotification('warning', 'New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot'
+                        + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Broadcaster',
+                        'OAuth Scope Change', 0, 0, false);
+            }
+        }, 5000);
     });
 })();
