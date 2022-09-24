@@ -48,6 +48,7 @@ import tv.phantombot.RepoVersion;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 /**
@@ -61,7 +62,9 @@ public class WsPanelHandler implements WsFrameHandler {
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
-        this.authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10);
+        this.authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10, () -> {
+            EventBus.instance().postAsync(new WebPanelSocketConnectEvent());
+        });
     }
 
     @Override
@@ -302,7 +305,6 @@ public class WsPanelHandler implements WsFrameHandler {
         jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion()).endObject();
         jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
         jsonObject.key("os-version").value(System.getProperty("os.name"));
-        jsonObject.key("autorefreshoauth").value(CaselessProperties.instance().getProperty("clientsecret") != null && !CaselessProperties.instance().getProperty("clientsecret").isBlank());
         jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
@@ -557,16 +559,6 @@ public class WsPanelHandler implements WsFrameHandler {
         }
     }
 
-    public void triggerAudioPanel(String audioHook) {
-        try {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
-            sendJSONToAll(jsonObject.toString());
-        } catch (JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
     public void doAudioHooksUpdate() {
         try {
             JSONObject jso = new JSONObject();
@@ -580,13 +572,46 @@ public class WsPanelHandler implements WsFrameHandler {
         }
     }
 
-    public void alertImage(String imageInfo) {
-        try {
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("alert_image").value(imageInfo).endObject();
-            sendJSONToAll(jsonObject.toString());
-        } catch (JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+    public void panelNotification(String type, String message) {
+        this.panelNotification(type, message, null);
+    }
+
+    public void panelNotification(String type, String message, String title) {
+        this.panelNotification(type, message, title, null);
+    }
+
+    public void panelNotification(String type, String message, String title, Integer timeout) {
+        this.panelNotification(type, message, title, null, null);
+    }
+
+    public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout) {
+        this.panelNotification(type, message, title, null, null, null);
+    }
+
+    /**
+     * Sends a toastr notification to everyone currently authenticated to the panel
+     *
+     * @param type The type of notification to show. Valid values: {@code success}, {@code error}, {@code warning}, {@code info}. Invalid values are
+     * treated as {@code info}
+     * @param message The message content of the notification
+     * @param title The title of the notification. {@code null} or empty string for no title
+     * @param timeout The timeout before the notification automatically closes. {@code null} for default; {@code 0} to not close until the {@code X}
+     * is clicked
+     * @param extendedTimeout The timeout before the notification automatically closes, if the user hover over it with their mouse. This should be
+     * longer than {@code timeout} because the timer is shared. {@code null} for default; {@code 0} to not close until the {@code X} is clicked
+     * @param progressBar {@code true} to show a progress bar indicating the time remaining in {@code timeout} until the notification closes
+     * automatically; {@code false} to explicitly disable the progress bar on this notification; {@code null} for default
+     */
+    public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout, Boolean progressBar) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value("notification").key("results").object()
+                .key("type").value(type)
+                .key("message").value(message)
+                .key("title").value(title)
+                .key("timeout").value(timeout)
+                .key("extendedTimeout").value(extendedTimeout)
+                .key("progressBar").value(progressBar)
+                .endObject().endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 }

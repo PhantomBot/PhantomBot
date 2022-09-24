@@ -20,6 +20,40 @@
 // Script that handles all of the global things.
 
 $(function () {
+    socket.addListener('notification', function (e) {
+        let options = {};
+
+        if (e.timeout !== undefined && e.timeout !== null && !isNaN(e.timeout) && e.timeout > 0) {
+            options.timeOut = e.timeout;
+        }
+
+        if (e.extendedTimeout !== undefined && e.extendedTimeout !== null && !isNaN(e.extendedTimeout) && e.extendedTimeout > 0) {
+            options.extendedTimeOut = e.extendedTimeout;
+        }
+
+        if ((options.timeOut !== undefined && options.timeOut === 0) || (options.extendedTimeOut !== undefined && options.extendedTimeOut === 0)) {
+            options.closeButton = true;
+        }
+
+        if (e.progressBar !== undefined && e.progressBar !== null) {
+            options.progressBar = e.progressBar;
+        }
+
+        switch (e.type.toLowerCase()) {
+            case 'success':
+                toastr.success(e.message, e.title, options);
+                break;
+            case 'warning':
+                toastr.warning(e.message, e.title, options);
+                break;
+            case 'error':
+                toastr.error(e.message, e.title, options);
+                break
+            default:
+                toastr.info(e.message, e.title, options);
+        }
+    });
+
     // Dark mode toggle.
     $('#dark-mode-toggle').on('click', function () {
         // Update the toggle.
@@ -113,32 +147,6 @@ $(function () {
                     }
                 });
             }, 3e4);
-        }
-    });
-
-    socket.getBotVersion('get_autorefresh', function (e) {
-        if (e['autorefreshoauth'] !== null && e['autorefreshoauth'] !== undefined && !e['autorefreshoauth']) {
-            let html = 'It appears you may not have automatically refreshing OAuth tokens setup. It is strongly reccomended to set this up to '
-                    + 'enjoy the latest features and avoid the expiration of your current token. You can set it up ' +
-                    $('<a/>', {'target': '_blank', 'rel': 'noopener noreferrer'}).prop('href', '../oauth/').append('here')[0].outerHTML + '.';
-            toastr.warning('Automatically refreshing OAuth tokens may not be setup!', {
-                'timeOut': 2000
-            });
-            helpers.addNotification($('<a/>', {
-                'href': 'javascript:void(0);',
-                'click': function () {
-                    helpers.getModal('pb-oauth', 'PhantomBot OAuth Tokens', 'Ok', $('<form/>', {
-                        'role': 'form'
-                    })
-                            .append($('<p/>', {
-                                'html': html
-                            })), function () {
-                        $('#pb-oauth').modal('toggle');
-                    }).modal('toggle');
-                }
-            }).append($('<i/>', {
-                'class': 'fa fa-warning text-yellow'
-            })).append('OAuth Tokens Don\'t Refresh'));
         }
     });
 });
