@@ -586,9 +586,9 @@
                     });
         </script>
         <script>
-            if (window.location.pathname.endsWith("/")) {
+            if (!window.location.pathname.endsWith("/")) {
                 let newURL = window.location.toString();
-                newURL = newURL.substring(0, newURL.indexOf(window.location.pathname)) + window.location.pathname.substring(0, window.location.pathname.length - 1) + newURL.substring(newURL.indexOf(window.location.pathname) + window.location.pathname.length);
+                newURL = newURL.substring(0, newURL.indexOf(window.location.pathname)) + window.location.pathname + '/' + newURL.substring(newURL.indexOf(window.location.pathname) + window.location.pathname.length);
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
                 window.location.replace(newURL);
             }
