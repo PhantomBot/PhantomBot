@@ -617,12 +617,20 @@
         $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0', true);
     }
 
-        if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope("moderator:manage:banned_users")) {
-            Packages.com.gmt2001.Console.warn.println('');
-            Packages.com.gmt2001.Console.warn.println('');
-            Packages.com.gmt2001.Console.warn.println('New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot');
-            Packages.com.gmt2001.Console.warn.println('Please visit the OAuth page on the panel and re-auth the Broadcaster');
-            Packages.com.gmt2001.Console.warn.println('');
-            Packages.com.gmt2001.Console.warn.println('');
+    if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope('moderator:manage:banned_users')) {
+        Packages.com.gmt2001.Console.warn.println('');
+        Packages.com.gmt2001.Console.warn.println('');
+        Packages.com.gmt2001.Console.warn.println('New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot');
+        Packages.com.gmt2001.Console.warn.println('Please visit the OAuth page on the panel and re-auth the Broadcaster');
+        Packages.com.gmt2001.Console.warn.println('');
+        Packages.com.gmt2001.Console.warn.println('');
+    }
+
+    $.bind('webPanelSocketConnect', function (event) {
+        if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope('moderator:manage:banned_users')) {
+            $.panelsocketserver.panelNotification('warning', 'New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot'
+                    + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Broadcaster',
+                    'OAuth Scope Change', 0, 0, false);
         }
+    });
 })();

@@ -31,11 +31,15 @@ $(function () {
             options.extendedTimeOut = e.extendedTimeout;
         }
 
+        if ((options.timeOut !== undefined && options.timeOut === 0) || (options.extendedTimeOut !== undefined && options.extendedTimeOut === 0)) {
+            options.closeButton = true;
+        }
+
         if (e.progressBar !== undefined && e.progressBar !== null) {
             options.progressBar = e.progressBar;
         }
 
-        switch (e.type) {
+        switch (e.type.toLowerCase()) {
             case 'success':
                 toastr.success(e.message, e.title, options);
                 break;
