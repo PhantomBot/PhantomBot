@@ -64,6 +64,20 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      * @param readOnlyToken The authorization token that grants read-only access
      * @param readWriteToken The authorization token that grants read-write access
      * @param maxAttempts The maximum allowed auth failure responses before the connection is shut down
+     */
+    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts) {
+        this.readOnlyToken = readOnlyToken;
+        this.readWriteToken = readWriteToken;
+        this.maxAttempts = maxAttempts;
+        this.authenticatedCallback = null;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param readOnlyToken The authorization token that grants read-only access
+     * @param readWriteToken The authorization token that grants read-write access
+     * @param maxAttempts The maximum allowed auth failure responses before the connection is shut down
      * @param authenticatedCallback A callback to run when a connection authenticates successfully
      */
     public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts, Runnable authenticatedCallback) {
