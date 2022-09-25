@@ -810,16 +810,9 @@ $(function () {
                     } else {
                         printDebug('Failed to authenticate with the socket.', true);
                     }
-                } else
-
-                // Queue all events and process them one at-a-time.
-                if (message.alert_image !== undefined || message.audio_panel_hook !== undefined) {
-                    queue.push(message);
-                }
-
-                // Message cannot be handled error.
-                else {
-                    printDebug('Failed to process message from socket: ' + rawMessage);
+                } else {
+                  // Queue all events and process them one at-a-time.
+                  queue.push(message);
                 }
             }
         } catch (ex) {
