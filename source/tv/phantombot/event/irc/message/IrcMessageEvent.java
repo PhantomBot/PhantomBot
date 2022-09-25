@@ -39,7 +39,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
 
         this.sender = sender;
         this.message = message;
-        this.tags = new HashMap<String, String>();
+        this.tags = new HashMap<>();
     }
 
     /**
@@ -55,7 +55,7 @@ public abstract class IrcMessageEvent extends IrcEvent {
 
         this.sender = sender;
         this.message = message;
-        this.tags = (tags == null ? new HashMap<String, String>() : tags);
+        this.tags = (tags == null ? new HashMap<>() : tags);
     }
 
     /**

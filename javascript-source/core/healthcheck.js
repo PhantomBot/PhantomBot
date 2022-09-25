@@ -22,15 +22,11 @@
  */
 (function() {
     /**
-     * Logs timestamp for MODE #channel +O botName, including the fake message triggered by .mods
+     * Logs timestamp for @msg-id=unrecognized_cmd :tmi.twitch.tv NOTICE, including the fake message triggered by .ping
      */
-    $.bind('ircChannelUserMode', function (event) {
-        if (event.getMode().equalsIgnoreCase('o')) {
-            if (event.getAdd()) {
-                if (event.getUser().equalsIgnoreCase($.botName)) {
-                    $.writeToFile($.systemTime(), './addons/healthcheck.txt', false);
-                }
-            }
+    $.bind('ircPrivateMessage', function (event) {
+        if ($.jsString(event.getTags().getOrDefault('msg-id', '')) === 'unrecognized_cmd') {
+            $.writeToFile($.systemTime(), './addons/healthcheck.txt', false);
         }
     });
 })();
