@@ -40,7 +40,7 @@
 ## noauth - The `webauth=` line was not found or was empty in botlogin.txt
 ## nopresencecode - The HTTP GET request to the /presence endpoint on the bots webserver did not return HTTP 200 OK. For this endpoint, this means the webserver is failing
 ## nopresence - The HTTP GET request to the /presence endpoint returned HTTP 200 OK, but the content was not `PBok`. The webserver is malfunctioning or another webserver responded
-## noputcode - The HTTP PUT request to the /dbquery endpoint, to send `.mods` to chat, did not return HTTP 200 OK. Probably returned 401 Unauthorized, message will include the code
+## noputcode - The HTTP PUT request to the /dbquery endpoint, to send `.ping` to chat, did not return HTTP 200 OK. Probably returned 401 Unauthorized, message will include the code
 ## noput - The HTTP PUT request to the /dbquery endpoint returned HTTP 200 OK, but the content was not `event posted`. The webserver is malfunctioning or another webserver responded
 ## nohealthcheckcode - The HTTP GET request to healthcheck.txt on the bots webserver did not return HTTP 200 OK. Possibly a 404, message will include the code
 ## nohealthcheck - A ValueError was raised trying to convert the healthcheck.txt timestamp into an integer. A blank or invalid output was probably returned
@@ -170,11 +170,11 @@ def main(args):
             dofailure(args, "nopresencecode", "Presence check failed with HTTP " + resp.status_code)
         elif resp.text.strip() != "PBok":
             dofailure(args, "nopresence", "Presence check returned an unknown response")
-        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".mods" }, verify = False)
+        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".ping" }, verify = False)
         if resp.status_code != 200:
-            dofailure(args, "noputcode", "Send .mods failed with HTTP " + resp.status_code)
+            dofailure(args, "noputcode", "Send .ping failed with HTTP " + resp.status_code)
         elif resp.text.strip() != "event posted":
-            dofailure(args, "noput", "Send .mods returned an unknown response")
+            dofailure(args, "noput", "Send .ping returned an unknown response")
         time.sleep(5)
         resp = requests.get(scheme + "://" + iphostname + ":" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" }, verify = False)
         if resp.status_code != 200:
