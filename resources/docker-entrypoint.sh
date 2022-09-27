@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-id phantombot
-
 if [[ ${UID+x} && ${GID+x} ]]; then
 	if [[ "$(id -u phantombot)" != $UID ]]; then
 		echo "Setting user to UID/GID: $UID / $GID"
@@ -10,8 +8,6 @@ if [[ ${UID+x} && ${GID+x} ]]; then
 		usermod -u $UID -g $GID phantombot
 	fi
 fi
-
-id phantombot
 
 # allow the container to be started with `--user`
 if [ "$(id -u)" = '0' -a ! -v ALLOW_ROOT ]; then
