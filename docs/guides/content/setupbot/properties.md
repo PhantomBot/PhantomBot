@@ -484,6 +484,14 @@ twitterusertimelinelimit - The maximum number of tweets to retrieve per follower
 
 &nbsp;
 
+### usebroadcasterforchatcommands
+
+Data Type: _Boolean_
+
+usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`
+
+&nbsp;
+
 ### usedefaultdnsresolver
 
 Data Type: _Boolean_
