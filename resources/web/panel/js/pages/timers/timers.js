@@ -15,19 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 (function (){
     let selected = null;
 
     function openGroupModal(groupData, cb) {
-        const idPrefix = groupData == null ? 'add-' : 'edit-'
-        const title = groupData == null ? 'Add Group' : 'Edit Group',
-              name = groupData == null ? '' : groupData.name,
-              noticeToggle  = groupData == null ? 'Yes' : (groupData.noticeToggle === true ? 'Yes' : 'No'),
-              noticeOfflineToggle = groupData == null ? 'No' : (groupData.noticeOfflineToggle === true ? 'Yes' : 'No'),
-              intervalMin = groupData == null ? '10' : groupData.intervalMin,
-              intervalMax = groupData == null ? '' : (intervalMin === groupData.intervalMax ? '' : groupData.intervalMax),
-              reqMessages = groupData == null ? '0' : groupData.reqMessages,
-              shuffle = groupData == null ? 'No' : (groupData.shuffle === true ? 'Yes' : 'No');
+        const idPrefix = groupData === null ? 'add-' : 'edit-';
+        const title = groupData === null ? 'Add Group' : 'Edit Group',
+              name = groupData === null ? '' : groupData.name,
+              noticeToggle  = groupData === null ? 'Yes' : (groupData.noticeToggle === true ? 'Yes' : 'No'),
+              noticeOfflineToggle = groupData === null ? 'No' : (groupData.noticeOfflineToggle === true ? 'Yes' : 'No'),
+              intervalMin = groupData === null ? '10' : groupData.intervalMin,
+              intervalMax = groupData === null ? '' : (intervalMin === groupData.intervalMax ? '' : groupData.intervalMax),
+              reqMessages = groupData === null ? '0' : groupData.reqMessages,
+              shuffle = groupData === null ? 'No' : (groupData.shuffle === true ? 'Yes' : 'No');
 
         helpers.getModal(idPrefix + 'group-modal', title, 'Save',
             $('<form/>', {'role': 'form'})
@@ -211,7 +213,7 @@
 
                     socket.getDBValue('timer_group_edit_get', 'notices', groupId, function(e) {
                         let groupData = e.notices;
-                        if (groupData == null) {
+                        if (groupData === null) {
                             run();  // group doesn't exist anymore => reload
                         }
                         groupData = JSON.parse(groupData);
@@ -225,10 +227,10 @@
                                 reqMessages: result.noticeReqMsg,
                                 shuffle: result.groupShuffle,
                                 messages: groupData.messages,
-                                disabled: groupData.disabled,
+                                disabled: groupData.disabled
                             }), function () {
                                 socket.wsEvent('timer_group_edit_ws', './systems/noticeSystem.js', null,
-                                    ['reloadGroup', groupId], function() {
+                                    ['reloadGroup', groupId, (groupData.intervalMin !== result.noticeIntervalMin || groupData.intervalMax !== result.noticeIntervalMax) ? 'true' : 'false'], function() {
                                         // Update group name in table.
                                         $this.parents('tr').find('td:eq(1)').text(result.groupName);
                                         if (selected === Number(groupId)) {
@@ -252,11 +254,11 @@
                     showGroupMessages(groupId);
                 });
 
-                if (selected == null) {
+                if (selected === null) {
                     if (results.length > 0) {
                         showGroupMessages(0);
                     } else {
-                        showGroupMessages(null)
+                        showGroupMessages(null);
                     }
                 } else {
                     if (selected >= results.length) {
@@ -276,14 +278,14 @@
         selected = groupId;
         const $messageBox = $('#messages-box');
         const $messagesTable = $('#messages-table');
-        if (groupId == null) {
+        if (groupId === null) {
             $messageBox.addClass("hidden");
             return;
         }
 
         socket.getDBValue('timer_messages_edit_get', 'notices', String(groupId), function(e) {
             let groupData = e.notices;
-            if (groupData == null) {
+            if (groupData === null) {
                 run();  // group doesn't exist anymore => reload
                 return;
             }

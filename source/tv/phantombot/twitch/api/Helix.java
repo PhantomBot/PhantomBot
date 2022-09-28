@@ -1328,10 +1328,10 @@ public class Helix {
 
         js.object().key("message").value(message).key("color").value(color.toString()).endObject();
 
-        String endpoint = "/chat/announcements?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+        String endpoint = "/chat/announcements?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", this.chooseModeratorId("moderator:manage:announcements"));
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), this.chooseModeratorOAuth("moderator:manage:announcements"));
         });
     }
 
@@ -1400,10 +1400,10 @@ public class Helix {
 
         js.key("reason").value(reason).key("user_id").value(user_id).endObject().endObject();
 
-        String endpoint = "/moderation/bans?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+        String endpoint = "/moderation/bans?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", this.chooseModeratorId("moderator:manage:banned_users"));
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), this.chooseModeratorOAuth("moderator:manage:banned_users"));
         });
     }
 
@@ -1440,10 +1440,10 @@ public class Helix {
             throw new IllegalArgumentException("user_id");
         }
 
-        String endpoint = "/moderation/bans?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&user_id", user_id);
+        String endpoint = "/moderation/bans?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", this.chooseModeratorId("moderator:manage:banned_users")) + this.qspValid("&user_id", user_id);
 
         return this.handleMutatorAsync(endpoint, () -> {
-            return this.handleRequest(HttpMethod.DELETE, endpoint);
+            return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("moderator:manage:banned_users"));
         });
     }
 
@@ -1484,10 +1484,10 @@ public class Helix {
             throw new IllegalArgumentException("broadcaster_id");
         }
 
-        String endpoint = "/moderation/chat?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&message_id", message_id);
+        String endpoint = "/moderation/chat?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", this.chooseModeratorId("moderator:manage:chat_messages")) + this.qspValid("&message_id", message_id);
 
         return this.handleMutatorAsync(endpoint, () -> {
-            return this.handleRequest(HttpMethod.DELETE, endpoint);
+            return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("moderator:manage:chat_messages"));
         });
     }
 
@@ -1716,10 +1716,10 @@ public class Helix {
             throw new IllegalArgumentException("Must provide at least one setting to update");
         }
 
-        String endpoint = "/chat/settings?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+        String endpoint = "/chat/settings?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", this.chooseModeratorId("moderator:manage:chat_settings"));
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString(), this.chooseModeratorOAuth("moderator:manage:chat_settings"));
         });
     }
 
@@ -1791,6 +1791,25 @@ public class Helix {
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), CaselessProperties.instance().getProperty("oauth").replaceFirst("oauth:", ""));
         });
+    }
+
+    private String chooseModeratorId(String scope) {
+        /**
+         * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`
+         */
+        if (TwitchValidate.instance().hasChatScope(scope) && !CaselessProperties.instance().getPropertyAsBoolean("usebroadcasterforchatcommands", false)) {
+            return TwitchValidate.instance().getChatUserID();
+        }
+
+        return TwitchValidate.instance().getAPIUserID();
+    }
+
+    private String chooseModeratorOAuth(String scope) {
+        if (TwitchValidate.instance().hasChatScope(scope) && !CaselessProperties.instance().getPropertyAsBoolean("usebroadcasterforchatcommands", false)) {
+            return CaselessProperties.instance().getProperty("oauth").replaceFirst("oauth:", "");
+        }
+
+        return null;
     }
 
     private class CallRequest {

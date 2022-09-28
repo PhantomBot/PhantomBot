@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java, Packages */
+
 /**
  * noticeSystem.js
  *
@@ -51,7 +53,7 @@
         lastTimeNoticesSent = [];
         for (i = 0; i < keys.length; i++) {
             inconsistent |= String(i) !== keys[i];
-            if (selectedGroup == null) {
+            if (selectedGroup === null) {
                 selectedGroup = i;
             }
             noticeGroups.push(JSON.parse($.inidb.get('notices', keys[i])));
@@ -59,11 +61,11 @@
             disabled = noticeGroups[noticeGroups.length - 1].disabled;
             intervalMin = noticeGroups[noticeGroups.length - 1].intervalMin;
             intervalMax = noticeGroups[noticeGroups.length - 1].intervalMax;
-            if (intervalMin == null) {
+            if (intervalMin === null) {
                 intervalMin = intervalMax || 10;
                 inconsistent = true;
             }
-            if (intervalMax == null) {
+            if (intervalMax === null) {
                 intervalMax = intervalMin;
                 inconsistent = true;
             }
@@ -106,7 +108,7 @@
      * @function startNoticeTimer
      */
     function startNoticeTimer(idx, retryCall) {
-        if (retryCall == null) {
+        if (retryCall === null) {
             retryCall = false;
         }
         noticeLock.lock();
@@ -140,7 +142,7 @@
             }
             noticeTimoutIds[idx] = setTimeout(function () {
                 noticeLock.lock();
-                if (noticeTimoutIds[idx] == null) {
+                if (noticeTimoutIds[idx] === null) {
                     // got canceled
                     return;
                 }
@@ -170,7 +172,7 @@
      */
     function stopNoticeTimer(idx) {
         noticeLock.lock();
-        if (noticeTimoutIds[idx] != null) {
+        if (noticeTimoutIds[idx] !== null) {
             clearTimeout(noticeTimoutIds[idx]);
             noticeTimoutIds[idx] = null;
         }
@@ -205,7 +207,7 @@
             if (disabled[noticeIdx]) {
                 return null;
             }
-            var notice = notices[noticeIdx]
+            var notice = notices[noticeIdx];
             if (notice && notice.match(/\(gameonly=.*\)/g)) {
                 var game = notice.match(/\(gameonly=(.*)\)/)[1];
                 if ($.getGame($.channelName).equalsIgnoreCase(game)) {
@@ -236,7 +238,7 @@
         if (!timer.shuffle) {
             for (i = 1; i <= notices.length; i++) {
                 notice = getNotice((lastNoticesSent[groupIdx] + i) % notices.length);
-                if (notice != null) {
+                if (notice !== null) {
                     lastNoticesSent[groupIdx] = (lastNoticesSent[groupIdx] + i) % notices.length;
                     break;
                 }
@@ -244,7 +246,7 @@
         } else {
             for (i = 0; i <= notices.length; i++) {
                 tmp = getNotice(i);
-                if (tmp != null) {
+                if (tmp !== null) {
                     randOptions.push([i, tmp]);
                 }
             }
@@ -345,7 +347,7 @@
             }
         }
         noticeLock.unlock();
-        return name
+        return name;
     }
 
     /**
@@ -605,6 +607,8 @@
                 noticeLock.lock();
                 noticeGroups[selectedGroup].intervalMin = minInterval;
                 noticeGroups[selectedGroup].intervalMax = maxInterval;
+                stopNoticeTimer(selectedGroup);
+                lastTimeNoticesSent[selectedGroup] = 0;
                 startNoticeTimer(selectedGroup);
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
                 noticeLock.unlock();
@@ -879,13 +883,13 @@
                 }
                 noticeLock.lock();
                 noticeGroups.push({
-                    name: params["name"] == null ? "Timer Group" : params["name"],
+                    name: params["name"] === null ? "Timer Group" : params["name"],
                     reqMessages: isNaN(params["reqMessages"]) ? 25 : parseInt(params["reqMessages"]),
                     intervalMin: isNaN(params["intervalMin"]) ? 10 : parseInt(params["intervalMin"]),
                     intervalMax: isNaN(params["intervalMax"]) ? 10 : parseInt(params["intervalMax"]),
-                    shuffle: params["shuffle"] == null ? false : !!params["shuffle"],
-                    noticeToggle: params["noticeToggle"] == null ? false : !!params["noticeToggle"],
-                    noticeOfflineToggle: params["noticeOfflineToggle"] == null ? false : !!params["noticeOfflineToggle"],
+                    shuffle: params["shuffle"] === null ? false : !!params["shuffle"],
+                    noticeToggle: params["noticeToggle"] === null ? false : !!params["noticeToggle"],
+                    noticeOfflineToggle: params["noticeOfflineToggle"] === null ? false : !!params["noticeOfflineToggle"],
                     messages: [],
                     disabled: []
                 });
@@ -894,7 +898,7 @@
                 lastNoticesSent.push(-1);
                 lastTimeNoticesSent.push(0);
                 $.inidb.set('notices', noticeGroups.length - 1, JSON.stringify(noticeGroups[noticeGroups.length - 1]));
-                if (selectedGroup == null) {
+                if (selectedGroup === null) {
                     selectedGroup = noticeGroups.length - 1;
                 }
                 startNoticeTimer(noticeGroups.length - 1);
@@ -932,6 +936,10 @@
                 tmp = JSON.parse($.inidb.get('notices', groupIdx));
                 noticeGroups[groupIdx].messages = tmp.messages;
                 noticeGroups[groupIdx].disabled = tmp.disabled;
+                if (args.length > 2 && $.jsString(args[2]) === 'true') {
+                    stopNoticeTimer(groupIdx);
+                    lastTimeNoticesSent[groupIdx] = 0;
+                }
                 reloadNoticeTimerSettings(groupIdx);
                 noticeLock.unlock();
             }
