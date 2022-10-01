@@ -217,6 +217,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().contains("sql") && error.getMessage().contains("no transaction is active")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("sql") && error.getMessage().contains("no such table")) {
                                     return true;
                                 }
@@ -261,6 +265,18 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().contains("No route to host")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Die Verbindung wurde vom Kommunikationspartner zurückgesetzt")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("PrematureCloseException")) {
+                                    return true;
+                                }
+
                                 if (error.getClass().equals(java.net.ConnectException.class) && error.getMessage().contains("Connection refused")) {
                                     return true;
                                 }
@@ -278,6 +294,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().contains("Address already in use")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.NoSuchFieldException.class)) {
                                     return true;
                                 }
                             }
