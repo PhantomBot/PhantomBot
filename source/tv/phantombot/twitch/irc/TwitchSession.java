@@ -80,6 +80,10 @@ public class TwitchSession extends MessageQueue {
         return this.botName;
     }
 
+    public int getWrites() {
+        return PhantomBot.instance().getTMI().rateLimiter().limit() - PhantomBot.instance().getTMI().rateLimiter().currentTokens();
+    }
+
     private void send(String message, boolean isretry) {
         try {
             if (PhantomBot.instance().getTMI().connected() && this.isJoined) {
