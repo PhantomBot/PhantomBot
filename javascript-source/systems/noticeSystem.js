@@ -262,7 +262,7 @@
             }
         }
 
-        if (notice === null) {
+        if (notice === null || notice === undefined) {
             noticeLock.unlock();
             return false;
         }
