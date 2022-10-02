@@ -56,11 +56,13 @@
             if (selectedGroup === null) {
                 selectedGroup = i;
             }
+
             noticeGroups.push(JSON.parse($.inidb.get('notices', keys[i])));
             messages = noticeGroups[noticeGroups.length - 1].messages;
             disabled = noticeGroups[noticeGroups.length - 1].disabled;
             intervalMin = noticeGroups[noticeGroups.length - 1].intervalMin;
             intervalMax = noticeGroups[noticeGroups.length - 1].intervalMax;
+
             if (intervalMin === null) {
                 intervalMin = intervalMax || 10;
                 inconsistent = true;
@@ -73,6 +75,7 @@
                 while (messages.length > disabled.length) {
                     disabled.push(false);
                 }
+
                 noticeGroups[noticeGroups.length - 1].disabled = disabled;
                 inconsistent = true;
             } else if (messages.length < disabled.length) {
@@ -80,6 +83,7 @@
                 noticeGroups[noticeGroups.length - 1].disabled = disabled;
                 inconsistent = true;
             }
+
             noticeTimoutIds.push(null);
             messageCounts.push(0);
             lastNoticesSent.push(-1);
@@ -92,6 +96,7 @@
                 $.inidb.set('notices', i, JSON.stringify(noticeGroups[i]));
             }
         }
+
         noticeLock.unlock();
     }
 
@@ -111,6 +116,7 @@
         if (retryCall === null) {
             retryCall = false;
         }
+
         noticeLock.lock();
         stopNoticeTimer(idx);
 
@@ -120,6 +126,7 @@
                 rnd = Math.random(),
                 lastSent = lastTimeNoticesSent[idx],
                 time = (minTime + (maxTime - minTime) * rnd) * 6e4;
+
         if (isNaN(time)) {
             time = 10 * 6e4;
         }
@@ -140,6 +147,7 @@
             if (isNaN(time)) {
                 time = 10 * 6e4;
             }
+
             noticeTimoutIds[idx] = setTimeout(function () {
                 noticeLock.lock();
                 if (noticeTimoutIds[idx] === null) {
@@ -155,6 +163,7 @@
                 }
             }, Math.floor(time), 'scripts::handlers::noticeSystem.js::timer_' + idx);
         }
+
         noticeLock.unlock();
     }
 
@@ -176,6 +185,7 @@
             clearTimeout(noticeTimoutIds[idx]);
             noticeTimoutIds[idx] = null;
         }
+
         noticeLock.unlock();
     }
 
@@ -187,14 +197,39 @@
         var timer = noticeGroups[idx],
                 messageCount = messageCounts[idx],
                 res = false;
+
         if (timer.noticeToggle
                 && $.bot.isModuleEnabled('./systems/noticeSystem.js')
                 && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)
                 && (timer.noticeOfflineToggle || $.isOnline($.channelName))) {
             res = sendNotice(idx);
         }
+
         noticeLock.unlock();
         return res;
+    }
+
+    /**
+     * @function getNotice
+     *
+     * @returns {Number} notice index
+     */
+    function getNotice(noticeIdx, timer) {
+        if (timer.disabled[noticeIdx]) {
+            return null;
+        }
+
+        var notice = notices[noticeIdx];
+
+        if (notice && notice.match(/\(gameonly=.*\)/g)) {
+            var game = notice.match(/\(gameonly=(.*)\)/)[1];
+            if ($.getGame($.channelName).equalsIgnoreCase(game)) {
+                return $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
+            }
+
+            return null;
+        }
+        return notice;
     }
 
     /**
@@ -203,29 +238,12 @@
      * @returns {boolean} whether a was found and sent
      */
     function sendNotice(groupIdx) {
-        function getNotice(noticeIdx) {
-            if (disabled[noticeIdx]) {
-                return null;
-            }
-            var notice = notices[noticeIdx];
-            if (notice && notice.match(/\(gameonly=.*\)/g)) {
-                var game = notice.match(/\(gameonly=(.*)\)/)[1];
-                if ($.getGame($.channelName).equalsIgnoreCase(game)) {
-                    return $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
-                } else {
-                    return null;
-                }
-            }
-            return notice;
-        }
-
         noticeLock.lock();
         var EventBus = Packages.tv.phantombot.event.EventBus,
                 CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
                 i,
                 timer = noticeGroups[groupIdx],
                 notices = timer.messages,
-                disabled = timer.disabled,
                 tmp,
                 randOptions = [],
                 notice = null;
@@ -237,7 +255,7 @@
 
         if (!timer.shuffle) {
             for (i = 1; i <= notices.length; i++) {
-                notice = getNotice((lastNoticesSent[groupIdx] + i) % notices.length);
+                notice = getNotice((lastNoticesSent[groupIdx] + i) % notices.length, timer);
                 if (notice !== null) {
                     lastNoticesSent[groupIdx] = (lastNoticesSent[groupIdx] + i) % notices.length;
                     break;
@@ -245,16 +263,18 @@
             }
         } else {
             for (i = 0; i <= notices.length; i++) {
-                tmp = getNotice(i);
+                tmp = getNotice(i, timer);
                 if (tmp !== null) {
                     randOptions.push([i, tmp]);
                 }
             }
+
             if (randOptions.length > 1) {
                 randOptions = randOptions.filter(function (opt) {
                     return opt[0] !== lastNoticesSent[groupIdx];
                 });
             }
+
             if (randOptions.length > 0) {
                 tmp = Math.floor(Math.random() * randOptions.length);
                 notice = randOptions[tmp][1];
@@ -279,6 +299,7 @@
         } else {
             $.say(notice);
         }
+
         noticeLock.unlock();
         return true;
     }
@@ -319,9 +340,11 @@
      */
     $.bind('ircChannelMessage', function (event) {
         noticeLock.lock();
+
         for (var i = 0; i < noticeGroups.length; i++) {
             messageCounts[i]++;
         }
+
         noticeLock.unlock();
     });
 
@@ -338,6 +361,7 @@
     function formatGroupName(id) {
         var name;
         noticeLock.lock();
+
         if (id < 0 || id >= noticeGroups.length) {
             name = "None";
         } else {
@@ -346,6 +370,7 @@
                 name += " (" + noticeGroups[id].name + ")";
             }
         }
+
         noticeLock.unlock();
         return name;
     }
@@ -386,31 +411,41 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
+
                 if (noticeGroups[selectedGroup].messages.length === 0) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-notices', formatGroupName(selectedGroup)));
                     return;
                 }
+
                 length = $.whisperPrefix(sender).length;
                 length += $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), "").length;
                 list = [];
+
                 for (i = 0; i < noticeGroups[selectedGroup].messages.length; i++) {
                     message = '[' + String(i) + '] ' + noticeGroups[selectedGroup].messages[i];
+
                     if (message.length > 48) {
                         message = message.slice(0, 48) + '…';
                     }
+
                     list.push(message);
                     length += message.length + 1;  // + 1 for the space used later to join the messages
+
                     if (length >= 480) {  // message limit is 500. Don't attempt to add another message if only a few characters are left
                         break
                     }
                 }
+
                 noticeLock.unlock();
                 message = $.whisperPrefix(sender) + $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), list.join(' '));
+
                 if (message.length > 500) {
                     message = message.slice(0, 499) + '…';
                 }
+
                 $.say(message);
                 return;
             }
@@ -423,23 +458,26 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
+
                 if (noticeGroups[selectedGroup].messages.length === 0) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-notices', formatGroupName(selectedGroup)));
                     return;
                 }
+
                 if (args.length < 2 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     length = noticeGroups[selectedGroup].messages.length;
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-get-usage', formatGroupName(selectedGroup), length - 1));
                     return;
-                } else {
-                    message = noticeGroups[selectedGroup].messages[parseInt(args[1])];
-                    noticeLock.unlock();
-                    $.say(message);
-                    return;
                 }
+
+                message = noticeGroups[selectedGroup].messages[parseInt(args[1])];
+                noticeLock.unlock();
+                $.say(message);
+                return;
             }
 
             /**
@@ -450,20 +488,21 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
                 if (args.length < 3 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     length = noticeGroups[selectedGroup].messages.length;
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-edit-usage', formatGroupName(selectedGroup), length - 1));
                     return;
-                } else {
-                    argsString = args.slice(2).join(' ');
-                    noticeGroups[selectedGroup].messages[parseInt(args[1])] = argsString;
-                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
-                    noticeLock.unlock();
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-edit-success', formatGroupName(selectedGroup)));
-                    return;
                 }
+
+                argsString = args.slice(2).join(' ');
+                noticeGroups[selectedGroup].messages[parseInt(args[1])] = argsString;
+                $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+                noticeLock.unlock();
+                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-edit-success', formatGroupName(selectedGroup)));
+                return;
             }
 
             /**
@@ -474,19 +513,20 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
                 if (args.length < 2 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-usage', formatGroupName(selectedGroup), noticeGroups[selectedGroup].messages.length));
                     return;
-                } else {
-                    disabled = noticeGroups[selectedGroup].disabled[parseInt(args[1])];
-                    noticeGroups[selectedGroup].disabled[parseInt(args[1])] = !disabled;
-                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
-                    noticeLock.unlock();
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-success', args[1], disabled ? 'enabled' : 'disabled'));
-                    return;
                 }
+
+                disabled = noticeGroups[selectedGroup].disabled[parseInt(args[1])];
+                noticeGroups[selectedGroup].disabled[parseInt(args[1])] = !disabled;
+                $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+                noticeLock.unlock();
+                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-success', args[1], disabled ? 'enabled' : 'disabled'));
+                return;
             }
 
 
@@ -498,23 +538,26 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
                 if (args.length < 2 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     length = noticeGroups[selectedGroup].messages.length;
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-remove-usage', formatGroupName(selectedGroup), length - 1));
                     return;
-                } else {
-                    noticeGroups[selectedGroup].messages.splice(parseInt(args[1]), 1);
-                    noticeGroups[selectedGroup].disabled.splice(parseInt(args[1]), 1);
-                    if (lastNoticesSent[selectedGroup] === parseInt(args[1])) {
-                        lastNoticesSent[selectedGroup] = -1;
-                    }
-                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
-                    noticeLock.unlock();
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-remove-success', formatGroupName(selectedGroup)));
-                    return;
                 }
+
+                noticeGroups[selectedGroup].messages.splice(parseInt(args[1]), 1);
+                noticeGroups[selectedGroup].disabled.splice(parseInt(args[1]), 1);
+
+                if (lastNoticesSent[selectedGroup] === parseInt(args[1])) {
+                    lastNoticesSent[selectedGroup] = -1;
+                }
+
+                $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+                noticeLock.unlock();
+                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-remove-success', formatGroupName(selectedGroup)));
+                return;
             }
 
             /**
@@ -528,16 +571,16 @@
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-add-usage'));
                     return;
-                } else {
-                    argsString = args.slice(1).join(' ');
-                    noticeLock.lock();
-                    noticeGroups[selectedGroup].messages.push(argsString);
-                    noticeGroups[selectedGroup].disabled.push(false);
-                    $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
-                    noticeLock.unlock();
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-add-success', formatGroupName(selectedGroup), noticeGroups[selectedGroup].messages.length - 1));
-                    return;
                 }
+
+                argsString = args.slice(1).join(' ');
+                noticeLock.lock();
+                noticeGroups[selectedGroup].messages.push(argsString);
+                noticeGroups[selectedGroup].disabled.push(false);
+                $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+                noticeLock.unlock();
+                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-add-success', formatGroupName(selectedGroup), noticeGroups[selectedGroup].messages.length - 1));
+                return;
             }
 
             /**
@@ -556,17 +599,18 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-insert-nan'));
                     return;
                 }
+
                 idx = parseInt(args[1]);
                 argsString = args.slice(2).join(' ');
                 noticeLock.lock();
                 length = noticeGroups[selectedGroup].messages.slice(0, idx).length;
                 noticeGroups[selectedGroup].messages =
                         noticeGroups[selectedGroup].messages.slice(0, idx).concat(
-                        [argsString], noticeGroups[selectedGroup].messages.slice(idx)
+                            [argsString], noticeGroups[selectedGroup].messages.slice(idx)
                         );
                 noticeGroups[selectedGroup].disabled =
                         noticeGroups[selectedGroup].disabled.slice(0, idx).concat(
-                        [false], noticeGroups[selectedGroup].disabled.slice(idx)
+                            [false], noticeGroups[selectedGroup].disabled.slice(idx)
                         );
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
                 noticeLock.unlock();
@@ -604,6 +648,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-interval-wrong-order'));
                     return;
                 }
+
                 noticeLock.lock();
                 noticeGroups[selectedGroup].intervalMin = minInterval;
                 noticeGroups[selectedGroup].intervalMax = maxInterval;
@@ -629,6 +674,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-req-404'));
                     return;
                 }
+
                 noticeLock.lock();
                 noticeGroups[selectedGroup].reqMessages = parseInt(args[1]);
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
@@ -644,13 +690,14 @@
                 noticeLock.lock();
                 if (noticeGroups.length > 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config',
-                            formatGroupName(selectedGroup), noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
-                            noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
-                            noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
-                            noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
+                        formatGroupName(selectedGroup), noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
+                        noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
+                        noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
+                        noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                 }
+
                 noticeLock.unlock();
                 return;
             }
@@ -666,14 +713,16 @@
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-usage'));
                     return;
-                } else {
-                    noticeLock.lock();
-                    if (isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups.length) {
-                        noticeLock.unlock();
-                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-404', noticeGroups.length - 1));
-                        return;
-                    }
                 }
+
+                noticeLock.lock();
+
+                if (isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups.length) {
+                    noticeLock.unlock();
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-404', noticeGroups.length - 1));
+                    return;
+                }
+
                 selectedGroup = parseInt(args[1]);
                 noticeLock.unlock();
                 $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-success', formatGroupName(selectedGroup)));
@@ -688,6 +737,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-addgroup-usage'));
                     return;
                 }
+
                 noticeLock.lock();
                 noticeGroups.push({
                     name: args.slice(1).join(' '),
@@ -700,6 +750,7 @@
                     messages: [],
                     disabled: []
                 });
+
                 noticeTimoutIds.push(null);
                 messageCounts.push(0);
                 lastNoticesSent.push(-1);
@@ -723,14 +774,15 @@
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegroup-usage', noticeGroups.length - 1));
                     return;
-                } else {
-                    idx = parseInt(args[1]);
-                    noticeLock.lock();
-                    if (isNaN(idx) || idx < 0 || idx >= noticeGroups.length) {
-                        noticeLock.unlock();
-                        $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegroup-404', noticeGroups.length - 1));
-                        return;
-                    }
+                }
+
+                idx = parseInt(args[1]);
+                noticeLock.lock();
+
+                if (isNaN(idx) || idx < 0 || idx >= noticeGroups.length) {
+                    noticeLock.unlock();
+                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegroup-404', noticeGroups.length - 1));
+                    return;
                 }
 
                 nameOfRemovedGroup = formatGroupName(idx);
@@ -741,9 +793,11 @@
                 messageCounts.splice(idx, 1);
                 lastNoticesSent.splice(idx, 1);
                 lastTimeNoticesSent.splice(idx, 1);
+
                 for (i = idx; i < noticeGroups.length; i++) {
                     $.inidb.set('notices', i, $.inidb.get('notices', i + 1));
                 }
+
                 $.inidb.del('notices', noticeGroups.length);
 
                 if (noticeGroups.length === 0) {
@@ -753,7 +807,9 @@
                 } else if (selectedGroup === idx) {
                     selectedGroup = 0;
                 }
+
                 noticeLock.unlock();
+
                 if (selectedGroup !== null) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegroup-success', nameOfRemovedGroup, formatGroupName(selectedGroup)));
                 } else {
@@ -774,8 +830,10 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-renamegroup-usage'));
                     return;
                 }
+
                 idx = parseInt(args[1]);
                 noticeLock.lock();
+
                 if (isNaN(idx) || idx < 0 || idx >= noticeGroups.length) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-renamegroup-404', noticeGroups.length - 1));
@@ -800,9 +858,11 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
                 noticeGroups[selectedGroup].noticeToggle = !noticeGroups[selectedGroup].noticeToggle;
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+
                 if (noticeGroups[selectedGroup].noticeToggle) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-enabled', formatGroupName(selectedGroup)));
@@ -821,9 +881,11 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
                 noticeGroups[selectedGroup].noticeOfflineToggle = !noticeGroups[selectedGroup].noticeOfflineToggle;
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+
                 if (noticeGroups[selectedGroup].noticeOfflineToggle) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-enabled.offline', formatGroupName(selectedGroup)));
@@ -842,9 +904,11 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
                     return;
                 }
+
                 noticeLock.lock();
                 noticeGroups[selectedGroup].shuffle = !noticeGroups[selectedGroup].shuffle;
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
+
                 if (noticeGroups[selectedGroup].shuffle) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-enabled.shuffle', formatGroupName(selectedGroup)));
@@ -874,6 +938,7 @@
                     eventName = args[0] + '',
                     groupIdx = parseInt(args[1]),
                     tmp;
+
             if (eventName === 'appendGroup') {
                 var params = {};
                 try {
@@ -881,6 +946,7 @@
                 } catch (e) {
                     $.log.error("Received invalid parameters from frontend (" + e + ")\n" + params);
                 }
+
                 noticeLock.lock();
                 noticeGroups.push({
                     name: params["name"] === null ? "Timer Group" : params["name"],
@@ -898,9 +964,11 @@
                 lastNoticesSent.push(-1);
                 lastTimeNoticesSent.push(0);
                 $.inidb.set('notices', noticeGroups.length - 1, JSON.stringify(noticeGroups[noticeGroups.length - 1]));
+
                 if (selectedGroup === null) {
                     selectedGroup = noticeGroups.length - 1;
                 }
+
                 startNoticeTimer(noticeGroups.length - 1);
                 noticeLock.unlock();
             } else if (eventName === 'removeGroup') {
@@ -909,16 +977,20 @@
                     noticeLock.unlock();
                     return;
                 }
+
                 stopNoticeTimer(groupIdx);
                 noticeGroups.splice(groupIdx, 1);
                 noticeTimoutIds.splice(groupIdx, 1);
                 messageCounts.splice(groupIdx, 1);
                 lastNoticesSent.splice(groupIdx, 1);
                 lastTimeNoticesSent.splice(groupIdx, 1);
+
                 for (var i = groupIdx; i < noticeGroups.length; i++) {
                     $.inidb.set('notices', i, $.inidb.get('notices', i + 1));
                 }
+
                 $.inidb.del('notices', noticeGroups.length);
+
                 if (noticeGroups.length === 0) {
                     selectedGroup = null;
                 } else if (selectedGroup > groupIdx) {
@@ -926,6 +998,7 @@
                 } else if (selectedGroup === groupIdx) {
                     selectedGroup = 0;
                 }
+
                 noticeLock.unlock();
             } else if (eventName === 'reloadGroup') {
                 noticeLock.lock();
@@ -933,13 +1006,16 @@
                     noticeLock.unlock();
                     return;
                 }
+
                 tmp = JSON.parse($.inidb.get('notices', groupIdx));
                 noticeGroups[groupIdx].messages = tmp.messages;
                 noticeGroups[groupIdx].disabled = tmp.disabled;
+
                 if (args.length > 2 && $.jsString(args[2]) === 'true') {
                     stopNoticeTimer(groupIdx);
                     lastTimeNoticesSent[groupIdx] = 0;
                 }
+
                 reloadNoticeTimerSettings(groupIdx);
                 noticeLock.unlock();
             }
