@@ -63,11 +63,11 @@
             intervalMin = noticeGroups[noticeGroups.length - 1].intervalMin;
             intervalMax = noticeGroups[noticeGroups.length - 1].intervalMax;
 
-            if (intervalMin === null) {
+            if (intervalMin === null || intervalMin === undefined) {
                 intervalMin = intervalMax || 10;
                 inconsistent = true;
             }
-            if (intervalMax === null) {
+            if (intervalMax === null || intervalMax === undefined) {
                 intervalMax = intervalMin;
                 inconsistent = true;
             }
@@ -112,11 +112,7 @@
     /**
      * @function startNoticeTimer
      */
-    function startNoticeTimer(idx, retryCall) {
-        if (retryCall === null) {
-            retryCall = false;
-        }
-
+    function startNoticeTimer(idx, retryCall = false) {
         noticeLock.lock();
         stopNoticeTimer(idx);
 
@@ -134,11 +130,15 @@
             lastSent = now - time;
         }
         if (!retryCall && lastSent + time <= now) {
+            noticeLock.unlock();
+
             if (trySendNotice(idx)) {
                 startNoticeTimer(idx);
             } else {
                 startNoticeTimer(idx, true);
             }
+
+            noticeLock.lock();
         } else {
             time -= now - lastSent;
             if (retryCall) {
@@ -150,15 +150,15 @@
 
             noticeTimoutIds[idx] = setTimeout(function () {
                 noticeLock.lock();
-                if (noticeTimoutIds[idx] === null) {
+                if (noticeTimoutIds[idx] === null || noticeTimoutIds[idx] === undefined) {
                     // got canceled
                     return;
                 }
+
+                noticeLock.unlock();
                 if (trySendNotice(idx)) {
-                    noticeLock.unlock();
                     startNoticeTimer(idx);
                 } else {
-                    noticeLock.unlock();
                     startNoticeTimer(idx, true);
                 }
             }, Math.floor(time), 'scripts::handlers::noticeSystem.js::timer_' + idx);
@@ -181,7 +181,7 @@
      */
     function stopNoticeTimer(idx) {
         noticeLock.lock();
-        if (noticeTimoutIds[idx] !== null) {
+        if (noticeTimoutIds[idx] !== null && noticeTimoutIds[idx] !== undefined) {
             clearTimeout(noticeTimoutIds[idx]);
             noticeTimoutIds[idx] = null;
         }
@@ -202,6 +202,7 @@
                 && $.bot.isModuleEnabled('./systems/noticeSystem.js')
                 && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)
                 && (timer.noticeOfflineToggle || $.isOnline($.channelName))) {
+            noticeLock.unlock();
             res = sendNotice(idx);
         }
 
@@ -219,7 +220,7 @@
             return null;
         }
 
-        var notice = notices[noticeIdx];
+        var notice = timer.messages[noticeIdx];
 
         if (notice && notice.match(/\(gameonly=.*\)/g)) {
             var game = notice.match(/\(gameonly=(.*)\)/)[1];
@@ -248,7 +249,7 @@
                 randOptions = [],
                 notice = null;
 
-        if (notices.length === 0) {
+        if (notices === null || notices === undefined || notices.length === 0 ) {
             noticeLock.unlock();
             return false;
         }
@@ -262,7 +263,7 @@
                 }
             }
         } else {
-            for (i = 0; i <= notices.length; i++) {
+            for (i = 0; i < notices.length; i++) {
                 tmp = getNotice(i, timer);
                 if (tmp !== null) {
                     randOptions.push([i, tmp]);
@@ -311,8 +312,8 @@
         noticeLock.lock();
         noticeGroups[idx] = JSON.parse($.inidb.get('notices', idx));
         lastNoticesSent[idx] = -1;
-        startNoticeTimer(idx);
         noticeLock.unlock();
+        startNoticeTimer(idx);
     }
 
     /**
@@ -331,8 +332,8 @@
     function reloadNoticeTimerSettings(idx) {
         noticeLock.lock();
         noticeGroups[idx] = JSON.parse($.inidb.get('notices', idx));
-        startNoticeTimer(idx);
         noticeLock.unlock();
+        startNoticeTimer(idx);
     }
 
     /**
@@ -375,6 +376,15 @@
         return name;
     }
 
+    function checkForNoticesGroups(sender) {
+        if (noticeGroups === undefined || noticeGroups === null || noticeGroups.length === 0) {
+            $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @event command
      */
@@ -407,8 +417,7 @@
              * @commandpath notice list - Lists the beginning of all notices in the currently selected group
              */
             if (action.equalsIgnoreCase('list')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
@@ -421,7 +430,9 @@
                 }
 
                 length = $.whisperPrefix(sender).length;
+                noticeLock.unlock();
                 length += $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), "").length;
+                noticeLock.lock();
                 list = [];
 
                 for (i = 0; i < noticeGroups[selectedGroup].messages.length; i++) {
@@ -432,21 +443,23 @@
                     }
 
                     list.push(message);
-                    length += message.length + 1;  // + 1 for the space used later to join the messages
+                    length += message.length + 1; // + 1 for the space used later to join the messages
 
-                    if (length >= 480) {  // message limit is 500. Don't attempt to add another message if only a few characters are left
-                        break
+                    if (length >= 480) { // message limit is 500. Don't attempt to add another message if only a few characters are left
+                        break;
                     }
                 }
 
                 noticeLock.unlock();
                 message = $.whisperPrefix(sender) + $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), list.join(' '));
+                noticeLock.lock();
 
                 if (message.length > 500) {
                     message = message.slice(0, 499) + '…';
                 }
 
                 $.say(message);
+                noticeLock.unlock();
                 return;
             }
 
@@ -454,8 +467,7 @@
              * @commandpath notice get [id] - Gets the notice related to the ID in the currently selected group
              */
             if (action.equalsIgnoreCase('get')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
@@ -474,9 +486,8 @@
                     return;
                 }
 
-                message = noticeGroups[selectedGroup].messages[parseInt(args[1])];
+                $.say(noticeGroups[selectedGroup].messages[parseInt(args[1])]);
                 noticeLock.unlock();
-                $.say(message);
                 return;
             }
 
@@ -484,12 +495,12 @@
              * @commandpath notice edit [id] [new message] - Replace the notice at the given ID in the currently selected group
              */
             if (action.equalsIgnoreCase('edit')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
                 noticeLock.lock();
+
                 if (args.length < 3 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     length = noticeGroups[selectedGroup].messages.length;
                     noticeLock.unlock();
@@ -509,12 +520,12 @@
              * @commandpath notice toggleid [id] - Toggles on/off the notice at the given ID
              */
             if (action.equalsIgnoreCase('toggleid')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
                 noticeLock.lock();
+
                 if (args.length < 2 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-usage', formatGroupName(selectedGroup), noticeGroups[selectedGroup].messages.length));
@@ -524,8 +535,8 @@
                 disabled = noticeGroups[selectedGroup].disabled[parseInt(args[1])];
                 noticeGroups[selectedGroup].disabled[parseInt(args[1])] = !disabled;
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
-                noticeLock.unlock();
                 $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-success', args[1], disabled ? 'enabled' : 'disabled'));
+                noticeLock.unlock();
                 return;
             }
 
@@ -534,12 +545,12 @@
              * @commandpath notice remove [id] - Removes the notice related to the given ID in the currently selected group
              */
             if (action.equalsIgnoreCase('remove')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
                 noticeLock.lock();
+
                 if (args.length < 2 || isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups[selectedGroup].messages.length) {
                     length = noticeGroups[selectedGroup].messages.length;
                     noticeLock.unlock();
@@ -564,10 +575,10 @@
              * @commandpath notice add [message or command] - Adds a notice, with a custom message or a command ex: !notice add command:COMMANDS_NAME to the currently selected group
              */
             if (action.equalsIgnoreCase('add')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
+
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-add-usage'));
                     return;
@@ -587,10 +598,10 @@
              * @commandpath notice insert [id] [message or command] - Inserts a notice at place [id], with a custom message or a command ex: !notice add command:COMMANDS_NAME to the currently selected group
              */
             if (action.equalsIgnoreCase('insert')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
+
                 if (args.length < 3) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-insert-usage'));
                     return;
@@ -622,10 +633,10 @@
              * @commandpath notice interval [min minutes] [max minutes] | [fixed minutes] - Sets the notice interval in minutes
              */
             if (action.equalsIgnoreCase('interval')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
+
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-interval-usage'));
                     return;
@@ -652,9 +663,13 @@
                 noticeLock.lock();
                 noticeGroups[selectedGroup].intervalMin = minInterval;
                 noticeGroups[selectedGroup].intervalMax = maxInterval;
+                noticeLock.unlock();
                 stopNoticeTimer(selectedGroup);
+                noticeLock.lock();
                 lastTimeNoticesSent[selectedGroup] = 0;
+                noticeLock.unlock();
                 startNoticeTimer(selectedGroup);
+                noticeLock.lock();
                 $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
                 noticeLock.unlock();
                 $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-inteval-success', formatGroupName(selectedGroup)));
@@ -687,17 +702,17 @@
              * @commandpath notice status - Shows notice configuration for currently selected group
              */
             if (action.equalsIgnoreCase('status')) {
-                noticeLock.lock();
-                if (noticeGroups.length > 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config',
-                        formatGroupName(selectedGroup), noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
-                        noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
-                        noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
-                        noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
-                } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
+                    return;
                 }
 
+                var selGroup = formatGroupName(selectedGroup);
+                noticeLock.lock();
+                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-config',
+                    selGroup, noticeGroups.length, noticeGroups[selectedGroup].noticeToggle,
+                    noticeGroups[selectedGroup].intervalMin, noticeGroups[selectedGroup].intervalMax,
+                    noticeGroups[selectedGroup].reqMessages, noticeGroups[selectedGroup].messages.length,
+                    noticeGroups[selectedGroup].noticeOfflineToggle, noticeGroups[selectedGroup].shuffle));
                 noticeLock.unlock();
                 return;
             }
@@ -706,10 +721,10 @@
              * @commandpath notice selectgroup - Change the group currently selected for inspection and editing
              */
             if (action.equalsIgnoreCase('selectgroup')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
+
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-usage'));
                     return;
@@ -718,8 +733,8 @@
                 noticeLock.lock();
 
                 if (isNaN(parseInt(args[1])) || parseInt(args[1]) < 0 || parseInt(args[1]) >= noticeGroups.length) {
-                    noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-selectgroup-404', noticeGroups.length - 1));
+                    noticeLock.unlock();
                     return;
                 }
 
@@ -757,8 +772,8 @@
                 lastTimeNoticesSent.push(0);
                 selectedGroup = noticeGroups.length - 1;
                 $.inidb.set('notices', selectedGroup, JSON.stringify(noticeGroups[selectedGroup]));
-                startNoticeTimer(selectedGroup);
                 noticeLock.unlock();
+                startNoticeTimer(selectedGroup);
                 $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-addgroup-success', formatGroupName(selectedGroup)));
                 return;
             }
@@ -767,10 +782,10 @@
              * @commandpath notice removegroup [id] - Remove a group of notices
              */
             if (action.equalsIgnoreCase('removegroup')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
+
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegroup-usage', noticeGroups.length - 1));
                     return;
@@ -785,9 +800,10 @@
                     return;
                 }
 
+                noticeLock.unlock();
                 nameOfRemovedGroup = formatGroupName(idx);
-
                 stopNoticeTimer(idx);
+                noticeLock.lock();
                 noticeGroups.splice(idx, 1);
                 noticeTimoutIds.splice(idx, 1);
                 messageCounts.splice(idx, 1);
@@ -815,6 +831,7 @@
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-removegroup-success-none-left', nameOfRemovedGroup));
                 }
+
                 return;
             }
 
@@ -822,10 +839,10 @@
              * @commandpath notice renamegroup [id] [name] - Rename a group of notices
              */
             if (action.equalsIgnoreCase('renamegroup')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
+
                 if (args.length < 3) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-renamegroup-usage'));
                     return;
@@ -835,18 +852,18 @@
                 noticeLock.lock();
 
                 if (isNaN(idx) || idx < 0 || idx >= noticeGroups.length) {
-                    noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-renamegroup-404', noticeGroups.length - 1));
+                    noticeLock.unlock();
                     return;
                 }
 
-                message = $.lang.get('noticesystem.notice-renamegroup-success', formatGroupName(idx), args[2]);
-                noticeGroups[idx].name = '' + args[2];
-
-                $.inidb.set('notices', String(idx), JSON.stringify(noticeGroups[idx]));
                 noticeLock.unlock();
-
+                message = $.lang.get('noticesystem.notice-renamegroup-success', formatGroupName(idx), args[2]);
+                noticeLock.lock();
+                noticeGroups[idx].name = '' + args[2];
+                $.inidb.set('notices', String(idx), JSON.stringify(noticeGroups[idx]));
                 $.say($.whisperPrefix(sender) + message);
+                noticeLock.unlock();
                 return;
             }
 
@@ -854,8 +871,7 @@
              * @commandpath notice toggle - Toggles currently selected notice group on and off
              */
             if (action.equalsIgnoreCase('toggle')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
@@ -870,6 +886,7 @@
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-disabled', formatGroupName(selectedGroup)));
                 }
+
                 return;
             }
 
@@ -877,8 +894,7 @@
              * @commandpath notice toggleoffline - Toggles on and off if notices of currently selected group will be sent in chat if the channel is offline
              */
             if (action.equalsIgnoreCase('toggleoffline')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
@@ -893,6 +909,7 @@
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-disabled.offline', formatGroupName(selectedGroup)));
                 }
+
                 return;
             }
 
@@ -900,8 +917,7 @@
              * @commandpath notice toggleshuffle - Toggles on and off if notices of currently selected group will be sent in random order
              */
             if (action.equalsIgnoreCase('toggleshuffle')) {
-                if (noticeGroups.length === 0) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-no-groups'));
+                if (!checkForNoticesGroups(sender)) {
                     return;
                 }
 
@@ -916,6 +932,7 @@
                     noticeLock.unlock();
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-disabled.shuffle', formatGroupName(selectedGroup)));
                 }
+
                 return;
             }
         }
@@ -969,8 +986,8 @@
                     selectedGroup = noticeGroups.length - 1;
                 }
 
-                startNoticeTimer(noticeGroups.length - 1);
                 noticeLock.unlock();
+                startNoticeTimer(noticeGroups.length - 1);
             } else if (eventName === 'removeGroup') {
                 noticeLock.lock();
                 if (isNaN(groupIdx) || groupIdx >= noticeGroups.length) {
@@ -978,7 +995,9 @@
                     return;
                 }
 
+                noticeLock.unlock();
                 stopNoticeTimer(groupIdx);
+                noticeLock.lock();
                 noticeGroups.splice(groupIdx, 1);
                 noticeTimoutIds.splice(groupIdx, 1);
                 messageCounts.splice(groupIdx, 1);
@@ -1012,12 +1031,14 @@
                 noticeGroups[groupIdx].disabled = tmp.disabled;
 
                 if (args.length > 2 && $.jsString(args[2]) === 'true') {
+                    noticeLock.unlock();
                     stopNoticeTimer(groupIdx);
+                    noticeLock.lock();
                     lastTimeNoticesSent[groupIdx] = 0;
                 }
 
-                reloadNoticeTimerSettings(groupIdx);
                 noticeLock.unlock();
+                reloadNoticeTimerSettings(groupIdx);
             }
         }
     });
