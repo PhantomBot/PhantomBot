@@ -24,7 +24,7 @@
         const idPrefix = groupData === null ? 'add-' : 'edit-';
         const title = groupData === null ? 'Add Group' : 'Edit Group',
               name = groupData === null ? '' : groupData.name,
-              noticeToggle  = groupData === null ? 'Yes' : (groupData.noticeToggle === true ? 'Yes' : 'No'),
+              noticeToggle = groupData === null ? 'Yes' : (groupData.noticeToggle === true ? 'Yes' : 'No'),
               noticeOfflineToggle = groupData === null ? 'No' : (groupData.noticeOfflineToggle === true ? 'Yes' : 'No'),
               intervalMin = groupData === null ? '10' : groupData.intervalMin,
               intervalMax = groupData === null ? '' : (intervalMin === groupData.intervalMax ? '' : groupData.intervalMax),
@@ -214,7 +214,7 @@
                     socket.getDBValue('timer_group_edit_get', 'notices', groupId, function(e) {
                         let groupData = e.notices;
                         if (groupData === null) {
-                            run();  // group doesn't exist anymore => reload
+                            run(); // group doesn't exist anymore => reload
                         }
                         groupData = JSON.parse(groupData);
                         openGroupModal(groupData, function(result) {
@@ -286,7 +286,7 @@
         socket.getDBValue('timer_messages_edit_get', 'notices', String(groupId), function(e) {
             let groupData = e.notices;
             if (groupData === null) {
-                run();  // group doesn't exist anymore => reload
+                run(); // group doesn't exist anymore => reload
                 return;
             }
             groupData = JSON.parse(groupData);
