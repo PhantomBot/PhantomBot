@@ -111,7 +111,8 @@
     /**
      * @function startNoticeTimer
      */
-    function startNoticeTimer(idx, retryCall = false) {
+    function startNoticeTimer(idx, retryCall) {
+        retryCall = (retryCall === undefined || retryCall === null) ? false : retryCall;
         noticeLock.lock();
         stopNoticeTimer(idx);
 
