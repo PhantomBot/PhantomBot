@@ -26,7 +26,7 @@
 (function () {
     var noticeGroups = [],
             selectedGroup = null,
-            noticeTimoutIds = [],
+            noticeTimeoutIds = [],
             noticeLock = new java.util.concurrent.locks.ReentrantLock,
             messageCounts = [],
             lastNoticesSent = [],
@@ -47,7 +47,7 @@
                     intervalMax;
 
             noticeGroups = [];
-            noticeTimoutIds = [];
+            noticeTimeoutIds = [];
             messageCounts = [];
             lastNoticesSent = [];
             lastTimeNoticesSent = [];
@@ -85,7 +85,7 @@
                     inconsistent = true;
                 }
 
-                noticeTimoutIds.push(null);
+                noticeTimeoutIds.push(null);
                 messageCounts.push(0);
                 lastNoticesSent.push(-1);
                 lastTimeNoticesSent.push(0);
@@ -136,7 +136,7 @@
             if (isNaN(time)) {
                 time = 10 * 6e4;
             }
-            if (isNaN(lastSent)) {
+            if (lastSent === null || isNaN(lastSent)) {
                 lastSent = now - time;
             }
             if (!retryCall && lastSent + time <= now) {
@@ -152,14 +152,11 @@
                 if (retryCall) {
                     time = Math.max(5e3, time);
                 }
-                if (isNaN(time)) {
-                    time = 10 * 6e4;
-                }
 
-                noticeTimoutIds[idx] = setTimeout(function () {
+                noticeTimeoutIds[idx] = setTimeout(function () {
                     try {
                         noticeLock.lock();
-                        if (noticeTimoutIds[idx] === null || noticeTimoutIds[idx] === undefined) {
+                        if (noticeTimeoutIds[idx] === null || noticeTimeoutIds[idx] === undefined) {
                             // got canceled
                             return;
                         }
@@ -198,9 +195,9 @@
     function stopNoticeTimer(idx) {
         try {
             noticeLock.lock();
-            if (noticeTimoutIds[idx] !== null && noticeTimoutIds[idx] !== undefined) {
-                clearTimeout(noticeTimoutIds[idx]);
-                noticeTimoutIds[idx] = null;
+            if (noticeTimeoutIds[idx] !== null && noticeTimeoutIds[idx] !== undefined) {
+                clearTimeout(noticeTimeoutIds[idx]);
+                noticeTimeoutIds[idx] = null;
             }
         } finally {
             noticeLock.unlock();
@@ -244,7 +241,7 @@
         if (notice && notice.match(/\(gameonly=.*\)/g)) {
             var game = notice.match(/\(gameonly=(.*)\)/)[1];
             if ($.getGame($.channelName).equalsIgnoreCase(game)) {
-                return $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], "");
+                return $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], '');
             }
 
             return null;
@@ -340,7 +337,7 @@
     }
 
     /**
-     * @function startNoticeTimers
+     * @function reloadNoticeTimers
      * @export $
      */
     function reloadNoticeTimers() {
@@ -398,11 +395,11 @@
             noticeLock.lock();
 
             if (id < 0 || id >= noticeGroups.length) {
-                name = "None";
+                name = 'None';
             } else {
                 name = String(id);
-                if (noticeGroups[id].name !== "") {
-                    name += " (" + noticeGroups[id].name + ")";
+                if (noticeGroups[id].name !== '') {
+                    name += ' (' + noticeGroups[id].name + ')';
                 }
             }
 
@@ -470,11 +467,11 @@
                         return;
                     }
 
-                    length = $.whisperPrefix(sender).length;
-                    length += $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), "").length;
+                    length = ($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), '')).length;
                     list = [];
 
-                    for (i = 0; i < noticeGroups[selectedGroup].messages.length; i++) {
+                    // Message limit is 500. Don't attempt to add another message if only a few characters are left
+                    for (i = 0; i < noticeGroups[selectedGroup].messages.length && length < 480; i++) {
                         message = '[' + String(i) + '] ' + noticeGroups[selectedGroup].messages[i];
 
                         if (message.length > 48) {
@@ -483,10 +480,6 @@
 
                         list.push(message);
                         length += message.length + 1; // + 1 for the space used later to join the messages
-
-                        if (length >= 480) { // message limit is 500. Don't attempt to add another message if only a few characters are left
-                            break;
-                        }
                     }
 
                     message = $.whisperPrefix(sender) + $.lang.get('noticesystem.notice-list', formatGroupName(selectedGroup), list.join(' '));
@@ -771,7 +764,7 @@
             }
 
             /**
-             * @commandpath notice selectgroup - Change the group currently selected for inspection and editing
+             * @commandpath notice selectgroup [id] - Change the group currently selected for inspection and editing
              */
             if (action.equalsIgnoreCase('selectgroup')) {
                 if (!checkForNoticesGroups(sender)) {
@@ -821,7 +814,7 @@
                         disabled: []
                     });
 
-                    noticeTimoutIds.push(null);
+                    noticeTimeoutIds.push(null);
                     messageCounts.push(0);
                     lastNoticesSent.push(-1);
                     lastTimeNoticesSent.push(0);
@@ -860,7 +853,7 @@
                     nameOfRemovedGroup = formatGroupName(idx);
                     stopNoticeTimer(idx);
                     noticeGroups.splice(idx, 1);
-                    noticeTimoutIds.splice(idx, 1);
+                    noticeTimeoutIds.splice(idx, 1);
                     messageCounts.splice(idx, 1);
                     lastNoticesSent.splice(idx, 1);
                     lastTimeNoticesSent.splice(idx, 1);
@@ -925,7 +918,7 @@
             }
 
             /**
-             * @commandpath notice toggle - Toggles currently selected notice group on and off
+             * @commandpath notice toggle - Toggles the currently selected notice group on and off
              */
             if (action.equalsIgnoreCase('toggle')) {
                 if (!checkForNoticesGroups(sender)) {
@@ -950,7 +943,7 @@
             }
 
             /**
-             * @commandpath notice toggleoffline - Toggles on and off if notices of currently selected group will be sent in chat if the channel is offline
+             * @commandpath notice toggleoffline - Toggles on and off if notices of the currently selected group will be sent in chat if the channel is offline
              */
             if (action.equalsIgnoreCase('toggleoffline')) {
                 if (!checkForNoticesGroups(sender)) {
@@ -975,7 +968,7 @@
             }
 
             /**
-             * @commandpath notice toggleshuffle - Toggles on and off if notices of currently selected group will be sent in random order
+             * @commandpath notice toggleshuffle - Toggles on and off if notices of the currently selected group will be sent in random order
              */
             if (action.equalsIgnoreCase('toggleshuffle')) {
                 if (!checkForNoticesGroups(sender)) {
@@ -1025,23 +1018,23 @@
                 try {
                     params = JSON.parse(args[1]);
                 } catch (e) {
-                    $.log.error("Received invalid parameters from frontend (" + e + ")\n" + params);
+                    $.log.error('Received invalid parameters from frontend (' + e + ')\n' + params);
                 }
 
                 try {
                     noticeLock.lock();
                     noticeGroups.push({
-                        name: params["name"] === null ? "Timer Group" : params["name"],
-                        reqMessages: isNaN(params["reqMessages"]) ? 25 : parseInt(params["reqMessages"]),
-                        intervalMin: isNaN(params["intervalMin"]) ? 10 : parseInt(params["intervalMin"]),
-                        intervalMax: isNaN(params["intervalMax"]) ? 10 : parseInt(params["intervalMax"]),
-                        shuffle: params["shuffle"] === null ? false : !!params["shuffle"],
-                        noticeToggle: params["noticeToggle"] === null ? false : !!params["noticeToggle"],
-                        noticeOfflineToggle: params["noticeOfflineToggle"] === null ? false : !!params["noticeOfflineToggle"],
+                        name: (params['name'] === null || params['name'] === undefined) ? 'Timer Group' : params['name'],
+                        reqMessages: (params['reqMessages'] === null || isNaN(params['reqMessages'])) ? 25 : parseInt(params['reqMessages']),
+                        intervalMin: (params['intervalMin'] === null || isNaN(params['intervalMin'])) ? 10 : parseInt(params['intervalMin']),
+                        intervalMax: (params['intervalMax'] === null || isNaN(params['intervalMax'])) ? 10 : parseInt(params['intervalMax']),
+                        shuffle: (params['shuffle'] === null || params['shuffle'] === undefined) ? false : !!params['shuffle'],
+                        noticeToggle: (params['noticeToggle'] === null || params['noticeToggle'] === undefined) ? false : !!params['noticeToggle'],
+                        noticeOfflineToggle: (params['noticeOfflineToggle'] === null || params['noticeOfflineToggle'] === undefined) ? false : !!params['noticeOfflineToggle'],
                         messages: [],
                         disabled: []
                     });
-                    noticeTimoutIds.push(null);
+                    noticeTimeoutIds.push(null);
                     messageCounts.push(0);
                     lastNoticesSent.push(-1);
                     lastTimeNoticesSent.push(0);
@@ -1064,7 +1057,7 @@
 
                     stopNoticeTimer(groupIdx);
                     noticeGroups.splice(groupIdx, 1);
-                    noticeTimoutIds.splice(groupIdx, 1);
+                    noticeTimeoutIds.splice(groupIdx, 1);
                     messageCounts.splice(groupIdx, 1);
                     lastNoticesSent.splice(groupIdx, 1);
                     lastTimeNoticesSent.splice(groupIdx, 1);
