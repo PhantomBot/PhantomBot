@@ -31,7 +31,6 @@
             messageCounts = [],
             lastNoticesSent = [],
             lastTimeNoticesSent = [];
-    loadNotices();
 
     /**
      * @function loadNotices
@@ -943,6 +942,7 @@
      */
     $.bind('initReady', function () {
         $.registerChatCommand('./systems/noticeSystem.js', 'notice', $.PERMISSION.Admin);
+        loadNotices();
         startNoticeTimers();
     });
 
