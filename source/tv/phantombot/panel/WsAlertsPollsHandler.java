@@ -33,11 +33,17 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author gmt2001
  */
 public class WsAlertsPollsHandler implements WsFrameHandler {
+
+    private static final String KEY_EVENT_TYPE = "type";
 
     private final WsAuthenticationHandler authHandler;
 
@@ -120,10 +126,17 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     public void triggerAudioPanel(String audioHook) {
+        this.triggerAudioPanel(audioHook, false);
+    }
+
+    public void triggerAudioPanel(String audioHook, boolean ignoreIsPlaying) {
         try {
             com.gmt2001.Console.debug.println("triggerAudioPanel: " + audioHook);
             JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("audio_panel_hook").value(audioHook).endObject();
+            jsonObject.object()
+                    .key("audio_panel_hook").value(audioHook)
+                    .key("ignoreIsPlaying").value(ignoreIsPlaying)
+                    .endObject();
             sendJSONToAll(jsonObject.toString());
         } catch (JSONException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -141,14 +154,125 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         }
     }
 
-    public void alertImage(String imageInfo) {
+    public void stopMedia(String type) {
         try {
-            com.gmt2001.Console.debug.println("alertImage: " + imageInfo);
             JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("alert_image").value(imageInfo).endObject();
+            jsonObject.object()
+                    .key("stopMedia").value("all")
+                    .endObject();
             sendJSONToAll(jsonObject.toString());
         } catch (JSONException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+
+    public void alertImage(String imageInfo) {
+        this.alertImage(imageInfo, false);
+    }
+
+    public void alertImage(String imageInfo, boolean ignoreIsPlaying) {
+        try {
+            com.gmt2001.Console.debug.println("alertImage: " + imageInfo);
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("alert_image").value(imageInfo)
+                    .key("ignoreIsPlaying").value(ignoreIsPlaying)
+                    .endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    public void playVideo(String filename, int durationMs, boolean fullscreen) {
+        JSONStringer json = new JSONStringer();
+        json.object()
+                .key(KEY_EVENT_TYPE).value("playVideoClip")
+                .key("filename").value(filename)
+                .key("duration").value(durationMs)
+                .key("fullscreen").value(fullscreen)
+                .endObject();
+        this.sendJSONToAll(json.toString());
+    }
+
+    /**
+     * Takes a string to parse and trigger one or more emotes.
+     * Each emote entry is separated by a '/'.
+     * An emote describes its occurrences in the (here not relevant) string in simple start-stop notation.
+     * Multiple occurrences are separated by a comma.
+     * <p>
+     * This is the default method that handles Twitch style emotes and uses the default emote provider Twitch
+     *
+     * @param emoteString a string in format of Twitch's emote format e.g. "425618:0-2,4-6,8-10/145315:12-24"
+     */
+    public void triggerEmotes(String emoteString) {
+        Map<String, Integer> emotes = Arrays.stream(emoteString.split("/"))
+                .map((singleEmotes -> singleEmotes.split(";")))
+                .collect(Collectors.toMap(strings -> strings[0], strings -> strings[1].split(",").length));
+        emotes.forEach(this::triggerEmote);
+    }
+
+    public void triggerEmotes(String[] emotes, String provider) {
+        for (String emote : emotes) {
+            this.triggerEmote(emote, provider);
+        }
+    }
+
+    public void triggerEmote(String image) {
+        this.triggerEmote(image, "twitch");
+    }
+
+    public void triggerEmote(String image, int amount) {
+        this.triggerEmote(image, amount, "twitch");
+    }
+
+    public void triggerEmote(String image, String provider) {
+        this.triggerEmote(image, 1, provider);
+    }
+
+    public void triggerEmote(String emoteId, int amount, String provider) {
+        this.triggerEmote(emoteId, amount, provider, false);
+    }
+
+    public void triggerEmote(String emoteId, int amount, String provider, boolean ignoreSleep) {
+        try {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("emoteId").value(emoteId)
+                    .key("amount").value(amount)
+                    .key("provider").value(provider)
+                    .key("ignoreSleep").value(ignoreSleep)
+                    .endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    public void triggerEmoteAnimation(String emoteId, int amount, String provider, String animationName, int duration, boolean ignoreSleep) {
+        try {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object()
+                    .key("emoteId").value(emoteId)
+                    .key("amount").value(amount)
+                    .key("provider").value(provider)
+                    .key("duration").value(duration)
+                    .key("animationName").value(animationName)
+                    .key("ignoreSleep").value(ignoreSleep)
+                    .endObject();
+            sendJSONToAll(jsonObject.toString());
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+    }
+
+    /**
+     * Sends a macro to be played by the alerts overlay
+     *
+     * @param macroJson A json string with commands
+     */
+    public void sendMacro(String macroJson) {
+        sendJSONToAll(macroJson);
     }
 }

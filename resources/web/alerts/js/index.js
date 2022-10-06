@@ -391,7 +391,7 @@ $(function () {
         switch (provider) {
             case PROVIDER_TWITCH:
                 // Taken from the entry "emotes" on https://dev.twitch.tv/docs/irc/tags/#privmsg-twitch-tags
-                emoteUrl = 'https://static-cdn.jtvnw.net/emoticons/v1/' + emoteId + '/3.0';
+                emoteUrl = 'https://static-cdn.jtvnw.net/emoticons/v2/' + emoteId + '/default/dark/3.0';
                 break;
             case PROVIDER_LOCAL:
                 emoteUrl = '/config/emotes/' + emoteId;
