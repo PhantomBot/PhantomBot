@@ -1,0 +1,96 @@
+<!--
+    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<main>
+    <!-- Header -->
+    <section class="content-header">
+        <h1>Keyword Emotes</h1>
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li>Keywords</li>
+            <li class="active">Keyword Emotes</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <label class="switch" data-toggle="tooltip" title="Module toggle">
+                    <input type="checkbox" id="keywordEmotesToggle">
+                    <span class="slider round"></span>
+                </label>
+
+                <h3 class="box-title">Keywords</h3>
+            </div>
+            <!-- Box content -->
+            <div class="box-body">
+                <button class="btn btn-primary btn-sm pull-right" type="button" id="keywordEmote-add-button">
+                    <i class="fa fa-plus"></i>&nbsp; Add Emote-Keyword
+                </button>
+
+                <div class="load-ajax">
+                    <div class="spinner"></div>
+                    <p class="load-ajax-text">Loading...</p>
+                </div>
+
+                <table id="keywordsTable" class="table table-bordered table-hover"></table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dialog -->
+    <div class="modal fade" id="keywordEmote-editModal" tabIndex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="editModalLabel">${action} title</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="keywordEmote-keyword">Keyword</label>
+                            <input type="text" class="form-control" id="keywordEmote-keyword" placeholder="phantombot"/>
+                            <label for="keywordEmote-isRegex" class="checkbox-inline">
+                                <input id="keywordEmote-isRegex" class="form-check-input" type="checkbox"
+                                       data-toggle="tooltip"
+                                       data-original-title="The keyword uses a regular expression"/>
+                                Regex</label>
+                            <label for="keywordEmote-isCaseSensitive" class="checkbox-inline">
+                                <input id="keywordEmote-isCaseSensitive" class="form-check-input" type="checkbox"
+                                       data-toggle="tooltip" data-original-title="The keyword is case-sensitive"/>
+                                Case-Sensitive
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="keywordEmote-image">Image</label>
+                            <input type="text" class="form-control" id="keywordEmote-image" placeholder="image.png"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="keywordEmote-edit-save" type="button">Save</button>
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- keywords -->
+    <script src="/panel/js/pages/keywords/keywordEmotes.js"></script>
+</main>
