@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2021 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,10 @@
  */
 
 (function () {
-    const datebaseModuleId = 'keyword_emotes';
+    const databaseModuleId = 'keyword_emotes';
     const emoteProvider = 'local';
     const handlerModule = './handlers/keywordEmotesHandler.js';
-    let keywords = new Map();
+    var keywords = undefined;
 
     // Reference
     const json = {
@@ -27,21 +27,22 @@
         isCaseSensitive: false,
         cooldown: 0,
         image: 'sample.gif',
-    }
+    };
 
     function loadKeywords() {
-        let keyValuePairs = $.inidb.GetKeyValueList(datebaseModuleId, '');
-        keywords = new Map();
-        for (let i = 0; i < keyValuePairs.length; i++) {
-            let keyword = String(keyValuePairs[i].getKey());
+        var keyValuePairs = $.inidb.GetKeyValueList(databaseModuleId, '');
+
+        keywords = {};
+        for (var i = 0; i < keyValuePairs.length; i++) {
+            var keyword = String(keyValuePairs[i].getKey());
             try {
-                let json = JSON.parse(keyValuePairs[i].getValue());
+                var json = JSON.parse(keyValuePairs[i].getValue());
                 if (json.isRegex) {
                     json.regexKey = new RegExp(keyword, json.isCaseSensitive ? '' : 'i');
                 }
-                keywords.set(keyword, json);
+                keywords[keyword] = json;
             } catch (ex) {
-                $.log.error(`Could not process keyword "${keyword}": ${ex.message}`);
+                $.log.error("Could not process keyword " + keyword + ": " + ex.message});
             }
         }
     }
@@ -49,7 +50,8 @@
     $.bind('ircChannelMessage', function (event) {
         var message = String(event.getMessage());
 
-        keywords.forEach((json, keyword) => {
+        Object.keys(keywords).forEach(keyword => {
+            var json = keywords[keyword];
             var count = 0;
             if (json.isRegex) {
                 var re = new RegExp(keyword, 'g' + (json.isCaseSensitive ? 'i' : ''));
