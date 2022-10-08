@@ -385,7 +385,7 @@ $(function () {
         const browserSafeId = emoteId.replace(/\W/g, '');
 
         // a pseudo unique id to make sure, the keyframe names won't interfere each other
-        const uniqueId = `${Date.now()}${Math.random().toString(16).substr(2, 8)}`
+        const uniqueId = `${Date.now()}${Math.random().toString(16).substr(2, 8)}`;
 
         let emoteUrl;
         switch (provider) {
@@ -511,7 +511,7 @@ $(function () {
         let volume = getOptionSetting(CONF_VIDEO_CLIP_VOLUME, '0.8');
 
         let video = document.createElement('video');
-        video.src = `${defaultPath}/${filename}`
+        video.src = `${defaultPath}/${filename}`;
         video.autoplay = false;
         video.preload = 'auto';
         video.volume = volume;

@@ -25,7 +25,7 @@ public class EmotesCacheUpdatedEvent extends EmotesEvent {
      * }
      * }
      */
-    private NativeObject bttvEmotes;
+    private final NativeObject bttvEmotes;
 
     /**
      * Contents of the ffzEmote Cache
@@ -42,9 +42,10 @@ public class EmotesCacheUpdatedEvent extends EmotesEvent {
      * }
      * }
      */
-    private NativeObject ffzEmotes;
+    private final NativeObject ffzEmotes;
 
     public EmotesCacheUpdatedEvent(NativeObject bttvEmotes, NativeObject ffzEmotes) {
+        super();
         this.bttvEmotes = bttvEmotes;
         this.ffzEmotes = ffzEmotes;
     }
