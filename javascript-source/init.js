@@ -181,21 +181,20 @@
         if (path === undefined || path === null) {
             return;
         }
-        var files = $.findFiles('./scripts/' + path, ''),
-                i;
+        var files = $api.findFiles($.javaString('./scripts/' + path), $.javaString(''));
 
-        for (i in files) {
-            files[i] = $.jsString(files[i]);
+        for (var i = 0; i < files.size(); i++) {
+            var file = $.jsString(files.get(i));
             if (path === '.') {
-                if (files[i] === 'lang' || files[i] === 'discord' || files[i] === 'init.js') {
+                if (file === 'lang' || file === 'discord' || file === 'init.js') {
                     continue;
                 }
             }
 
-            if ($.isDirectory('./scripts/' + path + '/' + files[i])) {
-                loadScriptRecursive(path + '/' + files[i], silent, (force && path !== './core' && path !== './discord/core' ? force : false));
+            if ($api.isDirectory($.javaString('./scripts/' + path + '/' + file))) {
+                loadScriptRecursive(path + '/' + file, silent, (force && path !== './core' && path !== './discord/core' ? force : false));
             } else {
-                loadScript(path + '/' + files[i], (force && path !== './core' && path !== './discord/core' ? force : false), silent);
+                loadScript(path + '/' + file, (force && path !== './core' && path !== './discord/core' ? force : false), silent);
             }
         }
     }

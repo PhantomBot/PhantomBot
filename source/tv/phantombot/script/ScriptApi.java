@@ -18,7 +18,13 @@ package tv.phantombot.script;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public final class ScriptApi {
 
@@ -68,5 +74,21 @@ public final class ScriptApi {
 
     public Script getScript(Script script, String fileName) throws IOException {
         return ScriptManager.getScript(new File(new File("./scripts/"), fileName));
+    }
+
+    public boolean isDirectory(String path) {
+        return Files.isDirectory(Paths.get(path));
+    }
+
+    public List<String> findFiles(String path, String needle) throws IOException {
+        List<String> files = new ArrayList<>();
+
+        if (this.isDirectory(path)) {
+            try ( Stream<Path> fileStream = Files.find(Paths.get(path), 1, (p, a) -> p.getFileName().toString().contains(needle) && !p.getFileName().toString().equals("."), FileVisitOption.FOLLOW_LINKS)) {
+                fileStream.forEach(p -> files.add(p.getFileName().toString()));
+            }
+        }
+
+        return files;
     }
 }
