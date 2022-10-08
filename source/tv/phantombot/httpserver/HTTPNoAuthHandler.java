@@ -161,7 +161,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             String start = "./web/";
             String path = qsd.path();
 
-            if (path.startsWith("/config/audio-hooks") || path.startsWith("/config/gif-alerts") || path.startsWith("/addons")) {
+            if (path.startsWith("/config/audio-hooks") || path.startsWith("/config/gif-alerts") || path.startsWith("/addons") || path.startsWith("/config/clips") || path.startsWith("/config/emotes")) {
                 start = ".";
             }
 
@@ -175,6 +175,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             if (!PathValidator.isValidPathWeb(p.toString()) || (!p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web"))
                     && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./addons"))
                     && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./config/audio-hooks"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./config/clips"))
+                    && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./config/emotes"))
                     && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./config/gif-alerts")))
                     || (p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel"))
                     && !p.toAbsolutePath().startsWith(Paths.get(Reflect.GetExecutionPath(), "./web/panel/vendors"))
