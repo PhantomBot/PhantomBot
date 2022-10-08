@@ -33,8 +33,19 @@ import java.util.List;
  */
 public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-    private static final List<String> ALLOWNONSSLPATHS = List.of("/addons", "/alerts", "/common", "/config/audio-hooks", "/config/gif-alerts",
-            "/favicon", "/obs/poll-chart", "/presence", "/ws/alertspolls");
+    private static final List<String> ALLOWNONSSLPATHS = List.of(
+            "/addons",
+            "/alerts",
+            "/common",
+            "/config/audio-hooks",
+            "/config/clips",
+            "/config/emotes",
+            "/config/gif-alerts",
+            "/favicon",
+            "/obs/poll-chart",
+            "/presence",
+            "/ws/alertspolls"
+            );
 
     /**
      * Default Constructor

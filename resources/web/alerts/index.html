@@ -21,51 +21,94 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <!-- Title -->
-        <title>PhantomBot Alerts</title>
+<head>
+    <!-- Title -->
+    <title>PhantomBot Alerts</title>
+    <link rel="stylesheet" href="/alerts/css/animate.min.css"/>
+    <!-- Main styles. -->
+    <style>
+        body {
+            background-color: transparent;
+        }
 
-        <!-- Main styles. -->
-        <style>
-            body {
-                background-color: transparent;
-            }
+        #main-video-clips {
+            text-align: center;
+        }
 
-            .main-alert {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+        .main-alert {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-            .main-text-alert {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        </style>
+        .main-text-alert {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        <!-- Load our favicon -->
-        <link rel="icon" href="/favicon.ico" />
-    </head>
+        #main-emotes {
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
 
-    <!-- Main body -->
-    <body>
-        <div class="main-alert">
-            <!-- Where the gif gets played. -->
-            <div id="alert"></div>
-        </div>
-        <div class="main-text-alert">
-            <!-- Where the custom gif text is displayed. -->
-            <div id="alert-text"></div>
-        </div>
+        #browserInteractionButton {
+            cursor: pointer;
+            font-size: 2em;
+            font-weight: 30;
+            margin: 0 25vw;
+            position: absolute;
+            top: 50%;
+            width: 50vw;
+        }
 
-        <!-- jQuery -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <!-- Bot config file -->
-        <script src="/common/js/wsConfig.js"></script>
-        <!-- Reconnecting socket -->
-        <script src="/common/reconnecting-websocket/reconnectingWS.min.js"></script>
-        <!-- File that handles alerts -->
-        <script src="/alerts/js/index.js"></script>
-    </body>
+        video.fullscreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .animatedEmote {
+            position: fixed;
+        }
+    </style>
+
+    <!-- Load our favicon -->
+    <link rel="icon" href="/favicon.ico"/>
+</head>
+
+<!-- Main body -->
+<body>
+    <div id="main-video-clips">
+        <!-- Where the video clips are played. -->
+    </div>
+    <div id="main-emotes">
+        <!-- Where the emotes are played. -->
+    </div>
+    <div class="main-alert">
+        <!-- Where the gif gets played. -->
+        <div id="alert"></div>
+    </div>
+    <div class="main-text-alert">
+        <!-- Where the custom gif text is displayed. -->
+        <div id="alert-text"></div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha384-i61gTtaoovXtAbKjo903+O55Jkn2+RtzHtvNez+yI49HAASvznhe9sZyjaSHTau9" crossorigin="anonymous"></script>
+    <!-- Vanilla JS Keyframes -->
+    <script src="/alerts/js/keyframes.dist.js"></script>
+    <!-- Bot config file -->
+    <script src="/common/js/wsConfig.js"></script>
+    <!-- Reconnecting socket -->
+    <script src="/common/reconnecting-websocket/reconnectingWS.min.js"></script>
+    <!-- File that handles alerts -->
+    <script src="/alerts/js/index.js"></script>
+</body>
 </html>

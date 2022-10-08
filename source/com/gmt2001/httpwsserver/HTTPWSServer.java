@@ -342,9 +342,13 @@ public final class HTTPWSServer {
      * @return true otherwise
      */
     static boolean validateUriPath(String path, boolean isWs) {
-        return (isWs ? path.startsWith("/ws") : !path.startsWith("/ws"))
+        return (isWs == path.startsWith("/ws"))
                 || !path.contains("..")
-                || !(path.startsWith("/config") && !path.startsWith("/config/audio-hooks") && !path.startsWith("/config/gif-alerts"));
+                || !(path.startsWith("/config")
+                && !path.startsWith("/config/audio-hooks")
+                && !path.startsWith("/config/clips")
+                && !path.startsWith("/config/emotes")
+                && !path.startsWith("/config/gif-alerts"));
     }
 
     /**
