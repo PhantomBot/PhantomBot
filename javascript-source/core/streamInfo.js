@@ -18,7 +18,6 @@
 /* global Packages */
 
 (function () {
-    var currentGame = null;
     var count = 1;
     var gamesPlayed;
 
