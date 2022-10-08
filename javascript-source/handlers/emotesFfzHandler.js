@@ -1,9 +1,9 @@
 (function () {
     const emoteProvider = 'ffz';
-    let emotes = [];
+    var emotes = [];
 
     function loadCacheFromDatabase() {
-        let cacheContents = $.inidb.get('emotecache', 'ffzEmotes');
+        var cacheContents = $.inidb.get('emotecache', 'ffzEmotes');
         if (cacheContents !== undefined) {
             prepareLocalCache(JSON.parse(cacheContents));
         } else {
@@ -23,10 +23,10 @@
     }
 
     $.bind('ircChannelMessage', function (event) {
-        let message = String(event.getMessage());
+        var message = String(event.getMessage());
         emotes.forEach((emote) => {
-            let count = 0;
-            let lastPosition = message.indexOf(emote.code);
+            var count = 0;
+            var lastPosition = message.indexOf(emote.code);
             while (lastPosition !== -1) {
                 count++;
                 lastPosition = message.indexOf(emote.code, lastPosition + 1);

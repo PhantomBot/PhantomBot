@@ -50,12 +50,12 @@
             i, j,
             emoteRegExp,
             newEmotesRegExpList = [];
-        let bttvEmotesCache = { global: [], local: [], shared: [] };
-        let ffzEmotesCache = { global: [], local: [], shared: [] };
+        var bttvEmotesCache = { global: [], local: [], shared: [] };
+        var ffzEmotesCache = { global: [], local: [], shared: [] };
 
         jsonArray = bttvEmotes.getJSONArray('data');
         for (i = 0; i < jsonArray.length(); i++) {
-            let emoteObject = jsonArray.getJSONObject(i);
+            var emoteObject = jsonArray.getJSONObject(i);
             emote = emoteObject.getString('code');
 
             // Check for emote at the beginning, middle and end of a string.
@@ -72,7 +72,7 @@
         if (bttvLocalEmotes.has('channelEmotes')) {
             jsonArray = bttvLocalEmotes.getJSONArray('channelEmotes');
             for (i = 0; i < jsonArray.length(); i++) {
-                let emoteObject = jsonArray.getJSONObject(i);
+                var emoteObject = jsonArray.getJSONObject(i);
                 emote = emoteObject.getString('code');
 
                 // Check for emote at the beginning, middle and end of a string.
@@ -90,7 +90,7 @@
         if (bttvLocalEmotes.has('sharedEmotes')) {
             jsonArray = bttvLocalEmotes.getJSONArray('sharedEmotes');
             for (i = 0; i < jsonArray.length(); i++) {
-                let emoteObject = jsonArray.getJSONObject(i);
+                var emoteObject = jsonArray.getJSONObject(i);
                 emote = emoteObject.getString('code');
 
                 // Check for emote at the beginning, middle and end of a string.
@@ -110,7 +110,7 @@
             currentSet = String(defaultSets.getInt(i));
             jsonArray = ffzEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
             for (j = 0; j < jsonArray.length(); j++) {
-                let emoteObject = jsonArray.getJSONObject(j);
+                var emoteObject = jsonArray.getJSONObject(j);
                 emote = $.replace($.replace($.replace($.replace($.replace(emoteObject.getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
@@ -129,7 +129,7 @@
             currentSet = String(ffzLocalEmotes.getJSONObject('room').getInt('set'));
             jsonArray = ffzLocalEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
             for (i = 0; i < jsonArray.length(); i++) {
-                let emoteObject = jsonArray.getJSONObject(j);
+                var emoteObject = jsonArray.getJSONObject(j);
                 emote = $.replace($.replace($.replace($.replace($.replace(emoteObject.getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
 
                 // Check for emote at the beginning, middle and end of a string.
@@ -154,8 +154,8 @@
         $.consoleDebug("Loaded Emotes from BetterTwitchTV: " + bttvEmotesCache.global.length + "global, " + bttvEmotesCache.shared.length + " shared, " + bttvEmotesCache.local.length + " local");
         $.consoleDebug("Loaded Emotes from FrankerFacez: " + ffzEmotesCache.global.length + "global, " + ffzEmotesCache.shared.length + " shared, " + ffzEmotesCache.local.length + " local");
 
-        let EventBus = Packages.tv.phantombot.event.EventBus;
-        let EmotesCacheUpdatedEvent = Packages.tv.phantombot.event.emotes.EmotesCacheUpdatedEvent;
+        var EventBus = Packages.tv.phantombot.event.EventBus;
+        var EmotesCacheUpdatedEvent = Packages.tv.phantombot.event.emotes.EmotesCacheUpdatedEvent;
         EventBus.instance().post(new EmotesCacheUpdatedEvent(bttvEmotesCache, ffzEmotesCache));
     }
 

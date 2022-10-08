@@ -17,11 +17,11 @@
 
 (function () {
     const handlerModule = './handlers/emojiHandler.js';
-    let emoteProvider = 'maxcdn';
+    var emoteProvider = 'maxcdn';
 
     $.bind('ircChannelMessage', function (event) {
-        let codepoints = Packages.tv.phantombot.scripts.handler.EmojiProcessor.extractAllEmojiToCodepoint(event.getMessage());
-        let emojiCounts = Packages.tv.phantombot.scripts.handler.EmojiProcessor.groupByCount(codepoints);
+        var codepoints = Packages.tv.phantombot.scripts.handler.EmojiProcessor.extractAllEmojiToCodepoint(event.getMessage());
+        var emojiCounts = Packages.tv.phantombot.scripts.handler.EmojiProcessor.groupByCount(codepoints);
 
         if (emojiCounts.size() > 0) {
             emojiCounts.forEach((codepoint, count) =>
