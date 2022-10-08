@@ -1,10 +1,6 @@
 # macOS Setup Guide
 
-1. You will need a Twitch account for your bot. [Create one here](https://www.twitch.tv/signup). We do not recommend using your streaming account.
-
-2. Once you have the account, you will need to get a oauth token from [Twitch Apps](https://phantombot.github.io/PhantomBot/oauth/). This will allow the bot to login to your newly created Twitch account.
-
-3. Once you connect with Twitch on that page it will give you a oauth token, make sure to copy it.
+You will need a Twitch account for your bot. [Create one here](https://www.twitch.tv/signup). We do not recommend using your streaming account.
 
 **Make sure you mod the bot in your channel or it will not talk in chat. /mod my_bot_name.**
 
@@ -37,9 +33,6 @@
 8. Follow the steps on screen. It will ask you for the bot username, use the username you created earlier.
 After that it will ask you for a oauth token, paste the one you got from Twitch Apps.
 After that enter the channel you wish the bot to join. (Your channel)
-And now your bot should be connected to your channel! You can find a list of commands for the bot [here](https://phantombot.github.io/PhantomBot/commands/).
-
-9. Type `exit` and hit Enter in the bot console to shut it down gracefully.
 
 #### Automatically Refreshing OAuth
 

@@ -16,6 +16,8 @@
  */
 package com.gmt2001.twitch.tmi;
 
+import com.gmt2001.DurationString;
+import java.time.Duration;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
@@ -184,9 +186,14 @@ final class TMISlashCommands {
             try {
                 duration = Integer.parseInt(params[2]);
             } catch (NumberFormatException ex) {
-                com.gmt2001.Console.err.println("Failed to convert " + params[2] + " to an integer, using default /timeout duration");
-                com.gmt2001.Console.err.printStackTrace(ex, false, true);
-                duration = 600;
+                Duration d = DurationString.from(params[2]);
+                if (!d.isZero() && !d.isNegative()) {
+                    duration = (int) d.getSeconds();
+                } else {
+                    com.gmt2001.Console.err.println("Failed to convert " + params[2] + " to an integer, using default /timeout duration");
+                    com.gmt2001.Console.err.printStackTrace(ex, false, true);
+                    duration = 600;
+                }
             }
         }
 

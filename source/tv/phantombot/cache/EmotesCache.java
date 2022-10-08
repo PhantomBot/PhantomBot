@@ -26,14 +26,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
-import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
 
 public class EmotesCache implements Runnable {
 
-    private static final long LOOP_SLEEP_EMOTES_DISABLED = 60L;
-    private static final long LOOP_SLEEP_EMOTES_ENABLED = 60L * 60L;
+    private static final long LOOP_SLEEP_EMOTES = 60L * 60L * 1000L;
     private static final Map<String, EmotesCache> instances = new ConcurrentHashMap<>();
 
     public static EmotesCache instance(String channel) {
@@ -52,7 +50,6 @@ public class EmotesCache implements Runnable {
     private Instant lastFail = Instant.now();
     private int numfail = 0;
     private boolean killed = false;
-    private long loopSleep = 0;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private EmotesCache(String channel) {
@@ -82,8 +79,6 @@ public class EmotesCache implements Runnable {
     @Override
     @SuppressWarnings("SleepWhileInLoop")
     public void run() {
-        loopSleep = 600L;
-
         while (!killed) {
             try {
                 if (Instant.now().isAfter(timeoutExpire)) {
@@ -95,7 +90,7 @@ public class EmotesCache implements Runnable {
             }
 
             try {
-                Thread.sleep(loopSleep * 1000L);
+                Thread.sleep(LOOP_SLEEP_EMOTES);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.debug.println("EmotesCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
             }
@@ -119,21 +114,6 @@ public class EmotesCache implements Runnable {
         JSONObject bttvLocalJsonResult;
         JSONObject ffzJsonResult;
         JSONObject ffzLocalJsonResult;
-        String emotesModEnabled;
-
-        emotesModEnabled = PhantomBot.instance().getDataStore().GetString("chatModerator", "", "emotesToggle");
-
-        if (emotesModEnabled == null) {
-            loopSleep = LOOP_SLEEP_EMOTES_DISABLED;
-            return;
-        }
-        if (!emotesModEnabled.equals("true")) {
-            loopSleep = LOOP_SLEEP_EMOTES_DISABLED;
-            return;
-        }
-
-        // We will pull emotes, set the sleep to every 10 minutes.
-        loopSleep = LOOP_SLEEP_EMOTES_ENABLED;
 
         com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
 

@@ -4,7 +4,7 @@
 
     function loadCacheFromDatabase() {
         var cacheContents = $.inidb.get('emotecache', 'bttvEmotes');
-        if (cacheContents !== undefined) {
+        if (cacheContents !== undefined && cacheContents !== null && cacheContents.length() > 0) {
             prepareLocalCache(JSON.parse(cacheContents));
         } else {
             // No cache :(
