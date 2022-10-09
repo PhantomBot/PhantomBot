@@ -111,8 +111,10 @@ public class TwitchSession extends MessageQueue {
                 }
             }
             com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to send message to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
