@@ -49,9 +49,25 @@ import tv.phantombot.twitch.api.Helix;
  */
 public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage> implements WsClientFrameHandler {
 
+    /**
+     * The URI to TMI
+     */
     private static final String TMI_URI = "wss://irc-ws.chat.twitch.tv:443";
+    /**
+     * A {@link WindowedRateLimiter} to handle the PRIVMSG rate limit
+     */
     private final WindowedRateLimiter rateLimiter = new WindowedRateLimiter(30000L, 100);
+    /**
+     * A {@link WSPinger} to handle pinging to detect connection failure
+     */
+    private final WSPinger pinger = new WSPinger(Duration.ofSeconds(15), Duration.ofSeconds(5), 4);
+    /**
+     * Indicates when the connection is legitimately closing and should not be reconnected
+     */
     private boolean closing = false;
+    /**
+     * The underlying {@link WSClient} for the connection
+     */
     private WSClient client;
 
     /**
@@ -59,7 +75,8 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     public TwitchMessageInterface() {
         try {
-            this.client = new WSClient(new URI(TMI_URI), this, new WSPinger(Duration.ofSeconds(15), Duration.ofSeconds(5), 4));
+            this.client = new WSClient(new URI(TMI_URI), this, this.pinger);
+            com.gmt2001.Console.debug.println("Created a new WSClient");
         } catch (URISyntaxException | SSLException | IllegalArgumentException ex) {
             com.gmt2001.Console.err.println("Failed to create WSClient for TMI [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -67,6 +84,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
         }
 
         ExecutorService.schedule(() -> {
+            com.gmt2001.Console.debug.println("Loading processors via reflection");
             Reflect.instance().loadPackageRecursive(AbstractTMIProcessor.class.getName().substring(0, AbstractTMIProcessor.class.getName().lastIndexOf('.')));
             Reflect.instance().getSubTypesOf(AbstractTMIProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractTMIProcessor.class.getName()))).forEachOrdered((c) -> {
                 for (Constructor constructor : c.getConstructors()) {
@@ -289,7 +307,8 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
         }
 
         try {
-            this.client = new WSClient(new URI(TMI_URI), this);
+            this.client = new WSClient(new URI(TMI_URI), this, this.pinger);
+            com.gmt2001.Console.debug.println("Created a new WSClient");
         } catch (URISyntaxException | SSLException | IllegalArgumentException ex) {
             com.gmt2001.Console.err.println("Failed to create WSClient for TMI [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);

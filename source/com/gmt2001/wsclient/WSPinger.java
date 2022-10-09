@@ -149,15 +149,18 @@ public class WSPinger implements WsClientFrameHandler {
     @Override
     public void onClose() {
         synchronized (lock) {
+            boolean changed = false;
             if (this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 this.timerFuture.cancel(true);
+                changed = true;
             }
 
             if (this.failureFuture != null && !this.failureFuture.isCancelled() && !this.failureFuture.isDone()) {
                 this.failureFuture.cancel(true);
+                changed = true;
             }
 
-            if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+            if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false) && changed) {
                 com.gmt2001.Console.debug.println("Pinger Stopped: Remote[" + this.remote + "]");
             }
         }
@@ -169,7 +172,9 @@ public class WSPinger implements WsClientFrameHandler {
      * @param client
      */
     void setClient(WSClient client) {
-        this.client = client;
+        synchronized (lock) {
+            this.client = client;
+        }
     }
 
     /**

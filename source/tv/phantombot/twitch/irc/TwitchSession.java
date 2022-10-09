@@ -52,6 +52,7 @@ public class TwitchSession extends MessageQueue {
                 this.reconnect();
             }
         }, 20, TimeUnit.SECONDS);
+        com.gmt2001.Console.debug.println("Started the initial connection failure timer");
     }
 
     public void doSubscribe() {
