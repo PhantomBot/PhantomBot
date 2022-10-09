@@ -25,11 +25,13 @@ $(function () {
         moduleEmoji: './handlers/emojiHandler.js',
         moduleBttv: './handlers/emotesBttvHandler.js',
         moduleFfz: './handlers/emotesFfzHandler.js',
+        moduleKeywordEmotes: './handlers/keywordEmotesHandler.js',
 
         checkboxEmoji: 'enableEmoji',
         checkboxBttv: 'enableBttv',
         checkboxFfz: 'enableFfz',
-    };
+        checkboxKeywordEmotes: 'enableKeywordEmotes',
+};
 
     page.init = function () {
         let closure = this;
@@ -37,7 +39,7 @@ $(function () {
         checkBoxMap[this.moduleEmoji] = this.checkboxEmoji;
         checkBoxMap[this.moduleBttv] = this.checkboxBttv;
         checkBoxMap[this.moduleFfz] = this.checkboxFfz;
-        console.log(Object.keys(checkBoxMap));
+        checkBoxMap[this.moduleKeywordEmotes] = this.checkboxKeywordEmotes;
         Object.keys(checkBoxMap).forEach((modulePath, index) => {
             socket.getDBValue(this.moduleId + '_get_' + index, 'modules', modulePath, function (e) {
                 let checkbox = document.getElementById(checkBoxMap[modulePath]);
