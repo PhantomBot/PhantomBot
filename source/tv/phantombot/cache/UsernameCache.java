@@ -16,6 +16,7 @@
  */
 package tv.phantombot.cache;
 
+import com.gmt2001.ExecutorService;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,7 +45,7 @@ public class UsernameCache {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.lookupUserDataAsync(List.of(CaselessProperties.instance().getProperty("user").toLowerCase(),
                 CaselessProperties.instance().getProperty("channel").toLowerCase())).subscribe();
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+        ExecutorService.scheduleAtFixedRate(() -> {
             Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
             Thread.currentThread().setName("UsernameCache::GC");
             final Instant expiresBefore = Instant.now().minus(1, ChronoUnit.HOURS);

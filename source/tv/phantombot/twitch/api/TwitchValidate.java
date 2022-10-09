@@ -16,6 +16,7 @@
  */
 package tv.phantombot.twitch.api;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
@@ -25,7 +26,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +72,7 @@ public class TwitchValidate {
     private TwitchValidate() {
         // Set the default exception handler thread.
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> this.doValidations(), REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
+        ExecutorService.scheduleAtFixedRate(() -> this.doValidations(), REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
     private void doValidationA() {
@@ -219,7 +219,7 @@ public class TwitchValidate {
             this.validateChat(token, "CHAT (oauth)");
         } else {
             this.validaterC.updateToken(token);
-            Executors.newSingleThreadExecutor().execute(() -> this.doValidationC());
+            ExecutorService.execute(() -> this.doValidationC());
         }
     }
 
@@ -252,7 +252,7 @@ public class TwitchValidate {
             this.validateAPI(token, "API (apioauth)");
         } else {
             this.validaterA.updateToken(token);
-            Executors.newSingleThreadExecutor().execute(() -> this.doValidationA());
+            ExecutorService.execute(() -> this.doValidationA());
         }
     }
 
@@ -285,7 +285,7 @@ public class TwitchValidate {
             this.validateApp(token, "APP (EventSub)");
         } else {
             this.validaterT.updateToken(token);
-            Executors.newSingleThreadExecutor().execute(() -> this.doValidationT());
+            ExecutorService.execute(() -> this.doValidationT());
         }
     }
 

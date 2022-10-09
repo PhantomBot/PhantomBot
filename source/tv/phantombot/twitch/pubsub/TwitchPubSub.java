@@ -21,9 +21,10 @@
  */
 package tv.phantombot.twitch.pubsub;
 
-import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.RollbarProvider;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -38,7 +39,6 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -72,7 +72,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
         this.botId = botId;
         this.oAuth = oAuth;
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        ExecutorService.schedule(() -> {
             Reflect.instance().loadPackageRecursive(AbstractPubSubProcessor.class.getName().substring(0, AbstractPubSubProcessor.class.getName().lastIndexOf('.')));
             Reflect.instance().getSubTypesOf(AbstractPubSubProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractPubSubProcessor.class.getName()))).forEachOrdered((c) -> {
                 for (Constructor constructor : c.getConstructors()) {
@@ -144,7 +144,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
                     this.backoff.BackoffAsync(() -> {
                         this.connect();
                         if (!this.lastConnectSuccess) {
-                            Executors.newSingleThreadScheduledExecutor().schedule(() -> this.reconnect(), 500, TimeUnit.MILLISECONDS);
+                            ExecutorService.schedule(() -> this.reconnect(), 500, TimeUnit.MILLISECONDS);
                         }
                     });
                 }
@@ -214,7 +214,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
                 this.client = nclient;
             }
 
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            ExecutorService.scheduleAtFixedRate(() -> {
                 Thread.currentThread().setName("tv.phantombot.twitch.pubsub.TwitchPubSub::pingTimer");
                 Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 

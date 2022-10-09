@@ -16,6 +16,7 @@
  */
 package com.gmt2001.eventsub;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
@@ -44,8 +45,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.json.JSONArray;
@@ -72,9 +71,8 @@ public final class EventSub implements HttpRequestHandler {
      * anti-duplicate map when they expire.
      */
     private EventSub() {
-        ScheduledExecutorService svc = Executors.newSingleThreadScheduledExecutor();
-        svc.schedule(() -> this.getSubscriptions(true), 5, TimeUnit.SECONDS);
-        svc.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
+        ExecutorService.schedule(() -> this.getSubscriptions(true), 5, TimeUnit.SECONDS);
+        ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     private static final EventSub INSTANCE = new EventSub();

@@ -16,6 +16,7 @@
  */
 package com.gmt2001.twitch.tmi;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.ratelimiters.WindowedRateLimiter;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
@@ -32,7 +33,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
@@ -64,7 +64,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             return;
         }
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        ExecutorService.schedule(() -> {
             Reflect.instance().loadPackageRecursive(AbstractTMIProcessor.class.getName().substring(0, AbstractTMIProcessor.class.getName().lastIndexOf('.')));
             Reflect.instance().getSubTypesOf(AbstractTMIProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractTMIProcessor.class.getName()))).forEachOrdered((c) -> {
                 for (Constructor constructor : c.getConstructors()) {
@@ -294,7 +294,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             return;
         }
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        ExecutorService.schedule(() -> {
             try {
                 this.closing = false;
 
