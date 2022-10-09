@@ -331,6 +331,8 @@
         </move>
     </target>
 
+    <target depends="clean,jar" name="clean-jar"></target>
+
     <target depends="compile.src.test,post.compile" name="test"/>
 
     <target name="run" depends="jar">
