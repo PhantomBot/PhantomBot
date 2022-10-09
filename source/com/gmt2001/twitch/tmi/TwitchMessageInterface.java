@@ -174,7 +174,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             if (!channel.startsWith("#")) {
                 channel = "#" + channel;
             }
-            this.sendFullCommand(replyToId == null ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
+            this.sendFullCommand(replyToId == null || replyToId.isBlank() ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
         }
     }
 
