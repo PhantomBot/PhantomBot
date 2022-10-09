@@ -33,7 +33,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class ExecutorService {
 
-    private static final ScheduledExecutorService SCHEDULEDEXECUTOR = Executors.newScheduledThreadPool(1);
+    private static final ScheduledExecutorService SCHEDULEDEXECUTOR = Executors.newScheduledThreadPool(4);
+    private static boolean shutdown = false;
 
     private ExecutorService() {
     }
@@ -176,6 +177,16 @@ public class ExecutorService {
      *         java.lang.RuntimePermission}{@code ("modifyThread")}, or the security manager's {@code checkAccess} method denies access.
      */
     public static void shutdown() {
+        shutdown = true;
         SCHEDULEDEXECUTOR.shutdown();
+    }
+
+    /**
+     * Indicates if this ExecutorService is shutdown or in the process of shutting down
+     *
+     * @return
+     */
+    public static boolean isShutdown() {
+        return shutdown;
     }
 }

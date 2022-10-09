@@ -48,6 +48,12 @@ public final class debug {
         return st.length >= 4 ? st[3] : st[0];
     }
 
+    public static String findCallerInfo(String myClassName) {
+        StackTraceElement st = findCaller(myClassName);
+
+        return "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "]";
+    }
+
     public static StackTraceElement findCaller(String myClassName) {
         StackTraceElement[] st = Thread.currentThread().getStackTrace();
         StackTraceElement foundme = null;
