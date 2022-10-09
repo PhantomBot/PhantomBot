@@ -21,13 +21,14 @@
     const handlerModule = './handlers/keywordEmotesHandler.js';
     var keywords = undefined;
 
-    // Reference
+    /** Reference
     const json = {
         isRegex: true,
         isCaseSensitive: false,
         cooldown: 0,
-        image: 'sample.gif',
+        image: 'sample.gif'
     };
+    */
 
     function loadKeywords() {
         var keyValuePairs = $.inidb.GetKeyValueList(databaseModuleId, '');
@@ -42,7 +43,7 @@
                 }
                 keywords[keyword] = json;
             } catch (ex) {
-                $.log.error("Could not process keyword " + keyword + ": " + ex.message});
+                $.log.error("Could not process keyword " + keyword + ": " + ex.message);
             }
         }
     }
