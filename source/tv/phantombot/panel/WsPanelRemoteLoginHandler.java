@@ -106,7 +106,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
 
                 if (!isError) {
                     jsonObject.key("version-data").object().key("version").value(RepoVersion.getPhantomBotVersion()).key("commit").value(RepoVersion.getRepoVersion());
-                    jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion());
+                    jsonObject.key("build-type").value(RepoVersion.getBuildType());
                     jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
                     jsonObject.key("os-version").value(System.getProperty("os.name"));
                     jsonObject.endObject();

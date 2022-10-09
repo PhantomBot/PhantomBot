@@ -648,7 +648,7 @@ public final class PhantomBot implements Listener {
      */
     public String getBotInformation() {
         return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
-                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + this.getBotInfo() + "\r\n\r\n";
+                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\n" + this.getBotInfo() + "\r\n\r\n";
     }
 
     /**

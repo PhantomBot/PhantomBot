@@ -25,9 +25,7 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.6.5.3" />
-    <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="webpanel.version" value="1.6.13" />
+    <property name="version" value="3.6.6.0" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -178,7 +176,6 @@
 
     <target depends="init,ivy-retrieve,classpaths,git.revision" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
-        <echo>${ant.project.name} Control Panel Version ${webpanel.version}</echo>
         <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
             match="repoVersion = &quot;(.*)&quot;;"
@@ -191,10 +188,6 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;${version}&quot;;" />
-        <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="panelVersion = &quot;(.*)&quot;;"
-            replace="panelVersion = &quot;${webpanel.version}&quot;;" />
         <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
             match="isDocker = false;"
@@ -249,10 +242,6 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="phantomBotVersion = &quot;(.*)&quot;;"
             replace="phantomBotVersion = &quot;@phantombot.version@&quot;;" />
-        <replaceregexp
-            file="source/tv/phantombot/RepoVersion.java"
-            match="panelVersion = &quot;(.*)&quot;;"
-            replace="panelVersion = &quot;@webpanel.version@&quot;;" />
         <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
             match="isDocker = (.*);"
@@ -321,10 +310,6 @@
         <copy todir="${res.dir}/scripts">
             <fileset dir="./javascript-source" />
         </copy>
-        <replaceregexp
-            file="${build.dir}/web/panel/js/utils/helpers.js"
-            match="helpers\.PANEL_VERSION = &quot;(.*)&quot;;"
-            replace="helpers\.PANEL_VERSION = &quot;${webpanel.version}&quot;;" />
         <echo level="info" message="staging files into distribution folder." />
         <move todir="${version.folder}">
             <fileset dir="${build.dir}" />
