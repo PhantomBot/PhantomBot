@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.wsclient;
+package com.gmt2001.wspinger;
 
 import com.gmt2001.ExecutorService;
-import io.netty.buffer.Unpooled;
+import com.gmt2001.wsclient.WSClient;
+import com.gmt2001.wsclient.WsClientFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
@@ -27,20 +27,17 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import tv.phantombot.CaselessProperties;
 
 /**
- * Pings the remote endpoint using an RFC6455 PING frame periodically; closes the socket if a PONG is not received after a defined number of PING
- * attempts
+ * Pings the remote endpoint periodically; closes the socket if a PONG is not received after a defined number of PING attempts
  *
  * @author gmt2001
  */
 public class WSPinger implements WsClientFrameHandler {
 
-    /**
-     * An incrementing counter used as a unique payload
-     */
-    private long payload = 1L;
     /**
      * The current number of failures
      */
@@ -70,6 +67,14 @@ public class WSPinger implements WsClientFrameHandler {
      */
     private final int failureLimit;
     /**
+     * A factory method that emits a {@link WebSocketFrame} that can be sent as a PING
+     */
+    private final Supplier<WebSocketFrame> pingFrameFactory;
+    /**
+     * A method that determines if a given frame is a valid PONG
+     */
+    private final Predicate<WebSocketFrame> pongParser;
+    /**
      * Mutex
      */
     private final Object lock = new Object();
@@ -83,7 +88,7 @@ public class WSPinger implements WsClientFrameHandler {
     private String remote = "";
 
     /**
-     * Constructor
+     * Constructor that uses RFC6455 PING/PONG frames
      *
      * @param interval A {@link Duration} indicating the interval at which to send PING frames
      * @param timeout A {@link Duration} indicating the timeout during which a PONG must be received before the PING fails
@@ -91,11 +96,25 @@ public class WSPinger implements WsClientFrameHandler {
      * @throws IllegalArgumentException interval or timeout was less than 5 seconds; failureLimit was less than 1
      */
     public WSPinger(Duration interval, Duration timeout, int failureLimit) {
-        if (interval.isZero() || interval.isNegative() || interval.toSeconds() < 5) {
+        this(interval, timeout, failureLimit, null);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param interval A {@link Duration} indicating the interval at which to send PING frames
+     * @param timeout A {@link Duration} indicating the timeout during which a PONG must be received before the PING fails
+     * @param failureLimit The number of timeouts before the connection is considered failing and is closed
+     * @param pingFrameFactory A factory method that emits a {@link WebSocketFrame} that can be sent as a PING
+     * @param pongParser A method that determines if a given frame is a valid PONG
+     * @throws IllegalArgumentException interval or timeout was less than 5 seconds; failureLimit was less than 1; Any value was null
+     */
+    public WSPinger(Duration interval, Duration timeout, int failureLimit, Supplier<WebSocketFrame> pingFrameFactory, Predicate<WebSocketFrame> pongParser) {
+        if (interval == null || interval.isZero() || interval.isNegative() || interval.toSeconds() < 5) {
             throw new IllegalArgumentException("interval must be at least 5 seconds");
         }
 
-        if (timeout.isZero() || timeout.isNegative() || timeout.toSeconds() < 5) {
+        if (timeout == null || timeout.isZero() || timeout.isNegative() || timeout.toSeconds() < 5) {
             throw new IllegalArgumentException("timeout must be at least 5 seconds");
         }
 
@@ -103,9 +122,53 @@ public class WSPinger implements WsClientFrameHandler {
             throw new IllegalArgumentException("failureLimit must be at least 1");
         }
 
+        if (pingFrameFactory == null) {
+            throw new IllegalArgumentException("pingFrameFactory required");
+        }
+
+        if (pongParser == null) {
+            throw new IllegalArgumentException("pongParser required");
+        }
+
         this.interval = interval;
         this.timeout = timeout;
         this.failureLimit = failureLimit;
+        this.pingFrameFactory = pingFrameFactory;
+        this.pongParser = pongParser;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param interval A {@link Duration} indicating the interval at which to send PING frames
+     * @param timeout A {@link Duration} indicating the timeout during which a PONG must be received before the PING fails
+     * @param failureLimit The number of timeouts before the connection is considered failing and is closed
+     * @param supplierPredicate An object implementing both the PING supplier and the PONG predicate. Defaults to {@link RFC6455PingPong} if
+     * {@code null}
+     * @throws IllegalArgumentException interval or timeout was less than 5 seconds; failureLimit was less than 1; Any value was null
+     */
+    public WSPinger(Duration interval, Duration timeout, int failureLimit, PingPongSupplierPredicate supplierPredicate) {
+        if (interval == null || interval.isZero() || interval.isNegative() || interval.toSeconds() < 5) {
+            throw new IllegalArgumentException("interval must be at least 5 seconds");
+        }
+
+        if (timeout == null || timeout.isZero() || timeout.isNegative() || timeout.toSeconds() < 5) {
+            throw new IllegalArgumentException("timeout must be at least 5 seconds");
+        }
+
+        if (failureLimit < 1) {
+            throw new IllegalArgumentException("failureLimit must be at least 1");
+        }
+
+        if (supplierPredicate == null) {
+            supplierPredicate = new RFC6455PingPong();
+        }
+
+        this.interval = interval;
+        this.timeout = timeout;
+        this.failureLimit = failureLimit;
+        this.pingFrameFactory = supplierPredicate;
+        this.pongParser = supplierPredicate;
     }
 
     /**
@@ -116,7 +179,7 @@ public class WSPinger implements WsClientFrameHandler {
      */
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        if (frame instanceof PongWebSocketFrame) {
+        if (this.pongParser.test(frame)) {
             this.receivedPong();
         }
     }
@@ -130,15 +193,17 @@ public class WSPinger implements WsClientFrameHandler {
     public void handshakeComplete(ChannelHandlerContext ctx) {
         this.onClose();
         synchronized (lock) {
-            this.failureCount = 0;
-            this.lastPong = Instant.now();
-            this.timerFuture = ExecutorService.scheduleAtFixedRate(this::sendPing, this.interval.toMillis(), this.interval.toMillis(), TimeUnit.MILLISECONDS);
-            /**
-             * @botproperty wspingerdebug - If `true`, prints debug messages for active WSPinger instances. Default `false`
-             */
-            if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
-                this.remote = ctx.channel().remoteAddress().toString();
-                com.gmt2001.Console.debug.println("Pinger Started: Remote[" + this.remote + "]");
+            if (this.client != null && this.client.connected() && !ExecutorService.isShutdown()) {
+                this.failureCount = 0;
+                this.lastPong = Instant.now();
+                this.timerFuture = ExecutorService.scheduleAtFixedRate(this::sendPing, this.interval.toMillis(), this.interval.toMillis(), TimeUnit.MILLISECONDS);
+                /**
+                 * @botproperty wspingerdebug - If `true`, prints debug messages for active WSPinger instances. Default `false`
+                 */
+                if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                    this.remote = ctx.channel().remoteAddress().toString();
+                    com.gmt2001.Console.debug.println("Pinger Started: Remote[" + this.remote + "]");
+                }
             }
         }
     }
@@ -171,7 +236,7 @@ public class WSPinger implements WsClientFrameHandler {
      *
      * @param client
      */
-    void setClient(WSClient client) {
+    public void setClient(WSClient client) {
         synchronized (lock) {
             this.client = client;
         }
@@ -190,7 +255,7 @@ public class WSPinger implements WsClientFrameHandler {
             this.failureCount = 0;
 
             if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
-                com.gmt2001.Console.debug.println("Received RFC6455 PONG: Remote[" + this.remote + "]");
+                com.gmt2001.Console.debug.println("Received PONG: Remote[" + this.remote + "]");
             }
         }
     }
@@ -207,7 +272,7 @@ public class WSPinger implements WsClientFrameHandler {
                     this.failureCount++;
 
                     if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
-                        com.gmt2001.Console.debug.println("Failed to receive RFC6455 PONG: Remote[" + this.remote + "] failureCount[" + this.failureCount + "]");
+                        com.gmt2001.Console.debug.println("Failed to receive PONG: Remote[" + this.remote + "] failureCount[" + this.failureCount + "]");
                     }
                 }
 
@@ -223,23 +288,22 @@ public class WSPinger implements WsClientFrameHandler {
     }
 
     /**
-     * Sends an RFC6455 PING frame with the value of payload, then starts the failure timer, increases the payload for the next frame, and ensures
+     * Sends a PING frame with the value of payload, if enabled, then starts the failure timer, increases the payload for the next frame, and ensures
      * payload won't overflow {@link Long.MAX_VALUE}. No-op if client is {@code null}, {@link WSClient.connected()} is {@code false}, or the
      * timerFuture is null, done, or canceled
      */
     private void sendPing() {
         synchronized (lock) {
             if (this.client != null && this.client.connected() && this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
-                this.client.send(new PingWebSocketFrame(Unpooled.copiedBuffer(Long.toString(this.payload).getBytes())));
-                this.failureFuture = ExecutorService.schedule(this::checkPongFailure, this.timeout.toMillis(), TimeUnit.MILLISECONDS);
+                try {
+                    this.client.send(this.pingFrameFactory.get());
+                    this.failureFuture = ExecutorService.schedule(this::checkPongFailure, this.timeout.toMillis(), TimeUnit.MILLISECONDS);
 
-                if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
-                    com.gmt2001.Console.debug.println("Sent a RFC6455 PING: Remote[" + this.remote + "] Payload[" + this.payload + "]");
-                }
-
-                this.payload++;
-                if (this.payload > Long.MAX_VALUE - 5) {
-                    this.payload = 1L;
+                    if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                        com.gmt2001.Console.debug.println("Sent a PING: Remote[" + this.remote + "]");
+                    }
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
         }

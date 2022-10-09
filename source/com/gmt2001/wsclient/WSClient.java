@@ -17,6 +17,7 @@
 package com.gmt2001.wsclient;
 
 import com.gmt2001.dns.CompositeAddressResolverGroup;
+import com.gmt2001.wspinger.WSPinger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -66,7 +67,7 @@ public class WSClient {
      */
     WebSocketFrameHandler frameHandler = null;
     /**
-     * The {@link WSPinger} that will send RFC6455 PING frames on an interval, or {@code null} if this is not desired
+     * The {@link WSPinger} that will send PING on an interval, or {@code null} if this is not desired
      */
     final WSPinger pinger;
     /**
@@ -95,7 +96,7 @@ public class WSClient {
      *
      * @param uri The URI to connect to
      * @param handler An object implementing {@link WsClientFrameHandler} which will receive frames
-     * @param pinger The {@link WSPinger} that will send RFC6455 PING frames on an interval, or {@code null} if this is not desired
+     * @param pinger The {@link WSPinger} that will send PING on an interval, or {@code null} if this is not desired
      * @throws SSLException Failed to create the {@link SslContext}
      * @throws IllegalArgumentException URI scheme is not ws or wss
      */
@@ -269,6 +270,7 @@ public class WSClient {
      * @param closeFrame The close frame to send
      */
     public void close(WebSocketFrame closeFrame) {
+        com.gmt2001.Console.debug.println("caller " + com.gmt2001.Console.debug.findCallerInfo("com.gmt2001.wsclient.WSClient"));
         WebSocketFrameHandler.close(this.channel(), closeFrame).awaitUninterruptibly(5, TimeUnit.SECONDS);
 
         group.shutdownGracefully(3, 5, TimeUnit.SECONDS);
