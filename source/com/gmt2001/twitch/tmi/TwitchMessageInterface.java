@@ -22,6 +22,7 @@ import com.gmt2001.ratelimiters.WindowedRateLimiter;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
 import com.gmt2001.twitch.tmi.processors.AbstractTMIProcessor;
 import com.gmt2001.wsclient.WSClient;
+import com.gmt2001.wsclient.WSPinger;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
@@ -31,6 +32,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.SubmissionPublisher;
@@ -57,7 +59,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     public TwitchMessageInterface() {
         try {
-            this.client = new WSClient(new URI(TMI_URI), this);
+            this.client = new WSClient(new URI(TMI_URI), this, new WSPinger(Duration.ofSeconds(15), Duration.ofSeconds(5), 4));
         } catch (URISyntaxException | SSLException | IllegalArgumentException ex) {
             com.gmt2001.Console.err.println("Failed to create WSClient for TMI [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
