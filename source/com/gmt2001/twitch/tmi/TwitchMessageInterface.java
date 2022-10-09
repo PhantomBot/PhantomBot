@@ -139,7 +139,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
 
     /**
      * Sends an IRC PRIVMSG command as a reply to another message. If the message starts with {@code /me}, then it is passed to
-     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String)} instead.
+     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String, java.lang.String)} instead.
      *
      * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
      *
