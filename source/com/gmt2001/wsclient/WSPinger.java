@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import tv.phantombot.CaselessProperties;
 
 /**
  * Pings the remote endpoint using an RFC6455 PING frame periodically; closes the socket if a PONG is not received after a defined number of PING
@@ -76,6 +77,10 @@ public class WSPinger implements WsClientFrameHandler {
      * The {@link WSClient} that this pinger is connected to
      */
     private WSClient client = null;
+    /**
+     * Remote address for debug messages
+     */
+    private String remote = "";
 
     /**
      * Constructor
@@ -128,6 +133,13 @@ public class WSPinger implements WsClientFrameHandler {
             this.failureCount = 0;
             this.lastPong = Instant.now();
             this.timerFuture = ExecutorService.scheduleAtFixedRate(this::sendPing, this.interval.toMillis(), this.interval.toMillis(), TimeUnit.MILLISECONDS);
+            /**
+             * @botproperty wspingerdebug - If `true`, prints debug messages for active WSPinger instances. Default `false`
+             */
+            if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                this.remote = ctx.channel().remoteAddress().toString();
+                com.gmt2001.Console.debug.println("Pinger Started: Remote[" + this.remote + "]");
+            }
         }
     }
 
@@ -143,6 +155,10 @@ public class WSPinger implements WsClientFrameHandler {
 
             if (this.failureFuture != null && !this.failureFuture.isCancelled() && !this.failureFuture.isDone()) {
                 this.failureFuture.cancel(true);
+            }
+
+            if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                com.gmt2001.Console.debug.println("Pinger Stopped: Remote[" + this.remote + "]");
             }
         }
     }
@@ -167,6 +183,10 @@ public class WSPinger implements WsClientFrameHandler {
 
             this.lastPong = Instant.now();
             this.failureCount = 0;
+
+            if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                com.gmt2001.Console.debug.println("Received RFC6455 PONG: Remote[" + this.remote + "]");
+            }
         }
     }
 
@@ -180,10 +200,18 @@ public class WSPinger implements WsClientFrameHandler {
             if (this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 if (Instant.now().minus(this.timeout).plusMillis(1).isAfter(this.lastPong)) {
                     this.failureCount++;
+
+                    if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                        com.gmt2001.Console.debug.println("Failed to receive RFC6455 PONG: Remote[" + this.remote + "] failureCount[" + this.failureCount + "]");
+                    }
                 }
 
                 if (this.failureCount >= this.failureLimit) {
                     this.client.close(WebSocketCloseStatus.POLICY_VIOLATION, "PING failure limit exceeded");
+
+                    if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                        com.gmt2001.Console.debug.println("Failure limit reached: Remote[" + this.remote + "] failureLimit[" + this.failureLimit + "]");
+                    }
                 }
             }
         }
@@ -199,6 +227,11 @@ public class WSPinger implements WsClientFrameHandler {
             if (this.client != null && this.client.connected() && this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 this.client.send(new PingWebSocketFrame(Unpooled.copiedBuffer(Long.toString(this.payload).getBytes())));
                 this.failureFuture = ExecutorService.schedule(this::checkPongFailure, this.timeout.toMillis(), TimeUnit.MILLISECONDS);
+
+                if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
+                    com.gmt2001.Console.debug.println("Sent a RFC6455 PING: Remote[" + this.remote + "] Payload[" + this.payload + "]");
+                }
+
                 this.payload++;
                 if (this.payload > Long.MAX_VALUE - 5) {
                     this.payload = 1L;
