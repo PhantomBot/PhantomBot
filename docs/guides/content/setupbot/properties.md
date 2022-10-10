@@ -548,6 +548,14 @@ wsdebug - If `true`, information about inbound WS frames for the panel are sent 
 
 &nbsp;
 
+### wspingerdebug
+
+Data Type: _Boolean_
+
+wspingerdebug - If `true`, prints debug messages for active WSPinger instances. Default `false`
+
+&nbsp;
+
 ### youtubekey
 
 Data Type: _String_
