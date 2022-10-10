@@ -65,6 +65,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
+        if (this.client.pinger != null) {
+            this.client.pinger.handleFrame(ctx, frame);
+        }
         this.client.handler.handleFrame(ctx, frame);
     }
 
@@ -81,9 +84,15 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             com.gmt2001.Console.debug.println("200 WS Client: Remote: [" + ctx.channel().remoteAddress().toString() + "]");
             ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                 this.connected = false;
+                if (this.client.pinger != null) {
+                    this.client.pinger.onClose();
+                }
                 this.client.handler.onClose();
             });
             this.connected = true;
+            if (this.client.pinger != null) {
+                this.client.pinger.handshakeComplete(ctx);
+            }
             this.client.handler.handshakeComplete(ctx);
         }
     }

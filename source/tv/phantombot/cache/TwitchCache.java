@@ -22,6 +22,7 @@
  */
 package tv.phantombot.cache;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import java.io.IOException;
@@ -38,8 +39,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +62,6 @@ import tv.phantombot.twitch.api.Helix;
 public final class TwitchCache {
 
     private static final TwitchCache INSTANCE = new TwitchCache();
-    private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     /* Cached data */
     private boolean isOnline = false;
@@ -94,7 +92,7 @@ public final class TwitchCache {
      */
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitchCache() {
-        this.executorService.schedule(this::startup, 1, TimeUnit.SECONDS);
+        ExecutorService.schedule(this::startup, 1, TimeUnit.SECONDS);
     }
 
     private void startup() {
@@ -108,7 +106,7 @@ public final class TwitchCache {
             if (streamTitlen != null) {
                 this.streamTitle = streamTitlen;
             }
-            this.executorService.scheduleAtFixedRate(() -> {
+            ExecutorService.scheduleAtFixedRate(() -> {
                 Thread.currentThread().setName("TwitchCache::updateCache");
                 com.gmt2001.Console.debug.println("TwitchCache::updateCache");
                 try {
@@ -117,7 +115,7 @@ public final class TwitchCache {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }, 0, 30, TimeUnit.SECONDS);
-            this.executorService.scheduleAtFixedRate(() -> {
+            ExecutorService.scheduleAtFixedRate(() -> {
                 Thread.currentThread().setName("TwitchCache::updateClips");
                 com.gmt2001.Console.debug.println("TwitchCache::updateClips");
                 try {
@@ -127,7 +125,7 @@ public final class TwitchCache {
                 }
             }, 0, 1, TimeUnit.MINUTES);
         } else {
-            this.executorService.schedule(this::startup, 1, TimeUnit.SECONDS);
+            ExecutorService.schedule(this::startup, 1, TimeUnit.SECONDS);
         }
     }
 
@@ -485,13 +483,6 @@ public final class TwitchCache {
      */
     public int getViews() {
         return this.views;
-    }
-
-    /**
-     * Destroys the current instance of the TwitchCache object.
-     */
-    public void kill() {
-        this.executorService.shutdown();
     }
 
     /**

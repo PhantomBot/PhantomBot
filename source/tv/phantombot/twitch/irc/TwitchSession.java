@@ -16,12 +16,12 @@
  */
 package tv.phantombot.twitch.irc;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import java.nio.channels.NotYetConnectedException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import tv.phantombot.PhantomBot;
@@ -46,12 +46,13 @@ public class TwitchSession extends MessageQueue {
         super(channelName);
         this.botName = botName;
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        ExecutorService.schedule(() -> {
             if (!this.isJoined) {
                 com.gmt2001.Console.warn.println("Failed to connect to TMI and join #" + this.getChannelName() + ", reconnecting...");
                 this.reconnect();
             }
         }, 20, TimeUnit.SECONDS);
+        com.gmt2001.Console.debug.println("Started the initial connection failure timer");
     }
 
     public void doSubscribe() {
@@ -110,8 +111,10 @@ public class TwitchSession extends MessageQueue {
                 }
             }
             com.gmt2001.Console.err.println("Failed to send message to Twitch [NotYetConnectedException]: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to send message to Twitch [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -158,7 +161,7 @@ public class TwitchSession extends MessageQueue {
                     com.gmt2001.Console.warn.println("Delaying next reconnect " + (this.backoff.GetNextInterval() / 1000) + " seconds...", true);
                     this.backoff.BackoffAsync(() -> {
                         PhantomBot.instance().getTMI().reconnect();
-                        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+                        ExecutorService.schedule(() -> {
                             if (!this.isJoined) {
                                 com.gmt2001.Console.warn.println("Failed to connect to TMI and join #" + this.getChannelName() + ", reconnecting...");
                                 this.reconnect();

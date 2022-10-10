@@ -16,10 +16,9 @@
  */
 package com.gmt2001.ratelimiters;
 
+import com.gmt2001.ExecutorService;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -104,8 +103,7 @@ public class ExponentialBackoff {
         com.gmt2001.Console.debug.println("Interval calculated as " + this.lastIntervalMS + "...");
         this.totalIterations++;
         com.gmt2001.Console.debug.println("Scheduling...");
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.schedule(() -> {
+        ExecutorService.schedule(() -> {
             this.lastBackoff = Instant.now();
             this.setIsBackingOff(false);
             com.gmt2001.Console.debug.println("Unlocked backoff...");
@@ -136,8 +134,7 @@ public class ExponentialBackoff {
         Instant lresetTime = Instant.now().plus(duration);
         this.resetTime = lresetTime;
 
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.schedule(() -> {
+        ExecutorService.schedule(() -> {
             if (this.resetTime == lresetTime) {
                 this.Reset();
             }

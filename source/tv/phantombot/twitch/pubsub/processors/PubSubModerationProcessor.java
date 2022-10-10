@@ -16,12 +16,12 @@
  */
 package tv.phantombot.twitch.pubsub.processors;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.Logger;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,7 +43,7 @@ public class PubSubModerationProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;
     private final Map<String, Instant> timeoutCache = new ConcurrentHashMap<>();
-    private ScheduledExecutorService executorService;
+    private Future future;
 
     public PubSubModerationProcessor() {
         this(TwitchValidate.instance().getAPIUserID().equalsIgnoreCase(""
@@ -67,8 +67,7 @@ public class PubSubModerationProcessor extends AbstractPubSubProcessor {
     @Override
     protected void onSubscribeSuccess() {
         com.gmt2001.Console.out.println("Connected to Twitch Moderation Data Feed for " + this.channelId);
-        this.executorService = Executors.newSingleThreadScheduledExecutor();
-        this.executorService.scheduleAtFixedRate(() -> {
+        this.future = ExecutorService.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.twitch.pubsub.processors.PubSubModerationProcessor::cleanupTimeoutCache");
             Instant now = Instant.now();
             this.timeoutCache.forEach((k, v) -> {
@@ -86,7 +85,7 @@ public class PubSubModerationProcessor extends AbstractPubSubProcessor {
 
     @Override
     protected void onClose() {
-        this.executorService.shutdown();
+        this.future.cancel(true);
         this.timeoutCache.clear();
     }
 

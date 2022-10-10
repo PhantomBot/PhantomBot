@@ -59,6 +59,9 @@ class WSClientInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         this.client.frameHandler = new WebSocketFrameHandler(this.client);
+        if (this.client.pinger != null) {
+            this.client.pinger.setClient(this.client);
+        }
         ChannelPipeline pipeline = ch.pipeline();
 
         if (this.client.sslCtx != null) {

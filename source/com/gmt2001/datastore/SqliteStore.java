@@ -17,6 +17,7 @@
 package com.gmt2001.datastore;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
+import com.gmt2001.ExecutorService;
 import com.gmt2001.PathValidator;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.io.FileUtils;
@@ -152,7 +152,7 @@ public final class SqliteStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::doMaintenance, 3, 3, TimeUnit.HOURS);
+        ExecutorService.scheduleAtFixedRate(this::doMaintenance, 3, 3, TimeUnit.HOURS);
     }
 
     private String sanitizeOrder(String order) {

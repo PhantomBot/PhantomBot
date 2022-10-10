@@ -92,7 +92,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                     jsonObject.key("authtoken").value(this.panelAuthRO).key("authtype").value("read");
                 } else if (jso.getJSONObject("params").getString("user").equals(this.panelUser) && jso.getJSONObject("params").getString("pass").equals(this.panelPassword)) {
                     jsonObject.key("authtoken").value(this.panelAuth).key("authtype").value("read/write");
-                } else if (jso.getJSONObject("params").getString("user").equals("broadcaster")
+                } else if (jso.getJSONObject("params").getString("user").equals("broadcaster") && PhantomBot.instance() != null
                         && PhantomBot.instance().getHTTPOAuthHandler().validateBroadcasterToken(jso.getJSONObject("params").getString("pass"))) {
                     jsonObject.key("authtoken").value(jso.getJSONObject("params").getString("pass")).key("authtype").value("oauth/broadcaster");
                 } else {
@@ -106,7 +106,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
 
                 if (!isError) {
                     jsonObject.key("version-data").object().key("version").value(RepoVersion.getPhantomBotVersion()).key("commit").value(RepoVersion.getRepoVersion());
-                    jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion());
+                    jsonObject.key("build-type").value(RepoVersion.getBuildType());
                     jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
                     jsonObject.key("os-version").value(System.getProperty("os.name"));
                     jsonObject.endObject();

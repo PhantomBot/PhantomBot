@@ -16,12 +16,14 @@
  */
 package com.gmt2001.twitch.tmi;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.ratelimiters.WindowedRateLimiter;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
 import com.gmt2001.twitch.tmi.processors.AbstractTMIProcessor;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
+import com.gmt2001.wspinger.WSPinger;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -30,9 +32,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
@@ -47,9 +49,25 @@ import tv.phantombot.twitch.api.Helix;
  */
 public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage> implements WsClientFrameHandler {
 
+    /**
+     * The URI to TMI
+     */
     private static final String TMI_URI = "wss://irc-ws.chat.twitch.tv:443";
+    /**
+     * A {@link WindowedRateLimiter} to handle the PRIVMSG rate limit
+     */
     private final WindowedRateLimiter rateLimiter = new WindowedRateLimiter(30000L, 100);
+    /**
+     * A {@link WSPinger} to handle pinging to detect connection failure
+     */
+    private final WSPinger pinger = new WSPinger(Duration.ofSeconds(15), Duration.ofSeconds(5), 4, new TMIPingPongSupplierPredicate());
+    /**
+     * Indicates when the connection is legitimately closing and should not be reconnected
+     */
     private boolean closing = false;
+    /**
+     * The underlying {@link WSClient} for the connection
+     */
     private WSClient client;
 
     /**
@@ -57,14 +75,16 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     public TwitchMessageInterface() {
         try {
-            this.client = new WSClient(new URI(TMI_URI), this);
+            this.client = new WSClient(new URI(TMI_URI), this, this.pinger);
+            com.gmt2001.Console.debug.println("Created a new WSClient");
         } catch (URISyntaxException | SSLException | IllegalArgumentException ex) {
             com.gmt2001.Console.err.println("Failed to create WSClient for TMI [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        ExecutorService.schedule(() -> {
+            com.gmt2001.Console.debug.println("Loading processors via reflection");
             Reflect.instance().loadPackageRecursive(AbstractTMIProcessor.class.getName().substring(0, AbstractTMIProcessor.class.getName().lastIndexOf('.')));
             Reflect.instance().getSubTypesOf(AbstractTMIProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractTMIProcessor.class.getName()))).forEachOrdered((c) -> {
                 for (Constructor constructor : c.getConstructors()) {
@@ -139,7 +159,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
 
     /**
      * Sends an IRC PRIVMSG command as a reply to another message. If the message starts with {@code /me}, then it is passed to
-     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String)} instead.
+     * {@link #sendActionPrivMessage(java.lang.String, java.lang.String, java.lang.String)} instead.
      *
      * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped
      *
@@ -174,7 +194,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             if (!channel.startsWith("#")) {
                 channel = "#" + channel;
             }
-            this.sendFullCommand(replyToId == null ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
+            this.sendFullCommand(replyToId == null || replyToId.isBlank() ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
         }
     }
 
@@ -287,14 +307,15 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
         }
 
         try {
-            this.client = new WSClient(new URI(TMI_URI), this);
+            this.client = new WSClient(new URI(TMI_URI), this, this.pinger);
+            com.gmt2001.Console.debug.println("Created a new WSClient");
         } catch (URISyntaxException | SSLException | IllegalArgumentException ex) {
             com.gmt2001.Console.err.println("Failed to create WSClient for TMI [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+        ExecutorService.schedule(() -> {
             try {
                 this.closing = false;
 

@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord.util;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.PathValidator;
 import discord4j.common.util.Snowflake;
@@ -61,7 +62,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import reactor.core.publisher.Flux;
@@ -1187,7 +1187,7 @@ public class DiscordUtil {
         }
 
         com.gmt2001.Console.debug.println("Attempting to delete " + amount + " messages from " + DiscordUtil.channelName(channel));
-        Executors.newSingleThreadExecutor().submit(() -> {
+        ExecutorService.submit(() -> {
             Thread.currentThread().setName("tv.phantombot.discord.util.DiscordUtil::bulkDelete");
             channel.getMessagesBefore(channel.getLastMessageId().orElseThrow()).take(amount).collectList().doOnSuccess(msgs -> {
                 com.gmt2001.Console.debug.println("Found " + msgs.size() + " messages to delete");

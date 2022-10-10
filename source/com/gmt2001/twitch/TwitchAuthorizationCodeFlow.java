@@ -16,6 +16,7 @@
  */
 package com.gmt2001.twitch;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -29,7 +30,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
@@ -173,7 +173,7 @@ public class TwitchAuthorizationCodeFlow {
 
         if (clientid != null && !clientid.isBlank() && clientsecret != null && !clientsecret.isBlank()) {
             com.gmt2001.Console.debug.println("starting timer");
-            Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
+            ExecutorService.scheduleAtFixedRate(() -> {
                 checkAndRefreshTokens();
             }, REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
             this.timerStarted = true;

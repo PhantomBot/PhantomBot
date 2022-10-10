@@ -17,6 +17,7 @@
 package com.gmt2001.wsclient;
 
 import com.gmt2001.dns.CompositeAddressResolverGroup;
+import com.gmt2001.wspinger.WSPinger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -66,6 +67,10 @@ public class WSClient {
      */
     WebSocketFrameHandler frameHandler = null;
     /**
+     * The {@link WSPinger} that will send PING on an interval, or {@code null} if this is not desired
+     */
+    final WSPinger pinger;
+    /**
      * The {@link Channel} for the session
      */
     private Channel channel = null;
@@ -75,7 +80,7 @@ public class WSClient {
     private final EventLoopGroup group = new NioEventLoopGroup();
 
     /**
-     * Constructor
+     * Constructor that does not initialize a {@link WSPinger}
      *
      * @param uri The URI to connect to
      * @param handler An object implementing {@link WsClientFrameHandler} which will receive frames
@@ -83,6 +88,19 @@ public class WSClient {
      * @throws IllegalArgumentException URI scheme is not ws or wss
      */
     public WSClient(URI uri, WsClientFrameHandler handler) throws SSLException, IllegalArgumentException {
+        this(uri, handler, null);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param uri The URI to connect to
+     * @param handler An object implementing {@link WsClientFrameHandler} which will receive frames
+     * @param pinger The {@link WSPinger} that will send PING on an interval, or {@code null} if this is not desired
+     * @throws SSLException Failed to create the {@link SslContext}
+     * @throws IllegalArgumentException URI scheme is not ws or wss
+     */
+    public WSClient(URI uri, WsClientFrameHandler handler, WSPinger pinger) throws SSLException, IllegalArgumentException {
         try {
             this.uri = uri;
 
@@ -107,6 +125,7 @@ public class WSClient {
             }
 
             this.handler = handler;
+            this.pinger = pinger;
             if ("wss".equalsIgnoreCase(scheme)) {
                 this.sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
             } else {
@@ -251,6 +270,7 @@ public class WSClient {
      * @param closeFrame The close frame to send
      */
     public void close(WebSocketFrame closeFrame) {
+        com.gmt2001.Console.debug.println("caller " + com.gmt2001.Console.debug.findCallerInfo("com.gmt2001.wsclient.WSClient"));
         WebSocketFrameHandler.close(this.channel(), closeFrame).awaitUninterruptibly(5, TimeUnit.SECONDS);
 
         group.shutdownGracefully(3, 5, TimeUnit.SECONDS);

@@ -33,9 +33,6 @@ $(function () {
     helpers.DEBUG_STATE = (localStorage.getItem('phantombot_debug_state') !== null ? parseInt(localStorage.getItem('phantombot_debug_state')) : helpers.DEBUG_STATES.NONE);
     // Debug types.
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
-    // Panel version. SEE: https://semver.org/
-    // Example: MAJOR.MINOR.PATCH
-    helpers.PANEL_VERSION = "NONE";
 
     helpers.hashmap = [];
 

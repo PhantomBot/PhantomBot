@@ -16,6 +16,7 @@
  */
 package tv.phantombot.discord;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.dns.CompositeAddressResolverGroup;
 import discord4j.common.ReactorResources;
 import discord4j.common.sinks.EmissionStrategy;
@@ -59,8 +60,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -340,7 +339,6 @@ public class DiscordAPI extends DiscordUtil {
     private static class DiscordEventListener {
 
         private static final List<Long> processedMessages = new CopyOnWriteArrayList<>();
-        private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
@@ -396,8 +394,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.debug.println("guildid=" + DiscordAPI.guildId);
 
             // Set a timer that checks our connection status with Discord every 60 seconds
-            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.scheduleAtFixedRate(() -> {
+            ExecutorService.scheduleAtFixedRate(() -> {
                 if (DiscordAPI.instance().getConnectionState() != ConnectionState.CANNOT_RECONNECT && !PhantomBot.instance().isExiting()) {
                     DiscordAPI.instance().checkConnectionStatus();
                 }
@@ -448,7 +445,7 @@ public class DiscordAPI extends DiscordUtil {
                 Mono<Boolean> isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser);
 
                 DiscordEventListener.processedMessages.add(iMessage.getId().asLong());
-                DiscordEventListener.scheduler.schedule(() -> DiscordEventListener.processedMessages.remove(iMessage.getId().asLong()), 5, TimeUnit.SECONDS);
+                ExecutorService.schedule(() -> DiscordEventListener.processedMessages.remove(iMessage.getId().asLong()), 5, TimeUnit.SECONDS);
 
                 if (iChannel.getType() == Channel.Type.DM) {
                     channel = "DM";

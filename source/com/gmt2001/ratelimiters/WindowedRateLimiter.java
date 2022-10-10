@@ -16,10 +16,9 @@
  */
 package com.gmt2001.ratelimiters;
 
+import com.gmt2001.ExecutorService;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -124,8 +123,7 @@ public class WindowedRateLimiter {
         if (this.takeToken()) {
             command.run();
         } else {
-            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.schedule(() -> {
+            ExecutorService.schedule(() -> {
                 this.waitAndTakeToken(command);
             }, Instant.now().until(this.nextReset, ChronoUnit.MILLIS), TimeUnit.MILLISECONDS);
         }
@@ -141,8 +139,7 @@ public class WindowedRateLimiter {
         if (this.isTokenAvailable()) {
             command.run();
         } else {
-            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-            service.schedule(() -> {
+            ExecutorService.schedule(() -> {
                 this.waitAndRun(command);
             }, Instant.now().until(this.nextReset, ChronoUnit.MILLIS), TimeUnit.MILLISECONDS);
         }

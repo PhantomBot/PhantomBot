@@ -126,6 +126,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleCommand(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null) {
+            return;
+        }
+
         String command = jso.has("command_sync") ? jso.getString("command_sync") : jso.getString("command");
         String username = jso.has("username") ? jso.getString("username") : PhantomBot.instance().getBotName();
         String uniqueID = jso.has("query_id") ? jso.getString("query_id") : "";
@@ -148,6 +152,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleDBUpdate(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("update").getString("table");
         String key = jso.getJSONObject("update").getString("key");
         String value = jso.getJSONObject("update").getString("value");
@@ -164,6 +172,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleDBIncr(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("incr").getString("table");
         String key = jso.getJSONObject("incr").getString("key");
         String value = jso.getJSONObject("incr").getString("value");
@@ -180,6 +192,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleDBDecr(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("decr").getString("table");
         String key = jso.getJSONObject("decr").getString("key");
         String value = jso.getJSONObject("decr").getString("value");
@@ -196,6 +212,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleDBDelKey(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("delkey").getString("table");
         String key = jso.getJSONObject("delkey").getString("key");
         String uniqueID = jso.has("dbdelkey") ? jso.getString("dbdelkey") : "";
@@ -295,6 +315,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleVersion(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null) {
+            return;
+        }
+
         JSONStringer jsonObject = new JSONStringer();
         String version = PhantomBot.instance().getBotInfo();
         String uniqueID = jso.has("version") ? jso.getString("version") : "";
@@ -302,7 +326,7 @@ public class WsPanelHandler implements WsFrameHandler {
         jsonObject.object().key("versionresult").value(uniqueID);
         jsonObject.key("version").value(version);
         jsonObject.key("version-data").object().key("version").value(RepoVersion.getPhantomBotVersion()).key("commit").value(RepoVersion.getRepoVersion());
-        jsonObject.key("build-type").value(RepoVersion.getBuildType()).key("panel-version").value(RepoVersion.getPanelVersion()).endObject();
+        jsonObject.key("build-type").value(RepoVersion.getBuildType()).endObject();
         jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
         jsonObject.key("os-version").value(System.getProperty("os.name"));
         jsonObject.endObject();
@@ -310,6 +334,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleRemote(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null) {
+            return;
+        }
+
         JSONStringer jsonObject = new JSONStringer();
         String uniqueID = jso.has("id") ? jso.getString("id") : "";
         String query = jso.has("query") ? jso.getString("query") : "";
@@ -393,6 +421,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void handleDBQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("query").getString("table");
         String key = jso.getJSONObject("query").getString("key");
         String uniqueID = jso.has("dbquery") ? jso.getString("dbquery") : "";
@@ -411,6 +443,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void handleDBKeysQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("query").getString("table");
         String uniqueID = jso.has("dbkeys") ? jso.getString("dbkeys") : "";
 
@@ -438,6 +474,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void handleDBKeysListQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         JSONArray jsonArray = jso.getJSONArray("query");
         String uniqueID = jso.has("dbkeyslist") ? jso.getString("dbkeyslist") : "";
 
@@ -470,6 +510,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void handleDBKeysByOrderQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("query").getString("table");
         String limit = jso.getJSONObject("query").getString("limit");
         String offset = jso.getJSONObject("query").getString("offset");
@@ -495,6 +539,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void handleDBValuesByOrderQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("query").getString("table");
         String limit = jso.getJSONObject("query").getString("limit");
         String offset = jso.getJSONObject("query").getString("offset");
@@ -526,6 +574,10 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void handleDBKeysSearchQuery(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null || PhantomBot.instance().getDataStore() == null) {
+            return;
+        }
+
         String table = jso.getJSONObject("query").getString("table");
         String key = jso.getJSONObject("query").getString("key");
         String limit = jso.getJSONObject("query").getString("limit");

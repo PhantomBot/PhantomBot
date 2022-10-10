@@ -16,6 +16,7 @@
  */
 package tv.phantombot.ytplayer;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
@@ -31,8 +32,6 @@ import io.netty.util.AttributeKey;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Queue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,11 +71,10 @@ public class WsYTHandler implements WsFrameHandler {
     private int currentState = -10;
     private boolean clientConnected;
     private int bufferCounter;
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public WsYTHandler(String ytAuthRO, String ytAuth) {
         authHandler = new WsSharedRWTokenAuthenticationHandler(ytAuthRO, ytAuth, 10);
-        executor.scheduleAtFixedRate(() -> {
+        ExecutorService.scheduleAtFixedRate(() -> {
             Queue<Channel> channels = WebSocketFrameHandler.getWsSessions("/ws/ytplayer");
             Instant valid = Instant.now().minusSeconds(12);
 

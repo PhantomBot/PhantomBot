@@ -16,6 +16,7 @@
  */
 package tv.phantombot;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.PathValidator;
 import com.gmt2001.Reflect;
@@ -60,8 +61,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.io.FileUtils;
@@ -649,7 +648,7 @@ public final class PhantomBot implements Listener {
      */
     public String getBotInformation() {
         return "\r\nJava Version: " + System.getProperty("java.runtime.version") + "\r\nOS Version: " + System.getProperty("os.name") + " "
-                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\nPanel Version: " + RepoVersion.getPanelVersion() + "\r\n" + this.getBotInfo() + "\r\n\r\n";
+                + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")\r\n" + this.getBotInfo() + "\r\n\r\n";
     }
 
     /**
@@ -1029,6 +1028,7 @@ public final class PhantomBot implements Listener {
         this.print("Stopping all events and message dispatching...");
         ScriptFileWatcher.instance().kill();
         ScriptEventManager.instance().kill();
+        ExecutorService.shutdown();
 
         /* Gonna need a way to pass this to all channels */
         if (this.getSession() != null) {
@@ -1041,12 +1041,6 @@ public final class PhantomBot implements Listener {
 
         if (this.pubSubEdge != null) {
             this.pubSubEdge.shutdown();
-        }
-
-        /* Shutdown all caches */
-        if (this.twitchCache != null) {
-            this.print("Terminating the Twitch online/clips cache...");
-            TwitchCache.instance().kill();
         }
 
         /* Shutdown all caches */
@@ -1368,8 +1362,7 @@ public final class PhantomBot implements Listener {
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(() -> {
+        ExecutorService.scheduleAtFixedRate(() -> {
             if (!RepoVersion.getBuildType().startsWith("edge") && !RepoVersion.getBuildType().startsWith("custom")) {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
@@ -1448,8 +1441,7 @@ public final class PhantomBot implements Listener {
             return;
         }
 
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(() -> {
+        ExecutorService.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
 
             String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));

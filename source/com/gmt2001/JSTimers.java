@@ -18,8 +18,6 @@ package com.gmt2001;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +29,6 @@ public class JSTimers {
 
     private static final JSTimers INSTANCE = new JSTimers();
     private final Map<Integer, JSTimer> timers = new ConcurrentHashMap<>();
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
     private int index = 0;
     private boolean overflow = false;
 
@@ -40,7 +37,7 @@ public class JSTimers {
     }
 
     private JSTimers() {
-        this.executorService.scheduleAtFixedRate(this::cleanup, 15, 15, TimeUnit.MINUTES);
+        ExecutorService.scheduleAtFixedRate(this::cleanup, 15, 15, TimeUnit.MINUTES);
     }
 
     public int setTimeout(Runnable callback, int delayMS) {
@@ -56,7 +53,7 @@ public class JSTimers {
         }
 
         JSTimer timer = new JSTimer(name, false, callback);
-        ScheduledFuture future = this.executorService.schedule(timer::run, delayMS, TimeUnit.MILLISECONDS);
+        ScheduledFuture future = ExecutorService.schedule(timer::run, delayMS, TimeUnit.MILLISECONDS);
         timer.setFuture(future);
 
         this.timers.put(id, timer);
@@ -77,7 +74,7 @@ public class JSTimers {
         }
 
         JSTimer timer = new JSTimer(name, true, callback);
-        ScheduledFuture future = this.executorService.scheduleAtFixedRate(timer::run, delayMS, delayMS, TimeUnit.MILLISECONDS);
+        ScheduledFuture future = ExecutorService.scheduleAtFixedRate(timer::run, delayMS, delayMS, TimeUnit.MILLISECONDS);
         timer.setFuture(future);
 
         this.timers.put(id, timer);

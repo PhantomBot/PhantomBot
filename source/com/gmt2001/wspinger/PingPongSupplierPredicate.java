@@ -14,16 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.gmt2001.wspinger;
 
-// Function that querys all of the data we need.
-$(function() {
-	// Get the version
-	socket.getBotVersion('get_panel_info_version', function(e) {
-		// Set bot version
-		$('#panel-bot-version').html(e['version'].substring(20));
-		// Set the java version.
-		$('#panel-java-version').html(e['java-version']);
-		// Set the OS version.
-		$('#panel-os-version').html(e['os-version']);
-	});
-});
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+/**
+ * An interface representing a single class that implements both a PING supplier and a PONG predicate.
+ *
+ * The supplier should return a {@link WebSocketFrame} that sends a PING as defined by the protocol of the connected remote.
+ *
+ * The predicate should return {@code true} if the supplied {@link WebSocketFrame} is a valid PONG response from the connected remote
+ *
+ * @author gmt2001
+ */
+public interface PingPongSupplierPredicate extends Supplier<WebSocketFrame>, Predicate<WebSocketFrame> {
+}
