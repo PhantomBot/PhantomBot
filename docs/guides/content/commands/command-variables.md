@@ -245,9 +245,20 @@ Defined in script: _./javascript-source/core/transformers/commands.js_
 
 **Formulas:**
 
-- `(count)` - increases the count of how often this command has been called and output new count
+- `(count)` - increases the count of how often this command has been called and outputs new count
+- `(count amount:int)` - increases the count of how often this command has been called by the specified amount and outputs new count
+- `(count amount:int name:str)` - increases the count of how often the named counter has been called by the specified amount and outputs new count
 
 **Labels:** twitch commandevent commands
+
+
+_NOTE: Specify an amount of `0` to display the count without changing it._
+
+_Specify a negative amount to subtract from it._
+
+_To zero the count, use `(count -(count 0 counterName) counterName)`._
+
+_The default counter name is the command name, without the `!`_
 
 
 **Example:**
