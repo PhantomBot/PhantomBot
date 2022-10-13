@@ -19,7 +19,6 @@
     var blacklist = [],
         whitelist = [],
         permitList = {},
-        timeout = {},
         spam = {},
         lastMessage = 0,
 
@@ -76,7 +75,7 @@
         var keys = $.inidb.GetKeyList('discordWhitelist', ''),
             i;
 
-        whitelist = []
+        whitelist = [];
         for (i = 0; i < keys.length; i++) {
             whitelist.push(keys[i].toLowerCase());
         }
@@ -102,7 +101,7 @@
      */
     function isWhiteList(username, message) {
         for (var i in whitelist) {
-            if (message.includes(whitelist[i]) || username == whitelist[i]) {
+            if (message.includes(whitelist[i]) || username === whitelist[i]) {
                 return true;
             }
         }
@@ -142,6 +141,10 @@
         $.discordAPI.deleteMessage(message);
     }
     
+    function userLink(username) {
+        return 'https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase();
+    }
+    
     /*
      * @function embedDelete
      *
@@ -154,13 +157,13 @@
             obj = {},
             i;
 
-        obj['**Deleted_message_of:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Deleted_message_of:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
         obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {
-            if (obj[keys[i]] != '') {
+            if (obj[keys[i]] !== '') {
                 toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
             }
         }
@@ -181,7 +184,7 @@
             obj = {},
             i;
 
-        obj['**Timeout_placed_on:**'] = '[' + username + '](https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase() + ')';
+        obj['**Timeout_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
         obj['**Time:**'] = time + ' seconds.';
@@ -190,7 +193,7 @@
 
         var keys = Object.keys(obj);
         for (i in keys) {
-            if (obj[keys[i]] != '') {
+            if (obj[keys[i]] !== '') {
                 toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
             }
         }
@@ -210,14 +213,14 @@
             obj = {},
             i;
 
-        obj['**Ban_placed_on:**'] = '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')';
+        obj['**Ban_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
         obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {
-            if (obj[keys[i]] != '') {
+            if (obj[keys[i]] !== '') {
                 toSend += keys[i].replace(/_/g, ' ') + ' ' + obj[keys[i]] + '\r\n\r\n';
             }
         }
@@ -267,7 +270,7 @@
             return;
         }
 
-        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')' + ' \r\n\r\n **Creator:** ' + creator);
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + username + '](' + userLink(username) + ')' + ' \r\n\r\n **Creator:** ' + creator);
     });
 
     /*
@@ -281,7 +284,7 @@
             return;
         }
 
-        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + username + '](https://twitch.tv/' + username.toLowerCase() + ')' + ' \r\n\r\n **Creator:** ' + creator);
+        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + username + '](' + userLink(username) + ')' + ' \r\n\r\n **Creator:** ' + creator);
     });
 
     /*
@@ -309,7 +312,7 @@
             message = event.getMessage().toLowerCase(),
             messageLength = message.length();
 
-        if (event.isAdmin() == false && !hasPermit(sender) && !isWhiteList(sender, message)) {
+        if (event.isAdmin() === false && !hasPermit(sender) && !isWhiteList(sender, message)) {
             if (linkToggle && $.discord.pattern.hasLink(message)) {
                 timeoutUser(event.getDiscordMessage());
                 return;
@@ -353,11 +356,9 @@
      * @event discordChannelCommand
      */
     $.bind('discordChannelCommand', function(event) {
-        var sender = event.getSender(),
-            channel = event.getDiscordChannel(),
+        var channel = event.getDiscordChannel(),
             command = event.getCommand(),
             mention = event.getMention(),
-            arguments = event.getArguments(),
             args = event.getArgs(),
             action = args[0],
             subAction = args[1],
@@ -629,7 +630,7 @@
              */
             if (action.equalsIgnoreCase('cleanup')) {
                 var resolvedChannel = null;
-                if (subAction === undefined || (actionArgs == undefined || isNaN(parseInt(actionArgs)))) {
+                if (subAction === undefined || (actionArgs === undefined || isNaN(parseInt(actionArgs)))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.usage'));
                     return;
                 } else if (parseInt(actionArgs) > 10000 || parseInt(actionArgs) < 2) {
@@ -640,7 +641,7 @@
                 if (subAction.match(/<#\d+>/)) {
                     resolvedChannel = $.discordAPI.getChannelByID(subAction.match(/<#(\d+)>/)[1]);
                 }
-                if (resolvedChannel == null) {
+                if (resolvedChannel === null) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.err.unknownchannel', subAction));
                     return;
                 }
