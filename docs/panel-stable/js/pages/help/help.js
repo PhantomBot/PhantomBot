@@ -25,7 +25,5 @@ $(function() {
 		$('#panel-java-version').html(e['java-version']);
 		// Set the OS version.
 		$('#panel-os-version').html(e['os-version']);
-		// Set the panel version.
-		$('#panel-version-number').html(helpers.PANEL_VERSION);
 	});
 });
