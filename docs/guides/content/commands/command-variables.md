@@ -263,7 +263,7 @@ _The default counter name is the command name, without the `!`_
 
 **Example:**
 ```text
-Caster:  !addcom !spam Chat has been spammed (count) times
+Caster: !addcom !spam Chat has been spammed (count) times
 User: !spam
 Bot: Chat has been spammed 5050 times.
 ```
