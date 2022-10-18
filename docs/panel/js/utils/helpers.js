@@ -1262,6 +1262,21 @@ $(function () {
         return parsedDate;
     };
 
+    /**
+     * Returns a function prototype that sets a timeout in the future and executes the given function then
+     *
+     * @param func the function to debounce
+     * @param timeout the timespan to debounce in ms
+     * @returns {(function(...[*]=): void)|*} the given function wrapped in the debounce functionality
+     */
+    helpers.debounce = function(func, timeout = 300){
+      let timer;
+      return (...args) => {
+          window.clearInterval(timer);
+          timer = window.setTimeout(() => { func.apply(this, args); }, timeout);
+      }
+    };
+
     helpers.parseHashmap = function () {
         var hash = window.location.hash.slice(1);
         var kvs = hash.split('&');
