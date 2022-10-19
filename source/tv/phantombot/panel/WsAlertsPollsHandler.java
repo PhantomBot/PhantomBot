@@ -23,8 +23,11 @@ import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,10 +35,6 @@ import org.json.JSONStringer;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
-
-import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -144,10 +143,18 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     public void triggerAudioPanel(String audioHook, float volume) {
+        this.triggerAudioPanel(audioHook, volume, false);
+    }
+
+    public void triggerAudioPanel(String audioHook, float volume, boolean ignoreIsPlaying) {
         try {
             com.gmt2001.Console.debug.println("triggerAudioPanel: " + audioHook);
             JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object().key("audio_panel_hook").value(audioHook).key("audio_panel_volume").value(volume).endObject();
+            jsonObject.object()
+                    .key("audio_panel_hook").value(audioHook)
+                    .key("audio_panel_volume").value(volume)
+                    .key("ignoreIsPlaying").value(ignoreIsPlaying)
+                    .endObject();
             sendJSONToAll(jsonObject.toString());
         } catch (JSONException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -196,10 +203,8 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     /**
-     * Takes a string to parse and trigger one or more emotes.
-     * Each emote entry is separated by a '/'.
-     * An emote describes its occurrences in the (here not relevant) string in simple start-stop notation.
-     * Multiple occurrences are separated by a comma.
+     * Takes a string to parse and trigger one or more emotes. Each emote entry is separated by a '/'. An emote describes its occurrences in the (here
+     * not relevant) string in simple start-stop notation. Multiple occurrences are separated by a comma.
      * <p>
      * This is the default method that handles Twitch style emotes and uses the default emote provider Twitch
      *

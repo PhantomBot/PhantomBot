@@ -79,16 +79,16 @@
      * The default counter name is the command name, without the `!`
      */
     function count(args, event) {
-        match = args.match(/^\s(\S+)(?:\s(.*))?$/);
+        match = $.parseArgs(args, ' ', 2, true);
         var incr = 1;
         var counter = event.getCommand();
 
-        if (match.length > 0 && !isNaN(match[1])) {
+        if (match !== null && match.length > 0 && !isNaN(match[1])) {
             incr = parseInt(incr);
         }
 
-        if (match.length > 1 && match[2].trim().length > 0) {
-            counter = match[2].trim();
+        if (match !== null && match.length > 1 && match[2].length > 0) {
+            counter = match[2];
         }
 
         $.inidb.incr('commandCount', counter, incr);
