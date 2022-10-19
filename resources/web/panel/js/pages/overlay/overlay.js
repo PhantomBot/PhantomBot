@@ -44,7 +44,7 @@ $(function() {
             tables: [
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable, moduleConfigTable,
+                moduleConfigTable, moduleConfigTable
             ],
             keys: [
                 enableAudioHooks, audioHookVolume, enableFlyingEmotes,
@@ -104,13 +104,13 @@ $(function() {
         let stringSettings = Array.prototype.filter.call(inputElements, (element) => element.type !== 'checkbox')
             .map((element) => {
                 let name = element.id.slice(moduleId.length);
-                return `${name[0].toLowerCase()}${name.slice(1)}=${element.value}`
+                return `${name[0].toLowerCase()}${name.slice(1)}=${element.value}`;
             })
             .join('&');
         let booleanSettings = Array.prototype.filter.call(inputElements, (element) => element.type === 'checkbox')
             .map((element) => {
                 let name = element.id.slice(moduleId.length);
-                return `${name[0].toLowerCase()}${name.slice(1)}=${element.checked}`
+                return `${name[0].toLowerCase()}${name.slice(1)}=${element.checked}`;
             })
             .join('&');
         outputElement.value += stringSettings + '&' + booleanSettings;

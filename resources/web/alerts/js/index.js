@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global Keyframes */
+
 $(function () {
     let webSocket = getWebSocket(),
             queryMap = getQueryMap(),
@@ -140,7 +142,7 @@ $(function () {
 
         let ret = audio.canPlayType(formats[type] || type);
 
-        if (getOptionSetting('show-debug', 'false') === 'true') {
+        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true') {
             $('.main-alert').append('<br />supportsAudioType(' + type + '): ' + ret);
         }
 
@@ -167,7 +169,7 @@ $(function () {
 
         let ret = video.canPlayType(formats[type] || type);
 
-        if (getOptionSetting('show-debug', 'false') === 'true') {
+        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true') {
             $('.main-alert').append('<br />supportsVideoType(' + type + '): ' + ret);
         }
 
@@ -309,7 +311,7 @@ $(function () {
             printDebug(`Could not find a supported audio file for ${name}.`, true);
         }
 
-        if (getOptionSetting('show-debug', 'false') === 'true' && path === undefined) {
+        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true' && path === undefined) {
             $('.main-alert').append('<br />getAudioFile(' + name + '): Unable to find file in a supported format');
         }
 
@@ -323,7 +325,7 @@ $(function () {
      */
     function handleAudioHook(json) {
         // Make sure we can allow audio hooks.
-        if (getOptionSetting('allow-audio-hooks', 'false') === 'true') {
+        if (getOptionSetting('enableAudioHooks', getOptionSetting('allow-audio-hooks', 'false')) === 'true') {
             let audioFile = getAudioFile(json.audio_panel_hook),
                     audio;
 
@@ -335,7 +337,7 @@ $(function () {
             // Create a new audio file.
             audio = new Audio(audioFile);
             // Set the volume.
-            audio.volume = getOptionSetting('audio-hook-volume', '1');
+            audio.volume = getOptionSetting('audioHookVolume', getOptionSetting('audio-hook-volume', '1'));
 
             if (json.hasOwnProperty("audio_panel_volume") && json.audio_panel_volume >= 0.0) {
                 audio.volume = json.audio_panel_volume;
