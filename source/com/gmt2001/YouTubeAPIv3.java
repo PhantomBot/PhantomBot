@@ -16,14 +16,9 @@
  */
 package com.gmt2001;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.Duration;
@@ -32,7 +27,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,65 +60,16 @@ public class YouTubeAPIv3 {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    /*
-     * Reads data from a stream.
-     */
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    /*
-     * Populates additional information into a JSON object to be digested
-     * as needed.
-     */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-            String url, int responseCode, String exception,
-            String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
-    }
-
     @SuppressWarnings({
         "null", "SleepWhileInLoop", "UseSpecificCatch"
     })
-    private JSONObject GetData(request_type type, String urlAddress) throws JSONException {
+    private JSONObject GetData(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
-        InputStream inputStream = null;
-        URL urlRaw;
-        HttpsURLConnection urlConn;
-        String jsonText = "";
 
         try {
-            urlRaw = new URL(urlAddress);
-            urlConn = (HttpsURLConnection) urlRaw.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setRequestMethod("GET");
-            urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 "
-                    + "(KHTML, like Gecko) Chrome/44.0.2403.52 Safari/537.36 PhantomBotJ/2015");
-            urlConn.connect();
-
-            if (urlConn.getResponseCode() == 200) {
-                inputStream = urlConn.getInputStream();
-            } else {
-                inputStream = urlConn.getErrorStream();
-            }
-
-            try ( BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")))) {
-                jsonText = readAll(rd);
-            }
+            HttpClientResponse resp = HttpClient.get(URI.create(urlAddress));
+            String jsonText = resp.responseBody();
             jsonResult = new JSONObject(jsonText);
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
 
             /* If the JSON was properly parsed then we may have received back a proper error JSON payload from YouTube. */
             if (jsonResult.has("error")) {
@@ -136,34 +81,10 @@ public class YouTubeAPIv3 {
                     }
                 }
             }
-        } catch (JSONException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "JSONException", ex.getMessage(), jsonText);
-            if (!urlAddress.startsWith("https://www.youtube.com/oembed")) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        } catch (NullPointerException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "NullPointerException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (MalformedURLException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "MalformedURLException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (SocketTimeoutException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "SocketTimeoutException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
-        } catch (IOException ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-            com.gmt2001.Console.err.printStackTrace(ex);
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, resp.responseCode().code(), null, null);
         } catch (Exception ex) {
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "Exception", ex.getMessage(), "");
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, 0, ex.getClass().getName(), ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            if (inputStream != null)
-                try {
-                inputStream.close();
-            } catch (IOException ex) {
-                fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
         }
         com.gmt2001.Console.debug.logln(jsonResult.toString().replaceAll(apikey, "xxx"));
         return (jsonResult);
@@ -186,7 +107,7 @@ public class YouTubeAPIv3 {
             q = matcher.group(1);
         }
 
-        JSONObject j = GetData(request_type.GET, "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
+        JSONObject j = GetData("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
         if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
             if (j.toString().contains("Unauthorized")) {
                 com.gmt2001.Console.debug.println("URL Check Returned Unauthorized (Video Marked Private)");
@@ -209,7 +130,7 @@ public class YouTubeAPIv3 {
         } else {
             q = URLEncoder.encode(q, Charset.forName("UTF-8"));
 
-            JSONObject j2 = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
+            JSONObject j2 = GetData("https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
             if (j2.getBoolean("_success")) {
                 updateQuota(100L);
                 if (j2.getInt("_http") == 200) {
@@ -259,7 +180,7 @@ public class YouTubeAPIv3 {
     public int[] GetVideoLength(String id, boolean isRetry) throws JSONException {
         com.gmt2001.Console.debug.println("Query = [" + id + "]");
 
-        JSONObject j = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
+        JSONObject j = GetData("https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=contentDetails");
         if (j.getBoolean("_success")) {
             if (j.getInt("_http") == 200) {
                 updateQuota(3L);
@@ -306,7 +227,7 @@ public class YouTubeAPIv3 {
         int licenseRetval = 0;
         int embedRetval = 0;
 
-        JSONObject jsonObject = GetData(request_type.GET, "https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=status");
+        JSONObject jsonObject = GetData("https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=" + apikey + "&part=status");
 
         if (jsonObject.getBoolean("_success")) {
             if (jsonObject.getInt("_http") == 200) {

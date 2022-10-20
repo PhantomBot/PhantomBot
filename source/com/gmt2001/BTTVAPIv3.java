@@ -16,14 +16,9 @@
  */
 package com.gmt2001;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.charset.Charset;
-import javax.net.ssl.HttpsURLConnection;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import java.net.URI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,79 +43,22 @@ public class BTTVAPIv3 {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    /*
-     * Reads data from a stream.
-     */
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    /*
-     * Populates additional information into a JSON object to be digested
-     * as needed.
-     */
-    private static void fillJSONObject(JSONObject jsonObject, boolean success, String type,
-            String url, int responseCode, String exception,
-            String exceptionMessage, String jsonContent) throws JSONException {
-        jsonObject.put("_success", success);
-        jsonObject.put("_type", type);
-        jsonObject.put("_url", url);
-        jsonObject.put("_http", responseCode);
-        jsonObject.put("_exception", exception);
-        jsonObject.put("_exceptionMessage", exceptionMessage);
-        jsonObject.put("_content", jsonContent);
-    }
-
     @SuppressWarnings("UseSpecificCatch")
     private static JSONObject readJsonFromUrl(String urlAddress, boolean isJSONArray) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
-        InputStream inputStream = null;
-        URL urlRaw;
-        HttpsURLConnection urlConn;
-        String jsonText = "";
 
         try {
-            urlRaw = new URL(urlAddress);
-            urlConn = (HttpsURLConnection) urlRaw.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setRequestMethod("GET");
-            urlConn.addRequestProperty("Content-Type", "application/json");
-            urlConn.setRequestProperty("User-Agent", "PhantomBotJ/2020");
-            urlConn.connect();
-
-            if (urlConn.getResponseCode() == 200) {
-                inputStream = urlConn.getInputStream();
-            } else {
-                inputStream = urlConn.getErrorStream();
-            }
-
-            try ( BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")))) {
-                jsonText = readAll(rd);
-            }
+            HttpClientResponse resp = HttpClient.get(URI.create(urlAddress));
+            String jsonText = resp.responseBody();
             if (isJSONArray) {
                 jsonResult.put("data", new JSONArray(jsonText));
             } else {
                 jsonResult = new JSONObject(jsonText);
             }
-            fillJSONObject(jsonResult, true, "GET", urlAddress, urlConn.getResponseCode(), "", "", jsonText);
-        } catch (IOException | NullPointerException | JSONException ex) {
-            // Generate the return object.
-            fillJSONObject(jsonResult, false, "GET", urlAddress, 0, ex.getClass().getSimpleName(), ex.getMessage(), jsonText);
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, resp.responseCode().code(), null, null);
+        } catch (Exception ex) {
+            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, 0, ex.getClass().getName(), ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException ex) {
-                    fillJSONObject(jsonResult, false, "GET", urlAddress, 0, "IOException", ex.getMessage(), "");
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            }
         }
 
         return (jsonResult);
