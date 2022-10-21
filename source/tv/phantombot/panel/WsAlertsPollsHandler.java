@@ -161,11 +161,14 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         }
     }
 
+    public void stopMedia(){
+        stopMedia("all");
+    }
     public void stopMedia(String type) {
         try {
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object()
-                    .key("stopMedia").value("all")
+                    .key("stopMedia").value(type)
                     .endObject();
             sendJSONToAll(jsonObject.toString());
         } catch (JSONException ex) {
@@ -189,6 +192,17 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
         } catch (JSONException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+
+    public void playVideo(String filename){
+        playVideo(filename, -1, false);
+    }
+    public void playVideo(String filename, int durationMs){
+        playVideo(filename, durationMs, false);
+    }
+
+    public void playVideo(String filename, boolean fullscreen){
+        playVideo(filename, -1, fullscreen);
     }
 
     public void playVideo(String filename, int durationMs, boolean fullscreen) {

@@ -3,6 +3,7 @@
 
     },
     "pages": {
-        "channelpoints": "Channel Points Handler"
+        "channelpoints": "Channel Points Handler",
+        "streamoverlay": "Stream Overlay"
     }
 }
