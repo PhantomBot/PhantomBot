@@ -1325,15 +1325,26 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public static String generateRandomString(int length) {
-        String randomAllowed = "01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        return generateRandomString(length, false);
+    }
+
+    public static String generateRandomString(int length, boolean allowSpecial) {
+        String randomAllowed = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+        if (allowSpecial) {
+            randomAllowed += "-._~";
+        }
+
         char[] randomChars = randomAllowed.toCharArray();
         char[] randomBuffer;
 
         randomBuffer = new char[length];
         SecureRandom random = new SecureRandom();
+
         for (int i = 0; i < randomBuffer.length; i++) {
             randomBuffer[i] = randomChars[random.nextInt(randomChars.length)];
         }
+
         return new String(randomBuffer);
     }
 
