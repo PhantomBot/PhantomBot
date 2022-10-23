@@ -540,20 +540,13 @@
             var lastUpdateTime = $.getSetIniDbNumber('twitter', 'last_autoupdate', $.systemTime());
 
             if (($.systemTime() - lastUpdateTime) >= ($.getIniDbNumber('twitter', 'postdelay_update', 180) * 6e4)) { // 3 hour cooldown
-                var DownloadHTTP = Packages.com.illusionaryone.ImgDownload;
-                var success = DownloadHTTP.downloadHTTP($.twitchcache.getPreviewLink(), 'twitch-preview.jpg'),
-                        uptimeSec = $.getStreamUptimeSeconds($.channelName),
+                var uptimeSec = $.getStreamUptimeSeconds($.channelName),
                         hrs = (uptimeSec / 3600 < 10 ? '0' : '') + Math.floor(uptimeSec / 3600),
                         min = ((uptimeSec % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptimeSec % 3600) / 60);
 
                 $.inidb.set('twitter', 'last_autoupdate', $.systemTime());
 
-                if (success.equals('true')) {
-                    $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace(/\(enter\)/g, '\r\n').replace('(uptime)', hrs + ':' + min),
-                            './addons/downloadHTTP/twitch-preview.jpg', 'TWEET_IMAGE');
-                } else {
-                    $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace('(uptime)', hrs + ':' + min).replace(/\(enter\)/g, '\r\n'));
-                }
+                $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + uptimeSec).replace('(uptime)', hrs + ':' + min).replace(/\(enter\)/g, '\r\n'));
                 $.log.event('Sent Auto Update to Twitter');
             }
         }

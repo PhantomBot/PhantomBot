@@ -21,12 +21,16 @@ import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
 import com.gmt2001.Reflect;
 import com.gmt2001.TwitchAPIv5;
+import com.gmt2001.TwitterAPI;
+import com.twitter.clientlib.ApiException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +38,7 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import static tv.phantombot.PhantomBot.getTimeZoneId;
+import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
@@ -118,6 +123,50 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("updategameslist")) {
             GamesListUpdater.update(true);
+        }
+
+        /**
+         * @consolecommand twittersetup [newapp] - Authenticates Twitter. If the optional _newapp_ argument is set, also updates the Client ID and
+         * Secret
+         */
+        if (message.equalsIgnoreCase("twittersetup")) {
+            if (CaselessProperties.instance().getProperty("twitter_client_id", "").isBlank() || CaselessProperties.instance().getProperty("twitter_client_secret", "").isBlank()) {
+                com.gmt2001.Console.out.println("Please create a Twitter application at https://developer.twitter.com/en/portal/dashboard");
+                com.gmt2001.Console.out.println("Then, activate User Authentication in the App");
+                com.gmt2001.Console.out.println("--- App permissions: Read and write");
+                com.gmt2001.Console.out.println("--- Type of app: Web App, Automated App or Bot");
+                com.gmt2001.Console.out.println("--- Callback URI / Redirect URL: https://localhost:25000");
+                com.gmt2001.Console.out.println("--- Website URL: https://localhost:25000");
+                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Once this is done, you should see your Client ID and Secret.");
+                com.gmt2001.Console.out.println("If you don't see it, go back to the dashboard, select the App,");
+                com.gmt2001.Console.out.println("and then switch to the Keys and tokens tab.");
+                com.gmt2001.Console.out.println();
+                System.out.print("Please enter the Client ID: ");
+                String clientid = System.console().readLine().trim();
+                transaction.setProperty("twitter_client_id", clientid);
+                System.out.print("Please enter the Client Secret: ");
+                String clientsecret = System.console().readLine().trim();
+                transaction.setProperty("twitter_client_secret", clientsecret);
+                transaction.commit();
+                com.gmt2001.Console.out.println();
+                transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
+                TwitterAPI.instance().updateClientIdSecret();
+            }
+
+            TwitterAPI.AuthorizationParameters params = TwitterAPI.instance().startAuthorize();
+            com.gmt2001.Console.out.println("To authorize Twitter, please visit this URL: " + params.authroizationUrl());
+            com.gmt2001.Console.out.println();
+            System.out.print("Please enter the authorization code returned by Twitter: ");
+            String code = System.console().readLine().trim();
+            try {
+                TwitterAPI.instance().completeAuthorize(params, code);
+
+                TwitterCache.instance(PhantomBot.instance().getChannelName());
+            } catch (ApiException | IOException | InterruptedException | ExecutionException ex) {
+                com.gmt2001.Console.err.println("Failed to Authorize Twitter: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
 
         /**
