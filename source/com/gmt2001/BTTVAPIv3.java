@@ -50,10 +50,15 @@ public class BTTVAPIv3 {
         try {
             HttpClientResponse resp = HttpClient.get(URI.create(urlAddress));
             String jsonText = resp.responseBody();
+
             if (isJSONArray) {
-                jsonResult.put("data", new JSONArray(jsonText));
+                if (jsonText.startsWith("[")) {
+                    jsonResult.put("data", new JSONArray(jsonText));
+                }
             } else {
-                jsonResult = new JSONObject(jsonText);
+                if (jsonText.startsWith("{")) {
+                    jsonResult = new JSONObject(jsonText);
+                }
             }
             HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, resp.responseCode().code(), null, null);
         } catch (Exception ex) {
