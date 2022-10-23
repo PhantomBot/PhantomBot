@@ -51,6 +51,10 @@ public class ExecutorService {
      * @throws NullPointerException if callable is null
      */
     public static <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.schedule(callable, delay, unit);
     }
 
@@ -65,6 +69,10 @@ public class ExecutorService {
      * @throws NullPointerException if command is null
      */
     public static ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.schedule(command, delay, unit);
     }
 
@@ -85,6 +93,10 @@ public class ExecutorService {
      * @throws IllegalArgumentException if period less than or equal to zero
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
@@ -103,6 +115,10 @@ public class ExecutorService {
      * @throws IllegalArgumentException if delay less than or equal to zero
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
@@ -115,6 +131,10 @@ public class ExecutorService {
      * @throws NullPointerException if command is null
      */
     public static void execute(Runnable command) {
+        if (shutdown) {
+            return;
+        }
+
         SCHEDULEDEXECUTOR.execute(command);
     }
 
@@ -128,6 +148,10 @@ public class ExecutorService {
      * @throws NullPointerException if the task is null
      */
     public static Future<?> submit(Runnable task) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.submit(task);
     }
 
@@ -143,6 +167,10 @@ public class ExecutorService {
      * @throws NullPointerException if the task is null
      */
     public static <T> Future<T> submit(Runnable task, T result) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.submit(task, result);
     }
 
@@ -162,6 +190,10 @@ public class ExecutorService {
      * @throws NullPointerException if the task is null
      */
     public static <T> Future<T> submit(Callable<T> task) {
+        if (shutdown) {
+            return null;
+        }
+
         return SCHEDULEDEXECUTOR.submit(task);
     }
 
