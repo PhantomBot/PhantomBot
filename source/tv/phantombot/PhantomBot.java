@@ -23,6 +23,7 @@ import com.gmt2001.Reflect;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
+import com.gmt2001.TwitterAPI;
 import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
@@ -38,10 +39,10 @@ import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
-import com.illusionaryone.TwitterAPI;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.StreamElementsAPIv2;
 import com.scaniatv.TipeeeStreamAPIv1;
+import com.twitter.clientlib.ApiException;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
@@ -76,6 +77,7 @@ import tv.phantombot.cache.StreamElementsCache;
 import tv.phantombot.cache.TipeeeStreamCache;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.cache.TwitchTeamsCache;
+import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleEventHandler;
@@ -834,37 +836,12 @@ public final class PhantomBot implements Listener {
             StreamElementsAPIv2.instance().SetLimit(CaselessProperties.instance().getPropertyAsInt("streamelementslimit", 5));
         }
 
-        /* Check to see if all the Twitter info needed is there */
-        /**
-         * @botproperty twitteruser - The username for Twitter
-         */
-        /**
-         * @botproperty twitter_access_token - The access token for Twitter API
-         */
-        /**
-         * @botproperty twitter_consumer_key - The consumer key for Twitter API
-         */
-        /**
-         * @botproperty twitter_consumer_secret - The consumer secret for Twitter API
-         */
-        /**
-         * @botproperty twitter_secret_token - The secret token for Twitter API
-         */
-        if (!CaselessProperties.instance().getProperty("twitterUser", "").isEmpty() && !CaselessProperties.instance().getProperty("twitter_access_token", "").isEmpty()
-                && !CaselessProperties.instance().getProperty("twitter_consumer_key", "").isEmpty()
-                && !CaselessProperties.instance().getProperty("twitter_consumer_secret", "").isEmpty()
-                && !CaselessProperties.instance().getProperty("twitter_secret_token", "").isEmpty()) {
+        if (!CaselessProperties.instance().getProperty("twitter_access_token", "").isEmpty()) {
             try {
-                /* Set the Twitter tokens */
-                TwitterAPI.instance().setUsername(CaselessProperties.instance().getProperty("twitterUser", ""));
-                TwitterAPI.instance().setAccessToken(CaselessProperties.instance().getProperty("twitter_access_token", ""));
-                TwitterAPI.instance().setSecretToken(CaselessProperties.instance().getProperty("twitter_secret_token", ""));
-                TwitterAPI.instance().setConsumerKey(CaselessProperties.instance().getProperty("twitter_consumer_key", ""));
-                TwitterAPI.instance().setConsumerSecret(CaselessProperties.instance().getProperty("twitter_consumer_secret", ""));
-                /* Check to see if the tokens worked */
                 TwitterAPI.instance().authenticate();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.println("TwitterAPI authentication failed fatally");
+                TwitterCache.instance(this.getChannelName());
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("TwitterAPI authentication failed. Try re-authenticating with twittersetup console command");
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }

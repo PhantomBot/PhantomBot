@@ -105,6 +105,14 @@ public class TwitterAPI implements ApiClientCallback {
     }
 
     /**
+     * Re-pulls the Client ID and Secret from {@link CaselessProperties}
+     */
+    public void updateClientIdSecret() {
+        this.credentials.setTwitterOauth2ClientId(CaselessProperties.instance().getProperty("twitter_client_id", (String) null));
+        this.credentials.setTwitterOAuth2ClientSecret(CaselessProperties.instance().getProperty("twitter_client_secret", (String) null));
+    }
+
+    /**
      * Indicates if the API is likely authenticated. Not guaranteed
      *
      * @return

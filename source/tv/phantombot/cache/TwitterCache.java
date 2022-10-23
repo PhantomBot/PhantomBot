@@ -112,6 +112,10 @@ public class TwitterCache implements Runnable {
      * Polls the Twitter API and updates the database cache with information. This method also sends events to chat when appropriate.
      */
     private void updateCache() throws Exception {
+        if (!TwitterAPI.instance().authenticated()) {
+            return;
+        }
+
         boolean poll_retweets;
         boolean poll_mentions;
         boolean poll_hometimeline;
