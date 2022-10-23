@@ -55,7 +55,9 @@ public class FrankerZAPIv1 {
         try {
             HttpClientResponse resp = HttpClient.get(URI.create(urlAddress));
             String jsonText = resp.responseBody();
-            jsonResult = new JSONObject(jsonText);
+            if (jsonText.startsWith("{")) {
+                jsonResult = new JSONObject(jsonText);
+            }
             HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, resp.responseCode().code(), null, null);
         } catch (Exception ex) {
             HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, 0, ex.getClass().getName(), ex.getMessage());

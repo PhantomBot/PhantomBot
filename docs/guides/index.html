@@ -206,7 +206,8 @@
                         return '<h' + tokens[idx].hLevel + ' id=' + slugifyHeader() + '>';
                     };
                     md.renderer.rules.heading_close = function(tokens, idx) {
-                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugify(tokens[idx - 1].content) +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
+                        updateHeaders(tokens[idx].hLevel, tokens[idx - 1].content, true);
+                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugifyHeader() +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
                     };
                 });
                 md.use(function(md) {
