@@ -23,11 +23,28 @@ import com.twitter.clientlib.ApiCallback;
 import com.twitter.clientlib.ApiClientCallback;
 import com.twitter.clientlib.ApiException;
 import com.twitter.clientlib.TwitterCredentialsOAuth2;
+import com.twitter.clientlib.api.TweetsApi.APIusersIdMentionsRequest;
+import com.twitter.clientlib.api.TweetsApi.APIusersIdTimelineRequest;
+import com.twitter.clientlib.api.TweetsApi.APIusersIdTweetsRequest;
 import com.twitter.clientlib.api.TwitterApi;
+import com.twitter.clientlib.api.UsersApi.APItweetsIdRetweetingUsersRequest;
 import com.twitter.clientlib.auth.TwitterOAuth20Service;
+import com.twitter.clientlib.model.Get2TweetsIdRetweetedByResponse;
+import com.twitter.clientlib.model.Get2UsersByUsernameUsernameResponse;
+import com.twitter.clientlib.model.Get2UsersIdMentionsResponse;
+import com.twitter.clientlib.model.Get2UsersIdTimelinesReverseChronologicalResponse;
+import com.twitter.clientlib.model.Get2UsersIdTweetsResponse;
 import com.twitter.clientlib.model.Get2UsersMeResponse;
+import com.twitter.clientlib.model.Problem;
+import com.twitter.clientlib.model.Tweet;
+import com.twitter.clientlib.model.TweetCreateRequest;
+import com.twitter.clientlib.model.TweetCreateResponse;
+import com.twitter.clientlib.model.TweetCreateResponseData;
 import com.twitter.clientlib.model.User;
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -46,9 +63,6 @@ public class TwitterAPI implements ApiClientCallback {
      * Singleton
      */
     private static final TwitterAPI INSTANCE = new TwitterAPI();
-    /**
-     * @botproperty twitteruser - The username for Twitter
-     */
     /**
      * @botproperty twitter_client_id - The client id for Twitter API
      */
@@ -87,6 +101,15 @@ public class TwitterAPI implements ApiClientCallback {
      * Private constructor for singleton
      */
     private TwitterAPI() {
+    }
+
+    /**
+     * Indicates if the API is likely authenticated. Not guaranteed
+     *
+     * @return
+     */
+    public boolean authenticated() {
+        return this.credentials.isOAuth2AccessToken() && this.self != null;
     }
 
     /**
@@ -202,6 +225,357 @@ public class TwitterAPI implements ApiClientCallback {
 
         this.onAfterRefreshToken(accessToken);
         this.authenticate();
+    }
+
+    /**
+     * Posts a Tweet on Twitter. This will post to the user timeline and is the same as posting any other status update on Twitter. If there is an
+     * error posting, an exception is logged.
+     *
+     * @param message The string that will be posted on Twitter.
+     * @return true on success
+     */
+    public boolean updateStatus(String message) {
+        if (this.authenticated()) {
+            TweetCreateRequest req = new TweetCreateRequest();
+            req.setText(message);
+
+            try {
+                TweetCreateResponse res = this.twitterApi.tweets().createTweet(req).execute();
+                TweetCreateResponseData data = res.getData();
+                if (data != null) {
+                    if (!data.getId().isBlank()) {
+                        return true;
+                    }
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Tweet");
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Tweet: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Reads the user timeline on Twitter. This includes posts only made by the authenticated user. Retweets are excluded
+     *
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<Tweet> getUserTimeline(String sinceId) {
+        return this.getUserTimeline(sinceId, null);
+    }
+
+    /**
+     * Reads the user timeline on Twitter. This includes posts only made by the authenticated user. Retweets are excluded
+     *
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @param startTime If specified, limits the earliest time of returned tweets
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<Tweet> getUserTimeline(String sinceId, OffsetDateTime startTime) {
+        if (this.authenticated()) {
+            return this.getUserTimeline(this.self.getId(), sinceId, false, startTime);
+        }
+
+        return null;
+    }
+
+    /**
+     * Reads the user timeline on Twitter. This includes posts only made by the specified user.
+     *
+     * @param userId The user ID to retrieve tweets for
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @param retweets If true, include retweets. If false, retweets will be filtered, which may reduce the number of results
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<Tweet> getUserTimeline(String userId, String sinceId, boolean retweets) {
+        if (this.authenticated()) {
+            return this.getUserTimeline(userId, sinceId, retweets, null);
+        }
+
+        return null;
+    }
+
+    /**
+     * Reads the user timeline on Twitter. This includes posts only made by the specified user.
+     *
+     * @param userId The user ID to retrieve tweets for
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @param retweets If true, include retweets. If false, retweets will be filtered, which may reduce the number of results
+     * @param startTime If specified, limits the earliest time of returned tweets
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<Tweet> getUserTimeline(String userId, String sinceId, boolean retweets, OffsetDateTime startTime) {
+        if (this.authenticated()) {
+            /**
+             * @botproperty twitterusertimelinelimit - The maximum number of tweets to retrieve per follower, when grabbing retweets. Default `15`
+             */
+            APIusersIdTweetsRequest req = this.twitterApi.tweets().usersIdTweets(userId).maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
+
+            if (sinceId != null && !sinceId.isBlank()) {
+                req.sinceId(sinceId);
+            }
+
+            if (!retweets) {
+                req.exclude(Collections.singleton("retweets"));
+            }
+
+            if (startTime != null) {
+                req.startTime(startTime);
+            }
+
+            try {
+                Get2UsersIdTweetsResponse res = req.execute();
+                List<Tweet> data = res.getData();
+                if (data != null) {
+                    return data;
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Get Tweets for " + userId);
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Get Tweets for " + userId + ": " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds the Twitter User ID for the given username
+     *
+     * @param userName The username to find
+     * @return The user ID on success, null on failure
+     */
+    public String getUserIdFromUsername(String userName) {
+        if (this.authenticated()) {
+            try {
+                Get2UsersByUsernameUsernameResponse res = this.twitterApi.users().findUserByUsername(userName).execute();
+                User data = res.getData();
+                if (data != null) {
+                    if (!data.getId().isBlank()) {
+                        return data.getId();
+                    }
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Lookup User");
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Lookup User: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Reads the timeline of another user.Note that if the authenticated user does not have access to the timeline, nothing is returned but the API
+     * lookup is still charged.
+     *
+     * @param username The username to lookup
+     * @return Most recent status of the user requested. null on failure
+     */
+    public String getOtherUserTimeline(String username) {
+        List<Tweet> result = this.getUserTimeline(this.getUserIdFromUsername(username), null, true);
+
+        if (result != null && !result.isEmpty()) {
+            return result.get(0).getText();
+        }
+
+        return null;
+    }
+
+    /**
+     * Reads the home timeline on Twitter. This includes posts made by the user, retweets, and posts made by friends. This is essentially the screen
+     * that is seen when logging into Twitter. This is limited to the last 24 hours
+     *
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<Tweet> getHomeTimeline(String sinceId) {
+        if (this.authenticated()) {
+            APIusersIdTimelineRequest req = this.twitterApi.tweets().usersIdTimeline(this.self.getId());
+
+            /**
+             * @botproperty twittertimelinelimit - The maximum number of tweets to retrieve with a latest tweets request. Default `15`
+             */
+            /**
+             * @botproperty twittertimelineextendedlimit - The maximum number of tweets to retrieve with a sinceId. Default `30`
+             */
+            req.maxResults(sinceId != null && sinceId.isBlank()
+                    ? CaselessProperties.instance().getPropertyAsInt("twittertimelinelimit", 15)
+                    : CaselessProperties.instance().getPropertyAsInt("twittertimelineextendedlimit", 30))
+                    .startTime(OffsetDateTime.now().minusDays(1));
+
+            if (sinceId != null && !sinceId.isBlank()) {
+                req.sinceId(sinceId);
+            }
+
+            try {
+                Get2UsersIdTimelinesReverseChronologicalResponse res = req.execute();
+                List<Tweet> data = res.getData();
+                if (data != null) {
+                    return data;
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Get Home Timeline");
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Get Home Timeline: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Reads retweets on Twitter. This includes posts made by the user that have been retweeted by others. This is limited to the last 24 hours
+     *
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<TweetToUser> getRetweetsOfMe(String sinceId) {
+        if (this.authenticated()) {
+            List<Tweet> tweets = this.getUserTimeline(sinceId, OffsetDateTime.now().minusDays(1));
+
+            if (tweets != null && !tweets.isEmpty()) {
+                List<TweetToUser> ret = new ArrayList<>();
+                for (Tweet tweet : tweets) {
+                    List<User> rts = this.getRetweets(tweet.getId());
+
+                    if (rts != null && !rts.isEmpty()) {
+                        for (User user : rts) {
+                            ret.add(new TweetToUser(tweet, user));
+                        }
+                    }
+                }
+
+                return ret;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Looks for mentions (@username) on Twitter.
+     *
+     * @param sinceId The tweet ID for pagination. The tweet with the specified ID will be the first result. Use null for the latest tweets
+     * @return List of Status objects on success, null on failure.
+     */
+    public List<Tweet> getMentions(String sinceId) {
+        if (this.authenticated()) {
+            APIusersIdMentionsRequest req = this.twitterApi.tweets().usersIdMentions(this.self.getId()).maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
+
+            if (sinceId != null && !sinceId.isBlank()) {
+                req.sinceId(sinceId);
+            }
+
+            try {
+                Get2UsersIdMentionsResponse res = req.execute();
+                List<Tweet> data = res.getData();
+                if (data != null) {
+                    return data;
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Get Mentions");
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Get Mentions: " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Grabs Users who retweeted a specific Tweet from Twitter. This is limited to the last 24 hours
+     *
+     * @param statusId The tweet ID to check for retweets
+     * @return List of Users objects on success, null on failure.
+     */
+    public List<User> getRetweets(String statusId) {
+        if (this.authenticated()) {
+            APItweetsIdRetweetingUsersRequest req = this.twitterApi.users().tweetsIdRetweetingUsers(statusId);
+
+            try {
+                Get2TweetsIdRetweetedByResponse res = req.execute();
+                List<User> data = res.getData();
+                if (data != null) {
+                    return data;
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Get Retweets for " + statusId);
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Get Retweets for " + statusId + ": " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Given a status for the authenticated user, creates the URL for that status.
+     *
+     * @param id Twitter status ID.
+     * @return String URL in the format of https://twitter.com/USERNAME/status/ID
+     */
+    public String getTwitterURLFromId(String id) {
+        if (this.self != null) {
+            return "https://twitter.com/" + this.self.getUsername() + "/status/" + id;
+        }
+
+        return "";
+    }
+
+    /**
+     * Provides a mapping of a {@link Tweet} to a {@link User} as defined by the returning method
+     */
+    public class TweetToUser {
+
+        private final Tweet tweet;
+        private final User user;
+
+        private TweetToUser(Tweet tweet, User user) {
+            this.tweet = tweet;
+            this.user = user;
+        }
+
+        public Tweet tweet() {
+            return this.tweet;
+        }
+
+        public User user() {
+            return this.user;
+        }
     }
 
     /**
