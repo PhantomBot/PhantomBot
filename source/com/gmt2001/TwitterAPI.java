@@ -32,6 +32,7 @@ import com.twitter.clientlib.auth.TwitterOAuth20Service;
 import com.twitter.clientlib.model.Get2TweetsIdRetweetedByResponse;
 import com.twitter.clientlib.model.Get2UsersByUsernameUsernameResponse;
 import com.twitter.clientlib.model.Get2UsersIdMentionsResponse;
+import com.twitter.clientlib.model.Get2UsersIdResponse;
 import com.twitter.clientlib.model.Get2UsersIdTimelinesReverseChronologicalResponse;
 import com.twitter.clientlib.model.Get2UsersIdTweetsResponse;
 import com.twitter.clientlib.model.Get2UsersMeResponse;
@@ -535,6 +536,36 @@ public class TwitterAPI implements ApiClientCallback {
                 }
             } catch (ApiException ex) {
                 com.gmt2001.Console.err.println("Failed to Get Retweets for " + statusId + ": " + ex.getMessage());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets the User represented by the given user id
+     *
+     * @param id The user id to lookup
+     * @return The user object on success. null on failure
+     */
+    public User getUser(String id) {
+        if (this.authenticated()) {
+            try {
+                Get2UsersIdResponse res = this.twitterApi.users().findUserById(id).execute();
+
+                User data = res.getData();
+                if (data != null) {
+                    return data;
+                } else {
+                    List<Problem> errors = res.getErrors();
+                    if (errors != null && !errors.isEmpty()) {
+                        com.gmt2001.Console.warn.println("Failed to Get User " + id);
+                        errors.forEach(p -> com.gmt2001.Console.warn.println(p));
+                    }
+                }
+            } catch (ApiException ex) {
+                com.gmt2001.Console.err.println("Failed to Get User " + id + ": " + ex.getMessage());
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
