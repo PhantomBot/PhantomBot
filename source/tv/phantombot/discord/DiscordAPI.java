@@ -147,6 +147,8 @@ public class DiscordAPI extends DiscordUtil {
 
             if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
                 DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordAPI.builder.setReactorResources(ReactorResources.builder().httpClient(ReactorResources.DEFAULT_HTTP_CLIENT.get().resolver(DefaultAddressResolverGroup.INSTANCE)).build());
+            } else {
+                DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordAPI.builder.setReactorResources(ReactorResources.builder().httpClient(ReactorResources.DEFAULT_HTTP_CLIENT.get().resolver(CompositeAddressResolverGroup.INSTANCE)).build());
             }
 
             DiscordAPI.client = DiscordAPI.builder.setRequestQueueFactory(RequestQueueFactory.createFromSink(spec -> spec.multicast().onBackpressureBuffer(Queues.SMALL_BUFFER_SIZE, false), EmissionStrategy.timeoutError(Duration.ofSeconds(5L)))).build();

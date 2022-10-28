@@ -416,39 +416,31 @@ twitchalertslimit - The maximum number of donations to pull from StreamLabs when
 
 Data Type: _String_
 
-twitter_access_token - The access token for Twitter API
+No definition
 
 &nbsp;
 
-### twitter_consumer_key
+### twitter_client_id
 
 Data Type: _String_
 
-twitter_consumer_key - The consumer key for Twitter API
+twitter_client_id - The client id for Twitter API
 
 &nbsp;
 
-### twitter_consumer_secret
+### twitter_client_secret
 
 Data Type: _String_
 
-twitter_consumer_secret - The consumer secret for Twitter API
+twitter_client_secret - The client secret for Twitter API
 
 &nbsp;
 
-### twitter_secret_token
+### twitter_refresh_token
 
 Data Type: _String_
 
-twitter_secret_token - The secret token for Twitter API
-
-&nbsp;
-
-### twitterallowmentions
-
-Data Type: _Boolean_
-
-twitterallowmentions - If `true`, outbound tweets are allowed to @mention and #hashtag. Default `false`
+No definition
 
 &nbsp;
 
@@ -465,14 +457,6 @@ twittertimelineextendedlimit - The maximum number of tweets to retrieve with a s
 Data Type: _Int_
 
 twittertimelinelimit - The maximum number of tweets to retrieve with a latest tweets request. Default `15`
-
-&nbsp;
-
-### twitteruser
-
-Data Type: _String_
-
-twitteruser - The username for Twitter
 
 &nbsp;
 
