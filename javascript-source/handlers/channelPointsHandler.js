@@ -42,6 +42,8 @@
             timeoutID = $.getSetIniDbString('channelPointsSettings', 'timeoutID', 'noIDSet'),
             timeoutConfig = $.getSetIniDbBoolean('channelPointsSettings', 'timeoutConfig', false),
             timeoutReward = $.getSetIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet'),
+            commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]')),
+            commandConfig = $.getSetIniDbString('channelPointsSettings', 'commandConfig', ''),
             pointName = $.pointNameMultiple;
 
     /*
@@ -68,6 +70,8 @@
         timeoutID = $.getIniDbString('channelPointsSettings', 'timeoutID', 'noIDSet');
         timeoutConfig = $.getIniDbBoolean('channelPointsSettings', 'timeoutConfig', false);
         timeoutReward = $.getIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet');
+        commands = JSON.parse($.getIniDbString('channelPointsSettings', 'commands', '[]'));
+        commandConfig = $.getIniDbString('channelPointsSettings', 'commandConfig', '');
     }
 
     /*
@@ -84,7 +88,7 @@
          */
         if (command.equalsIgnoreCase('channelpoints')) {
             if (action === undefined) {
-                if (transferToggle === false && giveAllToggle === false && emoteOnlyToggle === false && timeoutToggle === false) {
+                if (transferToggle === false && giveAllToggle === false && emoteOnlyToggle === false && timeoutToggle === false && commands.length === 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.notenabled'));
                     return;
                 }
@@ -100,6 +104,9 @@
                 }
                 if (timeoutToggle === true) {
                     config += ' timeout';
+                }
+                if (commands.length > 0) {
+                    config += ' command';
                 }
                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.current', config));
                 return;
@@ -118,6 +125,80 @@
              */
             if (action.equalsIgnoreCase('info')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.info'));
+                return;
+            }
+
+            /*
+             * @commandpath channelpoints command - Allows setting channel points redemptions to convert into custom commands, then execute command tags
+             */
+            if (action.equalsIgnoreCase('command')) {
+                if (args[1] === undefined) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.info'));
+                } else {
+                    var subAction = $.jsString(args[1]).toLowerCase();
+                    /*
+                     * @commandpath channelpoints command example - Prints an example add subaction for the "command" rewards type
+                     */
+                    if (subAction === 'example') {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.example'));
+                        /*
+                         * @commandpath channelpoints command get - Given a channel point reward id, returns the custom command definition that will be parsed
+                         */
+                    } else if (subAction === 'list') {
+                        var active = '';
+                        for (var i = 0; i < commands.length; i++) {
+                            if (active.length > 0) {
+                                active += ' === ';
+                            }
+
+                            active += commands[i].id + ' - ' + commands[i].title;
+                        }
+
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.list', active));
+                        /*
+                         * @commandpath channelpoints command get - Given a channel point reward id, returns the custom command definition that will be parsed
+                         */
+                    } else if (subAction === 'get') {
+                        if (args[2] === undefined || $.jsString(args[2]).length === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.usage'));
+                        } else {
+                            var selected = -1;
+                            var target = $.jsString(args[2]);
+                            for (var i = 0; i < commands.length; i++) {
+                                if (commands[i].id === target) {
+                                    selected = i;
+                                    break;
+                                }
+                            }
+
+                            if (selected === -1) {
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
+                            } else {
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get', target, commands[selected].command));
+                            }
+                        }
+                        /*
+                         * @commandpath channelpoints command add - Starts the process of adding a "command" type redemption reward
+                         */
+                    } else if (subAction === 'add') {
+                        if (args[2] === undefined || $.jsString(args[2]).length === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage1'));
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage2', $.botName));
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage3'));
+                        } else {
+                            if (commandConfig.length === 0) {
+                                commandConfig = args.slice(2).join(' ');
+                                $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
+
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.start'));
+                            } else {
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
+                            }
+                        }
+                    } else {
+                        $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.usage'));
+                    }
+                }
                 return;
             }
 
@@ -519,6 +600,24 @@
             return;
         }
 
+        if (commandConfig.length > 0) {
+            if (findRewardCommandIndex(rewardID) !== -1) {
+                $.say($.lang.get('channelPointsHandler.command.add.failed', rewardTitle));
+            }
+
+            var data = {
+                'id': rewardID,
+                'title': rewardTitle,
+                'command': commandConfig
+            };
+            commands.push(data);
+            $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+            commandConfig = '';
+            $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
+            $.say($.lang.get('channelPointsHandler.command.add.complete', data.title, data.command));
+            return;
+        }
+
         /*
          * transfer
          */
@@ -539,9 +638,9 @@
         /*
          * give all
          */
-        if (rewardID.equals(giveAllID)){
-            if (giveAllToggle === true){
-                com.gmt2001.Console.debug.println("giveAllRunStart");
+        if (rewardID.equals(giveAllID)) {
+            if (giveAllToggle === true) {
+                Packages.com.gmt2001.Console.debug.println("giveAllRunStart");
                 $.giveAll(giveAllAmount, displayName);
                 return;
             }
@@ -550,9 +649,9 @@
         /*
          * emote only
          */
-        if (rewardID.equals(emoteOnlyID)){
-            if (emoteOnlyToggle ===true){
-                com.gmt2001.Console.debug.println("emoteOnlyRunStart" + emoteOnlyDuration);
+        if (rewardID.equals(emoteOnlyID)) {
+            if (emoteOnlyToggle === true) {
+                Packages.com.gmt2001.Console.debug.println("emoteOnlyRunStart" + emoteOnlyDuration);
                 $.say('/emoteonly');
                 setTimeout(emoteOnlyOff, emoteOnlyDuration * 1e3);
                 return;
@@ -562,9 +661,9 @@
         /*
          * timeout
          */
-        if (rewardID.equals(timeoutID)){
+        if (rewardID.equals(timeoutID)) {
             if (timeoutToggle === true) {
-                com.gmt2001.Console.debug.println("timeoutRunStart");
+                Packages.com.gmt2001.Console.debug.println("timeoutRunStart");
                 userInput = $.user.sanitize(userInput);
                 $.say('/timeout ' + userInput + ' ' + timeoutDuration);
                 $.say(userInput + ' has been timed out for ' + timeoutDuration + ' seconds by ' + displayName);
@@ -573,10 +672,44 @@
             }
         }
 
+        var cmd = findRewardCommand(rewardID);
 
-
-
+        if (cmd !== null) {
+            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' ' + displayName + ' "' + $.javaString(userInput).replaceAll("\"", "\\\"") + '"');
+            var tag = $.transformers.tags(cmdEvent, cmd.command, false, ['twitch', ['commandevent', 'noevent']]);
+            if (tag !== null) {
+                $.say(tag);
+            }
+        }
     });
+
+    /*
+     * exit emote only mode after required time
+     */
+    function emoteOnlyOff() {
+        $.say('/emoteonlyoff');
+    }
+
+    function findRewardCommandIndex(rewardID) {
+        rewardID = $.jsString(rewardID);
+        for (var i = 0; i < commands.length; i++) {
+            if (rewardID === commands[i].id) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    function findRewardCommand(rewardID) {
+        var idx = findRewardCommandIndex(rewardID);
+
+        if (idx === -1) {
+            return null;
+        } else {
+            return commands[idx];
+        }
+    }
 
     /*
      * add chat commands
@@ -589,6 +722,7 @@
         $.registerChatSubcommand('channelpoints', 'giveall', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'emoteonly', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'timeout', $.PERMISSION.Admin);
+        $.registerChatSubcommand('channelpoints', 'command', $.PERMISSION.Admin);
     });
 
     /*
