@@ -18,7 +18,7 @@
 $.lang.register('channelpointshandler.notenabled', 'no channel points functions are currently enabled. Please use "!channelpoints info" for information about what PhantomBot can do with channelpoints or "!channelpoints usage" for usage');
 $.lang.register('channelpointshandler.info', 'PhantomBot can be configured to automate channel point redemptions for several functions. Transfer: user will receive bot currency. Giveall: everyone in chat to receive bot currency. Emoteonly: place chat in emote only mode for an amount of time. Timeout: timeout a specified user for an amount of time.');
 $.lang.register('channelpointshandler.usage', 'usage: !channelpoints [info / usage / transfer / giveall / emoteonly / timeout]');
-$.lang.register('channelpointshandler.current', 'channel point automation currently enabled for$1. Use "!channelpoints useage" for command usage or "!channelpoints info" for information about what PhantomBot can do with channelpoints');
+$.lang.register('channelpointshandler.current', 'channel point automation currently enabled for $1. Use "!channelpoints useage" for command usage or "!channelpoints info" for information about what PhantomBot can do with channelpoints');
 $.lang.register('channelpointshandler.nan', 'input must be a number, please try again.');
 $.lang.register('channelpointshandler.config.failed', 'no channel point redemption was detected. Please try again. If you are having problems please visit the PhantomBot Discord discord.com/invite/YKvMd78');
 
