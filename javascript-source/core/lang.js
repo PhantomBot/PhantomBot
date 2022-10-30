@@ -193,6 +193,6 @@
         paramCount: paramCount
     };
 
-    // Run the load function to enable modules, loaded after lang.js, to access the language strings immediatly
+    // Run the load function to enable modules, loaded after lang.js, to access the language strings immediately
     load();
 })();

@@ -22,7 +22,8 @@
             action = getSetIniDbBoolean('settings', 'response_action', false),
             secureRandom = new java.security.SecureRandom(),
             reg = new RegExp(/^@\w+,\s?$/),
-            timeout = 0;
+            timeout = 0,
+            _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /*
      * @function reloadMisc
@@ -185,11 +186,16 @@
      * @param {boolean} run
      */
     function sayWithTimeout(message, run) {
-        if (((timeout + 10000) > systemTime()) || !run) {
-            return;
-        }
+        _lock.lock();
+        try {
+            if (((timeout + 10000) > systemTime()) || !run) {
+                return;
+            }
 
-        timeout = systemTime();
+            timeout = systemTime();
+        } finally {
+            _lock.unlock();
+        }
 
         say(message);
     }
