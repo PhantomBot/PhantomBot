@@ -25,7 +25,8 @@
 
 (function() {
     var modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false),
-        cooldown = [];
+        cooldown = [],
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function permCheck
@@ -63,12 +64,18 @@
 
         time = ((time * 1000) + $.systemTime());
 
-        cooldown.push({
-            keyword: keyword,
-            time: time
-        });
+        _lock.lock();
+        try {
+            cooldown.push({
+                keyword: keyword,
+                time: time
+            });
+        } finally {
+            _lock.unlock();
+        }
+
         $.consoleDebug('Pushed keyword ' + keyword + ' to cooldown.');
-    };
+    }
 
     /**
      * @function get
@@ -84,18 +91,23 @@
         if (!hasCooldown)
             return 0;
 
-        for (i in cooldown) {
-            if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
-                if ((cooldown[i].time - $.systemTime()) > 0) {
-                    if (permCheck(username)) return 0;
-                    return parseInt(cooldown[i].time - $.systemTime());
+        _lock.lock();
+        try {
+            for (i in cooldown) {
+                if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
+                    if ((cooldown[i].time - $.systemTime()) > 0) {
+                        if (permCheck(username)) return 0;
+                        return parseInt(cooldown[i].time - $.systemTime());
+                    }
                 }
             }
+        } finally {
+            _lock.unlock();
         }
 
         set(keyword, hasCooldown, getCooldown(keyword));
         return 0;
-    };
+    }
 
     /**
      * @function clear
@@ -104,28 +116,37 @@
      */
     function clear(keyword) {
         var i;
-        for (i in cooldown) {
-            if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
-                cooldown.splice(i, 1);
-                return;
+
+        _lock.lock();
+        try {
+            for (i in cooldown) {
+                if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
+                    cooldown.splice(i, 1);
+                    return;
+                }
             }
+        } finally {
+            _lock.unlock();
         }
-    };
+    }
 
     /**
      * @function clearAll
      */
     function clearAll() {
-        var i;
-        for (i in cooldown) {
-            cooldown.splice(i, 1);
+        _lock.lock();
+        try {
+            cooldown = [];
+        } finally {
+            _lock.unlock();
         }
-    };
+    }
 
     /** EXPORT TO $. API*/
     $.coolDownKeywords = {
         set: set,
         get: get,
-        clear: clear
+        clear: clear,
+        clearAll: clearAll
     };
 })();
