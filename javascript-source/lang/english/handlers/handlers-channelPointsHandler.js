@@ -73,7 +73,7 @@ $.lang.register('channelpointshandler.timeout.toggle.id', 'unable to enable time
 $.lang.register('channelpointshandler.timeout.toggle.duration', 'unable to enable timeout as no duration has been set. Please use "!channelpoints timeout duration [duration in seconds]" to set.');
 $.lang.register('channelpointshandler.timeout.enabled', 'channel points redemption timeout enabled for reward $1.');
 $.lang.register('channelpointshandler.timeout.disabled', 'channel points redemption timeout disabled.');
-$.lang.register('channelpointshandler.timeout.nouserinput', 'Channel point reward redeemed has no user input so cannot be set used for timeout. Please setup a reward with user input and try again.');
+$.lang.register('channelpointshandler.timeout.nouserinput', 'channel point reward redeemed has no user input so cannot be set used for timeout. Please setup a reward with user input and try again.');
 
 $.lang.register('channelpointshandler.command.info', 'converts the redemption into a command, then parses command tags as if a custom command was called as the bot. See "!channelpoints command add" to configure, "!channelpoints command usage" for usage, or "!channelpoints command example" for an example');
 $.lang.register('channelpointshandler.command.usage', 'usage: !channelpoints command [usage / example / list / get / add / edit / remove]');
@@ -88,4 +88,7 @@ $.lang.register('channelpointshandler.command.add.usage3', '(1) will be the rede
 $.lang.register('channelpointshandler.command.add.start', 'channel points command config active. Please redeem desired reward.');
 $.lang.register('channelpointshandler.command.add.complete', 'channel points command config complete. Reward $1 is now registered to: $2');
 $.lang.register('channelpointshandler.command.add.failed', 'unable to configure command reward. Reward $1 is already registered to a command');
+$.lang.register('channelpointshandler.command.edit.usage1', 'usage: !channelpoints command edit (reward id) (custom command definition)');
+$.lang.register('channelpointshandler.command.edit', 'reward $1 is now registered to: $2');
 $.lang.register('channelpointshandler.command.remove.usage', 'usage: !channelpoints command remove (reward id)');
+$.lang.register('channelpointshandler.command.remove', 'removed command reward for $1');

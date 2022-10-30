@@ -44,6 +44,7 @@
             timeoutReward = $.getSetIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet'),
             commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]')),
             commandConfig = $.getSetIniDbString('channelPointsSettings', 'commandConfig', ''),
+            commandLock = new Packages.java.util.concurrent.locks.ReentrantLock,
             pointName = $.pointNameMultiple;
 
     /*
@@ -168,7 +169,7 @@
                             if (cmd === null) {
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
                             } else {
-                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get', target, cmd.command));
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get', cmd.title, cmd.command));
                             }
                         }
                         /*
@@ -187,6 +188,60 @@
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.start'));
                             } else {
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.config.failed'));
+                            }
+                        }
+                        /*
+                         * @commandpath channelpoints command edit - Changes the command definition for a "command" type reward
+                         */
+                    } else if (subAction === 'edit') {
+                        if (args[2] === undefined || $.jsString(args[2]).length === 0 || args[3] === undefined || $.jsString(args[3]).length === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.edit.usage1'));
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage2', $.botName));
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage3'));
+                        } else {
+                            var target = $.jsString(args[2]);
+                            var cmdid = findRewardCommandIndex(target);
+
+                            if (cmdid === null) {
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
+                            } else {
+                                var cmd;
+                                commandLock.lock();
+                                try {
+                                    cmd = commands[cmdid];
+                                    cmd.command = args.slice(3).join(' ');
+                                    commands[cmdid] = cmd;
+                                    $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+                                } finally {
+                                    commandLock.unlock();
+                                }
+
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.edit', cmd.title, cmd.command));
+                            }
+                        }
+                        /*
+                         * @commandpath channelpoints command remove - Removes a "command" type reward
+                         */
+                    } else if (subAction === 'remove') {
+                        if (args[2] === undefined || $.jsString(args[2]).length === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.remove.usage'));
+                        } else {
+                            var target = $.jsString(args[2]);
+                            var cmdid = findRewardCommandIndex(target);
+
+                            if (cmdid === null) {
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
+                            } else {
+                                var title = commands[cmdid].title;
+                                commandLock.lock();
+                                try {
+                                    commands.splice(cmdid, 1);
+                                    $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+                                } finally {
+                                    commandLock.unlock();
+                                }
+
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.remove', title));
                             }
                         }
                     } else {
@@ -599,13 +654,18 @@
                 $.say($.lang.get('channelPointsHandler.command.add.failed', rewardTitle));
             }
 
-            var data = {
-                'id': rewardID,
-                'title': rewardTitle,
-                'command': commandConfig
-            };
-            commands.push(data);
-            $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+            commandLock.lock();
+            try {
+                var data = {
+                    'id': rewardID,
+                    'title': rewardTitle,
+                    'command': commandConfig
+                };
+                commands.push(data);
+                $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
+            } finally {
+                commandLock.unlock();
+            }
             commandConfig = '';
             $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
             $.say($.lang.get('channelPointsHandler.command.add.complete', data.title, data.command));
