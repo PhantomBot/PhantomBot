@@ -117,7 +117,6 @@
      */
     $.bind('initReady', function() {
         loadResponses();
-
         $.registerChatCommand('./games/random.js', 'random');
         $.registerChatSubcommand('random', 'pg13toggle', $.PERMISSION.Admin);
     });

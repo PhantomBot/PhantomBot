@@ -24,13 +24,14 @@
     var timeoutTime = $.getSetIniDbNumber('roulette', 'timeoutTime', 60),
         responseCounts = {
             win: 0,
-            lost: 0,
+            lost: 0
         },
-        lastRandom = 0;
+        lastRandom = 0,
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     function reloadRoulette() {
         timeoutTime = $.getIniDbNumber('roulette', 'timeoutTime');
-    };
+    }
 
     /**
      * @function loadResponses
@@ -47,7 +48,7 @@
         }
 
         $.consoleDebug($.lang.get('roulette.console.loaded', responseCounts.win, responseCounts.lost));
-    };
+    }
 
     /**
      * @function timeoutUser
@@ -55,7 +56,7 @@
      */
     function timeoutUserR(username) {
         Packages.tv.phantombot.PhantomBot.instance().getSession().say('.timeout ' + username + ' ' + timeoutTime);
-    };
+    }
 
     /**
      * @event command
@@ -75,15 +76,31 @@
             d1 = $.randRange(1, 2);
             d2 = $.randRange(1, 2);
 
-            if (d1 == d2) {
+            if (d1 === d2) {
                 do {
                     random = $.randRange(1, responseCounts.win);
-                } while (random == lastRandom);
+                } while (random === lastRandom);
+
+                _lock.lock();
+                try {
+                    lastRandom = random;
+                } finally {
+                    _lock.unlock();
+                }
+
                 $.say($.lang.get('roulette.win.' + random, $.resolveRank(sender)));
             } else {
                 do {
                     random = $.randRange(1, responseCounts.lost);
-                } while (random == lastRandom);
+                } while (random === lastRandom);
+
+                _lock.lock();
+                try {
+                    lastRandom = random;
+                } finally {
+                    _lock.unlock();
+                }
+
                 $.say($.lang.get('roulette.lost.' + random, $.resolveRank(sender)));
                 if (!$.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod)) {
                     if ($.getBotWhisperMode()) {
@@ -118,10 +135,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if (responseCounts.win == 0 && responseCounts.lost == 0) {
-            loadResponses();
-        }
-
+        loadResponses();
         $.registerChatCommand('./games/roulette.js', 'roulette', $.PERMISSION.Viewer);
         $.registerChatCommand('./games/roulette.js', 'roulettetimeouttime', $.PERMISSION.Admin);
     });
