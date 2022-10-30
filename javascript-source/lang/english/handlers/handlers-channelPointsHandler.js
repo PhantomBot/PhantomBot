@@ -75,7 +75,7 @@ $.lang.register('channelpointshandler.timeout.enabled', 'channel points redempti
 $.lang.register('channelpointshandler.timeout.disabled', 'channel points redemption timeout disabled.');
 $.lang.register('channelpointshandler.timeout.nouserinput', 'Channel point reward redeemed has no user input so cannot be set used for timeout. Please setup a reward with user input and try again.');
 
-$.lang.register('channelpointshandler.command.info', 'converts the redemption into a command, then parses command tags as if a custom command was called as the bot. See "!channelpoints command config" to configure, "!channelpoints command usage" for usage, or "!channelpoints command example" for an example');
+$.lang.register('channelpointshandler.command.info', 'converts the redemption into a command, then parses command tags as if a custom command was called as the bot. See "!channelpoints command add" to configure, "!channelpoints command usage" for usage, or "!channelpoints command example" for an example');
 $.lang.register('channelpointshandler.command.usage', 'usage: !channelpoints command [usage / example / list / get / add / edit / remove]');
 $.lang.register('channelpointshandler.command.example', 'example: !channelpoints command add Thank you for redeeming @(2)! (playsound applause)');
 $.lang.register('channelpointshandler.command.list', 'active command reward ids: $1');
