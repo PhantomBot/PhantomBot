@@ -30,7 +30,6 @@
             modeOUsers = [],
             subUsers = new java.util.concurrent.CopyOnWriteArrayList(),
             vipUsers = [],
-            modListUsers = [],
             users = [],
             moderatorsCache = [],
             botList = [],
@@ -391,16 +390,6 @@
      */
     function hasModeO(username) {
         return hasKey(modeOUsers, username);
-    }
-
-    /**
-     * @function hasModList
-     * @export $
-     * @param {string} username
-     * @returns {boolean}
-     */
-    function hasModList(username) {
-        return hasKey(modListUsers, username);
     }
 
     /**
@@ -938,7 +927,6 @@
             $.inidb.SetBatchString('visited', '', joins, values);
 
             isUpdatingUsers = false;
-            firstRun = false;
         }, 0, 'core::permissions.js::ircChannelUsersUpdate');
     });
 
@@ -1364,7 +1352,6 @@
     $.userGroups = userGroups;
     $.modeOUsers = modeOUsers;
     $.subUsers = subUsers;
-    $.modListUsers = modListUsers;
     $.users = users;
     $.lastJoinPart = lastJoinPart;
 
