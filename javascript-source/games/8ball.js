@@ -22,7 +22,8 @@
  */
 (function() {
     var responseCount = 0,
-        lastRandom = 0;
+        lastRandom = 0,
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function loadResponses
@@ -32,8 +33,9 @@
         for (i = 1; $.lang.exists('8ball.answer.' + i); i++) {
             responseCount++;
         }
+
         $.consoleDebug($.lang.get('8ball.console.loaded', responseCount));
-    };
+    }
 
     /**
      * @event command
@@ -51,15 +53,20 @@
             if (!args[0]) {
                 $.say($.resolveRank(sender) + ' ' + $.lang.get('8ball.usage'));
                 $.returnCommandCost(sender, command, $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod));
-                return
+                return;
             }
 
-            do {
-                random = $.randRange(1, responseCount);
-            } while (random == lastRandom);
+            _lock.lock();
+            try {
+                do {
+                    random = $.randRange(1, responseCount);
+                } while (random === lastRandom);
 
-            $.say($.lang.get('8ball.response', $.lang.get('8ball.answer.' + random)));
-            lastRandom = random;
+                $.say($.lang.get('8ball.response', $.lang.get('8ball.answer.' + random)));
+                lastRandom = random;
+            } finally {
+                _lock.unlock();
+            }
         }
     });
 
@@ -67,9 +74,7 @@
      * @event initReady
      */
     $.bind('initReady', function() {
-        if (responseCount == 0) {
-            loadResponses();
-        }
+        loadResponses();
         $.registerChatCommand('./games/8ball.js', '8ball', $.PERMISSION.Viewer);
     });
 })();
