@@ -16,7 +16,8 @@
  */
 
 (function () {
-    var transformers = {};
+    var transformers = {},
+            _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /*
      * transformer function definition
@@ -183,13 +184,18 @@
                 $.replace(message, wholeMatch, transformCache[wholeMatch]);
                 thisTagFound = true;
             } else {
-                if (localTransformers.hasOwnProperty(tagName)
-                        && (transformed = localTransformers[tagName](tagArgs, event, customArgs))) {
-                    thisTagFound = true;
-                } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(globalTransformerRequiredLabels)
-                        && transformers[tagName].hasAnyLabel(globalTransformerAnyLabels)
-                        && (transformed = transformers[tagName].transformer(tagArgs, event, customArgs, globalTransformerRequiredLabels, globalTransformerAnyLabels))) {
-                    thisTagFound = true;
+                _lock.lock();
+                try {
+                    if (localTransformers.hasOwnProperty(tagName)
+                            && (transformed = localTransformers[tagName](tagArgs, event, customArgs))) {
+                        thisTagFound = true;
+                    } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(globalTransformerRequiredLabels)
+                            && transformers[tagName].hasAnyLabel(globalTransformerAnyLabels)
+                            && (transformed = transformers[tagName].transformer(tagArgs, event, customArgs, globalTransformerRequiredLabels, globalTransformerAnyLabels))) {
+                        thisTagFound = true;
+                    }
+                } finally {
+                    _lock.unlock();
                 }
 
                 if (thisTagFound) {
@@ -230,9 +236,10 @@
                 message = message.replace('/me ', '');
                 //  write '/me ' at the beginning of the message
                 return '/me ' + $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
-            } else {
-                return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
             }
+
+            return $.jsString(event.getArgs()[0]) + ' -> ' + unescapeTags(message);
+
         }
 
         return unescapeTags(message);
@@ -274,7 +281,12 @@
      * @param {transformer} transformer - a transformer object constructed from $.transformers.transformer
      */
     function addTransformer(transformer) {
-        transformers[transformer.tag] = transformer;
+        _lock.lock();
+        try {
+            transformers[transformer.tag] = transformer;
+        } finally {
+            _lock.unlock();
+        }
     }
 
     /*
@@ -296,7 +308,12 @@
      * @returns {object[string->transformer]}
      */
     function getTransformers() {
-        return transformers;
+        _lock.lock();
+        try {
+            return transformers;
+        } finally {
+            _lock.unlock();
+        }
     }
 
     /*
@@ -307,7 +324,12 @@
      * @returns {transformer}
      */
     function getTransformer(tag) {
-        return transformers[tag.toLowerCase()];
+        _lock.lock();
+        try {
+            return transformers[tag.toLowerCase()];
+        } finally {
+            _lock.unlock();
+        }
     }
 
     /*
@@ -319,10 +341,15 @@
      */
     function getTransformersWithLabel(label) {
         var result = [];
-        for (var i = 0; i < transformers.length; i++) {
-            if (transformers[i].hasLabel(label)) {
-                result.push(transformers[i]);
+        _lock.lock();
+        try {
+            for (var i = 0; i < transformers.length; i++) {
+                if (transformers[i].hasLabel(label)) {
+                    result.push(transformers[i]);
+                }
             }
+        } finally {
+            _lock.unlock();
         }
 
         return result;
@@ -337,10 +364,15 @@
      */
     function getTransformersWithAllLabels(labelSet) {
         var result = [];
-        for (var i = 0; i < transformers.length; i++) {
-            if (transformers[i].hasAllLabels(labelSet)) {
-                result.push(transformers[i]);
+        _lock.lock();
+        try {
+            for (var i = 0; i < transformers.length; i++) {
+                if (transformers[i].hasAllLabels(labelSet)) {
+                    result.push(transformers[i]);
+                }
             }
+        } finally {
+            _lock.unlock();
         }
 
         return result;
@@ -355,10 +387,15 @@
      */
     function getTransformersWithAnyLabel(labelSet) {
         var result = [];
-        for (var i = 0; i < transformers.length; i++) {
-            if (transformers[i].hasAnyLabel(labelSet)) {
-                result.push(transformers[i]);
+        _lock.lock();
+        try {
+            for (var i = 0; i < transformers.length; i++) {
+                if (transformers[i].hasAnyLabel(labelSet)) {
+                    result.push(transformers[i]);
+                }
             }
+        } finally {
+            _lock.unlock();
         }
 
         return result;
