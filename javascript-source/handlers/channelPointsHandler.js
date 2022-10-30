@@ -142,7 +142,7 @@
                     if (subAction === 'example') {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.example'));
                         /*
-                         * @commandpath channelpoints command get - Given a channel point reward id, returns the custom command definition that will be parsed
+                         * @commandpath channelpoints command list - Lists each Reward ID and Title that is currently linked to the "command" reward type
                          */
                     } else if (subAction === 'list') {
                         var active = '';
@@ -162,19 +162,13 @@
                         if (args[2] === undefined || $.jsString(args[2]).length === 0) {
                             $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.usage'));
                         } else {
-                            var selected = -1;
                             var target = $.jsString(args[2]);
-                            for (var i = 0; i < commands.length; i++) {
-                                if (commands[i].id === target) {
-                                    selected = i;
-                                    break;
-                                }
-                            }
+                            var cmd = findRewardCommand(target);
 
-                            if (selected === -1) {
+                            if (cmd === null) {
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
                             } else {
-                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get', target, commands[selected].command));
+                                $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get', target, cmd.command));
                             }
                         }
                         /*
