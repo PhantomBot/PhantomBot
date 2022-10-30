@@ -37,7 +37,8 @@
             lastJoinPart = $.systemTime(),
             isUpdatingUsers = false,
             _isSwappedSubscriberVIP = $.inidb.GetBoolean('settings', '', 'isSwappedSubscriberVIP'),
-            _usersLock = new java.util.concurrent.locks.ReentrantLock();
+            _usersLock = new java.util.concurrent.locks.ReentrantLock(),
+            _usersGroupsLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @export $
@@ -517,7 +518,12 @@
      * @returns {string}
      */
     function getGroupNameById(groupId, defaultName) {
-        return $.getIniDbString('groups', parseInt(groupId), (defaultName ? defaultName : userGroups[PERMISSION.Viewer]));
+        _usersGroupsLock.lock();
+        try {
+            return $.getIniDbString('groups', parseInt(groupId), (defaultName ? defaultName : userGroups[PERMISSION.Viewer]));
+        } finally {
+            _usersGroupsLock.unlock();
+        }
     }
 
     /**
@@ -530,11 +536,16 @@
         var groupName = $.javaString(inGroupName),
                 userGroupName;
 
-        for (var i = 0; i < userGroups.length; i++) {
-            userGroupName = $.javaString(userGroups[i]);
-            if ($.equalsIgnoreCase(userGroupName, groupName.toLowerCase()) || $.equalsIgnoreCase(userGroupName.substring(0, userGroupName.length() - 1), groupName.toLowerCase())) {
-                return i;
+        _usersGroupsLock.lock();
+        try {
+            for (var i = 0; i < userGroups.length; i++) {
+                userGroupName = $.javaString(userGroups[i]);
+                if ($.equalsIgnoreCase(userGroupName, groupName.toLowerCase()) || $.equalsIgnoreCase(userGroupName.substring(0, userGroupName.length() - 1), groupName.toLowerCase())) {
+                    return i;
+                }
             }
+        } finally {
+            _usersGroupsLock.unlock();
         }
 
         return PERMISSION.Viewer;
@@ -575,10 +586,16 @@
      */
     function reloadGroups() {
         var groupKeys = $.inidb.GetKeyList('groups', '');
-        userGroups = [];
 
-        for (var i in groupKeys) {
-            userGroups[parseInt(groupKeys[i])] = $.getIniDbString('groups', groupKeys[i], '');
+        _usersGroupsLock.lock();
+        try {
+            userGroups = [];
+
+            for (var i in groupKeys) {
+                userGroups[parseInt(groupKeys[i])] = $.getIniDbString('groups', groupKeys[i], '');
+            }
+        } finally {
+            _usersGroupsLock.unlock();
         }
     }
 
@@ -766,37 +783,42 @@
      * @function generateDefaultGroups
      */
     function generateDefaultGroups() {
-        if (!userGroups[PERMISSION.Caster] || !$.equalsIgnoreCase(userGroups[PERMISSION.Caster], 'Caster')) {
-            userGroups[PERMISSION.Caster] = 'Caster';
-            $.setIniDbString('groups', PERMISSION.Caster.toString(), 'Caster');
-        }
-        if (!userGroups[PERMISSION.Admin] || !$.equalsIgnoreCase(userGroups[PERMISSION.Admin], 'Administrator')) {
-            userGroups[PERMISSION.Admin] = 'Administrator';
-            $.setIniDbString('groups', PERMISSION.Admin.toString(), 'Administrator');
-        }
-        if (!userGroups[PERMISSION.Mod] || !$.equalsIgnoreCase(userGroups[PERMISSION.Mod], 'Moderator')) {
-            userGroups[PERMISSION.Mod] = 'Moderator';
-            $.setIniDbString('groups', PERMISSION.Mod.toString(), 'Moderator');
-        }
-        if (!userGroups[PERMISSION.Sub] || !$.equalsIgnoreCase(userGroups[PERMISSION.Sub], 'Subscriber')) {
-            userGroups[PERMISSION.Sub] = 'Subscriber';
-            $.setIniDbString('groups', PERMISSION.Sub.toString(), 'Subscriber');
-        }
-        if (!userGroups[PERMISSION.Donator] || !$.equalsIgnoreCase(userGroups[PERMISSION.Donator], 'Donator')) {
-            userGroups[PERMISSION.Donator] = 'Donator';
-            $.setIniDbString('groups', PERMISSION.Donator.toString(), 'Donator');
-        }
-        if (!userGroups[PERMISSION.VIP] || !$.equalsIgnoreCase(userGroups[PERMISSION.VIP], 'VIP')) {
-            userGroups[PERMISSION.VIP] = 'VIP';
-            $.setIniDbString('groups', PERMISSION.VIP.toString(), 'VIP');
-        }
-        if (!userGroups[PERMISSION.Regular] || !$.equalsIgnoreCase(userGroups[PERMISSION.Regular], 'Regular')) {
-            userGroups[PERMISSION.Regular] = 'Regular';
-            $.setIniDbString('groups', PERMISSION.Regular.toString(), 'Regular');
-        }
-        if (!userGroups[PERMISSION.Viewer] || !$.equalsIgnoreCase(userGroups[PERMISSION.Viewer], 'Viewer')) {
-            userGroups[PERMISSION.Viewer] = 'Viewer';
-            $.setIniDbString('groups', PERMISSION.Viewer.toString(), 'Viewer');
+        _usersGroupsLock.lock();
+        try {
+            if (!userGroups[PERMISSION.Caster] || !$.equalsIgnoreCase(userGroups[PERMISSION.Caster], 'Caster')) {
+                userGroups[PERMISSION.Caster] = 'Caster';
+                $.setIniDbString('groups', PERMISSION.Caster.toString(), 'Caster');
+            }
+            if (!userGroups[PERMISSION.Admin] || !$.equalsIgnoreCase(userGroups[PERMISSION.Admin], 'Administrator')) {
+                userGroups[PERMISSION.Admin] = 'Administrator';
+                $.setIniDbString('groups', PERMISSION.Admin.toString(), 'Administrator');
+            }
+            if (!userGroups[PERMISSION.Mod] || !$.equalsIgnoreCase(userGroups[PERMISSION.Mod], 'Moderator')) {
+                userGroups[PERMISSION.Mod] = 'Moderator';
+                $.setIniDbString('groups', PERMISSION.Mod.toString(), 'Moderator');
+            }
+            if (!userGroups[PERMISSION.Sub] || !$.equalsIgnoreCase(userGroups[PERMISSION.Sub], 'Subscriber')) {
+                userGroups[PERMISSION.Sub] = 'Subscriber';
+                $.setIniDbString('groups', PERMISSION.Sub.toString(), 'Subscriber');
+            }
+            if (!userGroups[PERMISSION.Donator] || !$.equalsIgnoreCase(userGroups[PERMISSION.Donator], 'Donator')) {
+                userGroups[PERMISSION.Donator] = 'Donator';
+                $.setIniDbString('groups', PERMISSION.Donator.toString(), 'Donator');
+            }
+            if (!userGroups[PERMISSION.VIP] || !$.equalsIgnoreCase(userGroups[PERMISSION.VIP], 'VIP')) {
+                userGroups[PERMISSION.VIP] = 'VIP';
+                $.setIniDbString('groups', PERMISSION.VIP.toString(), 'VIP');
+            }
+            if (!userGroups[PERMISSION.Regular] || !$.equalsIgnoreCase(userGroups[PERMISSION.Regular], 'Regular')) {
+                userGroups[PERMISSION.Regular] = 'Regular';
+                $.setIniDbString('groups', PERMISSION.Regular.toString(), 'Regular');
+            }
+            if (!userGroups[PERMISSION.Viewer] || !$.equalsIgnoreCase(userGroups[PERMISSION.Viewer], 'Viewer')) {
+                userGroups[PERMISSION.Viewer] = 'Viewer';
+                $.setIniDbString('groups', PERMISSION.Viewer.toString(), 'Viewer');
+            }
+        } finally {
+            _usersGroupsLock.unlock();
         }
 
         setUserGroupById($.ownerName.toLowerCase(), PERMISSION.Caster);
@@ -804,7 +826,9 @@
     }
 
     function swapSubscriberVIP() {
-        var oldSubL = userGroups[PERMISSION.Sub],
+        _usersGroupsLock.lock();
+        try {
+            var oldSubL = userGroups[PERMISSION.Sub],
                 oldSubD = $.inidb.get('groups', PERMISSION.Sub.toString()),
                 oldSubU = $.inidb.GetKeysByLikeValues('group', '', PERMISSION.Sub.toString()),
                 newSubU = [],
@@ -814,18 +838,22 @@
                 newVIPU = [],
                 temp = PERMISSION.VIP,
                 i;
-        PERMISSION.VIP = PERMISSION.Sub;
-        PERMISSION.Sub = temp;
-        for (i in oldSubU) {
-            newSubU[i] = PERMISSION.Sub;
+            PERMISSION.VIP = PERMISSION.Sub;
+            PERMISSION.Sub = temp;
+            for (i in oldSubU) {
+                newSubU[i] = PERMISSION.Sub;
+            }
+
+            for (i in oldVIPU) {
+                newVIPU[i] = PERMISSION.VIP;
+            }
+
+            userGroups[PERMISSION.VIP] = oldVIPL;
+            userGroups[PERMISSION.Sub] = oldSubL;
+        } finally {
+            _usersGroupsLock.unlock();
         }
 
-        for (i in oldVIPU) {
-            newVIPU[i] = PERMISSION.VIP;
-        }
-
-        userGroups[PERMISSION.VIP] = oldVIPL;
-        userGroups[PERMISSION.Sub] = oldSubL;
         $.inidb.set('groups', PERMISSION.VIP.toString(), oldVIPD);
         $.inidb.set('groups', PERMISSION.Sub.toString(), oldSubD);
         $.inidb.SetBatchString('group', '', oldSubU, newSubU);
