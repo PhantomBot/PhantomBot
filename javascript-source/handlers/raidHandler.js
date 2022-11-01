@@ -19,6 +19,7 @@
     var raidToggle = $.getSetIniDbBoolean('raidSettings', 'raidToggle', false),
             newRaidIncMessage = $.getSetIniDbString('raidSettings', 'newRaidIncMessage', '(username) is raiding us with (viewers) viewers!'),
             raidIncMessage = $.getSetIniDbString('raidSettings', 'raidIncMessage', '(username) is raiding us with (viewers) viewers! This is the (times) time (username) has raided us!'),
+            raidIncMinViewers = $.getSetIniDbNumber('raidSettings', 'raidMinViewers', 0),
             raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
             raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
             raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1);
@@ -30,6 +31,7 @@
         raidToggle = $.getIniDbBoolean('raidSettings', 'raidToggle');
         newRaidIncMessage = $.getIniDbString('raidSettings', 'newRaidIncMessage');
         raidIncMessage = $.getIniDbString('raidSettings', 'raidIncMessage');
+        raidIncMinViewers = $.getSetIniDbNumber('raidSettings', 'raidMinViewers', 0);
         raidReward = $.getIniDbNumber('raidSettings', 'raidReward');
         raidOutMessage = $.getIniDbString('raidSettings', 'raidOutMessage');
         raidOutSpam = $.getIniDbNumber('raidSettings', 'raidOutSpam');
@@ -148,12 +150,13 @@
      */
     $.bind('twitchRaid', function (event) {
         var username = event.getUsername(),
-                viewers = event.getViewers(),
-                hasRaided = false,
-                raidObj,
-                message;
+            viewers = event.getViewers(),
+            parsedViewers = parseInt(viewers),
+            hasRaided = false,
+            raidObj,
+            message;
 
-        if (raidToggle === true) {
+        if (raidToggle === true && viewers >= raidIncMinViewers) {
             // If the user has raided before.
             if ((hasRaided = $.inidb.exists('incoming_raids', username))) {
                 // Set the message.
@@ -214,7 +217,7 @@
         }
 
         // Add reward.
-        if (raidReward > 0) {
+        if (raidReward > 0 && viewers >= raidIncMinViewers) {
             $.inidb.incr('points', username, raidReward);
         }
 
@@ -227,10 +230,10 @@
      */
     $.bind('command', function (event) {
         var sender = event.getSender(),
-                command = event.getCommand(),
-                args = event.getArgs(),
-                action = args[0],
-                subAction = args[1];
+            command = event.getCommand(),
+            args = event.getArgs(),
+            action = args[0],
+            subAction = args[1];
 
         if (command.equalsIgnoreCase('raid')) {
             if (action === undefined) {
@@ -260,6 +263,21 @@
                 raidReward = parseInt(subAction);
                 $.setIniDbNumber('raidSettings', 'raidReward', raidReward);
                 $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.reward.set', $.getPointsString(raidReward)));
+                return;
+            }
+
+            /*
+             * @commandpath raid setincomingminviewers [amount] - Sets the minimum amount of viewers to trigger the raid message.
+             */
+            if (action.equalsIgnoreCase('setincomingminviewers')) {
+                if (isNaN(subAction) || parseInt(subAction) < 0) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.minviewers.usage'));
+                    return;
+                }
+
+                raidIncMinViewers = parseInt(subAction);
+                $.setIniDbNumber('raidSettings', 'raidMinViewers', raidIncMinViewers);
+                $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.minviewers.set', raidIncMinViewers));
                 return;
             }
 
@@ -359,6 +377,7 @@
         $.registerChatCommand('./handlers/raidHandler.js', 'raid', $.PERMISSION.Admin);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'toggle', $.PERMISSION.Admin);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setreward', $.PERMISSION.Admin);
+        $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setincomingminviewers', $.PERMISSION.Admin);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'lookup', $.PERMISSION.Mod);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setincomingmessage', $.PERMISSION.Admin);
         $.registerChatSubcommand('./handlers/raidHandler.js', 'raid', 'setnewincomingmessage', $.PERMISSION.Admin);

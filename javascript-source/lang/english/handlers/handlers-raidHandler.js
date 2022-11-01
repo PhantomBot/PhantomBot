@@ -20,6 +20,8 @@ $.lang.register('raidhandler.toggle.enabled', 'Raid alerts have successfully bee
 $.lang.register('raidhandler.toggle.disabled', 'Raid alerts have successfully been disabled.');
 $.lang.register('raidhandler.reward.usage', 'Usage: !raid setreward [amount]');
 $.lang.register('raidhandler.reward.set', 'Successfully set the raid reward to $1.');
+$.lang.register('raidhandler.minviewers.usage', 'Usage: !raid setincomingminviewers [amount]');
+$.lang.register('raidhandler.minviewers.set', 'Successfully set the raid minimum viewers to $1.');
 $.lang.register('raidhandler.inc.message.usage', 'Usage: !raid setincomingmessage [message] - Variables: (username), (viewers), (url), (times) and (game)');
 $.lang.register('raidhandler.inc.message.set', 'Successfully updated the incoming raid message!');
 $.lang.register('raidhandler.new.inc.message.usage', 'Usage: !raid setnewincomingmessage [message] - Variables: (username), (viewers), (url), and (game)');
