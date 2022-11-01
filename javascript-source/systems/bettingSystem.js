@@ -42,7 +42,8 @@
             winners: '',
             options: {},
             opt: []
-        };
+        },
+        _betLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadBet
@@ -286,7 +287,6 @@
         if (refund) {
             var betters = Object.keys(bets);
 
-
             for (var i = 0; i < betters.length; i++) {
                 $.inidb.incr('points', betters[i], bets[betters[i]].amount);
             }
@@ -347,14 +347,20 @@
             return;
         }
 
-        bet.entries++;
-        bet.total += parseInt(amount);
-        bet.options[option].bets++;
-        bet.options[option].total += parseInt(amount);
-        bets[sender] = {
-            option: option,
-            amount: amount
-        };
+        _betLock.lock();
+        try {
+            bet.entries++;
+            bet.total += parseInt(amount);
+            bet.options[option].bets++;
+            bet.options[option].total += parseInt(amount);
+            bets[sender] = {
+                option: option,
+                amount: amount
+            };
+        } finally {
+            _betLock.unlock();
+        }
+
         $.inidb.decr('points', sender, amount);
         $.inidb.incr('bettingVotes', option.replace(/\s/, '%space_option%'), 1);
     }
