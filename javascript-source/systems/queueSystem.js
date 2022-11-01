@@ -33,13 +33,16 @@
         if (isOpened === true) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.error.opened'));
             return;
-        } else if (size === undefined || isNaN(parseInt(size))) {
+        }
+        if (size === undefined || isNaN(parseInt(size))) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.error.usage'));
             return;
-        } else if (title === undefined) {
+        }
+        if (title === undefined) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.usage'));
             return;
-        } else if (Object.keys(queue).length !== 0) {
+        }
+        if (Object.keys(queue).length !== 0) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.open.error.clear'));
             return;
         }
@@ -55,6 +58,7 @@
         } else {
             $.say($.lang.get('queuesystem.open.limit', size, title));
         }
+
         isOpened = true;
         $.inidb.set('queueSettings', 'isActive', 'true');
     }
@@ -99,11 +103,13 @@
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.error.joined'));
             $.returnCommandCost(username, command, $.checkUserPermission(username, undefined, $.PERMISSION.Mod));
             return;
-        } else if (info.size !== 0 && (info.size <= Object.keys(queue).length)) {
+        }
+        if (info.size !== 0 && (info.size <= Object.keys(queue).length)) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.error.full'));
             $.returnCommandCost(username, command, $.checkUserPermission(username, undefined, $.PERMISSION.Mod));
             return;
-        } else if (isOpened === false) {
+        }
+        if (isOpened === false) {
             $.returnCommandCost(username, command, $.checkUserPermission(username, undefined, $.PERMISSION.Mod));
             return;
         }
@@ -134,7 +140,8 @@
         if (action === undefined) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.remove.usage'));
             return;
-        } else if (queue[action.toLowerCase()] === undefined) {
+        }
+        if (queue[action.toLowerCase()] === undefined) {
             $.say($.whisperPrefix(username) + $.lang.get('queuesystem.remove.404'));
             return;
         }
@@ -165,14 +172,15 @@
     function date(time, simple) {
         var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT';
         var ldate = Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(time), Packages.java.time.ZoneId.of(zone));
-        var date = ldate.format(Packages.java.time.format.DateTimeFormatter.ofPattern('HH:mm:ss z'));
+        var datevar = ldate.format(Packages.java.time.format.DateTimeFormatter.ofPattern('HH:mm:ss z'));
         var string = $.getTimeString(Packages.java.time.Duration.between(ldate, Packages.java.time.ZonedDateTime.now()).toSeconds());
 
         if (simple === undefined) {
-            return date + ' ' + $.lang.get('queuesystem.time.info', string);
-        } else {
-            return date;
+            return datevar + ' ' + $.lang.get('queuesystem.time.info', string);
         }
+
+        return datevar;
+
     }
 
     /*
@@ -338,69 +346,79 @@
              */
             if (action.equalsIgnoreCase('open')) {
                 open(sender, (isNaN(parseInt(subAction)) ? 0 : subAction), (isNaN(parseInt(subAction)) ? args.slice(1).join(' ') : args.slice(2).join(' ')));
+                return;
             }
 
             /*
              * @commandpath queue close - Closes the current queue that is opened.
              */
-            else if (action.equalsIgnoreCase('close')) {
+            if (action.equalsIgnoreCase('close')) {
                 close(sender);
+                return;
             }
 
             /*
              * @commandpath queue clear - Closes and resets the current queue.
              */
-            else if (action.equalsIgnoreCase('clear')) {
+            if (action.equalsIgnoreCase('clear')) {
                 clear(sender);
+                return;
             }
 
             /*
              * @commandpath queue remove [username] - Removes that username from the queue.
              */
-            else if (action.equalsIgnoreCase('remove')) {
+            if (action.equalsIgnoreCase('remove')) {
                 remove(sender, subAction);
+                return;
             }
 
             /*
              * @commandpath queue list - Gives you the current queue list. Note that if the queue list is very long it will only show the first 5 users in the queue.
              */
-            else if (action.equalsIgnoreCase('list')) {
+            if (action.equalsIgnoreCase('list')) {
                 list(sender);
+                return;
             }
 
             /*
              * @commandpath queue next [amount] - Shows the players that are to be picked next. Note if the amount is not specified it will only show one.
              */
-            else if (action.equalsIgnoreCase('next')) {
+            if (action.equalsIgnoreCase('next')) {
                 next(sender, subAction);
+                return;
             }
 
             /*
              * @commandpath queue pick [amount] - Picks the players next in line from the queue. Note if the amount is not specified it will only pick one.
              */
-            else if (action.equalsIgnoreCase('pick')) {
+            if (action.equalsIgnoreCase('pick')) {
                 pick(sender, subAction, false);
+                return;
             }
 
             /*
              * @commandpath queue random [amount] - Picks random players from the queue. Note if the amount is not specified it will only pick one.
              */
-            else if (action.equalsIgnoreCase('random')) {
+            if (action.equalsIgnoreCase('random')) {
                 pick(sender, subAction, true);
+                return;
             }
 
             /*
              * @commandpath queue position [username] - Tells what position that user is in the queue and at what time he joined.
              */
-            else if (action.equalsIgnoreCase('position')) {
+            if (action.equalsIgnoreCase('position')) {
                 position(sender, subAction);
+                return;
             }
 
             /*
              * @commandpath queue info - Gives you the current information about the queue that is opened
              */
-            else if (action.equalsIgnoreCase('info')) {
+            if (action.equalsIgnoreCase('info')) {
                 stats(sender);
+                return;
             }
         }
 
