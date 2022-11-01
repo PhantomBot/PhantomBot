@@ -153,8 +153,13 @@
     }
 
     function saveState() {
-        $.inidb.set('bettingState', 'bets', JSON.stringify(bets));
-        $.inidb.set('bettingState', 'bet', JSON.stringify(bet));
+        _betLock.lock();
+        try {
+            $.inidb.set('bettingState', 'bets', JSON.stringify(bets));
+            $.inidb.set('bettingState', 'bet', JSON.stringify(bet));
+        } finally {
+            _betLock.unlock();
+        }
     }
 
     /**
