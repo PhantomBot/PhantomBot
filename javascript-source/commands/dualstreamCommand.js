@@ -21,6 +21,7 @@
         timerInterval = $.getSetIniDbNumber('dualStreamCommand', 'timerInterval', 20),
         reqMessages = $.getSetIniDbNumber('dualStreamCommand', 'reqMessages', 10),
         messageCount = 0,
+        _messageCountLock = new java.util.concurrent.locks.ReentrantLock(),
         lastSent = 0;
 
     /*
@@ -37,7 +38,12 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function(event) {
-        messageCount++;
+        _messageCountLock.lock();
+        try {
+            messageCount++;
+        } finally {
+            _messageCountLock.unlock();
+        }
     });
 
     /*
@@ -171,10 +177,15 @@
          */
         var interval = setInterval(function() {
             if (timerToggle && !otherChannels.equals('Channel-1 Channel-2')) {
-                if ($.isOnline($.channelName) && messageCount >= reqMessages && $.systemTime() >= lastSent) {
-                    $.say($.lang.get('dualstreamcommand.link') + $.channelName + '/' + otherChannels.split(' ').join('/'));
-                    lastSent = ($.systemTime() + (timerInterval * 6e4));
-                    messageCount = 0;
+                _messageCountLock.lock();
+                try {
+                    if ($.isOnline($.channelName) && messageCount >= reqMessages && $.systemTime() >= lastSent) {
+                        $.say($.lang.get('dualstreamcommand.link') + $.channelName + '/' + otherChannels.split(' ').join('/'));
+                        lastSent = ($.systemTime() + (timerInterval * 6e4));
+                        messageCount = 0;
+                    }
+                } finally {
+                    _messageCountLock.unlock();
                 }
             }
         }, 10e3);

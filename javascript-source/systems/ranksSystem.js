@@ -36,13 +36,10 @@
         var numA = parseInt(a),
             numB = parseInt(b);
 
-        if (numA > numB) {
-            return 1;
-        } 
-        if (numA == numB) {
+        if (numA === numB) {
             return 0;
         }
-        
+
         return -1;
     }
 
@@ -77,23 +74,26 @@
         if (ranksTimeTable === undefined) {
             loadRanksTimeTable();
         }
-        if (ranksTimeTable.length == 0) {
+        if (ranksTimeTable.length === 0) {
             return false;
         }
 
         if (time === undefined) {
-          time = parseInt($.inidb.get('time', username));
+            time = parseInt($.inidb.get('time', username));
         }
+
         userTime = parseInt(time / 3600);
         if (isNaN(userTime)) {
             userTime = 0;
         }
+
         for (var i = 0; i < ranksTimeTable.length; i++) {
             if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
                 return true;
             }
             i = ranksTimeTable.length;
         }
+
         return false;
     }
 
@@ -122,17 +122,20 @@
         // Return System Rank
         userLevel = -1;
         if (time === undefined) {
-          time = parseInt($.inidb.get('time', username));
+            time = parseInt($.inidb.get('time', username));
         }
+
         userTime = parseInt(time / 3600);
         if (isNaN(userTime)) {
             userTime = 0;
         }
+
         for (var i = 0; i < ranksTimeTable.length; i++) {
             if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
                 userLevel = i;
             }
         }
+
         if (userLevel != -1) {
             return $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString());
         }

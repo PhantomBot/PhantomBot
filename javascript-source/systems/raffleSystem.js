@@ -41,7 +41,8 @@
         saveStateInterval,
         timerMessage = '',
         lastWinners = [],
-        hasDrawn = false;
+        hasDrawn = false,
+        _entriesLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadRaffle
@@ -245,8 +246,14 @@
     }
 
     function saveState() {
-        $.inidb.set('raffleState', 'entries', JSON.stringify(entries));
-        $.inidb.set('raffleState', 'entered', JSON.stringify(entered));
+        _entriesLock.lock();
+        try {
+            $.inidb.set('raffleState', 'entries', JSON.stringify(entries));
+            $.inidb.set('raffleState', 'entered', JSON.stringify(entered));
+        } finally {
+            _entriesLock.unlock();
+        }
+
         $.inidb.set('raffleState', 'keyword', keyword);
         $.inidb.set('raffleState', 'entryFee', entryFee);
         $.inidb.set('raffleState', 'timerTime', timerTime);
@@ -312,10 +319,15 @@
         var newWinners = [],
             taken = [];
 
-        while (amount--) {
-            var rnd = Math.floor(Math.random() * entriesLen);
-            newWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
-            taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+        _entriesLock.lock();
+        try {
+            while (amount--) {
+                var rnd = Math.floor(Math.random() * entriesLen);
+                newWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
+                taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+            }
+        } finally {
+            _entriesLock.unlock();
         }
 
         lastWinners = lastWinners.concat(newWinners);
@@ -332,17 +344,22 @@
         }
 
         /* Remove the user from the array if we are not allowed to have multiple repicks. */
-        if (allowRepick) {
-            for (var j in entries) {
-                for (var k in newWinners) {
-                    var e = entries[j];
-                    if (e.equalsIgnoreCase(newWinners[k])) {
-                        entries.splice(j, 1);
-                        $.inidb.del('raffleList', newWinners[k]);
-                        $.inidb.decr('raffleresults', 'raffleEntries', 1);
+        _entriesLock.lock();
+        try {
+            if (allowRepick) {
+                for (var j in entries) {
+                    for (var k in newWinners) {
+                        var e = entries[j];
+                        if (e.equalsIgnoreCase(newWinners[k])) {
+                            entries.splice(j, 1);
+                            $.inidb.del('raffleList', newWinners[k]);
+                            $.inidb.decr('raffleresults', 'raffleEntries', 1);
+                        }
                     }
                 }
             }
+        } finally {
+            _entriesLock.unlock();
         }
 
         close(undefined);
@@ -455,17 +472,22 @@
         }
 
         /* Push the user into the array */
-        entered[username] = true;
-        entries.push(username);
-        var i;
-        if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
-            for (i = 0; i < subscriberBonus; i++) {
-                entries.push(username);
+        _entriesLock.lock();
+        try {
+            entered[username] = true;
+            entries.push(username);
+            var i;
+            if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
+                for (i = 0; i < subscriberBonus; i++) {
+                    entries.push(username);
+                }
+            } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
+                for (i = 0; i < regularBonus; i++) {
+                    entries.push(username);
+                }
             }
-        } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
-            for (i = 0; i < regularBonus; i++) {
-                entries.push(username);
-            }
+        } finally {
+            _entriesLock.unlock();
         }
 
         /* Push the panel stats */

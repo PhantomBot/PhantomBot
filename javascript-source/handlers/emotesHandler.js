@@ -24,7 +24,8 @@
  */
 (function() {
     var emotesRegExpList = [],
-        loaded = false;
+        loaded = false,
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     // Load an existing emote RegExp cache.  Wait to see if there was a problem that needs us to load
     // from cache before doing so.  This saves CPU cycles and memory.
@@ -146,7 +147,12 @@
             }
         }
 
-        emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
+        _lock.lock();
+        try {
+            emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
+        } finally {
+            _lock.unlock();
+        }
         $.inidb.set('emotecache', 'regexp_cache', newEmotesRegExpList.join(','));
         $.inidb.set('emotecache', 'bttvEmotes', JSON.stringify(bttvEmotesCache));
         $.inidb.set('emotecache', 'ffzEmotes', JSON.stringify(ffzEmotesCache));
@@ -176,7 +182,12 @@
             newEmotesRegExpList.push(regExpList[i]);
         }
 
-        emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
+        _lock.lock();
+        try {
+            emotesRegExpList = new RegExp(newEmotesRegExpList.join('|'), 'g');
+        } finally {
+            _lock.unlock();
+        }
 
         loaded = true;
         $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling from cache.");
@@ -189,7 +200,12 @@
      * @returns {List}{RegExp}
      */
     function getEmotesRegExp() {
-        return emotesRegExpList;
+        _lock.lock();
+        try {
+            return emotesRegExpList;
+        } finally {
+            _lock.unlock();
+        }
     }
 
     /**
@@ -203,7 +219,12 @@
             return 0;
         }
 
-        var matched = message.match(emotesRegExpList);
+        _lock.lock();
+        try {
+            var matched = message.match(emotesRegExpList);
+        } finally {
+            _lock.unlock();
+        }
 
         return (matched !== null ? matched.length : 0);
     }

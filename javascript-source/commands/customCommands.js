@@ -22,7 +22,8 @@
     var reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
             customCommands = [],
             ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
-            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+            CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
+            _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /*
      * @function runCommand
@@ -131,7 +132,12 @@
                     i;
             for (i in commands) {
                 if (!$.commandExists(commands[i])) {
-                    customCommands[commands[i]] = $.inidb.get('command', commands[i]);
+                    _lock.lock();
+                    try {
+                        customCommands[commands[i]] = $.inidb.get('command', commands[i]);
+                    } finally {
+                        _lock.unlock();
+                    }
                     $.registerChatCommand('./commands/customCommands.js', commands[i], $.PERMISSION.Viewer);
                 }
             }
@@ -169,13 +175,18 @@
         /*
          * This handles custom commands, no command path is needed.
          */
-        if (customCommands[command] !== undefined
-                && !$.inidb.exists('disabledCommands', command)) {
-            var tag = $.transformers.tags(event, customCommands[command], true, ['twitch', ['commandevent', 'noevent']]);
-            if (tag !== null) {
-                $.say(tag);
+        _lock.lock();
+        try {
+            if (customCommands[command] !== undefined
+                    && !$.inidb.exists('disabledCommands', command)) {
+                var tag = $.transformers.tags(event, customCommands[command], true, ['twitch', ['commandevent', 'noevent']]);
+                if (tag !== null) {
+                    $.say(tag);
+                }
+                return;
             }
-            return;
+        } finally {
+            _lock.unlock();
         }
 
         /*
@@ -216,7 +227,13 @@
             });
             $.registerChatCommand('./commands/customCommands.js', action);
             $.inidb.set('command', action, argsString);
-            customCommands[action] = argsString;
+            _lock.lock();
+            try {
+                customCommands[action] = argsString;
+            } finally {
+                _lock.unlock();
+            }
+
             return;
         }
 
@@ -257,7 +274,13 @@
             });
             $.registerChatCommand('./commands/customCommands.js', action, $.PERMISSION.Viewer);
             $.inidb.set('command', action, argsString);
-            customCommands[action] = argsString;
+            _lock.lock();
+            try {
+                customCommands[action] = argsString;
+            } finally {
+                _lock.unlock();
+            }
+
             return;
         }
 
@@ -330,7 +353,13 @@
             $.inidb.del('hiddenCommands', action);
             $.inidb.del('commandtoken', action);
             $.unregisterChatCommand(action);
-            delete customCommands[action];
+            _lock.lock();
+            try {
+                delete customCommands[action];
+            } finally {
+                _lock.unlock();
+            }
+
             return;
         }
 
@@ -892,16 +921,33 @@
                 commandLower = command.toLowerCase() + '',
                 extra = (args[3] === null || args[3] === undefined) ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
-                if (customCommands[commandLower] !== undefined) {
-                    delete customCommands[commandLower];
-                    $.unregisterChatCommand(commandLower);
-                    $.coolDown.remove(commandLower);
+                _lock.lock();
+                try {
+                    if (customCommands[commandLower] !== undefined) {
+                        delete customCommands[commandLower];
+                        $.unregisterChatCommand(commandLower);
+                        $.coolDown.remove(commandLower);
+                    }
+                } finally {
+                    _lock.unlock();
                 }
             } else if (eventName === 'add') {
-                customCommands[commandLower] = args[2];
+                _lock.lock();
+                try {
+                    customCommands[commandLower] = args[2];
+                } finally {
+                    _lock.unlock();
+                }
+
                 $.registerChatCommand('./commands/customCommands.js', commandLower);
             } else if (eventName === 'edit') {
-                customCommands[commandLower] = args[2];
+                _lock.lock();
+                try {
+                    customCommands[commandLower] = args[2];
+                } finally {
+                    _lock.unlock();
+                }
+
                 handleExtraDisabled(commandLower, extra);
             } else if (eventName === 'removeAlias') {
                 $.unregisterChatCommand(commandLower);

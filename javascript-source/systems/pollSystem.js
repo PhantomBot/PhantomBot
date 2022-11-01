@@ -23,24 +23,25 @@
  */
 (function () {
     var poll = {
-        pollId: 0,
-        options: [],
-        votes: [],
-        voters: [],
-        callback: function () {},
-        pollRunning: false,
-        pollMaster: '',
-        time: 0,
-        question: '',
-        minVotes: 0,
-        result: '',
-        hasTie: 0,
-        counts: [],
-        startTime: 0
-    },
+            pollId: 0,
+            options: [],
+            votes: [],
+            voters: [],
+            callback: function () {},
+            pollRunning: false,
+            pollMaster: '',
+            time: 0,
+            question: '',
+            minVotes: 0,
+            result: '',
+            hasTie: 0,
+            counts: [],
+            startTime: 0
+        },
             timeout,
-            saveStateInterval;
-    var objOBS = [];
+            saveStateInterval,
+            objOBS = [],
+            _pollLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function hasKey
@@ -67,7 +68,6 @@
         }
         return false;
     }
-    ;
 
     // Compile regular expressions.
     var rePollOpenFourOptions = new RegExp(/"([\w\W]+)"\s+"([\w\W]+)"\s+(\d+)\s+(\d+)/),
@@ -90,7 +90,7 @@
         var optionsStr = "";
 
         if (poll.pollRunning) {
-            return false
+            return false;
         }
 
         objOBS = [];
@@ -149,7 +149,6 @@
         saveState();
         return true;
     }
-    ;
 
     function reopen() {
         if (!$.inidb.FileExists('pollState') || !$.inidb.HasKey('pollState', '', 'poll') || !$.inidb.HasKey('pollState', '', 'objOBS')) {
@@ -180,8 +179,13 @@
     }
 
     function saveState() {
-        $.inidb.set('pollState', 'poll', JSON.stringify(poll));
-        $.inidb.set('pollState', 'objOBS', JSON.stringify(objOBS));
+        _pollLock.lock();
+        try {
+            $.inidb.set('pollState', 'poll', JSON.stringify(poll));
+            $.inidb.set('pollState', 'objOBS', JSON.stringify(objOBS));
+        } finally {
+            _pollLock.unlock();
+        }
     }
 
     /**
@@ -208,20 +212,27 @@
         }
 
         optionIndex--;
-        poll.voters.push(sender);
-        poll.votes.push(optionIndex);
-        for (var i = 0; i < objOBS.length; i++) {
-            if (objOBS[i].label == poll.options[optionIndex])
-                objOBS[i].votes++;
+        _pollLock.lock();
+        try {
+            poll.voters.push(sender);
+            poll.votes.push(optionIndex);
+            for (var i = 0; i < objOBS.length; i++) {
+                if (objOBS[i].label == poll.options[optionIndex]) {
+                    objOBS[i].votes++;
+                }
+            }
+
+            var msg = JSON.stringify({
+                'new_vote': 'true',
+                'data': JSON.stringify(objOBS)
+            });
+        } finally {
+            _pollLock.unlock();
         }
-        var msg = JSON.stringify({
-            'new_vote': 'true',
-            'data': JSON.stringify(objOBS)
-        });
+
         $.alertspollssocket.sendJSONToAll(msg);
         $.inidb.incr('pollVotes', poll.options[optionIndex], 1);
     }
-    ;
 
     /**
      * @function endPoll
@@ -229,7 +240,8 @@
      */
     function endPoll() {
         var mostVotes = -1,
-                i;
+                i,
+                winner;
 
         if (!poll.pollRunning) {
             return;
@@ -275,7 +287,6 @@
         poll.callback(poll.result);
         saveState();
     }
-    ;
 
     function saywinner(winner) {
         if (winner === false) {

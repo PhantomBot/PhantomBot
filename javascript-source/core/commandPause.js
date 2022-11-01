@@ -23,7 +23,8 @@
 (function() {
     var isActive = $.getSetIniDbBoolean('commandPause', 'commandsPaused', false),
         defaultTime = $.getSetIniDbNumber('commandPause', 'defaultTime', 300),
-        timerId;
+        timerId,
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function pause
@@ -32,17 +33,22 @@
      */
     function pause(seconds) {
         seconds = (seconds !== undefined ? seconds : defaultTime);
-        if (isActive) {
-            clearTimeout(timerId);
-        } else {
-            $.setIniDbBoolean('commandPause', 'commandsPaused', true);
-            isActive = true;
-        }
+        _lock.lock();
+        try {
+            if (isActive) {
+                clearTimeout(timerId);
+            } else {
+                $.setIniDbBoolean('commandPause', 'commandsPaused', true);
+                isActive = true;
+            }
 
-        timerId = setTimeout(function() {
-            unPause();
-        }, seconds * 1e3);
-        $.say($.lang.get('commandpause.initiated', $.getTimeString(seconds)));
+            timerId = setTimeout(function() {
+                unPause();
+            }, seconds * 1e3);
+            $.say($.lang.get('commandpause.initiated', $.getTimeString(seconds)));
+        } finally {
+            _lock.unlock();
+        }
     }
 
     /**
@@ -51,7 +57,12 @@
      * @returns {boolean}
      */
     function isPaused() {
-        return isActive;
+        _lock.lock();
+        try {
+            return isActive;
+        } finally {
+            _lock.unlock();
+        }
     }
 
     /**
@@ -59,14 +70,19 @@
      * @export $.commandPause
      */
     function unPause() {
-        if (timerId !== undefined) {
-            clearTimeout(timerId);
-            $.setIniDbBoolean('commandPause', 'commandsPaused', false);
-            isActive = false;
-            timerId = undefined;
-            $.say($.lang.get('commandpause.ended'));
-        } else {
-            $.say($.lang.get('commandpause.notactive'));
+        _lock.lock();
+        try {
+            if (timerId !== undefined) {
+                clearTimeout(timerId);
+                $.setIniDbBoolean('commandPause', 'commandsPaused', false);
+                isActive = false;
+                timerId = undefined;
+                $.say($.lang.get('commandpause.ended'));
+            } else {
+                $.say($.lang.get('commandpause.notactive'));
+            }
+        } finally {
+            _lock.unlock();
         }
     }
 

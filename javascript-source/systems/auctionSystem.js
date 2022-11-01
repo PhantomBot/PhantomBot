@@ -29,9 +29,9 @@
         a,
         b,
         c,
-        //endTimer,
         extTime = $.getSetIniDbNumber('auctionSettings', 'extTime', 15),
-        warnTime = 10;
+        warnTime = 10,
+        _auctionLock = new java.util.concurrent.locks.ReentrantLock();
 
 
     /**
@@ -40,9 +40,11 @@
      * @param {bool} state
      */
     function usePoints(state){
-        if (!auction.isActive) { auction.usePoints = state; }
+        if (!auction.isActive) {
+            auction.usePoints = state;
+        }
     }
-    
+
     /**
      * @function openAuction
      *
@@ -77,7 +79,7 @@
         auction.isActive = true;
 
 
-        $.say($.lang.get('auctionsystem.opened', ((auction.usePoints) ? $.getPointsString(increments): increments), ((auction.usePoints) ? $.getPointsString(minimum) : minimum)));
+        $.say($.lang.get('auctionsystem.opened', ((auction.usePoints) ? $.getPointsString(increments) : increments), ((auction.usePoints) ? $.getPointsString(minimum) : minimum)));
 
         if (timer > 0) {
             $.say($.lang.get('auctionsystem.auto.timer.msg', timer));
@@ -85,24 +87,22 @@
                 a = setTimeout(function() { //Warn once 30 seconds before the end
                     warnAuction(true, undefined, 30);
                     clearInterval(a);
-                }, (timer - 30)  * 1000);
+                }, (timer - 30) * 1000);
             }
-            /*endTimer = setTimeout(function() { //10 Seconds left -> set ending variable
-                auction.isEnding = true;
-                clearInterval(endTimer);
-            }, (timer - warnTime)  * 1000);*/
+
             b = setTimeout(function() { //Warn 10 seconds before end
                 auction.isEnding = true;
                 warnAuction(true, undefined, warnTime);
                 clearInterval(b);
-            }, (timer - warnTime)  * 1000);
+            }, (timer - warnTime) * 1000);
             c = setTimeout(function() { //Close Auction when timer has run out
                 closeAuction();
                 clearInterval(c);
             }, timer * 1000);
         }
+
         $.inidb.SetBoolean('auctionSettings', '', 'isActive', true);
-    };
+    }
 
     /**
      * @function closeAuction
@@ -116,7 +116,6 @@
         }
 
         clearInterval(a);
-        //clearInterval(endTimer);
         clearInterval(b);
         clearInterval(c);
 
@@ -131,7 +130,7 @@
         auction.isActive = false;
         auction.isEnding = false;
 
-        if(auction.usePoints){
+        if (auction.usePoints){
             $.inidb.decr('points', auction.topUser, auction.topPoints);
         }
 
@@ -142,8 +141,8 @@
         }, 1000);
 
         $.inidb.SetBoolean('auctionSettings', '', 'isActive', false);
-    };
-    
+    }
+
     /**
      * @function warnAuction
      *
@@ -155,30 +154,34 @@
             return;
         }
 
-        if(time !== undefined ) {
-            if (auction.usePoints && force) {
-                $.say($.lang.get('auctionsystem.warnTime.force', time, auction.topUser, $.getPointsString(auction.topPoints), $.getPointsString((auction.topPoints + auction.increments))));
-            } else if(auction.usePoints) {
-                $.say($.lang.get('auctionsystem.warnTime', time, auction.topUser, $.getPointsString(auction.topPoints)));
-            } else if (force) {
-                $.say($.lang.get('auctionsystem.warnTime.force', time, auction.topUser, auction.topPoints, (auction.topPoints + auction.increments)));
-            } else {
-                $.say($.lang.get('auctionsystem.warnTime', time, auction.topUser, auction.topPoints));
+        _auctionLock.lock();
+        try {
+            if (time !== undefined ) {
+                if (auction.usePoints && force) {
+                    $.say($.lang.get('auctionsystem.warnTime.force', time, auction.topUser, $.getPointsString(auction.topPoints), $.getPointsString((auction.topPoints + auction.increments))));
+                } else if (auction.usePoints) {
+                    $.say($.lang.get('auctionsystem.warnTime', time, auction.topUser, $.getPointsString(auction.topPoints)));
+                } else if (force) {
+                    $.say($.lang.get('auctionsystem.warnTime.force', time, auction.topUser, auction.topPoints, (auction.topPoints + auction.increments)));
+                } else {
+                    $.say($.lang.get('auctionsystem.warnTime', time, auction.topUser, auction.topPoints));
+                }
+                return;
             }
-        } else {
             if (auction.usePoints && force) {
-                $.say($.lang.get('auctionsystem.warnTime.force', auction.topUser, $.getPointsString(auction.topPoints), $.getPointsString((auction.topPoints + auction.increments))));
-            } else if(auction.usePoints) {
-                $.say($.lang.get('auctionsystem.warnTime', auction.topUser, $.getPointsString(auction.topPoints)));
+                $.say($.lang.get('auctionsystem.warn.force', auction.topUser, $.getPointsString(auction.topPoints), $.getPointsString((auction.topPoints + auction.increments))));
+            } else if (auction.usePoints) {
+                $.say($.lang.get('auctionsystem.warn', auction.topUser, $.getPointsString(auction.topPoints)));
             } else if (force) {
-                $.say($.lang.get('auctionsystem.warnTime.force', auction.topUser, auction.topPoints, (auction.topPoints + auction.increments)));
+                $.say($.lang.get('auctionsystem.warn.force', auction.topUser, auction.topPoints, (auction.topPoints + auction.increments)));
             } else {
-                $.say($.lang.get('auctionsystem.warnTime', auction.topUser, auction.topPoints));
+                $.say($.lang.get('auctionsystem.warn', auction.topUser, auction.topPoints));
             }
+        } finally {
+            _auctionLock.unlock();
         }
 
-        
-    };
+    }
 
     /**
      * @function bid
@@ -192,7 +195,7 @@
             return;
         }
 
-        if (amount === undefined|| isNaN(parseInt(amount))) {
+        if (amount === undefined || isNaN(parseInt(amount))) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.bid.usage'));
             return;
         }
@@ -200,48 +203,60 @@
         amount = parseInt(amount);
 
         if (amount < auction.minimum) {
-            $.say($.lang.get('auctionsystem.err.bid.minimum', ((auction.usePoints) ? $.getPointsString(auction.minimum) :auction.minimum + '$')));
+            $.say($.lang.get('auctionsystem.err.bid.minimum', ((auction.usePoints) ? $.getPointsString(auction.minimum) : auction.minimum + '$')));
             return;
-        } else if (auction.usePoints && amount > $.getUserPoints(user)) {
+        }
+        if (auction.usePoints && amount > $.getUserPoints(user)) {
             $.say($.whisperPrefix(user) + $.lang.get('auctionsystem.err.points', $.pointNameMultiple, $.getPointsString($.getUserPoints(user))));
-            return;
-        } else if (amount < (auction.topPoints + auction.increments)) {
-            $.say($.lang.get('auctionsystem.err.increments', ((auction.usePoints) ? $.getPointsString(auction.increments) : auction.increments), auction.topPoints + auction.increments));
             return;
         }
 
-        auction.topUser = user;
-        auction.topPoints = amount;
-        
-        if(auction.isEnding) {
+        _auctionLock.lock();
+        try {
+            if (amount < (auction.topPoints + auction.increments)) {
+                $.say($.lang.get('auctionsystem.err.increments', ((auction.usePoints) ? $.getPointsString(auction.increments) : auction.increments), auction.topPoints + auction.increments));
+                return;
+            }
+
+            auction.topUser = user;
+            auction.topPoints = amount;
+        } finally {
+            _auctionLock.unlock();
+        }
+
+        if (auction.isEnding) {
             clearInterval(c);
             clearInterval(b);
             b = setTimeout(function() { //Warn about new highest bid 5 seconds after the bid ... prevents spam in case of a bid war at the end since the timer gets reset upon a new bid
                 auction.isEnding = true;
-                if(auction.usePoints){
+                if (auction.usePoints){
                     $.say($.lang.get('auctionsystem.warnTime.newBid', extTime-5, auction.topUser, $.getPointsString(auction.topPoints), $.getPointsString((auction.topPoints + auction.increments))));
-                    
                 } else {
                     $.say($.lang.get('auctionsystem.warnTime.newBid', extTime-5, auction.topUser, auction.topPoints, (auction.topPoints + auction.increments)));
                 }
+
                 clearInterval(b);
-            }, 5  * 1000);
+            }, 5 * 1000);
             c = setTimeout(function() { //Extend closing time by extTime seconds
                 closeAuction();
                 clearInterval(c);
             }, extTime * 1000);
         }
 
-        $.inidb.set('auctionresults', 'winner', auction.topUser);
-        $.inidb.set('auctionresults', 'amount', auction.topPoints);
-    };
+        _auctionLock.lock();
+        try {
+            $.inidb.set('auctionresults', 'winner', auction.topUser);
+            $.inidb.set('auctionresults', 'amount', auction.topPoints);
+        } finally {
+            _auctionLock.unlock();
+        }
+    }
 
     /**
      * @function resetAuction
      */
     function resetAuction() {
         clearInterval(a);
-        //clearInterval(endTimer);
         clearInterval(b);
         clearInterval(c);
         auction.increments = 0;
@@ -253,7 +268,7 @@
         auction.usePoints = true;
         auction.isActive = false;
         $.inidb.SetBoolean('auctionSettings', '', 'isActive', false);
-    };
+    }
 
     /**
      * @event command
@@ -309,11 +324,11 @@
             /**
              * @commandpath auction lastWinner - Shows the last auctions' winner and its winning bid
              */
-             if (action.equalsIgnoreCase('lastWinner')) {
+            if (action.equalsIgnoreCase('lastWinner')) {
                 var user = $.getIniDbString('auctionresults', 'winner'),
                     amount = $.getIniDbNumber('auctionresults', 'amount');
 
-                if(isNaN(amount)){
+                if (isNaN(amount)){
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.lastWinner.err'));
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.lastWinner', user, amount));
@@ -324,15 +339,17 @@
             /**
              * @commandpath auction setExtensionTime [extension time] - Sets the time being added to the endtimer if a bid is set in the last 10 seconds (maximum value is 29)
              */
-             if (action.equalsIgnoreCase('setExtensionTime')) {
-                if(args[1] === undefined || isNaN(parseInt(args[1]))) {
+            if (action.equalsIgnoreCase('setExtensionTime')) {
+                if (args[1] === undefined || isNaN(parseInt(args[1]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
                     return;
                 }
+
                 extTime = parseInt(args[1]);
                 if (extTime >= 30 || extTime <= 5) {
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
                 }
+
                 $.setIniDbNumber('auctionSettings', 'extTime', parseInt(extTime));
                 $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set', extTime));
             }
