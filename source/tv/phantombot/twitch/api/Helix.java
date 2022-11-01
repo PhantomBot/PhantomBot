@@ -1753,7 +1753,7 @@ public class Helix {
     /**
      * Sends a whisper message to the specified user.
      *
-     * NOTE: uses the Bot (Chat) username and OAuth to send the whisper.
+     * NOTE: Uses the Bot (Chat) username and OAuth to send the whisper.
      *
      * NOTE: The user sending the whisper must have a verified phone number.
      *
@@ -1790,6 +1790,44 @@ public class Helix {
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), CaselessProperties.instance().getProperty("oauth").replaceFirst("oauth:", ""));
+        });
+    }
+
+    /**
+     * Returns a list of Custom Reward objects for the Custom Rewards on a channel.
+     *
+     * @param id When used, this parameter filters the results and only returns reward objects for the Custom Rewards with matching ID. Maximum: 50
+     * @param only_manageable_rewards When set to {@code true}, only returns custom rewards that the calling Client ID can manage. Default:
+     * {@code false}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getCustomReward(@Nullable List<String> id, @Nullable Boolean only_manageable_rewards)
+            throws JSONException, IllegalArgumentException {
+        return this.getCustomRewardAsync(id, only_manageable_rewards).block();
+    }
+
+    /**
+     * Returns a list of Custom Reward objects for the Custom Rewards on a channel.
+     *
+     * @param id When used, this parameter filters the results and only returns reward objects for the Custom Rewards with matching ID. Maximum: 50
+     * @param only_manageable_rewards When set to {@code true}, only returns custom rewards that the calling Client ID can manage. Default:
+     * {@code false}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getCustomRewardAsync(@Nullable List<String> id, @Nullable Boolean only_manageable_rewards)
+            throws JSONException, IllegalArgumentException {
+        if (id != null && id.size() > 50) {
+            throw new IllegalArgumentException("Limit 50 ids");
+        }
+
+        String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID());
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 

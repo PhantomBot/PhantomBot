@@ -28,13 +28,14 @@
         lastRandom = -1,
         jailTimeout = $.getSetIniDbNumber('settings', 'killTimeoutTime', 60),
         lang,
-        rand;
+        rand,
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadKill
      */
     function reloadKill() {
-    	jailTimeout = $.getIniDbNumber('settings', 'killTimeoutTime', 60);
+        jailTimeout = $.getIniDbNumber('settings', 'killTimeoutTime', 60);
     }
 
     /**
@@ -49,24 +50,35 @@
             otherMessageCount++;
         }
         $.consoleDebug($.lang.get('killcommand.console.loaded', selfMessageCount, otherMessageCount));
-    };
+    }
 
     function selfKill(sender) {
-        do {
-            rand = $.randRange(1, selfMessageCount);
-        } while (rand === lastRandom);
-        $.say($.lang.get('killcommand.self.' + rand, $.resolveRank(sender)));
-        lastRandom = rand;
-    };
+        _lock.lock();
+        try {
+            do {
+                rand = $.randRange(1, selfMessageCount);
+            } while (rand === lastRandom);
+            $.say($.lang.get('killcommand.self.' + rand, $.resolveRank(sender)));
+            lastRandom = rand;
+        } finally {
+            _lock.unlock();
+        }
+    }
 
     function kill(sender, user) {
         user = $.user.sanitize(user);
         var tries = 0;
-        do {
-            tries++;
-            rand = $.randRange(1, otherMessageCount);
-        } while (rand === lastRandom && tries < 5);
-        lang = $.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user), jailTimeout, $.botName);
+        _lock.lock();
+        try {
+            do {
+                tries++;
+                rand = $.randRange(1, otherMessageCount);
+            } while (rand === lastRandom && tries < 5);
+            lang = $.lang.get('killcommand.other.' + rand, $.resolveRank(sender), $.resolveRank(user), jailTimeout, $.botName);
+        } finally {
+            _lock.unlock();
+        }
+
         if (lang.startsWith('(jail)')) {
             lang = $.replace(lang, '(jail)', '');
             $.say(lang);
@@ -78,8 +90,14 @@
         } else {
             $.say(lang);
         }
-        lastRandom = rand;
-    };
+
+        _lock.lock();
+        try {
+            lastRandom = rand;
+        } finally {
+            _lock.unlock();
+        }
+    }
 
     /**
      * @event command

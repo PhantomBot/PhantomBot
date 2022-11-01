@@ -64,7 +64,7 @@
              */
             if (args[0] !== undefined) {
                 if (args[0].equalsIgnoreCase('rewards')) {
-                    if (args.length != 7) {
+                    if (args.length !== 7) {
                         loadPrizes();
                         $.say($.whisperPrefix(sender) + $.lang.get('roll.rewards.usage', prizes.join(' ')));
                         return;
@@ -91,7 +91,7 @@
             dice2 = $.randRange(1, 6);
             resultMessage = $.lang.get('roll.rolled', $.resolveRank(sender), dice1, dice2);
 
-            if (dice1 == dice2) {
+            if (dice1 === dice2) {
                 loadPrizes();
                 switch (dice1) {
                     case 1:

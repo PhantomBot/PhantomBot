@@ -53,6 +53,7 @@
         if ($.inidb.exists('quotes', newKey)) {
             newKey++;
         }
+
         quote = String(quote).replace(/"/g, '\'\'');
         $.inidb.set('quotes', newKey, JSON.stringify([username, quote, $.systemTime(), game + '']));
         $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
@@ -78,7 +79,6 @@
             $.inidb.del('quotes', quoteId);
             quoteKeys = $.inidb.GetKeyList('quotes', '');
 
-            
             for (i in quoteKeys) {
                 quotes.push($.inidb.get('quotes', quoteKeys[i]));
                 $.inidb.del('quotes', quoteKeys[i]);
@@ -87,13 +87,13 @@
             for (i in quotes) {
                 $.inidb.set('quotes', i, quotes[i]);
             }
-            
+
             isDeleting = false;
             $.panelsocketserver.sendJSONToAll(JSON.stringify({"query_id": "quote_update", "results": "update"}));
             return (quotes.length ? quotes.length : 0);
-        } else {
-            return -1;
         }
+
+        return -1;
     }
 
     /**
@@ -122,9 +122,9 @@
             quote = JSON.parse($.inidb.get('quotes', quoteId));
             quote.push(quoteId);
             return quote;
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
@@ -164,11 +164,12 @@
                 } else {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.usage'));
                 }
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.404'));
+                return;
             }
 
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.404'));
             $.log.event(sender + ' edited quote #' + quote);
+            return;
         }
 
         /**
@@ -180,12 +181,13 @@
                 $.inidb.set('settings', 'quoteMode', 'false');
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
                 return;
-            } else {
-                quoteMode = true;
-                $.inidb.set('settings', 'quoteMode', 'true');
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
-                return;
             }
+
+            quoteMode = true;
+            $.inidb.set('settings', 'quoteMode', 'true');
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
+            return;
+
         }
 
         /**
@@ -197,27 +199,29 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
                     return;
                 }
+
                 quote = args.splice(0).join(' ');
                 $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
-            } else {
-                if (args.length < 2) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
-                    return;
-                }
-                var useTwitchNames = ($.inidb.exists('settings', 'quoteTwitchNamesToggle')) ? $.inidb.GetBoolean('settings', '', 'quoteTwitchNamesToggle') : true;
-                var target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
-                if (useTwitchNames && !$.user.isKnown(target)) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
-                    return;
-                }
-                quote = args.splice(1).join(' ');
-                var username = useTwitchNames ? $.username.resolve(target) : target;
-                $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
-                $.log.event(sender + ' added a quote "' + quote + '".');
+            }
+            if (args.length < 2) {
+                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage2'));
                 return;
             }
+
+            var useTwitchNames = ($.inidb.exists('settings', 'quoteTwitchNamesToggle')) ? $.inidb.GetBoolean('settings', '', 'quoteTwitchNamesToggle') : true;
+            var target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
+            if (useTwitchNames && !$.user.isKnown(target)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
+                return;
+            }
+
+            quote = args.splice(1).join(' ');
+            var username = useTwitchNames ? $.username.resolve(target) : target;
+            $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
+            $.log.event(sender + ' added a quote "' + quote + '".');
+            return;
         }
 
         /**
@@ -233,6 +237,7 @@
 
             quote = args.splice(0).join(' ');
             saveQuote(String($.username.resolve(sender)), quote);
+            return;
         }
 
         /**
@@ -248,11 +253,12 @@
 
             if ((newCount = deleteQuote(args[0])) >= 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.success', args[0], newCount));
-            } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
+                $.log.event(sender + ' removed quote with id: ' + args[0]);
+                return;
             }
 
-            $.log.event(sender + ' removed quote with id: ' + args[0]);
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.404', args[0]));
+            return;
         }
 
         /**
@@ -263,9 +269,10 @@
                 return;
             }
 
-            var newCount;
-
-            if ((newCount = deleteQuote(args[0])) >= 0) {} else {}
+            if (deleteQuote(args[0]) >= 0) {
+                $.log.event(sender + ' removed quote with id: ' + args[0]);
+            }
+            return;
         }
 
         /**
@@ -275,16 +282,18 @@
             quote = getQuote(args[0]);
             if (quote.length > 0) {
                 quoteStr = ($.inidb.exists('settings', 'quoteMessage') ? $.inidb.get('settings', 'quoteMessage') : $.lang.get('quotesystem.get.success'));
-                quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString())).
-                replace('(quote)', quote[1]).
-                replace('(userrank)', $.resolveRank(quote[0])).
-                replace('(user)', $.username.resolve(quote[0])).
-                replace('(game)', (quote.length === 5 ? quote[3] : "Some Game")).
-                replace('(date)', $.getLocalTimeString($.getSetIniDbString('settings', 'quoteDateFormat', 'dd-MM-yyyy'), parseInt(quote[2])));
+                quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString()))
+                                    .replace('(quote)', quote[1])
+                                    .replace('(userrank)', $.resolveRank(quote[0]))
+                                    .replace('(user)', $.username.resolve(quote[0]))
+                                    .replace('(game)', (quote.length === 5 ? quote[3] : "Some Game"))
+                                    .replace('(date)', $.getLocalTimeString($.getSetIniDbString('settings', 'quoteDateFormat', 'dd-MM-yyyy'), parseInt(quote[2])));
                 $.say(quoteStr);
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.get.404', (typeof args[0] !== 'undefined' ? args[0] : '')));
             }
+
+            return;
         }
 
         /**
@@ -300,6 +309,7 @@
             $.inidb.set('settings', 'quoteMessage', quoteStr);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotemessage.success'));
             $.log.event(sender + ' changed the quote message to: ' + quoteStr);
+            return;
         }
 
         /**
@@ -315,6 +325,7 @@
             $.inidb.set('settings', 'quoteDateFormat', quoteStr);
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotedateformat.success'));
             $.log.event(sender + ' changed the quote date format to: ' + quoteStr);
+            return;
         }
 
         /**
@@ -325,6 +336,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.usage'));
                 return;
             }
+
             var searchString = args.join(' ');
             if (searchString.length < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.usage'));
@@ -338,6 +350,7 @@
             }
 
             $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.found', matchingKeys.join(', ')));
+            return;
         }
 
         /**
@@ -349,11 +362,13 @@
                 useTwitchNames = false;
                 $.inidb.set('settings', 'quoteTwitchNamesToggle', 'false');
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.twitchnames-disabled'));
-            } else {
-                useTwitchNames = true;
-                $.inidb.set('settings', 'quoteTwitchNamesToggle', 'true');
-                $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.twitchnames-enabled'));
+                return;
             }
+
+            useTwitchNames = true;
+            $.inidb.set('settings', 'quoteTwitchNamesToggle', 'true');
+            $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.twitchnames-enabled'));
+            return;
         }
     });
 

@@ -283,8 +283,7 @@ $(function () {
     function getAudioFile(name, path) {
         let defaultPath = '/config/audio-hooks/',
                 fileName = '',
-                extensions = ['mp3', 'aac', 'ogg'],
-                found = false;
+                extensions = ['mp3', 'aac', 'ogg'];
 
         if (path !== undefined) {
             defaultPath = path;
@@ -295,7 +294,6 @@ $(function () {
                 break;
             }
             if (supportsAudioType(extensions[x]) !== '') {
-                found = true;
                 $.ajax({
                     async: false,
                     method: 'HEAD',
@@ -307,11 +305,11 @@ $(function () {
             }
         }
 
-        if (!found) {
+        if (fileName.length === 0) {
             printDebug(`Could not find a supported audio file for ${name}.`, true);
         }
 
-        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true' && path === undefined) {
+        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true' && fileName.length === 0) {
             $('.main-alert').append('<br />getAudioFile(' + name + '): Unable to find file in a supported format');
         }
 

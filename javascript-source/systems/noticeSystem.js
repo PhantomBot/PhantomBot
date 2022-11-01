@@ -27,7 +27,7 @@
     var noticeGroups = [],
             selectedGroup = null,
             noticeTimeoutIds = [],
-            noticeLock = new java.util.concurrent.locks.ReentrantLock,
+            noticeLock = new java.util.concurrent.locks.ReentrantLock(),
             messageCounts = [],
             lastNoticesSent = [],
             lastTimeNoticesSent = [];

@@ -34,7 +34,9 @@
         interval,
         uniqueEntries = [],
         lastWinners = [],
-        hasDrawn = false;
+        hasDrawn = false,
+        _entriesLock = new java.util.concurrent.locks.ReentrantLock(),
+        _totalTicketsLock = new java.util.concurrent.locks.ReentrantLock();
 
     var POS = {
         times: 0,
@@ -156,15 +158,26 @@
 
     function saveState() {
         $.inidb.set('traffleState', 'cost', cost);
-        $.inidb.set('traffleState', 'entries', JSON.stringify(entries));
+        _entriesLock.lock();
+        try {
+            $.inidb.set('traffleState', 'entries', JSON.stringify(entries));
+            $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
+        } finally {
+            _entriesLock.unlock();
+        }
         $.inidb.set('traffleState', 'subTMulti', subTMulti);
         $.inidb.set('traffleState', 'regTMulti', regTMulti);
         $.inidb.set('traffleState', 'maxEntries', maxEntries);
         $.inidb.SetBoolean('traffleState', '', 'isActive', raffleStatus);
         $.inidb.SetBoolean('traffleState', '', 'followers', followers);
-        $.inidb.set('traffleState', 'totalEntries', totalEntries);
-        $.inidb.set('traffleState', 'totalTickets', totalTickets);
-        $.inidb.set('traffleState', 'uniqueEntries', JSON.stringify(uniqueEntries));
+        _totalTicketsLock.lock();
+        try {
+            $.inidb.set('traffleState', 'totalEntries', totalEntries);
+            $.inidb.set('traffleState', 'totalTickets', totalTickets);
+        } finally {
+            _totalTicketsLock.unlock();
+        }
+
         $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
     }
 
@@ -213,11 +226,16 @@
          */
         lastWinners = [];
 
-        var taken = [];
-        while (amount--) {
-            var rnd = Math.floor(Math.random() * entriesLen);
-            lastWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
-            taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+        _entriesLock.lock();
+        try {
+            var taken = [];
+            while (amount--) {
+                var rnd = Math.floor(Math.random() * entriesLen);
+                lastWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
+                taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+            }
+        } finally {
+            _entriesLock.unlock();
         }
 
         winningMsg();
@@ -328,20 +346,21 @@
             }
         }
 
-        totalTickets += baseAmount + bonus;
+        _totalTicketsLock.lock();
+        try {
+            totalTickets += baseAmount + bonus;
+
+            if (!$.inidb.exists('entered', user.toLowerCase())) {
+                totalEntries++;
+                $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
+                $.inidb.incr('traffleresults', 'ticketRaffleEntries', 1);
+            }
+        } finally {
+            _totalTicketsLock.unlock();
+        }
 
         if (cost !== 0) {
             $.inidb.decr('points', user, (baseAmount * cost));
-        }
-
-        if (!$.inidb.exists('entered', user.toLowerCase())) {
-            totalEntries++;
-            $.inidb.SetBoolean('entered', '', user.toLowerCase(), true);
-            $.inidb.incr('traffleresults', 'ticketRaffleEntries', 1);
-        }
-
-        if (!(uniqueEntries.includes(user))) {
-            uniqueEntries.push(user);
         }
 
         incr(user.toLowerCase(), baseAmount, bonus);
@@ -357,8 +376,17 @@
 
     function incr(user, times, bonus) {
         var total = times * bonus;
-        for (var i = 0; i < total; i++) {
-            entries.push(user);
+        _entriesLock.lock();
+        try {
+            for (var i = 0; i < total; i++) {
+                entries.push(user);
+            }
+
+            if (!(uniqueEntries.includes(user))) {
+                uniqueEntries.push(user);
+            }
+        } finally {
+            _entriesLock.unlock();
         }
 
         if ($.inidb.exists('ticketsList', user.toLowerCase())) {

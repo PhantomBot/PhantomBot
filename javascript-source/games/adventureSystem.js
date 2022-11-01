@@ -26,8 +26,8 @@
         coolDownAnnounce = $.getSetIniDbBoolean('adventureSettings', 'coolDownAnnounce', false),
         currentAdventure = {},
         stories = [],
-        moduleLoaded = false,
-        lastStory;
+        lastStory,
+        _currentAdventureLock = new java.util.concurrent.locks.ReentrantLock();
 
 
     function reloadAdventure() {
@@ -39,15 +39,15 @@
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
         coolDownAnnounce = $.getIniDbBoolean('adventureSettings', 'coolDownAnnounce');
-    };
+    }
 
     /**
      * Loads stories from the prefixes 'adventuresystem.stories.default' (only if the language
      * property of 'adventuresystem.stories.default.enabled' is set to 'true') and
      * 'adventuresystem.stories'.
-     * 
+     *
      * Clears any previously loaded stories.
-     * 
+     *
      * @function loadStories
      */
     function loadStories() {
@@ -75,12 +75,12 @@
 
         $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
         currentAdventure.gameState = 2;
-    };
+    }
 
     /**
      * Loads stories from a specific prefix in the language table and adds them to the
      * global stories array.
-     * 
+     *
      * @param {string} prefix - The prefix underneath which the stories can be found
      * @example
      * // Import stories with adventuresystem.stories.custom.X.title as title and
@@ -92,7 +92,7 @@
             chapterId,
             lines;
 
-         for (storyId; $.lang.exists(prefix + '.' + storyId + '.title'); storyId++) {
+        for (storyId; $.lang.exists(prefix + '.' + storyId + '.title'); storyId++) {
             lines = [];
             for (chapterId = 1; $.lang.exists(prefix + '.' + storyId + '.chapter.' + chapterId); chapterId++) {
                 lines.push($.lang.get(prefix + '.' + storyId + '.chapter.' + chapterId));
@@ -101,12 +101,12 @@
             stories.push({
                 game: ($.lang.exists(prefix + '.' + storyId + '.game') ? $.lang.get(prefix + '.' + storyId + '.game') : null),
                 title: $.lang.get(prefix + '.' + storyId + '.title'),
-                lines: lines,
+                lines: lines
             });
         }
 
         $.consoleDebug($.lang.get('adventuresystem.loaded.prefix', storyId - 1, prefix));
-    };
+    }
 
     /**
      * @function top5
@@ -143,7 +143,7 @@
             }
         }
         $.say($.lang.get('adventuresystem.top5', top5.join(', ')));
-    };
+    }
 
     /**
      * @function checkUserAlreadyJoined
@@ -152,13 +152,19 @@
      */
     function checkUserAlreadyJoined(username) {
         var i;
-        for (i in currentAdventure.users) {
-            if (currentAdventure.users[i].username == username) {
-                return true;
+        _currentAdventureLock.lock();
+        try {
+            for (i in currentAdventure.users) {
+                if (currentAdventure.users[i].username == username) {
+                    return true;
+                }
             }
+        } finally {
+            _currentAdventureLock.unlock();
         }
+
         return false;
-    };
+    }
 
     /**
      * @function adventureUsersListJoin
@@ -172,7 +178,7 @@
             temp.push($.username.resolve(list[i].username));
         }
         return temp.join(', ');
-    };
+    }
 
     /**
      * @function calculateResult
@@ -186,7 +192,7 @@
                 currentAdventure.caught.push(currentAdventure.users[i]);
             }
         }
-    };
+    }
 
     /**
      * @function replaceTags
@@ -208,8 +214,8 @@
                 return '';
             }
         }
-        return line
-    };
+        return line;
+    }
 
     /**
      * @function startHeist
@@ -223,7 +229,7 @@
         }, joinTime * 1e3);
 
         $.say($.lang.get('adventuresystem.start.success', $.resolveRank(username), $.pointNameMultiple));
-    };
+    }
 
     /**
      * @function joinHeist
@@ -267,22 +273,25 @@
             return;
         }
 
-        if (currentAdventure.gameState == 0) {
+        if (currentAdventure.gameState === 0) {
             startHeist(username);
-        } else {
-            if (enterMessage) {
-                $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.success', $.getPointsString(bet)));
-            }
+        } else if (enterMessage) {
+            $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.success', $.getPointsString(bet)));
         }
 
-        currentAdventure.users.push({
-            username: username,
-            bet: parseInt(bet),
-        });
+        _currentAdventureLock.lock();
+        try {
+            currentAdventure.users.push({
+                username: username,
+                bet: parseInt(bet)
+            });
+        } finally {
+            currentAdventure.unlock();
+        }
 
         $.inidb.decr('points', username, bet);
         return true;
-    };
+    }
 
     /**
      * @function runStory
@@ -300,7 +309,7 @@
         var game = $.getGame($.channelName);
 
         for (var i in stories) {
-            if (stories[i].game != null) {
+            if (stories[i].game !== null) {
                 if (game.equalsIgnoreCase(stories[i].game)) {
                     //$.consoleLn('gamespec::' + stories[i].title);
                     temp.push({
@@ -319,7 +328,7 @@
 
         do {
             story = $.randElement(temp);
-        } while (story == lastStory && stories.length != 1);
+        } while (story === lastStory && stories.length !== 1);
 
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
 
@@ -335,7 +344,7 @@
             }
             progress++;
         }, 7e3);
-    };
+    }
 
     /**
      * @function endHeist
@@ -373,7 +382,7 @@
                 $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));
             }, coolDown*1000);
         }
-    };
+    }
 
     /**
      * @function clearCurrentAdventure
@@ -383,10 +392,10 @@
             gameState: 0,
             users: [],
             survivors: [],
-            caught: [],
-        }
+            caught: []
+        };
         $.inidb.RemoveFile('adventurePayoutsTEMP');
-    };
+    }
 
     /**
      * @event command

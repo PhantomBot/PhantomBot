@@ -32,7 +32,8 @@
             roll: 0,
             gamble: 0,
             slot: 0
-        };
+        },
+        _lock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function loadResponses
@@ -42,32 +43,62 @@
 
         // Load up messages for the roll command.
         for (i = 1; $.lang.exists('roll.win.' + i); i++) {
-            winMessageCount.roll++;
+            _lock.lock();
+            try {
+                winMessageCount.roll++;
+            } finally {
+                _lock.unlock();
+            }
         }
 
         // Load up messages for the roll command.
         for (i = 1; $.lang.exists('roll.lost.' + i); i++) {
-            lostMessagesCount.roll++;
+            _lock.lock();
+            try {
+                lostMessagesCount.roll++;
+            } finally {
+                _lock.unlock();
+            }
         }
 
         // Load up messages for the slot command.
         for (i = 1; $.lang.exists('slot.win.' + i); i++) {
-            winMessageCount.slot++;
+            _lock.lock();
+            try {
+                winMessageCount.slot++;
+            } finally {
+                _lock.unlock();
+            }
         }
 
         // Load up messages for the slot command.
         for (i = 1; $.lang.exists('slot.lost.' + i); i++) {
-            lostMessagesCount.slot++;
+            _lock.lock();
+            try {
+                lostMessagesCount.slot++;
+            } finally {
+                _lock.unlock();
+            }
         }
 
         // Load up messages for the gamble command.
         for (i = 1; $.lang.exists('gamble.win.' + i); i++) {
-            winMessageCount.gamble++;
+            _lock.lock();
+            try {
+                winMessageCount.gamble++;
+            } finally {
+                _lock.unlock();
+            }
         }
 
         // Load up messages for the gamble command.
         for (i = 1; $.lang.exists('gamble.lost.' + i); i++) {
-            lostMessagesCount.gamble++;
+            _lock.lock();
+            try {
+                lostMessagesCount.gamble++;
+            } finally {
+                _lock.unlock();
+            }
         }
     }
 
@@ -82,39 +113,44 @@
     function getWin(username, game) {
         var rand;
 
-        switch (game) {
-            case 'roll':
-                if (winMessageCount.roll === 0) {
+        _lock.lock();
+        try {
+            switch (game) {
+                case 'roll':
+                    if (winMessageCount.roll === 0) {
+                        return '';
+                    } else {
+                        do {
+                            rand = $.randRange(1, winMessageCount.roll);
+                        } while (rand === lastRandom);
+                    }
+                    lastRandom = rand;
+                    return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
+                case 'gamble':
+                    if (winMessageCount.gamble === 0) {
+                        return '';
+                    } else {
+                        do {
+                            rand = $.randRange(1, winMessageCount.gamble);
+                        } while (rand === lastRandom);
+                    }
+                    lastRandom = rand;
+                    return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
+                case 'slot':
+                    if (winMessageCount.slot === 0) {
+                        return '';
+                    } else {
+                        do {
+                            rand = $.randRange(1, winMessageCount.slot);
+                        } while (rand === lastRandom);
+                    }
+                    lastRandom = rand;
+                    return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
+                default:
                     return '';
-                } else {
-                    do {
-                        rand = $.randRange(1, winMessageCount.roll);
-                    } while (rand === lastRandom);
-                }
-                lastRandom = rand;
-                return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
-            case 'gamble':
-                if (winMessageCount.gamble === 0) {
-                    return '';
-                } else {
-                    do {
-                        rand = $.randRange(1, winMessageCount.gamble);
-                    } while (rand === lastRandom);
-                }
-                lastRandom = rand;
-                return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
-            case 'slot':
-                if (winMessageCount.slot === 0) {
-                    return '';
-                } else {
-                    do {
-                        rand = $.randRange(1, winMessageCount.slot);
-                    } while (rand === lastRandom);
-                }
-                lastRandom = rand;
-                return $.lang.get(game + '.win.' + rand, $.resolveRank(username));
-            default:
-                return '';
+            }
+        } finally {
+            _lock.unlock();
         }
     }
 
@@ -127,39 +163,44 @@
     function getLose(username, game) {
         var rand;
 
-        switch (game) {
-            case 'roll':
-                if (lostMessagesCount.roll === 0) {
+        _lock.lock();
+        try {
+            switch (game) {
+                case 'roll':
+                    if (lostMessagesCount.roll === 0) {
+                        return '';
+                    } else {
+                        do {
+                            rand = $.randRange(1, lostMessagesCount.roll);
+                        } while (rand === lastRandom);
+                    }
+                    lastRandom = rand;
+                    return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
+                case 'gamble':
+                    if (lostMessagesCount.gamble === 0) {
+                        return '';
+                    } else {
+                        do {
+                            rand = $.randRange(1, lostMessagesCount.gamble);
+                        } while (rand === lastRandom);
+                    }
+                    lastRandom = rand;
+                    return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
+                case 'slot':
+                    if (lostMessagesCount.slot === 0) {
+                        return '';
+                    } else {
+                        do {
+                            rand = $.randRange(1, lostMessagesCount.slot);
+                        } while (rand === lastRandom);
+                    }
+                    lastRandom = rand;
+                    return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
+                default:
                     return '';
-                } else {
-                    do {
-                        rand = $.randRange(1, lostMessagesCount.roll);
-                    } while (rand === lastRandom);
-                }
-                lastRandom = rand;
-                return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
-            case 'gamble':
-                if (lostMessagesCount.gamble === 0) {
-                    return '';
-                } else {
-                    do {
-                        rand = $.randRange(1, lostMessagesCount.gamble);
-                    } while (rand === lastRandom);
-                }
-                lastRandom = rand;
-                return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
-            case 'slot':
-                if (lostMessagesCount.slot === 0) {
-                    return '';
-                } else {
-                    do {
-                        rand = $.randRange(1, lostMessagesCount.slot);
-                    } while (rand === lastRandom);
-                }
-                lastRandom = rand;
-                return $.lang.get(game + '.lost.' + rand, $.resolveRank(username));
-            default:
-                return '';
+            }
+        } finally {
+            _lock.unlock();
         }
     }
 

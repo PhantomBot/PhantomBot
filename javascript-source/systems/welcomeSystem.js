@@ -32,7 +32,7 @@
         welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
         welcomeTimer = null,
         // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
-        welcomeLock = new java.util.concurrent.locks.ReentrantLock;
+        welcomeLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @event ircChannelMessage

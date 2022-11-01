@@ -498,8 +498,8 @@ $(function() {
     // Raid settings.
     $('#raidHandlerSettings').on('click', function() {
         socket.getDBValues('alerts_get_raid_settings', {
-            tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
-            keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam']
+            tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
+            keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers']
         }, true, function(e) {
             helpers.getModal('raid-alert', 'Raid Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -524,7 +524,10 @@ $(function() {
                     'Message said when someone raids your channel. Tags: (username), (alert), (playsound), (viewers), (url), (times), (reward) and (game)', false))
                 // Appen the reward box
                 .append(helpers.getInputGroup('raid-reward', 'number', 'Raid Reward', '', e.raidReward,
-                    'Reward given to the users who raid your channel.'))))
+                    'Reward given to the users who raid your channel.'))
+                // Appen the min viewers for alerts box
+                .append(helpers.getInputGroup('raid-min-viewers', 'number', 'Raid Minimum Viewers', '', e.raidMinViewers,
+                    'The minimum amount of viewers to trigger the raid alert. Data will still be saved in history even if minimum viewers is not met.'))))
             // Append second collapsible accordion.
             .append(helpers.getCollapsibleAccordion('main-2', 'Outgoing Raid Settings', $('<form/>', {
                     'role': 'form'
@@ -541,7 +544,8 @@ $(function() {
                     raidMsg = $('#raid-message'),
                     raidReward = $('#raid-reward'),
                     raidOutMsg = $('#out-raid-message'),
-                    raidMsgSpam = $('#raid-spam');
+                    raidMsgSpam = $('#raid-spam'),
+                    raidMinViewers = $('#raid-min-viewers');
 
                 switch (false) {
                     case helpers.handleInputString(raidNewMsg):
@@ -549,12 +553,13 @@ $(function() {
                     case helpers.handleInputNumber(raidReward, 0):
                     case helpers.handleInputString(raidOutMsg):
                     case helpers.handleInputNumber(raidMsgSpam, 1, 10):
+                    case helpers.handleInputNumber(raidMinViewers, 0):
                         break;
                     default:
                         socket.updateDBValues('raid_setting_update', {
-                            tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
-                            keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam'],
-                            values: [raidToggle, raidNewMsg.val(), raidMsg.val(), raidReward.val(), raidOutMsg.val(), raidMsgSpam.val()]
+                            tables: ['raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings', 'raidSettings'],
+                            keys: ['raidToggle', 'newRaidIncMessage', 'raidIncMessage', 'raidReward', 'raidOutMessage', 'raidOutSpam', 'raidMinViewers'],
+                            values: [raidToggle, raidNewMsg.val(), raidMsg.val(), raidReward.val(), raidOutMsg.val(), raidMsgSpam.val(), raidMinViewers.val()]
                         }, function() {
                             socket.sendCommand('raid_setting_update_cmd', 'reloadraid', function() {
                                 // Alert the user.
