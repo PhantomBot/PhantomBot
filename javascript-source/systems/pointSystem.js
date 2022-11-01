@@ -34,7 +34,8 @@
             pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
             pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
             pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
-            userCache = {};
+            userCache = {},
+            _userCacheLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function updateSettings
@@ -221,13 +222,18 @@
                     }
                 }
 
-                if (userCache[username] !== undefined) {
-                    if (userCache[username] - lastPayout > 0) {
-                        delete userCache[username];
-                        amount += activeBonus;
-                    } else {
-                        delete userCache[username];
+                _userCacheLock.lock();
+                try {
+                    if (userCache[username] !== undefined) {
+                        if (userCache[username] - lastPayout > 0) {
+                            delete userCache[username];
+                            amount += activeBonus;
+                        } else {
+                            delete userCache[username];
+                        }
                     }
+                } finally {
+                    _userCacheLock.unlock();
                 }
 
                 if (getUserPenalty(username)) {
@@ -409,7 +415,12 @@
      */
     $.bind('ircChannelMessage', function (event) {
         if (activeBonus > 0) {
-            userCache[event.getSender()] = $.systemTime();
+            _userCacheLock.lock();
+            try {
+                userCache[event.getSender()] = $.systemTime();
+            } finally {
+                _userCacheLock.unlock();
+            }
         }
     });
 
