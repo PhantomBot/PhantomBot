@@ -20,7 +20,8 @@
 (function() {
     var isOpened = false,
         info = {},
-        queue = {};
+        queue = {},
+        _queueLock = new java.util.concurrent.locks.ReentrantLock();
 
     /*
      * @function open
@@ -114,20 +115,25 @@
             return;
         }
 
-        queue[username] = {
-            tag: (action === undefined ? '' : action),
-            position: Object.keys(queue).length,
-            time: new Date(),
-            username: username
-        };
+        _queueLock.lock();
+        try {
+            queue[username] = {
+                tag: (action === undefined ? '' : action),
+                position: Object.keys(queue).length,
+                time: new Date(),
+                username: username
+            };
 
-        var temp = {
-            'tag': String((action === undefined ? '' : action)),
-            'time': String(date(new Date(), true)),
-            'position': String(Object.keys(queue).length),
-            'username': String(username)
-        };
-        $.inidb.set('queue', username, JSON.stringify(temp));
+            var temp = {
+                'tag': String((action === undefined ? '' : action)),
+                'time': String(date(new Date(), true)),
+                'position': String(Object.keys(queue).length),
+                'username': String(username)
+            };
+            $.inidb.set('queue', username, JSON.stringify(temp));
+        } finally {
+            _queueLock.unlock();
+        }
     }
 
     /*
@@ -265,27 +271,32 @@
      * @function resetPosition
      */
     function resetPosition(splice) {
-        var keys = Object.keys(queue),
-            t = 0,
-            i;
+        _queueLock.lock();
+        try {
+            var keys = Object.keys(queue),
+                t = 0,
+                i;
 
-        for (i in keys) {
-            if (splice !== -1 && t <= splice) {
-                $.inidb.del('queue', keys[i]);
-                delete queue[keys[i]];
+            for (i in keys) {
+                if (splice !== -1 && t <= splice) {
+                    $.inidb.del('queue', keys[i]);
+                    delete queue[keys[i]];
+                }
+                t++;
             }
-            t++;
-        }
 
-        keys = Object.keys(queue);
-        t = 1;
+            keys = Object.keys(queue);
+            t = 1;
 
-        for (i in keys) {
-            queue[keys[i]].position = t;
-            var temp = JSON.parse($.inidb.get('queue', keys[i]));
-            temp.position = t;
-            $.inidb.set('queue', keys[i], JSON.stringify(temp));
-            t++;
+            for (i in keys) {
+                queue[keys[i]].position = t;
+                var temp = JSON.parse($.inidb.get('queue', keys[i]));
+                temp.position = t;
+                $.inidb.set('queue', keys[i], JSON.stringify(temp));
+                t++;
+            }
+        } finally {
+            _queueLock.unlock();
         }
 
     }
@@ -307,13 +318,18 @@
             keys = $.arrayShuffle(keys);
         }
 
-        for (i in keys) {
-            if (total >= t && temp.length < 400) {
-                temp.push('#' + t + ': ' + queue[keys[i]].username + (queue[keys[i]].tag !== '' ? ' ' + $.lang.get('queuesystem.gamertag', queue[keys[i]].tag) : ''));
-                t++;
-            } else {
-                break;
+        _queueLock.lock();
+        try {
+            for (i in keys) {
+                if (total >= t && temp.length < 400) {
+                    temp.push('#' + t + ': ' + queue[keys[i]].username + (queue[keys[i]].tag !== '' ? ' ' + $.lang.get('queuesystem.gamertag', queue[keys[i]].tag) : ''));
+                    t++;
+                } else {
+                    break;
+                }
             }
+        } finally {
+            _queueLock.unlock();
         }
 
         if (temp.length !== 0) {
