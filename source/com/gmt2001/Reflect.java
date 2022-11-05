@@ -16,6 +16,7 @@
  */
 package com.gmt2001;
 
+import com.illusionaryone.Logger;
 import com.sun.management.HotSpotDiagnosticMXBean;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;

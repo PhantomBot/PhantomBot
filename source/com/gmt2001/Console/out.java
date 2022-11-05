@@ -16,7 +16,7 @@
  */
 package com.gmt2001.Console;
 
-import com.gmt2001.Logger;
+import com.illusionaryone.Logger;
 import tv.phantombot.PhantomBot;
 
 /**

@@ -60,7 +60,7 @@
      * @return {String}
      */
     function getLogDateString(timeStamp) {
-        return Packages.com.gmt2001.Logger.instance().logFileTimestamp();
+        return Packages.com.illusionaryone.Logger.instance().logFileTimestamp();
     }
 
     /*
@@ -85,7 +85,7 @@
      * @return {String}
      */
     function getLogEntryTimeDateString() {
-        return Packages.com.gmt2001.Logger.instance().logTimestamp();
+        return Packages.com.illusionaryone.Logger.instance().logTimestamp();
     }
 
     /*

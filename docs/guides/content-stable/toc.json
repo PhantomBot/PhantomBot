@@ -1,0 +1,14 @@
+{
+    "subfolders": {
+        "setupbot": "Setup and Update",
+        "integrations": "Bot Integrations",
+        "commands": "Commands",
+        "moduleguides": "Module Guides",
+        "developerdocs": "Developer Documentation"
+    },
+    "pages": {
+        "markdown": "Markdown for Guides",
+        "guides": "Guides",
+        "faq": "FAQ"
+    }
+}

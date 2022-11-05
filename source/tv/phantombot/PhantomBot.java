@@ -24,7 +24,6 @@ import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.TwitterAPI;
-import com.gmt2001.YouTubeAPIv3;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.datastore.H2Store;
@@ -39,6 +38,7 @@ import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.YouTubeAPIv3;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.StreamElementsAPIv2;
 import com.scaniatv.TipeeeStreamAPIv1;
@@ -406,7 +406,7 @@ public final class PhantomBot implements Listener {
         this.validateOAuth();
 
         /* Start things and start loading the scripts. */
-        this.init();
+        ExecutorService.submit(this::init);
 
         /* Check if the OS is Linux. */
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
@@ -548,7 +548,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty user - The username the bot will login as to send chat messages
          */
-        return CaselessProperties.instance().getProperty("user").toLowerCase();
+        return CaselessProperties.instance().getProperty("user", "A PhantomBot").toLowerCase();
     }
 
     public HTTPOAuthHandler getHTTPOAuthHandler() {
@@ -700,25 +700,8 @@ public final class PhantomBot implements Listener {
          * @botproperty webenable - If `true`, the bots webserver is started. Default `true`
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-            /**
-             * @botproperty bindip - The IP address the bots webserver runs on. Default all
-             */
-            /**
-             * @botproperty baseport - The port the bots webserver runs on. Default `25000`
-             */
-            /**
-             * @botproperty usehttps - If `true`, the bots webserver uses HTTPS to secure the connection. Default `true`
-             */
-            /**
-             * @botproperty httpsFileName - If set, the certificate in this file is used for HTTPS. Default is to generate a self-signed certificate
-             */
-            /**
-             * @botproperty httpsPassword - The password, if any, to _httpsFileName_
-             */
             checkPortAvailabity(CaselessProperties.instance().getPropertyAsInt("baseport", 25000));
-            HTTPWSServer.instance(CaselessProperties.instance().getProperty("bindIP", ""), CaselessProperties.instance().getPropertyAsInt("baseport", 25000),
-                    CaselessProperties.instance().getPropertyAsBoolean("usehttps", true), CaselessProperties.instance().getProperty("httpsFileName", ""),
-                    CaselessProperties.instance().getProperty("httpsPassword", ""), this.getBotName());
+            HTTPWSServer.instance();
             new HTTPNoAuthHandler().register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
             this.httpAuthenticatedHandler.register();

@@ -17,7 +17,7 @@
 package tv.phantombot.twitch.pubsub.processors;
 
 import com.gmt2001.ExecutorService;
-import com.gmt2001.Logger;
+import com.illusionaryone.Logger;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

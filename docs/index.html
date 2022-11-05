@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
     Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
@@ -11,8 +12,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<!DOCTYPE html>
 
 <html style="height: auto; min-height: 100%;">
     <head>
@@ -62,21 +61,6 @@
                                 <!-- /.box-header -->
                                 <div class="box-body">
                                     View the code and contribute to PhantomBot
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                            <!-- /.box -->
-                        </div>
-			<div class="col-md-4">
-                            <div class="box box-solid box-primary" id="forum-tab">
-                                <div class="box-header with-border">
-                                    <i class="fas fa-users"></i>
-                                    <h3 class="box-title">Community Forum (Comming Soon)</h3>
-                                    <!-- /.box-tools -->
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body">
-                                    Get help from PhantomBot staff and the community
                                 </div>
                                 <!-- /.box-body -->
                             </div>
@@ -189,13 +173,9 @@
                 });
                 $('#discord-tab').css('cursor', 'pointer');
 				
-				$('#panel-tab').click(function() {
+		$('#panel-tab').click(function() {
                     window.location = getWindowUrl('panel/login');
                 });
-		$('#forum-tab').css('cursor', 'pointer');
-		$('#forum-tab').click(function() {
-		      //window.location = 'https://community.phantombot.dev';	
-		});
                 $('#panel-tab').css('cursor', 'pointer');
                 
                 $('#guides-tab').click(function() {

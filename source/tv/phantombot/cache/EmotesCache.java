@@ -18,7 +18,7 @@
  */
 package tv.phantombot.cache;
 
-import com.gmt2001.BTTVAPIv3;
+import com.illusionaryone.BTTVAPIv3;
 import com.illusionaryone.FrankerZAPIv1;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
