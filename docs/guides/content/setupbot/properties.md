@@ -168,7 +168,15 @@ httpclienttimeout - The timeout, in seconds, for an HTTP request to complete. De
 
 Data Type: _String_
 
-httpsFileName - If set, the certificate in this file is used for HTTPS. Default is to generate a self-signed certificate
+httpsFileName - If httpsKeyFileName is unset/blank, a JKS containing the certificate; else, an X509 Certificate in PEM format
+
+&nbsp;
+
+### httpskeyfilename
+
+Data Type: _String_
+
+httpsKeyFileName - The PKCS#8 private key in PEM format for httpsFileName; if unset/blank, httpsFileName is loaded as a JKS
 
 &nbsp;
 
