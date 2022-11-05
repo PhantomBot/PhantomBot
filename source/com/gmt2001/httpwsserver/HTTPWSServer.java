@@ -322,47 +322,55 @@ public final class HTTPWSServer {
 
         try {
             KeyStore ks = KeyStore.getInstance("JKS");
-            if (Files.exists(Paths.get(sslFile))) {
-                try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
-                    ks.load(inputStream, sslPass.toCharArray());
-                }
-            }
-
             KeyPair kp = null;
-            if (!forceNew) {
-                Key key = ks.getKey(AUTOSSLKEYALIAS, sslPass.toCharArray());
-                if (key instanceof PrivateKey) {
-                    // Get certificate of public key
-                    Certificate cert = ks.getCertificate(AUTOSSLKEYALIAS);
 
-                    // Get public key
-                    PublicKey publicKey = cert.getPublicKey();
-
-                    // Return a key pair
-                    kp = new KeyPair(publicKey, (PrivateKey) key);
+            try {
+                if (Files.exists(Paths.get(sslFile))) {
+                    try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+                        ks.load(inputStream, sslPass.toCharArray());
+                    }
                 }
+
+                if (!forceNew) {
+                    Key key = ks.getKey(AUTOSSLKEYALIAS, sslPass.toCharArray());
+                    if (key instanceof PrivateKey) {
+                        // Get certificate of public key
+                        Certificate cert = ks.getCertificate(AUTOSSLKEYALIAS);
+
+                        // Get public key
+                        PublicKey publicKey = cert.getPublicKey();
+
+                        // Return a key pair
+                        kp = new KeyPair(publicKey, (PrivateKey) key);
+                    }
+                }
+            } catch (IOException | CertificateException | KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex) {
             }
 
-            if (kp == null) {
-                kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
+            try {
+                if (kp == null) {
+                    kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
+                }
+
+                String dn = SelfSignedX509CertificateGenerator.generateDistinguishedName("PhantomBot." + botName);
+
+                X509Certificate cert = SelfSignedX509CertificateGenerator.generateCertificate(dn, kp,
+                        SelfSignedX509CertificateGenerator.RECOMMENDED_VALIDITY_DAYS, SelfSignedX509CertificateGenerator.RECOMMENDED_SIG_ALGO);
+
+                ks.setKeyEntry(AUTOSSLKEYALIAS, kp.getPrivate(), sslPass.toCharArray(), new Certificate[]{cert});
+
+                try ( OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
+                    ks.store(outputStream, sslPass.toCharArray());
+                }
+
+                this.reloadSslContext();
+
+                this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
+            } catch (IOException | InvalidKeyException | NoSuchProviderException | SignatureException | CertificateException | UnrecoverableKeyException
+                    | KeyStoreException | NoSuchAlgorithmException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-
-            String dn = SelfSignedX509CertificateGenerator.generateDistinguishedName("PhantomBot." + botName);
-
-            X509Certificate cert = SelfSignedX509CertificateGenerator.generateCertificate(dn, kp,
-                    SelfSignedX509CertificateGenerator.RECOMMENDED_VALIDITY_DAYS, SelfSignedX509CertificateGenerator.RECOMMENDED_SIG_ALGO);
-
-            ks.setKeyEntry(AUTOSSLKEYALIAS, kp.getPrivate(), sslPass.toCharArray(), new Certificate[]{cert});
-
-            try ( OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
-                ks.store(outputStream, sslPass.toCharArray());
-            }
-
-            this.reloadSslContext();
-
-            this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
-        } catch (IOException | InvalidKeyException | NoSuchProviderException | SignatureException | CertificateException | UnrecoverableKeyException
-                | KeyStoreException | NoSuchAlgorithmException ex) {
+        } catch (KeyStoreException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
