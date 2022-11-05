@@ -1,0 +1,13 @@
+{
+    "subfolders": {
+    },
+    "pages": {
+        "youtubesetup": "YouTube Setup",
+        "discordintegrationsetup": "Discord Integration Setup",
+        "twitterintegration": "Twitter Integration Setup",
+        "twitchembeds": "Enable Twitch embeds",
+        "tipeeestream": "TipeeeStream Alerts",
+        "streamelements": "StreamElements Alerts",
+        "streamlabs": "StreamLabs Alerts"
+    }
+}
