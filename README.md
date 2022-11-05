@@ -66,13 +66,12 @@ The following values are sent from _botlogin.txt_:
 - _allownonascii_ - Indicates if other config values in _botlogin.txt_ are allowed to use non-US-ASCII characters
 - _baseport_ - Indicates the port that the built-in webserver listens on
 - _channel_ - Indicates the Broadcaster's channel, where the bot interacts with Twitch viewers
-- _datastore_ - Indicates which database backend is used
+- _datastore_ - Indicates which database backend is used, but **NOT** the IP/login details for the database
 - _debugon_ - Indicates whether debug messages are printed to the console and logged
 - _debuglog_ - Overrides the above to only log, but not print to console
 - _helixdebug_ - Enables additional debug logging of Twitch Helix API requests and responses (Not including OAuth tokens)
 - _ircdebug_ - Enables additional debug logging of incoming messages from Twitch Message Interface (TMI/IRC)
 - _logtimezone_ - Indicates the timezone used by the bot
-- _msglimit30_ - Indicates the self-imposed rate-limit on outgoing messages to TMI
 - _musicenable_ - Indicates whether the YouTube player has been enabled at the _botlogin.txt_ level
 - _owner_ - Indicates the bot owner (used for giving a non-broadcaster bot owner admin privileges)
 - _proxybypasshttps_ - Overrides the SSL checks in the bot to pretend SSL is enabled, for use with a reverse proxy
@@ -80,13 +79,10 @@ The following values are sent from _botlogin.txt_:
 - _reloadscripts_ - Indicates whether the bot is allowed to reload most JavaScript files when they are changed without a restart
 - _rhinodebugger_ - Enables verbose debug output when JavaScript exceptions occur
 - _rollbarid_ - A [GUIDv4](https://en.wikipedia.org/wiki/GUID#Version_4_(random)) which uniquely identifies the current PhantomBot installation, used for identifying when multiple exceptions are coming from the same bot
-- _twitch\_tcp\_nodelay_ - The TCP_NODELAY flag for TMI. Makes TMI less bandwidth efficient but possibly a little faster on outbound messages
 - _usehttps_ - Indicates whether SSL is enabled on the bots built-in webserver
 - _user_ - The bots Twitch username
-- _useeventsub_ - Indicates if EventSub is enabled
 - _userollbar_ - Indicates if Rollbar exception reporting is enabled
 - _webenable_ - Indicates if the bots built-in webserver is enabled
-- _whisperlimit60_ - Indicates the self-imposed rate-limit on outgoing whispers to TMI
 - _wsdebug_ - Enables debug output of WebSocket messages from the panel
 
 For all other values in _botlogin.txt_, only an indicator of whether the value exists will be sent, but not the actual value itself.
