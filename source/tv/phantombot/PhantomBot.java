@@ -375,9 +375,6 @@ public final class PhantomBot implements Listener {
         /* Set the oauth key in the Twitch api and perform a validation. */
         this.validateOAuth();
 
-        /* Start things and start loading the scripts. */
-        ExecutorService.submit(this::init);
-
         /* Check if the OS is Linux. */
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
@@ -390,7 +387,8 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        this.initChat();
+        /* Start things and start loading the scripts. */
+        ExecutorService.schedule(this::init, 250, TimeUnit.MILLISECONDS);
     }
 
     public void validateOAuth() {
@@ -938,6 +936,7 @@ public final class PhantomBot implements Listener {
 
         this.initConsoleEventBus();
         this.initWeb();
+        this.initChat();
     }
 
     /**
