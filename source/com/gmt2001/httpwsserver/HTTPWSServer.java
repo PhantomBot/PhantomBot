@@ -222,15 +222,18 @@ public final class HTTPWSServer {
     private static int findAvailablePort(String bindIp, int initialPort, int port) {
         try ( ServerSocket serverSocket = bindIp.isEmpty() ? new ServerSocket(port) : new ServerSocket(port, 1, java.net.InetAddress.getByName(bindIp))) {
             serverSocket.setReuseAddress(true);
+            com.gmt2001.Console.debug.println("Port available " + port);
+            return port;
         } catch (IOException ex) {
             if (port - initialPort >= FINDPORTLIMIT || port >= 65535) {
+                com.gmt2001.Console.debug.println("Port limit reached " + initialPort + " " + port);
+                com.gmt2001.Console.debug.printStackTrace(ex);
                 return -1;
             } else {
+                com.gmt2001.Console.debug.println("Port not available " + port);
                 return findAvailablePort(bindIp, initialPort, port + 1);
             }
         }
-
-        return -1;
     }
 
     public boolean isSsl() {
