@@ -16,8 +16,8 @@
  */
 package com.gmt2001.Console;
 
-import com.illusionaryone.Logger;
 import com.gmt2001.RollbarProvider;
+import com.illusionaryone.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -39,7 +39,7 @@ public final class err {
         String stackInfo = debug.findCallerInfo();
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + " " + o.toString());
-        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        System.err.print("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + " " + o);
     }
 
     public static void println() {
@@ -56,7 +56,7 @@ public final class err {
 
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + " " + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
-        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + " " + o);
     }
 
     public static void println(Object o, boolean logOnly) {
@@ -65,7 +65,7 @@ public final class err {
         Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + " " + o.toString());
         Logger.instance().log(Logger.LogType.Error, "");
         if (!logOnly) {
-            System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + o);
+            System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + " " + o);
         }
     }
 
