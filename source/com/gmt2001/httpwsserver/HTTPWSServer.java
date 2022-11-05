@@ -371,7 +371,7 @@ public final class HTTPWSServer {
                     | KeyStoreException | NoSuchAlgorithmException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-        } catch (KeyStoreException ex) {
+        } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
