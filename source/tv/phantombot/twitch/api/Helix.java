@@ -16,6 +16,7 @@
  */
 package tv.phantombot.twitch.api;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
@@ -38,7 +39,6 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -85,7 +85,6 @@ public class Helix {
     // The rate limit, when full
     private int maxRateLimit = 120;
     private String oAuthToken = null;
-    private final ScheduledThreadPoolExecutor tp = new ScheduledThreadPoolExecutor(1);
     private final Queue<Mono<JSONObject>> requestQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentMap<String, CallRequest> calls = new ConcurrentHashMap<>();
     private final ReentrantLock lock = new ReentrantLock();
@@ -93,8 +92,8 @@ public class Helix {
 
     private Helix() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.tp.schedule(() -> {
-            tp.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
+        ExecutorService.schedule(() -> {
+            ExecutorService.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
         }, 1000, TimeUnit.MILLISECONDS);
     }
 
