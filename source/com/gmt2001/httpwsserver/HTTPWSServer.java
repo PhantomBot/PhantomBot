@@ -322,6 +322,7 @@ public final class HTTPWSServer {
 
         try {
             KeyStore ks = KeyStore.getInstance("JKS");
+            ks.load(null, sslPass.toCharArray());
             KeyPair kp = null;
 
             try {
