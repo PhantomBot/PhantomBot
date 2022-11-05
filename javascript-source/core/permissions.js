@@ -1401,7 +1401,6 @@
     $.isViewer = isViewer;
     $.hasPermissionLevel = hasPermissionLevel;
     $.hasModeO = hasModeO;
-    $.hasModList = hasModList;
     $.getUserGroupId = getUserGroupId;
     $.getUserGroupName = getUserGroupName;
     $.getGroupNameById = getGroupNameById;

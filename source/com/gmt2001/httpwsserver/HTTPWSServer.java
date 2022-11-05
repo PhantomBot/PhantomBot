@@ -31,6 +31,7 @@ import io.netty.util.ReferenceCounted;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
@@ -53,6 +54,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -103,6 +105,7 @@ public final class HTTPWSServer {
     private static final String AUTOSSLKEYALIAS = "phantombot";
     private static final String AUTOSSLFILE = "./config/selfkey.jks";
     private static final String AUTOSSLPASSWORD = "pbselfsign";
+    private static final int FINDPORTLIMIT = 20;
 
     /**
      * Gets the server instance.
@@ -139,10 +142,35 @@ public final class HTTPWSServer {
          * @botproperty httpsPassword - The password, if any, to _httpsFileName_
          */
         String ipOrHostname = CaselessProperties.instance().getProperty("bindIP", "");
-        int port = CaselessProperties.instance().getPropertyAsInt("baseport", 25000);
+        int initialPort = CaselessProperties.instance().getPropertyAsInt("baseport", 25000);
         boolean useHttps = CaselessProperties.instance().getPropertyAsBoolean("usehttps", true);
         String sslFile = CaselessProperties.instance().getProperty("httpsFileName", "");
         String botName = PhantomBot.instance().getBotName();
+
+        int port = findAvailablePort(ipOrHostname, initialPort, initialPort);
+
+        if (port == -1) {
+            com.gmt2001.Console.err.println();
+            com.gmt2001.Console.err.println();
+            com.gmt2001.Console.err.println("Port is already in use: " + initialPort);
+            com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
+            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
+            com.gmt2001.Console.err.println("PhantomBot will now exit.");
+            com.gmt2001.Console.err.println();
+            com.gmt2001.Console.err.println();
+            PhantomBot.exitError();
+        } else if (port != initialPort) {
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("Port is already in use: " + initialPort);
+            com.gmt2001.Console.warn.println("Switching to an alternate port: " + port);
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println();
+            Transaction t = CaselessProperties.instance().startTransaction();
+            t.setProperty("baseport", port);
+            t.commit();
+        }
+
         try {
             if (useHttps) {
                 if (sslFile.isBlank()) {
@@ -181,13 +209,30 @@ public final class HTTPWSServer {
                     }
                 } catch (InterruptedException ex2) {
                     this.ch2 = null;
-                    com.gmt2001.Console.out.println("Unble to bind port 80, going with only 443...");
+                    com.gmt2001.Console.out.println("Unable to bind port 80, going with only 443...");
                     com.gmt2001.Console.err.printStackTrace(ex2);
                 }
             }
         } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyStoreException | UnrecoverableKeyException | InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
             this.group.shutdownGracefully();
+        }
+    }
+
+    private static int findAvailablePort(String bindIp, int initialPort, int port) {
+        try ( ServerSocket serverSocket = bindIp.isEmpty() ? new ServerSocket(port) : new ServerSocket(port, 1, java.net.InetAddress.getByName(bindIp))) {
+            serverSocket.setReuseAddress(true);
+            com.gmt2001.Console.debug.println("Port available " + port);
+            return port;
+        } catch (IOException ex) {
+            if (port - initialPort >= FINDPORTLIMIT || port >= 65535) {
+                com.gmt2001.Console.debug.println("Port limit reached " + initialPort + " " + port);
+                com.gmt2001.Console.debug.printStackTrace(ex);
+                return -1;
+            } else {
+                com.gmt2001.Console.debug.println("Port not available " + port);
+                return findAvailablePort(bindIp, initialPort, port + 1);
+            }
         }
     }
 
@@ -277,9 +322,16 @@ public final class HTTPWSServer {
 
         try {
             KeyStore ks = KeyStore.getInstance("JKS");
-            try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
-                ks.load(inputStream, sslPass.toCharArray());
-                KeyPair kp = null;
+            ks.load(null, sslPass.toCharArray());
+            KeyPair kp = null;
+
+            try {
+                if (Files.exists(Paths.get(sslFile))) {
+                    try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+                        ks.load(inputStream, sslPass.toCharArray());
+                    }
+                }
+
                 if (!forceNew) {
                     Key key = ks.getKey(AUTOSSLKEYALIAS, sslPass.toCharArray());
                     if (key instanceof PrivateKey) {
@@ -293,7 +345,10 @@ public final class HTTPWSServer {
                         kp = new KeyPair(publicKey, (PrivateKey) key);
                     }
                 }
+            } catch (IOException | CertificateException | KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex) {
+            }
 
+            try {
                 if (kp == null) {
                     kp = SelfSignedX509CertificateGenerator.generateKeyPair(SelfSignedX509CertificateGenerator.RECOMMENDED_KEY_SIZE);
                 }
@@ -308,13 +363,15 @@ public final class HTTPWSServer {
                 try ( OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
                     ks.store(outputStream, sslPass.toCharArray());
                 }
+
+                this.reloadSslContext();
+
+                this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
+            } catch (IOException | InvalidKeyException | NoSuchProviderException | SignatureException | CertificateException | UnrecoverableKeyException
+                    | KeyStoreException | NoSuchAlgorithmException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
-
-            this.reloadSslContext();
-
-            this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
-        } catch (IOException | InvalidKeyException | NoSuchProviderException | SignatureException | CertificateException | UnrecoverableKeyException
-                | KeyStoreException | NoSuchAlgorithmException ex) {
+        } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }

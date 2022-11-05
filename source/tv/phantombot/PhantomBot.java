@@ -48,7 +48,6 @@ import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -240,35 +239,6 @@ public final class PhantomBot implements Listener {
     }
 
     /**
-     * Checks port availability.
-     *
-     * @param port
-     */
-    public void checkPortAvailabity(int port) {
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = CaselessProperties.instance().getProperty("bindIP", "").isEmpty() ? new ServerSocket(port) : new ServerSocket(port, 1, java.net.InetAddress.getByName(CaselessProperties.instance().getProperty("bindIP", "")));
-            serverSocket.setReuseAddress(true);
-        } catch (IOException e) {
-            com.gmt2001.Console.err.println("Port is already in use: " + port);
-            com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
-            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
-            com.gmt2001.Console.err.println("PhantomBot will now exit.");
-            PhantomBot.exitError();
-        } finally {
-            if (serverSocket != null) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    com.gmt2001.Console.err.println("Unable to close port for testing: " + port);
-                    com.gmt2001.Console.err.println("PhantomBot will now exit.");
-                    PhantomBot.exitError();
-                }
-            }
-        }
-    }
-
-    /**
      * Check to see if YouTube Key is configured.
      *
      * @return
@@ -405,9 +375,6 @@ public final class PhantomBot implements Listener {
         /* Set the oauth key in the Twitch api and perform a validation. */
         this.validateOAuth();
 
-        /* Start things and start loading the scripts. */
-        ExecutorService.submit(this::init);
-
         /* Check if the OS is Linux. */
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
@@ -420,7 +387,8 @@ public final class PhantomBot implements Listener {
             }
         }
 
-        this.initChat();
+        /* Start things and start loading the scripts. */
+        ExecutorService.schedule(this::init, 250, TimeUnit.MILLISECONDS);
     }
 
     public void validateOAuth() {
@@ -700,7 +668,6 @@ public final class PhantomBot implements Listener {
          * @botproperty webenable - If `true`, the bots webserver is started. Default `true`
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-            checkPortAvailabity(CaselessProperties.instance().getPropertyAsInt("baseport", 25000));
             HTTPWSServer.instance();
             new HTTPNoAuthHandler().register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
@@ -969,6 +936,7 @@ public final class PhantomBot implements Listener {
 
         this.initConsoleEventBus();
         this.initWeb();
+        this.initChat();
     }
 
     /**
