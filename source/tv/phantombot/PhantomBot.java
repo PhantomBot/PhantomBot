@@ -48,7 +48,6 @@ import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -237,35 +236,6 @@ public final class PhantomBot implements Listener {
      */
     private void print(String message) {
         com.gmt2001.Console.out.println(message);
-    }
-
-    /**
-     * Checks port availability.
-     *
-     * @param port
-     */
-    public void checkPortAvailabity(int port) {
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = CaselessProperties.instance().getProperty("bindIP", "").isEmpty() ? new ServerSocket(port) : new ServerSocket(port, 1, java.net.InetAddress.getByName(CaselessProperties.instance().getProperty("bindIP", "")));
-            serverSocket.setReuseAddress(true);
-        } catch (IOException e) {
-            com.gmt2001.Console.err.println("Port is already in use: " + port);
-            com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
-            com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
-            com.gmt2001.Console.err.println("PhantomBot will now exit.");
-            PhantomBot.exitError();
-        } finally {
-            if (serverSocket != null) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    com.gmt2001.Console.err.println("Unable to close port for testing: " + port);
-                    com.gmt2001.Console.err.println("PhantomBot will now exit.");
-                    PhantomBot.exitError();
-                }
-            }
-        }
     }
 
     /**
@@ -700,7 +670,6 @@ public final class PhantomBot implements Listener {
          * @botproperty webenable - If `true`, the bots webserver is started. Default `true`
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-            checkPortAvailabity(CaselessProperties.instance().getPropertyAsInt("baseport", 25000));
             HTTPWSServer.instance();
             new HTTPNoAuthHandler().register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
