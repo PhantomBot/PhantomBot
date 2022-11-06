@@ -106,7 +106,7 @@ public class YouTubeAPIv3 {
             q = matcher.group(1);
         }
 
-        JSONObject j = GetData("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + q + "&format=json");
+        JSONObject j = GetData("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + URLEncoder.encode(q, Charset.forName("UTF-8")) + "&format=json");
         if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
             if (j.toString().contains("Unauthorized")) {
                 com.gmt2001.Console.debug.println("URL Check Returned Unauthorized (Video Marked Private)");
