@@ -729,7 +729,7 @@
         var cmd = findRewardCommand(rewardID);
 
         if (cmd !== null) {
-            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' ' + displayName + ' "' + $.javaString(userInput).replaceAll("\"", "\\\"") + '"');
+            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' "' + displayName + '" "' + $.javaString(userInput).replaceAll("\"", "\\\"").replaceAll("\n", "") + '"');
             var tag = $.transformers.tags(cmdEvent, cmd.command, false, ['twitch', ['commandevent', 'noevent']]);
             if (tag !== null) {
                 $.say(tag);
