@@ -734,6 +734,22 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### nl2br
+
+Defined in script: _./javascript-source/core/transformers/misc.js_
+
+**Formulas:**
+
+- `(bl2br str:str)` - replaces all LF (`\n`) with `<br>` and removes all CR (`\r`)
+
+**Labels:** twitch discord noevent misc
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### offlineonly
 
 Defined in script: _./javascript-source/core/transformers/meta.js_
@@ -1437,6 +1453,22 @@ Bot: @User, PhantomBot has been live for 2 hours, 3 minutes and 30 seconds.
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
+### url0a2nl
+
+Defined in script: _./javascript-source/core/transformers/misc.js_
+
+**Formulas:**
+
+- `(url0a2nl str:str)` - replaces all URL-Encoded LF (`%0A`) with LF (`\n`)
+
+**Labels:** twitch discord noevent misc
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
