@@ -99,6 +99,19 @@
     }
 
     /*
+     * @transformer nl2br
+     * @formula (bl2br str:str) replaces all LF (`\n`) with `<br>` and removes all CR (`\r`)
+     * @labels twitch discord noevent misc
+     * @cached
+     */
+    function nl2br(args) {
+        return {
+            result: args.replaceAll('\n', '<br>').replaceAll('\r', ''),
+            cache: true
+        };
+    }
+
+    /*
      * @transformer token
      * @formula (token) replaced with the secret token that was set by !tokencom or the panel
      * @labels twitch commandevent misc
@@ -141,13 +154,28 @@
         }
     }
 
+    /*
+     * @transformer url0a2nl
+     * @formula (url0a2nl str:str) replaces all URL-Encoded LF (`%0A`) with LF (`\n`)
+     * @labels twitch discord noevent misc
+     * @cached
+     */
+    function url0a2nl(args) {
+        return {
+            result: args.replaceAll('%0A', '\n').replaceAll('%0a', '\n'),
+            cache: true
+        };
+    }
+
     var transformers = [
         new $.transformers.transformer('code', ['twitch', 'discord', 'noevent', 'misc'], code),
         new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'noevent', 'misc'], encodeurl),
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
         new $.transformers.transformer('keywordcount', ['twitch', 'keywordevent', 'misc'], keywordcount),
+        new $.transformers.transformer('nl2br', ['twitch', 'discord', 'noevent', 'misc'], nl2br),
         new $.transformers.transformer('token', ['twitch', 'commandevent', 'misc'], token),
-        new $.transformers.transformer('unescape', ['twitch', 'discord', 'noevent', 'misc'], unescape)
+        new $.transformers.transformer('unescape', ['twitch', 'discord', 'noevent', 'misc'], unescape),
+        new $.transformers.transformer('url0a2nl', ['twitch', 'discord', 'noevent', 'misc'], url0a2nl)
     ];
 
     $.transformers.addTransformers(transformers);
