@@ -651,7 +651,10 @@
 
         if (commandConfig.length > 0) {
             if (findRewardCommandIndex(rewardID) !== -1) {
+                commandConfig = '';
+                $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
                 $.say($.lang.get('channelPointsHandler.command.add.failed', rewardTitle));
+                return;
             }
 
             commandLock.lock();
@@ -729,7 +732,7 @@
         var cmd = findRewardCommand(rewardID);
 
         if (cmd !== null) {
-            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' ' + displayName + ' "' + $.javaString(userInput).replaceAll("\"", "\\\"") + '"');
+            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' "' + displayName + '" "' + $.javaString(userInput).replaceAll("\"", "\\\"").replaceAll("\n", "") + '"');
             var tag = $.transformers.tags(cmdEvent, cmd.command, false, ['twitch', ['commandevent', 'noevent']]);
             if (tag !== null) {
                 $.say(tag);
