@@ -651,7 +651,10 @@
 
         if (commandConfig.length > 0) {
             if (findRewardCommandIndex(rewardID) !== -1) {
+                commandConfig = '';
+                $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
                 $.say($.lang.get('channelPointsHandler.command.add.failed', rewardTitle));
+                return;
             }
 
             commandLock.lock();
