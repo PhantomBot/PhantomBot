@@ -18,12 +18,11 @@ package com.gmt2001.httpwsserver;
 
 import com.gmt2001.Console.err;
 import com.gmt2001.ExecutorService;
+import com.gmt2001.dns.EventLoopDetector;
 import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.IllegalReferenceCountException;
@@ -86,7 +85,7 @@ public final class HTTPWSServer {
     /**
      * The server's {@link EventLoopGroup}
      */
-    private final EventLoopGroup group = new NioEventLoopGroup();
+    private final EventLoopGroup group = EventLoopDetector.createEventLoopGroup();
     /**
      * The server's listen {@link Channel}
      */
@@ -191,7 +190,7 @@ public final class HTTPWSServer {
 
             ServerBootstrap b = new ServerBootstrap();
             b.group(this.group)
-                    .channel(NioServerSocketChannel.class)
+                    .channel(EventLoopDetector.getServerChannelClass())
                     .childHandler(new HTTPWSServerInitializer());
 
             if (ipOrHostname.isBlank()) {
