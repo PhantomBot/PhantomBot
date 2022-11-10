@@ -360,7 +360,7 @@
                 }
                 return;
             }
-
+            action = $.user.sanitize(action);
             // Make sure the user exists on Twitch.
             if ($.username.exists(action)) {
                 handleOutRaid(action);
