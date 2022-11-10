@@ -17,7 +17,6 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.ExecutorService;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -61,7 +60,7 @@ public class UsernameCache {
 
     private void lookupUserData(String username) {
         try {
-            this.lookupUserDataAsync(username).block(Duration.ofSeconds(2));
+            this.lookupUserDataAsync(username).block();
         } catch (Exception e) {
         }
     }
