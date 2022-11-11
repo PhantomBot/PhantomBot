@@ -329,6 +329,7 @@ $(function () {
 
             if (audioFile.length === 0) {
                 printDebug('Failed to find audio file.', true);
+                isPlaying = false;
                 return;
             }
 
