@@ -16,8 +16,20 @@
  */
 package com.gmt2001.dns;
 
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.kqueue.KQueue;
+import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueServerSocketChannel;
+import io.netty.channel.kqueue.KQueueSocketChannel;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  *
@@ -58,5 +70,35 @@ public final class EventLoopDetector {
         }
 
         ISKQUEUEAVAILABLE = kqueueCheck;
+    }
+
+    public static EventLoopGroup createEventLoopGroup() {
+        if (ISEPOLLAVAILABLE) {
+            return new EpollEventLoopGroup();
+        } else if (ISKQUEUEAVAILABLE) {
+            return new KQueueEventLoopGroup();
+        }
+
+        return new NioEventLoopGroup();
+    }
+
+    public static Class<? extends ServerChannel> getServerChannelClass() {
+        if (ISEPOLLAVAILABLE) {
+            return EpollServerSocketChannel.class;
+        } else if (ISKQUEUEAVAILABLE) {
+            return KQueueServerSocketChannel.class;
+        }
+
+        return NioServerSocketChannel.class;
+    }
+
+    public static Class<? extends Channel> getChannelClass() {
+        if (ISEPOLLAVAILABLE) {
+            return EpollSocketChannel.class;
+        } else if (ISKQUEUEAVAILABLE) {
+            return KQueueSocketChannel.class;
+        }
+
+        return NioSocketChannel.class;
     }
 }

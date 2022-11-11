@@ -17,12 +17,11 @@
 package com.gmt2001.wsclient;
 
 import com.gmt2001.dns.CompositeAddressResolverGroup;
+import com.gmt2001.dns.EventLoopDetector;
 import com.gmt2001.wspinger.WSPinger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.ssl.SslContext;
@@ -77,7 +76,7 @@ public class WSClient {
     /**
      * The client's {@link EventLoopGroup}
      */
-    private final EventLoopGroup group = new NioEventLoopGroup();
+    private final EventLoopGroup group = EventLoopDetector.createEventLoopGroup();
 
     /**
      * Constructor that does not initialize a {@link WSPinger}
@@ -159,7 +158,7 @@ public class WSClient {
                 b.resolver(CompositeAddressResolverGroup.INSTANCE);
             }
 
-            b.channel(NioSocketChannel.class)
+            b.channel(EventLoopDetector.getChannelClass())
                     .handler(new WSClientInitializer(this));
 
             this.channel = b.connect(this.host, this.port).sync().channel();
