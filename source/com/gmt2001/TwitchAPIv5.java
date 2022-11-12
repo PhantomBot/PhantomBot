@@ -19,7 +19,7 @@ package com.gmt2001;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import java.net.URI;
+import com.gmt2001.httpclient.URIUtil;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -689,7 +689,7 @@ public class TwitchAPIv5 {
         String endpoint = "https://tmi.twitch.tv/group/user/" + channel + "/chatters";
 
         try {
-            HttpClientResponse response = HttpClient.get(URI.create(endpoint));
+            HttpClientResponse response = HttpClient.get(URIUtil.create(endpoint));
 
             if (response.hasJson()) {
                 jsonResult = response.json();

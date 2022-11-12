@@ -20,9 +20,9 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.URIUtil;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -137,7 +137,7 @@ public class TwitchValidate {
         try {
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
             headers.add("Authorization", "OAuth " + oAuthToken);
-            HttpClientResponse response = HttpClient.request(HttpMethod.GET, URI.create(BASE_URL), headers, null);
+            HttpClientResponse response = HttpClient.request(HttpMethod.GET, URIUtil.create(BASE_URL), headers, null);
 
             responseCode = response.responseCode().code();
 

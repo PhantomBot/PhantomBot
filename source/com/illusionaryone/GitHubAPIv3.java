@@ -20,7 +20,7 @@ package com.illusionaryone;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import java.net.URI;
+import com.gmt2001.httpclient.URIUtil;
 import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +44,7 @@ public final class GitHubAPIv3 {
         JSONObject jsonResult = new JSONObject();
 
         try {
-            HttpClientResponse response = HttpClient.get(URI.create(BASE_URL + endPoint));
+            HttpClientResponse response = HttpClient.get(URIUtil.create(BASE_URL + endPoint));
             if (isArray) {
                 jsonResult.put("array", new JSONArray(response.responseBody()));
             } else {

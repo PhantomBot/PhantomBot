@@ -20,6 +20,7 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
@@ -461,7 +462,7 @@ public final class EventSub implements HttpRequestHandler {
      * @throws URISyntaxException
      */
     private JSONObject doRequest(HttpMethod type, String queryString, String post) throws IOException, JSONException, URISyntaxException {
-        URI url = URI.create(BASE + queryString);
+        URI url = URIUtil.create(BASE + queryString);
         HttpHeaders headers = HttpClient.createHeaders(type, true);
         HttpClientResponse response = HttpClient.request(type, url, headers, post);
         JSONObject jso = response.json();

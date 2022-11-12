@@ -21,10 +21,10 @@ import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.NotJSONException;
+import com.gmt2001.httpclient.URIUtil;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -243,7 +243,7 @@ public class Helix {
             HttpHeaders headers = HttpClient.createHeaders(type, true);
             headers.add("Client-ID", CaselessProperties.instance().getProperty("clientid", TwitchValidate.instance().getAPIClientID()));
             headers.add("Authorization", "Bearer " + (oauth != null && !oauth.isBlank() ? oauth : this.oAuthToken));
-            HttpClientResponse response = HttpClient.request(type, URI.create(BASE_URL + endPoint), headers, data);
+            HttpClientResponse response = HttpClient.request(type, URIUtil.create(BASE_URL + endPoint), headers, data);
 
             responseCode = response.responseCode().code();
 
