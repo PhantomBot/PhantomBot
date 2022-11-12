@@ -25,7 +25,7 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.6.6.4" />
+    <property name="version" value="3.6.7.0" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
