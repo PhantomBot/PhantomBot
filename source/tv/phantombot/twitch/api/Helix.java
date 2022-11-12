@@ -42,6 +42,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1834,6 +1835,416 @@ public class Helix {
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Hex color pattern for custom rewards
+     */
+    private static final Pattern HEXCOLOR = Pattern.compile("^#[0-9A-F]{6}$", Pattern.CASE_INSENSITIVE);
+
+    /**
+     * Creates a Custom Reward in the broadcaster\'s channel. The maximum number of custom rewards per channel is 50, which includes both enabled and
+     * disabled rewards.
+     *
+     * @param title The custom reward\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the
+     * broadcaster\'s custom rewards.
+     * @param cost The cost of the reward, in Channel Points. The minimum is 1 point.
+     * @param is_enabled A Boolean value that determines whether the reward is enabled. Viewers see only enabled rewards. The default is {@code true}.
+     * @param background_color The background color to use for the reward. Specify the color using Hex format (for example, {@code #9147FF}).
+     * @param is_user_input_required A Boolean value that determines whether the user needs to enter information when redeeming the reward. See the
+     * {@code prompt} field. The default is {@code false}.
+     * @param prompt The prompt shown to the viewer when they redeem the reward. Specify a prompt if {@code is_user_input_required} is {@code true}.
+     * The prompt is limited to a maximum of 200 characters.
+     * @param is_max_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per live stream
+     * (see the {@code max_per_stream} field). The default is {@code false}.
+     * @param max_per_stream The maximum number of redemptions allowed per live stream. Applied only if {@code is_max_per_stream_enabled} is
+     * {@code true}. The minimum value is {@code 1}.
+     * @param is_max_per_user_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per user
+     * per stream (see the {@code max_per_user_per_stream} field). The default is {@code false}.
+     * @param max_per_user_per_stream The maximum number of redemptions allowed per user per stream. Applied only if
+     * {@code is_max_per_user_per_stream_enabled} is {@code true}. The minimum value is {@code 1}.
+     * @param is_global_cooldown_enabled A Boolean value that determines whether to apply a cooldown period between redemptions (see the
+     * {@code global_cooldown_seconds} field for the duration of the cooldown period). The default is {@code false}.
+     * @param global_cooldown_seconds The cooldown period, in seconds. Applied only if the {@code is_global_cooldown_enabled} field is {@code true}.
+     * The minimum value is {@code 1}; however, the minimum value is {@code 60} for it to be shown in the Twitch UX.
+     * @param should_redemptions_skip_request_queue A Boolean value that determines whether redemptions should be set to {@code FULFILLED} status
+     * immediately when a reward is redeemed. If {@code false}, status is set to {@code UNFULFILLED} and follows the normal request queue process. The
+     * default is {@code false}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject createCustomReward(String title, int cost, @Nullable Boolean is_enabled, @Nullable String background_color,
+            @Nullable Boolean is_user_input_required, @Nullable String prompt, @Nullable Boolean is_max_per_stream_enabled,
+            @Nullable Integer max_per_stream, @Nullable Boolean is_max_per_user_per_stream_enabled, @Nullable Integer max_per_user_per_stream,
+            @Nullable Boolean is_global_cooldown_enabled, @Nullable Integer global_cooldown_seconds,
+            @Nullable Boolean should_redemptions_skip_request_queue)
+            throws JSONException, IllegalArgumentException {
+        return this.createCustomRewardAsync(title, cost, is_enabled, background_color, is_user_input_required, prompt, is_max_per_stream_enabled,
+                max_per_stream, is_max_per_user_per_stream_enabled, max_per_user_per_stream, is_global_cooldown_enabled, global_cooldown_seconds,
+                should_redemptions_skip_request_queue).block();
+    }
+
+    /**
+     * Creates a Custom Reward in the broadcaster\'s channel. The maximum number of custom rewards per channel is 50, which includes both enabled and
+     * disabled rewards.
+     *
+     * @param title The custom reward\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the
+     * broadcaster\'s custom rewards.
+     * @param cost The cost of the reward, in Channel Points. The minimum is 1 point.
+     * @param is_enabled A Boolean value that determines whether the reward is enabled. Viewers see only enabled rewards. The default is {@code true}.
+     * @param background_color The background color to use for the reward. Specify the color using Hex format (for example, {@code #9147FF}).
+     * @param is_user_input_required A Boolean value that determines whether the user needs to enter information when redeeming the reward. See the
+     * {@code prompt} field. The default is {@code false}.
+     * @param prompt The prompt shown to the viewer when they redeem the reward. Specify a prompt if {@code is_user_input_required} is {@code true}.
+     * The prompt is limited to a maximum of 200 characters.
+     * @param is_max_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per live stream
+     * (see the {@code max_per_stream} field). The default is {@code false}.
+     * @param max_per_stream The maximum number of redemptions allowed per live stream. Applied only if {@code is_max_per_stream_enabled} is
+     * {@code true}. The minimum value is {@code 1}.
+     * @param is_max_per_user_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per user
+     * per stream (see the {@code max_per_user_per_stream} field). The default is {@code false}.
+     * @param max_per_user_per_stream The maximum number of redemptions allowed per user per stream. Applied only if
+     * {@code is_max_per_user_per_stream_enabled} is {@code true}. The minimum value is {@code 1}.
+     * @param is_global_cooldown_enabled A Boolean value that determines whether to apply a cooldown period between redemptions (see the
+     * {@code global_cooldown_seconds} field for the duration of the cooldown period). The default is {@code false}.
+     * @param global_cooldown_seconds The cooldown period, in seconds. Applied only if the {@code is_global_cooldown_enabled} field is {@code true}.
+     * The minimum value is {@code 1}; however, the minimum value is {@code 60} for it to be shown in the Twitch UX.
+     * @param should_redemptions_skip_request_queue A Boolean value that determines whether redemptions should be set to {@code FULFILLED} status
+     * immediately when a reward is redeemed. If {@code false}, status is set to {@code UNFULFILLED} and follows the normal request queue process. The
+     * default is {@code false}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> createCustomRewardAsync(String title, int cost, @Nullable Boolean is_enabled, @Nullable String background_color,
+            @Nullable Boolean is_user_input_required, @Nullable String prompt, @Nullable Boolean is_max_per_stream_enabled,
+            @Nullable Integer max_per_stream, @Nullable Boolean is_max_per_user_per_stream_enabled, @Nullable Integer max_per_user_per_stream,
+            @Nullable Boolean is_global_cooldown_enabled, @Nullable Integer global_cooldown_seconds,
+            @Nullable Boolean should_redemptions_skip_request_queue)
+            throws JSONException, IllegalArgumentException {
+        if (title == null || title.isBlank() || title.length() > 45) {
+            throw new IllegalArgumentException("title must not be blank or more than 45 characters");
+        }
+
+        if (cost < 1) {
+            throw new IllegalArgumentException("cost must be at least 1");
+        }
+
+        if (background_color != null && !HEXCOLOR.matcher(background_color).matches()) {
+            throw new IllegalArgumentException("background_color must be a full hex format color, satisfying the regex ^#[0-9A-F]{6}$");
+        }
+
+        if (is_user_input_required != null && is_user_input_required && (prompt == null || prompt.isBlank() || prompt.length() > 200)) {
+            throw new IllegalArgumentException("prompt must be not be blank or more than 200 characters");
+        }
+
+        if (is_max_per_stream_enabled != null && is_max_per_stream_enabled && (max_per_stream == null || max_per_stream < 1)) {
+            throw new IllegalArgumentException("max_per_stream must be at least 1");
+        }
+
+        if (is_max_per_user_per_stream_enabled != null && is_max_per_user_per_stream_enabled
+                && (max_per_user_per_stream == null || max_per_user_per_stream < 1)) {
+            throw new IllegalArgumentException("max_per_user_per_stream must be at least 1");
+        }
+
+        if (is_global_cooldown_enabled != null && is_global_cooldown_enabled && (global_cooldown_seconds == null || global_cooldown_seconds < 1)) {
+            throw new IllegalArgumentException("global_cooldown_seconds must be at least 1");
+        }
+
+        JSONStringer js = new JSONStringer();
+        js.object();
+
+        js.key("title").value(title).key("cost").value(cost);
+
+        if (is_enabled != null) {
+            js.key("is_enabled").value(is_enabled);
+        }
+
+        if (background_color != null) {
+            js.key("background_color").value(background_color);
+        }
+
+        if (is_user_input_required != null) {
+            js.key("is_user_input_required").value(is_user_input_required);
+
+            if (is_user_input_required) {
+                js.key("prompt").value(prompt);
+            }
+        }
+
+        if (is_max_per_stream_enabled != null) {
+            js.key("is_max_per_stream_enabled").value(is_max_per_stream_enabled);
+
+            if (is_max_per_stream_enabled) {
+                js.key("max_per_stream").value(max_per_stream);
+            }
+        }
+
+        if (is_max_per_user_per_stream_enabled != null) {
+            js.key("is_max_per_user_per_stream_enabled").value(is_max_per_user_per_stream_enabled);
+
+            if (is_max_per_user_per_stream_enabled) {
+                js.key("max_per_user_per_stream").value(max_per_user_per_stream);
+            }
+        }
+
+        if (is_global_cooldown_enabled != null) {
+            js.key("is_global_cooldown_enabled").value(is_global_cooldown_enabled);
+
+            if (is_global_cooldown_enabled) {
+                js.key("global_cooldown_seconds").value(global_cooldown_seconds);
+            }
+        }
+
+        if (should_redemptions_skip_request_queue != null) {
+            js.key("should_redemptions_skip_request_queue").value(should_redemptions_skip_request_queue);
+        }
+
+        js.endObject();
+
+        String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID());
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Updates a custom reward. The app used to create the reward is the only app that may update the reward.
+     *
+     * @param id The ID of the reward to update.
+     * @param title The custom reward\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the
+     * broadcaster\'s custom rewards.
+     * @param cost The cost of the reward, in Channel Points. The minimum is 1 point.
+     * @param is_enabled A Boolean value that determines whether the reward is enabled. Viewers see only enabled rewards. The default is {@code true}.
+     * @param is_paused A Boolean value that determines whether the reward is currently paused. Is {@code true} if the reward is paused. Viewers
+     * can\'t redeem paused rewards.
+     * @param background_color The background color to use for the reward. Specify the color using Hex format (for example, {@code #9147FF}).
+     * @param is_user_input_required A Boolean value that determines whether the user needs to enter information when redeeming the reward. See the
+     * {@code prompt} field. The default is {@code false}.
+     * @param prompt The prompt shown to the viewer when they redeem the reward. Specify a prompt if {@code is_user_input_required} is {@code true}.
+     * The prompt is limited to a maximum of 200 characters.
+     * @param is_max_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per live stream
+     * (see the {@code max_per_stream} field). The default is {@code false}.
+     * @param max_per_stream The maximum number of redemptions allowed per live stream. Applied only if {@code is_max_per_stream_enabled} is
+     * {@code true}. The minimum value is {@code 1}.
+     * @param is_max_per_user_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per user
+     * per stream (see the {@code max_per_user_per_stream} field). The default is {@code false}.
+     * @param max_per_user_per_stream The maximum number of redemptions allowed per user per stream. Applied only if
+     * {@code is_max_per_user_per_stream_enabled} is {@code true}. The minimum value is {@code 1}.
+     * @param is_global_cooldown_enabled A Boolean value that determines whether to apply a cooldown period between redemptions (see the
+     * {@code global_cooldown_seconds} field for the duration of the cooldown period). The default is {@code false}.
+     * @param global_cooldown_seconds The cooldown period, in seconds. Applied only if the {@code is_global_cooldown_enabled} field is {@code true}.
+     * The minimum value is {@code 1}; however, the minimum value is {@code 60} for it to be shown in the Twitch UX.
+     * @param should_redemptions_skip_request_queue A Boolean value that determines whether redemptions should be set to {@code FULFILLED} status
+     * immediately when a reward is redeemed. If {@code false}, status is set to {@code UNFULFILLED} and follows the normal request queue process. The
+     * default is {@code false}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject updateCustomReward(String id, @Nullable String title, @Nullable Integer cost, @Nullable Boolean is_enabled,
+            @Nullable Boolean is_paused, @Nullable String background_color, @Nullable Boolean is_user_input_required, @Nullable String prompt,
+            @Nullable Boolean is_max_per_stream_enabled, @Nullable Integer max_per_stream, @Nullable Boolean is_max_per_user_per_stream_enabled,
+            @Nullable Integer max_per_user_per_stream, @Nullable Boolean is_global_cooldown_enabled, @Nullable Integer global_cooldown_seconds,
+            @Nullable Boolean should_redemptions_skip_request_queue)
+            throws JSONException, IllegalArgumentException {
+        return this.updateCustomRewardAsync(id, title, cost, is_enabled, is_paused, background_color, is_user_input_required, prompt,
+                is_max_per_stream_enabled, max_per_stream, is_max_per_user_per_stream_enabled, max_per_user_per_stream, is_global_cooldown_enabled,
+                global_cooldown_seconds, should_redemptions_skip_request_queue).block();
+    }
+
+    /**
+     * Updates a custom reward. The app used to create the reward is the only app that may update the reward.
+     *
+     * @param id The ID of the reward to update.
+     * @param title The custom reward\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the
+     * broadcaster\'s custom rewards.
+     * @param cost The cost of the reward, in Channel Points. The minimum is 1 point.
+     * @param is_enabled A Boolean value that determines whether the reward is enabled. Viewers see only enabled rewards. The default is {@code true}.
+     * @param is_paused A Boolean value that determines whether the reward is currently paused. Is {@code true} if the reward is paused. Viewers
+     * can\'t redeem paused rewards.
+     * @param background_color The background color to use for the reward. Specify the color using Hex format (for example, {@code #9147FF}).
+     * @param is_user_input_required A Boolean value that determines whether the user needs to enter information when redeeming the reward. See the
+     * {@code prompt} field. The default is {@code false}.
+     * @param prompt The prompt shown to the viewer when they redeem the reward. Specify a prompt if {@code is_user_input_required} is {@code true}.
+     * The prompt is limited to a maximum of 200 characters.
+     * @param is_max_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per live stream
+     * (see the {@code max_per_stream} field). The default is {@code false}.
+     * @param max_per_stream The maximum number of redemptions allowed per live stream. Applied only if {@code is_max_per_stream_enabled} is
+     * {@code true}. The minimum value is {@code 1}.
+     * @param is_max_per_user_per_stream_enabled A Boolean value that determines whether to limit the maximum number of redemptions allowed per user
+     * per stream (see the {@code max_per_user_per_stream} field). The default is {@code false}.
+     * @param max_per_user_per_stream The maximum number of redemptions allowed per user per stream. Applied only if
+     * {@code is_max_per_user_per_stream_enabled} is {@code true}. The minimum value is {@code 1}.
+     * @param is_global_cooldown_enabled A Boolean value that determines whether to apply a cooldown period between redemptions (see the
+     * {@code global_cooldown_seconds} field for the duration of the cooldown period). The default is {@code false}.
+     * @param global_cooldown_seconds The cooldown period, in seconds. Applied only if the {@code is_global_cooldown_enabled} field is {@code true}.
+     * The minimum value is {@code 1}; however, the minimum value is {@code 60} for it to be shown in the Twitch UX.
+     * @param should_redemptions_skip_request_queue A Boolean value that determines whether redemptions should be set to {@code FULFILLED} status
+     * immediately when a reward is redeemed. If {@code false}, status is set to {@code UNFULFILLED} and follows the normal request queue process. The
+     * default is {@code false}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> updateCustomRewardAsync(String id, @Nullable String title, @Nullable Integer cost, @Nullable Boolean is_enabled,
+            @Nullable Boolean is_paused, @Nullable String background_color, @Nullable Boolean is_user_input_required, @Nullable String prompt,
+            @Nullable Boolean is_max_per_stream_enabled, @Nullable Integer max_per_stream, @Nullable Boolean is_max_per_user_per_stream_enabled,
+            @Nullable Integer max_per_user_per_stream, @Nullable Boolean is_global_cooldown_enabled, @Nullable Integer global_cooldown_seconds,
+            @Nullable Boolean should_redemptions_skip_request_queue)
+            throws JSONException, IllegalArgumentException {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("id is required");
+        }
+
+        if (title != null && (title.isBlank() || title.length() > 45)) {
+            throw new IllegalArgumentException("title must not be blank or more than 45 characters");
+        }
+
+        if (cost != null && cost < 1) {
+            throw new IllegalArgumentException("cost must be at least 1");
+        }
+
+        if (background_color != null && !HEXCOLOR.matcher(background_color).matches()) {
+            throw new IllegalArgumentException("background_color must be a full hex format color, satisfying the regex ^#[0-9A-F]{6}$");
+        }
+
+        if (is_user_input_required != null && is_user_input_required && (prompt == null || prompt.isBlank() || prompt.length() > 200)) {
+            throw new IllegalArgumentException("prompt must be not be blank or more than 200 characters");
+        }
+
+        if (is_max_per_stream_enabled != null && is_max_per_stream_enabled && (max_per_stream == null || max_per_stream < 1)) {
+            throw new IllegalArgumentException("max_per_stream must be at least 1");
+        }
+
+        if (is_max_per_user_per_stream_enabled != null && is_max_per_user_per_stream_enabled
+                && (max_per_user_per_stream == null || max_per_user_per_stream < 1)) {
+            throw new IllegalArgumentException("max_per_user_per_stream must be at least 1");
+        }
+
+        if (is_global_cooldown_enabled != null && is_global_cooldown_enabled && (global_cooldown_seconds == null || global_cooldown_seconds < 1)) {
+            throw new IllegalArgumentException("global_cooldown_seconds must be at least 1");
+        }
+
+        JSONStringer js = new JSONStringer();
+        js.object();
+
+        boolean hasUpdate = false;
+
+        if (title != null) {
+            hasUpdate = true;
+            js.key("title").value(title);
+        }
+
+        if (cost != null) {
+            hasUpdate = true;
+            js.key("cost").value(cost);
+        }
+
+        if (is_enabled != null) {
+            hasUpdate = true;
+            js.key("is_enabled").value(is_enabled);
+        }
+
+        if (is_paused != null) {
+            hasUpdate = true;
+            js.key("is_paused").value(is_paused);
+        }
+
+        if (background_color != null) {
+            hasUpdate = true;
+            js.key("background_color").value(background_color);
+        }
+
+        if (is_user_input_required != null) {
+            hasUpdate = true;
+            js.key("is_user_input_required").value(is_user_input_required);
+
+            if (is_user_input_required) {
+                js.key("prompt").value(prompt);
+            }
+        }
+
+        if (is_max_per_stream_enabled != null) {
+            hasUpdate = true;
+            js.key("is_max_per_stream_enabled").value(is_max_per_stream_enabled);
+
+            if (is_max_per_stream_enabled) {
+                js.key("max_per_stream").value(max_per_stream);
+            }
+        }
+
+        if (is_max_per_user_per_stream_enabled != null) {
+            hasUpdate = true;
+            js.key("is_max_per_user_per_stream_enabled").value(is_max_per_user_per_stream_enabled);
+
+            if (is_max_per_user_per_stream_enabled) {
+                js.key("max_per_user_per_stream").value(max_per_user_per_stream);
+            }
+        }
+
+        if (is_global_cooldown_enabled != null) {
+            hasUpdate = true;
+            js.key("is_global_cooldown_enabled").value(is_global_cooldown_enabled);
+
+            if (is_global_cooldown_enabled) {
+                js.key("global_cooldown_seconds").value(global_cooldown_seconds);
+            }
+        }
+
+        if (should_redemptions_skip_request_queue != null) {
+            hasUpdate = true;
+            js.key("should_redemptions_skip_request_queue").value(should_redemptions_skip_request_queue);
+        }
+
+        js.endObject();
+
+        if (!hasUpdate) {
+            throw new IllegalArgumentException("Must specify at least 1 parameter to update");
+        }
+
+        String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
+                + this.qspValid("&id", id);
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Deletes a custom reward that the broadcaster created. The app used to create the reward is the only app that may delete it. If the reward\'s
+     * redemption status is {@code UNFULFILLED} at the time the reward is deleted, its redemption status is marked as {@code FULFILLED}.
+     *
+     * @param id The ID of the custom reward to delete.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject deleteCustomReward(String id)
+            throws JSONException, IllegalArgumentException {
+        return this.deleteCustomRewardAsync(id).block();
+    }
+
+    /**
+     * Deletes a custom reward that the broadcaster created. The app used to create the reward is the only app that may delete it. If the reward\'s
+     * redemption status is {@code UNFULFILLED} at the time the reward is deleted, its redemption status is marked as {@code FULFILLED}.
+     *
+     * @param id The ID of the custom reward to delete.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> deleteCustomRewardAsync(String id)
+            throws JSONException, IllegalArgumentException {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("id is required");
+        }
+
+        String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
+                + this.qspValid("&id", id);
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint);
         });
     }
 
