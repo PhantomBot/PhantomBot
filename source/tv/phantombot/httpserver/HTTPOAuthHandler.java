@@ -18,12 +18,12 @@ package tv.phantombot.httpserver;
 
 import com.gmt2001.PathValidator;
 import com.gmt2001.Reflect;
-import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
+import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.SecureRandom;
+import tv.phantombot.PhantomBot;
 
 /**
  *
@@ -41,14 +41,13 @@ import java.security.SecureRandom;
 public class HTTPOAuthHandler implements HttpRequestHandler {
 
     private final HttpAuthenticationHandler authHandler;
-    private static final String TOKENCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     private static final int TOKENLEN = 40;
     private HttpAuthenticationHandler authHandlerBroadcaster;
     private String token;
 
     public HTTPOAuthHandler(String panelUser, String panelPass) {
         authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", panelUser, panelPass, "/panel/login/");
-        token = generateToken();
+        token = PhantomBot.generateRandomString(TOKENLEN);
         authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
     }
 
@@ -114,22 +113,9 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     }
 
     public String changeBroadcasterToken() {
-        token = generateToken();
+        token = PhantomBot.generateRandomString(TOKENLEN);
         authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
         return token;
-    }
-
-    private String generateToken() {
-        String ret = "";
-
-        SecureRandom r = new SecureRandom();
-
-        while (ret.length() < TOKENLEN) {
-            int val = r.nextInt(TOKENCHARS.length());
-            ret += TOKENCHARS.charAt(val);
-        }
-
-        return ret;
     }
 
     public boolean validateBroadcasterToken(String token) {
