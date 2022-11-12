@@ -1823,7 +1823,14 @@ public class Helix {
             throw new IllegalArgumentException("Limit 50 ids");
         }
 
-        String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID());
+        String ids = null;
+
+        if (id != null && !id.isEmpty()) {
+            ids = id.stream().limit(50).collect(Collectors.joining("&id="));
+        }
+
+        String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
+                + this.qspValid("&id", ids) + "&only_manageable_rewards=" + (only_manageable_rewards ? "true" : "false");
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
