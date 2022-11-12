@@ -19,7 +19,7 @@ package com.illusionaryone;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
-import java.net.URI;
+import com.gmt2001.httpclient.URIUtil;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.Duration;
@@ -66,7 +66,7 @@ public class YouTubeAPIv3 {
         JSONObject jsonResult = new JSONObject("{}");
 
         try {
-            HttpClientResponse resp = HttpClient.get(URI.create(urlAddress));
+            HttpClientResponse resp = HttpClient.get(URIUtil.create(urlAddress));
             String jsonText = resp.responseBody();
             jsonResult = new JSONObject(jsonText);
 

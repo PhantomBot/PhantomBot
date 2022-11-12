@@ -31,6 +31,7 @@ import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
@@ -48,7 +49,6 @@ import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -1307,7 +1307,7 @@ public final class PhantomBot implements Listener {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
                     if (RepoVersion.isNightlyBuild()) {
-                        String latestNightly = HttpClient.get(URI.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
+                        String latestNightly = HttpClient.get(URIUtil.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
                             this.dataStore.del("settings", "newrelease_info");
                         } else {

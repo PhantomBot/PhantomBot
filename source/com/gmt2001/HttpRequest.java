@@ -18,6 +18,7 @@ package com.gmt2001;
 
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.URIUtil;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.net.URI;
@@ -49,7 +50,7 @@ public final class HttpRequest {
 
     @Deprecated
     public static HttpResponse getData(RequestType type, String url, String post, Map<String, String> headers, boolean isJson) {
-        return getData(type, URI.create(url), post, headers, isJson);
+        return getData(type, URIUtil.create(url), post, headers, isJson);
     }
 
     @Deprecated

@@ -19,10 +19,10 @@ package com.scaniatv;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.URIUtil;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import java.net.URI;
 import java.net.URISyntaxException;
 import org.json.JSONObject;
 
@@ -63,7 +63,7 @@ public class StreamElementsAPIv2 {
         JSONObject jsonResult = new JSONObject("{}");
         HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
         headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + jwtToken);
-        HttpClientResponse response = HttpClient.get(URI.create(URL + endpoint), headers);
+        HttpClientResponse response = HttpClient.get(URIUtil.create(URL + endpoint), headers);
 
         if (response.hasJson()) {
             jsonResult = response.json();

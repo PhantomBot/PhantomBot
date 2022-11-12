@@ -19,6 +19,7 @@ package com.gmt2001.twitch;
 import com.gmt2001.ExecutorService;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.URIUtil;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import java.net.URI;
@@ -176,7 +177,7 @@ public class TwitchClientCredentialsFlow {
 
     private static JSONObject doRequest(String path, Map<String, String> query) {
         try {
-            URI url = URI.create(BASE_URL + path + HttpClient.createQuery(query));
+            URI url = URIUtil.create(BASE_URL + path + HttpClient.createQuery(query));
             HttpHeaders headers = HttpClient.createHeaders(HttpMethod.POST, true);
 
             HttpClientResponse response = HttpClient.post(url, headers, "");
