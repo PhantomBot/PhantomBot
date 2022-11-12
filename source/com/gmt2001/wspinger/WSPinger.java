@@ -292,7 +292,7 @@ public class WSPinger implements WsClientFrameHandler {
      * payload won't overflow {@link Long.MAX_VALUE}. No-op if client is {@code null}, {@link WSClient.connected()} is {@code false}, or the
      * timerFuture is null, done, or canceled
      */
-    private void sendPing() {
+    public void sendPing() {
         synchronized (lock) {
             if (this.client != null && this.client.connected() && this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 try {

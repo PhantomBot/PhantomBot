@@ -20,6 +20,8 @@ import com.gmt2001.wspinger.PingPongSupplierPredicate;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.irc.IrcPongEvent;
 
 /**
  * Supplier and Predicate for TMI PING/PONG commands
@@ -39,7 +41,13 @@ public class TMIPingPongSupplierPredicate implements PingPongSupplierPredicate {
     @Override
     public boolean test(WebSocketFrame t) {
         if (t instanceof TextWebSocketFrame) {
-            return ((TextWebSocketFrame) t).text().lines().anyMatch(message -> message.startsWith("PONG"));
+            boolean result = ((TextWebSocketFrame) t).text().lines().anyMatch(message -> message.startsWith("PONG"));
+
+            if (result) {
+                EventBus.instance().postAsync(new IrcPongEvent(null));
+            }
+
+            return result;
         }
 
         return false;

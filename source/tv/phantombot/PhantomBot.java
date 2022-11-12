@@ -1038,6 +1038,13 @@ public final class PhantomBot implements Listener {
         this.print(this.getBotName() + " is exiting.");
     }
 
+    @Handler
+    public void command(CommandEvent event) {
+        if (event.getCommand().equals("pbinternalping")) {
+            this.tmi.sendPing();
+        }
+    }
+
     /**
      * Connected to Twitch.
      *
@@ -1115,7 +1122,7 @@ public final class PhantomBot implements Listener {
         /* Does the command have arguments? */
         if (command.contains(" ")) {
             String commandString = command;
-            command = commandString.substring(0, commandString.indexOf(" "));
+            command = commandString.substring(1, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
         EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
@@ -1133,10 +1140,10 @@ public final class PhantomBot implements Listener {
         /* Does the command have arguments? */
         if (command.contains(" ")) {
             String commandString = command;
-            command = commandString.substring(0, commandString.indexOf(" "));
+            command = commandString.substring(1, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
-        EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
+        EventBus.instance().post(new CommandEvent(username, command, arguments));
     }
 
     /**

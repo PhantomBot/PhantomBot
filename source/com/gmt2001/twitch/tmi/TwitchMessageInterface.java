@@ -120,6 +120,13 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     }
 
     /**
+     * Forces a PING to be sent
+     */
+    public void sendPing() {
+        this.pinger.sendPing();
+    }
+
+    /**
      * Sends an IRC PRIVMSG command with the {@code /me ACTION} specifier.
      *
      * If there are no tokens left on {@link #rateLimiter}, the message is silently dropped

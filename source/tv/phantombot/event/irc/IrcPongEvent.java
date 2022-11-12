@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package tv.phantombot.event.irc;
+
+import tv.phantombot.twitch.irc.TwitchSession;
 
 /**
- * Health check script
- * 
- * Saves the last time selected message types were received as an indicator that the TMI connection is alive and the bot is working
+ *
+ * @author gmt2001
  */
-(function() {
-    /**
-     * Logs timestamp for PONG
-     */
-    $.bind('ircPong', function (event) {
-        $.writeToFile($.systemTime(), './addons/healthcheck.txt', false);
-    });
-})();
+public class IrcPongEvent extends IrcEvent {
+
+    public IrcPongEvent(TwitchSession session) {
+        super(session);
+    }
+}
