@@ -170,11 +170,11 @@ def main(args):
             dofailure(args, "nopresencecode", "Presence check failed with HTTP " + resp.status_code)
         elif resp.text.strip() != "PBok":
             dofailure(args, "nopresence", "Presence check returned an unknown response")
-        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": ".ping" }, verify = False)
+        resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": "!pbinternalping" }, verify = False)
         if resp.status_code != 200:
-            dofailure(args, "noputcode", "Send .ping failed with HTTP " + resp.status_code)
+            dofailure(args, "noputcode", "Send PING failed with HTTP " + resp.status_code)
         elif resp.text.strip() != "event posted":
-            dofailure(args, "noput", "Send .ping returned an unknown response")
+            dofailure(args, "noput", "Send PING returned an unknown response")
         time.sleep(5)
         resp = requests.get(scheme + "://" + iphostname + ":" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" }, verify = False)
         if resp.status_code != 200:
