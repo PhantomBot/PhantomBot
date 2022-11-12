@@ -1830,8 +1830,14 @@ public class Helix {
             ids = id.stream().limit(50).collect(Collectors.joining("&id="));
         }
 
+        String only_manageable_rewardsS = null;
+
+        if (only_manageable_rewards != null) {
+            only_manageable_rewardsS = only_manageable_rewards ? "true" : "false";
+        }
+
         String endpoint = "/channel_points/custom_rewards?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
-                + this.qspValid("&id", ids) + "&only_manageable_rewards=" + (only_manageable_rewards ? "true" : "false");
+                + this.qspValid("&id", ids) + this.qspValid("&only_manageable_rewards", only_manageable_rewardsS);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);
