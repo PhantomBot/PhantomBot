@@ -78,7 +78,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
         String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
         String astr = auth1 != null ? auth1 : (auth2 != null ? auth2 : (auth3 != null ? auth3 : ""));
 
-        if ((auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token)) || (auth3 != null && auth3.equals(token))) {
+        if (this.isAuthorized(ctx, req)) {
             return true;
         }
 
@@ -97,5 +97,17 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
+        HttpHeaders headers = req.headers();
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+
+        String auth1 = headers.get("password");
+        String auth2 = headers.get("webauth");
+        String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
+
+        return (auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token)) || (auth3 != null && auth3.equals(token));
     }
 }

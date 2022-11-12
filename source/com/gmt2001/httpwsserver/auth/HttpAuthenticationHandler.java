@@ -40,6 +40,18 @@ public interface HttpAuthenticationHandler {
     boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 
     /**
+     * Checks if the given {@link FullHttpRequest} is a valid authentication request, or if the underlying {@link Channel} has already been
+     * authenticated
+     *
+     * When returning {@code false}, this method MUST NOT send a response to the client
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} to check
+     * @return otherwise
+     */
+    boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req);
+
+    /**
      * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
