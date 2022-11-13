@@ -19,6 +19,12 @@
 #  * @botproperty propertyname - Description
 #  */
 
+# Optional doc-comment to set data type when not retrieved via CaselessProperties.getProperty*
+
+# /**
+#  * @botpropertytype propertyname dataType
+#  */
+
 import json
 import os
 
