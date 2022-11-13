@@ -20,6 +20,14 @@ NOTE: _botlogin.txt_ can **not** be edited while the bot is running
 &nbsp;
 
 
+### allowpanelusertosetup
+
+Data Type: _Boolean_
+
+allowpanelusertosetup - If `true`, the panel login can access the setup page; else only the random token. Default `true`
+
+&nbsp;
+
 ### backupdbauto
 
 Data Type: _Boolean_
@@ -512,7 +520,7 @@ usehttps - If `true`, the bots webserver uses HTTPS to secure the connection. De
 
 Data Type: _String_
 
-user - The username the bot will login as to send chat messages
+No definition
 
 &nbsp;
 
