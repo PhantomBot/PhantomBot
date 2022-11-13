@@ -19,6 +19,18 @@
 #  * @botproperty propertyname - Description
 #  */
 
+# Optional doc-comment to set category and sorting. If multiple sorting values across different comments, highest wins
+
+# /**
+#  * @botpropertycatsort propertyname propertySortInteger categorySortInteger categoryName
+#  */
+
+# Optional doc-comment to set data type when not retrieved via CaselessProperties.getProperty*
+
+# /**
+#  * @botpropertytype propertyname dataType
+#  */
+
 import json
 import os
 
@@ -74,21 +86,65 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type})
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 100, "category": "Other", "category_sort": 100})
                     else:
                         botproperties[idx]["type"] = type
+            if line.startswith("@botpropertycatsort"):
+                line = line[20:].strip()
+                prop_pos = line.find(" ")
+                if prop_pos >= 0:
+                    prop = line[0:prop_pos].strip().lower()
+                    line = line[prop_pos + 1:].strip()
+                    propSort_pos = line.find(" ")
+                    if propSort_pos == -1:
+                        if len(line[0:].strip()) > 0:
+                            propSort = int(line[0:].strip())
+                        else:
+                            propSort = 100
+                        catSort = 100
+                        catName = "Other"
+                    else:
+                        propSort = int(line[0:propSort_pos].strip())
+                        line = line[propSort_pos + 1:].strip()
+                        catSort_pos = line.find(" ")
+                        if catSort_pos == -1:
+                            if len(line[0:].strip()) > 0:
+                                catSort = int(line[0:].strip())
+                            else:
+                                catSort = 100
+                            catName = "Other"
+                        else:
+                            catSort = int(line[0:catSort_pos].strip())
+                            catName = line[catSort_pos + 1:].strip()
+                            if len(catName) == 0:
+                                catName = "Other"
+                    if not prop in ignoreproperties:
+                        idx = findprop(prop)
+                        if idx == -1:
+                            botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": propSort, "category": catName, "category_sort": catSort})
+                        else:
+                            botproperties[idx]["sort"] = propSort
+                            botproperties[idx]["category"] = catName
+                            botproperties[idx]["category_sort"] = catSort
             if line.startswith("@botproperty"):
                 line = line[13:].strip()
                 prop_pos = line.find(" ")
                 if prop_pos == -1:
                     prop_pos = len(line)
                 prop = line[0:prop_pos].strip().lower()
+                line = line[prop_pos:].strip()
+                propdef_pos = line.find("-")
+                if propdef_pos == -1:
+                    propdef_pos = 0
+                else:
+                    propdef_pos = propdef_pos + 1
+                propdef = line[propdef_pos:].strip().lower()
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": line, "type": "String"})
+                        botproperties.append({"botproperty": prop, "definition": propdef, "type": "String", "sort": 100, "category": "Other", "category_sort": 100})
                     else:
-                        botproperties[idx]["definition"] = line
+                        botproperties[idx]["definition"] = propdef
         if tgt in line:
             idx = line.find(tgt) + len(tgt)
             idx2 = line.find("(", idx)
@@ -106,7 +162,7 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type})
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 100, "category": "Other", "category_sort": 100})
                     else:
                         botproperties[idx]["type"] = type
 
@@ -115,6 +171,12 @@ def findprop(prop):
         if botproperties[i]["botproperty"] == prop:
             return i
     return -1
+
+def output_category(category, hlevel):
+    h = "#"
+    while len(h) < hlevel:
+        h = h + "#"
+    return [h + " " + category + '\n']
 
 def output_botproperty(botproperty, hlevel):
     lines = []
@@ -130,6 +192,18 @@ def output_botproperty(botproperty, hlevel):
     lines.append("&nbsp;" + '\n')
     lines.append('\n')
     return lines
+
+def sort():
+    global botproperties
+    categorysort = {}
+    for botproperty in botproperties:
+        if not botproperty["category"] in categorysort:
+            categorysort[botproperty["category"]] = botproperty["category_sort"]
+        elif botproperty["category_sort"] < categorysort[botproperty["category"]]:
+            categorysort[botproperty["category"]] = botproperty["category_sort"]
+    for i in range(len(botproperties)):
+        botproperties[i]["category_sort"] = categorysort[botproperties[i]["category"]]
+    return sorted(sorted(sorted(sorted(botproperties, key=lambda x: x["botproperty"]), key=lambda x: x["sort"]), key=lambda x: x["category"]), key=lambda x: x["category_sort"])
 
 for subdir, dirs, files in os.walk("./source"):
     for fname in files:
@@ -163,8 +237,11 @@ lines.append("&nbsp;" + '\n')
 lines.append('\n')
 lines.append('\n')
 
-for botproperty in sorted(botproperties, key=lambda x: x["botproperty"]):
-    lines.extend(output_botproperty(botproperty, 3))
+current_category = ""
+for botproperty in sort():
+    if current_category != botproperty["category"]:
+        lines.extend(output_category(botproperty["category"], 3))
+    lines.extend(output_botproperty(botproperty, 4))
 
 lines = lines[:len(lines) - 3]
 

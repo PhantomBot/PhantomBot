@@ -1214,10 +1214,10 @@ public final class PhantomBot implements Listener {
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
 
         /**
-         * @botproperty rhino_es6 - If `true`, enables newer features from ECMAScript 6 in Rhino. Default `false`
+         * @botproperty rhino_es6 - If `true`, enables newer features from ECMAScript 6 in Rhino. Default `true`
          * @botpropertytype rhino_es6 Boolean
          */
-        PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", false));
+        PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", true));
     }
 
     private static void setEnableRhinoDebugger(boolean enableRhinoDebugger) {
