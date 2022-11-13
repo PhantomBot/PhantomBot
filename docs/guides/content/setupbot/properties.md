@@ -29,7 +29,6 @@ if `true`, the panel login can access the setup page; else only the random token
 
 &nbsp;
 
-### Other
 #### backupdbauto
 
 Data Type: _Boolean_
@@ -38,7 +37,6 @@ if `true`, the database is backed up to the ./backups folder every so often. def
 
 &nbsp;
 
-### Other
 #### backupdbhourfrequency
 
 Data Type: _Int_
@@ -47,7 +45,6 @@ the number of hours between db backups, if enabled. default `24`
 
 &nbsp;
 
-### Other
 #### backupdbkeepdays
 
 Data Type: _Int_
@@ -56,7 +53,6 @@ the number of days before a db backup is deleted. default `5`
 
 &nbsp;
 
-### Other
 #### baseport
 
 Data Type: _Int_
@@ -65,7 +61,6 @@ the port the bots webserver runs on. default `25000`
 
 &nbsp;
 
-### Other
 #### bindip
 
 Data Type: _String_
@@ -74,7 +69,6 @@ the ip address the bots webserver runs on. default all
 
 &nbsp;
 
-### Other
 #### channel
 
 Data Type: _String_
@@ -83,7 +77,6 @@ the twitch channel the bot will operate in
 
 &nbsp;
 
-### Other
 #### clientid
 
 Data Type: _String_
@@ -92,7 +85,6 @@ the twitch developer application client id
 
 &nbsp;
 
-### Other
 #### clientsecret
 
 Data Type: _String_
@@ -101,7 +93,6 @@ the twitch developer application client secret
 
 &nbsp;
 
-### Other
 #### datastore
 
 Data Type: _String_
@@ -110,7 +101,6 @@ the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. de
 
 &nbsp;
 
-### Other
 #### datastoreconfig
 
 Data Type: _String_
@@ -119,7 +109,6 @@ if set, h2store: overrides the db file name; sqlitestore: links to a file contai
 
 &nbsp;
 
-### Other
 #### debuglog
 
 Data Type: _Boolean_
@@ -128,7 +117,6 @@ if `true`, debug output is sent to log only, not the console. default `false`
 
 &nbsp;
 
-### Other
 #### debugon
 
 Data Type: _Boolean_
@@ -137,7 +125,6 @@ if `true`, enables debug output. default `false`
 
 &nbsp;
 
-### Other
 #### discord_token
 
 Data Type: _String_
@@ -146,7 +133,6 @@ the bot token from the discord developer portal
 
 &nbsp;
 
-### Other
 #### dnsdebug
 
 Data Type: _Boolean_
@@ -155,7 +141,6 @@ if `true`, prints debugging info about dns resolution to the debug log. default 
 
 &nbsp;
 
-### Other
 #### eventsubcallbackurl
 
 Data Type: _String_
@@ -164,7 +149,6 @@ the url which will receive eventsub notifications
 
 &nbsp;
 
-### Other
 #### helixdebug
 
 Data Type: _Boolean_
@@ -173,7 +157,6 @@ if `true`, debugging info for twitch helix api requests are sent to the debug lo
 
 &nbsp;
 
-### Other
 #### httpclientdebug
 
 Data Type: _Boolean_
@@ -182,7 +165,6 @@ if `true`, information about each http request sent by httpclient is sent to the
 
 &nbsp;
 
-### Other
 #### httpclienttimeout
 
 Data Type: _Int_
@@ -191,7 +173,6 @@ the timeout, in seconds, for an http request to complete. default `10`
 
 &nbsp;
 
-### Other
 #### httpsfilename
 
 Data Type: _String_
@@ -200,7 +181,6 @@ if httpskeyfilename is unset/blank, a jks containing the certificate; else, an x
 
 &nbsp;
 
-### Other
 #### httpskeyfilename
 
 Data Type: _String_
@@ -209,7 +189,6 @@ the pkcs#8 private key in pem format for httpsfilename; if unset/blank, httpsfil
 
 &nbsp;
 
-### Other
 #### httpspassword
 
 Data Type: _String_
@@ -218,7 +197,6 @@ the password, if any, to _httpsfilename_
 
 &nbsp;
 
-### Other
 #### internaldebug
 
 Data Type: _Boolean_
@@ -227,7 +205,6 @@ if `true`, internal debugging from jdk and other libraries are sent to the conso
 
 &nbsp;
 
-### Other
 #### ircdebug
 
 Data Type: _Boolean_
@@ -236,7 +213,6 @@ if `true`, raw inbound and outbound irc commands (except pass) are sent to the d
 
 &nbsp;
 
-### Other
 #### logtimezone
 
 Data Type: _String_
@@ -245,7 +221,6 @@ the timezone for timestamps in the log. must be a valid iana time zone database 
 
 &nbsp;
 
-### Other
 #### musicenable
 
 Data Type: _Boolean_
@@ -254,7 +229,6 @@ if `true`, enables the websocket handler for the song request/youtube player. de
 
 &nbsp;
 
-### Other
 #### mysqlhost
 
 Data Type: _String_
@@ -263,7 +237,6 @@ the ip, domain name, or hostname of the mysql server
 
 &nbsp;
 
-### Other
 #### mysqlname
 
 Data Type: _String_
@@ -272,7 +245,6 @@ the schema where the tables for the bot will be created/located on the mysql ser
 
 &nbsp;
 
-### Other
 #### mysqlpass
 
 Data Type: _String_
@@ -281,7 +253,6 @@ the password for `mysqluser`
 
 &nbsp;
 
-### Other
 #### mysqlport
 
 Data Type: _String_
@@ -290,7 +261,6 @@ the port to use for mysql connections. default `3306`
 
 &nbsp;
 
-### Other
 #### mysqluser
 
 Data Type: _String_
@@ -299,7 +269,6 @@ the username to login as to the mysql server
 
 &nbsp;
 
-### Other
 #### offlinedelay
 
 Data Type: _Int_
@@ -308,7 +277,6 @@ the delay, in seconds, before the `channel` is confirmed to be offline. default 
 
 &nbsp;
 
-### Other
 #### offlinetimeout
 
 Data Type: _Int_
@@ -317,7 +285,6 @@ the timeout, in seconds, after `channel` goes offline before it can be online. d
 
 &nbsp;
 
-### Other
 #### owner
 
 Data Type: _String_
@@ -326,7 +293,6 @@ the name of the bot owner, who has administrator privileges to the bot
 
 &nbsp;
 
-### Other
 #### panelpassword
 
 Data Type: _String_
@@ -335,7 +301,6 @@ the password to login to the panel. default is a randomly generated password
 
 &nbsp;
 
-### Other
 #### paneluser
 
 Data Type: _String_
@@ -344,7 +309,6 @@ the username to login to the panel. default `panel`
 
 &nbsp;
 
-### Other
 #### pathvalidatedebug
 
 Data Type: _Boolean_
@@ -353,7 +317,6 @@ if `true`, prints debug information for the path validator to the debug log. def
 
 &nbsp;
 
-### Other
 #### proxybypasshttps
 
 Data Type: _Boolean_
@@ -362,7 +325,6 @@ if `true`, the http server reports ssl is enabled, even if `usessl` is `false`. 
 
 &nbsp;
 
-### Other
 #### reactordebug
 
 Data Type: _Boolean_
@@ -371,7 +333,6 @@ if `true`, internal debugging for reactor http and ws processing is sent to the 
 
 &nbsp;
 
-### Other
 #### reloadscripts
 
 Data Type: _Boolean_
@@ -380,7 +341,6 @@ if `true`, scripts which are changed while the bot is running will be reloaded. 
 
 &nbsp;
 
-### Other
 #### restartcmd
 
 Data Type: _String_
@@ -389,7 +349,6 @@ a command that can be used to restart the bot, if it is running as a service
 
 &nbsp;
 
-### Other
 #### rhino_es6
 
 Data Type: _Boolean_
@@ -398,7 +357,6 @@ if `true`, enables newer features from ecmascript 6 in rhino. default `true`
 
 &nbsp;
 
-### Other
 #### rhinodebugger
 
 Data Type: _Boolean_
@@ -407,7 +365,6 @@ if `true`, enables the rhino debugger console. default `false`
 
 &nbsp;
 
-### Other
 #### silentscriptsload
 
 Data Type: _Boolean_
@@ -416,7 +373,6 @@ if `true`, the script loading messages during startup are suppressed. default `f
 
 &nbsp;
 
-### Other
 #### streamelementsid
 
 Data Type: _String_
@@ -425,7 +381,6 @@ the user id for retrieving donations from streamelements
 
 &nbsp;
 
-### Other
 #### streamelementsjwt
 
 Data Type: _String_
@@ -434,7 +389,6 @@ the jwt token for retrieving donations from streamelements
 
 &nbsp;
 
-### Other
 #### streamelementslimit
 
 Data Type: _Int_
@@ -443,7 +397,6 @@ the maximum number of donations to pull from streamelements when updating. defau
 
 &nbsp;
 
-### Other
 #### tipeeestreamkey
 
 Data Type: _String_
@@ -452,7 +405,6 @@ the access token for retrieving donations from tipeeestream
 
 &nbsp;
 
-### Other
 #### tipeeestreamlimit
 
 Data Type: _Int_
@@ -461,7 +413,6 @@ the maximum number of donations to pull from tipeeestream when updating. default
 
 &nbsp;
 
-### Other
 #### twitchalertskey
 
 Data Type: _String_
@@ -470,7 +421,6 @@ the access token for retrieving donations from streamlabs
 
 &nbsp;
 
-### Other
 #### twitchalertslimit
 
 Data Type: _Int_
@@ -479,7 +429,6 @@ the maximum number of donations to pull from streamlabs when updating. default `
 
 &nbsp;
 
-### Other
 #### twitter_access_token
 
 Data Type: _String_
@@ -488,7 +437,6 @@ No definition
 
 &nbsp;
 
-### Other
 #### twitter_client_id
 
 Data Type: _String_
@@ -497,7 +445,6 @@ the client id for twitter api
 
 &nbsp;
 
-### Other
 #### twitter_client_secret
 
 Data Type: _String_
@@ -506,7 +453,6 @@ the client secret for twitter api
 
 &nbsp;
 
-### Other
 #### twitter_refresh_token
 
 Data Type: _String_
@@ -515,7 +461,6 @@ No definition
 
 &nbsp;
 
-### Other
 #### twittertimelineextendedlimit
 
 Data Type: _Int_
@@ -524,7 +469,6 @@ the maximum number of tweets to retrieve with a sinceid. default `30`
 
 &nbsp;
 
-### Other
 #### twittertimelinelimit
 
 Data Type: _Int_
@@ -533,7 +477,6 @@ the maximum number of tweets to retrieve with a latest tweets request. default `
 
 &nbsp;
 
-### Other
 #### twitterusertimelinelimit
 
 Data Type: _Int_
@@ -542,7 +485,6 @@ the maximum number of tweets to retrieve per follower, when grabbing retweets. d
 
 &nbsp;
 
-### Other
 #### usebroadcasterforchatcommands
 
 Data Type: _Boolean_
@@ -551,7 +493,6 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 &nbsp;
 
-### Other
 #### usedefaultdnsresolver
 
 Data Type: _Boolean_
@@ -560,7 +501,6 @@ if `true`, only the default java/system dns resolver is used. default `false`
 
 &nbsp;
 
-### Other
 #### useeventsub
 
 Data Type: _Boolean_
@@ -569,7 +509,6 @@ if `true`, enables the eventsub module. default `false`
 
 &nbsp;
 
-### Other
 #### usehttps
 
 Data Type: _Boolean_
@@ -578,7 +517,6 @@ if `true`, the bots webserver uses https to secure the connection. default `true
 
 &nbsp;
 
-### Other
 #### user
 
 Data Type: _String_
@@ -587,7 +525,6 @@ No definition
 
 &nbsp;
 
-### Other
 #### userollbar
 
 Data Type: _Boolean_
@@ -596,7 +533,6 @@ if `true`, exceptions thrown during operation may be sent to rollbar exception t
 
 &nbsp;
 
-### Other
 #### webenable
 
 Data Type: _Boolean_
@@ -605,7 +541,6 @@ if `true`, the bots webserver is started. default `true`
 
 &nbsp;
 
-### Other
 #### wsdebug
 
 Data Type: _Boolean_
@@ -614,7 +549,6 @@ if `true`, information about inbound ws frames for the panel are sent to the deb
 
 &nbsp;
 
-### Other
 #### wspingerdebug
 
 Data Type: _Boolean_
@@ -623,7 +557,6 @@ if `true`, prints debug messages for active wspinger instances. default `false`
 
 &nbsp;
 
-### Other
 #### youtubekey
 
 Data Type: _String_
