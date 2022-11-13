@@ -241,6 +241,7 @@ current_category = ""
 for botproperty in sort():
     if current_category != botproperty["category"]:
         lines.extend(output_category(botproperty["category"], 3))
+        current_category = botproperty["category"]
     lines.extend(output_botproperty(botproperty, 4))
 
 lines = lines[:len(lines) - 3]
