@@ -113,7 +113,7 @@
                                         Stable
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="version-dropdown">
-                                        <a class="dropdown-item bg-info" href="#" id="version-dropdown-stable">Stable</a>
+                                        <a class="dropdown-item" href="#" id="version-dropdown-stable">Stable</a>
                                         <a class="dropdown-item" href="#" id="version-dropdown-nightly">Nightly</a>
                                     </div>
                                 </li>
@@ -498,19 +498,22 @@
                 }
                 
                 function changeChannel(channel) {
+                    let previousChannel = currentChannel;
                     currentChannel = channel.toLowerCase();
                     let changed = false;
                     if (currentChannel === 'nightly' && currentPath.startsWith('content-stable/')) {
-                        loadGuide(currentPath.replace('content-stable/', 'content/'));
                         changed = true;
-                    } else if (currentPath.startsWith('content/')) {
-                        loadGuide(currentPath.replace('content/', 'content-stable/'));
+                    } else if (currentChannel === 'stable' && currentPath.startsWith('content/')) {
                         changed = true;
                     }
                     
                     if (changed) {
                         $('#guide-menu').empty();
                         loadMenuRecursive('content' + (currentChannel === 'nightly' ? '' : '-stable') + '/', '');
+                        loadGuide(currentPath.replace('content' + (currentChannel === 'stable' ? '' : '-stable') + '/', 'content' + (currentChannel === 'nightly' ? '' : '-stable') + '/'));
+                        $('#version-dropdown').text($('#version-dropdown-' + currentChannel).text());
+                        $('#version-dropdown-' + previousChannel).removeClass('bg-info');
+                        $('#version-dropdown-' + currentChannel).addClass('bg-info');
                     }
                 }
 
@@ -552,6 +555,8 @@
                     $('#version-dropdown-nightly').click(function() {
                         changeChannel('nightly');
                     });
+                    $('#version-dropdown').text($('#version-dropdown-' + currentChannel).text());
+                    $('#version-dropdown-' + currentChannel).addClass('bg-info');
                 });
 
                 $('[data-toggle="tooltip"]').tooltip();
