@@ -34,7 +34,7 @@ public final class JoinTMIProcessor extends AbstractTMIProcessor {
 
     @Override
     protected void onMessage(TMIMessage item) {
-        if (item.nick().equalsIgnoreCase(this.property("user"))) {
+        if (item.nick().equalsIgnoreCase(this.user())) {
             com.gmt2001.Console.out.println("Joined #" + this.property("channel").toLowerCase());
             this.session().joinSuccess();
             EventBus.instance().postAsync(new IrcJoinCompleteEvent(this.session()));

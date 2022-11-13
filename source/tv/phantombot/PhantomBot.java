@@ -513,10 +513,7 @@ public final class PhantomBot implements Listener {
      * @return bot name
      */
     public String getBotName() {
-        /**
-         * @botproperty user - The username the bot will login as to send chat messages
-         */
-        return CaselessProperties.instance().getProperty("user", "A PhantomBot").toLowerCase();
+        return TwitchValidate.instance().getChatLogin();
     }
 
     public HTTPOAuthHandler getHTTPOAuthHandler() {

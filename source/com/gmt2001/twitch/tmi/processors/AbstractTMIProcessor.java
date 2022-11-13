@@ -228,4 +228,8 @@ public abstract class AbstractTMIProcessor implements Flow.Subscriber<TMIMessage
     protected TwitchSession session() {
         return PhantomBot.instance().getSession();
     }
+
+    protected String user() {
+        return PhantomBot.instance().getBotName();
+    }
 }

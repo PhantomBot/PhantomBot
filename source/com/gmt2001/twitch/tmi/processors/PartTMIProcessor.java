@@ -33,7 +33,7 @@ public final class PartTMIProcessor extends AbstractTMIProcessor {
 
     @Override
     protected void onMessage(TMIMessage item) {
-        if (item.nick().equalsIgnoreCase(this.property("user"))) {
+        if (item.nick().equalsIgnoreCase(this.user())) {
             com.gmt2001.Console.out.println("Left #" + this.property("channel").toLowerCase());
         }
 

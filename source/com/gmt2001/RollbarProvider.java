@@ -65,7 +65,7 @@ public final class RollbarProvider implements AutoCloseable {
     private static final List<String> FINGERPRINT_FILE_REGEX = Collections.unmodifiableList(Arrays.asList("(.*).js"));
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
             "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
-            "rollbarid", "twitch_tcp_nodelay", "usehttps", "user", "useeventsub", "userollbar", "webenable", "wsdebug"));
+            "rollbarid", "twitch_tcp_nodelay", "usehttps", "useeventsub", "userollbar", "webenable", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
     private MessageDigest md;
@@ -94,7 +94,7 @@ public final class RollbarProvider implements AutoCloseable {
                     })
                     .person(() -> {
                         Map<String, Object> metadata = new HashMap<>();
-                        String botName = CaselessProperties.instance().getProperty("user", "").toLowerCase();
+                        String botName = TwitchValidate.instance().getChatLogin();
                         metadata.put("user", botName);
                         metadata.put("channel", CaselessProperties.instance().getProperty("channel", "").toLowerCase());
                         metadata.put("owner", CaselessProperties.instance().getProperty("owner", botName));
@@ -107,7 +107,6 @@ public final class RollbarProvider implements AutoCloseable {
                         metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                         metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                         metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
-                        metadata.put("config.oauth.isuser", TwitchValidate.instance().getChatLogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("user", "")) ? "true" : "false");
                         metadata.put("config.apioauth.iscaster", TwitchValidate.instance().getAPILogin().equalsIgnoreCase(CaselessProperties.instance().getProperty("channel", "")) ? "true" : "false");
 
                         CaselessProperties.instance().keySet().stream().map(k -> (String) k).forEachOrdered(s -> {

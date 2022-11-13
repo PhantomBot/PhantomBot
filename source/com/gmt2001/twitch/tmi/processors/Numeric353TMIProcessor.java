@@ -36,7 +36,7 @@ public class Numeric353TMIProcessor extends AbstractTMIProcessor {
         String[] nicks = item.parameters().split(" ");
 
         for (String nick : nicks) {
-            if (!nick.equalsIgnoreCase(this.property("user"))) {
+            if (!nick.equalsIgnoreCase(this.user())) {
                 EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session(), nick));
                 com.gmt2001.Console.debug.println("User Joined Channel [" + nick + " -> #" + this.property("channel").toLowerCase() + "]");
             }

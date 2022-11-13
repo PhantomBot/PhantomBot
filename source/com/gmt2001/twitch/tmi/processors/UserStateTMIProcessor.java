@@ -38,7 +38,7 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
     @Override
     protected void onMessage(TMIMessage item) {
         if (item.command().equals("PART")) {
-            if (item.nick().equalsIgnoreCase(this.property("user"))) {
+            if (item.nick().equalsIgnoreCase(this.user())) {
                 this.isModerator = false;
             }
             return;
@@ -46,24 +46,24 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
 
         Map<String, String> tags = item.tags();
 
-        if (this.property("channel").equalsIgnoreCase(this.property("user")) || tags.get("mod").equals("1") || !tags.get("user-type").isEmpty()) {
+        if (this.property("channel").equalsIgnoreCase(this.user()) || tags.get("mod").equals("1") || !tags.get("user-type").isEmpty()) {
             if (!this.isModerator) {
-                EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), this.property("user"), "O", true));
+                EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), this.user(), "O", true));
                 this.isModerator = true;
                 this.session().setAllowSendMessages(true);
             }
         } else {
             if (this.isModerator) {
-                EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), this.property("user"), "O", false));
+                EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), this.user(), "O", false));
                 this.isModerator = false;
                 this.session().setAllowSendMessages(false);
             }
 
             com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println(this.property("user") + " is not detected as a moderator!");
-            com.gmt2001.Console.warn.println("You must add " + this.property("user") + " as a channel moderator for it to chat.");
-            com.gmt2001.Console.warn.println("To fix this, the broadcaster must use add " + this.property("user") + " as a moderator in Stream Manager");
-            com.gmt2001.Console.warn.println("or type the following command in Twitch Chat: /mod " + this.property("user"));
+            com.gmt2001.Console.warn.println(this.user() + " is not detected as a moderator!");
+            com.gmt2001.Console.warn.println("You must add " + this.user() + " as a channel moderator for it to chat.");
+            com.gmt2001.Console.warn.println("To fix this, the broadcaster must use add " + this.user() + " as a moderator in Stream Manager");
+            com.gmt2001.Console.warn.println("or type the following command in Twitch Chat: /mod " + this.user());
             com.gmt2001.Console.warn.println();
         }
     }
