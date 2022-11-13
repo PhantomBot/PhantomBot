@@ -550,10 +550,14 @@
                         return false;
                     });
                     $('#version-dropdown-stable').click(function() {
+                        event.preventDefault();
                         changeChannel('stable');
+                        return false;
                     });
                     $('#version-dropdown-nightly').click(function() {
+                        event.preventDefault();
                         changeChannel('nightly');
+                        return false;
                     });
                     $('#version-dropdown').text($('#version-dropdown-' + currentChannel).text());
                     $('#version-dropdown-' + currentChannel).addClass('bg-info');
