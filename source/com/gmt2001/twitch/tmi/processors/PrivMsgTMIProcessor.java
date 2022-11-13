@@ -67,7 +67,7 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
             EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv", "SPECIALUSER " + item.nick() + " subscriber", item.tags()));
         }
 
-        if (!item.nick().equalsIgnoreCase(this.property("user"))) {
+        if (!item.nick().equalsIgnoreCase(this.user())) {
             if (item.tags().get("mod").equals("1") || !item.tags().get("user-type").isEmpty()) {
                 if (!this.moderators.contains(item.nick())) {
                     EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), item.nick(), "O", true));

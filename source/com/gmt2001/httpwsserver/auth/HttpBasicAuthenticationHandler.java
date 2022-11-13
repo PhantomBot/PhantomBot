@@ -77,7 +77,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * Checks if the given {@link FullHttpRequest} has the correct header with valid credentials
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param frame The {@link FullHttpRequest} to check
+     * @param req The {@link FullHttpRequest} to check
      * @return, this method will also reply with {@code 401 Unauthorized} and then close the channel
      */
     @Override
@@ -86,26 +86,8 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
         String auth = headers.get("Authorization");
 
-        if (auth != null && auth.startsWith("Basic ")) {
-            auth = auth.substring(6);
-            String userpass = new String(Base64.getDecoder().decode(auth));
-            int colon = userpass.indexOf(':');
-
-            if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
-                return true;
-            }
-        } else {
-            Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
-            auth = cookies.getOrDefault("panellogin", null);
-
-            if (auth != null) {
-                String userpass = new String(Base64.getDecoder().decode(auth));
-                int colon = userpass.indexOf(':');
-
-                if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
-                    return true;
-                }
-            }
+        if (this.isAuthorized(ctx, req)) {
+            return true;
         }
 
         if (this.loginUri == null || this.loginUri.isBlank()) {
@@ -135,7 +117,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
                 host = "http://" + host;
             }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + "?kickback=" + req.uri());
+            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + req.uri());
 
             com.gmt2001.Console.debug.println("303");
             com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
@@ -152,5 +134,36 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
+        HttpHeaders headers = req.headers();
+
+        String auth = headers.get("Authorization");
+
+        if (auth != null && auth.startsWith("Basic ")) {
+            auth = auth.substring(6);
+            String userpass = new String(Base64.getDecoder().decode(auth));
+            int colon = userpass.indexOf(':');
+
+            if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
+                return true;
+            }
+        } else {
+            Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
+            auth = cookies.getOrDefault("panellogin", null);
+
+            if (auth != null) {
+                String userpass = new String(Base64.getDecoder().decode(auth));
+                int colon = userpass.indexOf(':');
+
+                if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

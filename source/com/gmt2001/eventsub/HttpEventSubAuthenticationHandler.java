@@ -41,12 +41,7 @@ final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandl
         String body = req.content().toString(Charset.defaultCharset());
         String signature = req.headers().get("Twitch-Eventsub-Message-Signature").replaceAll("sha256=", "");
 
-        boolean authenticated = HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature);
-
-        ZonedDateTime ts = EventSub.parseDate(timestamp);
-        if (ts.isBefore(ZonedDateTime.now().minusMinutes(10)) || EventSub.instance().isDuplicate(id, ts)) {
-            authenticated = false;
-        }
+        boolean authenticated = this.isAuthorized(ctx, req);
 
         if (!authenticated) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN);
@@ -66,5 +61,18 @@ final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandl
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
+        String id = req.headers().get("Twitch-Eventsub-Message-Id");
+        String timestamp = req.headers().get("Twitch-Eventsub-Message-Timestamp");
+        String body = req.content().toString(Charset.defaultCharset());
+        String signature = req.headers().get("Twitch-Eventsub-Message-Signature").replaceAll("sha256=", "");
+
+        ZonedDateTime ts = EventSub.parseDate(timestamp);
+
+        return HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature) && ts.isAfter(ZonedDateTime.now().minusMinutes(10))
+                && !EventSub.instance().isDuplicate(id, ts);
     }
 }
