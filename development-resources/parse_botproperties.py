@@ -83,12 +83,19 @@ def parse_file(lines):
                 if prop_pos == -1:
                     prop_pos = len(line)
                 prop = line[0:prop_pos].strip().lower()
+                line = line[prop_pos:].strip()
+                propdef_pos = line.find("-")
+                if propdef_pos == -1:
+                    propdef_pos = 0
+                else:
+                    propdef_pos = propdef_pos + 1
+                propdef = line[propdef_pos:].strip().lower()
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": line, "type": "String"})
+                        botproperties.append({"botproperty": prop, "definition": propdef, "type": "String"})
                     else:
-                        botproperties[idx]["definition"] = line
+                        botproperties[idx]["definition"] = propdef
         if tgt in line:
             idx = line.find(tgt) + len(tgt)
             idx2 = line.find("(", idx)
