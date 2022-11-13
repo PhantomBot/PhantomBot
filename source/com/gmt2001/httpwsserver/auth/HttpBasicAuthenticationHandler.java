@@ -117,7 +117,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
                 host = "http://" + host;
             }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + "?kickback=" + req.uri());
+            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + req.uri());
 
             com.gmt2001.Console.debug.println("303");
             com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
