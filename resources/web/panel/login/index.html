@@ -57,6 +57,7 @@
 
                 <div class="alert-error text-center hide" id="error-box"></div>
                 <div class="alert-success text-center hide" id="success-box"></div>
+                <div class="alert-info text-center hide" id="info-box"></div>
                 <br id="alert-br" class="hide" />
 
                 <form id="loginform" autocomplete="on">
@@ -113,15 +114,15 @@
             let isLocalBot = false;
 
             let sslHelp = 'Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br /><br />'
-            + 'Troubleshooting Steps:<br />'
-            + '• Ensure the bot is running<br />On Windows, the black window must not be closed (minimize is okay)<br />On Linux, do not close your SSH '
-            + 'connection unless you have started the bot as a daemon using <i>service</i> or <i>systemctl</i><br />'
-            + '• Try visiting the bots built-in webserver directly to see if you need to give your browser approval to use the self-signed '
-            + 'SSL certificate: <a href="https://%hostname%:%port%" target="bot">https://%hostname%:%port%</a><br />'
-            + '• If you are getting an SSL error that can not be bypassed, try shutting down the bot and deleting <i>selfkey.jks</i> in '
-            + 'the <i>config</i> folder<br /><br />'
-            + 'For further instructions on setting up SSL, please see '
-            + '<a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds" target="guide">this guide</a>';
+                    + 'Troubleshooting Steps:<br />'
+                    + '• Ensure the bot is running<br />On Windows, the black window must not be closed (minimize is okay)<br />On Linux, do not close your SSH '
+                    + 'connection unless you have started the bot as a daemon using <i>service</i> or <i>systemctl</i><br />'
+                    + '• Try visiting the bots built-in webserver directly to see if you need to give your browser approval to use the self-signed '
+                    + 'SSL certificate: <a href="https://%hostname%:%port%" target="bot">https://%hostname%:%port%</a><br />'
+                    + '• If you are getting an SSL error that can not be bypassed, try shutting down the bot and deleting <i>selfkey.jks</i> in '
+                    + 'the <i>config</i> folder<br /><br />'
+                    + 'For further instructions on setting up SSL, please see '
+                    + '<a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds" target="guide">this guide</a>';
 
             function doLogin(hostname, port, username, password, remember) {
                 let webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
@@ -361,6 +362,14 @@
                 $('#remember').select2({
                     width: '100%'
                 });
+
+                let params = new URLSearchParams(document.location.search.substring(1));
+
+                if (params.get("message") !== null && params.get("message").length > 0) {
+                    $('#info-box').removeClass('hide');
+                    $('#alert-br').removeClass('hide');
+                    $('#info-box').html(params.get("message"));
+                }
 
                 $.ajax(
                         {

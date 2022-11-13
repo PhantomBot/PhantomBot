@@ -19,9 +19,11 @@
 #  * @botproperty propertyname - Description
 #  */
 
+import json
 import os
 
 md_path = "./docs/guides/content/setupbot/properties.md"
+json_path = "./resources/web/setup/properties.json"
 
 botproperties = []
 
@@ -168,3 +170,6 @@ lines = lines[:len(lines) - 3]
 
 with open(md_path, "w", encoding="utf8") as md_file:
     md_file.writelines(lines)
+
+with open(json_path, "w", encoding="utf8") as json_file:
+    json.dump(botproperties, json_file)
