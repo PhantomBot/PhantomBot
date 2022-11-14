@@ -289,7 +289,7 @@ public class TwitchValidate {
         }
     }
 
-    public void checkOAuthInconsistencies(String botName, String channelName) {
+    public void checkOAuthInconsistencies(String channelName) {
         if (validateA != null && validateA.isAlive()) {
             try {
                 validateA.join(TIMEOUT_TIME);
@@ -314,12 +314,6 @@ public class TwitchValidate {
             com.gmt2001.Console.warn.println("API (apioauth) does not have moderator:manage:banned_users. Bot may be unable to purge/timeout/ban");
         }
 
-        if (this.getAPILogin().equalsIgnoreCase(botName) && !this.getChatLogin().equalsIgnoreCase(botName)) {
-            com.gmt2001.Console.warn.println("CHAT (oauth) is not logged in as " + botName + " but API (apioauth) is. OAuth tokens may be reversed");
-        } else if (!this.getChatLogin().equalsIgnoreCase(botName)) {
-            com.gmt2001.Console.warn.println("CHAT (oauth) is not logged in as " + botName + ". OAuth token may be under the wrong login");
-        }
-
         if (!this.getAPILogin().equalsIgnoreCase(channelName) && this.getChatLogin().equalsIgnoreCase(channelName)) {
             com.gmt2001.Console.warn.println("API (apioauth) is not logged in as " + channelName + " but CHAT (oauth) is. OAuth tokens may be reversed");
         } else if (!this.getAPILogin().equalsIgnoreCase(channelName)) {
@@ -327,7 +321,7 @@ public class TwitchValidate {
         }
     }
 
-    public boolean hasOAuthInconsistencies(String botName, String channelName) {
+    public boolean hasOAuthInconsistencies(String channelName) {
         if (validateA != null && validateA.isAlive()) {
             try {
                 validateA.join(TIMEOUT_TIME);
@@ -344,8 +338,7 @@ public class TwitchValidate {
             }
         }
 
-        return !this.hasChatScope("chat:edit") || !this.hasAPIScope("moderator:manage:banned_users") || !this.getChatLogin().equalsIgnoreCase(botName)
-                || !this.getAPILogin().equalsIgnoreCase(channelName);
+        return !this.hasChatScope("chat:edit") || !this.hasAPIScope("moderator:manage:banned_users") || !this.getAPILogin().equalsIgnoreCase(channelName);
     }
 
     /**
