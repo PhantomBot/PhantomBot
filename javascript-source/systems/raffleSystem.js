@@ -19,30 +19,30 @@
  * raffleSystem.js made for giveaways on Twitch
  *
  */
-(function() {
+(function () {
     var entries = [],
-        entered = [],
-        keyword = '',
-        entryFee = 0,
-        timerTime = 0,
-        startTime = 0,
-        followers = false,
-        subscribers = false,
-        usePoints = true,
-        status = false,
-        sendMessages = $.getSetIniDbBoolean('raffleSettings', 'raffleMSGToggle', false),
-        whisperWinner = $.getSetIniDbBoolean('raffleSettings', 'raffleWhisperWinner', false),
-        allowRepick = $.getSetIniDbBoolean('raffleSettings', 'noRepickSame', true),
-        raffleMessage = $.getSetIniDbString('raffleSettings', 'raffleMessage', 'A raffle is still opened! Type (keyword) to enter. (entries) users have entered so far.'),
-        messageInterval = $.getSetIniDbNumber('raffleSettings', 'raffleMessageInterval', 0),
-        subscriberBonus = $.getSetIniDbNumber('raffleSettings', 'subscriberBonusRaffle', 1),
-        regularBonus = $.getSetIniDbNumber('raffleSettings', 'regularBonusRaffle', 1),
-        interval, timeout, followMessage = '',
-        saveStateInterval,
-        timerMessage = '',
-        lastWinners = [],
-        hasDrawn = false,
-        _entriesLock = new java.util.concurrent.locks.ReentrantLock();
+            entered = [],
+            keyword = '',
+            entryFee = 0,
+            timerTime = 0,
+            startTime = 0,
+            followers = false,
+            subscribers = false,
+            usePoints = true,
+            status = false,
+            sendMessages = $.getSetIniDbBoolean('raffleSettings', 'raffleMSGToggle', false),
+            whisperWinner = $.getSetIniDbBoolean('raffleSettings', 'raffleWhisperWinner', false),
+            allowRepick = $.getSetIniDbBoolean('raffleSettings', 'noRepickSame', true),
+            raffleMessage = $.getSetIniDbString('raffleSettings', 'raffleMessage', 'A raffle is still opened! Type (keyword) to enter. (entries) users have entered so far.'),
+            messageInterval = $.getSetIniDbNumber('raffleSettings', 'raffleMessageInterval', 0),
+            subscriberBonus = $.getSetIniDbNumber('raffleSettings', 'subscriberBonusRaffle', 1),
+            regularBonus = $.getSetIniDbNumber('raffleSettings', 'regularBonusRaffle', 1),
+            interval, timeout, followMessage = '',
+            saveStateInterval,
+            timerMessage = '',
+            lastWinners = [],
+            hasDrawn = false,
+            _entriesLock = new java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadRaffle
@@ -67,13 +67,13 @@
      */
     function open(username, arguments) {
         var args,
-            i = 1,
-            tempKeyword,
-            tempFollowMessage = '',
-            tempUsePoints,
-            tempFollowers = false,
-            tempSubscribers = false,
-            tempEntryFee;
+                i = 1,
+                tempKeyword,
+                tempFollowMessage = '',
+                tempUsePoints,
+                tempFollowers = false,
+                tempSubscribers = false,
+                tempEntryFee;
 
         /* Check if there's a raffle already opened */
         if (status) {
@@ -149,7 +149,7 @@
         /* Check if the caster wants a auto close timer */
         if (!isNaN(parseInt(args[i])) && parseInt(args[i]) !== 0) {
             timerTime = parseInt(args[i]);
-            timeout = setTimeout(function() {
+            timeout = setTimeout(function () {
                 close();
             }, (timerTime * 6e4));
             timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
@@ -165,13 +165,13 @@
         }
 
         if (parseInt(messageInterval) !== 0) {
-            interval = setInterval(function() {
+            interval = setInterval(function () {
                 $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length)));
             }, messageInterval * 6e4);
         }
 
         startTime = $.systemTime();
-        saveStateInterval = setInterval(function() {
+        saveStateInterval = setInterval(function () {
             saveState();
         }, 5 * 6e4);
 
@@ -184,9 +184,9 @@
 
     function reopen() {
         if (!$.inidb.FileExists('raffleState') || !$.inidb.HasKey('raffleState', '', 'entries') || !$.inidb.HasKey('raffleState', '', 'entered')
-                 || !$.inidb.HasKey('raffleState', '', 'keyword') || !$.inidb.HasKey('raffleState', '', 'entryFee') || !$.inidb.HasKey('raffleState', '', 'timerTime')
-                  || !$.inidb.HasKey('raffleState', '', 'startTime') || !$.inidb.HasKey('raffleState', '', 'isFollowersOnly') || !$.inidb.HasKey('raffleState', '', 'isSubscribersOnly')
-                  || !$.inidb.HasKey('raffleState', '', 'usePoints') || !$.inidb.HasKey('raffleState', '', 'isActive')) {
+                || !$.inidb.HasKey('raffleState', '', 'keyword') || !$.inidb.HasKey('raffleState', '', 'entryFee') || !$.inidb.HasKey('raffleState', '', 'timerTime')
+                || !$.inidb.HasKey('raffleState', '', 'startTime') || !$.inidb.HasKey('raffleState', '', 'isFollowersOnly') || !$.inidb.HasKey('raffleState', '', 'isSubscribersOnly')
+                || !$.inidb.HasKey('raffleState', '', 'usePoints') || !$.inidb.HasKey('raffleState', '', 'isActive')) {
             return;
         }
 
@@ -225,19 +225,19 @@
 
             if (timerTime > 0) {
                 var timeleft = timerTime - (($.systemTime() - startTime) / 6e4);
-                timeout = setTimeout(function() {
+                timeout = setTimeout(function () {
                     close();
                 }, timeleft * 6e4);
                 timerMessage = $.lang.get('rafflesystem.common.timer', timerTime);
             }
 
             if (parseInt(messageInterval) !== 0) {
-                interval = setInterval(function() {
+                interval = setInterval(function () {
                     $.say(raffleMessage.replace('(keyword)', keyword).replace('(entries)', String(Object.keys(entered).length)));
                 }, messageInterval * 6e4);
             }
 
-            saveStateInterval = setInterval(function() {
+            saveStateInterval = setInterval(function () {
                 saveState();
             }, 5 * 6e4);
 
@@ -263,7 +263,7 @@
         $.inidb.SetBoolean('raffleState', '', 'isSubscribersOnly', subscribers);
         $.inidb.SetBoolean('raffleState', '', 'usePoints', usePoints);
         $.inidb.SetBoolean('raffleState', '', 'hasDrawn', hasDrawn);
-        if (lastWinners.length >= 0){
+        if (lastWinners.length >= 0) {
             $.inidb.set('raffleresults', 'winner', JSON.stringify(lastWinners));
         } else if ($.inidb.HasKey('raffleresults', '', 'winner')) { //No winners but key present - we have to remove it
             $.inidb.del('raffleresults', 'winner');
@@ -302,9 +302,8 @@
      * @info draws a winner
      */
     function draw(amount) {
-        var entriesLen = entries.length;
         /* Check if anyone entered the raffle */
-        if (entriesLen === 0) {
+        if (entries.length === 0) {
             $.say($.lang.get('rafflesystem.winner.404'));
             return;
         }
@@ -314,17 +313,21 @@
             lastWinners = [];
         }
 
-        // Thanks https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
-        // Faster than calling $.randElement() over and over
-        var newWinners = [],
-            taken = [];
+        var newWinners = [];
 
         _entriesLock.lock();
         try {
-            while (amount--) {
-                var rnd = Math.floor(Math.random() * entriesLen);
-                newWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
-                taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+            if (amount >= entries.Length) {
+                newWinners = entries;
+            } else {
+                while (newWinners.length < amount) {
+                    var candidate;
+                    do {
+                        candidate = $.randElement(entries);
+                    } while (newWinners.includes(candidate));
+
+                    newWinners.push(candidate);
+                }
             }
         } finally {
             _entriesLock.unlock();
@@ -437,6 +440,7 @@
      * @param {string} username
      */
     function enter(username, tags) {
+        username = $.jsString(username);
         /* Check if the user already entered the raffle */
         if (entered[username] !== undefined) {
             message(username, $.lang.get('rafflesystem.enter.404'));
@@ -526,7 +530,7 @@
     /**
      * @event ircChannelMessage
      */
-    $.bind('ircChannelMessage', function(event) {
+    $.bind('ircChannelMessage', function (event) {
         if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
             enter(event.getSender().toLowerCase(), event.getTags());
         }
@@ -537,13 +541,13 @@
      * @info handles the command event
      * @param {object} event
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            arguments = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                arguments = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         if (command.equalsIgnoreCase('raffle')) {
             if (action === undefined) {
@@ -716,7 +720,7 @@
      * @event initReady
      * @info event sent to register commands
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./systems/raffleSystem.js', 'raffle', $.PERMISSION.Mod);
 
         $.registerChatSubcommand('raffle', 'open', $.PERMISSION.Mod);
@@ -738,7 +742,7 @@
     /**
      * @event Shutdown
      */
-    $.bind('Shutdown', function() {
+    $.bind('Shutdown', function () {
         saveState();
     });
 

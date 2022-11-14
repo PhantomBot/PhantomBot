@@ -15,28 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+/* global java */
+
+(function () {
     var cost = 0,
-        entries = [],
-        subTMulti = 1,
-        regTMulti = 1,
-        maxEntries = 0,
-        followers = false,
-        raffleStatus = false,
-        msgToggle = false,
-        raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
-        messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
-        limiter = false,
-        totalEntries = 0,
-        totalTickets = 0,
-        a = '',
-        saveStateInterval,
-        interval,
-        uniqueEntries = [],
-        lastWinners = [],
-        hasDrawn = false,
-        _entriesLock = new java.util.concurrent.locks.ReentrantLock(),
-        _totalTicketsLock = new java.util.concurrent.locks.ReentrantLock();
+            entries = [],
+            subTMulti = 1,
+            regTMulti = 1,
+            maxEntries = 0,
+            followers = false,
+            raffleStatus = false,
+            msgToggle = false,
+            raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
+            messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
+            limiter = false,
+            totalEntries = 0,
+            totalTickets = 0,
+            a = '',
+            saveStateInterval,
+            interval,
+            uniqueEntries = [],
+            lastWinners = [],
+            hasDrawn = false,
+            _entriesLock = new java.util.concurrent.locks.ReentrantLock(),
+            _totalTicketsLock = new java.util.concurrent.locks.ReentrantLock();
 
     var POS = {
         times: 0,
@@ -206,8 +208,7 @@
     }
 
     function winner(amount) {
-        var entriesLen = entries.length;
-        if (entriesLen === 0) {
+        if (entries.length === 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
         }
@@ -220,19 +221,21 @@
             $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
         }
 
-        /*
-         * Thanks https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
-         * Faster than calling $.randElement() over and over
-         */
-        lastWinners = [];
+        var newWinners = [];
 
         _entriesLock.lock();
         try {
-            var taken = [];
-            while (amount--) {
-                var rnd = Math.floor(Math.random() * entriesLen);
-                lastWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
-                taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+            if (amount >= entries.Length) {
+                newWinners = entries;
+            } else {
+                while (newWinners.length < amount) {
+                    var candidate;
+                    do {
+                        candidate = $.randElement(entries);
+                    } while (newWinners.includes(candidate));
+
+                    newWinners.push(candidate);
+                }
             }
         } finally {
             _entriesLock.unlock();
@@ -271,11 +274,11 @@
         }
 
         var baseAmount,
-            tmpMax = maxEntries,
-            multiplier = 1,
-            getsBonus = userGetsBonus(user, event),
-            currTickets = getTickets(user),
-            currBonus = getBonusTickets(user);
+                tmpMax = maxEntries,
+                multiplier = 1,
+                getsBonus = userGetsBonus(user, event),
+                currTickets = getTickets(user),
+                currBonus = getBonusTickets(user);
 
         if (limiter && getsBonus) {
             multiplier = 1 + calcBonus(user, event, 1);
@@ -298,7 +301,7 @@
         }
 
         var bonus = calcBonus(user, event, baseAmount),
-            amount = baseAmount;
+                amount = baseAmount;
 
         if (limiter) {
             amount = Math.round(baseAmount + bonus); //Math.Round because we can be limited by the bit length i.e 1/3 = 0.333333333.....
@@ -376,6 +379,7 @@
 
     function incr(user, times, bonus) {
         var total = times * bonus;
+        user = $.jsString(user);
         _entriesLock.lock();
         try {
             for (var i = 0; i < total; i++) {
@@ -450,12 +454,12 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0];
+                command = event.getCommand(),
+                argString = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0];
 
         /**
          * @commandpath traffle [option] - Displays usage for the command
@@ -619,7 +623,7 @@
                 if (msgToggle && raffleStatus) {
                     if (userGetsBonus(sender, event)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage.bonus', getTickets(sender),
-                            getBonusTickets(sender)));
+                                getBonusTickets(sender)));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
                     }
