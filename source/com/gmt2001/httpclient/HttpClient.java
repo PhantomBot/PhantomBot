@@ -71,7 +71,7 @@ public final class HttpClient {
 
         /**
          * @botproperty usedefaultdnsresolver - If `true`, only the default Java/System DNS resolver is used. Default `false`
-         * @botpropertycatsort usedefaultdnsresolver 10 700 HTTP/WS Options
+         * @botpropertycatsort usedefaultdnsresolver 10 700 HTTP/WS
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
             client = client.resolver(DefaultAddressResolverGroup.INSTANCE);
@@ -106,7 +106,7 @@ public final class HttpClient {
         try {
             /**
              * @botproperty httpclienttimeout - The timeout, in seconds, for an HTTP request to complete. Default `10`
-             * @botpropertycatsort httpclienttimeout 100 700 HTTP/WS Options
+             * @botpropertycatsort httpclienttimeout 100 700 HTTP/WS
              */
             return sender.send(ByteBufFlux.fromString(Mono.just(_requestBody)))
                     .responseSingle((res, buf) -> buf.asByteArray().map(content -> new HttpClientResponse(null, requestBody, content, url, res))

@@ -675,7 +675,7 @@ public final class PhantomBot implements Listener {
         /* Is the web toggle enabled? */
         /**
          * @botproperty webenable - If `true`, the bots webserver is started. Default `true`
-         * @botpropertycatsort webenable 300 700 HTTP/WS Options
+         * @botpropertycatsort webenable 300 700 HTTP/WS
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             HTTPWSServer.instance();
