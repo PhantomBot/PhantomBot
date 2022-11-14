@@ -94,6 +94,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
             /**
              * @botproperty wsdebug - If `true`, information about inbound WS frames for the panel are sent to the debug log. Default `false`
+             * @botpropertycatsort wsdebug 200 900 Debug
              */
             if (CaselessProperties.instance().getPropertyAsBoolean("wsdebug", false)) {
                 com.gmt2001.Console.debug.println(jso.toString());

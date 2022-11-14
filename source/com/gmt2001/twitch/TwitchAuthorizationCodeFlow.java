@@ -186,9 +186,11 @@ public class TwitchAuthorizationCodeFlow {
     public static byte[] handleRequest(FullHttpRequest req, byte[] data, HTTPOAuthHandler handler) {
         /**
          * @botproperty clientid - The Twitch Developer Application Client ID
+         * @botpropertycatsort clientid 20 20 Twitch
          */
         /**
          * @botproperty clientsecret - The Twitch Developer Application Client Secret
+         * @botpropertycatsort clientsecret 30 20 Twitch
          */
         if ((req.uri().startsWith("/oauth/checkidsecret") || req.uri().startsWith("/oauth/broadcaster/checkidsecret")) && req.method() == HttpMethod.GET) {
             if (CaselessProperties.instance().getProperty("clientid") != null && !CaselessProperties.instance().getProperty("clientid").isBlank()

@@ -15,28 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-(function() {
+/* global java */
+
+(function () {
     var cost = 0,
-        entries = [],
-        subTMulti = 1,
-        regTMulti = 1,
-        maxEntries = 0,
-        followers = false,
-        raffleStatus = false,
-        msgToggle = false,
-        raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
-        messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
-        limiter = false,
-        totalEntries = 0,
-        totalTickets = 0,
-        a = '',
-        saveStateInterval,
-        interval,
-        uniqueEntries = [],
-        lastWinners = [],
-        hasDrawn = false,
-        _entriesLock = new java.util.concurrent.locks.ReentrantLock(),
-        _totalTicketsLock = new java.util.concurrent.locks.ReentrantLock();
+            entries = [],
+            subTMulti = 1,
+            regTMulti = 1,
+            maxEntries = 0,
+            followers = false,
+            raffleStatus = false,
+            msgToggle = false,
+            raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
+            messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
+            limiter = false,
+            totalEntries = 0,
+            totalTickets = 0,
+            a = '',
+            saveStateInterval,
+            interval,
+            uniqueEntries = [],
+            lastWinners = [],
+            hasDrawn = false,
+            _entriesLock = new java.util.concurrent.locks.ReentrantLock(),
+            _totalTicketsLock = new java.util.concurrent.locks.ReentrantLock();
 
     var POS = {
         times: 0,
@@ -205,53 +207,58 @@
         saveState();
     }
 
-    function winner(amount) {
-        var entriesLen = entries.length;
-        if (entriesLen === 0) {
+    function winner(amount, keepopen) {
+        if (entries.length === 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
         }
 
-        hasDrawn = true;
-        $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
+        if (!keepopen) {
+            hasDrawn = true;
+            $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
+        }
 
-        if (raffleStatus) {
-            closeRaffle(); //Close the raffle if it's open. Why draw a winner when new users can still enter?
+        if (raffleStatus && !keepopen) {
+            closeRaffle();
             $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
         }
 
-        /*
-         * Thanks https://stackoverflow.com/questions/19269545/how-to-get-a-number-of-random-elements-from-an-array
-         * Faster than calling $.randElement() over and over
-         */
-        lastWinners = [];
+        var newWinners = [];
 
         _entriesLock.lock();
         try {
-            var taken = [];
-            while (amount--) {
-                var rnd = Math.floor(Math.random() * entriesLen);
-                lastWinners[amount] = entries[taken.includes(rnd) ? taken[rnd] : rnd];
-                taken[rnd] = taken.includes(--entriesLen) ? taken[entriesLen] : entriesLen;
+            if (amount >= entries.Length) {
+                newWinners = entries;
+            } else {
+                while (newWinners.length < amount) {
+                    var candidate;
+                    do {
+                        candidate = $.randElement(entries);
+                    } while (newWinners.includes(candidate));
+
+                    newWinners.push(candidate);
+                }
             }
         } finally {
             _entriesLock.unlock();
         }
 
-        winningMsg();
+        lastWinners = lastWinners.concat(newWinners);
+
+        winningMsg(newWinners);
 
         $.inidb.set('traffleresults', 'winner', JSON.stringify(lastWinners));
-        $.log.event('Winner of the ticket raffle was ' + lastWinners.join(', '));
+        $.log.event('Winner of the ticket raffle was ' + newWinners.join(', '));
     }
 
-    function winningMsg() {
-        if (lastWinners.length === 1) {
-            var followMsg = ($.user.isFollower(lastWinners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(lastWinners[0]), followMsg));
+    function winningMsg(winners) {
+        if (winners.length === 1) {
+            var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(winners[0]), followMsg));
             return;
         }
 
-        var msg = $.lang.get('ticketrafflesystem.winner.multiple', lastWinners.join(', '));
+        var msg = $.lang.get('ticketrafflesystem.winner.multiple', winners.join(', '));
 
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
             var i = msg.substring(0, 500).lastIndexOf(",");
@@ -271,11 +278,11 @@
         }
 
         var baseAmount,
-            tmpMax = maxEntries,
-            multiplier = 1,
-            getsBonus = userGetsBonus(user, event),
-            currTickets = getTickets(user),
-            currBonus = getBonusTickets(user);
+                tmpMax = maxEntries,
+                multiplier = 1,
+                getsBonus = userGetsBonus(user, event),
+                currTickets = getTickets(user),
+                currBonus = getBonusTickets(user);
 
         if (limiter && getsBonus) {
             multiplier = 1 + calcBonus(user, event, 1);
@@ -298,7 +305,7 @@
         }
 
         var bonus = calcBonus(user, event, baseAmount),
-            amount = baseAmount;
+                amount = baseAmount;
 
         if (limiter) {
             amount = Math.round(baseAmount + bonus); //Math.Round because we can be limited by the bit length i.e 1/3 = 0.333333333.....
@@ -375,14 +382,15 @@
     }
 
     function incr(user, times, bonus) {
-        var total = times * bonus;
+        var total = times + bonus;
+        user = $.jsString(user);
         _entriesLock.lock();
         try {
             for (var i = 0; i < total; i++) {
                 entries.push(user);
             }
 
-            if (!(uniqueEntries.includes(user))) {
+            if (!uniqueEntries.includes(user)) {
                 uniqueEntries.push(user);
             }
         } finally {
@@ -450,12 +458,12 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0];
+                command = event.getCommand(),
+                argString = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0];
 
         /**
          * @commandpath traffle [option] - Displays usage for the command
@@ -494,7 +502,41 @@
             }
 
             /**
-             * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points 
+             * @commandpath traffle opendraw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, but leaves the raffle open
+             */
+            if (action.equalsIgnoreCase('opendraw')) {
+
+                var amount = 1;
+                if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.draw.usage'));
+                    return;
+                }
+
+                if (hasDrawn) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.already.drawn'));
+                    return;
+                }
+
+                if (args[1] !== undefined) {
+                    amount = parseInt(args[1]);
+                }
+
+                if (amount > uniqueEntries.length) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
+                    return;
+                }
+
+                winner(amount, true);
+
+                if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
+                    awardWinners(parseInt(args[2]));
+                }
+
+                return;
+            }
+
+            /**
+             * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, and closes the raffle if it is still open
              */
             if (action.equalsIgnoreCase('draw')) {
 
@@ -518,7 +560,7 @@
                     return;
                 }
 
-                winner(amount);
+                winner(amount, false);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(parseInt(args[2]));
@@ -619,7 +661,7 @@
                 if (msgToggle && raffleStatus) {
                     if (userGetsBonus(sender, event)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage.bonus', getTickets(sender),
-                            getBonusTickets(sender)));
+                                getBonusTickets(sender)));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.ticket.usage', getTickets(sender)));
                     }
@@ -640,6 +682,7 @@
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', $.PERMISSION.Viewer);
         $.registerChatSubcommand('traffle', 'open', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('traffle', 'opendraw', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'draw', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'reset', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'autoannounceinterval', $.PERMISSION.Admin);

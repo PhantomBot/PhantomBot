@@ -141,6 +141,7 @@ public final class HttpClientResponse {
     private void debug() {
         /**
          * @botproperty httpclientdebug - If `true`, information about each HTTP request sent by HttpClient is sent to the debug log. Default `false`
+         * @botpropertycatsort httpclientdebug 800 900 Debug
          */
         if (PhantomBot.getEnableDebugging() && CaselessProperties.instance().getPropertyAsBoolean("httpclientdebug", false)) {
             JSONObject jso = new JSONObject();

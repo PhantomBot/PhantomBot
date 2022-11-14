@@ -200,6 +200,7 @@ public class Helix {
                 com.gmt2001.Console.err.printStackTrace(ex.getCause());
                 /**
                  * @botproperty helixdebug - If `true`, debugging info for Twitch Helix API requests are sent to the debug log. Default `false`
+                 * @botpropertycatsort helixdebug 100 900 Debug
                  */
                 if (CaselessProperties.instance().getPropertyAsBoolean("helixdebug", false)) {
                     com.gmt2001.Console.debug.println(ex.getMessage());
@@ -2257,6 +2258,7 @@ public class Helix {
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`
+         * @botpropertycatsort usebroadcasterforchatcommands 800 20 Twitch
          */
         if (TwitchValidate.instance().hasChatScope(scope) && !CaselessProperties.instance().getPropertyAsBoolean("usebroadcasterforchatcommands", false)) {
             return TwitchValidate.instance().getChatUserID();

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global java */
+
 (function() {
     var auction = {
             increments: 0,

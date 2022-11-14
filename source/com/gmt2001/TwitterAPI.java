@@ -66,9 +66,11 @@ public class TwitterAPI implements ApiClientCallback {
     private static final TwitterAPI INSTANCE = new TwitterAPI();
     /**
      * @botproperty twitter_client_id - The client id for Twitter API
+     * @botpropertycatsort twitter_client_id 10 290 Twitter
      */
     /**
      * @botproperty twitter_client_secret - The client secret for Twitter API
+     * @botpropertycatsort twitter_client_secret 20 290 Twitter
      */
     /**
      * Credentials holder
@@ -325,6 +327,7 @@ public class TwitterAPI implements ApiClientCallback {
         if (this.authenticated()) {
             /**
              * @botproperty twitterusertimelinelimit - The maximum number of tweets to retrieve per follower, when grabbing retweets. Default `15`
+             * @botpropertycatsort twitterusertimelinelimit 220 290 Twitter
              */
             APIusersIdTweetsRequest req = this.twitterApi.tweets().usersIdTweets(userId).maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
 
@@ -422,9 +425,11 @@ public class TwitterAPI implements ApiClientCallback {
 
             /**
              * @botproperty twittertimelinelimit - The maximum number of tweets to retrieve with a latest tweets request. Default `15`
+             * @botpropertycatsort twittertimelinelimit 200 290 Twitter
              */
             /**
              * @botproperty twittertimelineextendedlimit - The maximum number of tweets to retrieve with a sinceId. Default `30`
+             * @botpropertycatsort twittertimelineextendedlimit 210 290 Twitter
              */
             req.maxResults(sinceId != null && sinceId.isBlank()
                     ? CaselessProperties.instance().getPropertyAsInt("twittertimelinelimit", 15)

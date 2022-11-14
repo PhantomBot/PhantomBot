@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that querys all of the data we need.
 $(run = function () {
     socket.getDBValues('raffle_module_status_toggle', {
@@ -50,8 +52,10 @@ $(run = function () {
                     if (length === 0) {
                         // No entries disallow drawing winners
                         $('#draw-raffle').prop('disabled', true);
+                        $('#opendraw-raffle').prop('disabled', true);
                     } else {
                         $('#draw-raffle').prop('disabled', false);
+                        $('#opendraw-raffle').prop('disabled', false);
                     }
 
                     if (e['hasDrawn'] !== undefined) {
@@ -195,6 +199,25 @@ $(function () {
                 break;
             default:
                 socket.sendCommandSync('draw_raffle_cmd', 'raffle draw ' + drawAmount.val() + ' ' + prize.val(), function () {
+                    // Alert the user.
+                    toastr.success('Successfully drew ' + drawAmount.val() + ' winner' + (drawAmount.val() === 1 ? '' : 's') + '!');
+                    // Reload
+                    helpers.temp.loadRaffleList();
+                });
+        }
+    });
+
+    // Draw raffle button.
+    $('#opendraw-raffle').on('click', function () {
+        const   drawAmount = $('#raffle-draw'),
+                prize = $('#raffle-prize');
+
+        switch (false) {
+            case helpers.handleInputNumber(drawAmount, 1):
+            case helpers.handleInputNumber(prize, 0):
+                break;
+            default:
+                socket.sendCommandSync('draw_raffle_cmd', 'raffle opendraw ' + drawAmount.val() + ' ' + prize.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully drew ' + drawAmount.val() + ' winner' + (drawAmount.val() === 1 ? '' : 's') + '!');
                     // Reload
