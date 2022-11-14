@@ -121,27 +121,27 @@ public final class HTTPWSServer {
     private HTTPWSServer() {
         /**
          * @botproperty bindip - The IP address the bots webserver runs on. Default all
-         * @botpropertycatsort bindip 200 700 HTTP/WS Options
+         * @botpropertycatsort bindip 200 700 HTTP/WS
          */
         /**
          * @botproperty baseport - The port the bots webserver runs on. Default `25000`
-         * @botpropertycatsort baseport 20 700 HTTP/WS Options
+         * @botpropertycatsort baseport 20 700 HTTP/WS
          */
         /**
          * @botproperty usehttps - If `true`, the bots webserver uses HTTPS to secure the connection. Default `true`
-         * @botpropertycatsort usehttps 30 700 HTTP/WS Options
+         * @botpropertycatsort usehttps 30 700 HTTP/WS
          */
         /**
          * @botproperty httpsFileName - If httpsKeyFileName is unset/blank, a JKS containing the certificate; else, an X509 Certificate in PEM format
-         * @botpropertycatsort httpsFileName 40 700 HTTP/WS Options
+         * @botpropertycatsort httpsFileName 40 700 HTTP/WS
          */
         /**
          * @botproperty httpsKeyFileName - The PKCS#8 private key in PEM format for httpsFileName; if unset/blank, httpsFileName is loaded as a JKS
-         * @botpropertycatsort httpsKeyFileName 50 700 HTTP/WS Options
+         * @botpropertycatsort httpsKeyFileName 50 700 HTTP/WS
          */
         /**
          * @botproperty httpsPassword - The password, if any, to _httpsFileName_
-         * @botpropertycatsort httpsPassword 60 700 HTTP/WS Options
+         * @botpropertycatsort httpsPassword 60 700 HTTP/WS
          */
         String ipOrHostname = CaselessProperties.instance().getProperty("bindIP", "");
         int initialPort = CaselessProperties.instance().getPropertyAsInt("baseport", 25000);
@@ -241,7 +241,7 @@ public final class HTTPWSServer {
     public boolean isSsl() {
         /**
          * @botproperty proxybypasshttps - If `true`, the HTTP server reports SSL is enabled, even if `usessl` is `false`. Default `true`
-         * @botpropertycatsort proxybypasshttps 80 700 HTTP/WS Options
+         * @botpropertycatsort proxybypasshttps 80 700 HTTP/WS
          */
         return this.sslEnabled || CaselessProperties.instance().getPropertyAsBoolean("proxybypasshttps", false);
     }

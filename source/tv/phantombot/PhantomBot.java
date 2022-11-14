@@ -675,7 +675,7 @@ public final class PhantomBot implements Listener {
         /* Is the web toggle enabled? */
         /**
          * @botproperty webenable - If `true`, the bots webserver is started. Default `true`
-         * @botpropertycatsort webenable 300 700 HTTP/WS Options
+         * @botpropertycatsort webenable 300 700 HTTP/WS
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             HTTPWSServer.instance();
@@ -1146,7 +1146,7 @@ public final class PhantomBot implements Listener {
         /* Does the command have arguments? */
         if (command.contains(" ")) {
             String commandString = command;
-            command = commandString.substring(1, commandString.indexOf(" "));
+            command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
         EventBus.instance().postAsync(new CommandEvent(username, command, arguments));
@@ -1164,7 +1164,7 @@ public final class PhantomBot implements Listener {
         /* Does the command have arguments? */
         if (command.contains(" ")) {
             String commandString = command;
-            command = commandString.substring(1, commandString.indexOf(" "));
+            command = commandString.substring(0, commandString.indexOf(" "));
             arguments = commandString.substring(commandString.indexOf(" ") + 1);
         }
         EventBus.instance().post(new CommandEvent(username, command, arguments));

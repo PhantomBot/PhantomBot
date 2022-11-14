@@ -88,7 +88,7 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 100, "category": "Other", "category_sort": 100})
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999})
                     else:
                         botproperties[idx]["type"] = type
             if line.startswith("@botpropertycatsort"):
@@ -102,9 +102,9 @@ def parse_file(lines):
                         if len(line[0:].strip()) > 0:
                             propSort = int(line[0:].strip())
                         else:
-                            propSort = 100
-                        catSort = 100
-                        catName = "Other"
+                            propSort = 9999
+                        catSort = 9999
+                        catName = "Uncategorized"
                     else:
                         propSort = int(line[0:propSort_pos].strip())
                         line = line[propSort_pos + 1:].strip()
@@ -113,13 +113,13 @@ def parse_file(lines):
                             if len(line[0:].strip()) > 0:
                                 catSort = int(line[0:].strip())
                             else:
-                                catSort = 100
-                            catName = "Other"
+                                catSort = 9999
+                            catName = "Uncategorized"
                         else:
                             catSort = int(line[0:catSort_pos].strip())
                             catName = line[catSort_pos + 1:].strip()
                             if len(catName) == 0:
-                                catName = "Other"
+                                catName = "Uncategorized"
                     if not prop in ignoreproperties:
                         idx = findprop(prop)
                         if idx == -1:
@@ -144,7 +144,7 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": propdef, "type": "String", "sort": 100, "category": "Other", "category_sort": 100})
+                        botproperties.append({"botproperty": prop, "definition": propdef, "type": "String", "sort": 9999, "category": "Uncategorized", "category_sort": 9999})
                     else:
                         botproperties[idx]["definition"] = propdef
         if tgt in line:
@@ -164,7 +164,7 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 100, "category": "Other", "category_sort": 100})
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999})
                     else:
                         botproperties[idx]["type"] = type
 
