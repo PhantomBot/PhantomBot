@@ -65,6 +65,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
 
     /**
      * @botproperty allowpanelusertosetup - If `true`, the panel login can access the setup page; else only the random token. Default `true`
+     * @botpropertycatsort allowpanelusertosetup 20 10 Admin
      */
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {

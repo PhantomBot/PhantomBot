@@ -92,6 +92,7 @@ public final class CompositeInetNameResolver extends InetNameResolver {
     protected void doResolve(String inetHost, Promise<InetAddress> promise) throws Exception {
         /**
          * @botproperty dnsdebug - If `true`, prints debugging info about DNS resolution to the debug log. Default `false`
+         * @botpropertycatsort dnsdebug 800 900 Debug
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("dnsdebug", false)) {
             com.gmt2001.Console.debug.println("DNS Query: " + inetHost);

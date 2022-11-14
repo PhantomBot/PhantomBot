@@ -204,9 +204,11 @@ public final class TwitchCache {
      */
     /**
      * @botproperty offlinedelay - The delay, in seconds, before the `channel` is confirmed to be offline. Default `30`
+     * @botpropertycatsort offlinedelay 200 20 Twitch
      */
     /**
      * @botproperty offlinetimeout - The timeout, in seconds, after `channel` goes offline before it can be online. Default `300`
+     * @botpropertycatsort offlinetimeout 210 20 Twitch
      */
     private void updateCache() {
         Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null)

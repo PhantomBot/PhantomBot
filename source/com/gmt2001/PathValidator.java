@@ -164,6 +164,7 @@ public final class PathValidator {
 
             /**
              * @botproperty pathvalidatedebug - If `true`, prints debug information for the path validator to the debug log. Default `false`
+             * @botpropertycatsort pathvalidatedebug 900 900 Debug
              */
             if (CaselessProperties.instance().getPropertyAsBoolean("pathvalidatedebug", false)) {
                 com.gmt2001.Console.debug.println("orig=" + p.toString());

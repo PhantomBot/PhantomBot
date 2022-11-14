@@ -293,6 +293,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     public void sendRaw(String message) {
         /**
          * @botproperty ircdebug - If `true`, raw inbound and outbound IRC commands (except PASS) are sent to the debug log. Default `false`
+         * @botpropertycatsort ircdebug 60 900 Debug
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("ircdebug", false)) {
             if (message.startsWith("PASS")) {

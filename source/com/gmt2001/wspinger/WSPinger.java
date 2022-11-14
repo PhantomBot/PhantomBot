@@ -199,6 +199,7 @@ public class WSPinger implements WsClientFrameHandler {
                 this.timerFuture = ExecutorService.scheduleAtFixedRate(this::sendPing, this.interval.toMillis(), this.interval.toMillis(), TimeUnit.MILLISECONDS);
                 /**
                  * @botproperty wspingerdebug - If `true`, prints debug messages for active WSPinger instances. Default `false`
+                 * @botpropertycatsort wspingerdebug 700 900 Debug
                  */
                 if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
                     this.remote = ctx.channel().remoteAddress().toString();
