@@ -54,6 +54,8 @@ ignoreproperties = [
     "oauthexpires",
     "refresh",
     "rollbarid",
+    "twitter_access_token",
+    "twitter_refresh_token",
     "webauth",
     "webauthro",
     "ytauth",
