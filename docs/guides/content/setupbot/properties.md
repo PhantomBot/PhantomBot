@@ -250,35 +250,11 @@ the url which will receive eventsub notifications
 
 &nbsp;
 
-#### twitter_access_token
-
-Data Type: _String_
-
-No definition
-
-&nbsp;
-
-#### twitter_refresh_token
-
-Data Type: _String_
-
-No definition
-
-&nbsp;
-
 #### useeventsub
 
 Data Type: _Boolean_
 
 if `true`, enables the eventsub module. default `false`
-
-&nbsp;
-
-#### user
-
-Data Type: _String_
-
-No definition
 
 &nbsp;
 
