@@ -243,20 +243,22 @@
             _entriesLock.unlock();
         }
 
-        winningMsg();
+        lastWinners = lastWinners.concat(newWinners);
+
+        winningMsg(newWinners);
 
         $.inidb.set('traffleresults', 'winner', JSON.stringify(lastWinners));
-        $.log.event('Winner of the ticket raffle was ' + lastWinners.join(', '));
+        $.log.event('Winner of the ticket raffle was ' + newWinners.join(', '));
     }
 
-    function winningMsg() {
-        if (lastWinners.length === 1) {
-            var followMsg = ($.user.isFollower(lastWinners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(lastWinners[0]), followMsg));
+    function winningMsg(winners) {
+        if (winners.length === 1) {
+            var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(winners[0]), followMsg));
             return;
         }
 
-        var msg = $.lang.get('ticketrafflesystem.winner.multiple', lastWinners.join(', '));
+        var msg = $.lang.get('ticketrafflesystem.winner.multiple', winners.join(', '));
 
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
             var i = msg.substring(0, 500).lastIndexOf(",");
@@ -380,7 +382,7 @@
     }
 
     function incr(user, times, bonus) {
-        var total = times * bonus;
+        var total = times + bonus;
         user = $.jsString(user);
         _entriesLock.lock();
         try {
@@ -388,7 +390,7 @@
                 entries.push(user);
             }
 
-            if (!(uniqueEntries.includes(user))) {
+            if (!uniqueEntries.includes(user)) {
                 uniqueEntries.push(user);
             }
         } finally {
