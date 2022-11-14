@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 $(run = function () {
     socket.getDBValues('traffle_module_status_toggle', {
         tables: ['modules', 'traffleState', 'traffleState'],
@@ -118,6 +120,9 @@ $(run = function () {
             $('#ticket-draw-raffle').ready(function(){
                 $('#ticket-draw-raffle').prop('disabled', true);
             });
+            $('#ticket-opendraw-raffle').ready(function(){
+                $('#ticket-opendraw-raffle').prop('disabled', true);
+            });
         }
     });
 });
@@ -158,6 +163,7 @@ $(function () {
 
                     $('#traffle-list-title').text("Ticket Raffle List");
                     $('#ticket-draw-raffle').prop('disabled', false);
+                    $('#ticket-opendraw-raffle').prop('disabled', false);
 
                     // Reset the timer in case we destroyed it after the last draw
                     timers.push(setInterval(function () {
@@ -195,9 +201,30 @@ $(function () {
                     helpers.clearTimers();
 
                     $('#ticket-draw-raffle').prop('disabled', true);
+                    $('#ticket-opendraw-raffle').prop('disabled', true);
                     $('#ticket-open-or-close-raffle').html($('<i/>', {
                         'class': 'fa fa-unlock-alt'
                     })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+
+                    //Show the winners
+                    helpers.temp.loadWinners();
+                });
+        }
+    });
+
+    // Draw raffle button.
+    $('#ticket-opendraw-raffle').on('click', function () {
+        const   drawAmount = $('#ticket-raffle-draw'),
+                prize = $('#ticket-raffle-prize');
+
+        switch (false) {
+            case helpers.handleInputNumber(drawAmount, 1):
+            case helpers.handleInputNumber(prize, 0):
+                break;
+            default:
+                socket.sendCommandSync('opendraw_raffle_cmd', 'traffle opendraw ' + drawAmount.val() + ' ' + prize.val(), function () {
+                    // Alert the user.
+                    toastr.success('Successfully drew a winner!');
 
                     //Show the winners
                     helpers.temp.loadWinners();
