@@ -301,7 +301,7 @@
      * @function draw
      * @info draws a winner
      */
-    function draw(amount) {
+    function draw(amount, keepOpen) {
         /* Check if anyone entered the raffle */
         if (entries.length === 0) {
             $.say($.lang.get('rafflesystem.winner.404'));
@@ -365,7 +365,9 @@
             _entriesLock.unlock();
         }
 
-        close(undefined);
+        if (!keepOpen) {
+            close(undefined);
+        }
         hasDrawn = true;
         saveState();
     }
@@ -574,7 +576,7 @@
             }
 
             /**
-             * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points 
+             * @commandpath raffle opendraw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and keeps the raffle open
              */
             if (action.equalsIgnoreCase('draw')) {
                 var amount = 1;
@@ -587,7 +589,30 @@
                     amount = parseInt(args[1]);
                 }
 
-                draw(amount);
+                draw(amount, true);
+
+                if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
+                    awardWinners(amount, parseInt(args[2]));
+                }
+
+                return;
+            }
+
+            /**
+             * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and closes the raffle if it is still open
+             */
+            if (action.equalsIgnoreCase('draw')) {
+                var amount = 1;
+                if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
+                    return;
+                }
+
+                if (args[1] !== undefined) {
+                    amount = parseInt(args[1]);
+                }
+
+                draw(amount, false);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(amount, parseInt(args[2]));
@@ -725,6 +750,7 @@
 
         $.registerChatSubcommand('raffle', 'open', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('raffle', 'opendraw', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'draw', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'reset', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'results', $.PERMISSION.Viewer);

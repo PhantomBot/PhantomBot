@@ -207,17 +207,19 @@
         saveState();
     }
 
-    function winner(amount) {
+    function winner(amount, keepopen) {
         if (entries.length === 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
         }
 
-        hasDrawn = true;
-        $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
+        if (!keepopen) {
+            hasDrawn = true;
+            $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
+        }
 
-        if (raffleStatus) {
-            closeRaffle(); //Close the raffle if it's open. Why draw a winner when new users can still enter?
+        if (raffleStatus && !keepopen) {
+            closeRaffle();
             $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
         }
 
@@ -498,7 +500,41 @@
             }
 
             /**
-             * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points 
+             * @commandpath traffle opendraw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, but leaves the raffle open
+             */
+            if (action.equalsIgnoreCase('opendraw')) {
+
+                var amount = 1;
+                if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.draw.usage'));
+                    return;
+                }
+
+                if (hasDrawn) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.already.drawn'));
+                    return;
+                }
+
+                if (args[1] !== undefined) {
+                    amount = parseInt(args[1]);
+                }
+
+                if (amount > uniqueEntries.length) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
+                    return;
+                }
+
+                winner(amount, true);
+
+                if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
+                    awardWinners(parseInt(args[2]));
+                }
+
+                return;
+            }
+
+            /**
+             * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, and closes the raffle if it is still open
              */
             if (action.equalsIgnoreCase('draw')) {
 
@@ -522,7 +558,7 @@
                     return;
                 }
 
-                winner(amount);
+                winner(amount, false);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(parseInt(args[2]));
@@ -644,6 +680,7 @@
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', $.PERMISSION.Viewer);
         $.registerChatSubcommand('traffle', 'open', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'close', $.PERMISSION.Mod);
+        $.registerChatSubcommand('traffle', 'opendraw', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'draw', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'reset', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'autoannounceinterval', $.PERMISSION.Admin);
