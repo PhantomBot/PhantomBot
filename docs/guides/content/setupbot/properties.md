@@ -241,23 +241,6 @@ if `true`, enables the websocket handler for the song request/youtube player. de
 
 &nbsp;
 
-### Other
-#### eventsubcallbackurl
-
-Data Type: _String_
-
-the url which will receive eventsub notifications
-
-&nbsp;
-
-#### useeventsub
-
-Data Type: _Boolean_
-
-if `true`, enables the eventsub module. default `false`
-
-&nbsp;
-
 ### Discord
 #### discord_token
 
@@ -376,7 +359,7 @@ the maximum number of tweets to retrieve per follower, when grabbing retweets. d
 
 &nbsp;
 
-### HTTP/WS Options
+### HTTP/WS
 #### usedefaultdnsresolver
 
 Data Type: _Boolean_
@@ -551,3 +534,20 @@ if `true`, prints debug information for the path validator to the debug log. def
 Data Type: _Boolean_
 
 if `true`, enables the rhino debugger console. default `false`
+
+&nbsp;
+
+### Uncategorized
+#### eventsubcallbackurl
+
+Data Type: _String_
+
+the url which will receive eventsub notifications
+
+&nbsp;
+
+#### useeventsub
+
+Data Type: _Boolean_
+
+if `true`, enables the eventsub module. default `false`
