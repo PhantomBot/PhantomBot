@@ -62,7 +62,7 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println(this.user() + " is not detected as a moderator!");
             com.gmt2001.Console.warn.println("You must add " + this.user() + " as a channel moderator for it to chat.");
-            com.gmt2001.Console.warn.println("To fix this, the broadcaster must use add " + this.user() + " as a moderator in Stream Manager");
+            com.gmt2001.Console.warn.println("To fix this, the broadcaster must add " + this.user() + " as a moderator in Stream Manager");
             com.gmt2001.Console.warn.println("or type the following command in Twitch Chat: /mod " + this.user());
             com.gmt2001.Console.warn.println();
         }

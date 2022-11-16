@@ -25,7 +25,7 @@
 (function() {
     var emotesRegExpList = [],
         loaded = false,
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     // Load an existing emote RegExp cache.  Wait to see if there was a problem that needs us to load
     // from cache before doing so.  This saves CPU cycles and memory.
@@ -159,8 +159,8 @@
 
         loaded = true;
         $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling.");
-        $.consoleDebug("Loaded Emotes from BetterTwitchTV: " + bttvEmotesCache.global.length + "global, " + bttvEmotesCache.shared.length + " shared, " + bttvEmotesCache.local.length + " local");
-        $.consoleDebug("Loaded Emotes from FrankerFacez: " + ffzEmotesCache.global.length + "global, " + ffzEmotesCache.shared.length + " shared, " + ffzEmotesCache.local.length + " local");
+        $.consoleDebug("Loaded Emotes from BetterTwitchTV: " + bttvEmotesCache.global.length + " global, " + bttvEmotesCache.shared.length + " shared, " + bttvEmotesCache.local.length + " local");
+        $.consoleDebug("Loaded Emotes from FrankerFacez: " + ffzEmotesCache.global.length + " global, " + ffzEmotesCache.shared.length + " shared, " + ffzEmotesCache.local.length + " local");
 
         var EventBus = Packages.tv.phantombot.event.EventBus;
         var EmotesCacheUpdatedEvent = Packages.tv.phantombot.event.emotes.EmotesCacheUpdatedEvent;
