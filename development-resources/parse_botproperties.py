@@ -199,9 +199,7 @@ def sort():
     global botproperties
     categorysort = {}
     for botproperty in botproperties:
-        if not botproperty["category"] in categorysort:
-            categorysort[botproperty["category"]] = botproperty["category_sort"]
-        elif botproperty["category_sort"] < categorysort[botproperty["category"]]:
+        if not botproperty["category"] in categorysort or botproperty["category_sort"] < categorysort[botproperty["category"]]:
             categorysort[botproperty["category"]] = botproperty["category_sort"]
     for i in range(len(botproperties)):
         botproperties[i]["category_sort"] = categorysort[botproperties[i]["category"]]
