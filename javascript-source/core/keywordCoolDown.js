@@ -26,7 +26,7 @@
 (function() {
     var modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false),
         cooldown = [],
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function permCheck

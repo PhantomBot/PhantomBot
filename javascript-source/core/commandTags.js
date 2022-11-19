@@ -17,7 +17,7 @@
 
 (function () {
     var transformers = {},
-            _lock = new java.util.concurrent.locks.ReentrantLock();
+            _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /*
      * transformer function definition

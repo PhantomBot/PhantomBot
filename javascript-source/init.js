@@ -84,7 +84,7 @@
         try {
             throw new Error();
         } catch (ex) {
-            return java.util.Objects.toString(ex.stack.split('\n')[2].trim());
+            return Packages.java.util.Objects.toString(ex.stack.split('\n')[2].trim());
         }
     }
 

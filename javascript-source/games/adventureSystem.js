@@ -27,7 +27,7 @@
         currentAdventure = {},
         stories = [],
         lastStory,
-        _currentAdventureLock = new java.util.concurrent.locks.ReentrantLock();
+        _currentAdventureLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
 
     function reloadAdventure() {

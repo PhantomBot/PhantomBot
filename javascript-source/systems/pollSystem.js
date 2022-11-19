@@ -41,7 +41,7 @@
             timeout,
             saveStateInterval,
             objOBS = [],
-            _pollLock = new java.util.concurrent.locks.ReentrantLock();
+            _pollLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function hasKey

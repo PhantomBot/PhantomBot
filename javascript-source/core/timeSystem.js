@@ -57,7 +57,7 @@
      * @param {String} timeformat
      * @returns {String}
      *
-     * timeformat = java.time.format.DateTimeFormatter allowed formats:
+     * timeformat = Packages.java.time.format.DateTimeFormatter allowed formats:
      *   Letter   Date or Time Component   Presentation        Examples
      *   G        Era designator           Text                AD
      *   y        Year                     Year                1996; 96
@@ -492,7 +492,7 @@
                 return;
             }
 
-            tzData = java.util.TimeZone.getTimeZone(action);
+            tzData = Packages.java.util.TimeZone.getTimeZone(action);
             if (tzData.getID().equals("GMT") && !action.equals("GMT")) {
                 $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.invalid', action));
                 return;

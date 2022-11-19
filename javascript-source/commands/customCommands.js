@@ -23,7 +23,7 @@
             customCommands = [],
             ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
-            _lock = new java.util.concurrent.locks.ReentrantLock();
+            _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /*
      * @function runCommand

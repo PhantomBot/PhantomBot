@@ -26,8 +26,8 @@
 (function() {
     var commands = {},
         aliases = {},
-        _aliasesLock = new java.util.concurrent.locks.ReentrantLock(),
-        _commandsLock = new java.util.concurrent.locks.ReentrantLock();
+        _aliasesLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
+        _commandsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /*
      * @function registerChatCommand

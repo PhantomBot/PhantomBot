@@ -27,7 +27,7 @@
             lost: 0
         },
         lastRandom = 0,
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     function reloadRoulette() {
         timeoutTime = $.getIniDbNumber('roulette', 'timeoutTime');

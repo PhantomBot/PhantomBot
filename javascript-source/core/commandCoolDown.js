@@ -28,8 +28,8 @@
             modCooldown = $.getSetIniDbBoolean('cooldownSettings', 'modCooldown', false),
             defaultCooldowns = {},
             cooldowns = {},
-            _cooldownsLock = new java.util.concurrent.locks.ReentrantLock(),
-            _defaultCooldownsLock = new java.util.concurrent.locks.ReentrantLock();
+            _cooldownsLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
+            _defaultCooldownsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     $.raffleCommand = null;
 

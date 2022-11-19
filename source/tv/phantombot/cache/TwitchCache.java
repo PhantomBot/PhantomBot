@@ -74,7 +74,6 @@ public final class TwitchCache {
     private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private ZonedDateTime streamUptime = null;
     private int viewerCount = 0;
-    private int views = 0;
     private Instant offlineDelay = null;
     private Instant offlineTimeout = Instant.MIN;
     private ZonedDateTime latestClip = null;
@@ -298,7 +297,6 @@ public final class TwitchCache {
                     if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                         if (jso.getJSONArray("data").length() > 0) {
                             JSONObject data = jso.getJSONArray("data").getJSONObject(0);
-                            this.views = data.getInt("view_count");
 
                             String oldLogoLink = this.logoLink;
                             this.logoLink = data.getString("profile_image_url");
@@ -484,7 +482,7 @@ public final class TwitchCache {
      * @return
      */
     public int getViews() {
-        return this.views;
+        return -1;
     }
 
     /**

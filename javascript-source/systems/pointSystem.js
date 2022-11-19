@@ -35,7 +35,7 @@
             pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
             pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
             userCache = {},
-            _userCacheLock = new java.util.concurrent.locks.ReentrantLock();
+            _userCacheLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function updateSettings

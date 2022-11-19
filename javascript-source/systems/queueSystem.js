@@ -21,7 +21,7 @@
     var isOpened = false,
         info = {},
         queue = {},
-        _queueLock = new java.util.concurrent.locks.ReentrantLock();
+        _queueLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /*
      * @function open

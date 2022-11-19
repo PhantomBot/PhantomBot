@@ -28,11 +28,11 @@
         welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
         welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
         welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
-        welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue,
-        welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue,
+        welcomeQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
+        welcomeQueueFirst = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
         welcomeTimer = null,
         // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
-        welcomeLock = new java.util.concurrent.locks.ReentrantLock();
+        welcomeLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @event ircChannelMessage
@@ -175,8 +175,8 @@
                     welcomeTimer = setTimeout(processQueue, 15000, 'scripts::systems::welcomeSystem.js');
                 } else {
                     // There are welcomes, however, welcome has been disabled, so destroy the queues.
-                    welcomeQueue = new java.util.concurrent.ConcurrentLinkedQueue;
-                    welcomeQueueFirst = new java.util.concurrent.ConcurrentLinkedQueue;
+                    welcomeQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue;
+                    welcomeQueueFirst = new Packages.java.util.concurrent.ConcurrentLinkedQueue;
                     welcomeTimer = null;
                 }
             }

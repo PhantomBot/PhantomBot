@@ -43,7 +43,7 @@
             options: {},
             opt: []
         },
-        _betLock = new java.util.concurrent.locks.ReentrantLock();
+        _betLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadBet

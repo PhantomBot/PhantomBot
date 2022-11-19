@@ -67,9 +67,9 @@
             try {
                 if (value.getClass() !== null) {
                     switch (value) {
-                        case value instanceof java.lang.Number:
+                        case value instanceof Packages.java.lang.Number:
                             return parseInt(value);
-                        case value instanceof java.lang.Boolean:
+                        case value instanceof Packages.java.lang.Boolean:
                             return value.booleanValue();
                         default:
                             return (value + '');
@@ -100,8 +100,8 @@
     function updateStreamData() {
         if ($.twitchcache !== undefined) {
             saveObject('panelData', 'stream', {
-                'views': $.twitchcache.getViews(),
                 'followers': $.getFollows($.channelName),
+                'subs': $.getSubscriberCount(),
                 'viewers': $.twitchcache.getViewerCount(),
                 'title': $.twitchcache.getStreamStatus(),
                 'isLive': $.twitchcache.isStreamOnline(),

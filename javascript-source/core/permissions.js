@@ -27,17 +27,17 @@
  */
 (function () {
     var userGroups = [],
-            modeOUsers = new java.util.concurrent.CopyOnWriteArrayList(),
-            subUsers = new java.util.concurrent.CopyOnWriteArrayList(),
-            vipUsers = new java.util.concurrent.CopyOnWriteArrayList(),
+            modeOUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
+            subUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
+            vipUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             users = [],
-            moderatorsCache = new java.util.concurrent.CopyOnWriteArrayList(),
-            botList = new java.util.concurrent.CopyOnWriteArrayList(),
+            moderatorsCache = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
+            botList = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             lastJoinPart = $.systemTime(),
             isUpdatingUsers = false,
             _isSwappedSubscriberVIP = $.inidb.GetBoolean('settings', '', 'isSwappedSubscriberVIP'),
-            _usersLock = new java.util.concurrent.locks.ReentrantLock(),
-            _usersGroupsLock = new java.util.concurrent.locks.ReentrantLock();
+            _usersLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
+            _usersGroupsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @export $
