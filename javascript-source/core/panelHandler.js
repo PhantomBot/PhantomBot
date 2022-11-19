@@ -101,6 +101,7 @@
         if ($.twitchcache !== undefined) {
             saveObject('panelData', 'stream', {
                 'followers': $.getFollows($.channelName),
+                'subs': $.getSubscriberCount(),
                 'viewers': $.twitchcache.getViewerCount(),
                 'title': $.twitchcache.getStreamStatus(),
                 'isLive': $.twitchcache.isStreamOnline(),
