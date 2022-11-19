@@ -25,13 +25,19 @@ import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -86,8 +92,15 @@ public class HttpSetupHandler implements HttpRequestHandler {
         try {
             String path = qsd.path();
 
-            if (path.startsWith("/setup")) {
-                path = "/setup";
+            if (path.endsWith("/currentProperties.json")) {
+                this.currentProperties(ctx, req);
+                return;
+            }
+
+            if (!req.method().equals(HttpMethod.GET)) {
+                com.gmt2001.Console.debug.println("405");
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
+                return;
             }
 
             Path p = Paths.get("./web/", path);
@@ -116,6 +129,47 @@ public class HttpSetupHandler implements HttpRequestHandler {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+    public void currentProperties(ChannelHandlerContext ctx, FullHttpRequest req) {
+        if (req.method().equals(HttpMethod.GET)) {
+            JSONStringer js = new JSONStringer();
+            js.object().key("code").value(HttpResponseStatus.OK.code()).key("status").value(HttpResponseStatus.OK.reasonPhrase()).key("error").value("");
+            js.key("currentProperties").object();
+            CaselessProperties.instance().keySet().forEach(k -> js.key((String) k).value(CaselessProperties.instance().getProperty((String) k)));
+            js.endObject().endObject();
+            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": currentProperties.json");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, js.toString(), "json"));
+        } else if (req.method().equals(HttpMethod.PATCH)) {
+            HttpResponseStatus rs = HttpResponseStatus.NO_CONTENT;
+            String error = "";
+
+            try {
+                Transaction t = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
+                JSONObject jo = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
+                jo.keySet().forEach(k -> t.setProperty(k, "" + jo.get(k)));
+                t.commit();
+            } catch (JSONException ex) {
+                rs = HttpResponseStatus.BAD_REQUEST;
+                error = ex.getMessage();
+                com.gmt2001.Console.err.printStackTrace(ex);
+            } catch (IllegalStateException ex) {
+                rs = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+                error = ex.getMessage();
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+
+            JSONStringer js = new JSONStringer();
+            js.object().key("code").value(rs.code()).key("status").value(rs.reasonPhrase()).key("error").value(error).endObject();
+            com.gmt2001.Console.debug.println(rs.codeAsText() + " " + req.method().asciiName() + ": currentProperties.json");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(rs, js.toString(), "json"));
+        } else {
+            JSONStringer js = new JSONStringer();
+            js.object().key("code").value(HttpResponseStatus.METHOD_NOT_ALLOWED.code()).key("status").value(HttpResponseStatus.METHOD_NOT_ALLOWED.reasonPhrase())
+                    .key("error").value(req.method().asciiName() + " not allowed").endObject();
+            com.gmt2001.Console.debug.println("405");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED, js.toString(), "json"));
         }
     }
 }

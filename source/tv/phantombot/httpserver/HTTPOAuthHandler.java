@@ -26,6 +26,7 @@ import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
@@ -72,6 +73,12 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
             if (!authHandler.checkAuthorization(ctx, req)) {
                 return;
             }
+        }
+
+        if (!req.method().equals(HttpMethod.GET)) {
+            com.gmt2001.Console.debug.println("405");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
+            return;
         }
 
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
