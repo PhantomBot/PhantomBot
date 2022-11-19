@@ -104,6 +104,7 @@
                     'use strict';
                     $(function () {
                         let settings = {};
+                        let pendingSettings = {};
                         function error(msg) {
                             $('#error-box').removeClass('hide');
                             $('#success-box').addClass('hide');
@@ -132,6 +133,49 @@
                                     (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9]*/g, ''))
                                     (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9]*/g, ''));
                         }
+                        function change(event) {
+                            let settingName = event.target.attr('name');
+                            let prop = settings[settingName];
+                            if (event.target.attr('type') === 'radio') {
+                                if (event.target.prop('checked')) {
+                                    if (event.target.attr('id').endsWith('-undef')) {
+                                        if (prop.value !== null) {
+                                            pendingSettings[settingName] = null;
+                                        } else {
+                                            delete pendingSettings[settingName];
+                                        }
+                                    } else if (event.target.attr('id').endsWith('-def')) {
+                                        if (prop.value === null) {
+                                            if (prop.type === 'Boolean') {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                            } else {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                            }
+                                        } else {
+                                            if (prop.type === 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                            } else if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                            } else {
+                                                delete pendingSettings[settingName];
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (event.target.attr('type') === 'checkbox') {
+                                if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
+                                    pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                } else {
+                                    delete pendingSettings[settingName];
+                                }
+                            } else {
+                                if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                                    pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                } else {
+                                    delete pendingSettings[settingName];
+                                }
+                            }
+                        }
                         function createSetting(prop) {
                             $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).appendTo(cat(prop.category, 'ul', true));
                             $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
@@ -143,34 +187,84 @@
                             $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
                             $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'value'))
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef'))
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef')).on('change', event => change(event))
                                     .attr('name', prop.botproperty).attr('type', 'radio').prop('checked', true)
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
                                     .attr('for', cat(prop.category, prop.botproperty, false, 'undef'))
                                     .html('Unset').css('margin-right', '5px')
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty).attr('type', 'radio')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             switch (prop.type) {
+                                case 'Long':
+                                    prop.type = 'Int';
+                                case 'Int':
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if (event.target.prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', true);
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if (event.target.prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', false);
+                                        }
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'int-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').prop('disabled', true)
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    break;
+                                case 'Double':
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if (event.target.prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', true);
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if (event.target.prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', false);
+                                        }
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'double-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').attr('step', '0.01').prop('disabled', true)
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    break;
+                                case 'Boolean':
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if (event.target.prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', true);
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if (event.target.prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', false);
+                                        }
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'checkbox').prop('disabled', true)
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    break;
                                 default:
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
                                         if (event.target.prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', true);
                                         }
                                     });
-                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string'))
-                                            .attr('name', prop.botproperty).attr('type', 'radio').on('input', event => {
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
                                         if (event.target.prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', false);
                                         }
-                                    }).appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string-value'))
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string-value')).on('change', event => change(event))
                                             .attr('name', prop.botproperty + '-value').attr('type', 'text').prop('disabled', true)
                                             .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                                    settings[prop.botproperty] = prop;
-                                    settings[prop.botproperty].undef = true;
-                                    settings[prop.botproperty].value = null;
                                     break;
                             }
+
+
+                            settings[prop.botproperty] = prop;
+                            settings[prop.botproperty].value = null;
                         }
                         function showSettings(data) {
                             let categorySort = {};
