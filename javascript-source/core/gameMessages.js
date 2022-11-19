@@ -33,7 +33,7 @@
             gamble: 0,
             slot: 0
         },
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function loadResponses

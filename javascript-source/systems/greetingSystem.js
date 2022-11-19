@@ -28,7 +28,7 @@
             defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(name) joined!'),
             greetingCooldown = $.getSetIniDbNumber('greetingSettings', 'cooldown', (6 * 36e5)),
             /* 6 Hours */
-            greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+            greetingQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
             onJoin = $.getSetIniDbBoolean('greetingSettings', 'onJoin', true),
             userSelfService = $.getSetIniDbBoolean('greetingSettings', 'userSelfService', false);
 
@@ -79,7 +79,7 @@
 
             /* There are greetings, however, autoGreet has been disabled, so destroy the queue. */
             if (!greetingQueue.isEmpty() && !autoGreetEnabled) {
-                greetingQueue = new java.util.concurrent.ConcurrentLinkedQueue;
+                greetingQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue;
             }
 
         }, 15000, 'scripts::systems::greetingSystem.js');

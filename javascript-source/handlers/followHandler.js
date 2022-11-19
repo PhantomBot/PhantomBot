@@ -58,7 +58,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
             followReward = $.getSetIniDbNumber('settings', 'followReward', 0),
             followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
             followDelay = $.getSetIniDbNumber('settings', 'followDelay', 5),
-            followQueue = new java.util.concurrent.ConcurrentLinkedQueue,
+            followQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
             lastFollow = $.systemTime(),
             announceFollows = false;
 

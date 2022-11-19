@@ -29,7 +29,7 @@
         jailTimeout = $.getSetIniDbNumber('settings', 'killTimeoutTime', 60),
         lang,
         rand,
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadKill

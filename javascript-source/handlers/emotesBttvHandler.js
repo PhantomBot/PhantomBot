@@ -1,7 +1,7 @@
 (function () {
     const emoteProvider = 'bttv';
     var emotes = [],
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     function loadCacheFromDatabase() {
         var cacheContents = $.inidb.get('emotecache', 'bttvEmotes');

@@ -37,8 +37,8 @@
             uniqueEntries = [],
             lastWinners = [],
             hasDrawn = false,
-            _entriesLock = new java.util.concurrent.locks.ReentrantLock(),
-            _totalTicketsLock = new java.util.concurrent.locks.ReentrantLock();
+            _entriesLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
+            _totalTicketsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     var POS = {
         times: 0,

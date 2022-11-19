@@ -26,8 +26,8 @@
         lastRandom = 0,
         randomsPG13Count = 0,
         lastPG13Random = 0,
-        _PG13Lock = new java.util.concurrent.locks.ReentrantLock(),
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _PG13Lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @event webPanelSocketUpdate

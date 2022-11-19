@@ -23,7 +23,7 @@
 (function() {
     var responseCount = 0,
         lastRandom = 0,
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function loadResponses

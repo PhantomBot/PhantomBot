@@ -90,7 +90,7 @@
         // The script sometimes load before discord, so add this.
         while (!$.inidb.exists('discordPermsObj', 'obj')) {
             try {
-                java.lang.Thread.sleep(1000);
+                Packages.java.lang.Thread.sleep(1000);
             } catch (ex) {
                 $.log.error('Failed to set permission on Discord command as Discord is not connected. Please restart PhantomBot.');
                 return;

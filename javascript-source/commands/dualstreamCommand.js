@@ -21,7 +21,7 @@
         timerInterval = $.getSetIniDbNumber('dualStreamCommand', 'timerInterval', 20),
         reqMessages = $.getSetIniDbNumber('dualStreamCommand', 'reqMessages', 10),
         messageCount = 0,
-        _messageCountLock = new java.util.concurrent.locks.ReentrantLock(),
+        _messageCountLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
         lastSent = 0;
 
     /*

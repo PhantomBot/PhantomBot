@@ -24,7 +24,7 @@
     var isActive = $.getSetIniDbBoolean('commandPause', 'commandsPaused', false),
         defaultTime = $.getSetIniDbNumber('commandPause', 'defaultTime', 300),
         timerId,
-        _lock = new java.util.concurrent.locks.ReentrantLock();
+        _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function pause

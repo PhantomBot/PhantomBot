@@ -42,7 +42,7 @@
             timerMessage = '',
             lastWinners = [],
             hasDrawn = false,
-            _entriesLock = new java.util.concurrent.locks.ReentrantLock();
+            _entriesLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
      * @function reloadRaffle
