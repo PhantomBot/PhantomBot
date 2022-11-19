@@ -126,7 +126,7 @@ $(function () {
             socket.getDBValue('dashboard_get_data', 'panelData', 'stream', function (e) {
                 if (e.panelData === null) {
                     socket.wsEvent('panelDataRefresh', './core/panelHandler.js', '', [], function (e) {});
-                    e = {'title': 'Initializing...', 'game': 'Initializing...', 'isLive': false, 'uptime': 'Init', 'chatters': 0, 'viewers': 0, 'followers': 0, 'views': 0};
+                    e = {'title': 'Initializing...', 'game': 'Initializing...', 'isLive': false, 'uptime': 'Init', 'chatters': 0, 'viewers': 0, 'followers': 0, 'subs': 0};
                 } else {
                     // Parse our object.
                     e = JSON.parse(e.panelData);
@@ -177,12 +177,11 @@ $(function () {
                             // Disable chat and the player.
                             $('#twitch-chat-box').addClass('off');
                             $('#twitch-player-box').addClass('off');
-                            // Set views if not hidden.
-                            helpers.handlePanelSetInfo($('#dashboard-views').data('number', helpers.parseNumber(tempData.views)), 'dashboard-views', helpers.fixNumber(tempData.views));
                             // Set viewers.
                             helpers.handlePanelSetInfo($('#dashboard-viewers').data('number', helpers.parseNumber(tempData.viewers)), 'dashboard-viewers', helpers.fixNumber(tempData.viewers));
                             // Set followers.
                             helpers.handlePanelSetInfo($('#dashboard-followers').data('number', helpers.parseNumber(tempData.followers)), 'dashboard-followers', helpers.fixNumber(tempData.followers));
+                            helpers.handlePanelSetInfo($('#dashboard-subs').data('number', helpers.parseNumber(tempData.subs)), 'dashboard-subs', helpers.fixNumber(tempData.subs));
                         });
                     } else {
                         socket.getDBValues('dashboard_get_panel_toggles', {
@@ -237,12 +236,11 @@ $(function () {
                                 $.showPage();
                                 // Scroll to bottom of event log.
                                 $('.event-log').scrollTop((helpers.isReverseSortEvents ? ($('.event-log').scrollTop() - $('.recent-events').height()) : $('.recent-events').height()));
-                                // Set views if not hidden.
-                                helpers.handlePanelSetInfo($('#dashboard-views').data('number', helpers.parseNumber(tempData.views)), 'dashboard-views', helpers.fixNumber(tempData.views));
                                 // Set viewers.
                                 helpers.handlePanelSetInfo($('#dashboard-viewers').data('number', helpers.parseNumber(tempData.viewers)), 'dashboard-viewers', helpers.fixNumber(tempData.viewers));
                                 // Set followers.
                                 helpers.handlePanelSetInfo($('#dashboard-followers').data('number', helpers.parseNumber(tempData.followers)), 'dashboard-followers', helpers.fixNumber(tempData.followers));
+                                helpers.handlePanelSetInfo($('#dashboard-subs').data('number', helpers.parseNumber(tempData.subs)), 'dashboard-subs', helpers.fixNumber(tempData.subs));
                             });
                         });
                     }
@@ -304,7 +302,7 @@ $(function () {
     });
 
     // Handle the hidding of the dashboard panels.
-    $('#dashboard-views, #dashboard-followers, #dashboard-viewers').on('click', function (e) {
+    $('#dashboard-subs, #dashboard-followers, #dashboard-viewers').on('click', function (e) {
         helpers.handlePanelToggleInfo($(this), e.target.id);
     });
 
@@ -488,17 +486,16 @@ $(function () {
         socket.getDBValue('dashboard_get_data_refresh', 'panelData', 'stream', function (e) {
             if (e.panelData === null) {
                 socket.wsEvent('panelDataRefresh', './core/panelHandler.js', '', [], function (e) {});
-                e = {'title': 'Initializing...', 'game': 'Initializing...', 'isLive': false, 'uptime': 'Init', 'chatters': 0, 'viewers': 0, 'followers': 0, 'views': 0};
+                e = {'title': 'Initializing...', 'game': 'Initializing...', 'isLive': false, 'uptime': 'Init', 'chatters': 0, 'viewers': 0, 'followers': 0, 'subs': 0};
             } else {
                 // Parse our object.
                 e = JSON.parse(e.panelData);
             }
-            // Set views if not hidden.
-            helpers.handlePanelSetInfo($('#dashboard-views').data('number', helpers.parseNumber(e.views)), 'dashboard-views', helpers.fixNumber(e.views));
             // Set viewers.
             helpers.handlePanelSetInfo($('#dashboard-viewers').data('number', helpers.parseNumber(e.viewers)), 'dashboard-viewers', helpers.fixNumber(e.viewers));
             // Set followers.
             helpers.handlePanelSetInfo($('#dashboard-followers').data('number', helpers.parseNumber(e.followers)), 'dashboard-followers', helpers.fixNumber(e.followers));
+            helpers.handlePanelSetInfo($('#dashboard-subs').data('number', helpers.parseNumber(e.subs)), 'dashboard-subs', helpers.fixNumber(e.subs));
             // Set uptime.
             if (e.isLive) {
                 $('#dashboard-uptime').html(e.uptime);
