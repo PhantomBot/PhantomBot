@@ -275,7 +275,11 @@ public class CaselessProperties extends Properties {
             });
 
             newValues.forEach((k, v) -> {
-                this.setProperty(k, v);
+                if (v == null) {
+                    this.remove(k);
+                } else {
+                    this.setProperty(k, v);
+                }
             });
 
             this.store();
