@@ -100,7 +100,6 @@
     function updateStreamData() {
         if ($.twitchcache !== undefined) {
             saveObject('panelData', 'stream', {
-                'views': $.twitchcache.getViews(),
                 'followers': $.getFollows($.channelName),
                 'viewers': $.twitchcache.getViewerCount(),
                 'title': $.twitchcache.getStreamStatus(),
