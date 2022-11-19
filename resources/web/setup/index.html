@@ -29,6 +29,17 @@
         <link rel="stylesheet" href="/common/css/AdminLTE.dark.min.css" />
         <link rel="stylesheet" href="/common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="/common/css/pace.min.css" />
+        <style>
+            li.botproperty {
+                margin-bottom: 5px;
+            }
+            .botproperty input[type=radio] {
+                margin-right: 3px;
+            }
+            .botproperty label {
+                margin-right: 15px;
+            }
+        </style>
     </head>
 
     <body class="skin-purple layout-top-nav">
@@ -65,7 +76,7 @@
                             <!-- /.box-tools -->
                         </div>
                         <div class="box-body" id="content-pane">
-                            <div class="alert-info page-header">
+                            <div class="alert-info">
                                 Required steps for bot setup:
                                 <ol>
                                     <li>Set the options in the <b>Admin</b> section below</li>
@@ -129,22 +140,23 @@
                             $('#info-box').addClass('hide');
                         }
                         function cat(category, suffix = '', hash = false, suffix2 = '') {
-                            return (hash ? '#' : '') + 'cat-' + category.replace(/[^a-zA-Z0-9]*/g, '') +
-                                    (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9]*/g, ''))
-                                    (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9]*/g, ''));
+                            return (hash ? '#' : '') + 'cat-' + category.replace(/[^a-zA-Z0-9]*/g, '')
+                                    + (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9]*/g, ''))
+                                    + (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9]*/g, ''));
                         }
                         function change(event) {
-                            let settingName = event.target.attr('name');
+                            let elm = $(event.target);
+                            let settingName = elm.attr('name');
                             let prop = settings[settingName];
-                            if (event.target.attr('type') === 'radio') {
-                                if (event.target.prop('checked')) {
-                                    if (event.target.attr('id').endsWith('-undef')) {
+                            if (elm.attr('type') === 'radio') {
+                                if (elm.prop('checked')) {
+                                    if (elm.attr('id').endsWith('-undef')) {
                                         if (prop.value !== null) {
                                             pendingSettings[settingName] = null;
                                         } else {
                                             delete pendingSettings[settingName];
                                         }
-                                    } else if (event.target.attr('id').endsWith('-def')) {
+                                    } else if (elm.attr('id').endsWith('-def')) {
                                         if (prop.value === null) {
                                             if (prop.type === 'Boolean') {
                                                 pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
@@ -162,7 +174,7 @@
                                         }
                                     }
                                 }
-                            } else if (event.target.attr('type') === 'checkbox') {
+                            } else if (elm.attr('type') === 'checkbox') {
                                 if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
                                     pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
                                 } else {
@@ -177,12 +189,15 @@
                             }
                         }
                         function createSetting(prop) {
-                            $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).appendTo(cat(prop.category, 'ul', true));
-                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
+                            $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).addClass('botproperty')
+                                    .appendTo(cat(prop.category, 'ul', true));
+                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'property-span'))
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<b/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'property-span'));
                             $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'description'))
-                                    .html(prop.description.replace(/`(\w*)`/g, '<code>$1</code>'))
+                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'definition'))
+                                    .html(prop.definition.replace(/`(\w*)`/g, '<code>$1</code>'))
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
                             $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
                             $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'value'))
@@ -192,8 +207,7 @@
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
                                     .attr('for', cat(prop.category, prop.botproperty, false, 'undef'))
-                                    .html('Unset').css('margin-right', '5px')
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    .html('Unset/Default').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
                                     .attr('name', prop.botproperty).attr('type', 'radio')
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
@@ -202,12 +216,12 @@
                                     prop.type = 'Int';
                                 case 'Int':
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', true);
                                         }
                                     });
                                     $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', false);
                                         }
                                     });
@@ -217,12 +231,12 @@
                                     break;
                                 case 'Double':
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', true);
                                         }
                                     });
                                     $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', false);
                                         }
                                     });
@@ -232,12 +246,12 @@
                                     break;
                                 case 'Boolean':
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', true);
                                         }
                                     });
                                     $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', false);
                                         }
                                     });
@@ -247,12 +261,12 @@
                                     break;
                                 default:
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', true);
                                         }
                                     });
                                     $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if (event.target.prop('checked')) {
+                                        if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', false);
                                         }
                                     });
@@ -276,7 +290,7 @@
                             data.sort((a, b) => {
                                 if (categorySort[a.category] < categorySort[b.category]) {
                                     return -1;
-                                } else if (categorySort[a.category] > categorySort(b.category)) {
+                                } else if (categorySort[a.category] > categorySort[b.category]) {
                                     return 1;
                                 } else if (a.category.localeCompare(b.category) !== 0) {
                                     return a.category.localeCompare(b.category);
@@ -297,7 +311,7 @@
                                             .appendTo('#setup-sections');
                                     $('<div/>').attr('id', cat(prop.category, 'header')).addClass('box-header').addClass('with-border')
                                             .appendTo(cat(prop.category, '', true));
-                                    $('<h4/>').attr('id', cat(prop.category, 'h4')).appendTo(cat(prop.category, 'header', true));
+                                    $('<h4/>').attr('id', cat(prop.category, 'h4')).html(prop.category).appendTo(cat(prop.category, 'header', true));
                                     $('<div/>').attr('id', cat(prop.category, 'body')).addClass('box-body').appendTo(cat(prop.category, '', true));
                                     $('<ul/>').attr('id', cat(prop.category, 'ul')).addClass('list-unstyled').appendTo(cat(prop.category, 'body', true));
                                     currentCategory = prop.category;
