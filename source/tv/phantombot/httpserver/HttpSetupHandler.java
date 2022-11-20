@@ -141,6 +141,10 @@ public class HttpSetupHandler implements HttpRequestHandler {
         }
     }
 
+    public boolean checkTokenAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
+        return this.authHandlerToken.isAuthorized(ctx, req);
+    }
+
     public boolean checkTokenAuthorization(String user, String pass) {
         return this.authHandlerToken.isAuthorized(user, pass);
     }
