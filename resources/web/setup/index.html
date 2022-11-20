@@ -337,7 +337,7 @@
                             settings[prop.botproperty] = prop;
                             settings[prop.botproperty].value = null;
                         }
-                        function showSettings(data) {
+                        function createSettings(data) {
                             let categorySort = {};
                             for (let x in data) {
                                 if (!categorySort.hasOwnProperty(data[x].category) || data[x].category_sort < categorySort[data[x].category]) {
@@ -376,16 +376,50 @@
                                 createSetting(prop);
                             });
                         }
+                        function populateSettings(props) {
+                            for (const propk in props) {
+                                if (settings.hasOwnProperty(propk)) {
+                                    let prop = settings[propk];
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', false);
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', true);
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', false);
+                                    if (prop.type === 'Boolean') {
+                                        settings[propk].value = props[propk].match(/(1|true|yes)/i) !== null;
+                                        $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
+                                    } else {
+                                        settings[propk].value = props[propk];
+                                        $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
+                                    }
+                                }
+                            }
+                        }
                         $.ajax({
                             cache: false,
                             dataType: 'json',
                             url: 'properties.json',
                             method: 'GET',
                             success: function (data) {
-                                showSettings(data);
+                                createSettings(data);
+                                $.ajax({
+                                    cache: false,
+                                    dataType: 'json',
+                                    url: 'currentProperties.json',
+                                    method: 'GET',
+                                    success: function (data) {
+                                        if (data.code !== 200) {
+                                            error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
+                                        } else {
+                                            populateSettings(data.currentProperties);
+                                            clearAll();
+                                        }
+                                    },
+                                    error: function (err) {
+                                        error('Failed to retrive current settings: ' + err.statusText + ' ' + err.responseText + '!');
+                                    }
+                                });
                             },
                             error: function (err) {
-                                error('Failed to retrive settings list: ' + err.statusText + ' ' + err.responseText + '!!');
+                                error('Failed to retrive settings list: ' + err.statusText + ' ' + err.responseText + '!');
                             }
                         });
 
