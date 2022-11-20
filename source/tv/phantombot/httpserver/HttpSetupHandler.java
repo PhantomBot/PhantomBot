@@ -153,7 +153,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
             try {
                 Transaction t = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
                 JSONObject jo = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
-                jo.keySet().forEach(k -> t.setProperty(k, "" + jo.get(k)));
+                jo.keySet().forEach(k -> t.setProperty(k, jo.isNull(k) ? (String) null : "" + jo.get(k)));
                 t.commit();
             } catch (JSONException ex) {
                 rs = HttpResponseStatus.BAD_REQUEST;
