@@ -19,7 +19,6 @@ package tv.phantombot;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -57,10 +56,6 @@ public class ConfigurationManager {
     }
 
     static CaselessProperties getConfiguration() {
-        /* List of properties that must exist. */
-        String[] requiredProperties = new String[]{PROP_PANEL_USER, PROP_PANEL_PASSWORD, PROP_CHANNEL, PROP_OWNER, PROP_USER};
-        String requiredPropertiesErrorMessage;
-
         /* Properties configuration */
         CaselessProperties startProperties = CaselessProperties.instance();
         startProperties.clear();
@@ -102,10 +97,8 @@ public class ConfigurationManager {
         changed |= generateDefaultValues(startProperties);
 
         /* Make a new botlogin with the botName, oauth or channel is not found */
-        if (doSetup(startProperties, startProperties.getProperty(PROP_USER, "").isBlank(), startProperties.getProperty(PROP_CHANNEL, "").isBlank(),
-                startProperties.getProperty(PROP_OAUTH, "").isBlank(),
-                startProperties.getProperty(PROP_PANEL_USER, "").isBlank() || startProperties.getProperty(PROP_PANEL_PASSWORD, "").isBlank())) {
-            changed = true;
+        if (doSetup(startProperties, startProperties.getProperty(PROP_CHANNEL, "").isBlank(),
+                startProperties.getProperty(PROP_OAUTH, "").isBlank())) {
             newSetup = true;
         }
 
@@ -116,18 +109,6 @@ public class ConfigurationManager {
          * value.
          */
         changed = startProperties.stringPropertyNames().stream().map((propertyKey) -> startProperties.remove(propertyKey, "")).reduce(changed, (accumulator, _item) -> accumulator | _item);
-
-        /*
-         * Check for required settings.
-         */
-        requiredPropertiesErrorMessage = String.join(" ", Arrays.stream(requiredProperties).filter(x -> startProperties.getProperty(x) == null).toArray(String[]::new));
-
-        if (!requiredPropertiesErrorMessage.isEmpty()) {
-            com.gmt2001.Console.err.println();
-            com.gmt2001.Console.err.println("Missing Required Properties: " + requiredPropertiesErrorMessage);
-            com.gmt2001.Console.err.println("Exiting PhantomBot");
-            PhantomBot.exitError();
-        }
 
         if (!startProperties.getPropertyAsBoolean("allownonascii", false)) {
             for (String propertyKey : startProperties.stringPropertyNames()) {
@@ -249,144 +230,59 @@ public class ConfigurationManager {
         return properties.getPropertyAsBoolean(propertyName, defaulValue);
     }
 
-    private static boolean doSetup(CaselessProperties startProperties, boolean user, boolean channel, boolean oauth, boolean panel) {
-        try {
-            if (!user && !channel && !oauth && !panel) {
-                return false;
-            }
-
-            boolean interactive = System.getProperty("interactive") != null;
-
-            com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
-            com.gmt2001.Console.out.print("If you have any issues please join our Discord!\r\n");
-            com.gmt2001.Console.out.print("Discord: https://discord.gg/YKvMd78\r\n");
-            com.gmt2001.Console.out.print("\r\n");
-
-            if (RepoVersion.isDocker()) {
-                com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Docker.\r\n");
-                com.gmt2001.Console.out.print("We recommend using our official docker-compose.yml to setup\r\n");
-                com.gmt2001.Console.out.print("the initially required variables: https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml\r\n");
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("If you want your PhantomBot Docker container to update automatically,\r\n");
-                com.gmt2001.Console.out.print("we recommend using ouroboros: https://github.com/gmt2001/ouroboros\r\n");
-            } else if (SystemUtils.IS_OS_WINDOWS) {
-                com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.dev/guides/#guide=content/setupbot/windows");
-            } else if (SystemUtils.IS_OS_LINUX) {
-                com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
-            } else if (SystemUtils.IS_OS_MAC) {
-                com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
-                com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.dev/guides/#guide=content/setupbot/macos");
-            } else if (SystemUtils.IS_OS_FREE_BSD || SystemUtils.IS_OS_NET_BSD || SystemUtils.IS_OS_OPEN_BSD) {
-                com.gmt2001.Console.out.print("PhantomBot has detected that your device is running BSD.\r\n");
-                com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
-            } else if (SystemUtils.IS_OS_UNIX) {
-                com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Unix.\r\n");
-                com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
-            } else {
-                com.gmt2001.Console.out.print("PhantomBot is not able to detect your OS type.\r\n");
-                com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
-            }
-
-            com.gmt2001.Console.out.print("\r\n\r\n\r\n");
-
-            if (user) {
-                if (!interactive) {
-                    com.gmt2001.Console.out.print("The bot username is not setup, please perform first run\r\n");
-                    com.gmt2001.Console.out.print("in interactive mode (launch.bat/launch.sh) or see our\r\n");
-                    com.gmt2001.Console.out.print("official docker-compose.yml for environment variables if\r\n");
-                    com.gmt2001.Console.out.print("using Docker.\r\n");
-                    PhantomBot.exitError();
-                }
-                // Bot name.
-                do {
-                    com.gmt2001.Console.out.print("1. Please enter the bot's Twitch username: ");
-
-                    startProperties.setProperty("user", System.console().readLine().trim().toLowerCase());
-                } while (startProperties.getProperty("user", "").length() <= 0);
-            }
-
-            if (channel) {
-                if (!interactive) {
-                    com.gmt2001.Console.out.print("The broadcaster channel name is not setup, please perform first run\r\n");
-                    com.gmt2001.Console.out.print("in interactive mode (launch.bat/launch.sh) or see our\r\n");
-                    com.gmt2001.Console.out.print("official docker-compose.yml for environment variables if\r\n");
-                    com.gmt2001.Console.out.print("using Docker.\r\n");
-                    PhantomBot.exitError();
-                }
-                // Channel name.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("2. Please enter the name of the Twitch channel the bot should join: ");
-
-                    startProperties.setProperty(PROP_CHANNEL, System.console().readLine().trim());
-                } while (startProperties.getProperty(PROP_CHANNEL, "").length() <= 0);
-            }
-
-            if (panel) {
-                if (!interactive) {
-                    com.gmt2001.Console.out.print("The panel login is not setup, please perform first run\r\n");
-                    com.gmt2001.Console.out.print("in interactive mode (launch.bat/launch.sh) or see our\r\n");
-                    com.gmt2001.Console.out.print("official docker-compose.yml for environment variables if\r\n");
-                    com.gmt2001.Console.out.print("using Docker.\r\n");
-                    PhantomBot.exitError();
-                }
-                // Panel username.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("3. Please enter a username for the web panel: ");
-
-                    startProperties.setProperty(PROP_PANEL_USER, System.console().readLine().trim());
-                } while (startProperties.getProperty(PROP_PANEL_USER, "").length() <= 0);
-
-                // Panel password.
-                do {
-                    com.gmt2001.Console.out.print("\r\n");
-                    com.gmt2001.Console.out.print("4. Please enter a password for the web panel: ");
-
-                    startProperties.setProperty(PROP_PANEL_PASSWORD, System.console().readLine().trim());
-                } while (startProperties.getProperty(PROP_PANEL_PASSWORD, "").length() <= 0);
-            }
-
-            if (oauth) {
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("5. After this setup is completed, you will need to setup automatically refreshing OAuth tokens.\r\n");
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("You will setup a chat OAuth token for the bot to be able to send messages in Twitch Chat.\r\n");
-                com.gmt2001.Console.out.print("You will also setup a channel OAuth token for the bot to be able to change your title and game.\r\n");
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("Please note the BOT token is for the account that will show up in chat.\r\n");
-                com.gmt2001.Console.out.print("Please note the CASTER token is for the broadcaster's account for API requests.\r\n");
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("The link to the setup page is here: http://localhost:25000/oauth/\r\n");
-                com.gmt2001.Console.out.print("Or go to the equivilent URL if your bot is hosted remotely.\r\n");
-                com.gmt2001.Console.out.print("\r\n");
-                com.gmt2001.Console.out.print("Please note, you must complete this step for the bot to fully launch.\r\n");
-            }
-
-            com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("PhantomBot will start the web server in 10 seconds.\r\n");
-            com.gmt2001.Console.out.print("If you're hosting the bot locally you can access the control panel here: http://localhost:25000/\r\n");
-            com.gmt2001.Console.out.print("If you're running the bot on a server, make sure to open the following port: 25000\r\n");
-            com.gmt2001.Console.out.print("You have to change 'localhost' to your server ip to access the panel.\r\n");
-            com.gmt2001.Console.out.print("\r\n");
-            com.gmt2001.Console.out.print("You can now setup the automatically refreshing OAuth tokens system, you will need the\r\n");
-            com.gmt2001.Console.out.print("web panel username and password you set above to access the page.\r\n");
-            com.gmt2001.Console.out.print("\r\n");
-
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.debug.println("Failed to sleep in setup: " + ex.getMessage());
-            Thread.currentThread().interrupt();
-        } catch (NullPointerException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            com.gmt2001.Console.out.println("[ERROR] Failed to setup PhantomBot. Now exiting...");
-            PhantomBot.exitError();
+    private static boolean doSetup(CaselessProperties startProperties, boolean channel, boolean oauth) {
+        if (!channel && !oauth) {
+            return false;
         }
+
+        com.gmt2001.Console.out.print("\r\n");
+        com.gmt2001.Console.out.print("Welcome to the PhantomBot setup process!\r\n");
+        com.gmt2001.Console.out.print("If you have any issues please join our Discord!\r\n");
+        com.gmt2001.Console.out.print("Discord: https://discord.gg/YKvMd78\r\n");
+        com.gmt2001.Console.out.print("\r\n");
+
+        if (RepoVersion.isDocker()) {
+            com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Docker.\r\n");
+            com.gmt2001.Console.out.print("We recommend using our official docker-compose.yml to setup\r\n");
+            com.gmt2001.Console.out.print("the container: https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml\r\n");
+            com.gmt2001.Console.out.print("\r\n");
+            com.gmt2001.Console.out.print("If you want your PhantomBot Docker container to update automatically,\r\n");
+            com.gmt2001.Console.out.print("we recommend using ouroboros: https://github.com/gmt2001/ouroboros\r\n");
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Windows.\r\n");
+            com.gmt2001.Console.out.print("Here's the setup guide for Windows: https://phantombot.dev/guides/#guide=content/setupbot/windows");
+        } else if (SystemUtils.IS_OS_LINUX) {
+            com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Linux.\r\n");
+            com.gmt2001.Console.out.print("Here's the setup guide for Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu\r\n");
+            com.gmt2001.Console.out.print("Here's the setup guide for CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
+        } else if (SystemUtils.IS_OS_MAC) {
+            com.gmt2001.Console.out.print("PhantomBot has detected that your device is running macOS.\r\n");
+            com.gmt2001.Console.out.print("Here's the setup guide for macOS: https://phantombot.dev/guides/#guide=content/setupbot/macos");
+        } else if (SystemUtils.IS_OS_FREE_BSD || SystemUtils.IS_OS_NET_BSD || SystemUtils.IS_OS_OPEN_BSD) {
+            com.gmt2001.Console.out.print("PhantomBot has detected that your device is running BSD.\r\n");
+            com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
+        } else if (SystemUtils.IS_OS_UNIX) {
+            com.gmt2001.Console.out.print("PhantomBot has detected that your device is running Unix.\r\n");
+            com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
+        } else {
+            com.gmt2001.Console.out.print("PhantomBot is not able to detect your OS type.\r\n");
+            com.gmt2001.Console.out.print("Sorry, we do not have any setup guides for this OS.\r\n");
+        }
+
+        com.gmt2001.Console.out.print("\r\n\r\n\r\n");
+
+        if (channel) {
+            com.gmt2001.Console.out.print("The channel to join is not setup, please perform first run\r\n");
+            com.gmt2001.Console.out.print("setup from the bots webserver.\r\n");
+        }
+
+        if (oauth) {
+            com.gmt2001.Console.out.print("The oauth token is not setup, please perform first run\r\n");
+            com.gmt2001.Console.out.print("setup from the bots webserver.\r\n");
+        }
+
+        com.gmt2001.Console.out.print("\r\n");
+        com.gmt2001.Console.out.print("\r\n");
 
         return true;
     }
