@@ -121,7 +121,7 @@
                             <div class="alert-success text-center page-header hide" id="success-box"></div>
                             <div class="alert-error text-center page-header hide" id="error-box"></div>
                             <br />
-                            <div><button id="save-button" class="btn btn-primary disabled">Save</button></div>
+                            <div><button id="save-button" class="btn btn-primary">Save</button></div>
                             <br />
                             <div id="setup-sections"></div>
                         </div>
@@ -190,6 +190,10 @@
                                             delete pendingSettings[settingName];
                                         }
                                     } else if (elm.attr('id').endsWith('-def')) {
+                                        if (prop.type === 'Boolean') {
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                        }
                                         if (prop.value === null) {
                                             if (prop.type === 'Boolean') {
                                                 pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
@@ -199,7 +203,7 @@
                                         } else {
                                             if (prop.type === 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
                                                 pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
-                                            } else if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                                            } else if (prop.type !== 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
                                                 pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
                                             } else {
                                                 delete pendingSettings[settingName];
@@ -222,6 +226,7 @@
                                     delete pendingSettings[settingName];
                                 }
                             }
+                            $('#save-button').prop('disabled', Object.keys(pendingSettings).length === 0);
                         }
                         function createSetting(prop) {
                             $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).addClass('botproperty')
@@ -386,12 +391,54 @@
                                     if (prop.type === 'Boolean') {
                                         settings[propk].value = props[propk].match(/(1|true|yes)/i) !== null;
                                         $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
+                                        $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
                                     } else {
                                         settings[propk].value = props[propk];
                                         $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
                                     }
                                 }
                             }
+                        }
+                        function updateCurrentSettings() {
+                            for (const propk in pendingSettings) {
+                                if (settings.hasOwnProperty(propk)) {
+                                    let prop = settings[propk];
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', pendingSettings[propk] === null);
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', pendingSettings[propk] !== null);
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', pendingSettings[propk] !== null);
+                                    settings[propk].value = pendingSettings[propk];
+                                    if (pendingSettings[propk] !== null) {
+                                        if (prop.type === 'Boolean') {
+                                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                        } else {
+                                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
+                                        }
+                                    }
+                                }
+                            }
+                            pendingSettings = {};
+                        }
+                        function getCurrentSettings() {
+                            $.ajax({
+                                cache: false,
+                                dataType: 'json',
+                                url: 'currentProperties.json',
+                                method: 'GET',
+                                success: function (data) {
+                                    if (data.code !== 200) {
+                                        error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
+                                    } else {
+                                        populateSettings(data.currentProperties);
+                                        clearAll();
+                                    }
+                                },
+                                error: function (err) {
+                                    error('Failed to retrive current settings: ' + err.statusText + ' ' + err.responseText + '!');
+                                }
+                            });
                         }
                         $.ajax({
                             cache: false,
@@ -400,26 +447,36 @@
                             method: 'GET',
                             success: function (data) {
                                 createSettings(data);
-                                $.ajax({
-                                    cache: false,
-                                    dataType: 'json',
-                                    url: 'currentProperties.json',
-                                    method: 'GET',
-                                    success: function (data) {
-                                        if (data.code !== 200) {
-                                            error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
-                                        } else {
-                                            populateSettings(data.currentProperties);
-                                            clearAll();
-                                        }
-                                    },
-                                    error: function (err) {
-                                        error('Failed to retrive current settings: ' + err.statusText + ' ' + err.responseText + '!');
-                                    }
-                                });
+                                getCurrentSettings();
                             },
                             error: function (err) {
                                 error('Failed to retrive settings list: ' + err.statusText + ' ' + err.responseText + '!');
+                            }
+                        });
+
+                        $('#save-button').prop('disabled', true).click(function () {
+                            if (!$('#save-button').prop('disabled')) {
+                                $.ajax({
+                                    cache: false,
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(pendingSettings),
+                                    dataType: 'json',
+                                    url: 'currentProperties.json',
+                                    method: 'PATCH',
+                                    processData: false,
+                                    success: function (data) {
+                                        if (data !== undefined && data.code !== 204) {
+                                            error('Failed to update settings: ' + data.status + ' ' + data.error + '!');
+                                        } else {
+                                            success('Settings updated');
+                                            updateCurrentSettings();
+                                            $('#save-button').prop('disabled', true);
+                                        }
+                                    },
+                                    error: function (err) {
+                                        error('Failed to update settings: ' + err.statusText + ' ' + err.responseText + '!');
+                                    }
+                                });
                             }
                         });
 
