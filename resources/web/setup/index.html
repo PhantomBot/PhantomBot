@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
     Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
@@ -11,8 +12,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
-<!DOCTYPE html>
 
 <html>
     <head>
@@ -30,14 +29,25 @@
         <link rel="stylesheet" href="/common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="/common/css/pace.min.css" />
         <style>
+            .required-steps {
+                padding-left: 5px;
+            }
             li.botproperty {
-                margin-bottom: 5px;
+                margin-bottom: 10px;
             }
             .botproperty input[type=radio] {
                 margin-right: 3px;
             }
             .botproperty label {
                 margin-right: 15px;
+                min-width: 50px;
+            }
+            .botproperty input[type=number] {
+                max-width: 100px;
+            }
+            .botproperty input[type=text] {
+                max-width: 500px;
+                width: 88%;
             }
         </style>
     </head>
@@ -76,7 +86,7 @@
                             <!-- /.box-tools -->
                         </div>
                         <div class="box-body" id="content-pane">
-                            <div class="alert-info" style="padding-left: 5px;">
+                            <div class="alert-info required-steps">
                                 Required steps for bot setup:
                                 <ol>
                                     <li>Set the options in the <b>Admin</b> section below</li>
@@ -206,7 +216,8 @@
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
                                     .attr('for', cat(prop.category, prop.botproperty, false, 'undef'))
-                                    .html('Unset/Default').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    .html(prop.definition.toLowerCase().includes('default') ? 'Default' : 'Unset')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
                                     .attr('name', prop.botproperty).attr('type', 'radio')
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
