@@ -46,7 +46,7 @@ import tv.phantombot.PhantomBot;
  */
 public class HttpSetupHandler implements HttpRequestHandler {
 
-    private final HttpAuthenticationHandler authHandler;
+    private HttpAuthenticationHandler authHandler;
     private static final int TOKENLEN = 20;
     private HttpAuthenticationHandler authHandlerToken;
     private String token;
@@ -62,6 +62,11 @@ public class HttpSetupHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/setup", this);
         return this;
+    }
+
+    public void updateAuth() {
+        this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
     }
 
     @Override
