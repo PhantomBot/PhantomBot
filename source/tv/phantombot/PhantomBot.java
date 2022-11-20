@@ -420,11 +420,24 @@ public final class PhantomBot implements Listener {
 
     private void initChat() {
         this.validateOAuth();
-        if (!TwitchValidate.instance().isChatValid()) {
+        if (CaselessProperties.instance().getProperty("channel", "").isBlank()) {
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("Channel to join is not set");
+            com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
+            com.gmt2001.Console.warn.println();
+            if (!this.initChatBackoff.GetIsBackingOff()) {
+                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn.println();
+                this.initChatBackoff.BackoffAsync(() -> {
+                    this.initChat();
+                });
+            }
+        } else if (!TwitchValidate.instance().isChatValid()) {
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("OAuth was invalid, not starting TMI (Chat)");
             com.gmt2001.Console.warn.println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
-            com.gmt2001.Console.warn.println("The default URL is http://localhost:25000/oauth/");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
                 com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
@@ -669,7 +682,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println("The panel username has been changed to: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
             com.gmt2001.Console.warn.println("");
         }
-        if (CaselessProperties.instance().getProperty("panelpassword", (String) null) == null) {
+        if (CaselessProperties.instance().getProperty("panelpassword", "").isBlank()) {
             String pass = PhantomBot.generateRandomString(12);
             Transaction t = CaselessProperties.instance().startTransaction();
             t.setProperty("panelpassword", pass);
@@ -678,7 +691,8 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("Did not find a panel password...");
             com.gmt2001.Console.out.println("The panel username has been set to: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
             com.gmt2001.Console.out.println("The panel password has been set to: " + pass);
-            com.gmt2001.Console.out.println("You can change this in botlogin.txt, or by using the console command: panelsetup");
+            com.gmt2001.Console.out.println("You can change this on the setup page of the bots webserver");
+            com.gmt2001.Console.out.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
             com.gmt2001.Console.out.println("");
         }
     }
