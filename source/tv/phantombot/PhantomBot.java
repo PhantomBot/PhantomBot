@@ -483,6 +483,7 @@ public final class PhantomBot implements Listener {
     }
 
     public void reloadProperties() {
+        this.checkPanelLogin();
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
@@ -650,11 +651,24 @@ public final class PhantomBot implements Listener {
         return CaselessProperties.instance();
     }
 
-    private void checkPanelPassword() {
+    private void checkPanelLogin() {
+        /**
+         * @botproperty paneluser - The username to login to the panel. Default `panel`
+         * @botpropertycatsort paneluser 20 40 Panel Login
+         */
         /**
          * @botproperty panelpassword - The password to login to the panel. Default is a randomly generated password
          * @botpropertycatsort panelpassword 30 40 Panel Login
          */
+        if (CaselessProperties.instance().getProperty("paneluser", "").contains(":")) {
+            Transaction t = CaselessProperties.instance().startTransaction();
+            t.setProperty("paneluser", CaselessProperties.instance().getProperty("paneluser", "").replace(":", ""));
+            t.commit();
+            com.gmt2001.Console.warn.println("");
+            com.gmt2001.Console.warn.println("Found a colon in panel username...");
+            com.gmt2001.Console.warn.println("The panel username has been changed to: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println("");
+        }
         if (CaselessProperties.instance().getProperty("panelpassword", (String) null) == null) {
             String pass = PhantomBot.generateRandomString(12);
             Transaction t = CaselessProperties.instance().startTransaction();
@@ -685,17 +699,13 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort webenable 300 700 HTTP/WS
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-            this.checkPanelPassword();
+            this.checkPanelLogin();
             HTTPWSServer.instance();
             new HTTPNoAuthHandler().register();
             this.httpSetupHandler = new HttpSetupHandler();
             this.httpSetupHandler.register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
             this.httpAuthenticatedHandler.register();
-            /**
-             * @botproperty paneluser - The username to login to the panel. Default `panel`
-             * @botpropertycatsort paneluser 20 40 Panel Login
-             */
             /**
              * @botproperty useeventsub - If `true`, enables the EventSub module. Default `false`
              */
