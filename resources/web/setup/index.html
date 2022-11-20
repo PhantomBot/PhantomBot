@@ -25,6 +25,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
         <!-- Fontawesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="/panel/vendors/pretty-checkbox/pretty-checkbox.min.css">
         <link rel="stylesheet" href="/common/css/AdminLTE.dark.min.css" />
         <link rel="stylesheet" href="/common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="/common/css/pace.min.css" />
@@ -35,12 +36,16 @@
             li.botproperty {
                 margin-bottom: 10px;
             }
-            .botproperty label {
+            .botproperty label.botproperty-undef {
                 margin-right: 15px;
-                min-width: 50px;
+                min-width: 70px;
             }
-            .botproperty input {
-                margin-top:5px;
+            .botproperty-def {
+                margin-right: 0px;
+            }
+            .botproperty-definition {
+                display: inline-block;
+                margin-bottom:5px;
             }
             .botproperty input[type=radio] {
                 margin-right: 3px;
@@ -51,6 +56,18 @@
             .botproperty input[type=text] {
                 max-width: 500px;
                 width: 88%;
+            }
+            .botproperty .pretty.p-switch.p-fill input:disabled ~ .state::before, .botproperty .pretty.p-switch.p-fill input:disabled ~ .state label {
+                cursor: not-allowed;
+            }
+            .botproperty .pretty.p-switch.p-fill input:checked ~ .state::before {
+                background-color: #6441a5 !important;
+            }
+            .pretty .state label::before, .pretty .state label::after {
+                border: 1px solid #6e6d6d;
+            }
+            .form-control {
+                display: inline-block;
             }
         </style>
     </head>
@@ -104,7 +121,8 @@
                             <div class="alert-success text-center page-header hide" id="success-box"></div>
                             <div class="alert-error text-center page-header hide" id="error-box"></div>
                             <br />
-
+                            <div><button id="save-button" class="btn btn-primary disabled">Save</button></div>
+                            <br />
                             <div id="setup-sections"></div>
                         </div>
                         <!-- /.box-body -->
@@ -153,12 +171,15 @@
                         }
                         function cat(category, suffix = '', hash = false, suffix2 = '') {
                             return (hash ? '#' : '') + 'cat-' + category.replace(/[^a-zA-Z0-9]*/g, '')
-                                    + (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9]*/g, ''))
-                                    + (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9]*/g, ''));
+                                    + (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9\-]*/g, ''))
+                                    + (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9\-]*/g, ''));
                         }
                         function change(event) {
                             let elm = $(event.target);
                             let settingName = elm.attr('name');
+                            if (elm.attr('type') !== 'radio') {
+                                settingName = settingName.substr(0, settingName.length - 6);
+                            }
                             let prop = settings[settingName];
                             if (elm.attr('type') === 'radio') {
                                 if (elm.prop('checked')) {
@@ -187,6 +208,8 @@
                                     }
                                 }
                             } else if (elm.attr('type') === 'checkbox') {
+                                $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                        .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
                                 if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
                                     pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
                                 } else {
@@ -208,22 +231,32 @@
                             $('<b/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'property-span'));
                             $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'definition'))
+                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'definition')).addClass('botproperty-definition')
                                     .html(prop.definition.replace(/`(\w*)`/g, '<code>$1</code>'))
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
                             $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
                             $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'value'))
                                     .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-div'))
+                                    .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef')).on('change', event => change(event))
                                     .attr('name', prop.botproperty).attr('type', 'radio').prop('checked', true)
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-state'))
+                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
                             $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
-                                    .attr('for', cat(prop.category, prop.botproperty, false, 'undef'))
+                                    .attr('for', cat(prop.category, prop.botproperty, false, 'undef')).addClass('botproperty-undef')
                                     .html(prop.definition.toLowerCase().includes('default') ? 'Default' : 'Unset')
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-state'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-div')).addClass('botproperty-def')
+                                    .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                             $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
                                     .attr('name', prop.botproperty).attr('type', 'radio')
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-state'))
+                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
+                            $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-label'))
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-state'));
                             switch (prop.type) {
                                 case 'Long':
                                     prop.type = 'Int';
@@ -239,7 +272,7 @@
                                         }
                                     });
                                     $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'int-value')).on('change', event => change(event))
-                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').prop('disabled', true)
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').prop('disabled', true).addClass('form-control')
                                             .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                                     break;
                                 case 'Double':
@@ -255,7 +288,7 @@
                                     });
                                     $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'double-value')).on('change', event => change(event))
                                             .attr('name', prop.botproperty + '-value').attr('type', 'number').attr('step', '0.01').prop('disabled', true)
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                            .addClass('form-control').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                                     break;
                                 case 'Boolean':
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
@@ -268,9 +301,17 @@
                                             $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', false);
                                         }
                                     });
+                                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-div'))
+                                            .addClass('pretty').addClass('p-switch').addClass('p-fill')
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                                     $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-value')).on('change', event => change(event))
                                             .attr('name', prop.botproperty + '-value').attr('type', 'checkbox').prop('disabled', true)
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
+                                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-state'))
+                                            .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
+                                    $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-label'))
+                                            .html('false')
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-state'));
                                     break;
                                 default:
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
@@ -284,7 +325,7 @@
                                         }
                                     });
                                     $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string-value')).on('change', event => change(event))
-                                            .attr('name', prop.botproperty + '-value').attr('type', 'text').prop('disabled', true)
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'text').prop('disabled', true).addClass('form-control')
                                             .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
                                     break;
                             }
