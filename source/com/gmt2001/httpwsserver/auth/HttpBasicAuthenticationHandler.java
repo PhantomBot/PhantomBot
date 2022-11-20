@@ -147,7 +147,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             String userpass = new String(Base64.getDecoder().decode(auth));
             int colon = userpass.indexOf(':');
 
-            if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
+            if (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass)) {
                 return true;
             }
         } else {
@@ -158,12 +158,17 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
                 String userpass = new String(Base64.getDecoder().decode(auth));
                 int colon = userpass.indexOf(':');
 
-                if (userpass.substring(0, colon).equals(user) && userpass.substring(colon + 1).equals(pass)) {
+                if (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass)) {
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isAuthorized(String user, String pass) {
+        return user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
     }
 }

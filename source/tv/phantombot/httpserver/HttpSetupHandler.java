@@ -82,8 +82,12 @@ public class HttpSetupHandler implements HttpRequestHandler {
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if ((!CaselessProperties.instance().getPropertyAsBoolean("allowpanelusertosetup", true) || !this.authHandler.isAuthorized(ctx, req))
                 && !this.authHandlerToken.checkAuthorization(ctx, req)) {
+            String extra = "";
+            if (this.authHandler.isAuthorized(ctx, req)) {
+                extra = "The+panel+login+is+disabled+for+the+Setup+page%3Cbr+%2F%3E";
+            }
             this.token = PhantomBot.generateRandomString(TOKENLEN);
-            this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=A+login+for+the+Setup+page+is+available+in+the+console");
+            this.authHandlerToken = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "Token", this.token, "/panel/login/?message=" + extra + "A+login+for+the+Setup+page+is+available+in+the+console");
 
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("User for Setup Login: Token");
@@ -135,6 +139,10 @@ public class HttpSetupHandler implements HttpRequestHandler {
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }
+    }
+
+    public boolean checkTokenAuthorization(String user, String pass) {
+        return this.authHandlerToken.isAuthorized(user, pass);
     }
 
     public void currentProperties(ChannelHandlerContext ctx, FullHttpRequest req) {

@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -41,13 +42,14 @@ import tv.phantombot.PhantomBot;
  */
 public class HTTPOAuthHandler implements HttpRequestHandler {
 
-    private final HttpAuthenticationHandler authHandler;
+    private HttpAuthenticationHandler authHandler;
     private static final int TOKENLEN = 40;
     private HttpAuthenticationHandler authHandlerBroadcaster;
     private String token;
 
-    public HTTPOAuthHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", panelUser, panelPass, "/panel/login/");
+    public HTTPOAuthHandler() {
+        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
         token = PhantomBot.generateRandomString(TOKENLEN);
         authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
     }
@@ -56,6 +58,11 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
+    }
+
+    public void updateAuth() {
+        this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
     }
 
     @Override

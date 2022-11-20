@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
@@ -36,18 +37,9 @@ import tv.phantombot.RepoVersion;
  */
 public class WsPanelRemoteLoginHandler implements WsFrameHandler {
 
-    private final WsAuthenticationHandler authHandler;
-    private final String panelUser;
-    private final String panelPassword;
-    private final String panelAuthRO;
-    private final String panelAuth;
+    private final WsAuthenticationHandler authHandler = WsNoAuthenticationHandler.instance();
 
-    public WsPanelRemoteLoginHandler(String panelUser, String panelPassword, String panelAuthRO, String panelAuth) {
-        this.authHandler = WsNoAuthenticationHandler.instance();
-        this.panelUser = panelUser;
-        this.panelPassword = panelPassword;
-        this.panelAuthRO = panelAuthRO;
-        this.panelAuth = panelAuth;
+    public WsPanelRemoteLoginHandler() {
     }
 
     @Override
@@ -58,7 +50,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
 
     @Override
     public WsAuthenticationHandler getAuthHandler() {
-        return authHandler;
+        return this.authHandler;
     }
 
     @Override
@@ -89,12 +81,15 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
             if (jso.has("remote") && jso.getString("query").equals("login")) {
                 jsonObject.object();
                 if (jso.getJSONObject("params").getString("type").equalsIgnoreCase("AuthRO")) {
-                    jsonObject.key("authtoken").value(this.panelAuthRO).key("authtype").value("read");
-                } else if (jso.getJSONObject("params").getString("user").equals(this.panelUser) && jso.getJSONObject("params").getString("pass").equals(this.panelPassword)) {
-                    jsonObject.key("authtoken").value(this.panelAuth).key("authtype").value("read/write");
+                    jsonObject.key("authtoken").value(CaselessProperties.instance().getProperty("webauthro")).key("authtype").value("read");
+                } else if (jso.getJSONObject("params").getString("user").equals(CaselessProperties.instance().getProperty("paneluser", "panel")) && jso.getJSONObject("params").getString("pass").equals(CaselessProperties.instance().getProperty("panelpassword", "panel"))) {
+                    jsonObject.key("authtoken").value(CaselessProperties.instance().getProperty("webauth")).key("authtype").value("read/write");
                 } else if (jso.getJSONObject("params").getString("user").equals("broadcaster") && PhantomBot.instance() != null
                         && PhantomBot.instance().getHTTPOAuthHandler().validateBroadcasterToken(jso.getJSONObject("params").getString("pass"))) {
                     jsonObject.key("authtoken").value(jso.getJSONObject("params").getString("pass")).key("authtype").value("oauth/broadcaster");
+                } else if (jso.getJSONObject("params").getString("user").equalsIgnoreCase("token") && PhantomBot.instance() != null
+                        && PhantomBot.instance().getHTTPSetupHandler().checkTokenAuthorization(jso.getJSONObject("params").getString("user"), jso.getJSONObject("params").getString("pass"))) {
+                    jsonObject.key("authtoken").value("").key("authtype").value("setup/token");
                 } else {
                     jsonObject.key("errors").array().object()
                             .key("status").value("401")

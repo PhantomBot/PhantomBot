@@ -52,6 +52,17 @@ public interface HttpAuthenticationHandler {
     boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req);
 
     /**
+     * Checks if the given username and password is a valid
+     *
+     * When returning {@code false}, this method MUST NOT send a response to the client
+     *
+     * @param user The username
+     * @param pass The password
+     * @return otherwise
+     */
+    boolean isAuthorized(String user, String pass);
+
+    /**
      * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
      *
      * @param ctx The {@link ChannelHandlerContext} of the session

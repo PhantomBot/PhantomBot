@@ -489,6 +489,7 @@ public final class PhantomBot implements Listener {
         }
 
         this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+        this.oauthHandler.updateAuth();
         this.httpPanelHandler.updateAuth();
         this.httpSetupHandler.updateAuth();
 
@@ -533,6 +534,10 @@ public final class PhantomBot implements Listener {
 
     public HTTPOAuthHandler getHTTPOAuthHandler() {
         return this.oauthHandler;
+    }
+
+    public HttpSetupHandler getHTTPSetupHandler() {
+        return this.httpSetupHandler;
     }
 
     /**
@@ -696,13 +701,13 @@ public final class PhantomBot implements Listener {
              */
             this.httpPanelHandler = new HTTPPanelAndYTHandler();
             this.httpPanelHandler.register();
-            this.oauthHandler = (HTTPOAuthHandler) new HTTPOAuthHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), CaselessProperties.instance().getProperty("panelpassword", "panel")).register();
+            this.oauthHandler = new HTTPOAuthHandler();
+            this.oauthHandler.register();
             if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
                 EventSub.instance().register();
             }
             this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
-            new WsPanelRemoteLoginHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), CaselessProperties.instance().getProperty("panelpassword", "panel"),
-                    CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
+            new WsPanelRemoteLoginHandler().register();
             RestartRunner.instance().register();
         }
     }

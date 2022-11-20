@@ -110,4 +110,9 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
 
         return (auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token)) || (auth3 != null && auth3.equals(token));
     }
+
+    @Override
+    public boolean isAuthorized(String user, String pass) {
+        return pass.equals(password) || pass.equals("oauth:" + password) || pass.equals(token);
+    }
 }
