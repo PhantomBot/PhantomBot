@@ -269,6 +269,8 @@
                                     $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
                                         if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', false);
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
                                         }
                                     });
                                     $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'int-value')).on('change', event => change(event))
@@ -294,6 +296,7 @@
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
                                         if ($(event.target).prop('checked')) {
                                             $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', true);
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label')).html('');
                                         }
                                     });
                                     $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
@@ -310,7 +313,7 @@
                                     $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-state'))
                                             .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
                                     $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-label'))
-                                            .html('false')
+                                            .html('')
                                             .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-state'));
                                     break;
                                 default:
