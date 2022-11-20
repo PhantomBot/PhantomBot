@@ -212,6 +212,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().equals("")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("sql") && error.getMessage().contains("unrecognized token")) {
                                     return true;
                                 }
@@ -301,6 +305,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getClass().equals(com.twitter.clientlib.ApiException.class)) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.IllegalStateException.class) && error.getMessage().equals("failed to create a child event loop")) {
                                     return true;
                                 }
                             }

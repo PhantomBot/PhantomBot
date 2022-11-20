@@ -73,11 +73,11 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.uri().startsWith("/oauth/broadcaster")) {
-            if (!authHandlerBroadcaster.checkAuthorization(ctx, req)) {
+            if (!this.authHandlerBroadcaster.checkAuthorization(ctx, req)) {
                 return;
             }
         } else {
-            if (!authHandler.checkAuthorization(ctx, req)) {
+            if (!PhantomBot.instance().getHTTPSetupHandler().checkTokenAuthorization(ctx, req) && !this.authHandler.checkAuthorization(ctx, req)) {
                 return;
             }
         }
