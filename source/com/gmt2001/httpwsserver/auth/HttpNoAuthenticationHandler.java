@@ -65,4 +65,9 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
         return true;
     }
+
+    @Override
+    public boolean isAuthorized(String user, String pass) {
+        return true;
+    }
 }

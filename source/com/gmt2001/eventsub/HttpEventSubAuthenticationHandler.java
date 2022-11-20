@@ -75,4 +75,9 @@ final class HttpEventSubAuthenticationHandler implements HttpAuthenticationHandl
         return HMAC.compareHmacSha256(EventSub.getSecret(), id + timestamp + body, signature) && ts.isAfter(ZonedDateTime.now().minusMinutes(10))
                 && !EventSub.instance().isDuplicate(id, ts);
     }
+
+    @Override
+    public boolean isAuthorized(String user, String pass) {
+        throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
 }

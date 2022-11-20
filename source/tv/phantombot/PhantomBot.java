@@ -93,6 +93,7 @@ import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
 import tv.phantombot.httpserver.HTTPNoAuthHandler;
 import tv.phantombot.httpserver.HTTPOAuthHandler;
 import tv.phantombot.httpserver.HTTPPanelAndYTHandler;
+import tv.phantombot.httpserver.HttpSetupHandler;
 import tv.phantombot.panel.WsAlertsPollsHandler;
 import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.panel.WsPanelRemoteLoginHandler;
@@ -131,6 +132,8 @@ public final class PhantomBot implements Listener {
     private WsYTHandler ytHandler;
     private HTTPOAuthHandler oauthHandler;
     private HTTPAuthenticatedHandler httpAuthenticatedHandler;
+    private HTTPPanelAndYTHandler httpPanelHandler;
+    private HttpSetupHandler httpSetupHandler;
 
     /* PhantomBot Information */
     private static PhantomBot instance;
@@ -486,6 +489,9 @@ public final class PhantomBot implements Listener {
         }
 
         this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+        this.oauthHandler.updateAuth();
+        this.httpPanelHandler.updateAuth();
+        this.httpSetupHandler.updateAuth();
 
         EventBus.instance().postAsync(new PropertiesReloadedEvent());
     }
@@ -528,6 +534,10 @@ public final class PhantomBot implements Listener {
 
     public HTTPOAuthHandler getHTTPOAuthHandler() {
         return this.oauthHandler;
+    }
+
+    public HttpSetupHandler getHTTPSetupHandler() {
+        return this.httpSetupHandler;
     }
 
     /**
@@ -640,14 +650,13 @@ public final class PhantomBot implements Listener {
         return CaselessProperties.instance();
     }
 
-    private String getPanelPassword() {
+    private void checkPanelPassword() {
         /**
          * @botproperty panelpassword - The password to login to the panel. Default is a randomly generated password
          * @botpropertycatsort panelpassword 30 40 Panel Login
          */
-        String pass = CaselessProperties.instance().getProperty("panelpassword", (String) null);
-        if (pass == null) {
-            pass = PhantomBot.generateRandomString(12);
+        if (CaselessProperties.instance().getProperty("panelpassword", (String) null) == null) {
+            String pass = PhantomBot.generateRandomString(12);
             Transaction t = CaselessProperties.instance().startTransaction();
             t.setProperty("panelpassword", pass);
             t.commit();
@@ -658,8 +667,6 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("You can change this in botlogin.txt, or by using the console command: panelsetup");
             com.gmt2001.Console.out.println("");
         }
-
-        return pass;
     }
 
     private String getPanelOAuth() {
@@ -678,8 +685,11 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort webenable 300 700 HTTP/WS
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
+            this.checkPanelPassword();
             HTTPWSServer.instance();
             new HTTPNoAuthHandler().register();
+            this.httpSetupHandler = new HttpSetupHandler();
+            this.httpSetupHandler.register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
             this.httpAuthenticatedHandler.register();
             /**
@@ -689,14 +699,15 @@ public final class PhantomBot implements Listener {
             /**
              * @botproperty useeventsub - If `true`, enables the EventSub module. Default `false`
              */
-            new HTTPPanelAndYTHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword()).register();
-            this.oauthHandler = (HTTPOAuthHandler) new HTTPOAuthHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword()).register();
+            this.httpPanelHandler = new HTTPPanelAndYTHandler();
+            this.httpPanelHandler.register();
+            this.oauthHandler = new HTTPOAuthHandler();
+            this.oauthHandler.register();
             if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
                 EventSub.instance().register();
             }
             this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
-            new WsPanelRemoteLoginHandler(CaselessProperties.instance().getProperty("paneluser", "panel"), this.getPanelPassword(),
-                    CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
+            new WsPanelRemoteLoginHandler().register();
             RestartRunner.instance().register();
         }
     }

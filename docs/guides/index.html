@@ -552,11 +552,13 @@
                     $('#version-dropdown-stable').click(function() {
                         event.preventDefault();
                         changeChannel('stable');
+                        $('#version-dropdown').dropdown('toggle');
                         return false;
                     });
                     $('#version-dropdown-nightly').click(function() {
                         event.preventDefault();
                         changeChannel('nightly');
+                        $('#version-dropdown').dropdown('toggle');
                         return false;
                     });
                     $('#version-dropdown').text($('#version-dropdown-' + currentChannel).text());

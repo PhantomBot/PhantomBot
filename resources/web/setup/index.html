@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<!--
+    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<html>
+    <head>
+        <title>PhantomBot | Setup</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Favicon -->
+        <link rel="icon" href="../favicon.ico" type="image/x-icon">
+        <!-- Bootstrap 3.3.7 css -->
+        <link rel="stylesheet" href="/common/css/bootstrap.min.css" />
+        <!-- Google font -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <!-- Fontawesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="/panel/vendors/pretty-checkbox/pretty-checkbox.min.css">
+        <link rel="stylesheet" href="/common/css/AdminLTE.dark.min.css" />
+        <link rel="stylesheet" href="/common/css/skin-purple.dark.min.css" />
+        <link rel="stylesheet" href="/common/css/pace.min.css" />
+        <style>
+            .required-steps {
+                padding-left: 5px;
+            }
+            li.botproperty {
+                margin-bottom: 10px;
+            }
+            .botproperty label.botproperty-undef {
+                margin-right: 15px;
+                min-width: 70px;
+            }
+            .botproperty-def {
+                margin-right: 0px;
+            }
+            .botproperty-definition {
+                display: inline-block;
+                margin-bottom:5px;
+            }
+            .botproperty input[type=radio] {
+                margin-right: 3px;
+            }
+            .botproperty input[type=number] {
+                max-width: 100px;
+            }
+            .botproperty input[type=text] {
+                max-width: 500px;
+                width: 88%;
+            }
+            .botproperty .pretty.p-switch.p-fill input:disabled ~ .state::before, .botproperty .pretty.p-switch.p-fill input:disabled ~ .state label {
+                cursor: not-allowed;
+            }
+            .botproperty .pretty.p-switch.p-fill input:checked ~ .state::before {
+                background-color: #6441a5 !important;
+            }
+            .pretty .state label::before, .pretty .state label::after {
+                border: 1px solid #6e6d6d;
+            }
+            .form-control {
+                display: inline-block;
+            }
+        </style>
+    </head>
+
+    <body class="skin-purple layout-top-nav">
+        <div class="wrapper">
+            <!-- Header -->
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a href=".."><img class="navbar-brand" alt="PhantomBot" src="/common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse" id="navbar-collapse">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="GitHub" href="https://github.com/PhantomBot/PhantomBot"><i class="fab fa-github fa-lg"></i></a></li>
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="Website" href="https://phantombot.github.io/PhantomBot"><i class="fas fa-globe fa-lg"></i></a></li>
+                                <li><a data-toggle="tooltip" data-placement="bottom" title="Discord" href="https://discord.gg/YKvMd78"><i class="fab fa-discord fa-lg"></i></a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+
+            <!-- Main content -->
+            <aside class="content-wrapper">
+                <div id="page-content">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <i class="fas fa-key"></i>
+                            <h3 class="box-title">PhantomBot Setup</h3>
+                            <!-- /.box-tools -->
+                        </div>
+                        <div class="box-body" id="content-pane">
+                            <div class="alert-info required-steps">
+                                Required steps for bot setup:
+                                <ol>
+                                    <li>Set the options in the <b>Admin</b> section below</li>
+                                    <li>Hit the floating <b>Save</b> button to save the options</li>
+                                    <li>Setup both OAuth tokens on the <a href="/oauth/" target="oauth-setup"><b>OAuth Setup</b></a> page</li>
+                                </ol>
+                                <i>All other sections on this page are optional for initial bot setup, but may be required to enable additional functionality</i>
+                                <br />
+                                <i>NOTE: Some settings, such as datastore settings, may require a bot restart to take effect after saving</i>
+                            </div>
+                            <div class="alert-info text-center page-header" id="info-box">Loading...</div>
+                            <div class="alert-success text-center page-header hide" id="success-box"></div>
+                            <div class="alert-error text-center page-header hide" id="error-box"></div>
+                            <br />
+                            <div><button id="save-button" class="btn btn-primary">Save</button></div>
+                            <br />
+                            <div id="setup-sections"></div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </aside>
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2016 - <script>document.write(new Date().getFullYear());</script> <a href="https://github.com/PhantomBot/PhantomBot" style="color: #6441a5;">PhantomBot</a></strong>
+            </footer>
+        </div>
+
+        <!-- Load jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- Load Bootsrap 3.3.7 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js" data-pace-options='{ "eventLag": false }'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
+        <script>
+                    'use strict';
+                    $(function () {
+                        let settings = {};
+                        let pendingSettings = {};
+                        function error(msg) {
+                            $('#error-box').removeClass('hide');
+                            $('#success-box').addClass('hide');
+                            $('#info-box').addClass('hide');
+                            $('#error-box').html(msg);
+                        }
+                        function success(msg) {
+                            $('#error-box').addClass('hide');
+                            $('#success-box').removeClass('hide');
+                            $('#info-box').addClass('hide');
+                            $('#success-box').html(msg);
+                        }
+                        function info(msg) {
+                            $('#error-box').addClass('hide');
+                            $('#success-box').addClass('hide');
+                            $('#info-box').removeClass('hide');
+                            $('#info-box').html(msg);
+                        }
+                        function clearAll() {
+                            $('#error-box').addClass('hide');
+                            $('#success-box').addClass('hide');
+                            $('#info-box').addClass('hide');
+                        }
+                        function cat(category, suffix = '', hash = false, suffix2 = '') {
+                            return (hash ? '#' : '') + 'cat-' + category.replace(/[^a-zA-Z0-9]*/g, '')
+                                    + (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9\-]*/g, ''))
+                                    + (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9\-]*/g, ''));
+                        }
+                        function change(event) {
+                            let elm = $(event.target);
+                            let settingName = elm.attr('name');
+                            if (elm.attr('type') !== 'radio') {
+                                settingName = settingName.substr(0, settingName.length - 6);
+                            }
+                            let prop = settings[settingName];
+                            if (elm.attr('type') === 'radio') {
+                                if (elm.prop('checked')) {
+                                    if (elm.attr('id').endsWith('-undef')) {
+                                        if (prop.value !== null) {
+                                            pendingSettings[settingName] = null;
+                                        } else {
+                                            delete pendingSettings[settingName];
+                                        }
+                                    } else if (elm.attr('id').endsWith('-def')) {
+                                        if (prop.type === 'Boolean') {
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                        }
+                                        if (prop.value === null) {
+                                            if (prop.type === 'Boolean') {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                            } else {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                            }
+                                        } else {
+                                            if (prop.type === 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                            } else if (prop.type !== 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                            } else {
+                                                delete pendingSettings[settingName];
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if (elm.attr('type') === 'checkbox') {
+                                $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                        .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
+                                    pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                } else {
+                                    delete pendingSettings[settingName];
+                                }
+                            } else {
+                                if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                                    pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                } else {
+                                    delete pendingSettings[settingName];
+                                }
+                            }
+                            $('#save-button').prop('disabled', Object.keys(pendingSettings).length === 0);
+                        }
+                        function createSetting(prop) {
+                            $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).addClass('botproperty')
+                                    .appendTo(cat(prop.category, 'ul', true));
+                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'property-span'))
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<b/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'property-span'));
+                            $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'definition')).addClass('botproperty-definition')
+                                    .html(prop.definition.replace(/`(\w*)`/g, '<code>$1</code>'))
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'value'))
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-div'))
+                                    .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty).attr('type', 'radio').prop('checked', true)
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-state'))
+                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
+                            $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
+                                    .attr('for', cat(prop.category, prop.botproperty, false, 'undef')).addClass('botproperty-undef')
+                                    .html(prop.definition.toLowerCase().includes('default') ? 'Default' : 'Unset')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-state'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-div')).addClass('botproperty-def')
+                                    .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty).attr('type', 'radio')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-state'))
+                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
+                            $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-label'))
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-state'));
+                            switch (prop.type) {
+                                case 'Long':
+                                    prop.type = 'Int';
+                                case 'Int':
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', true);
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', false);
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                        }
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'int-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').prop('disabled', true).addClass('form-control')
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    break;
+                                case 'Double':
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', true);
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', false);
+                                        }
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'double-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').attr('step', '0.01').prop('disabled', true)
+                                            .addClass('form-control').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    break;
+                                case 'Boolean':
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', true);
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label')).html('');
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', false);
+                                        }
+                                    });
+                                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-div'))
+                                            .addClass('pretty').addClass('p-switch').addClass('p-fill')
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'checkbox').prop('disabled', true)
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
+                                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-state'))
+                                            .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
+                                    $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-label'))
+                                            .html('')
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-state'));
+                                    break;
+                                default:
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', true);
+                                        }
+                                    });
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                        if ($(event.target).prop('checked')) {
+                                            $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', false);
+                                        }
+                                    });
+                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string-value')).on('change', event => change(event))
+                                            .attr('name', prop.botproperty + '-value').attr('type', 'text').prop('disabled', true).addClass('form-control')
+                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                                    break;
+                            }
+
+
+                            settings[prop.botproperty] = prop;
+                            settings[prop.botproperty].value = null;
+                        }
+                        function createSettings(data) {
+                            let categorySort = {};
+                            for (let x in data) {
+                                if (!categorySort.hasOwnProperty(data[x].category) || data[x].category_sort < categorySort[data[x].category]) {
+                                    categorySort[data[x].category] = data[x].category_sort;
+                                }
+                            }
+                            data.sort((a, b) => {
+                                if (categorySort[a.category] < categorySort[b.category]) {
+                                    return -1;
+                                } else if (categorySort[a.category] > categorySort[b.category]) {
+                                    return 1;
+                                } else if (a.category.localeCompare(b.category) !== 0) {
+                                    return a.category.localeCompare(b.category);
+                                } else if (a.sort < b.sort) {
+                                    return -1;
+                                } else if (a.sort > b.sort) {
+                                    return 1;
+                                } else {
+                                    return a.botproperty.localeCompare(b.botproperty);
+                                }
+                            });
+
+                            let currentCategory = '';
+
+                            data.forEach(prop => {
+                                if (prop.category !== currentCategory) {
+                                    $('<div/>').attr('id', cat(prop.category)).addClass('box').addClass('box-solid').addClass('box-primary')
+                                            .appendTo('#setup-sections');
+                                    $('<div/>').attr('id', cat(prop.category, 'header')).addClass('box-header').addClass('with-border')
+                                            .appendTo(cat(prop.category, '', true));
+                                    $('<h4/>').attr('id', cat(prop.category, 'h4')).html(prop.category).appendTo(cat(prop.category, 'header', true));
+                                    $('<div/>').attr('id', cat(prop.category, 'body')).addClass('box-body').appendTo(cat(prop.category, '', true));
+                                    $('<ul/>').attr('id', cat(prop.category, 'ul')).addClass('list-unstyled').appendTo(cat(prop.category, 'body', true));
+                                    currentCategory = prop.category;
+                                }
+                                createSetting(prop);
+                            });
+                        }
+                        function populateSettings(props) {
+                            for (const propk in props) {
+                                if (settings.hasOwnProperty(propk)) {
+                                    let prop = settings[propk];
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', false);
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', true);
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', false);
+                                    if (prop.type === 'Boolean') {
+                                        settings[propk].value = props[propk].match(/(1|true|yes)/i) !== null;
+                                        $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
+                                        $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                    } else {
+                                        settings[propk].value = props[propk];
+                                        $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
+                                    }
+                                }
+                            }
+                        }
+                        function updateCurrentSettings() {
+                            for (const propk in pendingSettings) {
+                                if (settings.hasOwnProperty(propk)) {
+                                    let prop = settings[propk];
+                                    $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', pendingSettings[propk] === null);
+                                    $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', pendingSettings[propk] !== null);
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', pendingSettings[propk] === null);
+                                    settings[propk].value = pendingSettings[propk];
+                                    if (pendingSettings[propk] !== null) {
+                                        if (prop.type === 'Boolean') {
+                                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
+                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                        } else {
+                                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
+                                        }
+                                    }
+                                }
+                            }
+                            pendingSettings = {};
+                        }
+                        function getCurrentSettings() {
+                            $.ajax({
+                                cache: false,
+                                dataType: 'json',
+                                url: 'currentProperties.json',
+                                method: 'GET',
+                                success: function (data) {
+                                    if (data.code !== 200) {
+                                        error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
+                                    } else {
+                                        populateSettings(data.currentProperties);
+                                        clearAll();
+                                    }
+                                },
+                                error: function (err) {
+                                    error('Failed to retrive current settings: ' + err.statusText + ' ' + err.responseText + '!');
+                                }
+                            });
+                        }
+                        $.ajax({
+                            cache: false,
+                            dataType: 'json',
+                            url: 'properties.json',
+                            method: 'GET',
+                            success: function (data) {
+                                createSettings(data);
+                                getCurrentSettings();
+                            },
+                            error: function (err) {
+                                error('Failed to retrive settings list: ' + err.statusText + ' ' + err.responseText + '!');
+                            }
+                        });
+
+                        let timeout = null;
+                        $('#save-button').prop('disabled', true).click(function () {
+                            if (!$('#save-button').prop('disabled')) {
+                                $.ajax({
+                                    cache: false,
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(pendingSettings),
+                                    dataType: 'json',
+                                    url: 'currentProperties.json',
+                                    method: 'PATCH',
+                                    processData: false,
+                                    success: function (data) {
+                                        if (data !== undefined && data.code !== 204) {
+                                            error('Failed to update settings: ' + data.status + ' ' + data.error + '!');
+                                        } else {
+                                            if (timeout !== null) {
+                                                clearTimeout(timeout);
+                                            }
+                                            success('Settings updated');
+                                            timeout = setTimeout(function() {
+                                                clearAll();
+                                                timeout = null;
+                                            }, 10e3);
+                                            updateCurrentSettings();
+                                            $('#save-button').prop('disabled', true);
+                                        }
+                                    },
+                                    error: function (err) {
+                                        error('Failed to update settings: ' + err.statusText + ' ' + err.responseText + '!');
+                                    }
+                                });
+                            }
+                        });
+
+                        $('[data-toggle="tooltip"]').tooltip();
+                    });
+        </script>
+        <script>
+            if (!window.location.pathname.endsWith("/")) {
+                let newURL = window.location.toString();
+                newURL = newURL.substring(0, newURL.indexOf(window.location.pathname)) + window.location.pathname + '/' + newURL.substring(newURL.indexOf(window.location.pathname) + window.location.pathname.length);
+                document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
+                window.location.replace(newURL);
+            }
+        </script>
+    </body>
+</html>
+

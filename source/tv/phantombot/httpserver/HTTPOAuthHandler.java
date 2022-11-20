@@ -26,12 +26,14 @@ import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -40,13 +42,14 @@ import tv.phantombot.PhantomBot;
  */
 public class HTTPOAuthHandler implements HttpRequestHandler {
 
-    private final HttpAuthenticationHandler authHandler;
+    private HttpAuthenticationHandler authHandler;
     private static final int TOKENLEN = 40;
     private HttpAuthenticationHandler authHandlerBroadcaster;
     private String token;
 
-    public HTTPOAuthHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", panelUser, panelPass, "/panel/login/");
+    public HTTPOAuthHandler() {
+        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
         token = PhantomBot.generateRandomString(TOKENLEN);
         authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
     }
@@ -55,6 +58,11 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     public HttpRequestHandler register() {
         HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
+    }
+
+    public void updateAuth() {
+        this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
     }
 
     @Override
@@ -72,6 +80,12 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
             if (!authHandler.checkAuthorization(ctx, req)) {
                 return;
             }
+        }
+
+        if (!req.method().equals(HttpMethod.GET)) {
+            com.gmt2001.Console.debug.println("405");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
+            return;
         }
 
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());

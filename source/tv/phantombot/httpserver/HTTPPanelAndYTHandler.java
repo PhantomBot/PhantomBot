@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import tv.phantombot.CaselessProperties;
 
 /**
  *
@@ -40,10 +41,11 @@ import java.nio.file.Paths;
  */
 public class HTTPPanelAndYTHandler implements HttpRequestHandler {
 
-    private final HttpAuthenticationHandler authHandler;
+    private HttpAuthenticationHandler authHandler;
 
-    public HTTPPanelAndYTHandler(String panelUser, String panelPass) {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", panelUser, panelPass, "/panel/login/");
+    public HTTPPanelAndYTHandler() {
+        this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
     }
 
     @Override
@@ -51,6 +53,11 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         HttpServerPageHandler.registerHttpHandler("/panel", this);
         HttpServerPageHandler.registerHttpHandler("/ytplayer", this);
         return this;
+    }
+
+    public void updateAuth() {
+        this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web Panel", CaselessProperties.instance().getProperty("paneluser", "panel"),
+                CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
     }
 
     @Override
@@ -61,8 +68,8 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (!req.method().equals(HttpMethod.GET) && !req.uri().startsWith("/oauth")) {
-            com.gmt2001.Console.debug.println("403");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.FORBIDDEN));
+            com.gmt2001.Console.debug.println("405");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
             return;
         }
 
