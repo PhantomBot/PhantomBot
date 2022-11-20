@@ -406,7 +406,7 @@
                                     let prop = settings[propk];
                                     $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', pendingSettings[propk] === null);
                                     $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', pendingSettings[propk] !== null);
-                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', pendingSettings[propk] !== null);
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', pendingSettings[propk] === null);
                                     settings[propk].value = pendingSettings[propk];
                                     if (pendingSettings[propk] !== null) {
                                         if (prop.type === 'Boolean') {
@@ -454,6 +454,7 @@
                             }
                         });
 
+                        let timeout = null;
                         $('#save-button').prop('disabled', true).click(function () {
                             if (!$('#save-button').prop('disabled')) {
                                 $.ajax({
@@ -468,7 +469,14 @@
                                         if (data !== undefined && data.code !== 204) {
                                             error('Failed to update settings: ' + data.status + ' ' + data.error + '!');
                                         } else {
+                                            if (timeout !== null) {
+                                                clearTimeout(timeout);
+                                            }
                                             success('Settings updated');
+                                            timeout = setTimeout(function() {
+                                                clearAll();
+                                                timeout = null;
+                                            }, 10e3);
                                             updateCurrentSettings();
                                             $('#save-button').prop('disabled', true);
                                         }
