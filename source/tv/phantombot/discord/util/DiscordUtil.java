@@ -17,8 +17,8 @@
 package tv.phantombot.discord.util;
 
 import com.gmt2001.ExecutorService;
-import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.PathValidator;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.GuildEmoji;
@@ -36,6 +36,7 @@ import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.ClientActivity;
 import discord4j.core.object.presence.ClientPresence;
 import discord4j.core.object.reaction.ReactionEmoji;
@@ -1272,15 +1273,53 @@ public class DiscordUtil {
         }).subscribe();
     }
 
+    public void setCustomActivity(String activity) {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.of(Activity.Type.CUSTOM, activity, null))).doOnError(e -> {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
+    }
+
+    public void setCompeting(String competingIn) {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.competing(competingIn))).doOnError(e -> {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
+    }
+
+    public void setListening(String listeningTo) {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.listening(listeningTo))).doOnError(e -> {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
+    }
+
+    public void setWatching(String watching) {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.watching(watching))).doOnError(e -> {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
+    }
+
+    public void setPlaying(String game) {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.playing(game))).doOnError(e -> {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
+    }
+
+    public void setStreaming(String streaming, String url) {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.streaming(streaming, url))).doOnError(e -> {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }).subscribe();
+    }
+
+    public void resetPresence() {
+        DiscordAPI.getGateway().updatePresence(ClientPresence.online()).subscribe();
+    }
+
     /**
      * Method to set the current game.
      *
      * @param game
      */
     public void setGame(String game) {
-        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.playing(game))).doOnError(e -> {
-            com.gmt2001.Console.err.printStackTrace(e);
-        }).subscribe();
+        this.setPlaying(game);
     }
 
     /**
@@ -1290,17 +1329,14 @@ public class DiscordUtil {
      * @param url
      */
     public void setStream(String game, String url) {
-        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.streaming(game, url))).doOnError(e -> {
-            com.gmt2001.Console.err.printStackTrace(e);
-        }).subscribe();
+        this.setStreaming(game, url);
     }
 
     /**
      * Method to remove the current game or reset the streaming status.
-     *
      */
     public void removeGame() {
-        DiscordAPI.getGateway().updatePresence(ClientPresence.online()).subscribe();
+        this.resetPresence();
     }
 
     /**
