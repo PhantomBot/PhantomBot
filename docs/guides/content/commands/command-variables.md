@@ -181,6 +181,28 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+### cleardiscordactivity
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(cleardiscordactivity)` - removes the bots current activity in Discord, setting it to just plain Online
+
+**Labels:** twitch discord noevent discordpresence
+
+
+**Example:**
+```text
+Caster: !addcom !cleardiscord (cleardiscordactivity)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### code
 
 Defined in script: _./javascript-source/core/transformers/misc.js_
@@ -1151,6 +1173,141 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+### setdiscordactivity
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(setdiscordactivity str:str)` - sets the bots current activity in Discord to a custom string
+
+**Labels:** twitch discord noevent discordpresence
+
+
+**Example:**
+```text
+Caster: !addcom !sleeping (setdiscordactivity :zzz: sleeping...)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### setdiscordcompeting
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(setdiscordcompeting str:str)` - sets the bots current activity in Discord to: Competing in (str)
+
+**Labels:** twitch discord noevent discordpresence
+
+
+**Example:**
+```text
+Caster: !addcom !lcs (setdiscordcompeting LCS)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### setdiscordlistening
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(setdiscordlistening str:str)` - sets the bots current activity in Discord to: Listening to (str)
+
+**Labels:** twitch discord noevent discordpresence
+
+
+**Example:**
+```text
+Caster: !addcom !heavymetal (setdiscordlistening Heavy Metal)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### setdiscordplaying
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(setdiscordplaying str:str)` - sets the bots current activity in Discord to: Playing (str)
+
+**Labels:** twitch discord noevent discordpresence
+
+
+**Example:**
+```text
+Caster: !addcom !rocketleague (setdiscordplaying Rocket League)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### setdiscordstreaming
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(setdiscordstreaming url:str str:str)` - sets the bots current activity in Discord to: &lt;a href="(url)"&gt;Streaming (str)&lt;/a&gt;
+
+**Labels:** twitch discord noevent discordpresence
+
+
+_NOTE: Only urls starting with `https://twitch.tv/` and `https://youtube.com/` will work_
+
+
+**Example:**
+```text
+Caster: !addcom !dontstarve (setdiscordstreaming https://twitch.tv/CoolStreamer Don't Starve)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+### setdiscordwatching
+
+Defined in script: _./javascript-source/core/transformers/discordpresence.js_
+
+**Formulas:**
+
+- `(setdiscordwatching str:str)` - sets the bots current activity in Discord to: Watching (str)
+
+**Labels:** twitch discord noevent discordpresence
+
+
+**Example:**
+```text
+Caster: !addcom !movienight (setdiscordwatching Movie Night)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
