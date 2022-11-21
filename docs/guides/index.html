@@ -64,13 +64,13 @@
             #copy-box {
                 position: absolute;
                 top: 0px;
-                margin-left: 50px;
                 z-index: 100;
                 max-width: 420px;
                 border-radius: 3px;
             }
             #copy-box-input {
                 max-width: 400px;
+                width:100%;
             }
             .label-copy {
                 border-radius: 3px;
@@ -420,7 +420,7 @@
                                 data = data.replace(/<!-- faketoc -->/ig, '<!-- toc -->').replace(/<!-- faketocstop -->/ig, '<!-- tocstop -->');
                                 data = data.replace(/<!-- notoc # -->/ig, '#').replace(/<!-- notoc ## -->/ig, '##').replace(/<!-- notoc ### -->/ig, '###');
                                 data = data.replace(/<!-- notoc #### -->/ig, '####').replace(/<!-- notoc ##### -->/ig, '#####').replace(/<!-- notoc ###### -->/ig, '######');
-                                window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path;
+                                window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path + '&channel=' + currentChannel;
                                 headers = {};
                                 pastFirstHeader = false;
                                 $('#content-pane').html(md.render(data));
@@ -508,6 +508,7 @@
                     }
                     
                     if (changed) {
+                        hashmap['channel'] = currentChannel;
                         $('#guide-menu').empty();
                         loadMenuRecursive('content' + (currentChannel === 'nightly' ? '' : '-stable') + '/', '');
                         loadGuide(currentPath.replace('content' + (currentChannel === 'stable' ? '' : '-stable') + '/', 'content' + (currentChannel === 'nightly' ? '' : '-stable') + '/'));
