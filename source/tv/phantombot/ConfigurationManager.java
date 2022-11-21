@@ -112,7 +112,7 @@ public class ConfigurationManager {
 
         if (!startProperties.getPropertyAsBoolean("allownonascii", false)) {
             for (String propertyKey : startProperties.stringPropertyNames()) {
-                String olds = startProperties.getProperty(propertyKey);
+                String olds = startProperties.getProperty(propertyKey, "");
                 String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
                 if (!olds.equals(news)) {
@@ -170,10 +170,10 @@ public class ConfigurationManager {
         }
 
         /* Make sure the channelName does not have a # */
-        if (startProperties.getProperty(PROP_CHANNEL).startsWith("#")) {
+        if (startProperties.getProperty(PROP_CHANNEL) != null && startProperties.getProperty(PROP_CHANNEL).startsWith("#")) {
             startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL).substring(1));
             changed = true;
-        } else if (startProperties.getProperty(PROP_CHANNEL).contains(".tv")) {
+        } else if (startProperties.getProperty(PROP_CHANNEL) != null && startProperties.getProperty(PROP_CHANNEL).contains(".tv")) {
             startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL).substring(startProperties.getProperty(PROP_CHANNEL).indexOf(".tv/") + 4).replaceAll("/", ""));
             changed = true;
         }
