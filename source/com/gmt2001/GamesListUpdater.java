@@ -76,8 +76,7 @@ public final class GamesListUpdater {
 
         PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
 
-        HttpClientResponse response;
-        response = HttpClient.get(URIUtil.create(BASE_URL + "index.json"));
+        HttpClientResponse response = HttpClient.get(URIUtil.create(BASE_URL + "index.json"));
 
         if (!response.isSuccess() || !response.hasJson()) {
             if (force) {
