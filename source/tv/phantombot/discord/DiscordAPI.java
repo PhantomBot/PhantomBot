@@ -93,6 +93,7 @@ public class DiscordAPI extends DiscordUtil {
 
     private final Object mutex = new Object();
     private static final int PROCESSMESSAGETIMEOUT = 5;
+    private static final int ISADMINTIMEOUT = 3;
     private static DiscordAPI instance;
     private static DiscordClient client;
     private static GatewayDiscordClient gateway;
@@ -444,10 +445,9 @@ public class DiscordAPI extends DiscordUtil {
                 String username = iUser.getUsername().toLowerCase();
                 String message = iMessage.getContent();
                 String channel;
-                Mono<Boolean> isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser);
 
                 DiscordEventListener.processedMessages.add(iMessage.getId().asLong());
-                ExecutorService.schedule(() -> DiscordEventListener.processedMessages.remove(iMessage.getId().asLong()), 5, TimeUnit.SECONDS);
+                ExecutorService.schedule(() -> DiscordEventListener.processedMessages.remove(iMessage.getId().asLong()), DiscordAPI.PROCESSMESSAGETIMEOUT, TimeUnit.SECONDS);
 
                 if (iChannel.getType() == Channel.Type.DM) {
                     channel = "DM";
@@ -462,11 +462,13 @@ public class DiscordAPI extends DiscordUtil {
 
                 com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
 
+                boolean isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser).or(Mono.delay(Duration.ofSeconds(DiscordAPI.ISADMINTIMEOUT)).thenReturn(false)).block();
+
                 if (message.charAt(0) == '!') {
-                    DiscordAPI.instance().parseCommand(iUser, iChannel, iMessage, isAdmin.block(Duration.ofMillis(500)));
+                    DiscordAPI.instance().parseCommand(iUser, iChannel, iMessage, isAdmin);
                 }
 
-                EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUser, iChannel, iMessage, isAdmin.block(Duration.ofMillis(500))));
+                EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUser, iChannel, iMessage, isAdmin));
             }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).timeout(Duration.ofSeconds(DiscordAPI.PROCESSMESSAGETIMEOUT)).subscribe();
         }
 
