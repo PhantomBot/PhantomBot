@@ -30,7 +30,7 @@
      * @example Caster: !addcom !banana (alert banana.gif)
      */
     function alert(args) {
-        if ((match = args.match(/^ ([,.\w\W]+)$/))) {
+        if ((match = args.args.match(/^ ([,.\w\W]+)$/))) {
             $.alertspollssocket.alertImage(match[1]);
             return {result: '', cache: false};
         }
@@ -45,7 +45,7 @@
      * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
      */
     function playsound(args) {
-        if ((match = args.match(/^\s([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
+        if ((match = args.args.match(/^\s([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
             if (!$.audioHookExists(match[1])) {
                 $.log.error('Could not play audio hook: Audio hook does not exist.');
                 return {result: $.lang.get('customcommands.playsound.404', match[1])};

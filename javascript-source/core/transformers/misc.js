@@ -30,7 +30,7 @@
         var code,
                 length,
                 temp = '';
-        if ((match = args.match(/^(?:=|\s)([1-9]\d*)$/))) {
+        if ((match = args.args.match(/^(?:=|\s)([1-9]\d*)$/))) {
             code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             length = parseInt(match[1]);
             for (i = 0; i < length; i++) {
@@ -50,7 +50,7 @@
      * @cached
      */
     function encodeurl(args) {
-        if ((match = args.match(/^ (.*)$/))) {
+        if ((match = args.args.match(/^ (.*)$/))) {
             return {
                 result: encodeURI(match[1]),
                 cache: true
@@ -65,7 +65,7 @@
      * @cached
      */
     function encodeurlparam(args) {
-        if ((match = args.match(/^ (.*)$/))) {
+        if ((match = args.args.match(/^ (.*)$/))) {
             return {
                 result: encodeURIComponent(match[1]),
                 cache: true
@@ -81,7 +81,7 @@
     function keywordcount(args) {
         var keyword,
                 keywordInfo;
-        if ((match = args.match(/^\s(.+)$/))) {
+        if ((match = args.args.match(/^\s(.+)$/))) {
             keyword = match[1];
             if ($.inidb.exists('keywords', keyword)) {
                 keywordInfo = JSON.parse($.inidb.get('keywords', keyword));
@@ -100,13 +100,27 @@
 
     /*
      * @transformer nl2br
-     * @formula (bl2br str:str) replaces all LF (`\n`) with `<br>` and removes all CR (`\r`)
+     * @formula (nl2br str:str) replaces all LF (`\n`) with `<br>` and removes all CR (`\r`)
      * @labels twitch discord noevent misc
      * @cached
      */
     function nl2br(args) {
         return {
-            result: args.replaceAll('\n', '<br>').replaceAll('\r', ''),
+            result: args.args.replaceAll('\n', '<br>').replaceAll('\r', ''),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer nl2x
+     * @formula (nl2x repl:str str:str) replaces all LF (`\n`) with the value provided in **repl** and removes all CR (`\r`)
+     * @labels twitch discord noevent misc
+     * @cached
+     */
+    function nl2x(args) {
+        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        return {
+            result: pargs[1].replaceAll('\n', pargs[0]).replaceAll('\r', ''),
             cache: true
         };
     }
@@ -122,8 +136,8 @@
      * Bot: Weather for Boulder, CO : Sunny Temps: 75 F 24 C
      * @cached
      */
-    function token(args, event) {
-        cmd = event.getCommand();
+    function token(args) {
+        cmd = args.event.getCommand();
         if ($.inidb.HasKey('commandtoken', '', cmd)) {
             return {
                 result: $.inidb.GetString('commandtoken', '', cmd),
@@ -145,7 +159,7 @@
      * @cached
      */
     function unescape(args) {
-        if ((match = args.match(/^ (.*)$/))) {
+        if ((match = args.args.match(/^ (.*)$/))) {
             return {
                 result: match[1],
                 raw: true,
@@ -162,7 +176,7 @@
      */
     function url0a2nl(args) {
         return {
-            result: args.replaceAll('%0A', '\n').replaceAll('%0a', '\n'),
+            result: args.args.replaceAll('%0A', '\n').replaceAll('%0a', '\n'),
             cache: true
         };
     }
@@ -173,6 +187,7 @@
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
         new $.transformers.transformer('keywordcount', ['twitch', 'keywordevent', 'misc'], keywordcount),
         new $.transformers.transformer('nl2br', ['twitch', 'discord', 'noevent', 'misc'], nl2br),
+        new $.transformers.transformer('nl2x', ['twitch', 'discord', 'noevent', 'misc'], nl2x),
         new $.transformers.transformer('token', ['twitch', 'commandevent', 'misc'], token),
         new $.transformers.transformer('unescape', ['twitch', 'discord', 'noevent', 'misc'], unescape),
         new $.transformers.transformer('url0a2nl', ['twitch', 'discord', 'noevent', 'misc'], url0a2nl)

@@ -24,18 +24,24 @@
      * @transformer command
      * @formula (command name:str) execute command with given name and pass no args
      * @formula (command name:str args:str) execute command with given name and pass args
-     * @labels twitch commandevent commands
+     * @labels twitch discord commandevent commands
      * @cancels
      */
-    function command(args, event) {
+    function command(args) {
         var argStr;
-        if ((match = args.match(/^\s(\S+)(?:\s(.*))?$/))) {
+        if ((match = args.args.match(/^\s(\S+)(?:\s(.*))?$/))) {
             cmd = match[1];
             argStr = match[2] || '';
             if (cmd.length > 0) {
                 var EventBus = Packages.tv.phantombot.event.EventBus;
-                var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
-                EventBus.instance().postAsync(new CommandEvent(event.getSender(), cmd, argStr));
+                if (args.platform === 'discord') {
+                    var DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
+                    EventBus.instance().postAsync(new DiscordCommandEvent(args.event.getDiscordUser(), args.event.getDiscordChannel(),
+                            args.event.getDiscordMessage(), cmd, argStr, args.event.isAdmin()));
+                } else {
+                    var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                    EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr));
+                }
             }
             return {cancel: true};
         }
@@ -48,9 +54,9 @@
      * @labels twitch commandevent commands
      * @cancels
      */
-    function commandslist(args, event) {
+    function commandslist(args) {
         var prefix;
-        if ((match = args.match(/^(?:\s(.*))?$/))) {
+        if ((match = args.args.match(/^(?:\s(.*))?$/))) {
             prefix = match[1] || '';
             keys = $.inidb.GetKeyList('pricecom', '');
             temp = [];
@@ -59,7 +65,7 @@
                     temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
                 }
             }
-            $.paginateArray(temp, 'NULL' + prefix, ', ', true, event.getSender());
+            $.paginateArray(temp, 'NULL' + prefix, ', ', true, args.event.getSender());
             return {cancel: true};
         }
     }
@@ -70,7 +76,7 @@
      * @formula (count amount:int) increases the count of how often this command has been called by the specified amount and outputs new count
      * @formula (count amount:int name:str) increases the count of how often the named counter has been called by the specified amount and outputs new count
      * @formula (count reset name:str) zeroes the named counter and outputs new count
-     * @labels twitch commandevent commands
+     * @labels twitch discord commandevent commands
      * @example Caster: !addcom !spam Chat has been spammed (count) times
      * User: !spam
      * Bot: Chat has been spammed 5050 times.
@@ -78,10 +84,15 @@
      * Specify a negative amount to subtract from it.
      * The default counter name is the command name, without the `!`
      */
-    function count(args, event) {
-        match = $.parseArgs(args, ' ', 2, true);
+    function count(args) {
+        match = $.parseArgs(args.args, ' ', 2, true);
         var incr = 1;
-        var counter = event.getCommand();
+        var counter = args.event.getCommand();
+        var table = 'commandCount';
+        
+        if (args.platform === 'discord') {
+            table = 'discordCommandCount';
+        }
 
         if (match !== null && match.length > 1 && match[1].length > 0) {
             counter = match[1];
@@ -91,12 +102,12 @@
             if (!isNaN(match[0])) {
                 incr = parseInt(match[0]);
             } else if (match[0].toLowerCase() === 'reset') {
-                incr = - $.inidb.GetInteger('commandCount', '', counter);
+                incr = -$.inidb.GetInteger(table, '', counter);
             }
         }
 
-        $.inidb.incr('commandCount', counter, incr);
-        return {result: $.inidb.get('commandCount', counter)};
+        $.inidb.incr(table, counter, incr);
+        return {result: $.inidb.get(table, counter)};
     }
 
     /*
@@ -105,9 +116,9 @@
      * @labels twitch discord commandevent commands
      * @cancels sometimes
      */
-    function help(args, event) {
-        if ((match = args.match(/^(?:=|\s)(.*)$/))) {
-            if (event.getArgs()[0] === undefined) {
+    function help(args) {
+        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
+            if (args.event.getArgs()[0] === undefined) {
                 $.say(match[1]);
                 return {cancel: true};
             } else {
@@ -117,9 +128,9 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('command', ['twitch', 'commandevent', 'commands'], command),
+        new $.transformers.transformer('command', ['twitch', 'discord', 'commandevent', 'commands'], command),
         new $.transformers.transformer('commandslist', ['twitch', 'commandevent', 'commands'], commandslist),
-        new $.transformers.transformer('count', ['twitch', 'commandevent', 'commands'], count),
+        new $.transformers.transformer('count', ['twitch', 'discord', 'commandevent', 'commands'], count),
         new $.transformers.transformer('help', ['twitch', 'discord', 'commandevent', 'commands'], help)
     ];
 

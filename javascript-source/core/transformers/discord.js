@@ -17,19 +17,33 @@
 
 (function () {
     /*
+     * @transformer cleardiscordactivity
+     * @formula (cleardiscordactivity) removes the bots current activity in Discord, setting it to just plain Online
+     * @labels twitch discord noevent presence
+     * @example Caster: !addcom !cleardiscord (cleardiscordactivity)
+     */
+    function cleardiscordactivity() {
+        $.discordAPI.resetPresence();
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @transformer setdiscordactivity
      * @formula (setdiscordactivity str:str) sets the bots current activity in Discord to a custom string
-     * @labels twitch discord noevent discordpresence
+     * @labels twitch discord noevent presence
      * @example Caster: !addcom !sleeping (setdiscordactivity :zzz: sleeping...)
      */
     function setdiscordactivity(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordactivity an input is missing)'
             };
         }
-        $.discordAPI.setCustomActivity(args);
+        $.discordAPI.setCustomActivity(args.args);
 
         return {
             result: ''
@@ -39,17 +53,17 @@
     /*
      * @transformer setdiscordcompeting
      * @formula (setdiscordcompeting str:str) sets the bots current activity in Discord to: Competing in (str)
-     * @labels twitch discord noevent discordpresence
+     * @labels twitch discord noevent presence
      * @example Caster: !addcom !lcs (setdiscordcompeting LCS)
      */
     function setdiscordcompeting(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordcompeting an input is missing)'
             };
         }
-        $.discordAPI.setCompeting(args);
+        $.discordAPI.setCompeting(args.args);
 
         return {
             result: ''
@@ -59,17 +73,17 @@
     /*
      * @transformer setdiscordlistening
      * @formula (setdiscordlistening str:str) sets the bots current activity in Discord to: Listening to (str)
-     * @labels twitch discord noevent discordpresence
+     * @labels twitch discord noevent presence
      * @example Caster: !addcom !heavymetal (setdiscordlistening Heavy Metal)
      */
     function setdiscordlistening(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordlistening an input is missing)'
             };
         }
-        $.discordAPI.setListening(args);
+        $.discordAPI.setListening(args.args);
 
         return {
             result: ''
@@ -79,17 +93,17 @@
     /*
      * @transformer setdiscordwatching
      * @formula (setdiscordwatching str:str) sets the bots current activity in Discord to: Watching (str)
-     * @labels twitch discord noevent discordpresence
+     * @labels twitch discord noevent presence
      * @example Caster: !addcom !movienight (setdiscordwatching Movie Night)
      */
     function setdiscordwatching(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordwatching an input is missing)'
             };
         }
-        $.discordAPI.setWatching(args);
+        $.discordAPI.setWatching(args.args);
 
         return {
             result: ''
@@ -99,17 +113,17 @@
     /*
      * @transformer setdiscordplaying
      * @formula (setdiscordplaying str:str) sets the bots current activity in Discord to: Playing (str)
-     * @labels twitch discord noevent discordpresence
+     * @labels twitch discord noevent presence
      * @example Caster: !addcom !rocketleague (setdiscordplaying Rocket League)
      */
     function setdiscordplaying(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordplaying an input is missing)'
             };
         }
-        $.discordAPI.setPlaying(args);
+        $.discordAPI.setPlaying(args.args);
 
         return {
             result: ''
@@ -119,12 +133,12 @@
     /*
      * @transformer setdiscordstreaming
      * @formula (setdiscordstreaming url:str str:str) sets the bots current activity in Discord to: &lt;a href="(url)"&gt;Streaming (str)&lt;/a&gt;
-     * @labels twitch discord noevent discordpresence
+     * @labels twitch discord noevent presence
      * @example Caster: !addcom !dontstarve (setdiscordstreaming https://twitch.tv/CoolStreamer Don't Starve)
      * @notes Only urls starting with `https://twitch.tv/` and `https://youtube.com/` will work
      */
     function setdiscordstreaming(args) {
-        var pargs = $.parseArgs(args, ' ', 2, true);
+        var pargs = $.parseArgs(args.args, ' ', 2, true);
         if (pargs.length !== 2) {
             return {
                 result: '(setdiscordstreaming an input is missing)'
@@ -138,13 +152,19 @@
     }
 
     /*
-     * @transformer cleardiscordactivity
-     * @formula (cleardiscordactivity) removes the bots current activity in Discord, setting it to just plain Online
-     * @labels twitch discord noevent discordpresence
-     * @example Caster: !addcom !cleardiscord (cleardiscordactivity)
+     * @transformer setrole
+     * @formula (setrole username:str, role:str) adds the specified user to the specified Discord role
+     * @labels discord noevent roles
+     * @example Caster: !addcom !coolrole (setrole (sender), Cool Kids)
      */
-    function cleardiscordactivity() {
-        $.discordAPI.resetPresence();
+    function setrole(args) {
+        var pargs = $.parseArgs(args.args, ',', 2, true);
+        if (pargs.length !== 2) {
+            return {
+                result: '(setrole an input is missing)'
+            };
+        }
+        $.discord.setRole(pargs[1], pargs[0]);
 
         return {
             result: ''
@@ -152,13 +172,14 @@
     }
 
     var transformers = [
-        new $.transformers.transformer('setdiscordactivity', ['twitch', 'discord', 'noevent', 'discordpresence'], setdiscordactivity),
-        new $.transformers.transformer('setdiscordcompeting', ['twitch', 'discord', 'noevent', 'discordpresence'], setdiscordcompeting),
-        new $.transformers.transformer('setdiscordlistening', ['twitch', 'discord', 'noevent', 'discordpresence'], setdiscordlistening),
-        new $.transformers.transformer('setdiscordwatching', ['twitch', 'discord', 'noevent', 'discordpresence'], setdiscordwatching),
-        new $.transformers.transformer('setdiscordplaying', ['twitch', 'discord', 'noevent', 'discordpresence'], setdiscordplaying),
-        new $.transformers.transformer('setdiscordstreaming', ['twitch', 'discord', 'noevent', 'discordpresence'], setdiscordstreaming),
-        new $.transformers.transformer('cleardiscordactivity', ['twitch', 'discord', 'noevent', 'discordpresence'], cleardiscordactivity)
+        new $.transformers.transformer('cleardiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], cleardiscordactivity),
+        new $.transformers.transformer('setdiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], setdiscordactivity),
+        new $.transformers.transformer('setdiscordcompeting', ['twitch', 'discord', 'noevent', 'presence'], setdiscordcompeting),
+        new $.transformers.transformer('setdiscordlistening', ['twitch', 'discord', 'noevent', 'presence'], setdiscordlistening),
+        new $.transformers.transformer('setdiscordwatching', ['twitch', 'discord', 'noevent', 'presence'], setdiscordwatching),
+        new $.transformers.transformer('setdiscordplaying', ['twitch', 'discord', 'noevent', 'presence'], setdiscordplaying),
+        new $.transformers.transformer('setdiscordstreaming', ['twitch', 'discord', 'noevent', 'presence'], setdiscordstreaming),
+        new $.transformers.transformer('setrole', ['discord', 'noevent', 'presence'], setrole)
     ];
 
     $.transformers.addTransformers(transformers);

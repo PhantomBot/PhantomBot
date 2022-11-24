@@ -29,7 +29,7 @@
      * @cached
      */
     function countdown(args) {
-        if ((match = args.match(/^(?:=|\s)(.*)$/))) {
+        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
             temp = Date.parse(match[1]);
             if (isNaN(temp)) {
                 return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
@@ -53,7 +53,7 @@
      * @cached
      */
     function countup(args) {
-        if ((match = args.match(/^(?:=|\s)(.*)$/))) {
+        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
             temp = Date.parse(match[1]);
             if (isNaN(temp)) {
                 return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
@@ -75,7 +75,7 @@
      * @cached
      */
     function currenttime(args) {
-        if ((match = args.match(/^ (.+), (.*)$/))) {
+        if ((match = args.args.match(/^ (.+), (.*)$/))) {
             return {
                 result: $.getCurrentLocalTimeString(match[2], match[1]),
                 cache: true
@@ -94,14 +94,14 @@
      * @cached
      */
     function gettimevar(args) {
-        if (!args) {
+        if (!args.args) {
             return {
                 result: $.getLocalTime(),
                 cache: true
             };
         } else {
             return {
-                result: $.inidb.get('timevars', args),
+                result: $.inidb.get('timevars', args.args),
                 cache: true
             };
         }

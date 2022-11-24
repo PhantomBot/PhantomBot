@@ -23,10 +23,8 @@
      * @notes metatag that prevents anyone but the broadcaster or admins from editing the command
      * @example Caster: !addcom !playtime Current playtime: (playtime). (adminonlyedit)
      */
-    function adminonlyedit(args) {
-        if (!args) {
-            return {result: ''};
-        }
+    function adminonlyedit() {
+        return {result: ''};
     }
 
     /*
@@ -37,15 +35,15 @@
      * @cancels sometimes
      */
     function gameonly(args) {
-        if (args.match(/^(?:=|\s)(.*)$/) !== null) {
-            args = args.substring(1);
+        if (args.args.match(/^(?:=|\s)(.*)$/) !== null) {
+            var targs = args.args.substring(1);
             var negate = false;
-            if (args.match(/^(!!\s)/) !== null) {
-                args = args.substring(3);
+            if (targs.match(/^(!!\s)/) !== null) {
+                targs = targs.substring(3);
                 negate = true;
             }
             var game = $.getGame($.channelName);
-            var match = args.match(/([^|]+)/g);
+            var match = targs.match(/([^|]+)/g);
             for (var x in match) {
                 if (game.equalsIgnoreCase(match[x])) {
                     if (negate) {
@@ -70,14 +68,12 @@
      * @example Caster: !addcom !downtime The stream as been offline for (downtime). (offlineonly)
      * @cancels sometimes
      */
-    function offlineonly(args, event) {
-        if (!args) {
-            if ($.isOnline($.channelName)) {
-                $.returnCommandCost(event.getSender(), event.getCommand(), $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod));
-                return {cancel: true};
-            }
-            return {result: ''};
+    function offlineonly(args) {
+        if ($.isOnline($.channelName)) {
+            $.returnCommandCost(args.event.getSender(), args.event.getCommand(), $.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Mod));
+            return {cancel: true};
         }
+        return {result: ''};
     }
 
     /*
@@ -87,14 +83,12 @@
      * @example Caster: !addcom !uptime (pointtouser) (channelname) has been live for (uptime). (onlineonly)
      * @cancels sometimes
      */
-    function onlineonly(args, event) {
-        if (!args) {
-            if (!$.isOnline($.channelName)) {
-                $.returnCommandCost(event.getSender(), event.getCommand(), $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod));
-                return {cancel: true};
-            }
-            return {result: ''};
+    function onlineonly(args) {
+        if (!$.isOnline($.channelName)) {
+            $.returnCommandCost(args.event.getSender(), args.event.getCommand(), $.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Mod));
+            return {cancel: true};
         }
+        return {result: ''};
     }
 
     /*
@@ -105,24 +99,24 @@
      * @notes use @admins as one of the user names to allow all admins
      * @cancels sometimes
      */
-    function useronly(args, event) {
-        if (args.match(/^(?:=|\s)(.*)$/) !== null) {
-            var match = args.match(/(@?\w+)/g);
+    function useronly(args) {
+        if (args.args.match(/^(?:=|\s)(.*)$/) !== null) {
+            var match = args.args.match(/(@?\w+)/g);
             for (var x in match) {
                 if (match[x].match(/^@moderators$/) !== null) {
-                    if ($.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
+                    if ($.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Mod)) {
                         return {result: ''};
                     }
                 } else if (match[x].match(/^@admins$/) !== null) {
-                    if ($.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Admin)) {
+                    if ($.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Admin)) {
                         return {result: ''};
                     }
-                } else if (event.getSender().equalsIgnoreCase(match[x])) {
+                } else if (args.event.getSender().equalsIgnoreCase(match[x])) {
                     return {result: ''};
                 }
             }
             if ($.getIniDbBoolean('settings', 'permComMsgEnabled', true)) {
-                $.say($.whisperPrefix(event.getSender()) + $.lang.get('cmd.useronly', args.substring(1)));
+                $.say($.whisperPrefix(args.event.getSender()) + $.lang.get('cmd.useronly', args.substring(1)));
             }
             return {cancel: true};
         }

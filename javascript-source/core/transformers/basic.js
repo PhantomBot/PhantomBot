@@ -28,12 +28,12 @@
      * Bot: Your lucky number is 7
      */
     function randomInt(args) {
-        if (!args) {
+        if (!args.args) {
             return {
                 result: $.randRange(1, 100),
                 cache: false
             };
-        } else if ((match = args.match(/^\s(-?\d+),\s?(-?\d+)$/))) {
+        } else if ((match = args.args.match(/^\s(-?\d+),\s?(-?\d+)$/))) {
             return {
                 result: $.randRange(parseInt(match[1]), parseInt(match[2])),
                 cache: false
@@ -54,11 +54,11 @@
      * @cached
      */
     function buildArgs(n) {
-        return function (args, event) {
-            var arg = event.getArgs()[n - 1];
-            if (!args) {
+        return function (args) {
+            var arg = args.event.getArgs()[n - 1];
+            if (!args.args) {
                 return {result: arg !== undefined ? arg : ''};
-            } else if ((match = args.match(/^([=\|])(.*)$/))) {
+            } else if ((match = args.args.match(/^([=\|])(.*)$/))) {
                 if (arg !== undefined) {
                     return {
                         result: arg,
@@ -82,22 +82,22 @@
      * User: !echo test test
      * Bot: test test
      */
-    function echo(args, event) {
-        if (!args) {
-            return {result: event.getArguments() ? event.getArguments() : ''};
-        }
+    function echo(args) {
+        return {result: args.event.getArguments() ? args.event.getArguments() : ''};
     }
 
     /*
      * @transformer random
      * @formula (random) random user in chat, or the bot's name if chat is empty
-     * @labels twitch noevent basic
+     * @labels twitch discord noevent basic
      * @example Caster: !addcom !poke /me pokes (random) with a long wooden stick.
      * User: !poke
      * Bot: /me pokes User2 with a long wooden stick.
      */
     function random(args) {
-        if (!args) {
+        if (args.platform === 'discord') {
+            return {result: $.discord.username.random()};
+        } else {
             try {
                 var name = $.username.resolve($.randElement($.users));
 
@@ -105,10 +105,7 @@
                     name = $.username.resolve($.botName);
                 }
 
-                return {
-                    result: name,
-                    cache: false
-                };
+                return {result: name};
             } catch (ex) {
                 return {result: $.username.resolve($.botName)};
             }
@@ -123,16 +120,14 @@
      * User: !poke
      * Bot: /me Pokes Master User2 with a bar of soap.
      */
-    function randomrank(args) {
-        if (!args) {
-            try {
-                return {
-                    result: $.resolveRank($.randElement($.users)),
-                    cache: false
-                };
-            } catch (ex) {
-                return {result: $.resolveRank($.botName)};
-            }
+    function randomrank() {
+        try {
+            return {
+                result: $.resolveRank($.randElement($.users)),
+                cache: false
+            };
+        } catch (ex) {
+            return {result: $.resolveRank($.botName)};
         }
     }
 
@@ -146,7 +141,7 @@
     function repeat(args) {
         var MAX_COUNTER_VALUE = 30,
                 n;
-        if ((match = args.match(/^\s([1-9]\d*),\s?(.*)$/))) {
+        if ((match = args.args.match(/^\s([1-9]\d*),\s?(.*)$/))) {
             if (!match[2]) {
                 return {result: ''};
             }
@@ -171,11 +166,11 @@
     var transformers = [
         new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
-        new $.transformers.transformer('random', ['twitch', 'noevent', 'basic'], random),
+        new $.transformers.transformer('random', ['twitch', 'discord', 'noevent', 'basic'], random),
         new $.transformers.transformer('randomrank', ['twitch', 'noevent', 'basic'], randomrank),
         new $.transformers.transformer('repeat', ['twitch', 'discord', 'noevent', 'basic'], repeat)
     ];
-    
+
     for (i = 1; i <= 9; i++) {
         transformers.push(new $.transformers.transformer($.jsString(i), ['twitch', 'discord', 'commandevent', 'basic'], buildArgs(i)));
     }

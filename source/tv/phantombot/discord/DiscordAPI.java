@@ -424,7 +424,7 @@ public class DiscordAPI extends DiscordUtil {
                 return;
             }
 
-            iMessage.getChannel().timeout(Duration.ofMillis(500)).doOnSuccess(iChannel -> {
+            iMessage.getChannel().timeout(Duration.ofSeconds(DiscordAPI.PROCESSMESSAGETIMEOUT)).doOnSuccess(iChannel -> {
                 if (iChannel == null) {
                     com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iChannel");
                     return;
@@ -469,7 +469,7 @@ public class DiscordAPI extends DiscordUtil {
                 }
 
                 EventBus.instance().postAsync(new DiscordChannelMessageEvent(iUser, iChannel, iMessage, isAdmin));
-            }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).timeout(Duration.ofSeconds(DiscordAPI.PROCESSMESSAGETIMEOUT)).subscribe();
+            }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
         }
 
         public static void onDiscordUserJoinEvent(MemberJoinEvent event) {

@@ -21,19 +21,17 @@
     /*
      * @transformer atSender
      * @formula (@sender) '@<Sender's Name>, '
-     * @labels twitch commandevent user
+     * @labels twitch discord commandevent user
      * @example Caster: !addcom !hello (@sender) you are awesome!
      * User: !hello
      * Bot: @User, you're awesome!
      * @cached
      */
-    function atSender(args, event) {
-        if (!args) {
-            return {
-                result: $.userPrefix(event.getSender(), true),
-                cache: true
-            };
-        }
+    function atSender(args) {
+        return {
+            result: args.platform === 'discord' ? args.event.getMention() : $.userPrefix(args.event.getSender(), true),
+            cache: true
+        };
     }
 
     /*
@@ -48,11 +46,9 @@
      * Bot: @User, user2 has been on Twitch since December 25, 2010.
      * @cancels
      */
-    function age(args, event) {
-        if (!args) {
-            $.getChannelAge(event);
-            return {cancel: true};
-        }
+    function age(args) {
+        $.getChannelAge(args.event);
+        return {cancel: true};
     }
 
     /*
@@ -60,10 +56,8 @@
      * @formula (baresender) the login name of the message's sender
      * @labels twitch commandevent user
      */
-    function baresender(args, event) {
-        if (!args) {
-            return {result: event.getSender()};
-        }
+    function baresender(args) {
+        return {result: args.event.getSender()};
     }
 
     /*
@@ -78,13 +72,13 @@
      * Bot: User2 -> like my Facebook  page!
      * @cached
      */
-    function pointtouser(args, event) {
+    function pointtouser(args) {
         temp = '';
-        if (event.getArgs().length > 0) {
-            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+        if (args.event.getArgs().length > 0) {
+            temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
-            temp = event.getSender();
+            temp = args.event.getSender();
         }
         return {
             result: $.jsString($.usernameResolveIgnoreEx(temp)) + ' -> ',
@@ -95,19 +89,17 @@
     /*
      * @transformer sender
      * @formula (sender) the sender's display name
-     * @labels twitch commandevent user
+     * @labels twitch discord commandevent user
      * @example Caster: !addcom !hello Hello, (sender)!
      * User: !hello
      * Bot: Hello, User!
      * @cached
      */
-    function sender(args, event) {
-        if (!args) {
-            return {
-                result: $.usernameResolveIgnoreEx(event.getSender()),
-                cache: true
-            };
-        }
+    function sender(args) {
+        return {
+            result: args.platform === 'discord' ? args.event.getUsername() : $.usernameResolveIgnoreEx(args.event.getSender()),
+            cache: true
+        };
     }
 
     /*
@@ -119,13 +111,11 @@
      * Bot: /me Pokes Master User with a bar of soap.
      * @cached
      */
-    function senderrank(args, event) {
-        if (!args) {
-            return {
-                result: $.resolveRank(event.getSender()),
-                cache: true
-            };
-        }
+    function senderrank(args) {
+        return {
+            result: $.resolveRank(args.event.getSender()),
+            cache: true
+        };
     }
 
     /*
@@ -134,19 +124,17 @@
      * @labels twitch commandevent user
      * @cached
      */
-    function senderrankonly(args, event) {
-        if (!args) {
-            return {
-                result: $.getRank(event.getSender()),
-                cache: true
-            };
-        }
+    function senderrankonly(args) {
+        return {
+            result: $.getRank(args.event.getSender()),
+            cache: true
+        };
     }
 
     /*
      * @transformer touser
      * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
-     * @labels twitch commandevent user
+     * @labels twitch discord commandevent user
      * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
      * User: !twitter
      * Bot: User Hey! Follow my Twitter!
@@ -155,29 +143,39 @@
      * Bot: User2 Hey! Follow my Twitter!
      * @cached
      */
-    function touser(args, event) {
+    function touser(args) {
         temp = '';
-        if (event.getArgs().length > 0) {
-            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+        if (args.event.getArgs().length > 0) {
+            temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
-            temp = event.getSender();
+            if (args.platform === 'discord') {
+                temp = event.getMention();
+            } else {
+                temp = $.usernameResolveIgnoreEx(args.event.getSender());
+            }
+        } else {
+            if (args.platform === 'discord') {
+                temp = $.discord.username.resolve(temp);
+            } else {
+                temp = $.usernameResolveIgnoreEx(temp);
+            }
         }
         return {
-            result: $.usernameResolveIgnoreEx(temp),
+            result: temp,
             cache: true
         };
     }
 
     var transformers = [
-        new $.transformers.transformer('@sender', ['twitch', 'commandevent', 'user'], atSender),
+        new $.transformers.transformer('@sender', ['twitch', 'discord', 'commandevent', 'user'], atSender),
         new $.transformers.transformer('age', ['twitch', 'commandevent', 'user'], age),
         new $.transformers.transformer('baresender', ['twitch', 'commandevent', 'user'], baresender),
         new $.transformers.transformer('pointtouser', ['twitch', 'commandevent', 'user'], pointtouser),
-        new $.transformers.transformer('sender', ['twitch', 'commandevent', 'user'], sender),
+        new $.transformers.transformer('sender', ['twitch', 'discord', 'commandevent', 'user'], sender),
         new $.transformers.transformer('senderrank', ['twitch', 'commandevent', 'user'], senderrank),
         new $.transformers.transformer('senderrankonly', ['twitch', 'commandevent', 'user'], senderrankonly),
-        new $.transformers.transformer('touser', ['twitch', 'commandevent', 'user'], touser)
+        new $.transformers.transformer('touser', ['twitch', 'discord', 'commandevent', 'user'], touser)
     ];
 
     $.transformers.addTransformers(transformers);
