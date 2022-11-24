@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function () {
     var transformers = {},
             _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
@@ -141,6 +143,7 @@
      * @export $.transformers
      * @param {javaObject[tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor, such as CommandEvent
      * @param {string} message - the input message containing tags to be processed
+     * @param {object} args - a js object containing any of the below parameters
      * @param {bool} atEnabled - default false. If set `true`, no tags are found to process, the sender is a moderator, and at least one argument is
      *                              present, responds with `argument1 -> message`
      * @param {jsArray[jsString]} globalTransformerRequiredLabels - default ['twitch', ['commandevent', 'noevent']]. A set of required labels. Only
@@ -150,35 +153,48 @@
      *                              will be processed
      * @param {object[string->function]} localTransformers - a js object of custom transformers defined by the caller
      * @param {object} customArgs - an arbitrary js object containing custom arguments to pass to transformers which support them
+     * @param {string} platform - identifies the platform that triggered the command. Valid values: 'twitch', 'discord'. Default: 'twitch'
      * @return {string or null}
      */
-    function tags(event, message, atEnabled, globalTransformerRequiredLabels, globalTransformerAnyLabels, localTransformers, customArgs) {
+    function tags(event, message, args) {
         var match,
                 tagFound = false,
                 transformed,
                 transformCache = {};
 
-        if (atEnabled === undefined || atEnabled === null) {
-            atEnabled = false;
+        if (args.atEnabled === undefined || args.atEnabled === null) {
+            args.atEnabled = false;
         }
 
-        if (globalTransformerRequiredLabels === undefined || globalTransformerRequiredLabels === null) {
-            globalTransformerRequiredLabels = ['twitch', ['commandevent', 'noevent']];
+        if (args.globalTransformerRequiredLabels === undefined || args.globalTransformerRequiredLabels === null) {
+            args.globalTransformerRequiredLabels = ['twitch', ['commandevent', 'noevent']];
         }
 
-        if (globalTransformerAnyLabels === undefined || globalTransformerAnyLabels === null) {
-            globalTransformerAnyLabels = [];
+        if (args.globalTransformerAnyLabels === undefined || args.globalTransformerAnyLabels === null) {
+            args.globalTransformerAnyLabels = [];
         }
 
-        if (localTransformers === undefined || localTransformers === null) {
-            localTransformers = {};
+        if (args.localTransformers === undefined || args.localTransformers === null) {
+            args.localTransformers = {};
+        }
+
+        if (args.platform === undefined || args.platform === null) {
+            args.platform = 'twitch';
         }
 
         message = $.jsString(message);  // make sure this is a JS string, not a Java string
         while ((match = message.match(/(?:[^\\]|^)(\(([^\\\s\|=()]*)([\s=\|](?:\\\(|\\\)|[^()])*)?\))/))) {
             var wholeMatch = match[1],
                     tagName = match[2].toLowerCase(),
-                    tagArgs = match[3] ? unescapeTags(match[3]) : '',
+                    tagArgs = {
+                        event: event,
+                        tag: tagName,
+                        args: match[3] ? unescapeTags(match[3]) : '',
+                        customArgs: args.customArgs,
+                        globalTransformerRequiredLabels: args.globalTransformerRequiredLabels,
+                        globalTransformerAnyLabels: args.globalTransformerAnyLabels,
+                        platform: args.platform.toLowerCase()
+                    },
                     thisTagFound = false;
             if (transformCache.hasOwnProperty(wholeMatch)) {
                 $.replace(message, wholeMatch, transformCache[wholeMatch]);
@@ -186,12 +202,12 @@
             } else {
                 _lock.lock();
                 try {
-                    if (localTransformers.hasOwnProperty(tagName)
-                            && (transformed = localTransformers[tagName](tagArgs, event, customArgs))) {
+                    if (args.localTransformers.hasOwnProperty(tagName)
+                            && (transformed = args.localTransformers[tagName](tagArgs))) {
                         thisTagFound = true;
-                    } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(globalTransformerRequiredLabels)
-                            && transformers[tagName].hasAnyLabel(globalTransformerAnyLabels)
-                            && (transformed = transformers[tagName].transformer(tagArgs, event, customArgs, globalTransformerRequiredLabels, globalTransformerAnyLabels))) {
+                    } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(args.globalTransformerRequiredLabels)
+                            && transformers[tagName].hasAnyLabel(args.globalTransformerAnyLabels)
+                            && (transformed = transformers[tagName].transformer(tagArgs))) {
                         thisTagFound = true;
                     }
                 } finally {
@@ -227,11 +243,11 @@
         }
 
         // custom commands without tags can be directed towards users by mods
-        if (!tagFound && atEnabled && event.getArgs()[0] !== undefined && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
+        if (!tagFound && args.atEnabled && event.getArgs()[0] !== undefined && $.checkUserPermission(event.getSender(), event.getTags(), $.PERMISSION.Mod)) {
             // Split the message into parts
             var part = message.split(' ');
             // Check if the command is written in color ('/me ')
-            if (part[0] !== undefined && part[0] === '/me'){
+            if (part[0] !== undefined && part[0] === '/me') {
                 //  remove '/me ' if present
                 message = message.replace('/me ', '');
                 //  write '/me ' at the beginning of the message
@@ -271,7 +287,7 @@
      * @deprecated
      */
     function legacyAddTransformer(tag, transformer) {
-        addTransformer(new Transformer(tag, ['twitch', 'command'], transformer));
+        addTransformer(new Transformer(tag, ['twitch', 'commandevent', 'legacy'], transformer));
     }
 
     /*
@@ -413,7 +429,7 @@
             globalRequired.push(['commandevent', 'noevent']);
         }
 
-        return tags(event, message, atEnabled, globalRequired, [], localTransformers, null);
+        return tags(event, message, {atEnabled: atEnabled, globalTransformerRequiredLabels: globalRequired, localTransformers: localTransformers});
     }
 
     $.tags = legacyTags; // @deprecated export
