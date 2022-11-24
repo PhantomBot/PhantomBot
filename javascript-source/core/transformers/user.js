@@ -21,7 +21,7 @@
     /*
      * @transformer atSender
      * @formula (@sender) '@<Sender's Name>, '
-     * @labels twitch commandevent user
+     * @labels twitch discord commandevent user
      * @example Caster: !addcom !hello (@sender) you are awesome!
      * User: !hello
      * Bot: @User, you're awesome!
@@ -29,7 +29,7 @@
      */
     function atSender(args) {
         return {
-            result: $.userPrefix(args.event.getSender(), true),
+            result: args.platform === 'discord' ? args.event.getMention() : $.userPrefix(args.event.getSender(), true),
             cache: true
         };
     }
@@ -89,7 +89,7 @@
     /*
      * @transformer sender
      * @formula (sender) the sender's display name
-     * @labels twitch commandevent user
+     * @labels twitch discord commandevent user
      * @example Caster: !addcom !hello Hello, (sender)!
      * User: !hello
      * Bot: Hello, User!
@@ -97,7 +97,7 @@
      */
     function sender(args) {
         return {
-            result: $.usernameResolveIgnoreEx(args.event.getSender()),
+            result: args.platform === 'discord' ? args.event.getUsername() : $.usernameResolveIgnoreEx(args.event.getSender()),
             cache: true
         };
     }
@@ -134,7 +134,7 @@
     /*
      * @transformer touser
      * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
-     * @labels twitch commandevent user
+     * @labels twitch discord commandevent user
      * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
      * User: !twitter
      * Bot: User Hey! Follow my Twitter!
@@ -149,23 +149,33 @@
             temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
-            temp = args.event.getSender();
+            if (args.platform === 'discord') {
+                temp = event.getMention();
+            } else {
+                temp = $.usernameResolveIgnoreEx(args.event.getSender());
+            }
+        } else {
+            if (args.platform === 'discord') {
+                temp = $.discord.username.resolve(temp);
+            } else {
+                temp = $.usernameResolveIgnoreEx(temp);
+            }
         }
         return {
-            result: $.usernameResolveIgnoreEx(temp),
+            result: temp,
             cache: true
         };
     }
 
     var transformers = [
-        new $.transformers.transformer('@sender', ['twitch', 'commandevent', 'user'], atSender),
+        new $.transformers.transformer('@sender', ['twitch', 'discord', 'commandevent', 'user'], atSender),
         new $.transformers.transformer('age', ['twitch', 'commandevent', 'user'], age),
         new $.transformers.transformer('baresender', ['twitch', 'commandevent', 'user'], baresender),
         new $.transformers.transformer('pointtouser', ['twitch', 'commandevent', 'user'], pointtouser),
-        new $.transformers.transformer('sender', ['twitch', 'commandevent', 'user'], sender),
+        new $.transformers.transformer('sender', ['twitch', 'discord', 'commandevent', 'user'], sender),
         new $.transformers.transformer('senderrank', ['twitch', 'commandevent', 'user'], senderrank),
         new $.transformers.transformer('senderrankonly', ['twitch', 'commandevent', 'user'], senderrankonly),
-        new $.transformers.transformer('touser', ['twitch', 'commandevent', 'user'], touser)
+        new $.transformers.transformer('touser', ['twitch', 'discord', 'commandevent', 'user'], touser)
     ];
 
     $.transformers.addTransformers(transformers);

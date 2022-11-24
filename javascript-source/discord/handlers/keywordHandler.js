@@ -15,34 +15,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * This module is to handle custom keywords in discord.
  */
-(function() {
+(function () {
 
     /**
      * @event discordChannelMessage
      */
-    $.bind('discordChannelMessage', function(event) {
+    $.bind('discordChannelMessage', function (event) {
         var message = event.getMessage().toLowerCase(),
-            channel = event.getDiscordChannel(),
-            keys = $.inidb.GetKeyList('discordKeywords', ''),
-            keyword,
-            i;
+                channel = event.getDiscordChannel(),
+                keys = $.inidb.GetKeyList('discordKeywords', ''),
+                i;
 
         for (i in keys) {
             // Some users use special symbols that may break regex so this will fix that.
             try {
                 if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
-                    keyword = $.inidb.get('discordKeywords', keys[i]);
-                    $.discord.say(channel, $.discord.tags(event, keyword));
+                    var kevent1 = new Packages.tv.phantombot.event.discord.channel.DiscordCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
+                            event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
+                    var tag = $.transformers.tags(kevent1, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']]);
+                    if (tag !== null) {
+                        $.discord.say(channel, tag);
+                    }
                     break;
                 }
             } catch (ex) {
                 if (ex.message.toLowerCase().includes('invalid quantifier') || ex.message.toLowerCase().includes('syntax')) {
                     if (message.includes(keys[i]) && !message.includes('!keyword')) {
-                        keyword = $.inidb.get('discordKeywords', keys[i]);
-                        $.discord.say(channel, $.discord.tags(event, keyword));
+                        var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
+                                event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
+                        var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']]);
+                        if (tag !== null) {
+                            $.discord.say(channel, tag);
+                        }
                         break;
                     }
                 } else {
@@ -56,15 +65,13 @@
     /**
      * @event discordChannelCommand
      */
-    $.bind('discordChannelCommand', function(event) {
-        var sender = event.getSender(),
-            channel = event.getDiscordChannel(),
-            command = event.getCommand(),
-            mention = event.getMention(),
-            arguments = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+    $.bind('discordChannelCommand', function (event) {
+        var channel = event.getDiscordChannel(),
+                command = event.getCommand(),
+                mention = event.getMention(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         if (command.equalsIgnoreCase('keyword')) {
             if (action === undefined) {
@@ -131,7 +138,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.discord.registerCommand('./discord/handlers/keywordHandler.js', 'keyword', 1);
         $.discord.registerSubCommand('keyword', 'add', 1);
         $.discord.registerSubCommand('keyword', 'edit', 1);

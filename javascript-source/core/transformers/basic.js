@@ -89,25 +89,26 @@
     /*
      * @transformer random
      * @formula (random) random user in chat, or the bot's name if chat is empty
-     * @labels twitch noevent basic
+     * @labels twitch discord noevent basic
      * @example Caster: !addcom !poke /me pokes (random) with a long wooden stick.
      * User: !poke
      * Bot: /me pokes User2 with a long wooden stick.
      */
-    function random() {
-        try {
-            var name = $.username.resolve($.randElement($.users));
+    function random(args) {
+        if (args.platform === 'discord') {
+            return {result: $.discord.username.random()};
+        } else {
+            try {
+                var name = $.username.resolve($.randElement($.users));
 
-            if ($.users.length === 0 || name === null || name === undefined) {
-                name = $.username.resolve($.botName);
+                if ($.users.length === 0 || name === null || name === undefined) {
+                    name = $.username.resolve($.botName);
+                }
+
+                return {result: name};
+            } catch (ex) {
+                return {result: $.username.resolve($.botName)};
             }
-
-            return {
-                result: name,
-                cache: false
-            };
-        } catch (ex) {
-            return {result: $.username.resolve($.botName)};
         }
     }
 
@@ -165,7 +166,7 @@
     var transformers = [
         new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
-        new $.transformers.transformer('random', ['twitch', 'noevent', 'basic'], random),
+        new $.transformers.transformer('random', ['twitch', 'discord', 'noevent', 'basic'], random),
         new $.transformers.transformer('randomrank', ['twitch', 'noevent', 'basic'], randomrank),
         new $.transformers.transformer('repeat', ['twitch', 'discord', 'noevent', 'basic'], repeat)
     ];
