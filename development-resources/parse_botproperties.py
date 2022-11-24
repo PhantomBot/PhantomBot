@@ -35,7 +35,7 @@ import json
 import os
 
 md_path = "./docs/guides/content/setupbot/properties.md"
-json_path = "./resources/web/setup/properties.json"
+json_path = "./resources/web/common/json/properties.json"
 
 botproperties = []
 
@@ -250,4 +250,4 @@ with open(md_path, "w", encoding="utf8") as md_file:
     md_file.writelines(lines)
 
 with open(json_path, "w", encoding="utf8") as json_file:
-    json.dump(botproperties, json_file)
+    json.dump(sorted(botproperties, key=lambda x: x["botproperty"]), json_file)
