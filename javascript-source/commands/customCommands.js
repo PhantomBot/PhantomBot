@@ -179,7 +179,7 @@
         try {
             if (customCommands[command] !== undefined
                     && !$.inidb.exists('disabledCommands', command)) {
-                var tag = $.transformers.tags(event, customCommands[command], true, ['twitch', ['commandevent', 'noevent']]);
+                var tag = $.transformers.tags(event, customCommands[command], ['twitch', ['commandevent', 'noevent']], {atEnabled: true});
                 if (tag !== null) {
                     $.say(tag);
                 }
@@ -916,10 +916,10 @@
 
         if (event.getScript().equalsIgnoreCase('./commands/customCommands.js')) {
             var args = event.getArgs(),
-                eventName = args[0] + '',
-                command = args[1] + '',
-                commandLower = command.toLowerCase() + '',
-                extra = (args[3] === null || args[3] === undefined) ? {} : JSON.parse(args[3]);
+                    eventName = args[0] + '',
+                    command = args[1] + '',
+                    commandLower = command.toLowerCase() + '',
+                    extra = (args[3] === null || args[3] === undefined) ? {} : JSON.parse(args[3]);
             if (eventName === 'remove') {
                 _lock.lock();
                 try {

@@ -17,7 +17,7 @@
 
 /* global Packages */
 
-(function() {
+(function () {
     var keywords = [];
 
     /*
@@ -25,7 +25,7 @@
      */
     function loadKeywords() {
         var keys = $.inidb.GetKeyList('keywords', ''),
-            i;
+                i;
 
         keywords = [];
 
@@ -49,7 +49,7 @@
      * @event ircChannelMessage
      * @usestransformers global twitch commandevent keywordevent noevent
      */
-    $.bind('ircChannelMessage', function(event) {
+    $.bind('ircChannelMessage', function (event) {
         function executeKeyword(json, event) {
             // Make sure the keyword isn't on cooldown.
             if ($.coolDownKeywords.get(json.keyword, sender) > 0) {
@@ -64,7 +64,7 @@
                 var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                 var cmdEvent = new CommandEvent(sender, "keyword_" + json.keyword, event.getMessage(), event.getTags());
                 json.response = $.replace(json.response, '(keywordcount)', '(keywordcount ' + $.escapeTags(json.keyword) + ')');
-                var tag = $.transformers.tags(cmdEvent, json.response, false, ['twitch', ['commandevent', 'keywordevent', 'noevent']]);
+                var tag = $.transformers.tags(cmdEvent, json.response, ['twitch', ['commandevent', 'keywordevent', 'noevent']]);
                 if (tag !== null) {
                     $.say(tag);
                 }
@@ -72,10 +72,10 @@
         }
 
         var message = event.getMessage(),
-            sender = event.getSender(),
-            messagePartsLower = message.toLowerCase().split(' '),
-            messageParts = message.split(' '),
-            json;
+                sender = event.getSender(),
+                messagePartsLower = message.toLowerCase().split(' '),
+                messageParts = message.split(' '),
+                json;
 
         // Don't say the keyword if someone tries to remove it.
         if (message.startsWith('!keyword')) {
@@ -92,7 +92,7 @@
                 }
             } else {
                 var str = '',
-                  caseAdjustedMessageParts = messageParts;
+                        caseAdjustedMessageParts = messageParts;
                 if (!json.isCaseSensitive) {
                     caseAdjustedMessageParts = messagePartsLower;
                 }
@@ -112,14 +112,14 @@
     /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments().trim(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1],
-            actionArgs = args[2];
+                command = event.getCommand(),
+                argString = event.getArguments().trim(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1],
+                actionArgs = args[2];
 
         /*
          * @commandpath keyword - Base command for keyword options
@@ -135,9 +135,9 @@
              */
             if (action.equalsIgnoreCase('add')) {
                 var isRegex = false,
-                    isCaseSensitive = false,
-                    keyword = null,
-                    response = null;
+                        isCaseSensitive = false,
+                        keyword = null,
+                        response = null;
 
                 for (var i = 1; i < args.length; i++) {
                     if (keyword === null) {
@@ -221,7 +221,7 @@
     /*
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.registerChatCommand('./handlers/keywordHandler.js', 'keyword', $.PERMISSION.Admin);
 
         $.registerChatSubcommand('keyword', 'add', $.PERMISSION.Admin);
@@ -233,7 +233,7 @@
     /*
      * @event webPanelSocketUpdate
      */
-    $.bind('webPanelSocketUpdate', function(event) {
+    $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./handlers/keywordHandler.js')) {
             loadKeywords();
         }

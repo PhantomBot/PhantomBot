@@ -733,7 +733,7 @@
 
         if (cmd !== null) {
             var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' "' + displayName + '" "' + $.javaString(userInput).replaceAll("\"", "\\\"").replaceAll("\n", "%0A") + '"');
-            var tag = $.transformers.tags(cmdEvent, cmd.command, false, ['twitch', ['commandevent', 'noevent']]);
+            var tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent']]);
             if (tag !== null) {
                 $.say(tag);
             }

@@ -113,7 +113,7 @@
 
         plan = $.jsString(plan);
 
-        switch(plan.toLowerCase()) {
+        switch (plan.toLowerCase()) {
             case '1000':
                 return '1';
                 break;
@@ -148,7 +148,7 @@
 
         tier = $.jsString(tier);
 
-        switch(tier.toLowerCase()) {
+        switch (tier.toLowerCase()) {
             case '1':
                 return '1000';
                 break;
@@ -394,7 +394,7 @@
                     reward = subReward[plan],
                     message = $.jsString(subMessage[plan]);
 
-            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.SUB), {'reward': reward});
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.SUB), customArgs: {'reward': reward}});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -424,7 +424,7 @@
                     reward = reSubReward[plan],
                     message = $.jsString(reSubMessage[plan]);
 
-            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.RESUB), {'reward': reward});
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.RESUB), customArgs: {'reward': reward}});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -457,7 +457,7 @@
                     giftreward = giftSubReward[plan],
                     message = $.jsString(giftSubMessage[plan]);
 
-            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.GIFT), {'reward': reward, 'giftreward': giftreward});
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.GIFT), customArgs: {'reward': reward, 'giftreward': giftreward}});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -491,7 +491,7 @@
                     giftreward = massGiftSubReward[plan] * parseInt(event.getAmount()),
                     message = $.jsString(massGiftSubMessage[plan]);
 
-            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.MASSGIFT), {'giftreward': giftreward});
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.MASSGIFT), customArgs: {'giftreward': giftreward}});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -514,7 +514,7 @@
                     reward = subReward[plan],
                     message = $.jsString(giftAnonSubMessage[plan]);
 
-            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.GIFTANON), {'reward': reward});
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.GIFTANON), customArgs: {'reward': reward}});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
@@ -541,7 +541,7 @@
         if (massAnonGiftSubWelcomeToggle === true && announce === true) {
             var message = $.jsString(massGiftSubMessage[event.getPlan()]);
 
-            message = $.transformers.tags(event, message, false, ['twitch', 'noevent'], [], transformers(types.MASSGIFTANON));
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.MASSGIFTANON)});
 
             if ($.jsString(message).trim() !== '') {
                 $.say(message);
