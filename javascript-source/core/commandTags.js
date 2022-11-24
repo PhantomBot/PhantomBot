@@ -143,12 +143,12 @@
      * @export $.transformers
      * @param {javaObject[tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor, such as CommandEvent
      * @param {string} message - the input message containing tags to be processed
-     * @param {object} args - a js object containing any of the below parameters
-     * @param {bool} atEnabled - default false. If set `true`, no tags are found to process, the sender is a moderator, and at least one argument is
-     *                              present, responds with `argument1 -> message`
      * @param {jsArray[jsString]} globalTransformerRequiredLabels - default ['twitch', ['commandevent', 'noevent']]. A set of required labels. Only
      *                              transformers which have all labels in this set will be processed.
      *                              A sub-array in a particular position creates an `or` between all possible combinations
+     * @param {object} args - a js object containing any of the below parameters
+     * @param {bool} atEnabled - default false. If set `true`, no tags are found to process, the sender is a moderator, and at least one argument is
+     *                              present, responds with `argument1 -> message`
      * @param {jsArray[jsString]} globalTransformerAnyLabels - default []. A set of labels. Only transformers which have at least one label in this set
      *                              will be processed
      * @param {object[string->function]} localTransformers - a js object of custom transformers defined by the caller
@@ -156,7 +156,7 @@
      * @param {string} platform - identifies the platform that triggered the command. Valid values: 'twitch', 'discord'. Default: 'twitch'
      * @return {string or null}
      */
-    function tags(event, message, args) {
+    function tags(event, message, globalTransformerRequiredLabels, args) {
         var match,
                 tagFound = false,
                 transformed,
@@ -166,8 +166,8 @@
             args.atEnabled = false;
         }
 
-        if (args.globalTransformerRequiredLabels === undefined || args.globalTransformerRequiredLabels === null) {
-            args.globalTransformerRequiredLabels = ['twitch', ['commandevent', 'noevent']];
+        if (globalTransformerRequiredLabels === undefined || globalTransformerRequiredLabels === null) {
+            globalTransformerRequiredLabels = ['twitch', ['commandevent', 'noevent']];
         }
 
         if (args.globalTransformerAnyLabels === undefined || args.globalTransformerAnyLabels === null) {
@@ -191,7 +191,7 @@
                         tag: tagName,
                         args: match[3] ? unescapeTags(match[3]) : '',
                         customArgs: args.customArgs,
-                        globalTransformerRequiredLabels: args.globalTransformerRequiredLabels,
+                        globalTransformerRequiredLabels: globalTransformerRequiredLabels,
                         globalTransformerAnyLabels: args.globalTransformerAnyLabels,
                         platform: args.platform.toLowerCase()
                     },
@@ -205,7 +205,7 @@
                     if (args.localTransformers.hasOwnProperty(tagName)
                             && (transformed = args.localTransformers[tagName](tagArgs))) {
                         thisTagFound = true;
-                    } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(args.globalTransformerRequiredLabels)
+                    } else if (transformers.hasOwnProperty(tagName) && transformers[tagName].hasAllLabels(globalTransformerRequiredLabels)
                             && transformers[tagName].hasAnyLabel(args.globalTransformerAnyLabels)
                             && (transformed = transformers[tagName].transformer(tagArgs))) {
                         thisTagFound = true;
@@ -429,7 +429,7 @@
             globalRequired.push(['commandevent', 'noevent']);
         }
 
-        return tags(event, message, {atEnabled: atEnabled, globalTransformerRequiredLabels: globalRequired, localTransformers: localTransformers});
+        return tags(event, message, globalRequired, {atEnabled: atEnabled, localTransformers: localTransformers});
     }
 
     $.tags = legacyTags; // @deprecated export
