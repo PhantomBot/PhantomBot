@@ -27,15 +27,15 @@
      * @labels twitch commandevent commands
      * @cancels
      */
-    function command(args, event) {
+    function command(args) {
         var argStr;
-        if ((match = args.match(/^\s(\S+)(?:\s(.*))?$/))) {
+        if ((match = args.args.match(/^\s(\S+)(?:\s(.*))?$/))) {
             cmd = match[1];
             argStr = match[2] || '';
             if (cmd.length > 0) {
                 var EventBus = Packages.tv.phantombot.event.EventBus;
                 var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
-                EventBus.instance().postAsync(new CommandEvent(event.getSender(), cmd, argStr));
+                EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr));
             }
             return {cancel: true};
         }
@@ -48,9 +48,9 @@
      * @labels twitch commandevent commands
      * @cancels
      */
-    function commandslist(args, event) {
+    function commandslist(args) {
         var prefix;
-        if ((match = args.match(/^(?:\s(.*))?$/))) {
+        if ((match = args.args.match(/^(?:\s(.*))?$/))) {
             prefix = match[1] || '';
             keys = $.inidb.GetKeyList('pricecom', '');
             temp = [];
@@ -59,7 +59,7 @@
                     temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
                 }
             }
-            $.paginateArray(temp, 'NULL' + prefix, ', ', true, event.getSender());
+            $.paginateArray(temp, 'NULL' + prefix, ', ', true, args.event.getSender());
             return {cancel: true};
         }
     }
@@ -78,10 +78,10 @@
      * Specify a negative amount to subtract from it.
      * The default counter name is the command name, without the `!`
      */
-    function count(args, event) {
-        match = $.parseArgs(args, ' ', 2, true);
+    function count(args) {
+        match = $.parseArgs(args.args, ' ', 2, true);
         var incr = 1;
-        var counter = event.getCommand();
+        var counter = args.event.getCommand();
 
         if (match !== null && match.length > 1 && match[1].length > 0) {
             counter = match[1];
@@ -105,9 +105,9 @@
      * @labels twitch discord commandevent commands
      * @cancels sometimes
      */
-    function help(args, event) {
-        if ((match = args.match(/^(?:=|\s)(.*)$/))) {
-            if (event.getArgs()[0] === undefined) {
+    function help(args) {
+        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
+            if (args.event.getArgs()[0] === undefined) {
                 $.say(match[1]);
                 return {cancel: true};
             } else {

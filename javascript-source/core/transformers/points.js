@@ -25,11 +25,11 @@
      * @labels twitch commandevent points
      * @cached
      */
-    function pay(args, event) {
-        if ((match = args.match(/^(?:\s(.*))?$/))) {
+    function pay(args) {
+        if ((match = args.args.match(/^(?:\s(.*))?$/))) {
             cmd = match[1] || '';
             if (cmd.length === 0) {
-                cmd = event.getCommand();
+                cmd = args.event.getCommand();
             }
             if ($.inidb.exists('paycom', cmd)) {
                 temp = $.inidb.get('paycom', cmd);
@@ -51,10 +51,8 @@
      * User: !pointsname
      * Bot: User current points name is set to: points
      */
-    function pointname(args) {
-        if (!args) {
-            return {result: $.pointNameMultiple, cache: true};
-        }
+    function pointname() {
+        return {result: $.pointNameMultiple, cache: true};
     }
 
     /*
@@ -64,12 +62,12 @@
      * @labels twitch commandevent points
      * @cached
      */
-    function points(args, event) {
-        if ((match = args.match(/^(?:\s(.*))?$/))) {
+    function points(args) {
+        if ((match = args.args.match(/^(?:\s(.*))?$/))) {
             var user;
             user = (match[1] || '').replace(/^@/, '');
             if (user.length === 0) {
-                user = event.getSender();
+                user = args.event.getSender();
             }
             return {
                 result: $.getUserPoints(user),
@@ -88,11 +86,11 @@
      * Bot: This command costs 10 points
      * @cached
      */
-    function price(args, event) {
-        if ((match = args.match(/^(?:\s(.*))?$/))) {
+    function price(args) {
+        if ((match = args.args.match(/^(?:\s(.*))?$/))) {
             cmd = match[1] || '';
             if (cmd.length === 0) {
-                cmd = event.getCommand();
+                cmd = args.event.getCommand();
             }
             if ($.inidb.exists('pricecom', cmd)) {
                 temp = $.inidb.get('pricecom', cmd);

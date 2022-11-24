@@ -23,13 +23,13 @@
      * @example Caster: !addcom !sleeping (setdiscordactivity :zzz: sleeping...)
      */
     function setdiscordactivity(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordactivity an input is missing)'
             };
         }
-        $.discordAPI.setCustomActivity(args);
+        $.discordAPI.setCustomActivity(args.args);
 
         return {
             result: ''
@@ -43,13 +43,13 @@
      * @example Caster: !addcom !lcs (setdiscordcompeting LCS)
      */
     function setdiscordcompeting(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordcompeting an input is missing)'
             };
         }
-        $.discordAPI.setCompeting(args);
+        $.discordAPI.setCompeting(args.args);
 
         return {
             result: ''
@@ -63,13 +63,13 @@
      * @example Caster: !addcom !heavymetal (setdiscordlistening Heavy Metal)
      */
     function setdiscordlistening(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordlistening an input is missing)'
             };
         }
-        $.discordAPI.setListening(args);
+        $.discordAPI.setListening(args.args);
 
         return {
             result: ''
@@ -83,13 +83,13 @@
      * @example Caster: !addcom !movienight (setdiscordwatching Movie Night)
      */
     function setdiscordwatching(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordwatching an input is missing)'
             };
         }
-        $.discordAPI.setWatching(args);
+        $.discordAPI.setWatching(args.args);
 
         return {
             result: ''
@@ -103,13 +103,13 @@
      * @example Caster: !addcom !rocketleague (setdiscordplaying Rocket League)
      */
     function setdiscordplaying(args) {
-        args = args.trim();
-        if (args.length === 0) {
+        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
+        if (args.args.length === 0) {
             return {
                 result: '(setdiscordplaying an input is missing)'
             };
         }
-        $.discordAPI.setPlaying(args);
+        $.discordAPI.setPlaying(args.args);
 
         return {
             result: ''

@@ -30,7 +30,7 @@
      */
     function readfile(args) {
         var fileName;
-        if ((match = args.match(/^ (.+)$/))) {
+        if ((match = args.args.match(/^ (.+)$/))) {
             fileName = './addons/' + $.replace(match[1], '..', '');
             if (!$.fileExists(fileName)) {
                 return {
@@ -53,7 +53,7 @@
      */
     function readfilerand(args) {
         var fileName;
-        if ((match = args.match(/^ (.+)$/))) {
+        if ((match = args.args.match(/^ (.+)$/))) {
             fileName = './addons/' + $.replace(match[1], '..', '');
             if (!$.fileExists(fileName)) {
                 return {result: $.lang.get('customcommands.file.404', fileName)};
@@ -75,7 +75,7 @@
      */
     function writefile(args) {
         var fileName;
-        if ((match = $.parseArgs(args, ',', 3, true))) {
+        if ((match = $.parseArgs(args.args, ',', 3, true))) {
             fileName = './addons/' + $.replace(match[0], '..', '');
             $.writeToFile(match[2], fileName, match[1] === 'true');
             return {

@@ -27,13 +27,11 @@
      * Bot: @User, you're awesome!
      * @cached
      */
-    function atSender(args, event) {
-        if (!args) {
-            return {
-                result: $.userPrefix(event.getSender(), true),
-                cache: true
-            };
-        }
+    function atSender(args) {
+        return {
+            result: $.userPrefix(args.event.getSender(), true),
+            cache: true
+        };
     }
 
     /*
@@ -48,11 +46,9 @@
      * Bot: @User, user2 has been on Twitch since December 25, 2010.
      * @cancels
      */
-    function age(args, event) {
-        if (!args) {
-            $.getChannelAge(event);
-            return {cancel: true};
-        }
+    function age(args) {
+        $.getChannelAge(args.event);
+        return {cancel: true};
     }
 
     /*
@@ -60,10 +56,8 @@
      * @formula (baresender) the login name of the message's sender
      * @labels twitch commandevent user
      */
-    function baresender(args, event) {
-        if (!args) {
-            return {result: event.getSender()};
-        }
+    function baresender(args) {
+        return {result: args.event.getSender()};
     }
 
     /*
@@ -78,13 +72,13 @@
      * Bot: User2 -> like my Facebook  page!
      * @cached
      */
-    function pointtouser(args, event) {
+    function pointtouser(args) {
         temp = '';
-        if (event.getArgs().length > 0) {
-            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+        if (args.event.getArgs().length > 0) {
+            temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
-            temp = event.getSender();
+            temp = args.event.getSender();
         }
         return {
             result: $.jsString($.usernameResolveIgnoreEx(temp)) + ' -> ',
@@ -101,13 +95,11 @@
      * Bot: Hello, User!
      * @cached
      */
-    function sender(args, event) {
-        if (!args) {
-            return {
-                result: $.usernameResolveIgnoreEx(event.getSender()),
-                cache: true
-            };
-        }
+    function sender(args) {
+        return {
+            result: $.usernameResolveIgnoreEx(args.event.getSender()),
+            cache: true
+        };
     }
 
     /*
@@ -119,13 +111,11 @@
      * Bot: /me Pokes Master User with a bar of soap.
      * @cached
      */
-    function senderrank(args, event) {
-        if (!args) {
-            return {
-                result: $.resolveRank(event.getSender()),
-                cache: true
-            };
-        }
+    function senderrank(args) {
+        return {
+            result: $.resolveRank(args.event.getSender()),
+            cache: true
+        };
     }
 
     /*
@@ -134,13 +124,11 @@
      * @labels twitch commandevent user
      * @cached
      */
-    function senderrankonly(args, event) {
-        if (!args) {
-            return {
-                result: $.getRank(event.getSender()),
-                cache: true
-            };
-        }
+    function senderrankonly(args) {
+        return {
+            result: $.getRank(args.event.getSender()),
+            cache: true
+        };
     }
 
     /*
@@ -155,13 +143,13 @@
      * Bot: User2 Hey! Follow my Twitter!
      * @cached
      */
-    function touser(args, event) {
+    function touser(args) {
         temp = '';
-        if (event.getArgs().length > 0) {
-            temp = $.jsString(event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
+        if (args.event.getArgs().length > 0) {
+            temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
-            temp = event.getSender();
+            temp = args.event.getSender();
         }
         return {
             result: $.usernameResolveIgnoreEx(temp),

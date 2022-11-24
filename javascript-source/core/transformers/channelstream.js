@@ -25,10 +25,10 @@
      * @labels twitch noevent channel stream
      */
     function channelname(args) {
-        if (!args) {
+        if (!args.args) {
             temp = $.channelName;
         } else {
-            temp = args.trim();
+            temp = args.args.trim();
         }
         return {
             result: $.username.resolve(temp),
@@ -42,13 +42,11 @@
      * @labels twitch noevent channel stream
      * @cached
      */
-    function downtime(args) {
-        if (!args) {
-            return {
-                result: $.getStreamDownTime(),
-                cache: true
-            };
-        }
+    function downtime() {
+        return {
+            result: $.getStreamDownTime(),
+            cache: true
+        };
     }
 
     /*
@@ -62,19 +60,19 @@
      * Bot: @User, user has been following channel PhantomBot since March 29, 2016. (340 days)
      * @cancels
      */
-    function followage(args, event) {
+    function followage(args) {
         var channel,
                 user;
-        if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
+        if ((match = args.args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             channel = (match[2] || '').replace(/^@/, '');
             if (user.length === 0) {
-                user = $.jsString(event.getSender());
+                user = $.jsString(args.event.getSender());
             }
             if (channel.length === 0) {
                 channel = $.jsString($.channelName);
             }
-            $.getFollowAge(event.getSender(), user, channel);
+            $.getFollowAge(args.event.getSender(), user, channel);
             return {
                 cancel: true
             };
@@ -89,20 +87,20 @@
      * @labels twitch commandevent channel stream
      * @cached
      */
-    function followdate(args, event) {
+    function followdate(args) {
         var channel,
                 user;
-        if ((match = args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
+        if ((match = args.args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             channel = (match[2] || '').replace(/^@/, '');
             if (user.length === 0) {
-                user = $.jsString(event.getSender());
+                user = $.jsString(args.event.getSender());
             }
             if (channel.length === 0) {
                 channel = $.jsString($.channelName);
             }
             return {
-                result: $.getFollowDate(event.getSender(), user, channel),
+                result: $.getFollowDate(args.event.getSender(), user, channel),
                 cache: true
             };
         }
@@ -119,10 +117,10 @@
      * @cached
      */
     function follows(args) {
-        if (!args) {
+        if (!args.args) {
             temp = $.channelName;
         } else {
-            temp = args.trim();
+            temp = args.args.trim();
         }
         return {
             result: $.getFollows(temp),
@@ -141,10 +139,10 @@
      * @cached
      */
     function game(args) {
-        if (!args) {
+        if (!args.args) {
             temp = $.channelName;
         } else {
-            temp = args.trim();
+            temp = args.args.trim();
         }
         return {
             result: $.getGame(temp),
@@ -161,27 +159,25 @@
      * Bot: User -> Current game: Programming Playtime: 3 hours, 20 minutes and 35 seconds.
      * @cached
      */
-    function gameinfo(args) {
+    function gameinfo() {
         var game,
                 playtime;
-        if (!args) {
-            game = $.getGame($.channelName);
-            if (!game.trim()) {
-                return {
-                    result: $.lang.get('streamcommand.game.no.game'),
-                    cache: true
-                };
-            } else if (!$.isOnline($.channelName) || !(playtime = $.getPlayTime())) {
-                return {
-                    result: $.lang.get('streamcommand.game.offline', game),
-                    cache: true
-                };
-            } else {
-                return {
-                    result: $.lang.get('streamcommand.game.online', $.getGame($.channelName), playtime),
-                    cache: true
-                };
-            }
+        game = $.getGame($.channelName);
+        if (!game.trim()) {
+            return {
+                result: $.lang.get('streamcommand.game.no.game'),
+                cache: true
+            };
+        } else if (!$.isOnline($.channelName) || !(playtime = $.getPlayTime())) {
+            return {
+                result: $.lang.get('streamcommand.game.offline', game),
+                cache: true
+            };
+        } else {
+            return {
+                result: $.lang.get('streamcommand.game.online', $.getGame($.channelName), playtime),
+                cache: true
+            };
         }
     }
 
@@ -195,17 +191,15 @@
      * @cancels sometimes
      * @cached
      */
-    function gamesplayed(args, event) {
-        if (!args) {
-            if (!$.isOnline($.channelName)) {
-                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return {cancel: true};
-            }
-            return {
-                result: $.getGamesPlayed(),
-                cache: true
-            };
+    function gamesplayed(args) {
+        if (!$.isOnline($.channelName)) {
+            $.say($.userPrefix(args.event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+            return {cancel: true};
         }
+        return {
+            result: $.getGamesPlayed(),
+            cache: true
+        };
     }
 
     /*
@@ -215,12 +209,12 @@
      * @labels twitch commandevent channel stream
      * @cached
      */
-    function hours(args, event) {
+    function hours(args) {
         var user;
-        if ((match = args.match(/^(?: (.*))?$/))) {
+        if ((match = args.args.match(/^(?: (.*))?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             if (user.length === 0) {
-                user = $.jsString(event.getSender());
+                user = $.jsString(args.event.getSender());
             }
             return {
                 result: $.getUserTime(user) / 3600,
@@ -236,12 +230,12 @@
      * @labels twitch commandevent channel stream
      * @cached
      */
-    function hoursround(args, event) {
+    function hoursround(args) {
         var user;
-        if ((match = args.match(/^(?: (.*))?$/))) {
+        if ((match = args.args.match(/^(?: (.*))?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             if (user.length === 0) {
-                user = $.jsString(event.getSender());
+                user = $.jsString(args.event.getSender());
             }
             return {
                 result: Math.round($.getUserTime(user) / 360) / 10,
@@ -256,19 +250,17 @@
      * @labels twitch noevent channel stream
      * @cached
      */
-    function lasttip(args) {
-        if (!args) {
-            if ($.inidb.exists('donations', 'last_donation_message')) {
-                return {
-                    result: $.inidb.get('donations', 'last_donation_message'),
-                    cache: true
-                };
-            } else {
-                return {
-                    result: $.lang.get('customcommands.lasttip.404'),
-                    cache: true
-                };
-            }
+    function lasttip() {
+        if ($.inidb.exists('donations', 'last_donation_message')) {
+            return {
+                result: $.inidb.get('donations', 'last_donation_message'),
+                cache: true
+            };
+        } else {
+            return {
+                result: $.lang.get('customcommands.lasttip.404'),
+                cache: true
+            };
         }
     }
 
@@ -282,17 +274,15 @@
      * @cancels sometimes
      * @cached
      */
-    function playtime(args, event) {
-        if (!args) {
-            if (!$.isOnline($.channelName)) {
-                $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
-                return {cancel: true};
-            }
-            return {
-                result: $.getPlayTime() || '',
-                cache: true
-            };
+    function playtime(args) {
+        if (!$.isOnline($.channelName)) {
+            $.say($.userPrefix(args.event.getSender(), true) + $.lang.get('timesystem.uptime.offline', $.channelName));
+            return {cancel: true};
         }
+        return {
+            result: $.getPlayTime() || '',
+            cache: true
+        };
     }
 
     /*
@@ -306,10 +296,10 @@
      * @cached
      */
     function status(args) {
-        if (!args) {
+        if (!args.args) {
             temp = $.channelName;
         } else {
-            temp = args.trim();
+            temp = args.args.trim();
         }
         return {
             result: $.getStatus(temp),
@@ -327,13 +317,11 @@
      * @notes only works if the apioauth in botlogin.txt belongs to the broadcaster
      * @cached
      */
-    function subscribers(args) {
-        if (!args) {
-            return {
-                result: $.getSubscriberCount(),
-                cache: true
-            };
-        }
+    function subscribers() {
+        return {
+            result: $.getSubscriberCount(),
+            cache: true
+        };
     }
 
     /*
@@ -345,26 +333,23 @@
      * Bot: User -> Current title: Fun programming! Uptime: 3 hours, 20 minutes and 35 seconds.
      * @cached
      */
-    function titleinfo(args) {
-        var status;
-        if (!args) {
-            status = $.getStatus($.channelName);
-            if (!status.trim()) {
-                return {
-                    result: $.lang.get('streamcommand.title.no.title'),
-                    cache: true
-                };
-            } else if (!$.isOnline($.channelName)) {
-                return {
-                    result: $.lang.get('streamcommand.title.offline', status),
-                    cache: true
-                };
-            } else {
-                return {
-                    result: $.lang.get('streamcommand.title.online', status, $.jsString($.getStreamUptime($.channelName))),
-                    cache: true
-                };
-            }
+    function titleinfo() {
+        var status = $.getStatus($.channelName);
+        if (!status.trim()) {
+            return {
+                result: $.lang.get('streamcommand.title.no.title'),
+                cache: true
+            };
+        } else if (!$.isOnline($.channelName)) {
+            return {
+                result: $.lang.get('streamcommand.title.offline', status),
+                cache: true
+            };
+        } else {
+            return {
+                result: $.lang.get('streamcommand.title.online', status, $.jsString($.getStreamUptime($.channelName))),
+                cache: true
+            };
         }
     }
 
@@ -379,14 +364,14 @@
      * @cancels sometimes
      * @cached
      */
-    function uptime(args, event) {
-        if (!args) {
+    function uptime(args) {
+        if (!args.args) {
             temp = $.channelName;
         } else {
-            temp = args.trim();
+            temp = args.args.trim();
         }
         if (!$.isOnline(temp)) {
-            $.say($.userPrefix(event.getSender(), true) + $.lang.get('timesystem.uptime.offline', temp));
+            $.say($.userPrefix(args.event.getSender(), true) + $.lang.get('timesystem.uptime.offline', temp));
             return {cancel: true};
         }
         return {
@@ -406,10 +391,10 @@
      * @cached
      */
     function viewers(args) {
-        if (!args) {
+        if (!args.args) {
             temp = $.channelName;
         } else {
-            temp = args.trim();
+            temp = args.args.trim();
         }
         return {
             result: $.getViewers(temp),
@@ -423,13 +408,11 @@
      * @labels twitch noevent channel stream
      * @cached
      */
-    function views(args) {
-        if (!args) {
-            return {
-                result: $.twitchcache.getViews(),
-                cache: true
-            };
-        }
+    function views() {
+        return {
+            result: $.twitchcache.getViews(),
+            cache: true
+        };
     }
 
     var transformers = [

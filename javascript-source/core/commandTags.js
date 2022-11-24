@@ -24,10 +24,15 @@
     /*
      * transformer function definition
      *
-     * function(tagArgs, event, customArgs, globalTransformerRequiredLabels, globalTransformerAnyLabels)
+     * function(args)
+     *
+     * param {object} args - a js object that may contain any of the following params
+     *
      *
      * param {jsString} tagArgs - any arguments provided in the tag itself
      * * Example: (mytag arg1 arg2 arg3) - tagArgs = 'arg1 arg2 arg3'
+     *
+     * param {jsString} tag - the name of the tag
      *
      * param {javaObject[T extends tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor,
      *              such as a CommandEvent
@@ -37,6 +42,8 @@
      * param {jsArray[jsString]} globalTransformerRequiredLabels - the input to the globalTransformerRequiredLabels argument from $.transformers.tags
      *
      * param {jsArray[jsString]} globalTransformerAnyLabels - the input to the globalTransformerAnyLabels argument from $.transformers.tags
+     *
+     * param {jsString} platform - identifies the platform that triggered the command. Valid values: 'twitch', 'discord'
      *
      * return {jsObject}     {
      *                         result: {jsString or null}, // default: ''. the returned value. The tag being processed will be replaced with this
