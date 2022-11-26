@@ -100,6 +100,13 @@
      * @param {string} message
      */
     function say(channel, message) {
+        if (message === undefined || message === null) {
+            return;
+        }
+        message = $.jsString(message);
+        if (message.trim().length === 0) {
+            return;
+        }
         if (embedReg.test(message)) {
             return $.discordAPI.sendMessageEmbed(channel, message.match(embedReg)[1], message.match(embedReg)[2]);
         } else if (fileRegMsg.test(message)) {

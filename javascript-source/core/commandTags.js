@@ -227,6 +227,9 @@
 
                 if (thisTagFound) {
                     tagFound = true;
+                    if (transformed === undefined || transformed === null) {
+                        transformed = {};
+                    }
                     if (transformed.hasOwnProperty('result') && transformed.result !== null) {
                         transformed.result = $.jsString(transformed.result);
                     } else {
@@ -269,7 +272,7 @@
 
         }
 
-        return unescapeTags(message);
+        return unescapeTags(message).trim();
     }
 
     /*
