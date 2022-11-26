@@ -36,7 +36,6 @@ import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.object.entity.channel.VoiceChannel;
-import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.ClientActivity;
 import discord4j.core.object.presence.ClientPresence;
 import discord4j.core.object.reaction.ReactionEmoji;
@@ -65,8 +64,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.JSONStringer;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.ByteBufFlux;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.discord.DiscordAPI;
 
@@ -1269,12 +1270,6 @@ public class DiscordUtil {
                 }
             }
 
-            com.gmt2001.Console.err.printStackTrace(e);
-        }).subscribe();
-    }
-
-    public void setCustomActivity(String activity) {
-        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.of(Activity.Type.CUSTOM, activity, null))).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }
