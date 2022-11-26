@@ -67,22 +67,31 @@ public class YouTubeAPIv3 {
 
         try {
             HttpClientResponse resp = HttpClient.get(URIUtil.create(urlAddress));
-            String jsonText = resp.responseBody();
-            jsonResult = new JSONObject(jsonText);
+            boolean success = false;
+            if (resp.hasJson()) {
+                String jsonText = resp.responseBody();
+                jsonResult = new JSONObject(jsonText);
 
-            /* If the JSON was properly parsed then we may have received back a proper error JSON payload from YouTube. */
-            if (jsonResult.has("error")) {
-                if (jsonResult.getJSONObject("error").has("errors")) {
-                    JSONArray jaerror = jsonResult.getJSONObject("error").getJSONArray("errors");
-                    if (jaerror.getJSONObject(0).has("reason") && jaerror.getJSONObject(0).has("domain")) {
-                        com.gmt2001.Console.err.println("YouTubeAPIv3 Error: [Domain] " + jaerror.getJSONObject(0).getString("domain")
-                                + " [Reason] " + jaerror.getJSONObject(0).getString("reason"));
+                success = true;
+                /* If the JSON was properly parsed then we may have received back a proper error JSON payload from YouTube. */
+                if (jsonResult.has("error")) {
+                    if (jsonResult.getJSONObject("error").has("errors")) {
+                        JSONArray jaerror = jsonResult.getJSONObject("error").getJSONArray("errors");
+                        if (jaerror.getJSONObject(0).has("reason") && jaerror.getJSONObject(0).has("domain")) {
+                            com.gmt2001.Console.err.println("YouTubeAPIv3 Error: [Domain] " + jaerror.getJSONObject(0).getString("domain")
+                                    + " [Reason] " + jaerror.getJSONObject(0).getString("reason"));
+                        }
                     }
                 }
+            } else {
+                jsonResult = new JSONObject();
+                jsonResult.put("code", resp.responseCode().code());
+                jsonResult.put("status", resp.responseCode().reasonPhrase());
+                jsonResult.put("error", resp.responseBody() == null ? "" : resp.responseBody());
             }
-            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, resp.responseCode().code(), null, null);
+            HttpRequest.generateJSONObject(jsonResult, success, "GET", "", urlAddress, resp.responseCode().code(), null, null);
         } catch (Exception ex) {
-            HttpRequest.generateJSONObject(jsonResult, true, "GET", "", urlAddress, 0, ex.getClass().getName(), ex.getMessage());
+            HttpRequest.generateJSONObject(jsonResult, false, "GET", "", urlAddress, 0, ex.getClass().getName(), ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex);
         }
         com.gmt2001.Console.debug.logln(jsonResult.toString().replaceAll(apikey, "xxx"));

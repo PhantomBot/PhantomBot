@@ -30,6 +30,11 @@
         <link rel="stylesheet" href="/common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="/common/css/pace.min.css" />
         <style>
+            h4::before{
+                padding-right: 5px;
+                width: 23px;
+                display: inline-block;
+            }
             .required-steps {
                 padding-left: 5px;
             }
@@ -366,17 +371,28 @@
                             });
 
                             let currentCategory = '';
+                            let first = true;
 
                             data.forEach(prop => {
                                 if (prop.category !== currentCategory) {
                                     $('<div/>').attr('id', cat(prop.category)).addClass('box').addClass('box-solid').addClass('box-primary')
                                             .appendTo('#setup-sections');
                                     $('<div/>').attr('id', cat(prop.category, 'header')).addClass('box-header').addClass('with-border')
+                                            .attr('data-toggle', 'collapse').attr('data-target', cat(prop.category, 'body', true))
+                                            .attr('aria-expanded', first).attr('aria-controls', cat(prop.category, 'body'))
+                                            .attr('role', 'button').appendTo(cat(prop.category, '', true));
+                                    $('<h4/>').attr('id', cat(prop.category, 'h4')).html(prop.category)
+                                            .addClass('fa').addClass('fas').addClass(first ? 'fa-chevron-down' : 'fa-chevron-right')
+                                            .appendTo(cat(prop.category, 'header', true));
+                                    $('<div/>').attr('id', cat(prop.category, 'body')).addClass('box-body')
+                                            .addClass('collapse').attr('aria-labelledby', cat(prop.category, 'header'))
                                             .appendTo(cat(prop.category, '', true));
-                                    $('<h4/>').attr('id', cat(prop.category, 'h4')).html(prop.category).appendTo(cat(prop.category, 'header', true));
-                                    $('<div/>').attr('id', cat(prop.category, 'body')).addClass('box-body').appendTo(cat(prop.category, '', true));
+                                    if (first) {
+                                        $(cat(prop.category, 'body', true)).addClass('in');
+                                    }
                                     $('<ul/>').attr('id', cat(prop.category, 'ul')).addClass('list-unstyled').appendTo(cat(prop.category, 'body', true));
                                     currentCategory = prop.category;
+                                    first = false;
                                 }
                                 createSetting(prop);
                             });
@@ -473,7 +489,7 @@
                                                 clearTimeout(timeout);
                                             }
                                             success('Settings updated');
-                                            timeout = setTimeout(function() {
+                                            timeout = setTimeout(function () {
                                                 clearAll();
                                                 timeout = null;
                                             }, 10e3);
@@ -486,6 +502,13 @@
                                     }
                                 });
                             }
+                        });
+
+                        $('#setup-sections').on('hidden.bs.collapse shown.bs.collapse', function (e) {
+                            $(e.target)
+                                    .prev('.box-header')
+                                    .find('h4')
+                                    .toggleClass('fa-chevron-right fa-chevron-down');
                         });
 
                         $('[data-toggle="tooltip"]').tooltip();

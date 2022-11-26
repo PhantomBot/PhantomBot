@@ -169,6 +169,10 @@
                 transformed,
                 transformCache = {};
 
+        if (args === undefined || args === null) {
+            args = {};
+        }
+
         if (args.atEnabled === undefined || args.atEnabled === null) {
             args.atEnabled = false;
         }
