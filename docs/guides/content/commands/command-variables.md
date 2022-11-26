@@ -1192,28 +1192,6 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### setdiscordactivity
-
-Defined in script: _./javascript-source/core/transformers/discord.js_
-
-**Formulas:**
-
-- `(setdiscordactivity str:str)` - sets the bots current activity in Discord to a custom string
-
-**Labels:** twitch discord noevent presence
-
-
-**Example:**
-```text
-Caster: !addcom !sleeping (setdiscordactivity :zzz: sleeping...)
-```
-
-Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
--------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
-
-&nbsp;
-
 ### setdiscordcompeting
 
 Defined in script: _./javascript-source/core/transformers/discord.js_
