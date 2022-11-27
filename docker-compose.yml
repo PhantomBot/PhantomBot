@@ -15,8 +15,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Compose spec version. Do not change
-version: '3.2'
+# To bring up or update the container
+# docker compose --pull always up -d
+#
+# To bring up the container, and also bring up ouroboros for auto-updates
+# docker compose --pull always --profile ouroboros up -d
+
 services:
   # Service name, used internally by Docker Compose. Can be changed but does not matter
   phantombot:
@@ -50,17 +54,66 @@ services:
     environment:
       # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix
       # ------ Note that after first run, botlogin.txt takes priority
-      # ------ The next 4 variables provided are required to be set to valid values for first run
-      # Twitch bot user (Required)
-      PHANTOMBOT_USER: ""
-      # Twitch caster channel (Required)
-      PHANTOMBOT_CHANNEL: ""
-      # Webinterface username (Required)
-      PHANTOMBOT_PANELUSER: ""
-      # Webinterface password (Required)
-      PHANTOMBOT_PANELPASSWORD: ""
+      # ------ None of the variables are required
       # Enables the restart button in the panel
       PHANTOMBOT_RESTARTCMD: "/opt/PhantomBot/restartbot-docker.sh"
+  # Service name, used internally by Docker Compose. Can be changed but does not matter
+  # The ouroboros service provides auto-update functionality
+  # To enable this service, the profile must be activated when using the "docker compose up" command
+  # docker compose --pull always --profile ouroboros up -d
+  #
+  # NOTE: This container only needs to be created ONCE and it will then apply to all containers, unless the configuration is changed to do otherwise
+  ouroboros:
+    # Container name, this will show up in Docker command output, Docker Desktop, Portainer, etc
+    container_name: ouroboros
+    # Explicitly sets the NETBIOS name of the container
+    hostname: ouroboros
+    # Image to pull, automatically selects the latest version when creating the container
+    image: ghcr.io/gmt2001/ouroboros
+    # Assigns this container to a profile, requireing the "--profile ouroboros" addition to the "docker compose up" command to activate
+    profiles: ["ouroboros"]
+    # Defines the configuration for ouroboros, see https://github.com/gmt2001/ouroboros/wiki/Usage
+    environment:
+        # If `true`, after an update the old image is removed from disk if it is not being used by any remaining containers
+      - CLEANUP=true
+        # Interval, in seconds, to check for updates
+      - INTERVAL=300
+        # To instead only have updates run on a schedule (during certain hours, etc), remove the hash symbol (#) below
+        # and set to a valid crontab expression. The interval above is ignored if CRON is enabled
+        #
+        # The default schedule defined below is "At 0400 every day", in the timezone defined in TZ below
+        #
+        # For help creating a crontab expression, see https://crontab.guru/#0_4_*_*_*
+        # NOTE: Do NOT use the non-standard @expressions defined on this website
+      #- CRON="0 4 * * *"
+        # Sets the output language. For available languages besides `en`, see https://github.com/gmt2001/ouroboros/tree/main/locales
+      - LANGUAGE=en
+        # Verbosity of logging output
+      - LOG_LEVEL=info
+        # Change to `true` if you want ouroboros to only notify you of new updates, but not install them
+      - MONITOR_ONLY=false
+        # Defines where to send notifications to. See https://github.com/caronc/apprise#supported-notifications
+        # To send notifications to multiple locations, separate each URI with a space as in the example below
+        #
+        # Remove the hash symbol (#) below and change to valid URIs to enable
+      #- NOTIFIERS="discord://webhook_id/webhook_token mailtos://userid:pass@domain.com"
+        # If `true`, ouroboros is allowed to update itself
+      - SELF_UPDATE=true
+        # Sets the timezone used for logging and the scheduler
+      - TZ=America/New_York
+    # The restart policy. "always" or "unless-stopped" are the recommended values and are required to use the panel restart button
+    # "unless-stopped": The container auto-restarts. If you stop the container using a Docker command, it will stay stopped until you start it using a Docker command
+    # "always": The container always auto-restarts. If you stop the container using a Docker command, it will auto-restart if the Docker service or server restarts
+    restart: unless-stopped
+    volumes:
+        # Provides a connection to Docker engine to manage containers. DO NOT CHANGE
+      - /var/run/docker.sock:/var/run/docker.sock
+        # Defines the volume mount for ouroboros script hooks
+        # Change the part on the left side of the colon (:) to a path on the host
+        # Do not change the right side of the colon (:)
+        #
+        # For information on script hooks, see https://github.com/gmt2001/ouroboros/wiki/Hooks
+      - /app/pyouroboros/hooks:/app/pyouroboros/hooks
 
 volumes:
   # It is recommended to leave this as it is with nothing after the colon (:)
