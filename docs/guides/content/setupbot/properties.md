@@ -250,6 +250,14 @@ the bot token from the discord developer portal
 
 &nbsp;
 
+#### discord_restore_presence
+
+Data Type: _Boolean_
+
+if `true`, the bots current discord activity (_playing foo_) is restored on startup. default `true`
+
+&nbsp;
+
 ### StreamElements
 #### streamelementsid
 
