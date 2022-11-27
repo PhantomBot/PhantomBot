@@ -24,6 +24,9 @@
      */
     function cleardiscordactivity() {
         $.discordAPI.resetPresence();
+        $.inidb.RemoveKey('discordSettings', '', 'lastActivityType');
+        $.inidb.RemoveKey('discordSettings', '', 'lastActivityName');
+        $.inidb.RemoveKey('discordSettings', '', 'lastActivityUrl');
 
         return {
             result: ''
@@ -44,6 +47,8 @@
             };
         }
         $.discordAPI.setCompeting(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 5);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -64,6 +69,8 @@
             };
         }
         $.discordAPI.setListening(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 2);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -84,6 +91,8 @@
             };
         }
         $.discordAPI.setWatching(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 3);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -104,6 +113,8 @@
             };
         }
         $.discordAPI.setPlaying(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 0);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -125,6 +136,9 @@
             };
         }
         $.discordAPI.setStreaming(pargs[1], pargs[0]);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 1);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', pargs[1]);
+        $.inidb.SetString('discordSettings', '', 'lastActivityUrl', pargs[0]);
 
         return {
             result: ''
