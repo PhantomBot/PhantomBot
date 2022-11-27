@@ -155,7 +155,11 @@
      * @param {string} message
      */
     function say(message) {
-        if (reg.test(message)) {
+        if (message === undefined || message === null) {
+            return;
+        }
+        message = $.jsString(message);
+        if (message.trim().length === 0 || reg.test(message)) {
             return;
         }
 
