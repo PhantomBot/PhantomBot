@@ -24,31 +24,14 @@
      */
     function cleardiscordactivity() {
         $.discordAPI.resetPresence();
+        $.inidb.RemoveKey('discordSettings', '', 'lastActivityType');
+        $.inidb.RemoveKey('discordSettings', '', 'lastActivityName');
+        $.inidb.RemoveKey('discordSettings', '', 'lastActivityUrl');
 
         return {
             result: ''
         };
     }
-
-    /* @disabled until D4J fix is implemented
-     * @//transformer setdiscordactivity
-     * @//formula (setdiscordactivity str:str) sets the bots current activity in Discord to a custom string
-     * @//labels twitch discord noevent presence
-     * @//example Caster: !addcom !sleeping (setdiscordactivity :zzz: sleeping...)
-     */
-    /*function setdiscordactivity(args) {
-        args.args = args.args === undefined || args.args === null ? '' : args.args.trim();
-        if (args.args.length === 0) {
-            return {
-                result: '(setdiscordactivity an input is missing)'
-            };
-        }
-        $.discordAPI.setCustomActivity(args.args);
-
-        return {
-            result: ''
-        };
-    }*/
 
     /*
      * @transformer setdiscordcompeting
@@ -64,6 +47,8 @@
             };
         }
         $.discordAPI.setCompeting(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 5);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -84,6 +69,8 @@
             };
         }
         $.discordAPI.setListening(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 2);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -104,6 +91,8 @@
             };
         }
         $.discordAPI.setWatching(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 3);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -124,6 +113,8 @@
             };
         }
         $.discordAPI.setPlaying(args.args);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 0);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', args.args);
 
         return {
             result: ''
@@ -145,6 +136,9 @@
             };
         }
         $.discordAPI.setStreaming(pargs[1], pargs[0]);
+        $.inidb.SetInteger('discordSettings', '', 'lastActivityType', 1);
+        $.inidb.SetString('discordSettings', '', 'lastActivityName', pargs[1]);
+        $.inidb.SetString('discordSettings', '', 'lastActivityUrl', pargs[0]);
 
         return {
             result: ''
@@ -173,7 +167,6 @@
 
     var transformers = [
         new $.transformers.transformer('cleardiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], cleardiscordactivity),
-        //new $.transformers.transformer('setdiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], setdiscordactivity),
         new $.transformers.transformer('setdiscordcompeting', ['twitch', 'discord', 'noevent', 'presence'], setdiscordcompeting),
         new $.transformers.transformer('setdiscordlistening', ['twitch', 'discord', 'noevent', 'presence'], setdiscordlistening),
         new $.transformers.transformer('setdiscordwatching', ['twitch', 'discord', 'noevent', 'presence'], setdiscordwatching),

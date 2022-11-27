@@ -36,7 +36,6 @@ import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.object.entity.channel.VoiceChannel;
-import discord4j.core.object.presence.Activity;
 import discord4j.core.object.presence.ClientActivity;
 import discord4j.core.object.presence.ClientPresence;
 import discord4j.core.object.reaction.ReactionEmoji;
@@ -1269,12 +1268,6 @@ public class DiscordUtil {
                 }
             }
 
-            com.gmt2001.Console.err.printStackTrace(e);
-        }).subscribe();
-    }
-
-    public void setCustomActivity(String activity) {
-        DiscordAPI.getGateway().updatePresence(ClientPresence.online(ClientActivity.of(Activity.Type.CUSTOM, activity, null))).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }

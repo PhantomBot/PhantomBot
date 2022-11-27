@@ -44,6 +44,9 @@ import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.core.object.presence.Activity;
+import discord4j.core.object.presence.ClientActivity;
+import discord4j.core.object.presence.ClientPresence;
 import discord4j.gateway.DefaultGatewayClient;
 import discord4j.gateway.GatewayOptions;
 import discord4j.gateway.GatewayReactorResources;
@@ -179,10 +182,26 @@ public class DiscordAPI extends DiscordUtil {
             this.nextReconnect = Instant.now().plusSeconds(60);
         }
 
+        /**
+         * @botproperty discord_restore_presence - If `true`, the bots current Discord activity (_Playing foo_) is restored on startup. Default `true`
+         * @botpropertycatsort discord_restore_presence 50 200 Discord
+         */
         DiscordAPI.selfId = null;
         com.gmt2001.Console.debug.println("IntentSet: " + this.connectIntents.toString());
         DiscordAPI.client.gateway().setMaxMissedHeartbeatAck(5).setExtraOptions(o -> new DiscordGatewayOptions(o))
-                .setEnabledIntents(this.connectIntents).withEventDispatcher(this::subscribeToEvents).login(DefaultGatewayClient::new)
+                .setInitialPresence(shardInfo -> {
+                    ClientActivity activity = null;
+                    if (CaselessProperties.instance().getPropertyAsBoolean("discord_restore_presence", true)
+                            && PhantomBot.instance().getDataStore().HasKey("discordSettings", "", "lastActivityType")
+                            && PhantomBot.instance().getDataStore().HasKey("discordSettings", "", "lastActivityName")) {
+                        int lastActivityType = PhantomBot.instance().getDataStore().GetInteger("discordSettings", "", "lastActivityType");
+                        String lastActivityName = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "lastActivityName");
+                        String lastActivityUrl = PhantomBot.instance().getDataStore().GetString("discordSettings", "", "lastActivityUrl");
+                        activity = ClientActivity.of(Activity.Type.of(lastActivityType), lastActivityName, lastActivityUrl);
+                    }
+
+                    return ClientPresence.online(activity);
+                }).setEnabledIntents(this.connectIntents).withEventDispatcher(this::subscribeToEvents).login(DefaultGatewayClient::new)
                 .timeout(Duration.ofSeconds(30)).doOnSuccess(cgateway -> {
             com.gmt2001.Console.out.println("Connected to Discord, finishing authentication...");
             synchronized (this.mutex) {
