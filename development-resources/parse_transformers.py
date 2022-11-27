@@ -17,6 +17,7 @@
 
 # /*
 #  * @[|local]transformer functionName
+#  * @category? categoryName
 #  * @formula... (tag[|:type][|=|\|][| var:type...]) description?
 #  * @labels? list of labels
 #  * @customarg...? (name:customArgType) description?
@@ -50,6 +51,7 @@ usestransformers = []
 
 transformer_template = {}
 transformer_template["script"] = ""
+transformer_template["category"] = ""
 transformer_template["function"] = ""
 transformer_template["formulas"] = []
 transformer_template["labels"] = ""
@@ -113,6 +115,10 @@ def parse_file(fpath, lines):
                 state = 2
                 transformer = copy.deepcopy(transformer_template)
                 transformer["script"] = fpath.replace('\\', '/')
+                idx = transformer["script"].rfind('/')
+                if idx == -1:
+                    idx = 0
+                transformer["category"] = transformer["script"][idx:].removesuffix('.js')
                 transformer["function"] = line[13:].strip()
             if line.startswith("@localtransformer"):
                 state = 5
@@ -158,6 +164,8 @@ def parse_file(fpath, lines):
                     transformer["formulas"].append(formula)
                 if line.startswith("@labels"):
                     transformer["labels"] = line.removeprefix("@labels").strip()
+                if line.startswith("@category"):
+                    transformer["category"] = line.removeprefix("@category").strip()
                 if line.startswith("@customarg"):
                     line = line[11:].strip()
                     desc_pos = line.find(") ")
@@ -201,10 +209,14 @@ def parse_file(fpath, lines):
     if usestransformer_index >= 0:
         usestransformers[usestransformer_index] = usestransformer
 
-def output_transformer(transformer, hlevel):
+def output_transformer(transformer, hlevel, currentcategory=None):
     lines = []
     h = "#"
     while len(h) < hlevel:
+        h = h + "#"
+    if currentcategory != None:
+        if currentcategory != transformer["category"]:
+            lines.append(h + " " + transformer["category"] + '\n'
         h = h + "#"
     lines.append(h + " " + transformer["function"] + '\n')
     lines.append('\n')
@@ -344,8 +356,10 @@ lines.append('\n')
 lines.append("[^cancels]: **Cancels:** If _Yes_, this tag will immediately cancel further parsing and execution of the current command, though the tag itself may still send a message to chat. If _Sometimes_, then some return conditions may cancel execution of the command" + '\n')
 lines.append('\n')
 
-for transformer in sorted(gtransformers, key=lambda x: x["function"]):
-    lines.extend(output_transformer(transformer, 3))
+currentcategory = ""
+for transformer in sorted(sorted(gtransformers, key=lambda x: x["function"]), key=lambda x: x["category"]):
+    lines.extend(output_transformer(transformer, 3, currentcategory))
+    currentcategory = transformer["category"]
 
 lines = lines[:len(lines) - 3]
 
