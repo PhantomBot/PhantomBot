@@ -488,6 +488,29 @@ $(function () {
         });
     };
 
+    /*
+     * Sends a custom message. Used for development
+     * @param {String} type The message type
+     * @param {String} query_id The unique Query ID
+     * @param {Object} params Optional object of params to send
+     * @param {Function} callback Callback function
+     * @returns {undefined}
+     */
+    socket.custom = function (type, query_id, params, callback) {
+        generateCallBack(query_id, [], false, true, callback);
+
+        let param = {};
+        param[type] = query_id;
+
+        if (params !== undefined && params !== null) {
+            for (let x in params) {
+                param[x] = params[x];
+            }
+        }
+
+        sendToSocket(param);
+    };
+
     socket.close = function () {
         webSocket.close(1000);
     };
