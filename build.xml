@@ -316,7 +316,7 @@
         </move>
     </target>
 
-    <target depends="clean,jar" name="clean-jar"></target>
+    <target depends="clean-no-post,jar" name="clean-jar"></target>
 
     <target depends="compile.src.test,post.compile" name="test"/>
 
@@ -336,7 +336,11 @@
         </zip>
     </target>
 
-    <target name="clean" depends="git.revision,post.compile">
+    <target name="clean-no-post" depends="git.revision">
+        <delete dir="${build}" />
+    </target>
+
+    <target name="clean" depends="clean-no-post,post.compile">
         <delete dir="${build}" />
     </target>
 
