@@ -312,7 +312,7 @@ $.lang.register('cooldown.coolcom.setComboModsSkip', 'Cooldown for command !$1 h
 $.lang.register('cooldown.coolcom.remove', 'Cooldown for command !$1 has been removed.');
 $.lang.register('cooldown.cooldown.usage', 'Usage: !cooldown [togglemoderators / setdefault]');
 $.lang.register('cooldown.default.set', 'The default cooldown for commands without one has been set to $1 seconds.');
-$.lang.register('cooldown.default.usage', 'Usage: !cooldown setdefault [seconds] - Set a cooldown for commands that don\'t have one.');
+$.lang.register('cooldown.default.usage', 'Usage: !cooldown setdefault [seconds] - Set a cooldown for commands that don\'t have one. Currently $1 seconds');
 $.lang.register('cooldown.adventure.err', 'Please use "!adventure set cooldown" to set the cooldown for adventures.');
 $.lang.register('init.cmsgset', 'Connected message set!');
 $.lang.register('init.module.404', 'That module does not exist or is not loaded!');

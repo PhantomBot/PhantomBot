@@ -23,6 +23,8 @@
  * To use the cooldown in other scipts use the $.coolDown API
  */
 
+/* global Packages */
+
 (function() {
     var defaultCooldownTime = $.getSetIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5),
             modCooldown = $.getSetIniDbBoolean('cooldownSettings', 'modCooldown', false),
@@ -196,14 +198,16 @@
         }
 
         _defaultCooldownsLock.lock();
+        var cmdCD;
         try {
-            var cmdCD = defaultCooldowns[command];
+            cmdCD = defaultCooldowns[command];
         } finally {
             _defaultCooldownsLock.unlock();
         }
 
         if (cmdCD !== undefined && cmdCD > $.systemTime()) {
             maxCoolDown = getTimeDif(cmdCD);
+            isGlobal = true;
         } else {
             useDefault = true;
             set(command, useDefault, defaultCooldownTime, undefined);
@@ -346,10 +350,19 @@
      * @param {Boolean} modsSkipIn
      */
     function handleCoolCom(sender, command, first, second, modsSkipIn) {
-        var action1 = first.split("="),
-            type1   = action1[0],
+        var action1 = first === undefined || first === null ? null : first.split("="),
+            type1   = action1 === null ? null : action1[0],
             secsG   = Operation.UnChanged,
             secsU   = Operation.UnChanged;
+
+        if (action1 === null) {
+            if (cooldowns[command] === undefined) {
+                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', command));
+            } else {
+                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo' + cooldowns[command].modsSkip, command, cooldowns[command].globalSec, cooldowns[command].userSec));
+            }
+            return;
+        }
 
         if (modsSkipIn === undefined) {
             modsSkipIn = null;
@@ -463,7 +476,7 @@
              */
             if (action.equalsIgnoreCase('setdefault')) {
                 if (isNaN(parseInt(subAction))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.default.usage'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('cooldown.default.usage', defaultCooldownTime));
                     return;
                 }
 
