@@ -15,13 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * raffleSystem.js made for giveaways on Twitch
  *
  */
 (function () {
     var entries = [],
-            entered = [],
+            entered = {},
             keyword = '',
             entryFee = 0,
             timerTime = 0,
@@ -300,6 +302,8 @@
     /**
      * @function draw
      * @info draws a winner
+     * @param {int} amount
+     * @param {bool} keepOpen
      */
     function draw(amount, keepOpen) {
         /* Check if anyone entered the raffle */
@@ -427,7 +431,7 @@
      * @info messages that user if the raffle toggles are on
      *
      * @param {string} username
-     * @param {string} message
+     * @param {string} msg
      */
     function message(username, msg) {
         if (sendMessages) {
@@ -440,6 +444,7 @@
      * @info enters the user into the raffle
      *
      * @param {string} username
+     * @param {ArrayList} tags
      */
     function enter(username, tags) {
         username = $.jsString(username);
@@ -520,7 +525,7 @@
         entryFee = 0;
         timerTime = 0;
         startTime = 0;
-        entered = [];
+        entered = {};
         entries = [];
         $.raffleCommand = null;
         hasDrawn = false;
@@ -531,6 +536,7 @@
 
     /**
      * @event ircChannelMessage
+     * @param {object} event
      */
     $.bind('ircChannelMessage', function (event) {
         if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
@@ -578,7 +584,7 @@
             /**
              * @commandpath raffle opendraw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and keeps the raffle open
              */
-            if (action.equalsIgnoreCase('draw')) {
+            if (action.equalsIgnoreCase('opendraw')) {
                 var amount = 1;
                 if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
