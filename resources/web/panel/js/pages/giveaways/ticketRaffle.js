@@ -212,26 +212,6 @@ $(function () {
         }
     });
 
-    // Draw raffle button.
-    $('#ticket-opendraw-raffle').on('click', function () {
-        const   drawAmount = $('#ticket-raffle-draw'),
-                prize = $('#ticket-raffle-prize');
-
-        switch (false) {
-            case helpers.handleInputNumber(drawAmount, 1):
-            case helpers.handleInputNumber(prize, 0):
-                break;
-            default:
-                socket.sendCommandSync('opendraw_raffle_cmd', 'traffle opendraw ' + drawAmount.val() + ' ' + prize.val(), function () {
-                    // Alert the user.
-                    toastr.success('Successfully drew a winner!');
-
-                    //Show the winners
-                    helpers.temp.loadWinners();
-                });
-        }
-    });
-
     // Reset raffle button.
     $('#ticket-reset-raffle').on('click', function () {
         // Reset values.
@@ -257,8 +237,8 @@ $(function () {
     // Raffle settings button.
     $('#ticket-raffle-settings').on('click', function () {
         socket.getDBValues('get_traffle_settings', {
-            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
-            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
+            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+            keys: ['traffleMSGToggle', 'traffleOpenDraw', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
         }, true, function (e) {
             helpers.getModal('traffle-settings-modal', 'Ticket Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -282,6 +262,8 @@ $(function () {
             .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
                 'role': 'form'
             })
+            .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['traffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If disabled, the raffle will close automatically when drawing winners.'))
             // Add toggle for warning messages.
             .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
@@ -291,6 +273,7 @@ $(function () {
             function () {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
+                    openDraw = $('#opendraw').find(':selected').text() === 'Yes',
                     warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
                     limiter = $('#limiter').find(':selected').text() === 'Yes';
 
@@ -300,9 +283,9 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_traffle_settings_2', {
-                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
-                            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
-                            values: [warningMsg, raffleMessage.val(), raffleTimer.val(), limiter]
+                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+                            keys: ['traffleMSGToggle', 'traffleOpenDraw', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
+                            values: [warningMsg, openDraw, raffleMessage.val(), raffleTimer.val(), limiter]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {
                                 // Close the modal.

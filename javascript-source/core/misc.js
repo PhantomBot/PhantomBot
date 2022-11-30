@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global java, Packages */
+/* global Packages */
 
 (function () {
     var respond = getSetIniDbBoolean('settings', 'response_@chat', true),

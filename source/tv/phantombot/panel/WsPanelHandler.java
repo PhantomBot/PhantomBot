@@ -50,6 +50,7 @@ import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
+import tv.phantombot.twitch.api.Helix;
 
 /**
  *
@@ -123,6 +124,8 @@ public class WsPanelHandler implements WsFrameHandler {
             handleSocketEvent(ctx, frame, jso);
         } else if (jso.has("discordchannellist")) {
             handleDiscordChannelList(ctx, frame, jso);
+        } else if (jso.has("channelpointslist")) {
+            handleChannelPointsList(ctx, frame, jso);
         }
     }
 
@@ -293,6 +296,26 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.endObject().endObject().endObject();
             WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
         }).subscribe();
+    }
+
+    private void handleChannelPointsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        Helix.instance().getCustomRewardAsync(null, null).doOnSuccess(json -> {
+            String uniqueID = jso.has("channelpointslist") ? jso.getString("channelpointslist") : "";
+
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("query_id").value(uniqueID);
+            jsonObject.key("results").object();
+            if (json.has("data")) {
+                jsonObject.key("data").array();
+                json.getJSONArray("data").forEach(jsonObject::value);
+                jsonObject.endArray();
+            } else {
+                jsonObject.key("error").value(json.getString("error")).key("message").value(json.getString("message"));
+                jsonObject.key("status").value(json.getInt("status"));
+            }
+            jsonObject.endObject().endObject();
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        }).doOnError(com.gmt2001.Console.err::printStackTrace).subscribe();
     }
 
     private void handleUnrestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {

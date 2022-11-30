@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global java */
+/* global Packages */
 
 (function () {
     var cost = 0,
@@ -28,6 +28,7 @@
             msgToggle = false,
             raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage', 'A raffle is still opened! Type !tickets (amount) to enter. (entries) users have entered so far.'),
             messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval', 0),
+            openDraw = $.getSetIniDbBoolean('traffleSettings', 'traffleOpenDraw', false),
             limiter = false,
             totalEntries = 0,
             totalTickets = 0,
@@ -47,6 +48,7 @@
 
     function reloadTRaffle() {
         msgToggle = $.inidb.GetBoolean('traffleSettings', '', 'traffleMSGToggle');
+        openDraw = $.getIniDbBoolean('raffleSettings', 'raffleOpenDraw');
         raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage');
         messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval');
         limiter = $.inidb.GetBoolean('traffleSettings', '', 'traffleLimiter');
@@ -207,18 +209,18 @@
         saveState();
     }
 
-    function winner(amount, keepopen) {
+    function winner(amount) {
         if (entries.length === 0) {
             $.say($.lang.get('ticketrafflesystem.raffle.close.err'));
             return;
         }
 
-        if (!keepopen) {
+        if (!openDraw) {
             hasDrawn = true;
             $.inidb.SetBoolean('traffleState', '', 'hasDrawn', hasDrawn);
         }
 
-        if (raffleStatus && !keepopen) {
+        if (raffleStatus && !openDraw) {
             closeRaffle();
             $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
         }
@@ -457,6 +459,7 @@
 
     /**
      * @event command
+     * @param {object} event
      */
     $.bind('command', function (event) {
         var sender = event.getSender(),
@@ -502,40 +505,6 @@
             }
 
             /**
-             * @commandpath traffle opendraw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, but leaves the raffle open
-             */
-            if (action.equalsIgnoreCase('opendraw')) {
-
-                var amount = 1;
-                if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.draw.usage'));
-                    return;
-                }
-
-                if (hasDrawn) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.already.drawn'));
-                    return;
-                }
-
-                if (args[1] !== undefined) {
-                    amount = parseInt(args[1]);
-                }
-
-                if (amount > uniqueEntries.length) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.not.enoughUsers', amount));
-                    return;
-                }
-
-                winner(amount, true);
-
-                if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
-                    awardWinners(parseInt(args[2]));
-                }
-
-                return;
-            }
-
-            /**
              * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, and closes the raffle if it is still open
              */
             if (action.equalsIgnoreCase('draw')) {
@@ -560,7 +529,7 @@
                     return;
                 }
 
-                winner(amount, false);
+                winner(amount);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(parseInt(args[2]));
@@ -582,6 +551,16 @@
                 if (!sender.equalsIgnoreCase($.botName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.reset'));
                 }
+                return;
+            }
+
+            /**
+             * @commandpath traffle toggleopendraw - Toggles whether the raffle closes automatically when drawing a winner
+             */
+            if (action.equalsIgnoreCase('toggleopendraw')) {
+                openDraw = !openDraw;
+                $.setIniDbBoolean('traffleSettings', 'traffleOpenDraw', openDraw);
+                $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.opendraw.' + (openDraw ? 'enable' : 'disable')));
                 return;
             }
 
@@ -682,11 +661,11 @@
         $.registerChatCommand('./systems/ticketraffleSystem.js', 'ticket', $.PERMISSION.Viewer);
         $.registerChatSubcommand('traffle', 'open', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'close', $.PERMISSION.Mod);
-        $.registerChatSubcommand('traffle', 'opendraw', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'draw', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'reset', $.PERMISSION.Mod);
         $.registerChatSubcommand('traffle', 'autoannounceinterval', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'autoannouncemessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('traffle', 'toggleopendraw', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'messagetoggle', $.PERMISSION.Admin);
         $.registerChatSubcommand('traffle', 'limitertoggle', $.PERMISSION.Admin);
 

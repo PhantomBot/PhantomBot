@@ -15,13 +15,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * raffleSystem.js made for giveaways on Twitch
  *
  */
 (function () {
     var entries = [],
-            entered = [],
+            entered = {},
             keyword = '',
             entryFee = 0,
             timerTime = 0,
@@ -31,6 +33,7 @@
             usePoints = true,
             status = false,
             sendMessages = $.getSetIniDbBoolean('raffleSettings', 'raffleMSGToggle', false),
+            openDraw = $.getSetIniDbBoolean('raffleSettings', 'raffleOpenDraw', false),
             whisperWinner = $.getSetIniDbBoolean('raffleSettings', 'raffleWhisperWinner', false),
             allowRepick = $.getSetIniDbBoolean('raffleSettings', 'noRepickSame', true),
             raffleMessage = $.getSetIniDbString('raffleSettings', 'raffleMessage', 'A raffle is still opened! Type (keyword) to enter. (entries) users have entered so far.'),
@@ -50,6 +53,7 @@
      */
     function reloadRaffle() {
         sendMessages = $.getIniDbBoolean('raffleSettings', 'raffleMSGToggle');
+        openDraw = $.getIniDbBoolean('raffleSettings', 'raffleOpenDraw');
         allowRepick = $.getIniDbBoolean('raffleSettings', 'noRepickSame');
         whisperWinner = $.getIniDbBoolean('raffleSettings', 'raffleWhisperWinner');
         raffleMessage = $.getIniDbString('raffleSettings', 'raffleMessage');
@@ -300,8 +304,9 @@
     /**
      * @function draw
      * @info draws a winner
+     * @param {int} amount
      */
-    function draw(amount, keepOpen) {
+    function draw(amount) {
         /* Check if anyone entered the raffle */
         if (entries.length === 0) {
             $.say($.lang.get('rafflesystem.winner.404'));
@@ -365,7 +370,7 @@
             _entriesLock.unlock();
         }
 
-        if (!keepOpen) {
+        if (!openDraw) {
             close(undefined);
         }
         hasDrawn = true;
@@ -427,7 +432,7 @@
      * @info messages that user if the raffle toggles are on
      *
      * @param {string} username
-     * @param {string} message
+     * @param {string} msg
      */
     function message(username, msg) {
         if (sendMessages) {
@@ -440,6 +445,7 @@
      * @info enters the user into the raffle
      *
      * @param {string} username
+     * @param {ArrayList} tags
      */
     function enter(username, tags) {
         username = $.jsString(username);
@@ -520,7 +526,7 @@
         entryFee = 0;
         timerTime = 0;
         startTime = 0;
-        entered = [];
+        entered = {};
         entries = [];
         $.raffleCommand = null;
         hasDrawn = false;
@@ -531,6 +537,7 @@
 
     /**
      * @event ircChannelMessage
+     * @param {object} event
      */
     $.bind('ircChannelMessage', function (event) {
         if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
@@ -576,29 +583,6 @@
             }
 
             /**
-             * @commandpath raffle opendraw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and keeps the raffle open
-             */
-            if (action.equalsIgnoreCase('draw')) {
-                var amount = 1;
-                if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
-                    return;
-                }
-
-                if (args[1] !== undefined) {
-                    amount = parseInt(args[1]);
-                }
-
-                draw(amount, true);
-
-                if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
-                    awardWinners(amount, parseInt(args[2]));
-                }
-
-                return;
-            }
-
-            /**
              * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and closes the raffle if it is still open
              */
             if (action.equalsIgnoreCase('draw')) {
@@ -612,7 +596,7 @@
                     amount = parseInt(args[1]);
                 }
 
-                draw(amount, false);
+                draw(amount);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(amount, parseInt(args[2]));
@@ -690,6 +674,16 @@
             }
 
             /**
+             * @commandpath raffle toggleopendraw - Toggles whether the raffle closes automatically when drawing a winner
+             */
+            if (action.equalsIgnoreCase('toggleopendraw')) {
+                openDraw = !openDraw;
+                $.setIniDbBoolean('raffleSettings', 'raffleOpenDraw', openDraw);
+                $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.opendraw.' + (openDraw ? 'enable' : 'disable')));
+                return;
+            }
+
+            /**
              * @commandpath raffle togglewarningmessages - Toggles the raffle warning messages when entering.
              */
             if (action.equalsIgnoreCase('togglewarningmessages')) {
@@ -750,14 +744,14 @@
 
         $.registerChatSubcommand('raffle', 'open', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'close', $.PERMISSION.Mod);
-        $.registerChatSubcommand('raffle', 'opendraw', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'draw', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'reset', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'results', $.PERMISSION.Viewer);
         $.registerChatSubcommand('raffle', 'lastWinners', $.PERMISSION.Mod);
         $.registerChatSubcommand('raffle', 'subscriberbonus', $.PERMISSION.Admin);
         $.registerChatSubcommand('raffle', 'regularbonus', $.PERMISSION.Admin);
-        $.registerChatSubcommand('raffle', 'togglemessages', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'toggleopendraw', $.PERMISSION.Admin);
+        $.registerChatSubcommand('raffle', 'togglewarningmessages', $.PERMISSION.Admin);
         $.registerChatSubcommand('raffle', 'togglerepicks', $.PERMISSION.Admin);
         $.registerChatSubcommand('raffle', 'message', $.PERMISSION.Admin);
         $.registerChatSubcommand('raffle', 'messagetimer', $.PERMISSION.Admin);
