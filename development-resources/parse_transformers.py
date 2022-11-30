@@ -216,7 +216,7 @@ def output_transformer(transformer, hlevel, currentcategory=None):
         h = h + "#"
     if currentcategory != None:
         if currentcategory != transformer["category"]:
-            lines.append(h + " " + transformer["category"] + '\n'
+            lines.append(h + " " + transformer["category"] + '\n')
         h = h + "#"
     lines.append(h + " " + transformer["function"] + '\n')
     lines.append('\n')
