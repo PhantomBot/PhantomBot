@@ -53,3 +53,5 @@ $.lang.register('ticketrafflesystem.auto.msg.set', 'Message set to $1.');
 $.lang.register('ticketrafflesystem.auto.msg.usage', 'Usage: !traffle autoannouncemessage [amount in minutes]');
 $.lang.register('ticketrafflesystem.auto.msginterval.usage', 'Usage: !traffle autoannounceinterval [amount in minutes]');
 $.lang.register('ticketrafflesystem.reset', 'The raffle has been reset.');
+$.lang.register('ticketrafflesystem.opendraw.enable', 'Ticket raffles winners can be drawn without closing the raffle.');
+$.lang.register('ticketrafflesystem.opendraw.disable', 'Ticket raffles will automatically close when drawing a winner.');

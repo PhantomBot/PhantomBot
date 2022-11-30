@@ -207,25 +207,6 @@ $(function () {
         }
     });
 
-    // Draw raffle button.
-    $('#opendraw-raffle').on('click', function () {
-        const   drawAmount = $('#raffle-draw'),
-                prize = $('#raffle-prize');
-
-        switch (false) {
-            case helpers.handleInputNumber(drawAmount, 1):
-            case helpers.handleInputNumber(prize, 0):
-                break;
-            default:
-                socket.sendCommandSync('draw_raffle_cmd', 'raffle opendraw ' + drawAmount.val() + ' ' + prize.val(), function () {
-                    // Alert the user.
-                    toastr.success('Successfully drew ' + drawAmount.val() + ' winner' + (drawAmount.val() === 1 ? '' : 's') + '!');
-                    // Reload
-                    helpers.temp.loadRaffleList();
-                });
-        }
-    });
-
     // Reset raffle button.
     $('#reset-raffle').on('click', function () {
         // Reset values.
@@ -251,8 +232,8 @@ $(function () {
     // Raffle settings button.
     $('#raffle-settings').on('click', function () {
         socket.getDBValues('get_raffle_settings', {
-            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
-            keys: ['raffleMSGToggle', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval']
+            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
+            keys: ['raffleMSGToggle', 'raffleOpenDraw', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval']
         }, true, function (e) {
             helpers.getModal('raffle-settings-modal', 'Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -276,6 +257,8 @@ $(function () {
             .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
                 'role': 'form'
             })
+            .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['raffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If disabled, the raffle will close automatically when drawing winners.'))
             // Add toggle for warning messages.
             .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['raffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
@@ -288,6 +271,7 @@ $(function () {
             function () {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
+                    openDraw = $('#opendraw').find(':selected').text() === 'Yes',
                     warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
                     drawToggle = $('#draw-toggle').find(':selected').text() !== 'Yes',
                     whisperWinner = $('#whisper-toggle').find(':selected').text() === 'Yes';
@@ -298,9 +282,9 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_raffle_settings_2', {
-                            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
-                            keys: ['raffleMSGToggle', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval'],
-                            values: [warningMsg, whisperWinner, drawToggle, raffleMessage.val(), raffleTimer.val()]
+                            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
+                            keys: ['raffleMSGToggle', 'raffleOpenDraw', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval'],
+                            values: [warningMsg, openDraw, whisperWinner, drawToggle, raffleMessage.val(), raffleTimer.val()]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadraffle', function () {
                                 // Close the modal.
