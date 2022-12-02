@@ -781,9 +781,4 @@
         $.registerChatSubcommand('channelpoints', 'timeout', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'command', $.PERMISSION.Admin);
     });
-
-    /*
-     * update API
-     */
-    $.updateChannelPointsConfig = updateChannelPointsConfig();
 })();
