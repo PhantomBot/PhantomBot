@@ -139,7 +139,7 @@ def parse_file(fpath, lines):
                     usestransformer_hook["global"] = True
                 if "local" in line:
                     usestransformer_hook["local"] = True
-                usestransformer_hook["labels"] = line.removeprefix("@usestransformers").strip().removeprefix("global").strip().removeprefix("local").strip()
+                usestransformer_hook["labels"] = line.removeprefix("@usestransformers").strip().removeprefix("global").strip().removeprefix("local").strip().removeprefix("global").strip()
             if state > 1:
                 if state != 2 and state != 5 and line.startswith("@"):
                     if state == 3 or state == 6:
