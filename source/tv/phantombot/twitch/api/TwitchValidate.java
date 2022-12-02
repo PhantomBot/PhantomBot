@@ -306,18 +306,16 @@ public class TwitchValidate {
             }
         }
 
-        if (this.hasAPIScope("chat:edit") && !this.hasChatScope("chat:edit")) {
-            com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit but API (apioauth) does. OAuth tokens may be reversed");
-        } else if (!this.hasChatScope("chat:edit")) {
+        if (!this.hasChatScope("chat:edit")) {
             com.gmt2001.Console.warn.println("CHAT (oauth) does not have chat:edit. Bot may be unable to respond");
-        } else if (!this.hasAPIScope("moderator:manage:banned_users")) {
-            com.gmt2001.Console.warn.println("API (apioauth) does not have moderator:manage:banned_users. Bot may be unable to purge/timeout/ban");
+        } else if (!this.hasChatScope("moderator:manage:banned_users")) {
+            com.gmt2001.Console.warn.println("Chat (oauth) does not have moderator:manage:banned_users. Bot may be unable to purge/timeout/ban");
         }
 
         if (!this.getAPILogin().equalsIgnoreCase(channelName) && this.getChatLogin().equalsIgnoreCase(channelName)) {
             com.gmt2001.Console.warn.println("API (apioauth) is not logged in as " + channelName + " but CHAT (oauth) is. OAuth tokens may be reversed");
         } else if (!this.getAPILogin().equalsIgnoreCase(channelName)) {
-            com.gmt2001.Console.warn.println("API (apioauth) is not logged in as " + channelName + ". OAuth token may be under the wrong login");
+            com.gmt2001.Console.warn.println("API (apioauth) is not logged in as " + channelName + ". Some features may not work");
         }
     }
 
@@ -338,7 +336,7 @@ public class TwitchValidate {
             }
         }
 
-        return !this.hasChatScope("chat:edit") || !this.hasAPIScope("moderator:manage:banned_users") || !this.getAPILogin().equalsIgnoreCase(channelName);
+        return !this.hasChatScope("chat:edit") || !this.hasChatScope("moderator:manage:banned_users") || (!this.getAPILogin().equalsIgnoreCase(channelName) && this.getChatLogin().equalsIgnoreCase(channelName));
     }
 
     /**

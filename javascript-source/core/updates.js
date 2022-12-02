@@ -114,8 +114,8 @@
         $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
-        $.consoleLn('Installing old updates...');
-        versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0'
+        versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0', 'installedv3.6.0', 'installedv3.6.2.5',
+            'installedv3.6.3', 'installedv3.6.4', 'installedv3.6.4-1', 'installedv3.6.4.2', 'installedv3.6.4.5', 'installedv3.6.5.0'
         ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
@@ -617,20 +617,20 @@
         $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0', true);
     }
 
-    if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope('moderator:manage:banned_users')) {
+    if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
         Packages.com.gmt2001.Console.warn.println('');
         Packages.com.gmt2001.Console.warn.println('');
-        Packages.com.gmt2001.Console.warn.println('New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot');
-        Packages.com.gmt2001.Console.warn.println('Please visit the OAuth page on the panel and re-auth the Broadcaster');
+        Packages.com.gmt2001.Console.warn.println('New Bot (Chat) OAuth required by Twitch to continue using ban/timeout/purge on the bot');
+        Packages.com.gmt2001.Console.warn.println('Please visit the OAuth page on the panel and re-auth the Bot');
         Packages.com.gmt2001.Console.warn.println('');
         Packages.com.gmt2001.Console.warn.println('');
     }
 
     $.bind('webPanelSocketConnect', function (event) {
         setTimeout(function() {
-            if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasAPIScope('moderator:manage:banned_users')) {
-                $.panelsocketserver.panelNotification('warning', 'New Broadcaster OAuth required by Twitch to continue using ban/timeout/purge on the bot'
-                        + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Broadcaster',
+            if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
+                $.panelsocketserver.panelNotification('warning', 'New Bot (Chat) OAuth required by Twitch to continue using ban/timeout/purge on the bot'
+                        + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Bot',
                         'OAuth Scope Change', 0, 0, false);
             }
         }, 5000);

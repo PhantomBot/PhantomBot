@@ -366,6 +366,8 @@
         for (var i in $.users) {
             if (getUserPoints($.users[i].toLowerCase()) > amount) {
                 $.inidb.decr('points', $.users[i].toLowerCase(), amount);
+            } else {
+                $.inidb.set('points', $.users[i].toLowerCase(), '0');
             }
         }
 
@@ -902,4 +904,5 @@
     $.updateSettings = updateSettings;
     $.setTempBonus = setTempBonus;
     $.giveAll = giveAll;
+    $.takeAll = takeAll;
 })();

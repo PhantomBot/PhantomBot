@@ -52,8 +52,9 @@
         }
     }
 
-    /**
+    /*
      * @event discordChannelCommand
+     * @usestransformers global discord commandevent noevent
      */
     $.bind('discordChannelCommand', function (event) {
         var channel = event.getDiscordChannel(),

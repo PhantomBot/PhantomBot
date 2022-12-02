@@ -797,6 +797,14 @@
         }
     }
 
+    /**
+     * Parses an argument string into an array
+     * @param {string} str input string
+     * @param {char} sep separator character. Can be escaped in the input string using backslash (\). Default comma (,)
+     * @param {int} limit maximum amount of arguments to produce. -1 for unlimited. After the limit is reached, the remainder of the string is returned as the last argument. Default -1
+     * @param {boolean} limitNoEscape If true and limit is > 0, the last argument is treated as a string literal, not parsing the escape characters. Default false
+     * @returns {Array} if no arguments were found in str, returns null; else the array of arguments, each converted to a jsString and trimmed
+     */
     function parseArgs(str, sep, limit, limitNoEscape) {
         if (str === undefined || str === null) {
             throw 'Invalid str (undefined, null)';
@@ -815,7 +823,7 @@
         if (limitNoEscape === undefined || limitNoEscape === null) {
             limitNoEscape = false;
         }
-        $.consoleDebug(str);
+
         var retl = Packages.tv.phantombot.event.command.CommandEvent.parseArgs(str, sep, limit, limitNoEscape);
 
         var ret = [];
@@ -888,6 +896,14 @@
     $.equalsIgnoreCase = equalsIgnoreCase;
     $.javaString = javaString;
     $.jsString = jsString;
+    /**
+     * Parses an argument string into an array
+     * @param {string} str input string
+     * @param {char} sep separator character. Can be escaped in the input string using backslash (\). Default comma (,)
+     * @param {int} limit maximum amount of arguments to produce. -1 for unlimited. After the limit is reached, the remainder of the string is returned as the last argument. Default -1
+     * @param {boolean} limitNoEscape If true and limit is > 0, the last argument is treated as a string literal, not parsing the escape characters. Default false
+     * @returns {Array} if no arguments were found in str, returns null; else the array of arguments, each converted to a jsString and trimmed
+     */
     $.parseArgs = parseArgs;
     $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
 })();
