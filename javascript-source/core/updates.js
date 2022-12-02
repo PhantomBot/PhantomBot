@@ -114,8 +114,8 @@
         $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
-        $.consoleLn('Installing old updates...');
-        versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0'
+        versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0', 'installedv3.6.0', 'installedv3.6.2.5',
+            'installedv3.6.3', 'installedv3.6.4', 'installedv3.6.4-1', 'installedv3.6.4.2', 'installedv3.6.4.5', 'installedv3.6.5.0'
         ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
