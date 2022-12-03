@@ -213,7 +213,7 @@ $(function () {
             socket.custom('channelpointslist', 'channelpoints_edit', null, function (e) {
                 let commandSelector;
 
-                if (e.hasOwnProperty('error')) {
+                if (e.hasOwnProperty('error') || e.data.length === 0) {
                     commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redemption', '', 'Unable to Load. Manual Setup Enabled',
                             'Unable to load the Channel Points redemption list, using manual linking mode.', true);
                 } else {
@@ -249,7 +249,7 @@ $(function () {
                         case helpers.handleInputString(redemptionResponse):
                             break;
                         default:
-                            if (e.hasOwnProperty('error')) {
+                            if (e.hasOwnProperty('error') || e.data.length === 0) {
                                 socket.updateDBValues('channelpoints_manual', {
                                     tables: ['channelPointsSettings'],
                                     keys: ['commandConfig'],
