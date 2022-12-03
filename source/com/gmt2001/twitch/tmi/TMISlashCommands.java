@@ -97,6 +97,14 @@ final class TMISlashCommands {
             case ".emoteonlyoff":
                 emoteonlyoff(channel);
                 break;
+            case "/shield":
+            case ".shield":
+                shield(channel);
+                break;
+            case "/shieldoff":
+            case ".shieldoff":
+                shieldoff(channel);
+                break;
             case "/slow":
             case ".slow":
                 slow(channel, message);
@@ -365,6 +373,26 @@ final class TMISlashCommands {
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /emoteonlyoff: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void shield(String channel) {
+        Helix.instance().updateShieldModeStatusAsync(UsernameCache.instance().getID(channel), true)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /shield: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void shieldoff(String channel) {
+        Helix.instance().updateShieldModeStatusAsync(UsernameCache.instance().getID(channel), false)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") != 200) {
+                        com.gmt2001.Console.err.println("Failed to /shieldoff: " + jso.toString());
                     }
                 })
                 .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
