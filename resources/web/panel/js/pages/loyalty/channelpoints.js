@@ -49,7 +49,7 @@ $(function () {
             keys: ['commands']
         }, function (results) {
             let tableData = [];
-            commands = JSON.parse(results);
+            commands = structuredClone(results);
 
             if (updateTable !== false) {
                 for (const command of commands) {
@@ -237,6 +237,25 @@ $(function () {
                     'role': 'form'
                 })
                         .append(commandSelector)
+                        .append($('<div/>', {
+                            'class': 'box box-warning'
+                        }).append($('<div/>', {
+                            'class': 'box-header',
+                            'html': 'Warning'
+                        })).append($('<div/>', {
+                            'class': 'box-body',
+                            'html': 'When the response is parsed, the <b>(sender)</b> will be the bot and will have <b>ADMIN</b> permissions'
+                        }))
+                                )
+                        .append($('<div/>', {
+                            'class': 'box box-info'
+                        }).append($('<div/>', {
+                            'class': 'box-body',
+                            'html': 'Use the command tag <b>(1)</b> to get the login name (sender) of the redeeming user<br />'
+                                    + 'Use the command tag <b>(2)</b> to get the display name of the redeeming user<br />'
+                                    + 'Use the command tag <b>(3)</b> to get the text of the redemption input box, if used'
+                        }))
+                                )
                         // Append a text box for the command response.
                         .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', 'Thanks for being cool @(2)! (command doSomethingCool)',
                                 '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
@@ -286,6 +305,6 @@ $(function () {
                     }
                 }).modal('toggle');
             });
-        });
-    }, false);
+        }, false);
+    });
 });
