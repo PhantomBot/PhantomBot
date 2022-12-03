@@ -211,12 +211,9 @@ $(function () {
     $('#addcpreward-button').on('click', function () {
         loadChannelPoints(function () {
             socket.custom('channelpointslist', 'channelpoints_edit', null, function (e) {
-                let commandSelector;
+                let commandSelector = null;
 
-                if (e.hasOwnProperty('error') || e.data.length === 0) {
-                    commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redemption', '', 'Unable to Load. Manual Setup Enabled',
-                            'Unable to load the Channel Points redemption list, using manual linking mode.', true);
-                } else {
+                if (e.hasOwnproperty('data') && e.data.length > 0) {
                     let options = [];
                     for (const redemption of e.data) {
                         if (findCommand(redemption.id) === null) {
@@ -229,7 +226,14 @@ $(function () {
                         }
                     }
 
-                    channelSelector = helpers.getFlatMultiDropdownGroup('redemption-select', 'Linked Redemption', options, 'The linked Channel Points redemption.');
+                    if (options.length > 0) {
+                        commandSelector = helpers.getFlatMultiDropdownGroup('redemption-select', 'Linked Redemption', options, 'The linked Channel Points redemption.');
+                    }
+                }
+
+                if (e.hasOwnProperty('error') || e.data.length === 0 || commandSelector === null) {
+                    commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redemption', '', 'Unable to Load. Manual Setup Enabled',
+                            'Unable to load the Channel Points redemption list, using manual linking mode.', true);
                 }
 
                 // Get advance modal from our util functions in /utils/helpers.js
