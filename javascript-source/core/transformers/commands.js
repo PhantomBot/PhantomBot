@@ -25,26 +25,31 @@
      * @formula (command name:str) execute command with given name and pass no args
      * @formula (command name:str args:str) execute command with given name and pass args
      * @labels twitch discord commandevent commands
-     * @cancels
      */
     function command(args) {
-        var argStr;
-        if ((match = args.args.match(/^\s(\S+)(?:\s(.*))?$/))) {
-            cmd = match[1];
-            argStr = match[2] || '';
-            if (cmd.length > 0) {
-                var EventBus = Packages.tv.phantombot.event.EventBus;
-                if (args.platform === 'discord') {
-                    var DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
-                    EventBus.instance().postAsync(new DiscordCommandEvent(args.event.getDiscordUser(), args.event.getDiscordChannel(),
-                            args.event.getDiscordMessage(), cmd, argStr, args.event.isAdmin()));
-                } else {
-                    var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
-                    EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr));
-                }
+        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        if (pargs !== null) {
+            cmd = pargs[0];
+            var argStr = '';
+
+            if (pargs.length > 1) {
+                argStr = pargs[1];
             }
-            return {cancel: true};
+
+            var EventBus = Packages.tv.phantombot.event.EventBus;
+            if (args.platform === 'discord') {
+                var DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
+                EventBus.instance().postAsync(new DiscordCommandEvent(args.event.getDiscordUser(), args.event.getDiscordChannel(),
+                        args.event.getDiscordMessage(), cmd, argStr, args.event.isAdmin()));
+            } else {
+                var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr, args.event.getTags()));
+            }
         }
+
+        return {
+            result: ''
+        };
     }
 
     /*
@@ -89,7 +94,7 @@
         var incr = 1;
         var counter = args.event.getCommand();
         var table = 'commandCount';
-        
+
         if (args.platform === 'discord') {
             table = 'discordCommandCount';
         }
