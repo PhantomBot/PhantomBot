@@ -18,7 +18,7 @@
 
 [^cancels]: **Cancels:** If _Yes_, this tag will immediately cancel further parsing and execution of the current command, though the tag itself may still send a message to chat. If _Sometimes_, then some return conditions may cancel execution of the command
 
-### /alerts
+### alerts
 #### alert
 
 Defined in script: _./javascript-source/core/transformers/alerts.js_
@@ -76,7 +76,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /basic
+### basic
 #### buildArgs
 
 Defined in script: _./javascript-source/core/transformers/basic.js_
@@ -216,7 +216,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /channelstream
+### channelstream
 #### channelname
 
 Defined in script: _./javascript-source/core/transformers/channelstream.js_
@@ -592,7 +592,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /commands
+### commands
 #### command
 
 Defined in script: _./javascript-source/core/transformers/commands.js_
@@ -661,7 +661,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /customapi
+### customapi
 #### customapi
 
 Defined in script: _./javascript-source/core/transformers/customapi.js_
@@ -726,7 +726,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /discord
+### discord
 #### cleardiscordactivity
 
 Defined in script: _./javascript-source/core/transformers/discord.js_
@@ -884,7 +884,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /file
+### file
 #### readfile
 
 Defined in script: _./javascript-source/core/transformers/file.js_
@@ -956,7 +956,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /meta
+### meta
 #### adminonlyedit
 
 Defined in script: _./javascript-source/core/transformers/meta.js_
@@ -1064,7 +1064,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
-### /misc
+### misc
 #### code
 
 Defined in script: _./javascript-source/core/transformers/misc.js_
@@ -1227,7 +1227,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /points
+### points
 #### addpoints
 
 Defined in script: _./javascript-source/core/transformers/points.js_
@@ -1394,7 +1394,7 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /teams
+### teams
 #### team_member_followers
 
 Defined in script: _./javascript-source/core/transformers/teams.js_
@@ -1528,7 +1528,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /time
+### time
 #### countdown
 
 Defined in script: _./javascript-source/core/transformers/time.js_
@@ -1629,7 +1629,7 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
-### /user
+### user
 #### age
 
 Defined in script: _./javascript-source/core/transformers/user.js_
