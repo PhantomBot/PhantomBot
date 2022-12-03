@@ -2255,6 +2255,55 @@ public class Helix {
         });
     }
 
+    /**
+     * Activates or deactivates the broadcaster’s Shield Mode.
+     *
+     * Twitch's Shield Mode feature is like a panic button that broadcasters can push to protect themselves from chat abuse coming from one or more
+     * accounts. When activated, Shield Mode applies the overrides that the broadcaster configured in the Twitch UX. If the broadcaster hasn't
+     * configured Shield Mode, it applies default overrides.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose Shield Mode you want to activate or deactivate.
+     * @param isActive A Boolean value that determines whether to activate Shield Mode. Set to {@code true} to activate Shield Mode; otherwise,
+     * {@code false} to deactivate Shield Mode.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject updateShieldModeStatus(String broadcaster_id, boolean isActive)
+            throws JSONException, IllegalArgumentException {
+        return this.updateShieldModeStatusAsync(broadcaster_id, isActive).block();
+    }
+
+    /**
+     * Activates or deactivates the broadcaster’s Shield Mode.
+     *
+     * Twitch's Shield Mode feature is like a panic button that broadcasters can push to protect themselves from chat abuse coming from one or more
+     * accounts. When activated, Shield Mode applies the overrides that the broadcaster configured in the Twitch UX. If the broadcaster hasn't
+     * configured Shield Mode, it applies default overrides.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose Shield Mode you want to activate or deactivate.
+     * @param isActive A Boolean value that determines whether to activate Shield Mode. Set to {@code true} to activate Shield Mode; otherwise,
+     * {@code false} to deactivate Shield Mode.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> updateShieldModeStatusAsync(String broadcaster_id, boolean isActive)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        JSONStringer js = new JSONStringer();
+        js.object().key("is_active").value(isActive).endObject();
+
+        String endpoint = "/moderation/shield_mode?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.PUT, endpoint, js.toString());
+        });
+    }
+
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`

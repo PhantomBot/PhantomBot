@@ -118,7 +118,7 @@ def parse_file(fpath, lines):
                 idx = transformer["script"].rfind('/')
                 if idx == -1:
                     idx = 0
-                transformer["category"] = transformer["script"][idx:].removesuffix('.js')
+                transformer["category"] = transformer["script"][idx:].removeprefix('/').removesuffix('.js')
                 transformer["function"] = line[13:].strip()
             if line.startswith("@localtransformer"):
                 state = 5

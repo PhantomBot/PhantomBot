@@ -82,7 +82,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
             }
         }
 
-        if (!req.method().equals(HttpMethod.GET)) {
+        if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.PUT) && !req.method().equals(HttpMethod.POST)) {
             com.gmt2001.Console.debug.println("405");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
             return;
