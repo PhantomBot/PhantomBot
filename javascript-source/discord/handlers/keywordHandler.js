@@ -22,8 +22,9 @@
  */
 (function () {
 
-    /**
+    /*
      * @event discordChannelMessage
+     * @usestransformers global discord commandevent keywordevent noevent
      */
     $.bind('discordChannelMessage', function (event) {
         var message = event.getMessage().toLowerCase(),
