@@ -85,7 +85,7 @@
                 action = args[0];
 
         /*
-         * @commandpath channelpoints - Main command for the Channel Points module. Indicates what actions are in use 
+         * @commandpath channelpoints - Main command for the Channel Points module. Indicates what actions are in use
          */
         if (command.equalsIgnoreCase('channelpoints')) {
             if (action === undefined) {
@@ -767,6 +767,15 @@
             return commands[idx];
         }
     }
+
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getScript().equalsIgnoreCase('./handlers/ChannelPointsHandler.js')) {
+            var args = event.getArgs();
+            if (args.length > 0 && args[0].equalsIgnoreCase('reload')) {
+                updateChannelPointsConfig();
+            }
+        }
+    });
 
     /*
      * add chat commands
