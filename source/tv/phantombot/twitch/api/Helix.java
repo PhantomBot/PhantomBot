@@ -2295,7 +2295,7 @@ public class Helix {
         }
 
         JSONStringer js = new JSONStringer();
-        js.object().key("data").object().key("is_active").value(isActive).endObject().endObject();
+        js.object().key("is_active").value(isActive).endObject();
 
         String endpoint = "/moderation/shield_mode?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
 
