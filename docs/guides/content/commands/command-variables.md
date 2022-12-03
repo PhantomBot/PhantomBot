@@ -606,7 +606,7 @@ Defined in script: _./javascript-source/core/transformers/commands.js_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
@@ -2062,6 +2062,20 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | No
 
 **Labels Used:** discord commandevent noevent
+
+&nbsp;
+
+### discord / keywordHandler.js
+
+Defined in script: _./javascript-source/discord/handlers/keywordHandler.js_
+
+#### Hook: discordChannelMessage
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** discord commandevent keywordevent noevent
 
 &nbsp;
 
