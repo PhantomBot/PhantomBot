@@ -372,8 +372,18 @@
                 return;
             }
 
-            action = action.replace('!', '').toLowerCase();
-            subAction = args.slice(1).join(' ').replace('!', '').toLowerCase();
+            if (action.startsWith('!')) {
+                action = action.substring(1);
+            }
+
+            action = action.toLowerCase();
+            subAction = args.slice(1).join(' ');
+
+            if (subAction.startsWith('!')) {
+                subAction = action.substring(1);
+            }
+
+            subAction = subAction.toLowerCase();
 
             if ($.commandExists(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('customcommands.alias.error.exists'));
