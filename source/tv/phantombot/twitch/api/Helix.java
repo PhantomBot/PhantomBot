@@ -1229,10 +1229,25 @@ public class Helix {
      * Colors to be used with {@link sendChatAnnouncement}
      */
     public enum AnnouncementColors {
+        /**
+         * The primary color of the channel
+         */
         PRIMARY,
+        /**
+         * Blue
+         */
         BLUE,
+        /**
+         * Green
+         */
         GREEN,
+        /**
+         * Orange
+         */
         ORANGE,
+        /**
+         * Purple
+         */
         PURPLE;
 
         @Override
@@ -2252,6 +2267,91 @@ public class Helix {
                 + this.qspValid("&id", id);
         return this.handleMutatorAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.DELETE, endpoint);
+        });
+    }
+
+    /**
+     * The status of a custom reward redemption
+     */
+    public enum CustomRewardRedemptionStatus {
+        /**
+         * Not fulfilled yet
+         */
+        UNFULFILLED,
+        /**
+         * Cancelled and refunded
+         */
+        CANCELLED,
+        /**
+         * Fulfilled
+         */
+        FULFILLED
+    }
+
+    /**
+     * Updates a redemption\'s status.
+     *
+     * You may update a redemption only if its status is UNFULFILLED. The app used to create the reward is the only app that may update the
+     * redemption.
+     *
+     * @param id A list of IDs that identify the redemptions to update. You may specify a maximum of 50 IDs.
+     * @param reward_id The ID that identifies the reward that\'s been redeemed.
+     * @param newStatus The status to set the redemption to. Setting the status to {@link CustomRewardRedemptionStatus.CANCELLED} refunds the user\'s
+     * channel points.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject updateRedemptionStatus(List<String> id, String reward_id, CustomRewardRedemptionStatus newStatus)
+            throws JSONException, IllegalArgumentException {
+        return this.updateRedemptionStatusAsync(id, reward_id, newStatus).block();
+    }
+
+    /**
+     * Updates a redemption\'s status.
+     *
+     * You may update a redemption only if its status is UNFULFILLED. The app used to create the reward is the only app that may update the
+     * redemption.
+     *
+     * @param id A list of IDs that identify the redemptions to update. You may specify a maximum of 50 IDs.
+     * @param reward_id The ID that identifies the reward that\'s been redeemed.
+     * @param newStatus The status to set the redemption to. Setting the status to {@link CustomRewardRedemptionStatus.CANCELLED} refunds the user\'s
+     * channel points.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> updateRedemptionStatusAsync(List<String> id, String reward_id, CustomRewardRedemptionStatus newStatus)
+            throws JSONException, IllegalArgumentException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("id is required");
+        }
+
+        if (id.size() > 50) {
+            throw new IllegalArgumentException("Limit 50 ids");
+        }
+
+        if (reward_id == null || reward_id.isBlank()) {
+            throw new IllegalArgumentException("reward_id is required");
+        }
+
+        if (newStatus == CustomRewardRedemptionStatus.UNFULFILLED) {
+            throw new IllegalArgumentException("newStatus can not be CustomRewardRedemptionStatus.UNFULFILLED");
+        }
+
+        String ids = id.stream().limit(50).collect(Collectors.joining("&id="));
+
+        if (ids == null || ids.isBlank()) {
+            throw new IllegalArgumentException("id is required");
+        }
+
+        JSONStringer js = new JSONStringer();
+        js.object().key("status").value(newStatus.name()).endObject();
+
+        String endpoint = "/channel_points/custom_rewards/redemptions?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
+                + this.qspValid("&id", ids) + this.qspValid("&reward_id", reward_id);
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
         });
     }
 
