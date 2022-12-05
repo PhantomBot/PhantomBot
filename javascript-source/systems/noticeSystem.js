@@ -564,8 +564,14 @@
                         return;
                     }
 
-                    disabled = noticeGroups[selectedGroup].disabled[parseInt(args[1])];
-                    noticeGroups[selectedGroup].disabled[parseInt(args[1])] = !disabled;
+                    if (args.length > 2 && $.jsString(args[2]) === 'on') {
+                        disabled = false;
+                    } else if (args.length > 2 && $.jsString(args[2]) === 'off') {
+                        disabled = true;
+                    } else {
+                        disabled = !noticeGroups[selectedGroup].disabled[parseInt(args[1])];
+                    }
+                    noticeGroups[selectedGroup].disabled[parseInt(args[1])] = disabled;
                     $.inidb.set('notices', String(selectedGroup), JSON.stringify(noticeGroups[selectedGroup]));
                 } finally {
                     noticeLock.unlock();
