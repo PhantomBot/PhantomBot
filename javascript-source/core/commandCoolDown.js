@@ -41,7 +41,7 @@
             },
             Operation = {
                 UnSet: -1,
-                UnChanged: 0
+                UnChanged: -2
             };
 
     /*
