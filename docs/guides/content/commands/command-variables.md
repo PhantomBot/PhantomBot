@@ -912,6 +912,40 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### readfileall
+
+Defined in script: _./javascript-source/core/transformers/file.js_
+
+**Formulas:**
+
+- `(readfileall filename:str)` - all lines of the specified file
+
+**Labels:** twitch discord noevent file
+
+
+_NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
+
+_NOTE: empty lines may be ignored_
+
+_NOTE: WARNING: this can cause spam and block the bots message queue_
+
+
+**Example:**
+```text
+Caster: !addcom !story (readfileall ./nightBeforeXmas.txt)
+User: !story
+Bot: 'Twas the night before Christmas, when all through the house
+Bot: Not a creature was stirring, not even a mouse;
+Bot: The stockings were hung by the chimney with care,
+Bot: In hopes that St. Nicholas soon would be there;
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### readfilerand
 
 Defined in script: _./javascript-source/core/transformers/file.js_
