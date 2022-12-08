@@ -68,7 +68,7 @@
          * Checks for custom commands, no command path needed here.
          */
         if ($.inidb.exists('discordCommands', command)) {
-            var tag = $.transformers.tags(event, $.inidb.get('discordCommands', command), ['discord', ['commandevent', 'noevent']]);
+            var tag = $.transformers.tags(event, $.inidb.get('discordCommands', command), ['discord', ['commandevent', 'noevent']], {platform: 'discord'});
             if (tag !== null) {
                 $.discord.say(channel, tag);
             }

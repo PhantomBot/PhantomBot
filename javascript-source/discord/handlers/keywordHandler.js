@@ -38,7 +38,7 @@
                 if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
                     var kevent1 = new Packages.tv.phantombot.event.discord.channel.DiscordCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
                             event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                    var tag = $.transformers.tags(kevent1, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']]);
+                    var tag = $.transformers.tags(kevent1, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
                     if (tag !== null) {
                         $.discord.say(channel, tag);
                     }
@@ -49,7 +49,7 @@
                     if (message.includes(keys[i]) && !message.includes('!keyword')) {
                         var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
                                 event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                        var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']]);
+                        var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
                         if (tag !== null) {
                             $.discord.say(channel, tag);
                         }
