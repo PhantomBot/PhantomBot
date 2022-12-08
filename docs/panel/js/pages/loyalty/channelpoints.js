@@ -213,7 +213,7 @@ $(function () {
             socket.custom('channelpointslist', 'channelpoints_edit', null, function (e) {
                 let commandSelector = null;
 
-                if (e.hasOwnproperty('data') && e.data.length > 0) {
+                if (e.hasOwnProperty('data') && e.data.length > 0) {
                     let options = [];
                     for (const redemption of e.data) {
                         if (findCommand(redemption.id) === null) {
@@ -237,7 +237,7 @@ $(function () {
                 }
 
                 // Get advance modal from our util functions in /utils/helpers.js
-                helpers.getAdvanceModal('add-channelpoints-reward', 'Add Channel Points Reward', 'Save', $('<form/>', {
+                helpers.getModal('add-channelpoints-reward', 'Add Channel Points Reward', 'Save', $('<form/>', {
                     'role': 'form'
                 })
                         .append(commandSelector)

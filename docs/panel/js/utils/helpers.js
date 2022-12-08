@@ -35,6 +35,11 @@ $(function () {
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
 
     helpers.hashmap = [];
+    helpers.version = {};
+
+    socket.getBotVersion('helpers_version', function (e) {
+        helpers.version = structuredClone(e);
+    });
 
     /*
      * @function adds commas to thousands.
@@ -1269,12 +1274,14 @@ $(function () {
      * @param timeout the timespan to debounce in ms
      * @returns {(function(...[*]=): void)|*} the given function wrapped in the debounce functionality
      */
-    helpers.debounce = function(func, timeout = 300){
-      let timer;
-      return (...args) => {
-          window.clearInterval(timer);
-          timer = window.setTimeout(() => { func.apply(this, args); }, timeout);
-      }
+    helpers.debounce = function (func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            window.clearInterval(timer);
+            timer = window.setTimeout(() => {
+                func.apply(this, args);
+            }, timeout);
+        };
     };
 
     helpers.parseHashmap = function () {
@@ -1379,6 +1386,14 @@ $(function () {
                 }
             }
         }
+    };
+
+    helpers.isNightly = function () {
+        return helpers.version.hasOwnProperty('build-type') && helpers.version['build-type'].startsWith('nightly');
+    };
+
+    helpers.getBranch = function () {
+        return helpers.isNightly() ? 'nightly' : 'stable';
     };
 
     // Export.
