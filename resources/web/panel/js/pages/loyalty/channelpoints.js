@@ -139,7 +139,7 @@ $(function () {
                     let commandid = command.id;
                     let commandtitle = command.title;
 
-                    helpers.getAdvanceModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
+                    helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
                         'role': 'form'
                     })
                             .append(helpers.getInputGroup('redemption-name', 'text', 'Redemption Title', '', commandtitle, 'Title of the linked Channel Points redemption. This cannot be edited.', true))
