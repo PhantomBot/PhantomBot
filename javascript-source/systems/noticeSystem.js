@@ -116,7 +116,7 @@
         }
     }
 
-    /**
+    /*
      * @function startNoticeTimer
      */
     function startNoticeTimer(idx, retryCall) {
@@ -189,7 +189,7 @@
         }
     }
 
-    /**
+    /*
      * @function stopNoticeTimer
      */
     function stopNoticeTimer(idx) {
@@ -204,7 +204,7 @@
         }
     }
 
-    /**
+    /*
      * @function trySendNotice
      */
     function trySendNotice(idx) {
@@ -226,7 +226,7 @@
         }
     }
 
-    /**
+    /*
      * @function getNotice
      *
      * @returns {Number} notice index
@@ -249,7 +249,7 @@
         return notice;
     }
 
-    /**
+    /*
      * @function sendNotice
      *
      * @returns {boolean} whether a was found and sent
@@ -322,7 +322,7 @@
         }
     }
 
-    /**
+    /*
      * @function reloadNoticeTimer
      */
     function reloadNoticeTimer(idx) {
@@ -351,7 +351,7 @@
         }
     }
 
-    /**
+    /*
      * @function reloadNoticeTimerSettings
      */
     function reloadNoticeTimerSettings(idx) {
@@ -424,7 +424,7 @@
         }
     }
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function (event) {
@@ -577,7 +577,7 @@
                     noticeLock.unlock();
                 }
 
-                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-success', args[1], disabled ? 'enabled' : 'disabled'));
+                $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-toggleid-success', args[1], disabled ? $.lang.get('common.disabled') : $.lang.get('common.enabled')));
                 return;
             }
 
@@ -1009,7 +1009,7 @@
         startNoticeTimers();
     });
 
-    /**
+    /*
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {

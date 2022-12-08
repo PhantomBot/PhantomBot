@@ -46,6 +46,38 @@
     }
 
     /*
+     * @transformer readfileall
+     * @formula (readfileall filename:str) all lines of the specified file
+     * @labels twitch discord noevent file
+     * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+     * @notes empty lines may be ignored
+     * @notes WARNING: this can cause spam and block the bots message queue
+     * @example Caster: !addcom !story (readfileall ./nightBeforeXmas.txt)
+     * User: !story
+     * Bot: 'Twas the night before Christmas, when all through the house
+     * Bot: Not a creature was stirring, not even a mouse;
+     * Bot: The stockings were hung by the chimney with care,
+     * Bot: In hopes that St. Nicholas soon would be there;
+     * @cached
+     */
+    function readfileall(args) {
+        var fileName;
+        if ((match = args.args.match(/^ (.+)$/))) {
+            fileName = './addons/' + $.replace(match[1], '..', '');
+            if (!$.fileExists(fileName)) {
+                return {
+                    result: $.lang.get('customcommands.file.404', fileName),
+                    cache: true
+                };
+            }
+            return {
+                result: $.readFile(fileName).join('\n') || '',
+                cache: true
+            };
+        }
+    }
+
+    /*
      * @transformer readfilerand
      * @formula (readfilerand filename:str) random line of the specified file
      * @labels twitch discord noevent file
@@ -87,6 +119,7 @@
 
     var transformers = [
         new $.transformers.transformer('readfile', ['twitch', 'discord', 'noevent', 'file'], readfile),
+        new $.transformers.transformer('readfileall', ['twitch', 'discord', 'noevent', 'file'], readfileall),
         new $.transformers.transformer('readfilerand', ['twitch', 'discord', 'noevent', 'file'], readfilerand),
         new $.transformers.transformer('writefile', ['twitch', 'discord', 'noevent', 'file'], writefile)
     ];
