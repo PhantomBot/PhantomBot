@@ -18,7 +18,7 @@
 # /*
 #  * @[|local]transformer functionName
 #  * @category? categoryName
-#  * @formula... (tag[|:type][|=|\|][| var:type...]) description?
+#  * @formula... (tag[|:type][separator][| var:type...]) description?
 #  * @labels? list of labels
 #  * @customarg...? (name:customArgType) description?
 #  * @notes?... text
@@ -31,6 +31,8 @@
 #  */
 
 # types: str, int, bool
+
+# separators: " " (space), "=" (equals), "|" (pipe)
 
 # custom arg types: str, int, bool, array, dictionary, javaObject[className]
 
