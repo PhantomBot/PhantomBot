@@ -579,7 +579,7 @@ $(function () {
             let o = $('<option/>');
 
             if (typeof (option) === 'object') {
-                o.attr('html', option.name);
+                o.html(option.name);
                 o.attr('id', option._id);
 
                 if (option.value !== undefined) {
@@ -594,7 +594,7 @@ $(function () {
                     o.attr('disabled', 'disabled');
                 }
             } else {
-                o.attr('html', option);
+                o.html(option);
             }
 
             return o;
