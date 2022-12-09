@@ -49,7 +49,7 @@ $(function () {
             keys: ['commands']
         }, function (results) {
             let tableData = [];
-            commands = structuredClone(results);
+            commands = JSON.parse(results.channelPointsSettings);
 
             if (updateTable !== false) {
                 for (const command of commands) {
