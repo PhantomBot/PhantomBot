@@ -37,9 +37,11 @@ $(function () {
     helpers.hashmap = [];
     helpers.version = {};
 
-    socket.getBotVersion('helpers_version', function (e) {
-        helpers.version = structuredClone(e);
-    });
+    helpers.getBotVersion = function () {
+        socket.getBotVersion('helpers_version', function (e) {
+            helpers.version = structuredClone(e);
+        });
+    };
 
     /*
      * @function adds commas to thousands.
