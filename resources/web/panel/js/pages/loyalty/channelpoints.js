@@ -227,7 +227,7 @@ $(function () {
                     }
 
                     if (options.length > 0) {
-                        commandSelector = helpers.getFlatMultiDropdownGroup('redemption-select', 'Linked Redemption', options, 'The linked Channel Points redemption.');
+                        commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redemption', '', options, 'The linked Channel Points redemption.');
                     }
                 }
 

@@ -576,9 +576,28 @@ $(function () {
             'disabled': 'true',
             'hidden': 'true'
         })).append(options.map(function (option) {
-            return $('<option/>', {
-                'html': option
-            });
+            let o = $('<option/>');
+
+            if (typeof (option) === 'object') {
+                o.attr('html', option.name);
+                o.attr('id', option._id);
+
+                if (option.value !== undefined) {
+                    o.attr('value', option.value);
+                }
+
+                if (option.selected !== undefined && (option.selected === true || option.selected === 'true')) {
+                    o.attr('selected', 'selected');
+                }
+
+                if (option.disabled !== undefined && (option.disabled === true || option.disabled === 'true')) {
+                    o.attr('disabled', 'disabled');
+                }
+            } else {
+                o.attr('html', option);
+            }
+
+            return o;
         }))));
     };
 
