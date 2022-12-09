@@ -37,9 +37,11 @@ $(function () {
     helpers.hashmap = [];
     helpers.version = {};
 
-    socket.getBotVersion('helpers_version', function (e) {
-        helpers.version = structuredClone(e);
-    });
+    helpers.getBotVersion = function () {
+        socket.getBotVersion('helpers_version', function (e) {
+            helpers.version = structuredClone(e);
+        });
+    };
 
     /*
      * @function adds commas to thousands.
@@ -574,9 +576,28 @@ $(function () {
             'disabled': 'true',
             'hidden': 'true'
         })).append(options.map(function (option) {
-            return $('<option/>', {
-                'html': option
-            });
+            let o = $('<option/>');
+
+            if (typeof (option) === 'object') {
+                o.html(option.name);
+                o.attr('id', option._id);
+
+                if (option.value !== undefined) {
+                    o.attr('value', option.value);
+                }
+
+                if (option.selected !== undefined && (option.selected === true || option.selected === 'true')) {
+                    o.attr('selected', 'selected');
+                }
+
+                if (option.disabled !== undefined && (option.disabled === true || option.disabled === 'true')) {
+                    o.attr('disabled', 'disabled');
+                }
+            } else {
+                o.html(option);
+            }
+
+            return o;
         }))));
     };
 

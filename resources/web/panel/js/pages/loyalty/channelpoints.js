@@ -49,7 +49,7 @@ $(function () {
             keys: ['commands']
         }, function (results) {
             let tableData = [];
-            commands = structuredClone(results);
+            commands = JSON.parse(results.channelPointsSettings);
 
             if (updateTable !== false) {
                 for (const command of commands) {
@@ -227,7 +227,10 @@ $(function () {
                     }
 
                     if (options.length > 0) {
-                        commandSelector = helpers.getFlatMultiDropdownGroup('redemption-select', 'Linked Redemption', options, 'The linked Channel Points redemption.');
+                        commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redemption', '', options, 'The linked Channel Points redemption.');
+                    } else {
+                        commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redemption', '', 'All Redemptions Linked. Manual Setup Enabled',
+                                'All known redemptions are already linked to a reward, using manual linking mode.', true);
                     }
                 }
 
@@ -298,7 +301,7 @@ $(function () {
                                 data.push({
                                     'id': redemptionSelect.find(':selected').val(),
                                     'title': redemptionSelect.find(':selected').text(),
-                                    'command': redemptionResponse
+                                    'command': redemptionResponse.val()
                                 });
                                 updateChannelPoints(data, function () {
                                     $('#add-channelpoints-reward').modal('hide');

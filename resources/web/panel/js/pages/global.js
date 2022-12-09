@@ -20,6 +20,7 @@
 // Script that handles all of the global things.
 
 $(function () {
+    helpers.getBotVersion();
     socket.addListener('notification', function (e) {
         let options = {};
 
