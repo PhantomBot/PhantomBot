@@ -142,11 +142,11 @@ $(function () {
                     helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redemption Title', '', commandtitle, 'Title of the linked Channel Points redemption. This cannot be edited.', true))
+                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
                             // Append a text box for the command response.
                             .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
                                     'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                    + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the reward input box text (if used)')), function () {
+                                    + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
                         let redemptionResponse = $('#redemption-response');
 
                         // Handle each input to make sure they have a value.
@@ -198,9 +198,9 @@ $(function () {
 
     const validateRedemptionSelect = function (obj) {
         if (obj.attr('disabled') !== undefined) {
-            return 'The selected redemption is already linked to another reward.';
+            return 'The selected redeemable is already linked to another reward.';
         } else if (obj.val().trim().length === 0) {
-            return 'You must select a redemption to link.';
+            return 'You must select a redeemable to link.';
         }
         return null;
     };
@@ -237,12 +237,12 @@ $(function () {
                         options.push(entry);
                     }
 
-                    commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redemption', '', options, 'The linked Channel Points redemption.');
+                    commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redeemable', '', options, 'The linked Channel Points redeemable.');
                 }
 
                 if (e.hasOwnProperty('error') || e.data.length === 0 || commandSelector === null) {
-                    commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redemption', '', 'Unable to Load. Manual Setup Enabled',
-                            'Unable to load the Channel Points redemption list, using manual linking mode.', true);
+                    commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redeemable', '', 'Unable to Load. Manual Setup Enabled',
+                            'Unable to load the Channel Points redeemable list, using manual linking mode.', true);
                 }
 
                 // Get advance modal from our util functions in /utils/helpers.js
@@ -266,13 +266,13 @@ $(function () {
                             'class': 'box-body',
                             'html': 'Use the command tag <b>(1)</b> to get the login name (sender) of the redeeming user<br />'
                                     + 'Use the command tag <b>(2)</b> to get the display name of the redeeming user<br />'
-                                    + 'Use the command tag <b>(3)</b> to get the text of the redemption input box, if used'
+                                    + 'Use the command tag <b>(3)</b> to get the text of the redeemable input box, if used'
                         }))
                                 )
                         // Append a text box for the command response.
                         .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', 'Thanks for being cool @(2)! (command doSomethingCool)',
                                 '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the reward input box text (if used)')), function () {
+                                + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
                     let redemptionSelect = $('#redemption-select'),
                             redemptionResponse = $('#redemption-response');
 
@@ -291,8 +291,8 @@ $(function () {
                                     reloadChannelPoints(function () {
                                         swal({
                                             'title': 'Manual Channel Points Reward Configuration',
-                                            'text': 'PhantomBot was unable to load the list of available Channel Points redemptions.'
-                                                    + 'To complete the setup of this reward, please redeem the desired redemption to link on Twitch, '
+                                            'text': 'PhantomBot was unable to load the list of available Channel Points redeemables.'
+                                                    + 'To complete the setup of this reward, please redeem the desired redeemable to link on Twitch, '
                                                     + 'then click the Refresh button to reload the rewards list',
                                             'icon': 'warning'
                                         }).then(function () {
