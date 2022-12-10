@@ -19,20 +19,24 @@
 
 $(function () {
     let commands = [];
-    const reloadChannelPoints = function (cb) {
+    let redeemables = [];
+
+    const reloadRewards = function (cb) {
         socket.wsEvent('channelpoints_reload_ws', './handlers/channelPointsHandler.js', null, ['reload'], function () {
-            loadChannelPoints(cb);
+            loadRewards(cb);
         });
     };
-    const updateChannelPoints = function (data, cb) {
+
+    const updateRewards = function (data, cb) {
         socket.updateDBValues('channelpoints_update', {
             tables: ['channelPointsSettings'],
             keys: ['commands'],
             values: [JSON.stringify(data)]
         }, function () {
-            reloadChannelPoints(cb);
+            reloadRewards(cb);
         });
     };
+
     const findCommand = function (id) {
         for (const command of commands) {
             if (command.id === id) {
@@ -42,16 +46,17 @@ $(function () {
 
         return null;
     };
-    const loadChannelPoints = function (cb, updateTable) {
+
+    const loadRewards = function (cb, updateTable) {
         // Query custom commands.
         socket.getDBValues('channelpoints_get', {
             tables: ['channelPointsSettings'],
             keys: ['commands']
         }, function (results) {
-            let tableData = [];
             commands = JSON.parse(results.channelPointsSettings);
 
             if (updateTable !== false) {
+                let tableData = [];
                 for (const command of commands) {
                     tableData.push([
                         command.title,
@@ -79,14 +84,14 @@ $(function () {
                 }
 
                 // if the table exists, destroy it.
-                if ($.fn.DataTable.isDataTable('#channelpointsTable')) {
-                    $('#channelpointsTable').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#channelpointsRewardsTable')) {
+                    $('#channelpointsRewardsTable').DataTable().destroy();
                     // Remove all of the old events.
-                    $('#channelpointsTable').off();
+                    $('#channelpointsRewardsTable').off();
                 }
 
                 // Create table.
-                let table = $('#channelpointsTable').DataTable({
+                let table = $('#channelpointsRewardsTable').DataTable({
                     'searching': true,
                     'autoWidth': false,
                     'lengthChange': false,
@@ -107,7 +112,7 @@ $(function () {
                     let command = findCommand($(this).data('commandid'));
 
                     if (command === null) {
-                        reloadChannelPoints();
+                        reloadRewards();
                         return;
                     }
 
@@ -123,7 +128,7 @@ $(function () {
                                         data.push(structuredClone(command));
                                     }
                                 }
-                                updateChannelPoints(data);
+                                updateRewards(data);
                             });
                 });
 
@@ -132,7 +137,7 @@ $(function () {
                     let command = findCommand($(this).data('commandid'));
 
                     if (command === null) {
-                        reloadChannelPoints();
+                        reloadRewards();
                         return;
                     }
 
@@ -164,7 +169,7 @@ $(function () {
                                         data.push(newdata);
                                     }
                                 }
-                                updateChannelPoints(data, function () {
+                                updateRewards(data, function () {
                                     $('#edit-channelpoints-reward').modal('hide');
                                     // Tell the user the command was edited.
                                     toastr.success('Successfully edited the reward for ' + commandtitle);
@@ -180,6 +185,23 @@ $(function () {
         });
     };
 
+    const loadRedeemables = function (cb, updateTable) {
+        socket.custom('channelpointslist', 'channelpoints_edit', null, function (e) {
+
+            if (e.hasOwnProperty('data') && e.data.length > 0) {
+                redeemables = structuredClone(e.data);
+            } else {
+                redeemables = [];
+            }
+
+            if (updateTable !== false) {
+            }
+            if (cb !== undefined && cb !== null) {
+                cb();
+            }
+        });
+    };
+
     const init = function () {
         // Check if the module is enabled.
         socket.getDBValue('channelpoints_module', 'modules', './handlers/channelPointsHandler.js', function (e) {
@@ -187,10 +209,17 @@ $(function () {
             if (helpers.handleModuleLoadUp('channelpointsModule', e.modules)) {
                 $('#addcpreward-button').attr('disabled', null);
                 $('#refreshcprewards-button').attr('disabled', null);
-                loadChannelPoints();
+                $('#addcpredeemable-button').attr('disabled', null);
+                $('#convertcpredeemable-button').attr('disabled', null);
+                $('#refreshcpredeemables-button').attr('disabled', null);
+                loadRewards();
+                loadRedeemables();
             } else {
                 $('#addcpreward-button').attr('disabled', 'disabled');
                 $('#refreshcprewards-button').attr('disabled', 'disabled');
+                $('#addcpredeemable-button').attr('disabled', 'disabled');
+                $('#convertcpredeemable-button').attr('disabled', 'disabled');
+                $('#refreshcpredeemables-button').attr('disabled', 'disabled');
             }
         });
     };
@@ -212,18 +241,18 @@ $(function () {
     });
 
     $('#refreshcprewards-button').on('click', function () {
-        loadChannelPoints();
+        loadRewards();
     });
 
     // Add command button.
     $('#addcpreward-button').on('click', function () {
-        loadChannelPoints(function () {
-            socket.custom('channelpointslist', 'channelpoints_edit', null, function (e) {
+        loadRewards(function () {
+            loadRedeemables(function () {
                 let commandSelector = null;
 
-                if (e.hasOwnProperty('data') && e.data.length > 0) {
+                if (redeemables.length > 0) {
                     let options = [];
-                    for (const redemption of e.data) {
+                    for (const redemption of redeemables) {
                         let entry = {};
                         entry._id = redemption.id;
                         entry.name = redemption.title;
@@ -240,7 +269,7 @@ $(function () {
                     commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redeemable', '', options, 'The linked Channel Points redeemable.');
                 }
 
-                if (e.hasOwnProperty('error') || e.data.length === 0 || commandSelector === null) {
+                if (redeemables.length === 0 || commandSelector === null) {
                     commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redeemable', '', 'Unable to Load. Manual Setup Enabled',
                             'Unable to load the Channel Points redeemable list, using manual linking mode.', true);
                 }
@@ -282,13 +311,13 @@ $(function () {
                         case helpers.handleInputString(redemptionResponse):
                             break;
                         default:
-                            if (e.hasOwnProperty('error') || e.data.length === 0) {
+                            if (redeemables.length === 0) {
                                 socket.updateDBValues('channelpoints_manual', {
                                     tables: ['channelPointsSettings'],
                                     keys: ['commandConfig'],
                                     values: [redemptionResponse]
                                 }, function () {
-                                    reloadChannelPoints(function () {
+                                    reloadRewards(function () {
                                         swal({
                                             'title': 'Manual Channel Points Reward Configuration',
                                             'text': 'PhantomBot was unable to load the list of available Channel Points redeemables.'
@@ -296,7 +325,7 @@ $(function () {
                                                     + 'then click the Refresh button to reload the rewards list',
                                             'icon': 'warning'
                                         }).then(function () {
-                                            reloadChannelPoints();
+                                            reloadRewards();
                                         });
                                     });
                                 });
@@ -310,7 +339,7 @@ $(function () {
                                     'title': redemptionSelect.find(':selected').text(),
                                     'command': redemptionResponse.val()
                                 });
-                                updateChannelPoints(data, function () {
+                                updateRewards(data, function () {
                                     $('#add-channelpoints-reward').modal('hide');
                                     // Tell the user the command was edited.
                                     toastr.success('Successfully added the reward for ' + redemptionSelect.find(':selected').text());
@@ -318,7 +347,7 @@ $(function () {
                             }
                     }
                 }).modal('toggle');
-            });
+            }, false);
         }, false);
     });
 });

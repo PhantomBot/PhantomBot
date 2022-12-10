@@ -16,7 +16,12 @@
 <main>
     <!-- Header -->
     <section class="content-header">
-        <h1>Channel Points</h1>
+        <h1>
+            <label class="switch" data-toggle="tooltip" title="Module toggle">
+                <input type="checkbox" id="channelpointsModuleToggle" checked>
+                <span class="slider round"></span>
+            </label>
+            Channel Points</h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0);"><i class="fa fa-dashboard"></i> Home</a></li>
             <li>Loyalty</li>
@@ -26,34 +31,47 @@
 
     <!-- Main content -->
     <section class="content">
-        <div class="box box-solid">
-            <div class="box-header with-border">
-                <label class="switch" data-toggle="tooltip" title="Module toggle">
-                    <input type="checkbox" id="channelpointsModuleToggle" checked>
-                    <span class="slider round"></span>
-                </label>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#channelpoints_rewards" data-toggle="tab">Rewards</a></li>
+                <li><a href="#channelpoints_redeemables" data-toggle="tab">Redeemables</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="channelpoints_rewards">
+                    <div class="form-group">
+                        <div class="btn-toolbar pull-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="addcpreward-button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp; Add Reward</button>
+                            <button class="btn btn-info btn-sm" type="button" id="refreshcprewards-button" disabled="disabled"><i class="fa fa-refresh"></i>&nbsp; Refresh</button>
+                            <button class="btn btn-default btn-sm" type="button" onclick="window.open('https://phantombot.dev/guides/#guide=content/commands/command-variables&channel=' + helpers.getBranch());">
+                                <i class="fa fa-info"></i>&nbsp; Variables
+                            </button>
+                        </div>
 
-                <h3 class="box-title">Channel Points</h3>
-            </div>
-            <form role="form" id="channelpointsModule">
-                <!-- Box content -->
-                <div class="box-body">
-                    <div class="btn-toolbar pull-right">
-                        <button class="btn btn-primary btn-sm" type="button" id="addcpreward-button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp; Add Reward</button>
-                        <button class="btn btn-info btn-sm" type="button" id="refreshcprewards-button" disabled="disabled"><i class="fa fa-refresh"></i>&nbsp; Refresh</button>
-                        <button class="btn btn-default btn-sm" type="button" onclick="window.open('https://phantombot.dev/guides/#guide=content/commands/command-variables&channel=' + helpers.getBranch());">
-                            <i class="fa fa-info"></i>&nbsp; Variables
-                        </button>
+                        <div class="load-ajax">
+                            <div class="spinner"></div>
+                            <p class="load-ajax-text">Loading...</p>
+                        </div>
+
+                        <table id="channelpointsRewardsTable" class="table table-bordered table-hover"></table>
                     </div>
-
-                    <div class="load-ajax">
-                        <div class="spinner"></div>
-                        <p class="load-ajax-text">Loading...</p>
-                    </div>
-
-                    <table id="channelpointsTable" class="table table-bordered table-hover"></table>
                 </div>
-            </form>
+                <div class="tab-pane" id="channelpoints_redeemables">
+                    <div class="form-group">
+                        <div class="btn-toolbar pull-right">
+                            <button class="btn btn-primary btn-sm" type="button" id="addcpredeemable-button" disabled="disabled"><i class="fa fa-plus"></i>&nbsp; Add Redeemable</button>
+                            <button class="btn btn-success btn-sm" type="button" id="convertcpredeemable-button" disabled="disabled"><i class="fa fa-exchange"></i>&nbsp; Convert Redeemable</button>
+                            <button class="btn btn-info btn-sm" type="button" id="refreshcpredeemables-button" disabled="disabled"><i class="fa fa-refresh"></i>&nbsp; Refresh</button>
+                        </div>
+
+                        <div class="load-ajax">
+                            <div class="spinner"></div>
+                            <p class="load-ajax-text">Loading...</p>
+                        </div>
+
+                        <table id="channelpointsRedeemablesTable" class="table table-bordered table-hover"></table>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
