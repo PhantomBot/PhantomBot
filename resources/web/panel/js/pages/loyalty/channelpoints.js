@@ -196,6 +196,14 @@ $(function () {
     };
     init();
 
+    const validateRedemptionSelect = function (obj) {
+        if (obj.attr('disabled') !== undefined) {
+            return 'The selected redemption is already linked to another reward.';
+        } else if (obj.val().trim().length === 0) {
+            return 'You must select a redemption to link.';
+        }
+        return null;
+    };
 
     // Toggle for the module.
     $('#channelpointsModuleToggle').on('change', function () {
@@ -216,22 +224,20 @@ $(function () {
                 if (e.hasOwnProperty('data') && e.data.length > 0) {
                     let options = [];
                     for (const redemption of e.data) {
-                        if (findCommand(redemption.id) === null) {
-                            let entry = {};
-                            entry._id = redemption.id;
-                            entry.name = redemption.title;
-                            entry.value = redemption.id;
+                        let entry = {};
+                        entry._id = redemption.id;
+                        entry.name = redemption.title;
+                        entry.value = redemption.id;
 
-                            options.push(entry);
+                        if (findCommand(redemption.id) !== null) {
+                            entry.name += ' (Already Linked)';
+                            entry.disabled = true;
                         }
+
+                        options.push(entry);
                     }
 
-                    if (options.length > 0) {
-                        commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redemption', '', options, 'The linked Channel Points redemption.');
-                    } else {
-                        commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redemption', '', 'All Redemptions Linked. Manual Setup Enabled',
-                                'All known redemptions are already linked to a reward, using manual linking mode.', true);
-                    }
+                    commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redemption', '', options, 'The linked Channel Points redemption.');
                 }
 
                 if (e.hasOwnProperty('error') || e.data.length === 0 || commandSelector === null) {
@@ -272,6 +278,7 @@ $(function () {
 
                     // Handle each input to make sure they have a value.
                     switch (false) {
+                        case helpers.handleInput(redemptionSelect.find(':selected'), validateRedemptionSelect):
                         case helpers.handleInputString(redemptionResponse):
                             break;
                         default:
