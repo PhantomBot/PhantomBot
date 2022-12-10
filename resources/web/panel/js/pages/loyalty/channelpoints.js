@@ -195,6 +195,140 @@ $(function () {
             }
 
             if (updateTable !== false) {
+                let tableData = [];
+                for (const redeemable of redeemables) {
+                    tableData.push([
+                        redeemable.title,
+                        redeemable.cost,
+                        redeemable.is_enabled ? 'Yes' : 'No',
+                        redeemable.is_paused ? 'Yes' : 'No',
+                        redeemable.is_user_input_required ? 'Yes' : 'No',
+                        $('<div/>', {
+                            'class': 'btn-group'
+                        }).append($('<button/>', {
+                            'type': 'button',
+                            'class': 'btn btn-xs btn-danger',
+                            'style': 'float: right',
+                            'data-redeemableid': redeemable.id,
+                            'data-toggle': redeemable.isBotRedeemable ? null : 'tooltip',
+                            'disabled': redeemable.isBotRedeemable ? null : 'disabled',
+                            'title': redeemable.isBotRedeemable ? null : 'Can not delete redeemables that weren\'t created by the bot',
+                            'html': $('<i/>', {
+                                'class': 'fa fa-trash'
+                            })
+                        })).append($('<button/>', {
+                            'type': 'button',
+                            'class': 'btn btn-xs btn-warning',
+                            'style': 'float: right',
+                            'data-redeemableid': redeemable.id,
+                            'data-toggle': redeemable.isBotRedeemable ? null : 'tooltip',
+                            'disabled': redeemable.isBotRedeemable ? null : 'disabled',
+                            'title': redeemable.isBotRedeemable ? null : 'Can not edit redeemables that weren\'t created by the bot',
+                            'html': $('<i/>', {
+                                'class': 'fa fa-edit'
+                            })
+                        })).html()
+                    ]);
+                }
+
+                // if the table exists, destroy it.
+                if ($.fn.DataTable.isDataTable('#channelpointsRedeemablesTable')) {
+                    $('#channelpointsRedeemablesTable').DataTable().destroy();
+                    // Remove all of the old events.
+                    $('#channelpointsReedeemablesTable').off();
+                }
+
+                // Create table.
+                let table = $('#channelpointsRedeemablesTable').DataTable({
+                    'searching': true,
+                    'autoWidth': false,
+                    'lengthChange': false,
+                    'data': tableData,
+                    'columnDefs': [
+                        {'className': 'default-table', 'orderable': false, 'targets': [5]},
+                        {'className': 'max-width', 'width': '1px', 'targets': [1, 2, 3, 4]}
+                    ],
+                    'columns': [
+                        {'title': 'Title'},
+                        {'title': 'Cost'},
+                        {'title': 'Enabled'},
+                        {'title': 'Paused'},
+                        {'title': 'Has Input'},
+                        {'title': 'Actions'}
+                    ]
+                });
+
+                // On delete button.
+                table.on('click', '.btn-danger', function () {
+                    let command = findCommand($(this).data('commandid'));
+
+                    if (command === null) {
+                        reloadRewards();
+                        return;
+                    }
+
+                    let commandid = command.id;
+                    let commandtitle = command.title;
+
+                    // Ask the user if he want to remove the command.
+                    helpers.getConfirmDeleteModal('channelpoints_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
+                            'Successfully removed the reward for ' + commandtitle, function () {
+                                let data = [];
+                                for (const command of commands) {
+                                    if (command.id !== commandid) {
+                                        data.push(structuredClone(command));
+                                    }
+                                }
+                                updateRewards(data);
+                            });
+                });
+
+                // On edit button.
+                table.on('click', '.btn-warning', function () {
+                    let command = findCommand($(this).data('commandid'));
+
+                    if (command === null) {
+                        reloadRewards();
+                        return;
+                    }
+
+                    let commandid = command.id;
+                    let commandtitle = command.title;
+
+                    helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
+                        'role': 'form'
+                    })
+                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
+                            // Append a text box for the command response.
+                            .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
+                                    'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
+                                    + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
+                        let redemptionResponse = $('#redemption-response');
+
+                        // Handle each input to make sure they have a value.
+                        switch (false) {
+                            case helpers.handleInputString(redemptionResponse):
+                                break;
+                            default:
+                                let data = [];
+                                for (const command of commands) {
+                                    if (command.id !== commandid) {
+                                        data.push(structuredClone(command));
+                                    } else {
+                                        let newdata = structuredClone(command);
+                                        newdata.command = redemptionResponse;
+                                        data.push(newdata);
+                                    }
+                                }
+                                updateRewards(data, function () {
+                                    $('#edit-channelpoints-reward').modal('hide');
+                                    // Tell the user the command was edited.
+                                    toastr.success('Successfully edited the reward for ' + commandtitle);
+                                });
+                        }
+                    }).modal('toggle');
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
             }
             if (cb !== undefined && cb !== null) {
                 cb();
