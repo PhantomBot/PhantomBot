@@ -93,10 +93,10 @@ $(function () {
                     'data': tableData,
                     'columnDefs': [
                         {'className': 'default-table', 'orderable': false, 'targets': [2]},
-                        {'width': '15%', 'targets': 0}
+                        {'width': '20%', 'targets': 0}
                     ],
                     'columns': [
-                        {'title': 'Reward Title'},
+                        {'title': 'Linked Redeemable'},
                         {'title': 'Response'},
                         {'title': 'Actions'}
                     ]
