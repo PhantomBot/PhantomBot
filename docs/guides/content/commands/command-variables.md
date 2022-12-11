@@ -216,6 +216,228 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+### channelpoints
+#### cpcancel
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpcancel)` - marks the Channel Points redemption as cancelled, refunding the users channel points
+
+**Labels:** twitch channelpointsevent channelpoints
+
+
+_NOTE: only works on redeemables that have been created by the bot_
+
+_NOTE: only works on redeemables that have `should_redemptions_skip_request_queue` set to `false`_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpcost
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpcost)` - the cost of the redeemable that was redeemed
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpdisplayname
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpdisplayname)` - the display name of the user who redeemed
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpfulfill
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpfulfill)` - marks the Channel Points redemption as fulfilled
+
+**Labels:** twitch channelpointsevent channelpoints
+
+
+_NOTE: only works on redeemables that have been created by the bot_
+
+_NOTE: only works on redeemables that have `should_redemptions_skip_request_queue` set to `false`_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpfulfillstatus
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpfulfillstatus)` - the fulfillment status of the redemption when it was received by PubSub
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpinput
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpinput)` - the input supplied by the redeeming user, if set
+
+**Labels:** twitch channelpointsevent channelpoints
+
+
+_NOTE: All newline characters `\n` are URL-encoded as `%0A`_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpinputraw
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpinput)` - the raw input supplied by the redeeming user, if set
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpprompt
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpprompt)` - the input prompt of the redeemable that was redeemed, if set
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpredeemableid
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpredeemableid)` - the ID of the redeemable that was redeemed
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpredemptionid
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpredemptionid)` - the ID of this redemption event
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cptitle
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cptitle)` - the title of the redeemable that was redeemed
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpuserid
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpuserid)` - the ID of the user who redeemed
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpusername
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpusername)` - the login name of the user who redeemed
+
+**Labels:** twitch channelpointsevent channelpoints
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### channelstream
 #### channelname
 
@@ -2110,6 +2332,20 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | No
 
 **Labels Used:** discord commandevent keywordevent noevent
+
+&nbsp;
+
+### channelPointsHandler.js
+
+Defined in script: _./javascript-source/handlers/channelPointsHandler.js_
+
+#### Hook: pubSubChannelPoints
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch commandevent noevent channelpointsevent
 
 &nbsp;
 
