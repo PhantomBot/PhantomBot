@@ -127,8 +127,6 @@ public class WsPanelHandler implements WsFrameHandler {
             handleDiscordChannelList(ctx, frame, jso);
         } else if (jso.has("channelpointslist")) {
             handleChannelPointsList(ctx, frame, jso);
-        } else if (jso.has("channelpointsupdate")) {
-            handleChannelPointsUpdate(ctx, frame, jso);
         }
     }
 
@@ -305,7 +303,7 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleChannelPointsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        Helix.instance().getCustomRewardAsync(null, jso.has("managed") ? jso.getBoolean("managed") : false).doOnSuccess(json -> {
+        Helix.instance().getCustomRewardAsync(null, null).doOnSuccess(json -> {
             String uniqueID = jso.has("channelpointslist") ? jso.getString("channelpointslist") : "";
 
             JSONStringer jsonObject = new JSONStringer();
@@ -322,23 +320,6 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.endObject().endObject();
             WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
         }).doOnError(com.gmt2001.Console.err::printStackTrace).subscribe();
-    }
-
-    private void handleChannelPointsUpdate(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        String uniqueID = jso.has("channelpointsupdate") ? jso.getString("channelpointslist") : "";
-        String action = jso.has("action") ? jso.getString("action") : "";
-
-        switch (action) {
-            case "delete":
-                if (jso.has("id")) {
-                    Helix.instance().deleteCustomReward(jso.getString("id"));
-                }
-                break;
-        }
-
-        JSONStringer jsonObject = new JSONStringer();
-        jsonObject.object().key("query_id").value(uniqueID).endObject();
-        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 
     private void handleUnrestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {

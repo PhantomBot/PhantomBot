@@ -23,13 +23,13 @@ $(function () {
     let managed = [];
 
     const reloadRewards = function (cb) {
-        socket.wsEvent('channelpoints_reload_ws', './handlers/channelPointsHandler.js', null, ['reload'], function () {
+        socket.wsEvent('channelpoints_reload_rewards_ws', './handlers/channelPointsHandler.js', null, ['reward-reload'], function () {
             loadRewards(cb);
         });
     };
 
     const updateRewards = function (data, cb) {
-        socket.updateDBValues('channelpoints_update', {
+        socket.updateDBValues('channelpoints_rewards_update', {
             tables: ['channelPointsSettings'],
             keys: ['commands'],
             values: [JSON.stringify(data)]
@@ -46,6 +46,12 @@ $(function () {
         }
 
         return null;
+    };
+
+    const reloadRedeemables = function (cb) {
+        socket.wsEvent('channelpoints_reload_redeemables_ws', './handlers/channelPointsHandler.js', null, ['redeemables-reload-managed'], function () {
+            loadRedeemables(cb);
+        }, true);
     };
 
     const findRedeemable = function (id) {
@@ -198,7 +204,7 @@ $(function () {
 
     const loadRedeemables = function (cb, updateTable) {
         socket.query('channelpointslist', 'channelpoints_redeemables', {'managed': false}, function (e1) {
-            socket.query('channelpointslist', 'channelpoints_managed_redeemables', {'managed': true}, function (e2) {
+            socket.wsEvent('channelpoints_redeemable_get_managed_ws', './handlers/channelPointsHandler.js', null, ['redeemable-get-managed'], function (e2) {
                 if (e1.hasOwnProperty('data') && e1.data.length > 0) {
                     redeemables = structuredClone(e1.data);
                 } else {
@@ -289,9 +295,9 @@ $(function () {
                         // Ask the user if he want to remove the command.
                         helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
                                 'Successfully removed the redeemable ' + redeemabletitle, function () {
-                                    socket.update('channelpointsupdate', 'channelpoints_redeemable_remove', {'id': redeemableid, 'action': 'delete'}, function () {
+                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete', redeemableid], function () {
                                         loadRedeemables();
-                                    });
+                                    }, true);
                                 });
                     });
 
@@ -347,7 +353,7 @@ $(function () {
                 if (cb !== undefined && cb !== null) {
                     cb();
                 }
-            });
+            }, true);
         });
     };
 
@@ -501,7 +507,7 @@ $(function () {
     });
 
     $('#refreshcpredeemables-button').on('click', function () {
-        loadRedeemables();
+        reloadRedeemables();
     });
 
     $('#convertcpredeemable-button').on('click', function () {

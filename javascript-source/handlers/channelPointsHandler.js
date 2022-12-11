@@ -44,8 +44,8 @@
             timeoutReward = $.getSetIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet'),
             commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]')),
             commandConfig = $.getSetIniDbString('channelPointsSettings', 'commandConfig', ''),
-            commandLock = new Packages.java.util.concurrent.locks.ReentrantLock,
-            pointName = $.pointNameMultiple;
+            lock = new Packages.java.util.concurrent.locks.ReentrantLock,
+            managed = [];
 
     /*
      * @function updateChannelPointsConfig
@@ -206,14 +206,14 @@
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
                             } else {
                                 var cmd;
-                                commandLock.lock();
+                                lock.lock();
                                 try {
                                     cmd = commands[cmdid];
                                     cmd.command = args.slice(3).join(' ');
                                     commands[cmdid] = cmd;
                                     $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
                                 } finally {
-                                    commandLock.unlock();
+                                    lock.unlock();
                                 }
 
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.edit', cmd.title, cmd.command));
@@ -233,12 +233,12 @@
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
                             } else {
                                 var title = commands[cmdid].title;
-                                commandLock.lock();
+                                lock.lock();
                                 try {
                                     commands.splice(cmdid, 1);
                                     $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
                                 } finally {
-                                    commandLock.unlock();
+                                    lock.unlock();
                                 }
 
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.remove', title));
@@ -657,7 +657,7 @@
                 return;
             }
 
-            commandLock.lock();
+            lock.lock();
             try {
                 var data = {
                     'id': rewardID,
@@ -667,7 +667,7 @@
                 commands.push(data);
                 $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
             } finally {
-                commandLock.unlock();
+                lock.unlock();
             }
             commandConfig = '';
             $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
@@ -681,6 +681,7 @@
         if (rewardID.equals(transferID)) {
             if (transferToggle === true) {
                 Packages.com.gmt2001.Console.debug.println("transferRunStart");
+                var pointName;
                 if (transferAmount < 2) {
                     pointName = $.pointNameSingle;
                 } else {
@@ -768,11 +769,47 @@
         }
     }
 
+    function reloadManagedRedeemables() {
+        var jso = $.helix.getCustomReward(null, true);
+
+        if (jso.getInt('_http') === 200 && jso.has('data')) {
+            var jsa = jso.getJSONArray('data');
+
+            lock.lock();
+            try {
+                if (jsa.length() === 0) {
+                    managed = [];
+                } else {
+                    for (var i = 0; i < jsa.length(); i++) {
+                        managed.push(jsa.getJSONObject(i).getString('id'));
+                    }
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
     $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./handlers/ChannelPointsHandler.js')) {
             var args = event.getArgs();
-            if (args.length > 0 && args[0].equalsIgnoreCase('reload')) {
-                updateChannelPointsConfig();
+            if (args.length > 0) {
+                switch ($.jsString(args[0])) {
+                    case 'reward-reload':
+                        updateChannelPointsConfig();
+                        break;
+                    case 'redeemable-reload-managed':
+                        reloadManagedRedeemables();
+                        $.panel.sendAck(event.getId());
+                        break;
+                    case 'redeemable-get-managed':
+                        $.panel.sendArray(event.getId(), managed);
+                        break;
+                    case 'redeemable-delete':
+                        $.helix.deleteCustomReward(args[1]);
+                        $.panel.sendAck(event.getId());
+                        break;
+                }
             }
         }
     });
@@ -789,5 +826,7 @@
         $.registerChatSubcommand('channelpoints', 'emoteonly', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'timeout', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'command', $.PERMISSION.Admin);
+
+        reloadManagedRedeemables();
     });
 })();
