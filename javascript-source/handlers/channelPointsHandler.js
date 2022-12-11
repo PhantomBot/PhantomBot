@@ -734,7 +734,8 @@
 
         if (cmd !== null) {
             var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' "' + displayName + '" "' + $.javaString(userInput).replaceAll("\"", "\\\"").replaceAll("\n", "%0A") + '"');
-            var tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent']]);
+            var tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent', 'channelpointsevent']],
+                    {customArgs: {redemption: event}});
             if (tag !== null) {
                 $.say(tag);
             }
@@ -787,6 +788,32 @@
             } finally {
                 lock.unlock();
             }
+        }
+    }
+
+    /**
+     * Marks a managed redemption as fulfilled
+     *
+     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redemptionId The id of the redemption event
+     */
+    function updateRedemptionStatusFulfilled(rewardId, redemptionId) {
+        if (managed.includes($.jsString(rewardId))) {
+            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
+                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
+        }
+    }
+
+    /**
+     * Marks a managed redemption as cancelled, refunding the users channel points
+     *
+     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redemptionId The id of the redemption event
+     */
+    function updateRedemptionStatusCancelled(rewardId, redemptionId) {
+        if (managed.includes($.jsString(rewardId))) {
+            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
+                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
         }
     }
 
@@ -908,4 +935,21 @@
 
         reloadManagedRedeemables();
     });
+
+    $.channelpoints = {
+        /**
+         * Marks a managed redemption as fulfilled
+         *
+         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redemptionId The id of the redemption event
+         */
+        updateRedemptionStatusFulfilled: updateRedemptionStatusFulfilled,
+        /**
+         * Marks a managed redemption as cancelled, refunding the users channel points
+         *
+         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redemptionId The id of the redemption event
+         */
+        updateRedemptionStatusCancelled: updateRedemptionStatusCancelled
+    };
 })();
