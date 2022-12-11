@@ -216,9 +216,9 @@ $(function () {
                                 'class': 'btn btn-xs btn-danger',
                                 'style': 'float: right',
                                 'data-redeemableid': redeemable.id,
-                                'data-toggle': redeemable.isBotRedeemable ? null : 'tooltip',
-                                'disabled': redeemable.isBotRedeemable ? null : 'disabled',
-                                'title': redeemable.isBotRedeemable ? null : 'Can not delete redeemables that weren\'t created by the bot',
+                                'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
+                                'disabled': managed.includes(redeemable.id) ? null : 'disabled',
+                                'title': managed.includes(redeemable.id) ? null : 'Can not delete redeemables that weren\'t created by the bot',
                                 'html': $('<i/>', {
                                     'class': 'fa fa-trash'
                                 })
@@ -227,9 +227,9 @@ $(function () {
                                 'class': 'btn btn-xs btn-warning',
                                 'style': 'float: right',
                                 'data-redeemableid': redeemable.id,
-                                'data-toggle': redeemable.isBotRedeemable ? null : 'tooltip',
-                                'disabled': redeemable.isBotRedeemable ? null : 'disabled',
-                                'title': redeemable.isBotRedeemable ? null : 'Can not edit redeemables that weren\'t created by the bot',
+                                'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
+                                'disabled': managed.includes(redeemable.id) ? null : 'disabled',
+                                'title': managed.includes(redeemable.id) ? null : 'Can not edit redeemables that weren\'t created by the bot',
                                 'html': $('<i/>', {
                                     'class': 'fa fa-edit'
                                 })
