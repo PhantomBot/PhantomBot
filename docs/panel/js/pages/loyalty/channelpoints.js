@@ -23,13 +23,13 @@ $(function () {
     let managed = [];
 
     const reloadRewards = function (cb) {
-        socket.wsEvent('channelpoints_reload_ws', './handlers/channelPointsHandler.js', null, ['reload'], function () {
+        socket.wsEvent('channelpoints_reload_rewards_ws', './handlers/channelPointsHandler.js', null, ['reward-reload'], function () {
             loadRewards(cb);
         });
     };
 
     const updateRewards = function (data, cb) {
-        socket.updateDBValues('channelpoints_update', {
+        socket.updateDBValues('channelpoints_rewards_update', {
             tables: ['channelPointsSettings'],
             keys: ['commands'],
             values: [JSON.stringify(data)]
@@ -46,6 +46,12 @@ $(function () {
         }
 
         return null;
+    };
+
+    const reloadRedeemables = function (cb) {
+        socket.wsEvent('channelpoints_reload_redeemables_ws', './handlers/channelPointsHandler.js', null, ['redeemables-reload-managed'], function () {
+            loadRedeemables(cb);
+        }, true);
     };
 
     const findRedeemable = function (id) {
@@ -159,10 +165,27 @@ $(function () {
                         'role': 'form'
                     })
                             .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
+                            .append($('<div/>', {
+                                'class': 'box box-warning'
+                            }).append($('<div/>', {
+                                'class': 'box-header',
+                                'html': 'Warning'
+                            })).append($('<div/>', {
+                                'class': 'box-body',
+                                'html': 'When the response is parsed, the <b>(sender)</b> will be the bot and will have <b>ADMIN</b> permissions'
+                            }))
+                                    )
+                            .append($('<div/>', {
+                                'class': 'box box-info'
+                            }).append($('<div/>', {
+                                'class': 'box-body',
+                                'html': 'See the <a href="https://phantombot.dev/guides/#guide=content/commands/command-variables&jumpto=global-command-tags_channelpoints&channel='
+                                        + helpers.getBranch() + '" target="_blank">channelpoints</a> section of the command tags guide for tags that allow '
+                                        + 'access to the redemption data'
+                            })))
                             // Append a text box for the command response.
                             .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
-                                    'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                    + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
+                                    'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                         let redemptionResponse = $('#redemption-response');
 
                         // Handle each input to make sure they have a value.
@@ -198,7 +221,7 @@ $(function () {
 
     const loadRedeemables = function (cb, updateTable) {
         socket.query('channelpointslist', 'channelpoints_redeemables', {'managed': false}, function (e1) {
-            socket.query('channelpointslist', 'channelpoints_managed_redeemables', {'managed': true}, function (e2) {
+            socket.wsEvent('channelpoints_redeemable_get_managed_ws', './handlers/channelPointsHandler.js', null, ['redeemable-get-managed'], function (e2) {
                 if (e1.hasOwnProperty('data') && e1.data.length > 0) {
                     redeemables = structuredClone(e1.data);
                 } else {
@@ -289,9 +312,9 @@ $(function () {
                         // Ask the user if he want to remove the command.
                         helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
                                 'Successfully removed the redeemable ' + redeemabletitle, function () {
-                                    socket.update('channelpointsupdate', 'channelpoints_redeemable_remove', {'id': redeemableid, 'action': 'delete'}, function () {
+                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemableid], function () {
                                         loadRedeemables();
-                                    });
+                                    }, true);
                                 });
                     });
 
@@ -347,7 +370,7 @@ $(function () {
                 if (cb !== undefined && cb !== null) {
                     cb();
                 }
-            });
+            }, true);
         });
     };
 
@@ -442,15 +465,13 @@ $(function () {
                             'class': 'box box-info'
                         }).append($('<div/>', {
                             'class': 'box-body',
-                            'html': 'Use the command tag <b>(1)</b> to get the login name (sender) of the redeeming user<br />'
-                                    + 'Use the command tag <b>(2)</b> to get the display name of the redeeming user<br />'
-                                    + 'Use the command tag <b>(3)</b> to get the text of the redeemable input box, if used'
-                        }))
-                                )
+                            'html': 'See the <a href="https://phantombot.dev/guides/#guide=content/commands/command-variables&jumpto=global-command-tags_channelpoints&channel='
+                                    + helpers.getBranch() + '" target="_blank">channelpoints</a> section of the command tags guide for tags that allow '
+                                    + 'access to the redemption data'
+                        })))
                         // Append a text box for the command response.
                         .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', 'Thanks for being cool @(2)! (command doSomethingCool)',
-                                '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
+                                '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                     let redemptionSelect = $('#redemption-select'),
                             redemptionResponse = $('#redemption-response');
 
@@ -501,7 +522,7 @@ $(function () {
     });
 
     $('#refreshcpredeemables-button').on('click', function () {
-        loadRedeemables();
+        reloadRedeemables();
     });
 
     $('#convertcpredeemable-button').on('click', function () {
