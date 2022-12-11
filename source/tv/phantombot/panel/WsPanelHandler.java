@@ -239,6 +239,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String arguments = jso.getJSONObject("args").getString("arguments");
         JSONArray jsonArray = jso.getJSONObject("args").getJSONArray("args");
         String uniqueID = jso.has("socket_event") ? jso.getString("socket_event") : "";
+        boolean requiresReply = jso.has("requiresReply") ? jso.getBoolean("requiresReply") : false;
 
         JSONStringer jsonObject = new JSONStringer();
         List<String> tempArgs = new LinkedList<>();
@@ -258,9 +259,11 @@ public class WsPanelHandler implements WsFrameHandler {
             }
         }
 
-        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
-        jsonObject.object().key("query_id").value(uniqueID).endObject();
-        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args, requiresReply));
+        if (!requiresReply) {
+            jsonObject.object().key("query_id").value(uniqueID).endObject();
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        }
     }
 
     private void handleDiscordChannelList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
@@ -688,6 +691,40 @@ public class WsPanelHandler implements WsFrameHandler {
                 .key("extendedTimeout").value(extendedTimeout)
                 .key("progressBar").value(progressBar)
                 .endObject().endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    /**
+     * Sends an object response to a WS query
+     *
+     * @param uniqueID The ID the callback is registered under, sent by the requester
+     * @param obj A map of key/value pairs to send
+     */
+    public void sendObject(String uniqueID, Map<String, Object> obj) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID);
+        jsonObject.key("results").object();
+        obj.forEach((k, v) -> {
+            jsonObject.key(k).value(v);
+        });
+        jsonObject.endObject().endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    /**
+     * Sends an array response to a WS query
+     *
+     * @param uniqueID The ID the callback is registered under, sent by the requester
+     * @param obj A list of values to send
+     */
+    public void sendArray(String uniqueID, List<Object> obj) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID);
+        jsonObject.key("results").object();
+        jsonObject.key("data").array();
+        obj.forEach(jsonObject::value);
+        jsonObject.endArray();
+        jsonObject.endObject().endObject();
         WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 }

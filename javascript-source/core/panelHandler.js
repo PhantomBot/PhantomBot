@@ -304,4 +304,31 @@
 
     // Interval that updates stream data.
     setInterval(updateStreamData, 2e4);
+
+    var sendObject = function (uniqueID, object) {
+        var map = new Packages.java.util.HashMap();
+
+        var x;
+        for (x in object) {
+            map.put(x, object[x]);
+        }
+
+        $.panelsocketserver.sendObject($.javaString(uniqueID), map);
+    };
+
+    var sendArray = function (uniqueID, arr) {
+        var array = new Packages.java.util.ArrayList();
+
+        var x;
+        for (x in arr) {
+            array.add(arr[x]);
+        }
+
+        $.panelsocketserver.sendArray($.javaString(uniqueID), array);
+    };
+
+    $.panel = {
+        sendObject: sendObject,
+        sendArray: sendArray
+    };
 })();

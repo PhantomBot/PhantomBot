@@ -186,7 +186,7 @@ $(function () {
     };
 
     const loadRedeemables = function (cb, updateTable) {
-        socket.custom('channelpointslist', 'channelpoints_edit', null, function (e) {
+        socket.query('channelpointslist', 'channelpoints_edit', null, function (e) {
 
             if (e.hasOwnProperty('data') && e.data.length > 0) {
                 redeemables = structuredClone(e.data);
