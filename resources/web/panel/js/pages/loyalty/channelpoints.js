@@ -295,7 +295,7 @@ $(function () {
                         // Ask the user if he want to remove the command.
                         helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
                                 'Successfully removed the redeemable ' + redeemabletitle, function () {
-                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete', redeemableid], function () {
+                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemableid], function () {
                                         loadRedeemables();
                                     }, true);
                                 });

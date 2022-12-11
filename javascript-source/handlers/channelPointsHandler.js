@@ -805,8 +805,10 @@
                     case 'redeemable-get-managed':
                         $.panel.sendArray(event.getId(), managed);
                         break;
-                    case 'redeemable-delete':
-                        $.helix.deleteCustomReward(args[1]);
+                    case 'redeemable-delete-managed':
+                        if (managed.includes($.jsString(args[1]))) {
+                            $.helix.deleteCustomReward(args[1]);
+                        }
                         $.panel.sendAck(event.getId());
                         break;
                 }
