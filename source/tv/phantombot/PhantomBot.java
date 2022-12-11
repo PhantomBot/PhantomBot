@@ -944,6 +944,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("inidb", this.dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
+        Script.global.defineProperty("helix", Helix.instance(), 0);
         Script.global.defineProperty("botName", this.getBotName(), 0);
         Script.global.defineProperty("channelName", this.getChannelName(), 0);
         Script.global.defineProperty("ownerName", CaselessProperties.instance().getProperty("owner").toLowerCase(), 0);
