@@ -58,6 +58,7 @@ import tv.phantombot.twitch.api.Helix;
  */
 public class WsPanelHandler implements WsFrameHandler {
 
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
     private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
     private final WsAuthenticationHandler authHandler;
@@ -126,6 +127,8 @@ public class WsPanelHandler implements WsFrameHandler {
             handleDiscordChannelList(ctx, frame, jso);
         } else if (jso.has("channelpointslist")) {
             handleChannelPointsList(ctx, frame, jso);
+        } else if (jso.has("channelpointsupdate")) {
+            handleChannelPointsUpdate(ctx, frame, jso);
         }
     }
 
@@ -239,6 +242,7 @@ public class WsPanelHandler implements WsFrameHandler {
         String arguments = jso.getJSONObject("args").getString("arguments");
         JSONArray jsonArray = jso.getJSONObject("args").getJSONArray("args");
         String uniqueID = jso.has("socket_event") ? jso.getString("socket_event") : "";
+        boolean requiresReply = jso.has("requiresReply") ? jso.getBoolean("requiresReply") : false;
 
         JSONStringer jsonObject = new JSONStringer();
         List<String> tempArgs = new LinkedList<>();
@@ -258,9 +262,11 @@ public class WsPanelHandler implements WsFrameHandler {
             }
         }
 
-        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
-        jsonObject.object().key("query_id").value(uniqueID).endObject();
-        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args, requiresReply));
+        if (!requiresReply) {
+            jsonObject.object().key("query_id").value(uniqueID).endObject();
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        }
     }
 
     private void handleDiscordChannelList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
@@ -299,7 +305,7 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleChannelPointsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        Helix.instance().getCustomRewardAsync(null, null).doOnSuccess(json -> {
+        Helix.instance().getCustomRewardAsync(null, jso.has("managed") ? jso.getBoolean("managed") : false).doOnSuccess(json -> {
             String uniqueID = jso.has("channelpointslist") ? jso.getString("channelpointslist") : "";
 
             JSONStringer jsonObject = new JSONStringer();
@@ -316,6 +322,23 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.endObject().endObject();
             WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
         }).doOnError(com.gmt2001.Console.err::printStackTrace).subscribe();
+    }
+
+    private void handleChannelPointsUpdate(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        String uniqueID = jso.has("channelpointsupdate") ? jso.getString("channelpointslist") : "";
+        String action = jso.has("action") ? jso.getString("action") : "";
+
+        switch (action) {
+            case "delete":
+                if (jso.has("id")) {
+                    Helix.instance().deleteCustomReward(jso.getString("id"));
+                }
+                break;
+        }
+
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID).endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 
     private void handleUnrestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
@@ -688,6 +711,40 @@ public class WsPanelHandler implements WsFrameHandler {
                 .key("extendedTimeout").value(extendedTimeout)
                 .key("progressBar").value(progressBar)
                 .endObject().endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    /**
+     * Sends an object response to a WS query
+     *
+     * @param uniqueID The ID the callback is registered under, sent by the requester
+     * @param obj A map of key/value pairs to send
+     */
+    public void sendObject(String uniqueID, Map<String, Object> obj) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID);
+        jsonObject.key("results").object();
+        obj.forEach((k, v) -> {
+            jsonObject.key(k).value(v);
+        });
+        jsonObject.endObject().endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    /**
+     * Sends an array response to a WS query
+     *
+     * @param uniqueID The ID the callback is registered under, sent by the requester
+     * @param obj A list of values to send
+     */
+    public void sendArray(String uniqueID, List<Object> obj) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID);
+        jsonObject.key("results").object();
+        jsonObject.key("data").array();
+        obj.forEach(jsonObject::value);
+        jsonObject.endArray();
+        jsonObject.endObject().endObject();
         WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 }

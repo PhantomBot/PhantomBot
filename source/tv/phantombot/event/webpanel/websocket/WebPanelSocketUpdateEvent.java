@@ -22,6 +22,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
     private final String script;
     private final String arguments;
     private final String[] args;
+    private final boolean requiresReply;
 
     /**
      * Class constructor.
@@ -37,6 +38,16 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
         this.script = script;
         this.arguments = arguments;
         this.args = args.clone();
+        this.requiresReply = false;
+    }
+
+    public WebPanelSocketUpdateEvent(String id, String script, String arguments, String[] args, boolean requiresReply) {
+        super();
+        this.id = id;
+        this.script = script;
+        this.arguments = arguments;
+        this.args = args.clone();
+        this.requiresReply = requiresReply;
     }
 
     /**
@@ -73,5 +84,9 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
      */
     public String[] getArgs() {
         return this.args.clone();
+    }
+
+    public boolean requiresReply() {
+        return this.requiresReply;
     }
 }

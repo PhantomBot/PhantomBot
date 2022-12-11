@@ -87,6 +87,7 @@ public class Helix {
     private int maxRateLimit = 120;
     private String oAuthToken = null;
     private final Queue<Mono<JSONObject>> requestQueue = new ConcurrentLinkedQueue<>();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final ConcurrentMap<String, CallRequest> calls = new ConcurrentHashMap<>();
     private final ReentrantLock lock = new ReentrantLock();
     private Instant nextWarning = Instant.now();
@@ -262,8 +263,8 @@ public class Helix {
             try {
                 if (responseCode == 204) {
                     returnObject = new JSONObject();
-                    returnObject.put("message", "No Content");
-                    returnObject.put("status", 204);
+                    returnObject.put("message", response.responseCode().reasonPhrase());
+                    returnObject.put("status", responseCode);
                 } else {
                     returnObject = response.jsonOrThrow();
                 }
@@ -271,7 +272,7 @@ public class Helix {
                 returnObject = new JSONObject();
                 returnObject.put("message", response.responseBody());
                 returnObject.put("error", "Not JSON");
-                returnObject.put("status", -1);
+                returnObject.put("status", responseCode);
                 throw ex;
             }
             // Generate the return object,

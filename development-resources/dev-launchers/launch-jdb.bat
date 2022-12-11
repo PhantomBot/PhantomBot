@@ -17,6 +17,13 @@ REM You should have received a copy of the GNU General Public License
 REM along with this program.  If not, see <http://www.gnu.org/licenses/>.
 REM
 
+REM
+REM PhantomBot Launcher - Windows
+REM
+
+set CHECKLOC=%~dp0%config\wtcheck.txt
+set LAUNCHER=%~dp0%launch-jdb.bat
+
 IF /I "%1" == "--nowt" GOTO :LAUNCH
 
 WHERE powershell >nul 2>nul
@@ -28,9 +35,11 @@ IF %ERRORLEVEL% EQU 0 GOTO :SWITCHTOWT
 GOTO :LAUNCH
 
 :LAUNCH
+del /q /f %CHECKLOC% > NUL
 setlocal enableextensions enabledelayedexpansion
-cd %~dp0
+pushd %~dp0
 ".\java-runtime\bin\java" -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
+popd
 endlocal
 pause
 
@@ -38,6 +47,8 @@ GOTO :EOF
 
 :SWITCHTOWT
 setlocal enableextensions enabledelayedexpansion
-wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot launch-jdb.bat --nowt %*
+copy /y NUL %CHECKLOC% > NUL
+wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot %LAUNCHER% --nowt %*
+timeout /t 5 /nobreak > NUL
+IF EXIST %CHECKLOC% GOTO :LAUNCH
 endlocal
-
