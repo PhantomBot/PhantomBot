@@ -58,6 +58,7 @@ import tv.phantombot.twitch.api.Helix;
  */
 public class WsPanelHandler implements WsFrameHandler {
 
+    @SuppressWarnings("MismatchedReadAndWriteOfArray")
     private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
     private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
     private final WsAuthenticationHandler authHandler;
@@ -302,7 +303,7 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleChannelPointsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        Helix.instance().getCustomRewardAsync(null, null).doOnSuccess(json -> {
+        Helix.instance().getCustomRewardAsync(null, jso.has("managed") ? jso.getBoolean("managed") : false).doOnSuccess(json -> {
             String uniqueID = jso.has("channelpointslist") ? jso.getString("channelpointslist") : "";
 
             JSONStringer jsonObject = new JSONStringer();
