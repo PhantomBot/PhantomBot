@@ -48,6 +48,16 @@ $(function () {
         return null;
     };
 
+    const findRedeemable = function (id) {
+        for (const redeemable of redeemables) {
+            if (redeemable.id === id) {
+                return redeemable;
+            }
+        }
+
+        return null;
+    };
+
     const loadRewards = function (cb, updateTable) {
         // Query custom commands.
         socket.getDBValues('channelpoints_get', {
@@ -121,7 +131,7 @@ $(function () {
                     let commandtitle = command.title;
 
                     // Ask the user if he want to remove the command.
-                    helpers.getConfirmDeleteModal('channelpoints_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
+                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
                             'Successfully removed the reward for ' + commandtitle, function () {
                                 let data = [];
                                 for (const command of commands) {
@@ -187,8 +197,8 @@ $(function () {
     };
 
     const loadRedeemables = function (cb, updateTable) {
-        socket.query('channelpointslist', 'channelpoints_edit', {'managed': false}, function (e1) {
-            socket.query('channelpointslist', 'channelpoints_managed_edit', {'managed': true}, function (e2) {
+        socket.query('channelpointslist', 'channelpoints_redeemables', {'managed': false}, function (e1) {
+            socket.query('channelpointslist', 'channelpoints_managed_redeemables', {'managed': true}, function (e2) {
                 if (e1.hasOwnProperty('data') && e1.data.length > 0) {
                     redeemables = structuredClone(e1.data);
                 } else {
@@ -266,26 +276,22 @@ $(function () {
 
                     // On delete button.
                     table.on('click', '.btn-danger', function () {
-                        let command = findCommand($(this).data('commandid'));
+                        let redeemable = findRedeemable($(this).data('redeemableid'));
 
-                        if (command === null) {
-                            reloadRewards();
+                        if (redeemable === null) {
+                            loadRedeemables();
                             return;
                         }
 
-                        let commandid = command.id;
-                        let commandtitle = command.title;
+                        let redeemableid = redeemable.id;
+                        let redeemabletitle = redeemable.title;
 
                         // Ask the user if he want to remove the command.
-                        helpers.getConfirmDeleteModal('channelpoints_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
-                                'Successfully removed the reward for ' + commandtitle, function () {
-                                    let data = [];
-                                    for (const command of commands) {
-                                        if (command.id !== commandid) {
-                                            data.push(structuredClone(command));
-                                        }
-                                    }
-                                    updateRewards(data);
+                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
+                                'Successfully removed the redeemable ' + redeemabletitle, function () {
+                                    socket.update('channelpointsupdate', 'channelpoints_redeemable_remove', {'id': redeemableid, 'action': 'delete'}, function () {
+                                        loadRedeemables();
+                                    });
                                 });
                     });
 
