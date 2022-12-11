@@ -190,14 +190,15 @@ $(function () {
      * @param {Array}    args
      * @param {Function} callback
      */
-    socket.wsEvent = function (callback_id, script, argsString, args, callback) {
+    socket.wsEvent = function (callback_id, script, argsString, args, callback, requiresReply) {
         // Genetate a callback.
-        generateCallBack(callback_id, [], true, false, callback);
+        generateCallBack(callback_id, [], requiresReply !== true, true, callback);
 
         // Send event.
         sendToSocket({
             socket_event: callback_id,
             script: script,
+            requiresReply: requiresReply,
             args: {
                 arguments: String(argsString),
                 args: args
@@ -489,15 +490,38 @@ $(function () {
     };
 
     /*
-     * Sends a custom message. Used for development
+     * Sends a query requiring a reply
      * @param {String} type The message type
      * @param {String} query_id The unique Query ID
      * @param {Object} params Optional object of params to send
      * @param {Function} callback Callback function
      * @returns {undefined}
      */
-    socket.custom = function (type, query_id, params, callback) {
+    socket.query = function (type, query_id, params, callback) {
         generateCallBack(query_id, [], false, true, callback);
+
+        let param = {};
+        param[type] = query_id;
+
+        if (params !== undefined && params !== null) {
+            for (let x in params) {
+                param[x] = params[x];
+            }
+        }
+
+        sendToSocket(param);
+    };
+
+    /*
+     * Sends a query not requiring a reply
+     * @param {String} type The message type
+     * @param {String} query_id The unique Query ID
+     * @param {Object} params Optional object of params to send
+     * @param {Function} callback Callback function
+     * @returns {undefined}
+     */
+    socket.update = function (type, query_id, params, callback) {
+        generateCallBack(query_id, [], true, true, callback);
 
         let param = {};
         param[type] = query_id;
