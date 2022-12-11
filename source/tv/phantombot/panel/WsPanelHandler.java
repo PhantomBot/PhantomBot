@@ -715,6 +715,17 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     /**
+     * Sends an ack response to a WS query
+     *
+     * @param uniqueID The ID the callback is registered under, sent by the requester
+     */
+    public void sendAck(String uniqueID) {
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID).endObject();
+        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    /**
      * Sends an object response to a WS query
      *
      * @param uniqueID The ID the callback is registered under, sent by the requester
