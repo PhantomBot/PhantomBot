@@ -297,6 +297,8 @@ $(function () {
 
                     // On edit button.
                     table.on('click', '.btn-warning', function () {
+                        alert('Not yet implemented');
+                        return;
                         let command = findCommand($(this).data('commandid'));
 
                         if (command === null) {
@@ -496,5 +498,17 @@ $(function () {
                 }).modal('toggle');
             }, false);
         }, false);
+    });
+
+    $('#refreshcpredeemables-button').on('click', function () {
+        loadRedeemables();
+    });
+
+    $('#convertcpredeemable-button').on('click', function () {
+        alert('Not yet implemented');
+    });
+
+    $('addcpredeemable-button').on('click', function () {
+        alert('Not yet implemented');
     });
 });
