@@ -165,10 +165,27 @@ $(function () {
                         'role': 'form'
                     })
                             .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
+                            .append($('<div/>', {
+                                'class': 'box box-warning'
+                            }).append($('<div/>', {
+                                'class': 'box-header',
+                                'html': 'Warning'
+                            })).append($('<div/>', {
+                                'class': 'box-body',
+                                'html': 'When the response is parsed, the <b>(sender)</b> will be the bot and will have <b>ADMIN</b> permissions'
+                            }))
+                                    )
+                            .append($('<div/>', {
+                                'class': 'box box-info'
+                            }).append($('<div/>', {
+                                'class': 'box-body',
+                                'html': 'See the <a href="https://phantombot.dev/guides/#guide=content/commands/command-variables&jumpto=global-command-tags_channelpoints&channel='
+                                        + helpers.getBranch() + '" target="_blank">channelpoints</a> section of the command tags guide for tags that allow '
+                                        + 'access to the redemption data'
+                            })))
                             // Append a text box for the command response.
                             .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
-                                    'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                    + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
+                                    'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                         let redemptionResponse = $('#redemption-response');
 
                         // Handle each input to make sure they have a value.
@@ -448,15 +465,13 @@ $(function () {
                             'class': 'box box-info'
                         }).append($('<div/>', {
                             'class': 'box-body',
-                            'html': 'Use the command tag <b>(1)</b> to get the login name (sender) of the redeeming user<br />'
-                                    + 'Use the command tag <b>(2)</b> to get the display name of the redeeming user<br />'
-                                    + 'Use the command tag <b>(3)</b> to get the text of the redeemable input box, if used'
-                        }))
-                                )
+                            'html': 'See the <a href="https://phantombot.dev/guides/#guide=content/commands/command-variables&jumpto=global-command-tags_channelpoints&channel='
+                                    + helpers.getBranch() + '" target="_blank">channelpoints</a> section of the command tags guide for tags that allow '
+                                    + 'access to the redemption data'
+                        })))
                         // Append a text box for the command response.
                         .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', 'Thanks for being cool @(2)! (command doSomethingCool)',
-                                '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
+                                '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                     let redemptionSelect = $('#redemption-select'),
                             redemptionResponse = $('#redemption-response');
 

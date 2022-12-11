@@ -17,37 +17,199 @@
 
 (function () {
     /*
-     * @transformer cpfulfill
-     * @formula (cpfulfill) marks the Channel Points redemption as fulfilled
-     * @labels twitch channelpointsevent channelpoints
-     * @notes only works on redeemables that have been created by the bot
-     * @cached
-     */
-    function cpfulfill(args) {
-        $.channelpoints.updateRedemptionStatusFulfilled(args.customArgs.redemption.getRewardID(), args.customArgs.redemption.getRedemptionID());
-        return {
-            result: '',
-            cache: true
-        };
-    }
-    /*
      * @transformer cpcancel
      * @formula (cpcancel) marks the Channel Points redemption as cancelled, refunding the users channel points
      * @labels twitch channelpointsevent channelpoints
      * @notes only works on redeemables that have been created by the bot
+     * @notes only works on redeemables that have `should_redemptions_skip_request_queue` set to `false`
      * @cached
      */
     function cpcancel(args) {
-        $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.getRewardID(), args.customArgs.redemption.getRedemptionID());
+        if (args.customArgs.redemption.getFulfillmentStatus().equals('UNFULFILLED')) {
+            $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.getRewardID(), args.customArgs.redemption.getRedemptionID());
+        }
         return {
             result: '',
             cache: true
         };
     }
 
+    /*
+     * @transformer cpcost
+     * @formula (cpcost) the cost of the redeemable that was redeemed
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpcost(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getCost()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpdisplayname
+     * @formula (cpdisplayname) the display name of the user who redeemed
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpdisplayname(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getDisplayName()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpfulfill
+     * @formula (cpfulfill) marks the Channel Points redemption as fulfilled
+     * @labels twitch channelpointsevent channelpoints
+     * @notes only works on redeemables that have been created by the bot
+     * @notes only works on redeemables that have `should_redemptions_skip_request_queue` set to `false`
+     * @cached
+     */
+    function cpfulfill(args) {
+        if (args.customArgs.redemption.getFulfillmentStatus().equals('UNFULFILLED')) {
+            $.channelpoints.updateRedemptionStatusFulfilled(args.customArgs.redemption.getRewardID(), args.customArgs.redemption.getRedemptionID());
+        }
+        return {
+            result: '',
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpfulfillstatus
+     * @formula (cpfulfillstatus) the fulfillment status of the redemption when it was received by PubSub
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpfulfillstatus(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getFulfillmentStatus()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpinput
+     * @formula (cpinput) the input supplied by the redeeming user, if set
+     * @labels twitch channelpointsevent channelpoints
+     * @notes All newline characters `\n` are URL-encoded as `%0A`
+     * @cached
+     */
+    function cpinput(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getUserInput()).replaceAll("\n", "%0A"),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpinputraw
+     * @formula (cpinput) the raw input supplied by the redeeming user, if set
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpinputraw(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getUserInput()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpprompt
+     * @formula (cpprompt) the input prompt of the redeemable that was redeemed, if set
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpprompt(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getInputPrompt()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpredemptionid
+     * @formula (cpredemptionid) the ID of this redemption event
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpredemptionid(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getRedemptionID()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpredeemableid
+     * @formula (cpredeemableid) the ID of the redeemable that was redeemed
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpredeemableid(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getRewardID()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cptitle
+     * @formula (cptitle) the title of the redeemable that was redeemed
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cptitle(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getRewardTitle()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpuserid
+     * @formula (cpuserid) the ID of the user who redeemed
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpuserid(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getUserID()),
+            cache: true
+        };
+    }
+
+    /*
+     * @transformer cpusername
+     * @formula (cpusername) the login name of the user who redeemed
+     * @labels twitch channelpointsevent channelpoints
+     * @cached
+     */
+    function cpusername(args) {
+        return {
+            result: $.jsString(args.customArgs.redemption.getUsername()),
+            cache: true
+        };
+    }
+
     var transformers = [
+        new $.transformers.transformer('cpcancel', ['twitch', 'channelpointsevent', 'channelpoints'], cpcancel),
+        new $.transformers.transformer('cpcost', ['twitch', 'channelpointsevent', 'channelpoints'], cpcost),
+        new $.transformers.transformer('cpdisplayname', ['twitch', 'channelpointsevent', 'channelpoints'], cpdisplayname),
         new $.transformers.transformer('cpfulfill', ['twitch', 'channelpointsevent', 'channelpoints'], cpfulfill),
-        new $.transformers.transformer('cpcancel', ['twitch', 'channelpointsevent', 'channelpoints'], cpcancel)
+        new $.transformers.transformer('cpfulfillstatus', ['twitch', 'channelpointsevent', 'channelpoints'], cpfulfillstatus),
+        new $.transformers.transformer('cpinput', ['twitch', 'channelpointsevent', 'channelpoints'], cpinput),
+        new $.transformers.transformer('cpinputraw', ['twitch', 'channelpointsevent', 'channelpoints'], cpinputraw),
+        new $.transformers.transformer('cpprompt', ['twitch', 'channelpointsevent', 'channelpoints'], cpprompt),
+        new $.transformers.transformer('cpredemptionid', ['twitch', 'channelpointsevent', 'channelpoints'], cpredemptionid),
+        new $.transformers.transformer('cpredeemableid', ['twitch', 'channelpointsevent', 'channelpoints'], cpredeemableid),
+        new $.transformers.transformer('cptitle', ['twitch', 'channelpointsevent', 'channelpoints'], cptitle),
+        new $.transformers.transformer('cpuserid', ['twitch', 'channelpointsevent', 'channelpoints'], cpuserid),
+        new $.transformers.transformer('cpusername', ['twitch', 'channelpointsevent', 'channelpoints'], cpusername)
     ];
 
     $.transformers.addTransformers(transformers);

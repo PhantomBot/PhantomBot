@@ -586,6 +586,7 @@
 
     /*
      * @event channelPointRedemptions
+     * @usestransformers global twitch commandevent noevent channelpointsevent
      */
     $.bind('pubSubChannelPoints', function (event) {
         var rewardID = event.getRewardID(),
@@ -733,7 +734,7 @@
         var cmd = findRewardCommand(rewardID);
 
         if (cmd !== null) {
-            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' "' + displayName + '" "' + $.javaString(userInput).replaceAll("\"", "\\\"").replaceAll("\n", "%0A") + '"');
+            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, 'channelPoints_' + rewardTitle, '');
             var tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent', 'channelpointsevent']],
                     {customArgs: {redemption: event}});
             if (tag !== null) {
