@@ -843,7 +843,7 @@
                             }
                             $.panel.sendObject(event.getId(), {'success': true, 'id': newid});
                         } else {
-                            var error = 'unknown';
+                            var error = 'Unknown Error';
 
                             if (addrsp.getInt('_http') === 200) {
                                 error = 'Got HTTP 200 but invalid response body';
@@ -875,7 +875,7 @@
                         if (updatersp.getInt('_http') === 200 && updatersp.has('data')) {
                             $.panel.sendObject(event.getId(), {'success': true});
                         } else {
-                            var error = 'unknown';
+                            var error = 'Unknown Error';
 
                             if (updatersp.getInt('_http') === 200) {
                                 error = 'Got HTTP 200 but invalid response body';
