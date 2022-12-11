@@ -44,8 +44,8 @@
             timeoutReward = $.getSetIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet'),
             commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]')),
             commandConfig = $.getSetIniDbString('channelPointsSettings', 'commandConfig', ''),
-            commandLock = new Packages.java.util.concurrent.locks.ReentrantLock,
-            pointName = $.pointNameMultiple;
+            lock = new Packages.java.util.concurrent.locks.ReentrantLock,
+            managed = [];
 
     /*
      * @function updateChannelPointsConfig
@@ -206,14 +206,14 @@
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
                             } else {
                                 var cmd;
-                                commandLock.lock();
+                                lock.lock();
                                 try {
                                     cmd = commands[cmdid];
                                     cmd.command = args.slice(3).join(' ');
                                     commands[cmdid] = cmd;
                                     $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
                                 } finally {
-                                    commandLock.unlock();
+                                    lock.unlock();
                                 }
 
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.edit', cmd.title, cmd.command));
@@ -233,12 +233,12 @@
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.404', target));
                             } else {
                                 var title = commands[cmdid].title;
-                                commandLock.lock();
+                                lock.lock();
                                 try {
                                     commands.splice(cmdid, 1);
                                     $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
                                 } finally {
-                                    commandLock.unlock();
+                                    lock.unlock();
                                 }
 
                                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.remove', title));
@@ -586,6 +586,7 @@
 
     /*
      * @event channelPointRedemptions
+     * @usestransformers global twitch commandevent noevent channelpointsevent
      */
     $.bind('pubSubChannelPoints', function (event) {
         var rewardID = event.getRewardID(),
@@ -657,7 +658,7 @@
                 return;
             }
 
-            commandLock.lock();
+            lock.lock();
             try {
                 var data = {
                     'id': rewardID,
@@ -667,7 +668,7 @@
                 commands.push(data);
                 $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(commands));
             } finally {
-                commandLock.unlock();
+                lock.unlock();
             }
             commandConfig = '';
             $.setIniDbString('channelPointsSettings', 'commandConfig', commandConfig);
@@ -681,6 +682,7 @@
         if (rewardID.equals(transferID)) {
             if (transferToggle === true) {
                 Packages.com.gmt2001.Console.debug.println("transferRunStart");
+                var pointName;
                 if (transferAmount < 2) {
                     pointName = $.pointNameSingle;
                 } else {
@@ -732,8 +734,9 @@
         var cmd = findRewardCommand(rewardID);
 
         if (cmd !== null) {
-            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, "channelPoints_" + rewardTitle, username + ' "' + displayName + '" "' + $.javaString(userInput).replaceAll("\"", "\\\"").replaceAll("\n", "%0A") + '"');
-            var tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent']]);
+            var cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, 'channelPoints_' + rewardTitle, '');
+            var tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent', 'channelpointsevent']],
+                    {customArgs: {redemption: event}});
             if (tag !== null) {
                 $.say(tag);
             }
@@ -768,11 +771,152 @@
         }
     }
 
+    function reloadManagedRedeemables() {
+        var jso = $.helix.getCustomReward(null, true);
+
+        if (jso.getInt('_http') === 200 && jso.has('data')) {
+            var jsa = jso.getJSONArray('data');
+
+            lock.lock();
+            try {
+                if (jsa.length() === 0) {
+                    managed = [];
+                } else {
+                    for (var i = 0; i < jsa.length(); i++) {
+                        managed.push(jsa.getJSONObject(i).getString('id'));
+                    }
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+    }
+
+    /**
+     * Marks a managed redemption as fulfilled
+     *
+     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redemptionId The id of the redemption event
+     */
+    function updateRedemptionStatusFulfilled(rewardId, redemptionId) {
+        if (managed.includes($.jsString(rewardId))) {
+            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
+                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
+        }
+    }
+
+    /**
+     * Marks a managed redemption as cancelled, refunding the users channel points
+     *
+     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redemptionId The id of the redemption event
+     */
+    function updateRedemptionStatusCancelled(rewardId, redemptionId) {
+        if (managed.includes($.jsString(rewardId))) {
+            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
+                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+        }
+    }
+
     $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./handlers/ChannelPointsHandler.js')) {
             var args = event.getArgs();
-            if (args.length > 0 && args[0].equalsIgnoreCase('reload')) {
-                updateChannelPointsConfig();
+            if (args.length > 0) {
+                switch ($.jsString(args[0])) {
+                    case 'reward-reload':
+                        updateChannelPointsConfig();
+                        break;
+                    case 'redeemable-reload-managed':
+                        reloadManagedRedeemables();
+                        $.panel.sendAck(event.getId());
+                        break;
+                    case 'redeemable-get-managed':
+                        $.panel.sendArray(event.getId(), managed);
+                        break;
+                    case 'redeemable-delete-managed':
+                        var rmid = $.jsString(args[1]);
+                        if (managed.includes(rmid)) {
+                            $.helix.deleteCustomReward(args[1]);
+                            lock.lock();
+                            try {
+                                var rmidx = managed.indexOf(rmid);
+                                managed.splice(rmidx, 1);
+                            } finally {
+                                lock.unlock();
+                            }
+                        }
+                        $.panel.sendAck(event.getId());
+                        break;
+                    case 'redeemable-add-managed':
+                        //                                      title    cost
+                        var addrsp = $.helix.createCustomReward(args[1], parseInt(args[2]),
+                                //is_enabled                              background_color  is_user_input_required  prompt
+                                args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'), args[6],
+                                //is_max_per_stream_enabled                      max_per_stream
+                                args[7].equals('true'), args[7].equals('true') ? parseInt(args[8]) : null,
+                                //is_max_per_user_per_stream_enabled             max_per_user_per_stream
+                                args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
+                                //is_global_cooldown_enabled                       global_cooldown_seconds
+                                args[11].equals('true'), args[11].equals('true') ? parseInt(args[12]) : null,
+                                //should_redemptions_skip_request_queue
+                                args[13].equals('true'));
+
+                        if (addrsp.getInt('_http') === 200 && addrsp.has('data')) {
+                            var newid = $.jsString(addrsp.getJSONArray('data').getJSONObject(0).getString('id'));
+                            lock.lock();
+                            try {
+                                managed.push(newid);
+                            } finally {
+                                lock.unlock();
+                            }
+                            $.panel.sendObject(event.getId(), {'success': true, 'id': newid});
+                        } else {
+                            var error = 'Unknown Error';
+
+                            if (addrsp.getInt('_http') === 200) {
+                                error = 'Got HTTP 200 but invalid response body';
+                            } else if (addrsp.getInt('_http') > 0) {
+                                error = 'HTTP ' + addrsp.getInt('_http') + ': ' + $.jsString(addrsp.getString('message'));
+                            } else if (!addrsp.getString('_exception').isBlank()) {
+                                error = $.jsString(addrsp.getString('_exception')) + ' ' + $.jsString(addrsp.getString('_exceptionMessage'));
+                            }
+
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': error});
+                        }
+                        break;
+                    case 'redeemable-update-managed':
+                        //                                         id       title    cost
+                        var updatersp = $.helix.updateCustomReward(args[1], args[2], parseInt(args[3]),
+                                //is_enabled            is_paused                                 background_color
+                                args[4].equals('true'), args[5].equals('true'), args[6].isBlank() ? null : args[6],
+                                //is_user_input_required  prompt
+                                args[7].equals('true'), args[8],
+                                //is_max_per_stream_enabled                      max_per_stream
+                                args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
+                                //is_max_per_user_per_stream_enabled               max_per_user_per_stream
+                                args[11].equals('true'), args[11].equals('true') ? parseInt(args[12]) : null,
+                                //is_global_cooldown_enabled                       global_cooldown_seconds
+                                args[13].equals('true'), args[13].equals('true') ? parseInt(args[14]) : null,
+                                //should_redemptions_skip_request_queue
+                                args[15].equals('true'));
+
+                        if (updatersp.getInt('_http') === 200 && updatersp.has('data')) {
+                            $.panel.sendObject(event.getId(), {'success': true});
+                        } else {
+                            var error = 'Unknown Error';
+
+                            if (updatersp.getInt('_http') === 200) {
+                                error = 'Got HTTP 200 but invalid response body';
+                            } else if (updatersp.getInt('_http') > 0) {
+                                error = 'HTTP ' + updatersp.getInt('_http') + ': ' + $.jsString(updatersp.getString('message'));
+                            } else if (!updatersp.getString('_exception').isBlank()) {
+                                error = $.jsString(updatersp.getString('_exception')) + ' ' + $.jsString(updatersp.getString('_exceptionMessage'));
+                            }
+
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': error});
+                        }
+                        break;
+                }
             }
         }
     });
@@ -789,5 +933,24 @@
         $.registerChatSubcommand('channelpoints', 'emoteonly', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'timeout', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'command', $.PERMISSION.Admin);
+
+        reloadManagedRedeemables();
     });
+
+    $.channelpoints = {
+        /**
+         * Marks a managed redemption as fulfilled
+         *
+         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redemptionId The id of the redemption event
+         */
+        updateRedemptionStatusFulfilled: updateRedemptionStatusFulfilled,
+        /**
+         * Marks a managed redemption as cancelled, refunding the users channel points
+         *
+         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redemptionId The id of the redemption event
+         */
+        updateRedemptionStatusCancelled: updateRedemptionStatusCancelled
+    };
 })();

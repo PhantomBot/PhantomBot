@@ -306,6 +306,15 @@
     setInterval(updateStreamData, 2e4);
 
     /**
+     * Sends an ack response to a WS query
+     *
+     * @param {string} uniqueID The ID the callback is registered under, sent by the requester
+     */
+    var sendAck = function (uniqueID) {
+        $.panelsocketserver.sendAck($.javaString(uniqueID));
+    };
+
+    /**
      * Sends an object response to a WS query
      *
      * @param {string} uniqueID The ID the callback is registered under, sent by the requester
@@ -340,6 +349,12 @@
     };
 
     $.panel = {
+        /**
+         * Sends an ack response to a WS query
+         *
+         * @param {string} uniqueID The ID the callback is registered under, sent by the requester
+         */
+        sendAck: sendAck,
         /**
          * Sends an object response to a WS query
          *
