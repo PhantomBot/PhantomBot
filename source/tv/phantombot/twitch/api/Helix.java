@@ -87,6 +87,7 @@ public class Helix {
     private int maxRateLimit = 120;
     private String oAuthToken = null;
     private final Queue<Mono<JSONObject>> requestQueue = new ConcurrentLinkedQueue<>();
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final ConcurrentMap<String, CallRequest> calls = new ConcurrentHashMap<>();
     private final ReentrantLock lock = new ReentrantLock();
     private Instant nextWarning = Instant.now();
