@@ -806,8 +806,11 @@
                         $.panel.sendArray(event.getId(), managed);
                         break;
                     case 'redeemable-delete-managed':
-                        if (managed.includes($.jsString(args[1]))) {
+                        var rmid = $.jsString(args[1]);
+                        if (managed.includes(rmid)) {
                             $.helix.deleteCustomReward(args[1]);
+                            var rmidx = managed.indexOf(rmid);
+                            managed.splice(rmidx, 1);
                         }
                         $.panel.sendAck(event.getId());
                         break;
