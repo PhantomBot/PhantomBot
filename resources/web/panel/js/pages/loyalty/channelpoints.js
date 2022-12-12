@@ -470,7 +470,7 @@ $(function () {
                                     + 'access to the redemption data'
                         })))
                         // Append a text box for the command response.
-                        .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', 'Thanks for being cool @(2)! (command doSomethingCool)',
+                        .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', 'Thanks for being cool @(cpusername)! (command doSomethingCool)',
                                 '', 'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                     let redemptionSelect = $('#redemption-select'),
                             redemptionResponse = $('#redemption-response');
