@@ -57,21 +57,21 @@
     $.getSetIniDbBoolean('twitter', 'reward_toggle', false);
     $.getSetIniDbBoolean('twitter', 'reward_announce', false);
 
-    /**
+    /*
      * @event twitter
      */
     $.bind('twitter', function (event) {
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
-        if (event.getMentionUser() != null) {
+        if (event.getMentionUser() !== null) {
             $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
         } else {
             $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
         }
     });
 
-    /**
+    /*
      * @event twitterRetweet
      */
     $.bind('twitterRetweet', function (event) {
@@ -80,7 +80,7 @@
         }
 
         /* The core only generates this event if reward_toggle is enabled, therefore, we do not check the toggle here. */
-        if ($.getIniDbNumber('twitter', 'reward_points') == 0) {
+        if ($.getIniDbNumber('twitter', 'reward_points') === 0) {
             return;
         }
 
@@ -114,7 +114,7 @@
         }
     });
 
-    /**
+    /*
      * @event twitchOnline
      */
     $.bind('twitchOnline', function (event) {
@@ -131,14 +131,14 @@
                 $.inidb.set('twitter', 'last_onlinepost', now + onlinePostDelay);
                 do {
                     randNum = $.randRange(1, 9999);
-                } while (randNum == randPrev);
+                } while (randNum === randPrev);
                 randPrev = randNum;
                 $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
 
-    /**
+    /*
      * @event twitchGameChange
      */
     $.bind('twitchGameChange', function (event) {
@@ -148,7 +148,7 @@
             return;
         }
 
-        if ($.twitchcache.getGameTitle() == '') {
+        if ($.jsString($.twitchcache.getGameTitle()) === '') {
             return;
         }
 
@@ -162,14 +162,14 @@
 
                 do {
                     randNum = $.randRange(1, 9999);
-                } while (randNum == randPrev);
+                } while (randNum === randPrev);
                 randPrev = randNum;
                 $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(uptime)', hrs + ':' + min).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function (event) {
@@ -378,7 +378,7 @@
                  */
                 if (subCommandArg.equalsIgnoreCase('updatetimer')) {
                     setCommandVal = setCommandArg;
-                    if (setCommandVal == undefined) {
+                    if (setCommandVal === undefined) {
                         setCommandVal = $.getIniDbNumber('twitter', 'postdelay_update');
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.usage', setCommandVal));
                         return;
