@@ -65,9 +65,9 @@
             return;
         }
         if (event.getMentionUser() !== null) {
-            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.username() + ''));
         } else {
-            $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+            $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.username() + ''));
         }
     });
 
@@ -189,7 +189,7 @@
          */
         if (command.equalsIgnoreCase('twitter')) {
             if (commandArg === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.username() + '') + ' ' + $.lang.get('twitter.usage.id'));
                 return;
             }
 
@@ -488,7 +488,7 @@
              * @commandpath twitter id - Display the configured Twitter ID for the caster
              */
             if (commandArg.equalsIgnoreCase('id')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + ''));
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.username() + ''));
                 return;
             }
 
