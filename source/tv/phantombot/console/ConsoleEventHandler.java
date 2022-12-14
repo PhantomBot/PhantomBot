@@ -127,14 +127,23 @@ public final class ConsoleEventHandler implements Listener {
          * Secret
          */
         if (message.equalsIgnoreCase("twittersetup")) {
-            if (CaselessProperties.instance().getProperty("twitter_client_id", "").isBlank() || CaselessProperties.instance().getProperty("twitter_client_secret", "").isBlank()) {
+            boolean isNewTwitter = false;
+            if (CaselessProperties.instance().getProperty("twitter_client_id", "").isBlank()
+                    || CaselessProperties.instance().getProperty("twitter_client_secret", "").isBlank()
+                    || arguments.startsWith("newapp")) {
+                isNewTwitter = true;
                 com.gmt2001.Console.out.println("Please create a Twitter application at https://developer.twitter.com/en/portal/dashboard");
-                com.gmt2001.Console.out.println("Then, activate User Authentication in the App");
-                com.gmt2001.Console.out.println("--- App permissions: Read and write");
-                com.gmt2001.Console.out.println("--- Type of app: Web App, Automated App or Bot");
-                com.gmt2001.Console.out.println("--- Callback URI / Redirect URL: http://localhost:25000");
-                com.gmt2001.Console.out.println("--- Website URL: Put your own URL, or use http://phantombot.dev");
-                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Then, activate User Authentication in the App, with the settings below");
+            } else {
+                com.gmt2001.Console.out.println("Please ensure your Twitter application has the settings listed below");
+                com.gmt2001.Console.out.println("You can edit your Twitter application at https://developer.twitter.com/en/portal/dashboard");
+            }
+            com.gmt2001.Console.out.println("--- App permissions: Read and write");
+            com.gmt2001.Console.out.println("--- Type of app: Web App, Automated App or Bot");
+            com.gmt2001.Console.out.println("--- Callback URI / Redirect URL: http://localhost:25000");
+            com.gmt2001.Console.out.println("--- Website URL: Put your own URL, or use http://phantombot.dev");
+            com.gmt2001.Console.out.println();
+            if (isNewTwitter) {
                 com.gmt2001.Console.out.println("Once this is done, you should see your Client ID and Secret.");
                 com.gmt2001.Console.out.println("If you don't see it, go back to the dashboard, select the App,");
                 com.gmt2001.Console.out.println("and then switch to the Keys and tokens tab.");

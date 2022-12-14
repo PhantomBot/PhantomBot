@@ -216,13 +216,25 @@ public class TwitterAPI implements ApiClientCallback, Listener {
 
     /**
      * Starts an authorization attempt. The URL in the {@link AuthorizationParameters} should be used by the user to authorize the application, then
-     * the resulting code should be passed to {@link #completeAuthorize(com.gmt2001.TwitterAPI.AuthorizationParameters, java.lang.String)|
+     * the resulting code should be passed to {@link #completeAuthorize(com.gmt2001.TwitterAPI.AuthorizationParameters, java.lang.String)}
      *
      * @return
      */
     public AuthorizationParameters startAuthorize() {
+        return this.startAuthorize("http://localhost:25000");
+    }
+
+    /**
+     * Starts an authorization attempt. The URL in the {@link AuthorizationParameters} should be used by the user to authorize the application, then
+     * the resulting code should be passed to {@link #completeAuthorize(com.gmt2001.TwitterAPI.AuthorizationParameters, java.lang.String)}
+     *
+     * @param callbackUri The callback URI
+     *
+     * @return
+     */
+    public AuthorizationParameters startAuthorize(String callbackUri) {
         final TwitterOAuth20Service service = new TwitterOAuth20Service(this.credentials.getTwitterOauth2ClientId(),
-                this.credentials.getTwitterOAuth2ClientSecret(), "http://localhost:25000",
+                this.credentials.getTwitterOAuth2ClientSecret(), callbackUri,
                 "offline.access tweet.read tweet.write users.read follows.read");
         final PKCE pkce = PKCEService.defaultInstance().generatePKCE();
         final String state = PhantomBot.generateRandomString(32);
