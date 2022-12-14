@@ -552,6 +552,7 @@
         <!-- Main js file -->
         <script>
             $(function () {
+                helpers.parseQuerymap();
                 helpers.parseHashmap();
                 helpers.setupAuth();
                 if (helpers.getBotHost() === '!missing') {

@@ -34,7 +34,8 @@ $(function () {
     // Debug types.
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
 
-    helpers.hashmap = [];
+    helpers.querymap = {};
+    helpers.hashmap = {};
     helpers.version = {};
 
     helpers.getBotVersion = function () {
@@ -1305,10 +1306,30 @@ $(function () {
         };
     };
 
+    helpers.parseQuerymap = function () {
+        if (window.location.search.length === 0) {
+            return;
+        }
+        var query = window.location.search.slice(1);
+        var kvs = query.split('&');
+        var querymap = {};
+        var spl;
+
+        for (var i = 0; i < kvs.length; i++) {
+            spl = kvs[i].split('=', 2);
+            querymap[spl[0]] = spl[1];
+        }
+
+        helpers.querymap = querymap;
+    };
+
     helpers.parseHashmap = function () {
+        if (window.location.hash.length === 0) {
+            return;
+        }
         var hash = window.location.hash.slice(1);
         var kvs = hash.split('&');
-        var hashmap = [];
+        var hashmap = {};
         var spl;
 
         for (var i = 0; i < kvs.length; i++) {
