@@ -87,6 +87,7 @@
      * @param {string} message: raw message with tags to replace message
      * @param {array} names: array of user names to be welcomed
      * @returns {string}: `message` with replaced tags or null if `message` or `names` is empty.
+     * @usestransformers local
      */
     function buildMessage(message, names) {
         var match,
@@ -95,13 +96,20 @@
             return null;
         }
         return $.tags(null, message, false, {
+            /*
+             * @localtransformer names
+             * @formula (names) The names of the users being welcomed
+             * @example Caster: !welcome setmessage Welcome (names)!
+             * Bot: Welcome coolperson1, user2, and viewer3!
+             * @cached
+             */
             'names': function command() {
                 switch (names.length) {
                     case 1:
                         namesString = names[0];
                         break;
                     case 2:
-                        namesString = names.join($.lang.get('welcomesystem.names.join1'));
+                        namesString = names.join($.lang.get('welcomesystem.names.join3'));
                         break;
                     default:
                         namesString = names.slice(0, -1).join($.lang.get('welcomesystem.names.join1')) +
@@ -113,6 +121,13 @@
                     cache: true
                 };
             },
+            /*
+             * @localtransformer 1
+             * @formula (1 str:str) The text parameter inside this tag is only printed if there is 1 user being welcomed
+             * @example Caster: !welcome setmessage (names) (1 is)(2 are)(3 are all) new here. Give them a warm welcome!
+             * Bot: coolperson1 is new here. Give them a warm welcome!
+             * @cached
+             */
             '1': function (args) {
                 if (names.length !== 1) {
                     return {result: '', cache: true};
@@ -121,6 +136,13 @@
                     return {result: String(match[1]), cache: true};
                 }
             },
+            /*
+             * @localtransformer 2
+             * @formula (2 str:str) The text parameter inside this tag is only printed if there are 2 users being welcomed
+             * @example Caster: !welcome setmessage (names) (1 is)(2 are)(3 are all) new here. Give them a warm welcome!
+             * Bot: coolperson1 and user2 are new here. Give them a warm welcome!
+             * @cached
+             */
             '2': function (args) {
                 if (names.length !== 2) {
                     return {result: '', cache: true};
@@ -129,6 +151,13 @@
                     return {result: String(match[1]), cache: true};
                 }
             },
+            /*
+             * @localtransformer 3
+             * @formula (3 str:str) The text parameter inside this tag is only printed if there are 3 or more users being welcomed
+             * @example Caster: !welcome setmessage (names) (1 is)(2 are)(3 are all) new here. Give them a warm welcome!
+             * Bot: coolperson1, user2, and viewer3 are all new here. Give them a warm welcome!
+             * @cached
+             */
             '3': function (args) {
                 if (names.length < 3) {
                     return {result: '', cache: true};
