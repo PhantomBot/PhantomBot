@@ -17,7 +17,12 @@
 
 /* global Pace */
 
-$(function() {
+$(function () {
+    let currentPageInfo = {
+        folder: '',
+        page: '',
+        href: ''
+    };
     /*
      * @function removes the page loader.
      */
@@ -26,11 +31,11 @@ $(function() {
         if ($('.loader').length > 0) {
             // Stop pace since we already have one loader.
             Pace.stop();
-            $('.loader').fadeOut(3e2, function() {
+            $('.loader').fadeOut(3e2, function () {
                 $('.loader').remove();
             });
 
-            $('.main').fadeIn(2e2, function() {
+            $('.main').fadeIn(2e2, function () {
                 // Fix the window height.
                 $.fn.layout.Constuctor.prototype.fix();
             });
@@ -71,7 +76,7 @@ $(function() {
                 cache: false,
                 dataType: 'html',
                 url: 'pages/' + folder + '/' + page,
-                success: function(data) {
+                success: function (data) {
                     // Set the new page.
                     $('#page-content').html(data);
                     // Scroll to top.
@@ -81,16 +86,25 @@ $(function() {
                         $.fn.dinamicMenu(href);
                     }
                     helpers.log('Completed ajax request for page: ' + folder + '/' + page, helpers.LOG_TYPE.DEBUG);
+                    currentPageInfo = {
+                        folder: folder,
+                        page: page,
+                        href: href === undefined ? '' : href
+                    };
                 },
-                error: function(err) {
+                error: function (err) {
                     helpers.logError('Failed to load page (' + page + ') => ' + err.statusText, helpers.LOG_TYPE.FORCE);
                 }
             });
         }
     }
 
+    function currentPage() {
+        return currentPageInfo;
+    }
+
     // Handles loading of tabs.
-    $('[data-folder]').on('click', function(e) {
+    $('[data-folder]').on('click', function (e) {
         e.preventDefault();
         // Load the page.
         loadPage($(this).data('folder'), $(this).attr('href').substring(1), this.href);
@@ -99,4 +113,5 @@ $(function() {
     // Export to API.
     $.showPage = showPage;
     $.loadPage = loadPage;
+    $.currentPage = currentPage;
 });
