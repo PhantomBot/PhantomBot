@@ -88,6 +88,7 @@
      * @param {array} names: array of user names to be welcomed
      * @returns {string}: `message` with replaced tags or null if `message` or `names` is empty.
      * @usestransformers local
+     * @bind ircChannelMessage
      */
     function buildMessage(message, names) {
         var match,
