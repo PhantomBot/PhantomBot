@@ -302,14 +302,6 @@ panelsetup - Sets up the panel.
 
 &nbsp;
 
-### twittersetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-twittersetup - Sets up Twitter.
-
-&nbsp;
-
 ### ytsetup
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
