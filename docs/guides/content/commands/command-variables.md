@@ -2287,6 +2287,92 @@ Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
+&nbsp;
+
+### welcomeSystem.js
+
+#### names
+
+Defined in script: _./javascript-source/systems/welcomeSystem.js_
+
+**Formulas:**
+
+- `(names)` - The names of the users being welcomed
+
+
+**Example:**
+```text
+Caster: !welcome setmessage Welcome (names)!
+Bot: Welcome coolperson1, user2, and viewer3!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### 1
+
+Defined in script: _./javascript-source/systems/welcomeSystem.js_
+
+**Formulas:**
+
+- `(1 str:str)` - The text parameter inside this tag is only printed if there is 1 user being welcomed
+
+
+**Example:**
+```text
+Caster: !welcome setmessage (names) (1 is)(2 are)(3 are all) new here. Give them a warm welcome!
+Bot: coolperson1 is new here. Give them a warm welcome!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### 2
+
+Defined in script: _./javascript-source/systems/welcomeSystem.js_
+
+**Formulas:**
+
+- `(2 str:str)` - The text parameter inside this tag is only printed if there are 2 users being welcomed
+
+
+**Example:**
+```text
+Caster: !welcome setmessage (names) (1 is)(2 are)(3 are all) new here. Give them a warm welcome!
+Bot: coolperson1 and user2 are new here. Give them a warm welcome!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### 3
+
+Defined in script: _./javascript-source/systems/welcomeSystem.js_
+
+**Formulas:**
+
+- `(3 str:str)` - The text parameter inside this tag is only printed if there are 3 or more users being welcomed
+
+
+**Example:**
+```text
+Caster: !welcome setmessage (names) (1 is)(2 are)(3 are all) new here. Give them a warm welcome!
+Bot: coolperson1, user2, and viewer3 are all new here. Give them a warm welcome!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
 ---
 
 ## Transformer Usage
@@ -2414,3 +2500,15 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | Yes
 
 **Labels Used:** twitch noevent
+
+&nbsp;
+
+### welcomeSystem.js
+
+Defined in script: _./javascript-source/systems/welcomeSystem.js_
+
+#### Hook: ircChannelMessage
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+No&nbsp;&nbsp; | Yes
