@@ -904,7 +904,7 @@ $(function () {
                 $('#twitter-link-do-auth-button').on('click', function () {
                     window.open(e.authUrl, '_blank');
                 });
-            });
+            }, true);
         });
     });
 
@@ -917,7 +917,7 @@ $(function () {
             } else {
                 toastr.error('Failed to link Twitter');
             }
-        });
+        }, true);
     }
 
     // Twitter settings.
