@@ -518,8 +518,8 @@
                 return;
             }
 
-        } /* if (command.equalsIgnoreCase('twitter')) */
-    }); /* @event command */
+        }
+    });
 
     /**
      * @function checkAutoUpdate
@@ -555,6 +555,30 @@
     interval = setInterval(function () {
         checkAutoUpdate();
     }, 8e4);
+
+    var authParams;
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getScript().equalsIgnoreCase('./handlers/twitterHandler.js')) {
+            var args = event.getArgs();
+            if (args.length > 0) {
+                switch ($.jsString(args[0])) {
+                    case 'start-auth':
+                        authParams = $.twitter.startAuthorize(args[1]);
+                        $.panel.sendObject(event.getId(), {'success': true, 'authUrl': authParams.authorizationUrl()});
+                        break;
+                    case 'complete-auth':
+                        try {
+                            $.twitter.completeAuthorize(authParams, args[1]);
+                            authParams = null;
+                            $.panel.sendObject(event.getId(), {'success': $.twitter.authenticated()});
+                        } catch (e) {
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': e});
+                        }
+                        break;
+                }
+            }
+        }
+    });
 
     /**
      * @event initReady

@@ -1311,6 +1311,9 @@ $(function () {
             return;
         }
         var query = window.location.search.slice(1);
+        if (query.includes('?')) {
+            query = query.replace('?', '&');
+        }
         var kvs = query.split('&');
         var querymap = {};
         var spl;
