@@ -57,21 +57,21 @@
     $.getSetIniDbBoolean('twitter', 'reward_toggle', false);
     $.getSetIniDbBoolean('twitter', 'reward_announce', false);
 
-    /**
+    /*
      * @event twitter
      */
     $.bind('twitter', function (event) {
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
-        if (event.getMentionUser() != null) {
-            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+        if (event.getMentionUser() !== null) {
+            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.username() + ''));
         } else {
-            $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.getUsername() + ''));
+            $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.username() + ''));
         }
     });
 
-    /**
+    /*
      * @event twitterRetweet
      */
     $.bind('twitterRetweet', function (event) {
@@ -80,7 +80,7 @@
         }
 
         /* The core only generates this event if reward_toggle is enabled, therefore, we do not check the toggle here. */
-        if ($.getIniDbNumber('twitter', 'reward_points') == 0) {
+        if ($.getIniDbNumber('twitter', 'reward_points') === 0) {
             return;
         }
 
@@ -114,7 +114,7 @@
         }
     });
 
-    /**
+    /*
      * @event twitchOnline
      */
     $.bind('twitchOnline', function (event) {
@@ -131,14 +131,14 @@
                 $.inidb.set('twitter', 'last_onlinepost', now + onlinePostDelay);
                 do {
                     randNum = $.randRange(1, 9999);
-                } while (randNum == randPrev);
+                } while (randNum === randPrev);
                 randPrev = randNum;
                 $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
 
-    /**
+    /*
      * @event twitchGameChange
      */
     $.bind('twitchGameChange', function (event) {
@@ -148,7 +148,7 @@
             return;
         }
 
-        if ($.twitchcache.getGameTitle() == '') {
+        if ($.jsString($.twitchcache.getGameTitle()) === '') {
             return;
         }
 
@@ -162,14 +162,14 @@
 
                 do {
                     randNum = $.randRange(1, 9999);
-                } while (randNum == randPrev);
+                } while (randNum === randPrev);
                 randPrev = randNum;
                 $.twitter.updateStatus(String(message).replace('(title)', $.twitchcache.getStreamStatus()).replace('(game)', $.twitchcache.getGameTitle()).replace('(uptime)', hrs + ':' + min).replace('(twitchurl)', 'https://www.twitch.tv/' + $.ownerName + '?' + randNum).replace(/\(enter\)/g, '\r\n'));
             }
         }
     });
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function (event) {
@@ -189,7 +189,7 @@
          */
         if (command.equalsIgnoreCase('twitter')) {
             if (commandArg === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + '') + ' ' + $.lang.get('twitter.usage.id'));
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.username() + '') + ' ' + $.lang.get('twitter.usage.id'));
                 return;
             }
 
@@ -378,7 +378,7 @@
                  */
                 if (subCommandArg.equalsIgnoreCase('updatetimer')) {
                     setCommandVal = setCommandArg;
-                    if (setCommandVal == undefined) {
+                    if (setCommandVal === undefined) {
                         setCommandVal = $.getIniDbNumber('twitter', 'postdelay_update');
                         $.say($.whisperPrefix(sender) + $.lang.get('twitter.set.updatetimer.usage', setCommandVal));
                         return;
@@ -488,7 +488,7 @@
              * @commandpath twitter id - Display the configured Twitter ID for the caster
              */
             if (commandArg.equalsIgnoreCase('id')) {
-                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.getUsername() + ''));
+                $.say($.whisperPrefix(sender) + $.lang.get('twitter.id', $.ownerName, $.twitter.username() + ''));
                 return;
             }
 
@@ -518,8 +518,8 @@
                 return;
             }
 
-        } /* if (command.equalsIgnoreCase('twitter')) */
-    }); /* @event command */
+        }
+    });
 
     /**
      * @function checkAutoUpdate
@@ -555,6 +555,30 @@
     interval = setInterval(function () {
         checkAutoUpdate();
     }, 8e4);
+
+    var authParams;
+    $.bind('webPanelSocketUpdate', function (event) {
+        if (event.getScript().equalsIgnoreCase('./handlers/twitterHandler.js')) {
+            var args = event.getArgs();
+            if (args.length > 0) {
+                switch ($.jsString(args[0])) {
+                    case 'start-auth':
+                        authParams = $.twitter.startAuthorize(args[1]);
+                        $.panel.sendObject(event.getId(), {'success': true, 'authUrl': authParams.authorizationUrl()});
+                        break;
+                    case 'complete-auth':
+                        try {
+                            $.twitter.completeAuthorize(authParams, args[1]);
+                            authParams = null;
+                            $.panel.sendObject(event.getId(), {'success': $.twitter.authenticated()});
+                        } catch (e) {
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': e});
+                        }
+                        break;
+                }
+            }
+        }
+    });
 
     /**
      * @event initReady

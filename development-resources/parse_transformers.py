@@ -208,6 +208,10 @@ def parse_file(fpath, lines):
             usestransformer_hook["hook"] = line[line.find("("):line.find(",")].strip("()'\", ")
             usestransformer["hooks"].append(usestransformer_hook)
             state = 0
+        if line.startswith("@bind") and state == 8:
+            usestransformer_hook["hook"] = line[6:].strip()
+            usestransformer["hooks"].append(usestransformer_hook)
+            state = 0
     if usestransformer_index >= 0:
         usestransformers[usestransformer_index] = usestransformer
 

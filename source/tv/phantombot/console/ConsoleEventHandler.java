@@ -22,15 +22,12 @@ import com.gmt2001.HttpResponse;
 import com.gmt2001.Reflect;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.TwitterAPI;
-import com.twitter.clientlib.ApiException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -130,24 +127,37 @@ public final class ConsoleEventHandler implements Listener {
          * Secret
          */
         if (message.equalsIgnoreCase("twittersetup")) {
-            if (CaselessProperties.instance().getProperty("twitter_client_id", "").isBlank() || CaselessProperties.instance().getProperty("twitter_client_secret", "").isBlank()) {
+            boolean isNewTwitter = false;
+            if (CaselessProperties.instance().getProperty("twitter_client_id", "").isBlank()
+                    || CaselessProperties.instance().getProperty("twitter_client_secret", "").isBlank()
+                    || arguments.startsWith("newapp")) {
+                isNewTwitter = true;
                 com.gmt2001.Console.out.println("Please create a Twitter application at https://developer.twitter.com/en/portal/dashboard");
-                com.gmt2001.Console.out.println("Then, activate User Authentication in the App");
-                com.gmt2001.Console.out.println("--- App permissions: Read and write");
-                com.gmt2001.Console.out.println("--- Type of app: Web App, Automated App or Bot");
-                com.gmt2001.Console.out.println("--- Callback URI / Redirect URL: https://localhost:25000");
-                com.gmt2001.Console.out.println("--- Website URL: https://localhost:25000");
-                com.gmt2001.Console.out.println();
+                com.gmt2001.Console.out.println("Then, activate User Authentication in the App, with the settings below");
+            } else {
+                com.gmt2001.Console.out.println("Please ensure your Twitter application has the settings listed below");
+                com.gmt2001.Console.out.println("You can edit your Twitter application at https://developer.twitter.com/en/portal/dashboard");
+            }
+            com.gmt2001.Console.out.println("--- App permissions: Read and write");
+            com.gmt2001.Console.out.println("--- Type of app: Web App, Automated App or Bot");
+            com.gmt2001.Console.out.println("--- Callback URI / Redirect URL: http://localhost:25000");
+            com.gmt2001.Console.out.println("--- Website URL: Put your own URL, or use http://phantombot.dev");
+            com.gmt2001.Console.out.println();
+            if (isNewTwitter) {
                 com.gmt2001.Console.out.println("Once this is done, you should see your Client ID and Secret.");
                 com.gmt2001.Console.out.println("If you don't see it, go back to the dashboard, select the App,");
                 com.gmt2001.Console.out.println("and then switch to the Keys and tokens tab.");
                 com.gmt2001.Console.out.println();
                 System.out.print("Please enter the Client ID: ");
-                String clientid = System.console().readLine().trim();
-                transaction.setProperty("twitter_client_id", clientid);
-                System.out.print("Please enter the Client Secret: ");
-                String clientsecret = System.console().readLine().trim();
-                transaction.setProperty("twitter_client_secret", clientsecret);
+                try {
+                    String clientid = com.gmt2001.Console.in.readLine().trim();
+                    transaction.setProperty("twitter_client_id", clientid);
+                    System.out.print("Please enter the Client Secret: ");
+                    String clientsecret = com.gmt2001.Console.in.readLine().trim();
+                    transaction.setProperty("twitter_client_secret", clientsecret);
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
                 transaction.commit();
                 com.gmt2001.Console.out.println();
                 transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
@@ -155,15 +165,26 @@ public final class ConsoleEventHandler implements Listener {
             }
 
             TwitterAPI.AuthorizationParameters params = TwitterAPI.instance().startAuthorize();
-            com.gmt2001.Console.out.println("To authorize Twitter, please visit this URL: " + params.authroizationUrl());
+            com.gmt2001.Console.out.println("To authorize Twitter, please visit this URL: " + params.authorizationUrl());
             com.gmt2001.Console.out.println();
-            System.out.print("Please enter the authorization code returned by Twitter: ");
-            String code = System.console().readLine().trim();
+            System.out.println("After approving the authorization, Twitter will send you back to http://localhost:25000");
+            System.out.println("You can find the authorization code in the URL");
+            System.out.print("Please enter the authorization code, the entire URL, or 'exit': ");
             try {
-                TwitterAPI.instance().completeAuthorize(params, code);
+                String code = com.gmt2001.Console.in.readLine().trim();
 
-                TwitterCache.instance(PhantomBot.instance().getChannelName());
-            } catch (ApiException | IOException | InterruptedException | ExecutionException ex) {
+                if (!code.equalsIgnoreCase("exit")) {
+                    if (code.startsWith("http://") || code.startsWith("https://")) {
+                        code = code.substring(code.indexOf("code=") + 5);
+                    }
+
+                    com.gmt2001.Console.debug.println("code=" + code);
+
+                    TwitterAPI.instance().completeAuthorize(params, code);
+
+                    TwitterCache.instance(PhantomBot.instance().getChannelName());
+                }
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.println("Failed to Authorize Twitter: " + ex.getMessage());
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
@@ -671,23 +692,23 @@ public final class ConsoleEventHandler implements Listener {
                 System.out.println("");
 
                 System.out.print("Please enter your MySQL host name: ");
-                String mySqlHost = System.console().readLine().trim();
+                String mySqlHost = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("mysqlhost", mySqlHost);
 
                 System.out.print("Please enter your MySQL port: ");
-                String mySqlPort = System.console().readLine().trim();
+                String mySqlPort = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("mysqlport", mySqlPort);
 
                 System.out.print("Please enter your MySQL db name: ");
-                String mySqlName = System.console().readLine().trim();
+                String mySqlName = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("mysqlname", mySqlName);
 
                 System.out.print("Please enter a username for MySQL: ");
-                String mySqlUser = System.console().readLine().trim();
+                String mySqlUser = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("mysqluser", mySqlUser);
 
                 System.out.print("Please enter a password for MySQL: ");
-                String mySqlPass = System.console().readLine().trim();
+                String mySqlPass = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("mysqlpass", mySqlPass);
 
                 String dataStoreType = "MySQLStore";
@@ -695,7 +716,7 @@ public final class ConsoleEventHandler implements Listener {
 
                 com.gmt2001.Console.out.println("PhantomBot MySQL setup done, PhantomBot will exit.");
                 changed = true;
-            } catch (NullPointerException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -716,15 +737,15 @@ public final class ConsoleEventHandler implements Listener {
 
                 System.out.println("");
                 System.out.print("From the StreamLabs Application Settings page, please paste or enter your StreamLabs Client ID: ");
-                String twitchAlertsClientId = System.console().readLine().trim();
+                String twitchAlertsClientId = com.gmt2001.Console.in.readLine().trim();
 
                 System.out.println("");
                 System.out.print("From the StreamLabs Application Settings page, please paste or enter your StreamLabs Client Secret: ");
-                String twitchAlertsClientSecret = System.console().readLine().trim();
+                String twitchAlertsClientSecret = com.gmt2001.Console.in.readLine().trim();
 
                 System.out.println("");
                 System.out.print("From the StreamLabs Application Settings page, please paste or enter your StreamLabs Redirect URI: ");
-                String twitchAlertsRedirectURI = System.console().readLine().trim();
+                String twitchAlertsRedirectURI = com.gmt2001.Console.in.readLine().trim();
 
                 System.out.println("");
                 System.out.println("Use this link to authorize to the account you want to read donations from");
@@ -733,7 +754,7 @@ public final class ConsoleEventHandler implements Listener {
                 System.out.println("https://www.streamlabs.com/api/v1.0/authorize?client_id=" + twitchAlertsClientId + "&redirect_uri=" + twitchAlertsRedirectURI + "&response_type=code&scope=donations.read");
                 System.out.println("");
                 System.out.println("Please paste or enter the access code from the URL in your browser's address bar. You can also just paste the entire URL: ");
-                String twitchAlertsKickback = System.console().readLine().trim();
+                String twitchAlertsKickback = com.gmt2001.Console.in.readLine().trim();
 
                 if (twitchAlertsKickback.contains("code=")) {
                     twitchAlertsKickback = twitchAlertsKickback.substring(twitchAlertsKickback.indexOf("code=") + 5);
@@ -767,7 +788,7 @@ public final class ConsoleEventHandler implements Listener {
                     System.err.println(res.content);
                     System.err.println(res.exception);
                 }
-            } catch (JSONException | NullPointerException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -782,12 +803,12 @@ public final class ConsoleEventHandler implements Listener {
                 System.out.println("");
 
                 System.out.print("Please enter your TipeeeStream Api OAuth: ");
-                String tipeeeStreamOAuth = System.console().readLine().trim();
+                String tipeeeStreamOAuth = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("tipeeestreamkey", tipeeeStreamOAuth);
 
                 System.out.println("PhantomBot TipeeeStream setup done, PhantomBot will exit.");
                 changed = true;
-            } catch (NullPointerException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -803,52 +824,16 @@ public final class ConsoleEventHandler implements Listener {
                 System.out.println("");
 
                 System.out.print("Please enter a username of your choice: ");
-                String panelUsername = System.console().readLine().trim();
+                String panelUsername = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("paneluser", panelUsername);
 
                 System.out.print("Please enter a password of your choice: ");
-                String panelPassword = System.console().readLine().trim();
+                String panelPassword = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("panelpassword", panelPassword);
 
                 System.out.println("PhantomBot Web Panel setup done, PhantomBot will exit.");
                 changed = true;
-            } catch (NullPointerException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
-        /**
-         * @consolecommand twittersetup - Sets up Twitter.
-         */
-        if (message.equalsIgnoreCase("twittersetup")) {
-            try {
-                System.out.println("");
-                System.out.println("PhantomBot Twitter setup.");
-                System.out.println("");
-
-                System.out.print("Please enter your Twitter username: ");
-                String twitterUsername = System.console().readLine().trim();
-                transaction.setProperty("twitterUser", twitterUsername);
-
-                System.out.print("Please enter your consumer key: ");
-                String twitterConsumerToken = System.console().readLine().trim();
-                transaction.setProperty("twitter_consumer_key", twitterConsumerToken);
-
-                System.out.print("Please enter your consumer secret: ");
-                String twitterConsumerSecret = System.console().readLine().trim();
-                transaction.setProperty("twitter_consumer_secret", twitterConsumerSecret);
-
-                System.out.print("Please enter your access token: ");
-                String twitterAccessToken = System.console().readLine().trim();
-                transaction.setProperty("twitter_access_token", twitterAccessToken);
-
-                System.out.print("Please enter your access token secret: ");
-                String twitterSecretToken = System.console().readLine().trim();
-                transaction.setProperty("twitter_secret_token", twitterSecretToken);
-
-                System.out.println("PhantomBot Twitter setup done, PhantomBot will exit.");
-                changed = true;
-            } catch (NullPointerException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
@@ -862,11 +847,11 @@ public final class ConsoleEventHandler implements Listener {
                 System.out.println("PhantomBot YouTube API Key Setup");
                 System.out.println("");
                 System.out.println("Please enter the YouTube API key that you have acquired: ");
-                String youtubeKey = System.console().readLine().trim();
+                String youtubeKey = com.gmt2001.Console.in.readLine().trim();
                 transaction.setProperty("youtubekey", youtubeKey);
                 System.out.println("PhantomBot YouTube API key setup done, PhantomBot will exit.");
                 changed = true;
-            } catch (NullPointerException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }

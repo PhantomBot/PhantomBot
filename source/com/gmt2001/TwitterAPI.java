@@ -49,16 +49,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.Listener;
+import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 
 /**
  * Handles Twitter API
  *
  * @author gmt2001
  */
-public class TwitterAPI implements ApiClientCallback {
+public class TwitterAPI implements ApiClientCallback, Listener {
 
     /**
      * Singleton
@@ -103,7 +107,14 @@ public class TwitterAPI implements ApiClientCallback {
     /**
      * Private constructor for singleton
      */
+    @SuppressWarnings("LeakingThisInConstructor")
     private TwitterAPI() {
+        EventBus.instance().register(this);
+    }
+
+    @Handler
+    public void onPropertiesReloaded(PropertiesReloadedEvent event) {
+        this.updateClientIdSecret();
     }
 
     /**
@@ -205,13 +216,25 @@ public class TwitterAPI implements ApiClientCallback {
 
     /**
      * Starts an authorization attempt. The URL in the {@link AuthorizationParameters} should be used by the user to authorize the application, then
-     * the resulting code should be passed to {@link #completeAuthorize(com.gmt2001.TwitterAPI.AuthorizationParameters, java.lang.String)|
+     * the resulting code should be passed to {@link #completeAuthorize(com.gmt2001.TwitterAPI.AuthorizationParameters, java.lang.String)}
      *
      * @return
      */
     public AuthorizationParameters startAuthorize() {
+        return this.startAuthorize("http://localhost:25000");
+    }
+
+    /**
+     * Starts an authorization attempt. The URL in the {@link AuthorizationParameters} should be used by the user to authorize the application, then
+     * the resulting code should be passed to {@link #completeAuthorize(com.gmt2001.TwitterAPI.AuthorizationParameters, java.lang.String)}
+     *
+     * @param callbackUri The callback URI
+     *
+     * @return
+     */
+    public AuthorizationParameters startAuthorize(String callbackUri) {
         final TwitterOAuth20Service service = new TwitterOAuth20Service(this.credentials.getTwitterOauth2ClientId(),
-                this.credentials.getTwitterOAuth2ClientSecret(), "http://localhost:25000",
+                this.credentials.getTwitterOAuth2ClientSecret(), callbackUri,
                 "offline.access tweet.read tweet.write users.read follows.read");
         final PKCE pkce = PKCEService.defaultInstance().generatePKCE();
         final String state = PhantomBot.generateRandomString(32);
@@ -660,7 +683,7 @@ public class TwitterAPI implements ApiClientCallback {
          *
          * @return
          */
-        public String authroizationUrl() {
+        public String authorizationUrl() {
             return this.authorizationUrl;
         }
     }

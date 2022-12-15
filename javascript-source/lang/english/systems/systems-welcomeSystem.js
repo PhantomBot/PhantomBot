@@ -33,3 +33,4 @@ $.lang.register('welcomesystem.set.enableuser.success', '$1 will welcome $2.');
 $.lang.register('welcomesystem.generalusage', 'Usage: !welcome [toggle | setmessage text | setfirstmessage text | disable user | enable user]. Tags for message text: (names), (1 text for one name), (2 for two), (3 for three or more names)');
 $.lang.register('welcomesystem.names.join1', ', ');
 $.lang.register('welcomesystem.names.join2', ', and ');
+$.lang.register('welcomesystem.names.join3', ' and ');
