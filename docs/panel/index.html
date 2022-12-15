@@ -201,20 +201,6 @@
                                 </ul>
                             </li>
 
-                            <!-- Soon -->
-                            <!-- <li class="treeview">
-                                <a href="#">
-                                    <i class="fa fa-bullhorn"></i> <span> Alerts</span>
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li><a href="#alerts.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Chat</a></li>
-                                    <li><a href="#stream.html" data-folder="alerts"><i class="fa fa-circle-o"></i> Stream</a></li>
-                                </ul>
-                            </li> -->
-
                             <!-- Loyalty tab -->
                             <li class="treeview">
                                 <a href="#">
@@ -309,11 +295,6 @@
                                             <li><a href="#discordDefaultCommands.html" data-folder="discord"><i class="fa fa-circle-o"></i> Default</a></li>
                                         </ul>
                                     </li>
-
-                                    <!-- For IO and his promotion system:
-                                    From what I saw, you might need multiple tabs like the one above, since you
-                                    allow a "blacklist" of users. -->
-                                    <!-- <li><a href="#discordPromotion.html" data-folder="discord"><i class="fa fa-circle-o"></i> Promotion</a></li> -->
 
                                     <li><a href="#discordAlerts.html" data-folder="discord"><i class="fa fa-circle-o"></i> Alerts</a></li>
                                     <li><a href="#discordLogs.html" data-folder="discord"><i class="fa fa-circle-o"></i> Logging</a></li>
@@ -571,6 +552,7 @@
         <!-- Main js file -->
         <script>
             $(function () {
+                helpers.parseQuerymap();
                 helpers.parseHashmap();
                 helpers.setupAuth();
                 if (helpers.getBotHost() === '!missing') {
