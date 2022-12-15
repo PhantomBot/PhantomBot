@@ -683,7 +683,7 @@ public class TwitterAPI implements ApiClientCallback, Listener {
          *
          * @return
          */
-        public String authroizationUrl() {
+        public String authorizationUrl() {
             return this.authorizationUrl;
         }
     }

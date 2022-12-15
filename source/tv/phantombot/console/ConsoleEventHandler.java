@@ -165,7 +165,7 @@ public final class ConsoleEventHandler implements Listener {
             }
 
             TwitterAPI.AuthorizationParameters params = TwitterAPI.instance().startAuthorize();
-            com.gmt2001.Console.out.println("To authorize Twitter, please visit this URL: " + params.authroizationUrl());
+            com.gmt2001.Console.out.println("To authorize Twitter, please visit this URL: " + params.authorizationUrl());
             com.gmt2001.Console.out.println();
             System.out.println("After approving the authorization, Twitter will send you back to http://localhost:25000");
             System.out.println("You can find the authorization code in the URL");
