@@ -17,6 +17,7 @@
 package com.gmt2001.twitch.tmi.processors;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import tv.phantombot.cache.UsernameCache;
@@ -57,16 +58,6 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
             UsernameCache.instance().addUser(item.nick(), item.tags().get("display-name"), item.tags().get("user-id"));
         }
 
-        if (item.tags().containsKey("bits")) {
-            EventBus.instance().postAsync(new TwitchBitsEvent(item.nick(), item.tags().get("bits"), message));
-        }
-
-        EventBus.instance().postAsync(new IrcModerationEvent(this.session(), item.nick(), message, item.tags()));
-
-        if (item.tags().containsKey("subscriber") && item.tags().get("subscriber").equals("1")) {
-            EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv", "SPECIALUSER " + item.nick() + " subscriber", item.tags()));
-        }
-
         if (!item.nick().equalsIgnoreCase(this.user())) {
             if (item.tags().get("mod").equals("1") || !item.tags().get("user-type").isEmpty()) {
                 if (!this.moderators.contains(item.nick())) {
@@ -81,12 +72,29 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
             }
         }
 
-        if (message.startsWith("!") && message.indexOf(' ') != 1) {
-            int idx = message.indexOf(' ');
-            EventBus.instance().postAsync(new CommandEvent(item.nick(), idx > 1 ? message.substring(1, idx) : message.substring(1),
-                    idx == -1 ? "" : message.substring(idx + 1), item.tags()));
-        }
+        IrcModerationEvent modEvent = new IrcModerationEvent(this.session(), item.nick(), message, item.tags());
 
-        EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), message, item.tags()));
+        EventBus.instance().postAsync(modEvent);
+
+        final String fmessage = message;
+        modEvent.mono().timeout(Duration.ofSeconds(5)).onErrorReturn(Boolean.FALSE).doOnSuccess(moderated -> {
+            if (moderated) {
+                com.gmt2001.Console.debug.println("Message was moderated");
+                return;
+            }
+            if (item.tags().containsKey("subscriber") && item.tags().get("subscriber").equals("1")) {
+                EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv", "SPECIALUSER " + item.nick() + " subscriber", item.tags()));
+            }
+
+            if (item.tags().containsKey("bits")) {
+                EventBus.instance().postAsync(new TwitchBitsEvent(item.nick(), item.tags().get("bits"), fmessage));
+            }
+
+            if (CommandEvent.isCommand(fmessage)) {
+                EventBus.instance().postAsync(CommandEvent.asCommand(item.nick(), fmessage, item.tags()));
+            }
+
+            EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags()));
+        }).subscribe();
     }
 }

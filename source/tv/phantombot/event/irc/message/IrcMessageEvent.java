@@ -23,9 +23,9 @@ import tv.phantombot.twitch.irc.TwitchSession;
 
 public abstract class IrcMessageEvent extends IrcEvent {
 
-    private final String sender;
-    private final String message;
-    private final Map<String, String> tags;
+    protected final String sender;
+    protected final String message;
+    protected final Map<String, String> tags;
 
     /**
      * Class constructor.
