@@ -2240,6 +2240,7 @@
 
     /** Export functions to API */
     $.timeoutUser = timeoutUserFor;
+    $.banUser = banUser;
     $.permitUserLink = permitUser;
     $.reloadModeration = reloadModeration;
 })();
