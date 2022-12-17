@@ -17,147 +17,130 @@
 
 /* global Packages */
 
-(function() {
+(function () {
     var permitList = [],
-        timeouts = [],
-        whiteList = [],
-        blackList = [],
-        spamTracker = {},
-
-        linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
-        linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking.'),
-        linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 30),
-
-        capsToggle = $.getSetIniDbBoolean('chatModerator', 'capsToggle', false),
-        capsMessage = $.getSetIniDbString('chatModerator', 'capsMessage', 'you were timed out for overusing caps.'),
-        capsLimitPercent = $.getSetIniDbFloat('chatModerator', 'capsLimitPercent', 70),
-        capsTriggerLength = $.getSetIniDbNumber('chatModerator', 'capsTriggerLength', 20),
-
-        spamToggle = $.getSetIniDbBoolean('chatModerator', 'spamToggle', false),
-        spamMessage = $.getSetIniDbString('chatModerator', 'spamMessage', 'you were timed out for spamming repeating characters.'),
-        spamLimit = $.getSetIniDbNumber('chatModerator', 'spamLimit', 15),
-
-        symbolsToggle = $.getSetIniDbBoolean('chatModerator', 'symbolsToggle', false),
-        symbolsMessage = $.getSetIniDbString('chatModerator', 'symbolsMessage', 'you were timed out for overusing symbols.'),
-        symbolsLimitPercent = $.getSetIniDbFloat('chatModerator', 'symbolsLimitPercent', 50),
-        symbolsGroupLimit = $.getSetIniDbFloat('chatModerator', 'symbolsGroupLimit', 10),
-        symbolsTriggerLength = $.getSetIniDbNumber('chatModerator', 'symbolsTriggerLength', 20),
-
-        emotesToggle = $.getSetIniDbBoolean('chatModerator', 'emotesToggle', false),
-        emotesMessage = $.getSetIniDbString('chatModerator', 'emotesMessage', 'you were timed out for overusing emotes.'),
-        emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 5),
-
-        longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
-        longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage',  'you were timed out for posting a long message.'),
-        longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 325),
-
-        colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
-        colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text.'),
-
-        spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
-        spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage',  'you were timed out for spamming chat.'),
-        spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
-        spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 30),
-
-        blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
-        blacklistMessageBan = $.getSetIniDbString('chatModerator', 'blacklistMessageBan', 'you were banned for using a blacklisted phrase.'),
-
-        fakePurgeToggle = $.getSetIniDbBoolean('chatModerator', 'fakePurgeToggle', false),
-        fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage',  'you were timed out for a fake purge.'),
-
-        subscribers = {
-            Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
-            Caps: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateCaps', true),
-            Symbols: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSymbols', true),
-            Spam: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpam', true),
-            Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', true),
-            Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', true),
-            LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', true),
-            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpamTracker', true),
-            FakePurge: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateFakePurge', true)
-        },
-
-        regulars = {
-            Links: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLinks', true),
-            Caps: $.getSetIniDbBoolean('chatModerator', 'regularsModerateCaps', true),
-            Symbols: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSymbols', true),
-            Spam: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpam', true),
-            Emotes: $.getSetIniDbBoolean('chatModerator', 'regularsModerateEmotes', true),
-            Colors: $.getSetIniDbBoolean('chatModerator', 'regularsModerateColors', true),
-            LongMsg: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLongMsg', true),
-            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpamTracker', true),
-            FakePurge: $.getSetIniDbBoolean('chatModerator', 'regularsModerateFakePurge', true)
-        },
-
-        vips = {
-            Links: $.getSetIniDbBoolean('chatModerator', 'vipsModerateLinks', true),
-            Caps: $.getSetIniDbBoolean('chatModerator', 'vipsModerateCaps', true),
-            Symbols: $.getSetIniDbBoolean('chatModerator', 'vipsModerateSymbols', true),
-            Spam: $.getSetIniDbBoolean('chatModerator', 'vipsModerateSpam', true),
-            Emotes: $.getSetIniDbBoolean('chatModerator', 'vipsModerateEmotes', true),
-            Colors: $.getSetIniDbBoolean('chatModerator', 'vipsModerateColors', true),
-            LongMsg: $.getSetIniDbBoolean('chatModerator', 'vipsModerateLongMsg', true),
-            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'vipsModerateSpamTracker', true),
-            FakePurge: $.getSetIniDbBoolean('chatModerator', 'vipsModerateFakePurge', true)
-        },
-
-        silentTimeout = {
-            Links: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLinks', false),
-            Caps: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutCaps', false),
-            Symbols: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSymbols', false),
-            Spam: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpam', false),
-            Emotes: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutEmotes', false),
-            Colors: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutColors', false),
-            LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
-            Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
-            SpamTracker: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpamTracker', false),
-            FakePurge: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutFakePurge', false),
-            LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting links without permission. (Automated by ' + $.botName + ')'),
-            SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive use of repeating characters. (Automated by ' + $.botName + ')'),
-            CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive use of caps. (Automated by ' + $.botName + ')'),
-            SymbolMessage: $.getSetIniDbString('chatModerator', 'silentSymbolsMessage', 'Excessive use of symbols. (Automated by ' + $.botName + ')'),
-            ColorMessage: $.getSetIniDbString('chatModerator', 'silentColorMessage', 'Using colored text. (Automated by ' + $.botName + ')'),
-            EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive use of emotes. (Automated by ' + $.botName + ')'),
-            LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
-            BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted phrase. (Automated by ' + $.botName + ')'),
-            SpamTrackerMessage: $.getSetIniDbString('chatModerator', 'silentSpamTrackerMessage', 'Spamming chat. (Automated by ' + $.botName + ')'),
-            FakePurgeMessage: $.getSetIniDbString('chatModerator', 'silentFakePurgeMessage', 'Fake purge. (Automated by ' + $.botName + ')')
-        },
-
-        warningTime = {
-            Links: $.getSetIniDbNumber('chatModerator', 'warningTimeLinks', 5),
-            Caps: $.getSetIniDbNumber('chatModerator', 'warningTimeCaps', 5),
-            Symbols: $.getSetIniDbNumber('chatModerator', 'warningTimeSymbols', 5),
-            Spam: $.getSetIniDbNumber('chatModerator', 'warningTimeSpam', 5),
-            Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
-            Colors: $.getSetIniDbNumber('chatModerator', 'warningTimeColors', 5),
-            LongMsg: $.getSetIniDbNumber('chatModerator', 'warningTimeLongMsg', 5),
-            SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningTimeSpamTracker', 5),
-            FakePurge: $.getSetIniDbNumber('chatModerator', 'warningTimeFakePurge', 5)
-        },
-
-        timeoutTime = {
-            Links: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLinks', 600),
-            Caps: $.getSetIniDbNumber('chatModerator', 'timeoutTimeCaps', 600),
-            Symbols: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSymbols', 600),
-            Spam: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSpam', 600),
-            Emotes: $.getSetIniDbNumber('chatModerator', 'timeoutTimeEmotes', 600),
-            Colors: $.getSetIniDbNumber('chatModerator', 'timeoutTimeColors', 600),
-            LongMsg: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLongMsg', 600),
-            SpamTracker: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSpamTracker', 600),
-            FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge', 600)
-        },
-
-        moderationLogs = $.getSetIniDbBoolean('chatModerator', 'moderationLogs', false),
-        msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
-        warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
-        resetTime = (warningResetTime * 6e4),
-        messageTime = $.systemTime(),
-        warning = '',
-        youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
-        i,
-        j,
-        k;
+            timeouts = [],
+            whiteList = [],
+            blackList = [],
+            spamTracker = {},
+            linksToggle = $.getSetIniDbBoolean('chatModerator', 'linksToggle', false),
+            linksMessage = $.getSetIniDbString('chatModerator', 'linksMessage', 'you were timed out for linking.'),
+            linkPermitTime = $.getSetIniDbNumber('chatModerator', 'linkPermitTime', 30),
+            capsToggle = $.getSetIniDbBoolean('chatModerator', 'capsToggle', false),
+            capsMessage = $.getSetIniDbString('chatModerator', 'capsMessage', 'you were timed out for overusing caps.'),
+            capsLimitPercent = $.getSetIniDbFloat('chatModerator', 'capsLimitPercent', 70),
+            capsTriggerLength = $.getSetIniDbNumber('chatModerator', 'capsTriggerLength', 20),
+            spamToggle = $.getSetIniDbBoolean('chatModerator', 'spamToggle', false),
+            spamMessage = $.getSetIniDbString('chatModerator', 'spamMessage', 'you were timed out for spamming repeating characters.'),
+            spamLimit = $.getSetIniDbNumber('chatModerator', 'spamLimit', 15),
+            symbolsToggle = $.getSetIniDbBoolean('chatModerator', 'symbolsToggle', false),
+            symbolsMessage = $.getSetIniDbString('chatModerator', 'symbolsMessage', 'you were timed out for overusing symbols.'),
+            symbolsLimitPercent = $.getSetIniDbFloat('chatModerator', 'symbolsLimitPercent', 50),
+            symbolsGroupLimit = $.getSetIniDbFloat('chatModerator', 'symbolsGroupLimit', 10),
+            symbolsTriggerLength = $.getSetIniDbNumber('chatModerator', 'symbolsTriggerLength', 20),
+            emotesToggle = $.getSetIniDbBoolean('chatModerator', 'emotesToggle', false),
+            emotesMessage = $.getSetIniDbString('chatModerator', 'emotesMessage', 'you were timed out for overusing emotes.'),
+            emotesLimit = $.getSetIniDbNumber('chatModerator', 'emotesLimit', 5),
+            longMessageToggle = $.getSetIniDbBoolean('chatModerator', 'longMessageToggle', false),
+            longMessageMessage = $.getSetIniDbString('chatModerator', 'longMessageMessage', 'you were timed out for posting a long message.'),
+            longMessageLimit = $.getSetIniDbNumber('chatModerator', 'longMessageLimit', 325),
+            colorsToggle = $.getSetIniDbBoolean('chatModerator', 'colorsToggle', false),
+            colorsMessage = $.getSetIniDbString('chatModerator', 'colorsMessage', 'you were timed out for using colored text.'),
+            spamTrackerToggle = $.getSetIniDbBoolean('chatModerator', 'spamTrackerToggle', false),
+            spamTrackerMessage = $.getSetIniDbString('chatModerator', 'spamTrackerMessage', 'you were timed out for spamming chat.'),
+            spamTrackerTime = $.getSetIniDbNumber('chatModerator', 'spamTrackerTime', 30),
+            spamTrackerLimit = $.getSetIniDbNumber('chatModerator', 'spamTrackerLimit', 30),
+            blacklistMessage = $.getSetIniDbString('chatModerator', 'blacklistMessage', 'you were timed out for using a blacklisted phrase.'),
+            blacklistMessageBan = $.getSetIniDbString('chatModerator', 'blacklistMessageBan', 'you were banned for using a blacklisted phrase.'),
+            fakePurgeToggle = $.getSetIniDbBoolean('chatModerator', 'fakePurgeToggle', false),
+            fakePurgeMessage = $.getSetIniDbString('chatModerator', 'fakePurgeMessage', 'you were timed out for a fake purge.'),
+            subscribers = {
+                Links: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLinks', true),
+                Caps: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateCaps', true),
+                Symbols: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSymbols', true),
+                Spam: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpam', true),
+                Emotes: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateEmotes', true),
+                Colors: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateColors', true),
+                LongMsg: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateLongMsg', true),
+                SpamTracker: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateSpamTracker', true),
+                FakePurge: $.getSetIniDbBoolean('chatModerator', 'subscribersModerateFakePurge', true)
+            },
+            regulars = {
+                Links: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLinks', true),
+                Caps: $.getSetIniDbBoolean('chatModerator', 'regularsModerateCaps', true),
+                Symbols: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSymbols', true),
+                Spam: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpam', true),
+                Emotes: $.getSetIniDbBoolean('chatModerator', 'regularsModerateEmotes', true),
+                Colors: $.getSetIniDbBoolean('chatModerator', 'regularsModerateColors', true),
+                LongMsg: $.getSetIniDbBoolean('chatModerator', 'regularsModerateLongMsg', true),
+                SpamTracker: $.getSetIniDbBoolean('chatModerator', 'regularsModerateSpamTracker', true),
+                FakePurge: $.getSetIniDbBoolean('chatModerator', 'regularsModerateFakePurge', true)
+            },
+            vips = {
+                Links: $.getSetIniDbBoolean('chatModerator', 'vipsModerateLinks', true),
+                Caps: $.getSetIniDbBoolean('chatModerator', 'vipsModerateCaps', true),
+                Symbols: $.getSetIniDbBoolean('chatModerator', 'vipsModerateSymbols', true),
+                Spam: $.getSetIniDbBoolean('chatModerator', 'vipsModerateSpam', true),
+                Emotes: $.getSetIniDbBoolean('chatModerator', 'vipsModerateEmotes', true),
+                Colors: $.getSetIniDbBoolean('chatModerator', 'vipsModerateColors', true),
+                LongMsg: $.getSetIniDbBoolean('chatModerator', 'vipsModerateLongMsg', true),
+                SpamTracker: $.getSetIniDbBoolean('chatModerator', 'vipsModerateSpamTracker', true),
+                FakePurge: $.getSetIniDbBoolean('chatModerator', 'vipsModerateFakePurge', true)
+            },
+            silentTimeout = {
+                Links: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLinks', false),
+                Caps: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutCaps', false),
+                Symbols: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSymbols', false),
+                Spam: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpam', false),
+                Emotes: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutEmotes', false),
+                Colors: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutColors', false),
+                LongMsg: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutLongMsg', false),
+                Blacklist: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutBlacklist', false),
+                SpamTracker: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutSpamTracker', false),
+                FakePurge: $.getSetIniDbBoolean('chatModerator', 'silentTimeoutFakePurge', false),
+                LinkMessage: $.getSetIniDbString('chatModerator', 'silentLinkMessage', 'Posting links without permission. (Automated by ' + $.botName + ')'),
+                SpamMessage: $.getSetIniDbString('chatModerator', 'silentSpamMessage', 'Excessive use of repeating characters. (Automated by ' + $.botName + ')'),
+                CapMessage: $.getSetIniDbString('chatModerator', 'silentCapMessage', 'Excessive use of caps. (Automated by ' + $.botName + ')'),
+                SymbolMessage: $.getSetIniDbString('chatModerator', 'silentSymbolsMessage', 'Excessive use of symbols. (Automated by ' + $.botName + ')'),
+                ColorMessage: $.getSetIniDbString('chatModerator', 'silentColorMessage', 'Using colored text. (Automated by ' + $.botName + ')'),
+                EmoteMessage: $.getSetIniDbString('chatModerator', 'silentEmoteMessage', 'Excessive use of emotes. (Automated by ' + $.botName + ')'),
+                LongMessage: $.getSetIniDbString('chatModerator', 'silentLongMessage', 'Excessive message length. (Automated by ' + $.botName + ')'),
+                BlacklistMessage: $.getSetIniDbString('chatModerator', 'silentBlacklistMessage', 'Using a blacklisted phrase. (Automated by ' + $.botName + ')'),
+                SpamTrackerMessage: $.getSetIniDbString('chatModerator', 'silentSpamTrackerMessage', 'Spamming chat. (Automated by ' + $.botName + ')'),
+                FakePurgeMessage: $.getSetIniDbString('chatModerator', 'silentFakePurgeMessage', 'Fake purge. (Automated by ' + $.botName + ')')
+            },
+            warningTime = {
+                Links: $.getSetIniDbNumber('chatModerator', 'warningTimeLinks', 5),
+                Caps: $.getSetIniDbNumber('chatModerator', 'warningTimeCaps', 5),
+                Symbols: $.getSetIniDbNumber('chatModerator', 'warningTimeSymbols', 5),
+                Spam: $.getSetIniDbNumber('chatModerator', 'warningTimeSpam', 5),
+                Emotes: $.getSetIniDbNumber('chatModerator', 'warningTimeEmotes', 5),
+                Colors: $.getSetIniDbNumber('chatModerator', 'warningTimeColors', 5),
+                LongMsg: $.getSetIniDbNumber('chatModerator', 'warningTimeLongMsg', 5),
+                SpamTracker: $.getSetIniDbNumber('chatModerator', 'warningTimeSpamTracker', 5),
+                FakePurge: $.getSetIniDbNumber('chatModerator', 'warningTimeFakePurge', 5)
+            },
+            timeoutTime = {
+                Links: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLinks', 600),
+                Caps: $.getSetIniDbNumber('chatModerator', 'timeoutTimeCaps', 600),
+                Symbols: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSymbols', 600),
+                Spam: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSpam', 600),
+                Emotes: $.getSetIniDbNumber('chatModerator', 'timeoutTimeEmotes', 600),
+                Colors: $.getSetIniDbNumber('chatModerator', 'timeoutTimeColors', 600),
+                LongMsg: $.getSetIniDbNumber('chatModerator', 'timeoutTimeLongMsg', 600),
+                SpamTracker: $.getSetIniDbNumber('chatModerator', 'timeoutTimeSpamTracker', 600),
+                FakePurge: $.getSetIniDbNumber('chatModerator', 'timeoutTimeFakePurge', 600)
+            },
+            moderationLogs = $.getSetIniDbBoolean('chatModerator', 'moderationLogs', false),
+            msgCooldownSec = $.getSetIniDbNumber('chatModerator', 'msgCooldownSecs', 45),
+            warningResetTime = $.getSetIniDbNumber('chatModerator', 'warningResetTime', 60),
+            resetTime = (warningResetTime * 6e4),
+            messageTime = $.systemTime(),
+            warning = '',
+            youtubeLinks = new RegExp('(youtube.com|youtu.be)', 'i'),
+            i,
+            j,
+            k;
 
     /**
      * @function reloadModeration
@@ -298,9 +281,9 @@
     /*
      * @interval
      */
-    setInterval(function() {
+    setInterval(function () {
         var keys,
-            i;
+                i;
 
         if (spamTracker.length !== 0) {
             keys = Object.keys(spamTracker);
@@ -477,7 +460,7 @@
         return false;
     }
 
-    /**
+    /*
      * @function checkBlackList
      *
      * @param {string} sender
@@ -492,16 +475,20 @@
                         return false;
                     }
 
-                    if (blackList[i].isBan) {
-                        banUser(sender, blackList[i].banReason);
-                        warning = $.lang.get('chatmoderator.ban');
-                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
-                    } else {
-                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
-                        warning = $.lang.get('chatmoderator.timeout');
-                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    try {
+                        if (blackList[i].isBan) {
+                            banUser(sender, blackList[i].banReason);
+                            warning = $.lang.get('chatmoderator.ban');
+                            sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                        } else {
+                            timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
+                            warning = $.lang.get('chatmoderator.timeout');
+                            sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                        }
+                        return true;
+                    } finally {
+                        event.moderated();
                     }
-                    return true;
                 }
             } else {
                 if (message.indexOf(blackList[i].phrase) !== -1) {
@@ -509,16 +496,20 @@
                         return false;
                     }
 
-                    if (blackList[i].isBan) {
-                        banUser(sender, blackList[i].banReason);
-                        warning = $.lang.get('chatmoderator.ban');
-                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
-                    } else {
-                        timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
-                        warning = $.lang.get('chatmoderator.timeout');
-                        sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                    try {
+                        if (blackList[i].isBan) {
+                            banUser(sender, blackList[i].banReason);
+                            warning = $.lang.get('chatmoderator.ban');
+                            sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                        } else {
+                            timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
+                            warning = $.lang.get('chatmoderator.timeout');
+                            sendMessage(sender, blackList[i].message, blackList[i].isSilent);
+                        }
+                        return true;
+                    } finally {
+                        event.moderated();
                     }
-                    return true;
                 }
             }
         }
@@ -570,14 +561,14 @@
         return false;
     }
 
-    /**
-     * @function performModeration
+    /*
+     * @event ircModeration
      */
-    function performModeration(event) {
+    $.bind('ircModeration', function (event) {
         var sender = event.getSender(),
-            message = event.getMessage().toLowerCase(),
-            messageLength = message.length(),
-            tags = event.getTags();
+                message = event.getMessage().toLowerCase(),
+                messageLength = message.length(),
+                tags = event.getTags();
 
         if (!$.checkUserPermission(sender, tags, $.PERMISSION.Mod)) {
             // Blacklist
@@ -594,9 +585,13 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Links, timeoutTime.Links, silentTimeout.LinkMessage, tags);
-                sendMessage(sender, linksMessage, silentTimeout.Links);
-                $.patternDetector.logLastLink(event);
+                try {
+                    timeout(sender, warningTime.Links, timeoutTime.Links, silentTimeout.LinkMessage, tags);
+                    sendMessage(sender, linksMessage, silentTimeout.Links);
+                    $.patternDetector.logLastLink(event);
+                } finally {
+                    event.moderated();
+                }
                 return;
             }
 
@@ -607,8 +602,12 @@
                         return;
                     }
 
-                    timeout(sender, warningTime.Symbols, timeoutTime.Symbols, silentTimeout.SymbolMessage, tags);
-                    sendMessage(sender, symbolsMessage, silentTimeout.Symbols);
+                    try {
+                        timeout(sender, warningTime.Symbols, timeoutTime.Symbols, silentTimeout.SymbolMessage, tags);
+                        sendMessage(sender, symbolsMessage, silentTimeout.Symbols);
+                    } finally {
+                        event.moderated();
+                    }
                     return;
                 }
             }
@@ -619,8 +618,12 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Spam, timeoutTime.Spam, silentTimeout.SpamMessage, tags);
-                sendMessage(sender, spamMessage, silentTimeout.Spam);
+                try {
+                    timeout(sender, warningTime.Spam, timeoutTime.Spam, silentTimeout.SpamMessage, tags);
+                    sendMessage(sender, spamMessage, silentTimeout.Spam);
+                } finally {
+                    event.moderated();
+                }
                 return;
             }
 
@@ -630,8 +633,12 @@
                     return;
                 }
 
-                timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg, silentTimeout.LongMessage, tags);
-                sendMessage(sender, longMessageMessage, silentTimeout.LongMsg);
+                try {
+                    timeout(sender, warningTime.LongMsg, timeoutTime.LongMsg, silentTimeout.LongMessage, tags);
+                    sendMessage(sender, longMessageMessage, silentTimeout.LongMsg);
+                } finally {
+                    event.moderated();
+                }
                 return;
             }
 
@@ -641,8 +648,12 @@
                     return;
                 }
 
-                timeout(sender, warningTime.FakePurge, timeoutTime.FakePurge, silentTimeout.FakePurgeMessage, tags);
-                sendMessage(sender, fakePurgeMessage, silentTimeout.FakePurge);
+                try {
+                    timeout(sender, warningTime.FakePurge, timeoutTime.FakePurge, silentTimeout.FakePurgeMessage, tags);
+                    sendMessage(sender, fakePurgeMessage, silentTimeout.FakePurge);
+                } finally {
+                    event.moderated();
+                }
                 return;
             }
 
@@ -652,8 +663,12 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Emotes, timeoutTime.Emotes, silentTimeout.EmoteMessage, tags);
-                sendMessage(sender, emotesMessage, silentTimeout.Emotes);
+                try {
+                    timeout(sender, warningTime.Emotes, timeoutTime.Emotes, silentTimeout.EmoteMessage, tags);
+                    sendMessage(sender, emotesMessage, silentTimeout.Emotes);
+                } finally {
+                    event.moderated();
+                }
                 return;
             }
 
@@ -664,8 +679,12 @@
                         return;
                     }
 
-                    timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage, tags);
-                    sendMessage(sender, capsMessage, silentTimeout.Caps);
+                    try {
+                        timeout(sender, warningTime.Caps, timeoutTime.Caps, silentTimeout.CapMessage, tags);
+                        sendMessage(sender, capsMessage, silentTimeout.Caps);
+                    } finally {
+                        event.moderated();
+                    }
                     return;
                 }
             }
@@ -676,8 +695,12 @@
                     return;
                 }
 
-                timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage, tags);
-                sendMessage(sender, colorsMessage, silentTimeout.Colors);
+                try {
+                    timeout(sender, warningTime.Colors, timeoutTime.Colors, silentTimeout.ColorMessage, tags);
+                    sendMessage(sender, colorsMessage, silentTimeout.Colors);
+                } finally {
+                    event.moderated();
+                }
                 return;
             }
 
@@ -697,25 +720,29 @@
                     spamTracker[sender] = {count: 1, time: ($.systemTime() + (spamTrackerTime * 1e3))};
                 }
                 if (spamTracker[sender].count >= spamTrackerLimit) {
-                    timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage, tags);
-                    sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
-                    delete spamTracker[sender];
+                    try {
+                        timeout(sender, warningTime.SpamTracker, timeoutTime.SpamTracker, silentTimeout.SpamTrackerMessage, tags);
+                        sendMessage(sender, spamTrackerMessage, silentTimeout.SpamTracker);
+                        delete spamTracker[sender];
+                    } finally {
+                        event.moderated();
+                    }
                 }
             }
         }
-    }
+    });
 
-    /**
+    /*
      * @function extraCommands
      * Handles the commands that the normal function can't.
      */
     function extraCommands(event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                argString = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         if (command.equalsIgnoreCase('moderation') || command.equalsIgnoreCase('mod')) { // js can't handle anymore commands in the default function.
             if (!action) {
@@ -1039,9 +1066,9 @@
                     return;
                 }
                 var word = argString.split(' ').slice(2).join(' '),
-                    isRegex = word.startsWith('regex:'),
-                    timeout = parseInt(subAction),
-                    obj = {};
+                        isRegex = word.startsWith('regex:'),
+                        timeout = parseInt(subAction),
+                        obj = {};
 
                 obj = {
                     id: String(($.inidb.GetKeyList('blackList', '').length + 1)),
@@ -1152,21 +1179,21 @@
      * @event ircClearchat
      */
     /* Removed this for now because sometimes it fails and  it fails to send the moderation timeout and message because of it.
-    $.bind('ircClearchat', function(event) {
-        $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
-    });
-    */
+     $.bind('ircClearchat', function(event) {
+     $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
+     });
+     */
 
-    /**
+    /*
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            argString = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                command = event.getCommand(),
+                argString = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         /**
          * Handle extra commands
@@ -2200,7 +2227,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         loadWhiteList();
         loadBlackList();
 
@@ -2212,8 +2239,8 @@
     });
 
     /** Export functions to API */
-    $.performModeration = performModeration;
     $.timeoutUser = timeoutUserFor;
+    $.banUser = banUser;
     $.permitUserLink = permitUser;
     $.reloadModeration = reloadModeration;
 })();

@@ -115,6 +115,34 @@ public class CommandEvent extends Event {
     }
 
     /**
+     * Indicates if the given message appears to be a command, defined as exclamation point {@code !} followed by any character except for a space
+     *
+     * @param message The emssage to check
+     * @return {@code true} if the message appears to be a command
+     */
+    public static boolean isCommand(String message) {
+        return message.startsWith("!") && message.indexOf(' ') != 1;
+    }
+
+    /**
+     * Converts the given message into a CommandEvent
+     *
+     * @param sender The sender of the message
+     * @param message The message to convert
+     * @param tags Any IRCv3 tags attached to the message
+     * @return {@code null} if {@link #isCommand(java.lang.String)} returns {@code false}; otherwise a {@link CommandEvent}
+     */
+    public static CommandEvent asCommand(String sender, String message, Map<String, String> tags) {
+        if (isCommand(message)) {
+            int idx = message.indexOf(' ');
+            return new CommandEvent(sender, idx > 1 ? message.substring(1, idx) : message.substring(1),
+                    idx == -1 ? "" : message.substring(idx + 1), tags);
+        }
+
+        return null;
+    }
+
+    /**
      * Method that will return the sender of this command.
      *
      * @return sender

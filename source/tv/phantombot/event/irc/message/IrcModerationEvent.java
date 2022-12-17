@@ -17,9 +17,14 @@
 package tv.phantombot.event.irc.message;
 
 import java.util.Map;
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
+import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.twitch.irc.TwitchSession;
 
 public class IrcModerationEvent extends IrcMessageEvent {
+
+    private final Sinks.One<Boolean> moderated = Sinks.one();
 
     /**
      * Class constructor.
@@ -42,5 +47,46 @@ public class IrcModerationEvent extends IrcMessageEvent {
      */
     public IrcModerationEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
         super(session, sender, message, tags);
+    }
+
+    /**
+     * Returns a {@link Mono} which emits {@code true} if a moderation was performed and further processing of this message should be stopped
+     *
+     * @return
+     */
+    public Mono<Boolean> mono() {
+        return this.moderated.asMono();
+    }
+
+    /**
+     * Emits {@code true} from the mono, signaling that moderation has occurred and further processing of this message should be stopped
+     */
+    public void moderated() {
+        this.moderated.tryEmitValue(Boolean.TRUE);
+    }
+
+    /**
+     * Emits {@code false} from the mono, signaling that moderation has not occurred in any handlers and the message is safe to consume
+     */
+    public void complete() {
+        this.moderated.tryEmitValue(Boolean.FALSE);
+    }
+
+    /**
+     * Indicates if this message appears to be a command, defined as exclamation point {@code !} followed by any character except for a space
+     *
+     * @return {@code true} if the message appears to be a command
+     */
+    public boolean isCommand() {
+        return CommandEvent.isCommand(this.message);
+    }
+
+    /**
+     * Converts this message into a {@link CommandEvent}
+     *
+     * @return {@code null} if {@link #isCommand(java.lang.String)} returns {@code false}; otherwise a {@link CommandEvent}
+     */
+    public CommandEvent asCommand() {
+        return CommandEvent.asCommand(this.sender, this.message, this.tags);
     }
 }
