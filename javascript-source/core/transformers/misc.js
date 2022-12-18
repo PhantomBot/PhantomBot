@@ -153,7 +153,7 @@
 
     /*
      * @transformer unescape
-     * @formula (unescape str:str) unescape \\ \( \) to \ ( ) respectively
+     * @formula (unescape str:str) unescape \\\( \\\) to \( \) respectively
      * @labels twitch discord noevent misc
      * @raw
      * @cached
