@@ -103,6 +103,22 @@ Sometimes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### delaysay
+
+Defined in script: _./javascript-source/core/transformers/basic.js_
+
+**Formulas:**
+
+- `(delaysay delayseconds:int message:str)` - send the given message to chat, after the given delay
+
+**Labels:** twitch discord commandevent commands
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### echo
 
 Defined in script: _./javascript-source/core/transformers/basic.js_
@@ -883,6 +899,23 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### delaycommand
+
+Defined in script: _./javascript-source/core/transformers/commands.js_
+
+**Formulas:**
+
+- `(delaycommand delayseconds:int name:str)` - execute command with given name and pass no args, after the given delay
+- `(delaycommand delayseconds:int name:str args:str)` - execute command with given name and pass args, after the given delay
+
+**Labels:** twitch discord commandevent commands
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### customapi
 #### customapi
 
@@ -1541,6 +1574,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 **Formulas:**
 
 - `(pointname)` - the plural name of the loyalty points
+- `(pointname amount:int)` - the single or plural name of the loyalty points, depending on the amount provided
 
 **Labels:** twitch noevent points
 
@@ -1971,6 +2005,22 @@ Bot: User ->  like my Facebook page!
 User: !facebook User2
 Bot: User2 -> like my Facebook  page!
 ```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### sanitizeuser
+
+Defined in script: _./javascript-source/core/transformers/user.js_
+
+**Formulas:**
+
+- `(sanitizeuser user:str)` - does some basic sanitization of a username
+
+**Labels:** twitch commandevent user
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
