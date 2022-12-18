@@ -116,6 +116,44 @@
     }
 
     /*
+     * @transformer delaycommand
+     * @formula (delaycommand delayseconds:int name:str) execute command with given name and pass no args, after the given delay
+     * @formula (delaycommand delayseconds:int name:str args:str) execute command with given name and pass args, after the given delay
+     * @labels twitch discord commandevent commands
+     */
+    function delaycommand(args) {
+        var pargs = $.parseArgs(args.args, ' ', 3, true);
+        try {
+            if (pargs !== null) {
+                var delay = parseInt(pargs[0]);
+                cmd = pargs[1];
+                var argStr = '';
+
+                if (pargs.length > 2) {
+                    argStr = pargs[2];
+                }
+
+                setTimeout(function () {
+                    var EventBus = Packages.tv.phantombot.event.EventBus;
+                    if (args.platform === 'discord') {
+                        var DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
+                        EventBus.instance().postAsync(new DiscordCommandEvent(args.event.getDiscordUser(), args.event.getDiscordChannel(),
+                                args.event.getDiscordMessage(), cmd, argStr, args.event.isAdmin()));
+                    } else {
+                        var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                        EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr, args.event.getTags()));
+                    }
+                }, delay, 'delaycommand ' + cmd + ' ' + delay);
+            }
+        } catch (e) {
+        }
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @formula help
      * @formula (help message:str) if no arguments are provided to the command, outputs the provided message and then cancels the command
      * @labels twitch discord commandevent commands
@@ -136,6 +174,7 @@
         new $.transformers.transformer('command', ['twitch', 'discord', 'commandevent', 'commands'], command),
         new $.transformers.transformer('commandslist', ['twitch', 'commandevent', 'commands'], commandslist),
         new $.transformers.transformer('count', ['twitch', 'discord', 'commandevent', 'commands'], count),
+        new $.transformers.transformer('delaycommand', ['twitch', 'discord', 'commandevent', 'commands'], delaycommand),
         new $.transformers.transformer('help', ['twitch', 'discord', 'commandevent', 'commands'], help)
     ];
 

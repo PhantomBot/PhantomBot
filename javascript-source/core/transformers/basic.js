@@ -75,6 +75,38 @@
     }
 
     /*
+     * @transformer delaysay
+     * @formula (delaysay delayseconds:int message:str) send the given message to chat, after the given delay
+     * @labels twitch discord commandevent commands
+     */
+    function delaysay(args) {
+        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        try {
+            if (pargs !== null) {
+                var delay = parseInt(pargs[0]);
+                var argStr = '';
+
+                if (pargs.length > 1) {
+                    argStr = pargs[1];
+                }
+
+                setTimeout(function () {
+                    if (args.platform === 'discord') {
+                        $.discord.say(args.event.getDiscordChannel(), argStr);
+                    } else {
+                        $.say(argStr);
+                    }
+                }, delay, 'delaysay ' + delay);
+            }
+        } catch (e) {
+        }
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @transformer echo
      * @formula (echo) all arguments passed to the command
      * @labels twitch discord commandevent basic
@@ -165,6 +197,7 @@
 
     var transformers = [
         new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
+        new $.transformers.transformer('delaysay', ['twitch', 'discord', 'commandevent', 'basic'], delaysay),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
         new $.transformers.transformer('random', ['twitch', 'discord', 'noevent', 'basic'], random),
         new $.transformers.transformer('randomrank', ['twitch', 'noevent', 'basic'], randomrank),

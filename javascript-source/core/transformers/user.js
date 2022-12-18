@@ -87,6 +87,19 @@
     }
 
     /*
+     * @transformer sanitizeuser
+     * @formula (sanitizeuser user:str) does some basic sanitization of a username
+     * @labels twitch commandevent user
+     * @cached
+     */
+    function sender(args) {
+        return {
+            result: $.user.sanitize(args.args.trim()),
+            cache: true
+        };
+    }
+
+    /*
      * @transformer sender
      * @formula (sender) the sender's display name
      * @labels twitch discord commandevent user
@@ -172,6 +185,7 @@
         new $.transformers.transformer('age', ['twitch', 'commandevent', 'user'], age),
         new $.transformers.transformer('baresender', ['twitch', 'commandevent', 'user'], baresender),
         new $.transformers.transformer('pointtouser', ['twitch', 'commandevent', 'user'], pointtouser),
+        new $.transformers.transformer('sanitizeuser', ['twitch', 'commandevent', 'user'], sanitizeuser),
         new $.transformers.transformer('sender', ['twitch', 'discord', 'commandevent', 'user'], sender),
         new $.transformers.transformer('senderrank', ['twitch', 'commandevent', 'user'], senderrank),
         new $.transformers.transformer('senderrankonly', ['twitch', 'commandevent', 'user'], senderrankonly),
