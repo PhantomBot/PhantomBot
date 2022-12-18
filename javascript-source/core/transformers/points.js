@@ -95,13 +95,24 @@
     /*
      * @transformer pointname
      * @formula (pointname) the plural name of the loyalty points
+     * @formula (pointname amount:int) the single or plural name of the loyalty points, depending on the amount provided
      * @labels twitch noevent points
      * @example Caster: !addcom !pointsname (sender) current points name is set to: (pointname)
      * User: !pointsname
      * Bot: User current points name is set to: points
      */
-    function pointname() {
-        return {result: $.pointNameMultiple, cache: true};
+    function pointname(args) {
+        var pointName = $.pointNameMultiple;
+        if (args.args !== '' && !isNaN(args.args.trim())) {
+            if (parseInt(args.args.trim()) === 1) {
+                pointName = $.pointNameSingle;
+            }
+        }
+
+        return {
+            result: pointName,
+            cache: true
+        };
     }
 
     /*
