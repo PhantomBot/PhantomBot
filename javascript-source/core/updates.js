@@ -115,7 +115,8 @@
         $.inidb.set('command', 'age', '(age)');
 
         versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0', 'installedv3.6.0', 'installedv3.6.2.5',
-            'installedv3.6.3', 'installedv3.6.4', 'installedv3.6.4-1', 'installedv3.6.4.2', 'installedv3.6.4.5', 'installedv3.6.5.0'
+            'installedv3.6.3', 'installedv3.6.4', 'installedv3.6.4-1', 'installedv3.6.4.2', 'installedv3.6.4.5', 'installedv3.6.5.0',
+            'installedv3.7.0.0'
         ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
@@ -617,6 +618,84 @@
         $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0', true);
     }
 
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.0.0')) {
+        $.consoleLn('Starting PhantomBot update 3.7.0.0 updates...');
+
+        var cpcommands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]'));
+
+        var transferID = $.jsString($.getIniDbString('channelPointsSettings', 'transferID', 'noIDSet'));
+        var giveAllID = $.jsString($.getIniDbString('channelPointsSettings', 'giveAllID', 'noIDSet'));
+        var emoteOnlyID = $.jsString($.getIniDbString('channelPointsSettings', 'emoteOnlyID', 'noIDSet'));
+        var timeoutID = $.jsString($.getIniDbString('channelPointsSettings', 'timeoutID', 'noIDSet'));
+
+        if (transferID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'transferToggle', false)) {
+            var transferAmount = $.getIniDbNumber('channelPointsSettings', 'transferAmount', 0);
+            var tdata = {
+                'id': transferID,
+                'title': $.jsString($.getIniDbString('channelPointsSettings', 'transferReward', 'noNameSet')),
+                'command': '(addpoints ' + transferAmount + ' (cpusername))@(cpdisplayname), you have been awarded ' + transferAmount + ' (pointname ' + transferAmount
+                        + ') by redeeming (cptitle)'
+            };
+            cpcommands.push(tdata);
+        }
+        $.inidb.del('channelPointsSettings', 'transferToggle');
+        $.inidb.del('channelPointsSettings', 'transferAmount');
+        $.inidb.del('channelPointsSettings', 'transferID');
+        $.inidb.del('channelPointsSettings', 'transferConfig');
+        $.inidb.del('channelPointsSettings', 'transferReward');
+
+        if (giveAllID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'giveAllToggle', false)) {
+            var giveAllAmount = $.getIniDbNumber('channelPointsSettings', 'giveAllAmount', 0);
+            var gdata = {
+                'id': giveAllID,
+                'title': $.jsString($.getIniDbString('channelPointsSettings', 'giveAllReward', 'noNameSet')),
+                'command': '(addpointstoall ' + giveAllAmount + ')'
+            };
+            cpcommands.push(gdata);
+        }
+        $.inidb.del('channelPointsSettings', 'giveAllToggle');
+        $.inidb.del('channelPointsSettings', 'giveAllAmount');
+        $.inidb.del('channelPointsSettings', 'giveAllID');
+        $.inidb.del('channelPointsSettings', 'giveAllConfig');
+        $.inidb.del('channelPointsSettings', 'giveAllReward');
+
+        if (emoteOnlyID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'emoteOnlyToggle', false)) {
+            var emoteOnlyDuration = $.getIniDbNumber('channelPointsSettings', 'emoteOnlyDuration', 0);
+            var edata = {
+                'id': emoteOnlyID,
+                'title': $.jsString($.getIniDbString('channelPointsSettings', 'emoteOnlyReward', 'noNameSet')),
+                'command': '(delaysay ' + emoteOnlyDuration + ' /emoteonlyoff)/emoteonly'
+            };
+            cpcommands.push(edata);
+        }
+        $.inidb.del('channelPointsSettings', 'emoteOnlyToggle');
+        $.inidb.del('channelPointsSettings', 'emoteOnlyDuration');
+        $.inidb.del('channelPointsSettings', 'emoteOnlyID');
+        $.inidb.del('channelPointsSettings', 'emoteOnlyConfig');
+        $.inidb.del('channelPointsSettings', 'emoteOnlyReward');
+
+        if (timeoutID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'timeoutToggle', false)) {
+            var timeoutDuration = $.getIniDbNumber('channelPointsSettings', 'timeoutDuration', 0);
+            var odata = {
+                'id': timeoutID,
+                'title': $.jsString($.getIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet')),
+                'command': '(delaysay 1 (cpinput) has been timed out for ' + timeoutDuration + ' seconds by (cpdisplayname))/timeout (sanitizeuser (cpinput)) ' + timeoutDuration
+            };
+            cpcommands.push(odata);
+        }
+        $.inidb.del('channelPointsSettings', 'timeoutToggle');
+        $.inidb.del('channelPointsSettings', 'timeoutDuration');
+        $.inidb.del('channelPointsSettings', 'timeoutID');
+        $.inidb.del('channelPointsSettings', 'timeoutConfig');
+        $.inidb.del('channelPointsSettings', 'timeoutReward');
+
+        $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(cpcommands));
+
+        $.consoleLn('PhantomBot update 3.7.0.0 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.7.0.0', true);
+    }
+
     if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
         Packages.com.gmt2001.Console.warn.println('');
         Packages.com.gmt2001.Console.warn.println('');
@@ -627,7 +706,7 @@
     }
 
     $.bind('webPanelSocketConnect', function (event) {
-        setTimeout(function() {
+        setTimeout(function () {
             if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
                 $.panelsocketserver.panelNotification('warning', 'New Bot (Chat) OAuth required by Twitch to continue using ban/timeout/purge on the bot'
                         + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Bot',
