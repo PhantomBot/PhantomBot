@@ -74,6 +74,22 @@
     }
 
     /*
+     * @transformer escape
+     * @formula (escape str:str) escape \( \) to \\\( \\\) respectively
+     * @labels twitch discord noevent misc
+     * @note may double-escape existing \\\( \\\) to \\\\\( \\\\\)
+     * @cached
+     */
+    function escape(args) {
+        if ((match = args.args.match(/^ (.*)$/))) {
+            return {
+                result: match[1],
+                cache: true
+            };
+        }
+    }
+
+    /*
      * @transformer keywordcount
      * @formula (keywordcount keyword:str) increase the keyword count for the given keyword and return new count
      * @labels twitch keywordevent misc
@@ -185,6 +201,7 @@
         new $.transformers.transformer('code', ['twitch', 'discord', 'noevent', 'misc'], code),
         new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'noevent', 'misc'], encodeurl),
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
+        new $.transformers.transformer('escape', ['twitch', 'discord', 'noevent', 'misc'], escape),
         new $.transformers.transformer('keywordcount', ['twitch', 'keywordevent', 'misc'], keywordcount),
         new $.transformers.transformer('nl2br', ['twitch', 'discord', 'noevent', 'misc'], nl2br),
         new $.transformers.transformer('nl2x', ['twitch', 'discord', 'noevent', 'misc'], nl2x),
