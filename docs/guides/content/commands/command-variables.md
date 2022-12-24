@@ -1490,7 +1490,7 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
-- `(unescape str:str)` - unescape \\ \( \) to \ ( ) respectively
+- `(unescape str:str)` - unescape \\\( \\\) to \( \) respectively
 
 **Labels:** twitch discord noevent misc
 
