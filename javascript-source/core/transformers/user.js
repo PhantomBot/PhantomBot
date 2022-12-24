@@ -92,7 +92,7 @@
      * @labels twitch commandevent user
      * @cached
      */
-    function sender(args) {
+    function sanitizeuser(args) {
         return {
             result: $.user.sanitize(args.args.trim()),
             cache: true
