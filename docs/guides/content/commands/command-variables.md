@@ -1410,6 +1410,22 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### escape
+
+Defined in script: _./javascript-source/core/transformers/misc.js_
+
+**Formulas:**
+
+- `(escape str:str)` - escape \( \) to \\\( \\\) respectively
+
+**Labels:** twitch discord noevent misc
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### keywordcount
 
 Defined in script: _./javascript-source/core/transformers/misc.js_
