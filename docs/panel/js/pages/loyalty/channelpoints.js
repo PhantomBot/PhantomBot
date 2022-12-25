@@ -25,7 +25,7 @@ $(function () {
     const reloadRewards = function (cb) {
         socket.wsEvent('channelpoints_reload_rewards_ws', './handlers/channelPointsHandler.js', null, ['reward-reload'], function () {
             loadRewards(cb);
-        });
+        }, true);
     };
 
     const updateRewards = function (data, cb) {
@@ -59,6 +59,43 @@ $(function () {
             if (redeemable.id === id) {
                 return redeemable;
             }
+        }
+
+        return null;
+    };
+
+    const validateRedemptionSelect = function (obj) {
+        if (obj.attr('disabled') !== undefined) {
+            return 'The selected redeemable is already linked to another reward.';
+        } else if (obj.val().trim().length === 0) {
+            return 'You must select a redeemable to link.';
+        }
+        return null;
+    };
+
+    const handleInputColor = function (obj) {
+        return helpers.handleInput(obj, function (obj) {
+            let matched = obj.val().match(/^#[0-9A-F]{6}$/);
+
+            if (obj.val().length > 0 && matched === null) {
+                return 'Please enter a valid color code in hex format (for example, #9147FF).';
+            }
+
+            return null;
+        });
+    };
+
+    const handleToggledInputString = function (enabled, obj) {
+        if (enabled === 'true') {
+            return helpers.handleInputString(obj);
+        }
+
+        return null;
+    };
+
+    const handleToggledInputNumber = function (enabled, obj, min, max) {
+        if (enabled === 'true') {
+            return helpers.handleInputNumber(obj, min, max);
         }
 
         return null;
@@ -133,16 +170,12 @@ $(function () {
                         return;
                     }
 
-                    let commandid = command.id;
-                    let commandtitle = command.title;
-
-                    // Ask the user if he want to remove the command.
-                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
-                            'Successfully removed the reward for ' + commandtitle, function () {
+                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + command.title + '?', true,
+                            'Successfully removed the reward for ' + command.title, function () {
                                 let data = [];
-                                for (const command of commands) {
-                                    if (command.id !== commandid) {
-                                        data.push(structuredClone(command));
+                                for (const ccommand of commands) {
+                                    if (ccommand.id !== command.id) {
+                                        data.push(structuredClone(ccommand));
                                     }
                                 }
                                 updateRewards(data);
@@ -158,13 +191,10 @@ $(function () {
                         return;
                     }
 
-                    let commandid = command.id;
-                    let commandtitle = command.title;
-
                     helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
+                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', command.title, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
                             .append($('<div/>', {
                                 'class': 'box box-warning'
                             }).append($('<div/>', {
@@ -183,30 +213,27 @@ $(function () {
                                         + helpers.getBranch() + '" target="_blank">channelpoints</a> section of the command tags guide for tags that allow '
                                         + 'access to the redemption data'
                             })))
-                            // Append a text box for the command response.
                             .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
                                     'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                         let redemptionResponse = $('#redemption-response');
 
-                        // Handle each input to make sure they have a value.
                         switch (false) {
                             case helpers.handleInputString(redemptionResponse):
                                 break;
                             default:
                                 let data = [];
-                                for (const command of commands) {
-                                    if (command.id !== commandid) {
-                                        data.push(structuredClone(command));
+                                for (const ccommand of commands) {
+                                    if (ccommand.id !== command.id) {
+                                        data.push(structuredClone(ccommand));
                                     } else {
-                                        let newdata = structuredClone(command);
+                                        let newdata = structuredClone(ccommand);
                                         newdata.command = redemptionResponse;
                                         data.push(newdata);
                                     }
                                 }
                                 updateRewards(data, function () {
                                     $('#edit-channelpoints-reward').modal('hide');
-                                    // Tell the user the command was edited.
-                                    toastr.success('Successfully edited the reward for ' + commandtitle);
+                                    toastr.success('Successfully edited the reward for ' + command.title);
                                 });
                         }
                     }).modal('toggle');
@@ -220,7 +247,7 @@ $(function () {
     };
 
     const loadRedeemables = function (cb, updateTable) {
-        socket.query('channelpointslist', 'channelpoints_redeemables', {'managed': false}, function (e1) {
+        socket.query('channelpointslist', 'channelpoints_redeemables', null, function (e1) {
             socket.wsEvent('channelpoints_redeemable_get_managed_ws', './handlers/channelPointsHandler.js', null, ['redeemable-get-managed'], function (e2) {
                 if (e1.hasOwnProperty('data') && e1.data.length > 0) {
                     redeemables = structuredClone(e1.data);
@@ -266,6 +293,17 @@ $(function () {
                                 'html': $('<i/>', {
                                     'class': 'fa fa-edit'
                                 })
+                            })).append($('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-primary',
+                                'style': 'float: right',
+                                'data-redeemableid': redeemable.id,
+                                'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
+                                'disabled': managed.includes(redeemable.id) ? null : 'disabled',
+                                'title': managed.includes(redeemable.id) ? null : 'Can not edit redeemables that weren\'t created by the bot',
+                                'html': $('<i/>', {
+                                    'class': 'fa fa-' + (redeemable.is_paused ? 'play' : 'pause')
+                                })
                             })).html()
                         ]);
                     }
@@ -297,6 +335,30 @@ $(function () {
                         ]
                     });
 
+                    // On play/pause button.
+                    table.on('click', '.btn-primary', function () {
+                        let redeemable = findRedeemable($(this).data('redeemableid'));
+
+                        if (redeemable === null) {
+                            loadRedeemables();
+                            return;
+                        }
+
+                        let paused = !redeemable.is_paused;
+
+                        socket.wsEvent('channelpoints_redeemable_pause_ws', './handlers/channelPointsHandler.js', null,
+                                [
+                                    'redeemable-update-managed', redeemable.id, '', '', '', paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
+                                ], function (e) {
+                            loadRedeemables();
+                            if (e.success) {
+                                toastr.success('Successfully ' + (paused ? '' : 'un') + 'paused redeemable ' + redeemable.title + ' (' + redeemable.id + ')');
+                            } else {
+                                toastr.error('Failed to ' + (paused ? '' : 'un') + 'pause redeemable: ' + e.error);
+                            }
+                        }, true);
+                    });
+
                     // On delete button.
                     table.on('click', '.btn-danger', function () {
                         let redeemable = findRedeemable($(this).data('redeemableid'));
@@ -306,13 +368,9 @@ $(function () {
                             return;
                         }
 
-                        let redeemableid = redeemable.id;
-                        let redeemabletitle = redeemable.title;
-
-                        // Ask the user if he want to remove the command.
-                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
-                                'Successfully removed the redeemable ' + redeemabletitle, function () {
-                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemableid], function () {
+                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemable.title + '?', true,
+                                'Successfully removed the redeemable ' + redeemable.title, function () {
+                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemable.id], function () {
                                         loadRedeemables();
                                     }, true);
                                 });
@@ -320,50 +378,119 @@ $(function () {
 
                     // On edit button.
                     table.on('click', '.btn-warning', function () {
-                        alert('Not yet implemented');
-                        return;
-                        let command = findCommand($(this).data('commandid'));
+                        let redeemable = findRedeemable($(this).data('redeemableid'));
 
-                        if (command === null) {
-                            reloadRewards();
+                        if (redeemable === null) {
+                            loadRedeemables();
                             return;
                         }
-
-                        let commandid = command.id;
-                        let commandtitle = command.title;
-
-                        helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
+                        helpers.getAdvanceModal('edit-channelpoints-redeemable', 'Edit Redeemable', 'Save', $('<form/>', {
                             'role': 'form'
                         })
-                                .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
-                                // Append a text box for the command response.
-                                .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
-                                        'Response of the redemption. Uses command tags with labels: twitch, commandevent, and noevent. Available command parameters: (1) the '
-                                        + 'redeeming user\'s login name, (2) the redeeming user\'s display name, (3) the redeemable input box text (if used)')), function () {
-                            let redemptionResponse = $('#redemption-response');
+                                .append(helpers.getInputGroup('redeemable-title', 'text', 'Title', 'Do Something Cool', redeemable.title,
+                                        'The custom redeemable\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the '
+                                        + 'broadcaster\'s custom redeemables.'))
+                                .append(helpers.getInputGroup('redeemable-cost', 'number', 'Cost', '50', redeemable.cost,
+                                        'The cost of the redeemable, in Channel Points. The minimum is 1 point.'))
+                                .append($('<div/>', {
+                                    'class': 'collapse',
+                                    'id': 'advance-collapse',
+                                    'html': $('<form/>', {
+                                        'role': 'form'
+                                    })
+                                            .append(helpers.getCheckBox('redeemable-enabled', redeemable.is_enabled, 'Enabled',
+                                                    'Whether the redeemable is enabled. Viewers see only enabled redeemable.'))
+                                            .append(helpers.getCheckBox('redeemable-paused', redeemable.is_paused, 'Paused',
+                                                    'Whether the redeemable is currently paused. Viewers can\'t redeem paused redeemables.'))
+                                            .append(helpers.getInputGroup('redeemable-bgcolor', 'text', 'Background Color', '#9147FF', redeemable.background_color || '',
+                                                    'The background color to use for the redeemable. Specify the color using Hex format (for example, #9147FF).'))
+                                            .append(helpers.getCheckBox('redeemable-input-required', redeemable.is_user_input_required, 'Is User Input Required',
+                                                    'Whether the user needs to enter information when redeeming the redeemable.'))
+                                            .append(helpers.getInputGroup('redeemable-prompt', 'text', 'Prompt', 'Enter the Really Cool Phrase', redeemable.prompt || '',
+                                                    'The prompt shown to the viewer when they redeem the redeemable. The prompt is limited to a maximum of 200 '
+                                                    + 'characters.', true))
+                                            .append(helpers.getCheckBox('redeemable-max-stream-enabled', redeemable.max_per_stream_setting.is_enabled,
+                                                    'Is Max-Per-Stream Enabled',
+                                                    'Whether to limit the maximum number of redemptions allowed per live stream.'))
+                                            .append(helpers.getInputGroup('redeemable-max-stream', 'number', 'Max-Per-Stream', '1',
+                                                    redeemable.max_per_stream_setting.max_per_stream || '1',
+                                                    'The maximum number of redemptions allowed per live stream. The minimum value is 1.', true))
+                                            .append(helpers.getCheckBox('redeemable-max-user-stream-enabled', redeemable.max_per_user_per_stream_setting.is_enabled,
+                                                    'Is Max-Per-User-Per-Stream Enabled', 'Whether to limit the maximum number of redemptions allowed per user per stream.'))
+                                            .append(helpers.getInputGroup('redeemable-max-user-stream', 'number', 'Max-Per-User-Per-Stream', '1',
+                                                    redeemable.max_per_user_per_stream_setting.max_per_user_per_stream || '1',
+                                                    'The maximum number of redemptions allowed per user per stream. The minimum value is 1.', true))
+                                            .append(helpers.getCheckBox('redeemable-cooldown-enabled', redeemable.global_cooldown_setting.is_enabled,
+                                                    'Is Global Cooldown Enabled', 'Whether to apply a cooldown period between redemptions.'))
+                                            .append(helpers.getInputGroup('redeemable-cooldown', 'number', 'Global Cooldown', '1',
+                                                    redeemable.global_cooldown_setting.global_cooldown_seconds || '1',
+                                                    'The cooldown period, in seconds. The minimum value is 1; however, the minimum value is 60 for it to be shown '
+                                                    + 'in the Twitch UX.', true))
+                                            .append(helpers.getCheckBox('redeemable-fulfill', redeemable.should_redemptions_skip_request_queue,
+                                                    'Should Redemptions Skip Request Queue',
+                                                    'Whether redemptions should be set to fulfilled status immediately when a redeemable is redeemed.'))
+                                })), function () {
+                            let redeemableTitle = $('#redeemable-title'),
+                                    redeemableCost = $('#redeemable-cost'),
+                                    redeemableEnabled = $('#redeemable-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemablePaused = $('#redeemable-paused').is(':checked') ? 'true' : 'false',
+                                    redeemableBgcolor = $('#redeemable-bgcolor'),
+                                    redeemableInputRequired = $('#redeemable-input-required').is(':checked') ? 'true' : 'false',
+                                    redeemablePrompt = $('#redeemable-prompt'),
+                                    redeemableMaxStreamEnabled = $('redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemableMaxStream = $('redeemable-max-stream'),
+                                    redeemableMaxUserStreamEnabled = $('redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemableMaxUserStream = $('redeemable-max-user-stream'),
+                                    redeemableCooldownEnabled = $('redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemableCooldown = $('redeemable-cooldown'),
+                                    redeemableFulfill = $('redeemable-fulfill').is(':checked') ? 'true' : 'false';
 
-                            // Handle each input to make sure they have a value.
                             switch (false) {
-                                case helpers.handleInputString(redemptionResponse):
+                                case helpers.handleInputString(redeemableTitle):
+                                case helpers.handleInputNumber(redeemableCost, 1):
+                                case handleInputColor(redeemableBgcolor):
+                                case handleToggledInputString(redeemableInputRequired, redeemablePrompt):
+                                case handleToggledInputNumber(redeemableMaxStreamEnabled, redeemableMaxStream, 1):
+                                case handleToggledInputNumber(redeemableMaxUserStreamEnabled, redeemableMaxUserStream, 1):
+                                case handleToggledInputNumber(redeemableCooldownEnabled, redeemableCooldown, 1):
                                     break;
                                 default:
-                                    let data = [];
-                                    for (const command of commands) {
-                                        if (command.id !== commandid) {
-                                            data.push(structuredClone(command));
-                                        } else {
-                                            let newdata = structuredClone(command);
-                                            newdata.command = redemptionResponse;
-                                            data.push(newdata);
-                                        }
-                                    }
-                                    updateRewards(data, function () {
-                                        $('#edit-channelpoints-reward').modal('hide');
-                                        // Tell the user the command was edited.
-                                        toastr.success('Successfully edited the reward for ' + commandtitle);
-                                    });
+                                    socket.wsEvent('channelpoints_redeemable_edit_ws', './handlers/channelPointsHandler.js', null,
+                                            [
+                                                'redeemable-update-managed', redeemable.id, redeemableTitle.val(), redeemableCost.val(),
+                                                redeemableEnabled, redeemablePaused, redeemableBgcolor.val(),
+                                                redeemableInputRequired, redeemablePrompt.val(), redeemableMaxStreamEnabled, redeemableMaxStream.val(),
+                                                redeemableMaxUserStreamEnabled, redeemableMaxUserStream.val(), redeemableCooldownEnabled, redeemableCooldown.val(),
+                                                redeemableFulfill
+                                            ],
+                                            function (e) {
+                                                loadRedeemables();
+                                                $('#edit-channelpoints-redeemable').modal('hide');
+                                                if (e.success) {
+                                                    toastr.success('Successfully edited redeemable ' + redeemableTitle.val() + ' (' + redeemable.id + ')');
+                                                } else {
+                                                    toastr.error('Failed to edit redeemable (' + redeemable.id + '): ' + e.error);
+                                                }
+                                            }, true);
                             }
                         }).modal('toggle');
+
+                        $('#redeemable-input-required').on('click', function () {
+                            $('#redeemable-prompt').prop('disabled', !$(this).is(':checked'));
+                        });
+
+                        $('#redeemable-max-stream-enabled').on('click', function () {
+                            $('#redeemable-max-stream').prop('disabled', !$(this).is(':checked'));
+                        });
+
+                        $('#redeemable-max-user-stream-enabled').on('click', function () {
+                            $('#redeemable-max-user-stream').prop('disabled', !$(this).is(':checked'));
+                        });
+
+                        $('#redeemable-cooldown-enabled').on('click', function () {
+                            $('#redeemable-cooldown').prop('disabled', !$(this).is(':checked'));
+                        });
+
                         $('[data-toggle="tooltip"]').tooltip();
                     });
                 }
@@ -396,15 +523,6 @@ $(function () {
         });
     };
     init();
-
-    const validateRedemptionSelect = function (obj) {
-        if (obj.attr('disabled') !== undefined) {
-            return 'The selected redeemable is already linked to another reward.';
-        } else if (obj.val().trim().length === 0) {
-            return 'You must select a redeemable to link.';
-        }
-        return null;
-    };
 
     // Toggle for the module.
     $('#channelpointsModuleToggle').on('change', function () {
@@ -530,6 +648,104 @@ $(function () {
     });
 
     $('addcpredeemable-button').on('click', function () {
-        alert('Not yet implemented');
+        helpers.getAdvanceModal('add-channelpoints-redeemable', 'Add Redeemable', 'Save', $('<form/>', {
+            'role': 'form'
+        })
+                .append(helpers.getInputGroup('redeemable-title', 'text', 'Title', 'Do Something Cool', '',
+                        'The custom redeemable\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the '
+                        + 'broadcaster\'s custom redeemables.'))
+                .append(helpers.getInputGroup('redeemable-cost', 'number', 'Cost', '50', '50',
+                        'The cost of the redeemable, in Channel Points. The minimum is 1 point.'))
+                .append($('<div/>', {
+                    'class': 'collapse',
+                    'id': 'advance-collapse',
+                    'html': $('<form/>', {
+                        'role': 'form'
+                    })
+                            .append(helpers.getCheckBox('redeemable-enabled', true, 'Enabled',
+                                    'Whether the redeemable is enabled. Viewers see only enabled redeemable.'))
+                            .append(helpers.getInputGroup('redeemable-bgcolor', 'text', 'Background Color', '#9147FF', '',
+                                    'The background color to use for the redeemable. Specify the color using Hex format (for example, #9147FF).'))
+                            .append(helpers.getCheckBox('redeemable-input-required', false, 'Is User Input Required',
+                                    'Whether the user needs to enter information when redeeming the redeemable.'))
+                            .append(helpers.getInputGroup('redeemable-prompt', 'text', 'Prompt', 'Enter the Really Cool Phrase', '',
+                                    'The prompt shown to the viewer when they redeem the redeemable. The prompt is limited to a maximum of 200 '
+                                    + 'characters.', true))
+                            .append(helpers.getCheckBox('redeemable-max-stream-enabled', false, 'Is Max-Per-Stream Enabled',
+                                    'Whether to limit the maximum number of redemptions allowed per live stream.'))
+                            .append(helpers.getInputGroup('redeemable-max-stream', 'number', 'Max-Per-Stream', '1', '1',
+                                    'The maximum number of redemptions allowed per live stream. The minimum value is 1.', true))
+                            .append(helpers.getCheckBox('redeemable-max-user-stream-enabled', false, 'Is Max-Per-User-Per-Stream Enabled',
+                                    'Whether to limit the maximum number of redemptions allowed per user per stream.'))
+                            .append(helpers.getInputGroup('redeemable-max-user-stream', 'number', 'Max-Per-User-Per-Stream', '1', '1',
+                                    'The maximum number of redemptions allowed per user per stream. The minimum value is 1.', true))
+                            .append(helpers.getCheckBox('redeemable-cooldown-enabled', false, 'Is Global Cooldown Enabled',
+                                    'Whether to apply a cooldown period between redemptions.'))
+                            .append(helpers.getInputGroup('redeemable-cooldown', 'number', 'Global Cooldown', '1', '1',
+                                    'The cooldown period, in seconds. The minimum value is 1; however, the minimum value is 60 for it to be shown '
+                                    + 'in the Twitch UX.', true))
+                            .append(helpers.getCheckBox('redeemable-fulfill', false, 'Should Redemptions Skip Request Queue',
+                                    'Whether redemptions should be set to fulfilled status immediately when a redeemable is redeemed.'))
+                })), function () {
+            let redeemableTitle = $('#redeemable-title'),
+                    redeemableCost = $('#redeemable-cost'),
+                    redeemableEnabled = $('#redeemable-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableBgcolor = $('#redeemable-bgcolor'),
+                    redeemableInputRequired = $('#redeemable-input-required').is(':checked') ? 'true' : 'false',
+                    redeemablePrompt = $('#redeemable-prompt'),
+                    redeemableMaxStreamEnabled = $('redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableMaxStream = $('redeemable-max-stream'),
+                    redeemableMaxUserStreamEnabled = $('redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableMaxUserStream = $('redeemable-max-user-stream'),
+                    redeemableCooldownEnabled = $('redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableCooldown = $('redeemable-cooldown'),
+                    redeemableFulfill = $('redeemable-fulfill').is(':checked') ? 'true' : 'false';
+
+            switch (false) {
+                case helpers.handleInputString(redeemableTitle):
+                case helpers.handleInputNumber(redeemableCost, 1):
+                case handleInputColor(redeemableBgcolor):
+                case handleToggledInputString(redeemableInputRequired, redeemablePrompt):
+                case handleToggledInputNumber(redeemableMaxStreamEnabled, redeemableMaxStream, 1):
+                case handleToggledInputNumber(redeemableMaxUserStreamEnabled, redeemableMaxUserStream, 1):
+                case handleToggledInputNumber(redeemableCooldownEnabled, redeemableCooldown, 1):
+                    break;
+                default:
+                    socket.wsEvent('channelpoints_redeemable_add_ws', './handlers/channelPointsHandler.js', null,
+                            [
+                                'redeemable-add-managed', redeemableTitle.val(), redeemableCost.val(), redeemableEnabled, redeemableBgcolor.val(),
+                                redeemableInputRequired, redeemablePrompt.val(), redeemableMaxStreamEnabled, redeemableMaxStream.val(),
+                                redeemableMaxUserStreamEnabled, redeemableMaxUserStream.val(), redeemableCooldownEnabled, redeemableCooldown.val(),
+                                redeemableFulfill
+                            ],
+                            function (e) {
+                                loadRedeemables();
+                                $('#add-channelpoints-redeemable').modal('hide');
+                                if (e.success) {
+                                    toastr.success('Successfully added redeemable ' + redeemableTitle.val() + ' (' + e.id + ')');
+                                } else {
+                                    toastr.error('Failed to add redeemable: ' + e.error);
+                                }
+                            }, true);
+            }
+        }).modal('toggle');
+
+        $('#redeemable-input-required').on('click', function () {
+            $('#redeemable-prompt').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('#redeemable-max-stream-enabled').on('click', function () {
+            $('#redeemable-max-stream').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('#redeemable-max-user-stream-enabled').on('click', function () {
+            $('#redeemable-max-user-stream').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('#redeemable-cooldown-enabled').on('click', function () {
+            $('#redeemable-cooldown').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
     });
 });
