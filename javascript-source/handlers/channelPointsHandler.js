@@ -289,6 +289,7 @@
                 switch ($.jsString(args[0])) {
                     case 'reward-reload':
                         updateChannelPointsConfig();
+                        $.panel.sendAck(event.getId());
                         break;
                     case 'redeemable-reload-managed':
                         reloadManagedRedeemables();
@@ -314,8 +315,10 @@
                     case 'redeemable-add-managed':
                         //                                      title    cost
                         var addrsp = $.helix.createCustomReward(args[1], parseInt(args[2]),
-                                //is_enabled                              background_color  is_user_input_required  prompt
-                                args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'), args[6],
+                                //is_enabled                              background_color  is_user_input_required
+                                args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'),
+                                //prompt
+                                args[5].equals('true') ? args[6] : null,
                                 //is_max_per_stream_enabled                      max_per_stream
                                 args[7].equals('true'), args[7].equals('true') ? parseInt(args[8]) : null,
                                 //is_max_per_user_per_stream_enabled             max_per_user_per_stream
@@ -354,7 +357,7 @@
                                 //is_enabled            is_paused                                 background_color
                                 args[4].equals('true'), args[5].equals('true'), args[6].isBlank() ? null : args[6],
                                 //is_user_input_required  prompt
-                                args[7].equals('true'), args[8],
+                                args[7].equals('true'), args[7].equals('true') ? args[8] : null,
                                 //is_max_per_stream_enabled                      max_per_stream
                                 args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
                                 //is_max_per_user_per_stream_enabled               max_per_user_per_stream

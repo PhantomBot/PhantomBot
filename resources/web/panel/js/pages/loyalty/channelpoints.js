@@ -25,7 +25,7 @@ $(function () {
     const reloadRewards = function (cb) {
         socket.wsEvent('channelpoints_reload_rewards_ws', './handlers/channelPointsHandler.js', null, ['reward-reload'], function () {
             loadRewards(cb);
-        });
+        }, true);
     };
 
     const updateRewards = function (data, cb) {
