@@ -64,6 +64,43 @@ $(function () {
         return null;
     };
 
+    const validateRedemptionSelect = function (obj) {
+        if (obj.attr('disabled') !== undefined) {
+            return 'The selected redeemable is already linked to another reward.';
+        } else if (obj.val().trim().length === 0) {
+            return 'You must select a redeemable to link.';
+        }
+        return null;
+    };
+
+    const handleInputColor = function (obj) {
+        return helpers.handleInput(obj, function (obj) {
+            let matched = obj.val().match(/^#[0-9A-F]{6}$/);
+
+            if (obj.val().length > 0 && matched === null) {
+                return 'Please enter a valid color code in hex format (for example, #9147FF).';
+            }
+
+            return null;
+        });
+    };
+
+    const handleToggledInputString = function (enabled, obj) {
+        if (enabled === 'true') {
+            return helpers.handleInputString(obj);
+        }
+
+        return null;
+    };
+
+    const handleToggledInputNumber = function (enabled, obj, min, max) {
+        if (enabled === 'true') {
+            return helpers.handleInputNumber(obj, min, max);
+        }
+
+        return null;
+    };
+
     const loadRewards = function (cb, updateTable) {
         // Query custom commands.
         socket.getDBValues('channelpoints_get', {
@@ -133,15 +170,12 @@ $(function () {
                         return;
                     }
 
-                    let commandid = command.id;
-                    let commandtitle = command.title;
-
-                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
-                            'Successfully removed the reward for ' + commandtitle, function () {
+                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + command.title + '?', true,
+                            'Successfully removed the reward for ' + command.title, function () {
                                 let data = [];
-                                for (const command of commands) {
-                                    if (command.id !== commandid) {
-                                        data.push(structuredClone(command));
+                                for (const ccommand of commands) {
+                                    if (ccommand.id !== command.id) {
+                                        data.push(structuredClone(ccommand));
                                     }
                                 }
                                 updateRewards(data);
@@ -157,13 +191,10 @@ $(function () {
                         return;
                     }
 
-                    let commandid = command.id;
-                    let commandtitle = command.title;
-
                     helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', commandtitle, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
+                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', command.title, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
                             .append($('<div/>', {
                                 'class': 'box box-warning'
                             }).append($('<div/>', {
@@ -191,18 +222,18 @@ $(function () {
                                 break;
                             default:
                                 let data = [];
-                                for (const command of commands) {
-                                    if (command.id !== commandid) {
-                                        data.push(structuredClone(command));
+                                for (const ccommand of commands) {
+                                    if (ccommand.id !== command.id) {
+                                        data.push(structuredClone(ccommand));
                                     } else {
-                                        let newdata = structuredClone(command);
+                                        let newdata = structuredClone(ccommand);
                                         newdata.command = redemptionResponse;
                                         data.push(newdata);
                                     }
                                 }
                                 updateRewards(data, function () {
                                     $('#edit-channelpoints-reward').modal('hide');
-                                    toastr.success('Successfully edited the reward for ' + commandtitle);
+                                    toastr.success('Successfully edited the reward for ' + command.title);
                                 });
                         }
                     }).modal('toggle');
@@ -313,12 +344,11 @@ $(function () {
                             return;
                         }
 
-                        let redeemableid = redeemable.id;
                         let paused = !redeemable.is_paused;
 
                         socket.wsEvent('channelpoints_redeemable_pause_ws', './handlers/channelPointsHandler.js', null,
                                 [
-                                    'redeemable-update-managed', redeemableid, '', '', '', paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
+                                    'redeemable-update-managed', redeemable.id, '', '', '', paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
                                 ], function (e) {
                             loadRedeemables();
                             if (e.success) {
@@ -338,12 +368,9 @@ $(function () {
                             return;
                         }
 
-                        let redeemableid = redeemable.id;
-                        let redeemabletitle = redeemable.title;
-
-                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
-                                'Successfully removed the redeemable ' + redeemabletitle, function () {
-                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemableid], function () {
+                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemable.title + '?', true,
+                                'Successfully removed the redeemable ' + redeemable.title, function () {
+                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemable.id], function () {
                                         loadRedeemables();
                                     }, true);
                                 });
@@ -427,43 +454,6 @@ $(function () {
         });
     };
     init();
-
-    const validateRedemptionSelect = function (obj) {
-        if (obj.attr('disabled') !== undefined) {
-            return 'The selected redeemable is already linked to another reward.';
-        } else if (obj.val().trim().length === 0) {
-            return 'You must select a redeemable to link.';
-        }
-        return null;
-    };
-
-    const handleInputColor = function (obj) {
-        return helpers.handleInput(obj, function (obj) {
-            let matched = obj.val().match(/^#[0-9A-F]{6}$/);
-
-            if (obj.val().length > 0 && matched === null) {
-                return 'Please enter a valid color code in hex format (for example, #9147FF).';
-            }
-
-            return null;
-        });
-    };
-
-    const handleToggledInputString = function (enabled, obj) {
-        if (enabled === 'true') {
-            return helpers.handleInputString(obj);
-        }
-
-        return null;
-    };
-
-    const handleToggledInputNumber = function (enabled, obj, min, max) {
-        if (enabled === 'true') {
-            return helpers.handleInputNumber(obj, min, max);
-        }
-
-        return null;
-    };
 
     // Toggle for the module.
     $('#channelpointsModuleToggle').on('change', function () {
