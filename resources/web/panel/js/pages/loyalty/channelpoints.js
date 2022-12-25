@@ -406,6 +406,34 @@ $(function () {
         return null;
     };
 
+    const handleInputColor = function (obj) {
+        return helpers.handleInput(obj, function (obj) {
+            let matched = obj.val().match(/^#[0-9A-F]{6}$/);
+
+            if (obj.val().length > 0 && matched === null) {
+                return 'Please enter a valid color code in hex format (for example, #9147FF).';
+            }
+
+            return null;
+        });
+    };
+
+    const handleToggledInputString = function (enabled, obj) {
+        if (enabled === 'true') {
+            return helpers.handleInputString(obj);
+        }
+
+        return null;
+    };
+
+    const handleToggledInputNumber = function (enabled, obj, min, max) {
+        if (enabled === 'true') {
+            return helpers.handleInputNumber(obj, min, max);
+        }
+
+        return null;
+    };
+
     // Toggle for the module.
     $('#channelpointsModuleToggle').on('change', function () {
         // Enable the module then query the data.
@@ -530,6 +558,102 @@ $(function () {
     });
 
     $('addcpredeemable-button').on('click', function () {
-        alert('Not yet implemented');
+        helpers.getAdvanceModal('add-channelpoints-redeemable', 'Add Redeemable', 'Save', $('<form/>', {
+            'role': 'form'
+        })
+                .append(helpers.getInputGroup('redeemable-title', 'text', 'Title', 'Do Something Cool', '',
+                        'The custom redeemable\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the '
+                        + 'broadcaster\'s custom redeemables.'))
+                .append(helpers.getInputGroup('redeemable-cost', 'number', 'Cost', '50', '50',
+                        'The cost of the redeemable, in Channel Points. The minimum is 1 point.'))
+                .append($('<div/>', {
+                    'class': 'collapse',
+                    'id': 'advance-collapse',
+                    'html': $('<form/>', {
+                        'role': 'form'
+                    })
+                            .append(helpers.getCheckBox('redeemable-enabled', true, 'Enabled',
+                                    'Whether the redeemable is enabled. Viewers see only enabled redeemable.'))
+                            .append(helpers.getInputGroup('redeemable-bgcolor', 'text', 'Background Color', '#9147FF', '',
+                                    'The background color to use for the redeemable. Specify the color using Hex format (for example, #9147FF).'))
+                            .append(helpers.getCheckBox('redeemable-input-required', false, 'Is User Input Required',
+                                    'Whether the user needs to enter information when redeeming the redeemable.'))
+                            .append(helpers.getInputGroup('redeemable-prompt', 'text', 'Prompt', 'Enter the Really Cool Phrase', '',
+                                    'The prompt shown to the viewer when they redeem the redeemable. The prompt is limited to a maximum of 200 '
+                                    + 'characters.', true))
+                            .append(helpers.getCheckBox('redeemable-max-stream-enabled', false, 'Is Max-Per-Stream Enabled',
+                                    'Whether to limit the maximum number of redemptions allowed per live stream.'))
+                            .append(helpers.getInputGroup('redeemable-max-stream', 'number', 'Max-Per-Stream', '1', '1',
+                                    'The maximum number of redemptions allowed per live stream. The minimum value is 1.', true))
+                            .append(helpers.getCheckBox('redeemable-max-user-stream-enabled', false, 'Is Max-Per-User-Per-Stream Enabled',
+                                    'Whether to limit the maximum number of redemptions allowed per user per stream.'))
+                            .append(helpers.getInputGroup('redeemable-max-user-stream', 'number', 'Max-Per-User-Per-Stream', '1', '1',
+                                    'The maximum number of redemptions allowed per user per stream. The minimum value is 1.', true))
+                            .append(helpers.getCheckBox('redeemable-cooldown-enabled', false, 'Is Global Cooldown Enabled',
+                                    'Whether to apply a cooldown period between redemptions.'))
+                            .append(helpers.getInputGroup('redeemable-cooldown', 'number', 'Global Cooldown', '1', '1',
+                                    'The cooldown period, in seconds. The minimum value is 1; however, the minimum value is 60 for it to be shown '
+                                    + 'in the Twitch UX.', true))
+                            .append(helpers.getCheckBox('redeemable-fulfill', false, 'Should Redemptions Skip Request Queue',
+                                    'Whether redemptions should be set to fulfilled status immediately when a redeemable is redeemed.'))
+                })), function () {
+            let redeemableTitle = $('#redeemable-title'),
+                    redeemableCost = $('#redeemable-cost'),
+                    redeemableEnabled = $('#redeemable-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableBgcolor = $('#redeemable-bgcolor'),
+                    redeemableInputRequired = $('#redeemable-input-required').is(':checked') ? 'true' : 'false',
+                    redeemablePrompt = $('#redeemable-prompt'),
+                    redeemableMaxStreamEnabled = $('redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableMaxStream = $('redeemable-max-stream'),
+                    redeemableMaxUserStreamEnabled = $('redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableMaxUserStream = $('redeemable-max-user-stream'),
+                    redeemableCooldownEnabled = $('redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableCooldown = $('redeemable-cooldown'),
+                    redeemableFulfill = $('redeemable-fulfill').is(':checked') ? 'true' : 'false';
+
+            switch (false) {
+                case helpers.handleInputString(redeemableTitle):
+                case helpers.handleInputNumber(redeemableCost, 1):
+                case handleInputColor(redeemableBgcolor):
+                case handleToggledInputString(redeemableInputRequired, redeemablePrompt):
+                case handleToggledInputNumber(redeemableMaxStreamEnabled, redeemableMaxStream, 1):
+                case handleToggledInputNumber(redeemableMaxUserStreamEnabled, redeemableMaxUserStream, 1):
+                case handleToggledInputNumber(redeemableCooldownEnabled, redeemableCooldown, 1):
+                    break;
+                default:
+                    socket.wsEvent('channelpoints_redeemable_add_ws', './handlers/channelPointsHandler.js', null,
+                            [
+                                'redeemable-add-managed', redeemableTitle.val(), redeemableCost.val(), redeemableEnabled, redeemableBgcolor.val(),
+                                redeemableInputRequired, redeemablePrompt.val(), redeemableMaxStreamEnabled, redeemableMaxStream.val(),
+                                redeemableMaxUserStreamEnabled, redeemableMaxUserStream.val(), redeemableCooldownEnabled, redeemableCooldown.val(),
+                                redeemableFulfill
+                            ],
+                            function (e) {
+                                loadRedeemables();
+                                $('#add-channelpoints-redeemable').modal('hide');
+                                if (e.success) {
+                                    toastr.success('Successfully added redeemable ' + redeemableTitle.val() + ' (' + e.id + ')');
+                                } else {
+                                    toastr.error('Failed to add redeemable: ' + e.error);
+                                }
+                            }, true);
+            }
+        }).modal('toggle');
+
+        $('#redeemable-input-required').on('click', function () {
+            $('#redeemable-prompt').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('#redeemable-max-stream-enabled').on('click', function () {
+            $('#redeemable-max-stream').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('#redeemable-max-user-stream-enabled').on('click', function () {
+            $('#redeemable-max-user-stream').prop('disabled', !$(this).is(':checked'));
+        });
+
+        $('#redeemable-cooldown-enabled').on('click', function () {
+            $('#redeemable-cooldown').prop('disabled', !$(this).is(':checked'));
+        });
     });
 });
