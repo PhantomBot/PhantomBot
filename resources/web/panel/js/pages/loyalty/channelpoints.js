@@ -136,7 +136,6 @@ $(function () {
                     let commandid = command.id;
                     let commandtitle = command.title;
 
-                    // Ask the user if he want to remove the command.
                     helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + commandtitle + '?', true,
                             'Successfully removed the reward for ' + commandtitle, function () {
                                 let data = [];
@@ -183,12 +182,10 @@ $(function () {
                                         + helpers.getBranch() + '" target="_blank">channelpoints</a> section of the command tags guide for tags that allow '
                                         + 'access to the redemption data'
                             })))
-                            // Append a text box for the command response.
                             .append(helpers.getTextAreaGroup('redemption-response', 'text', 'Response', '', command.command,
                                     'Response of the redemption. Uses command tags with labels: twitch, commandevent, noevent, and channelpointsevent')), function () {
                         let redemptionResponse = $('#redemption-response');
 
-                        // Handle each input to make sure they have a value.
                         switch (false) {
                             case helpers.handleInputString(redemptionResponse):
                                 break;
@@ -205,7 +202,6 @@ $(function () {
                                 }
                                 updateRewards(data, function () {
                                     $('#edit-channelpoints-reward').modal('hide');
-                                    // Tell the user the command was edited.
                                     toastr.success('Successfully edited the reward for ' + commandtitle);
                                 });
                         }
@@ -220,7 +216,7 @@ $(function () {
     };
 
     const loadRedeemables = function (cb, updateTable) {
-        socket.query('channelpointslist', 'channelpoints_redeemables', {'managed': false}, function (e1) {
+        socket.query('channelpointslist', 'channelpoints_redeemables', null, function (e1) {
             socket.wsEvent('channelpoints_redeemable_get_managed_ws', './handlers/channelPointsHandler.js', null, ['redeemable-get-managed'], function (e2) {
                 if (e1.hasOwnProperty('data') && e1.data.length > 0) {
                     redeemables = structuredClone(e1.data);
@@ -266,6 +262,17 @@ $(function () {
                                 'html': $('<i/>', {
                                     'class': 'fa fa-edit'
                                 })
+                            })).append($('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-primary',
+                                'style': 'float: right',
+                                'data-redeemableid': redeemable.id,
+                                'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
+                                'disabled': managed.includes(redeemable.id) ? null : 'disabled',
+                                'title': managed.includes(redeemable.id) ? null : 'Can not edit redeemables that weren\'t created by the bot',
+                                'html': $('<i/>', {
+                                    'class': 'fa fa-' + (redeemable.is_paused ? 'play' : 'pause')
+                                })
                             })).html()
                         ]);
                     }
@@ -297,6 +304,31 @@ $(function () {
                         ]
                     });
 
+                    // On play/pause button.
+                    table.on('click', '.btn-primary', function () {
+                        let redeemable = findRedeemable($(this).data('redeemableid'));
+
+                        if (redeemable === null) {
+                            loadRedeemables();
+                            return;
+                        }
+
+                        let redeemableid = redeemable.id;
+                        let paused = !redeemable.is_paused;
+
+                        socket.wsEvent('channelpoints_redeemable_pause_ws', './handlers/channelPointsHandler.js', null,
+                        [
+                            'redeemable-update-managed', redeemableid, '', '', '', paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
+                        ], function (e) {
+                            loadRedeemables();
+                            if (e.success) {
+                                    toastr.success('Successfully ' + (paused ? '' : 'un') + 'paused redeemable ' + redeemable.title + ' (' + redeemable.id + ')');
+                                } else {
+                                    toastr.error('Failed to ' + (paused ? '' : 'un') + 'pause redeemable: ' + e.error);
+                                }
+                        }, true);
+                    });
+
                     // On delete button.
                     table.on('click', '.btn-danger', function () {
                         let redeemable = findRedeemable($(this).data('redeemableid'));
@@ -309,7 +341,6 @@ $(function () {
                         let redeemableid = redeemable.id;
                         let redeemabletitle = redeemable.title;
 
-                        // Ask the user if he want to remove the command.
                         helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemabletitle + '?', true,
                                 'Successfully removed the redeemable ' + redeemabletitle, function () {
                                     socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemableid], function () {
