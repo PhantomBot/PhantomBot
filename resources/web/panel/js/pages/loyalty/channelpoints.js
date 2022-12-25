@@ -317,15 +317,15 @@ $(function () {
                         let paused = !redeemable.is_paused;
 
                         socket.wsEvent('channelpoints_redeemable_pause_ws', './handlers/channelPointsHandler.js', null,
-                        [
-                            'redeemable-update-managed', redeemableid, '', '', '', paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
-                        ], function (e) {
+                                [
+                                    'redeemable-update-managed', redeemableid, '', '', '', paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
+                                ], function (e) {
                             loadRedeemables();
                             if (e.success) {
-                                    toastr.success('Successfully ' + (paused ? '' : 'un') + 'paused redeemable ' + redeemable.title + ' (' + redeemable.id + ')');
-                                } else {
-                                    toastr.error('Failed to ' + (paused ? '' : 'un') + 'pause redeemable: ' + e.error);
-                                }
+                                toastr.success('Successfully ' + (paused ? '' : 'un') + 'paused redeemable ' + redeemable.title + ' (' + redeemable.id + ')');
+                            } else {
+                                toastr.error('Failed to ' + (paused ? '' : 'un') + 'pause redeemable: ' + e.error);
+                            }
                         }, true);
                     });
 
@@ -686,5 +686,7 @@ $(function () {
         $('#redeemable-cooldown-enabled').on('click', function () {
             $('#redeemable-cooldown').prop('disabled', !$(this).is(':checked'));
         });
+
+        $('[data-toggle="tooltip"]').tooltip();
     });
 });
