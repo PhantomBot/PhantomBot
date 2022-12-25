@@ -289,6 +289,7 @@
                 switch ($.jsString(args[0])) {
                     case 'reward-reload':
                         updateChannelPointsConfig();
+                        $.panel.sendAck(event.getId());
                         break;
                     case 'redeemable-reload-managed':
                         reloadManagedRedeemables();
@@ -314,8 +315,10 @@
                     case 'redeemable-add-managed':
                         //                                      title    cost
                         var addrsp = $.helix.createCustomReward(args[1], parseInt(args[2]),
-                                //is_enabled                              background_color  is_user_input_required  prompt
-                                args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'), args[6],
+                                //is_enabled                              background_color  is_user_input_required
+                                args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'),
+                                //prompt
+                                args[5].equals('true') ? args[6] : null,
                                 //is_max_per_stream_enabled                      max_per_stream
                                 args[7].equals('true'), args[7].equals('true') ? parseInt(args[8]) : null,
                                 //is_max_per_user_per_stream_enabled             max_per_user_per_stream
@@ -349,20 +352,22 @@
                         }
                         break;
                     case 'redeemable-update-managed':
-                        //                                         id       title    cost
-                        var updatersp = $.helix.updateCustomReward(args[1], args[2], parseInt(args[3]),
-                                //is_enabled            is_paused                                 background_color
-                                args[4].equals('true'), args[5].equals('true'), args[6].isBlank() ? null : args[6],
-                                //is_user_input_required  prompt
-                                args[7].equals('true'), args[8],
-                                //is_max_per_stream_enabled                      max_per_stream
-                                args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
-                                //is_max_per_user_per_stream_enabled               max_per_user_per_stream
-                                args[11].equals('true'), args[11].equals('true') ? parseInt(args[12]) : null,
-                                //is_global_cooldown_enabled                       global_cooldown_seconds
-                                args[13].equals('true'), args[13].equals('true') ? parseInt(args[14]) : null,
-                                //should_redemptions_skip_request_queue
-                                args[15].equals('true'));
+                        //                                         id                                  title
+                        var updatersp = $.helix.updateCustomReward(args[1], args[2].isBlank() ? null : args[2],
+                                //                         cost                                          is_enabled
+                                args[3].isBlank() ? null : parseInt(args[3]), args[4].isBlank() ? null : args[4].equals('true'),
+                                //                         is_paused                                          background_color
+                                args[5].isBlank() ? null : args[5].equals('true'), args[6].isBlank() ? null : args[6],
+                                //                         is_user_input_required                           prompt
+                                args[7].isBlank() ? null : args[7].equals('true'), args[7].equals('true') ? args[8] : null,
+                                //                         is_max_per_stream_enabled                        max_per_stream
+                                args[9].isBlank() ? null : args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
+                                //                          is_max_per_user_per_stream_enabled                 max_per_user_per_stream
+                                args[11].isBlank() ? null : args[11].equals('true'), args[11].equals('true') ? parseInt(args[12]) : null,
+                                //                          is_global_cooldown_enabled                         global_cooldown_seconds
+                                args[13].isBlank() ? null : args[13].equals('true'), args[13].equals('true') ? parseInt(args[14]) : null,
+                                //                          should_redemptions_skip_request_queue
+                                args[15].isBlank() ? null : args[15].equals('true'));
 
                         if (updatersp.getInt('_http') === 200 && updatersp.has('data')) {
                             $.panel.sendObject(event.getId(), {'success': true});
