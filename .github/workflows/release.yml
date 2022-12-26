@@ -110,13 +110,13 @@ jobs:
         REPONAME: ${{ github.repository }}
       run: |
         echo ${GITHUB_REF:10}
-        echo "##[set-output name=branch;]$(echo ${GITHUB_REF:10})"
+        echo "branch=${GITHUB_REF:10}" >> $GITHUB_OUTPUT
         echo ${GITHUB_REF:11}
-        echo "##[set-output name=version;]$(echo ${GITHUB_REF:11})"
+        echo "version=${GITHUB_REF:11}" >> $GITHUB_OUTPUT
         echo ${GITHUB_SHA:0:7}
-        echo "##[set-output name=revision;]$(echo ${GITHUB_SHA:0:7})"
+        echo "revision=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
         echo ${REPONAME} | awk '{print tolower($0)}'
-        echo "##[set-output name=ghcrrepo;]$(echo ${REPONAME} | awk '{print tolower($0)}')"
+        echo "ghcrrepo=$(echo ${REPONAME} | awk '{print tolower($0)}')" >> $GITHUB_OUTPUT
     - name: Check Docker Credentials
       id: check_docker_credentials
       env:
@@ -126,16 +126,16 @@ jobs:
       run: |
         if [ "${DOCKER_USER}" == "" ]; then
           echo "Missing User"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         elif [ "${DOCKER_CLITOKEN}" == "" ]; then
           echo "Missing Cli Token"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         elif [ "${DOCKER_REPO_STABLE}" == "" ]; then
           echo "Missing Repo"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         else
           echo "All secrets present"
-          echo "##[set-output name=missingsecrets;]$(echo no)"
+          echo "missingsecrets=no" >> $GITHUB_OUTPUT
         fi
     - name: Check Rollbar Credentials
       id: check_rollbar_credentials
@@ -144,10 +144,10 @@ jobs:
       run: |
         if [ "${ROLLBAR_ACCESS_TOKEN}" == "" ]; then
           echo "Missing Rollbar Access Token"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         else
           echo "All secrets present"
-          echo "##[set-output name=missingsecrets;]$(echo no)"
+          echo "missingsecrets=no" >> $GITHUB_OUTPUT
         fi
     - name: Check Rollbar Passthrough Server Credentials
       id: check_server_credentials
@@ -157,13 +157,13 @@ jobs:
       run: |
         if [ "${ACCESS_TOKEN}" == "" ]; then
           echo "Missing Access Token"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         elif [ "${URL}" == "" ]; then
           echo "Missing URL"
-          echo "##[set-output name=missingsecrets;]$(echo yes)"
+          echo "missingsecrets=yes" >> $GITHUB_OUTPUT
         else
           echo "All secrets present"
-          echo "##[set-output name=missingsecrets;]$(echo no)"
+          echo "missingsecrets=no" >> $GITHUB_OUTPUT
         fi
   build:
     name: Build and upload on ubuntu-latest with JDK 11
