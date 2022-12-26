@@ -21,6 +21,7 @@ $(function () {
     let commands = [];
     let redeemables = [];
     let managed = [];
+    let convert = null;
 
     const reloadRewards = function (cb) {
         socket.wsEvent('channelpoints_reload_rewards_ws', './handlers/channelPointsHandler.js', null, ['reward-reload'], function () {
@@ -170,7 +171,8 @@ $(function () {
                         return;
                     }
 
-                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for ' + command.title + '?', true,
+                    helpers.getConfirmDeleteModal('channelpoints_reward_modal_remove', 'Are you sure you want to remove the reward for '
+                            + command.title + '?', true,
                             'Successfully removed the reward for ' + command.title, function () {
                                 let data = [];
                                 for (const ccommand of commands) {
@@ -194,7 +196,8 @@ $(function () {
                     helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', command.title, 'Title of the linked Channel Points redeemable. This cannot be edited.', true))
+                            .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', command.title, 'Title of the linked '
+                                    + 'Channel Points redeemable. This cannot be edited.', true))
                             .append($('<div/>', {
                                 'class': 'box box-warning'
                             }).append($('<div/>', {
@@ -368,9 +371,11 @@ $(function () {
                             return;
                         }
 
-                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable ' + redeemable.title + '?', true,
+                        helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable '
+                                + redeemable.title + '?', true,
                                 'Successfully removed the redeemable ' + redeemable.title, function () {
-                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null, ['redeemable-delete-managed', redeemable.id], function () {
+                                    socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null,
+                                            ['redeemable-delete-managed', redeemable.id], function () {
                                         loadRedeemables();
                                     }, true);
                                 });
@@ -527,7 +532,8 @@ $(function () {
     // Toggle for the module.
     $('#channelpointsModuleToggle').on('change', function () {
         // Enable the module then query the data.
-        socket.sendCommandSync('channelpoints_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./handlers/channelPointsHandler.js', init);
+        socket.sendCommandSync('channelpoints_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent')
+                + ' ./handlers/channelPointsHandler.js', init);
     });
 
     $('#refreshcprewards-button').on('click', function () {
@@ -644,7 +650,207 @@ $(function () {
     });
 
     $('#convertcpredeemable-button').on('click', function () {
-        alert('Not yet implemented');
+        loadRedeemables(function () {
+            let redeemableSelector = null;
+            let otherHtml = null;
+
+            if (convert !== null && managed.includes(convert.id)) {
+                convert = null;
+            }
+
+            if (redeemables.length > 0) {
+                let options = [];
+                for (const redemption of redeemables) {
+                    let entry = {};
+                    entry._id = redemption.id;
+                    entry.name = redemption.title;
+                    entry.value = redemption.id;
+
+                    if (convert !== null && redemption.id === convert.id) {
+                        entry.selected = true;
+                    }
+
+                    if (!managed.includes(redemption.id)) {
+                        options.push(entry);
+                    }
+                }
+
+                if (options.length > 0) {
+                    redeemableSelector = helpers.getDropdownGroup('redemption-select', 'Redeemable to Convert', (convert !== null ? convert.title : ''),
+                            options, 'The Channel Points redeemable to convert.');
+                }
+            }
+
+            if (redeemables.length === 0 || redeemableSelector === null) {
+                redeemableSelector = $('<div/>', {
+                    'class': 'box box-danger'
+                }).append($('<div/>', {
+                    'class': 'box-body',
+                    'html': 'No convertable redeemables found'
+                }));
+            } else {
+                otherHtml = [
+                    $('<div/>', {
+                        'class': 'box box-warning'
+                    }).append($('<div/>', {
+                        'class': 'box-header',
+                        'html': 'Warning'
+                    })).append($('<div/>', {
+                        'class': 'box-body',
+                        'html': 'Once step 3 is completed, do not close or navigate away from this page until the conversion is complete. '
+                                + 'Closing this dialog is okay, but data on the to-be-converted redeemable may be lost if the entire page is closed or '
+                                + 'you navigate away from the page'
+                    })),
+                    $('<div/>', {
+                        'class': 'box box-info'
+                    }).append($('<div/>', {
+                        'class': 'box-body',
+                        'html': 'Anyone with the panel login can use this dialog to perform the conversion, but the broadcaster is required to perform'
+                                + ' steps 3 and 5'
+                    })),
+                    $('<div/>', {
+                        'class': 'box box-info'
+                    }).append($('<div/>', {
+                        'class': 'box-body',
+                        'html': 'Due to limitations imposed by Twitch, the icon for the redeemable can not be transferred by this routine. The '
+                                + 'icon must manually be added from the Creator Dashboard after the conversion is completed (step 5)'
+                    })),
+                    $('<div/>', {
+                        'class': 'box box-primary'
+                    }).append($('<div/>', {
+                        'class': 'box-header',
+                        'html': 'Instructions'
+                    })).append($('<div/>', {
+                        'class': 'box-body'
+                    }).append($('<ol/>').append(
+                            [
+                                $('<li/>', {
+                                    'html': 'Select a redeemable to convert in the drop-down above'
+                                }),
+                                $('<li/>', {
+                                    'html': 'Click <button class="btn btn-primary btn-sm" type="button" id="start-convert-button" disabled="disabled">'
+                                            + '<i class="fa fa-exchange" id="start-convert-icon"></i>&nbsp; Start Conversion</button> to start the conversion process'
+                                }),
+                                $('<li/>', {
+                                    'html': 'Delete the redeemable from the <a href="https://dashboard.twitch.tv/" target="_blank">Creator Dashboard</a> (requires broadcaster)'
+                                }),
+                                $('<li/>', {
+                                    'html': 'Click <button class="btn btn-success btn-sm" type="button" id="finish-convert-button"'
+                                            + (convert === null ? ' disabled="disabled"' : '') + '><i class="fa fa-exchange" id="finish-convert-icon">'
+                                            + '</i>&nbsp; Finish Conversion</button> to finish the conversion process'
+                                }),
+                                $('<li/>', {
+                                    'html': '(Optional) Upload an icon for the redeemable from the <a href="https://dashboard.twitch.tv/" target="_blank">Creator Dashboard</a> (requires broadcaster)'
+                                })
+                            ])
+                            )
+                            )
+                ];
+            }
+
+            // Get advance modal from our util functions in /utils/helpers.js
+            helpers.getModal('convert-channelpoints-redeemble', 'Convert Redeemable', 'Close', $('<form/>', {
+                'role': 'form'
+            })
+                    .append($('<div/>', {
+                        'class': 'box box-info'
+                    }).append($('<div/>', {
+                        'class': 'box-body',
+                        'html': 'Converts a Channel Points redeemable created in the Creator Dashboard to one that is managed by the bot via API, '
+                                + 'allowing the bot to edit, enable, disable, pause, and unpause the redeemable, as well as mark redemptions '
+                                + 'of the redeemable as fulfilled or cancelled'
+                    }))
+                            )
+                    .append(redeemableSelector)
+                    .append(otherHtml), function () {
+                $('#convert-channelpoints-redeemble').modal('hide');
+            }).modal('toggle');
+
+            if (otherHtml !== null) {
+                $('#redemption-select').on('change', function () {
+                    let val = $('#redemption-select').find(':selected').val();
+                    if (val.length > 0) {
+                        if (convert === null || convert.id !== val) {
+                            $('#start-convert-icon').removeClass('fa-check').addClass('fa-exchange');
+                            $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                            $('#start-convert-button').prop('disabled', false);
+                            $('#finish-convert-button').prop('disabled', true);
+                        } else {
+                            $('#start-convert-icon').removeClass('fa-exchange').addClass('fa-check');
+                            $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                            $('#start-convert-button').prop('disabled', true);
+                            $('#finish-convert-button').prop('disabled', false);
+                        }
+                    } else {
+                        $('#start-convert-icon').removeClass('fa-check').addClass('fa-exchange');
+                        $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                        $('#start-convert-button').prop('disabled', true);
+                        $('#finish-convert-button').prop('disabled', true);
+                    }
+                });
+                $('#start-convert-button').on('click', function () {
+                    $('#start-convert-button').prop('disabled', true);
+                    convert = findRedeemable($('#redemption-select').find(':selected').val());
+
+                    if (convert === null) {
+                        loadRedeemables();
+                        $('#convert-channelpoints-redeemble').modal('hide');
+                    } else {
+                        $('#start-convert-icon').removeClass('fa-exchange').addClass('fa-check');
+                        $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                        $('#finish-convert-button').prop('disabled', false);
+                    }
+                });
+
+                $('#finish-convert-button').on('click', function () {
+                    $('#redemption-select').prop('disabled', true);
+                    $('#start-convert-button').prop('disabled', true);
+                    $('#finish-convert-button').prop('disabled', true);
+                    $('#finish-convert-icon').removeClass('fa-exchange').addClass('fa-spinner');
+                    if (convert === null) {
+                        loadRedeemables();
+                        $('#convert-channelpoints-redeemble').modal('hide');
+                    } else {
+                        socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
+                                [
+                                    'redeemable-add-managed', convert.title, convert.cost, convert.is_enabled, convert.background_color,
+                                    convert.is_user_input_required, convert.prompt, convert.max_per_stream_setting.is_enabled,
+                                    convert.max_per_stream_setting.max_per_stream, convert.max_per_user_per_stream_setting.is_enabled,
+                                    convert.max_per_user_per_stream_setting.max_per_user_per_stream, convert.global_cooldown_setting.is_enabled,
+                                    convert.global_cooldown_setting.global_cooldown_seconds, convert.should_redemptions_skip_request_queue
+                                ],
+                                function (e) {
+                                    let title = convert.title;
+                                    let paused = convert.is_paused;
+                                    convert = null;
+
+                                    if (paused) {
+                                        socket.wsEvent('channelpoints_redeemable_convert_pause_ws', './handlers/channelPointsHandler.js', null,
+                                                [
+                                                    'redeemable-update-managed', e.id, '', '', '', 'true', '', '', '', '', '', '', '', '', '', ''
+                                                ], function (e) {
+                                            loadRedeemables();
+                                            $('#convert-channelpoints-redeemable').modal('hide');
+                                            if (e.success) {
+                                                toastr.success('Successfully converted redeemable ' + title + ' (' + e.id + ')');
+                                            } else {
+                                                toastr.error('Failed to convert redeemable: ' + e.error);
+                                            }
+                                        }, true);
+                                    } else {
+                                        loadRedeemables();
+                                        $('#convert-channelpoints-redeemable').modal('hide');
+                                        if (e.success) {
+                                            toastr.success('Successfully converted redeemable ' + title + ' (' + e.id + ')');
+                                        } else {
+                                            toastr.error('Failed to convert redeemable: ' + e.error);
+                                        }
+                                    }
+                                }, true);
+                    }
+                });
+            }
+        }, false);
     });
 
     $('addcpredeemable-button').on('click', function () {
