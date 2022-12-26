@@ -33,7 +33,7 @@
         <link rel="stylesheet" href="../common/css/AdminLTE.dark.min.css" />
         <link rel="stylesheet" href="../common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="../common/css/pace.min.css" />
-		 <link rel="stylesheet" href="../common/css/tables-alternating.dark.css" />
+        <link rel="stylesheet" href="../common/css/tables-alternating.dark.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
         <style>
             #back2Top {
@@ -98,11 +98,14 @@
             <!-- Header -->
             <header class="main-header">
                 <div class="logo">
-                        <a href="https://phantombot.github.io/PhantomBot/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
-                        <button type="button" class="btn btn-primary" data-toggle="push-menu">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
+                    <a href="https://phantombot.github.io/PhantomBot/"><img class="navbar-brand" alt="PhantomBot" src="../common/images/logo.png" /> <span class="navbar-brand logo-lg"><b>Phantom</b>Bot</span></a>
+                    <button type="button" class="btn btn-primary" data-toggle="push-menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary" id="navbar-toggle">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
                 <nav class="navbar navbar-static-top">
                     <div class="container-fluid">
                         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -152,8 +155,7 @@
                         </div>
                         <div class="box-body">
                             <input type="text" id="copy-box-input" readonly="readonly" value="">
-                        </div>
-                    </div>
+                        </div>                     </div>
                     <div class="box">
                         <!-- /.box-header -->
                         <div class="box-body" id="content-pane">
@@ -161,8 +163,7 @@
                         </div>
                         <!-- /.box-body -->
                     </div>
-                    <!-- /.box -->
-                </div>
+                    <!-- /.box -->                 </div>
                 <div id="back2Top" title="Back to top">&#10148;</div>
             </aside>
             <footer class="main-footer">
@@ -181,245 +182,227 @@
         <script src="https://cdn.jsdelivr.net/gh/noticeable-app/remarkable-iframify@3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
         <script src="markdown-toc.js"></script>
         <script>
-            'use strict';
-            $(function () {
-                let lastPage = 'null';
-                let currentPath = null;
-                let currentChannel = 'stable';
-                window.renderdata = '';
-                const { Remarkable, linkify, utils } = window.remarkable;
-                let hashmap = [];
-                let headers = {};
-                let firstHeader = null;
-                let pastFirstHeader = false;
-                let md = new Remarkable('full', {
-                    html: false, // Enable HTML tags in source
-                    xhtmlOut: false, // Use '/' to close single tags (<br />)
-                    breaks: false, // Convert '\n' in paragraphs into <br>
-                    langPrefix: 'language-', // CSS language prefix for fenced blocks
-                    linkTarget: '', // set target to open link in
+                                                                        'use strict';
+                                                                        $(function () {
+                                                                        let lastPage = 'null';
+                                                                                let currentPath = null;
+                                                                                let currentChannel = 'stable';
+                                                                                window.renderdata = '';
+                                                                                const { Remarkable, linkify, utils } = window.remarkable;
+                                                                                let hashmap = [];
+                                                                                let headers = {};
+                                                                                let firstHeader = null;
+                                                                                let pastFirstHeader = false;
+                                                                                let md = new Remarkable('full', {
+                                                                                html: false, // Enable HTML tags in source
+                                                                                        xhtmlOut: false, // Use '/' to close single tags (<br />)
+                                                                                        breaks: false, // Convert '\n' in paragraphs into <br>
+                                                                                        langPrefix: 'language-', // CSS language prefix for fenced blocks
+                                                                                        linkTarget: '', // set target to open link in
 
-                    // Enable some language-neutral replacements + quotes beautification
-                    typographer: true,
+                                                                                        // Enable some language-neutral replacements + quotes beautification
+                                                                                        typographer: true,
+                                                                                        // Double + single quotes replacement pairs, when typographer enabled,
+                                                                                        // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
+                                                                                        quotes: '“”‘’',
+                                                                                        // Highlighter function. Should return escaped HTML,
+                                                                                        // or '' if input not changed
+                                                                                        highlight: function (str, lang) {
+                                                                                        if (lang && hljs.getLanguage(lang)) {
+                                                                                        try {                                     return hljs.highlight(lang, str).value;
+                                                                                        } catch (__) {
+                                                                                        }
+                                                                                        }
 
-                    // Double + single quotes replacement pairs, when typographer enabled,
-                    // and smartquotes on. Set doubles to '«»' for Russian, '„“' for German.
-                    quotes: '“”‘’',
+                                                                                        try {
+                                                                                        return hljs.highlightAuto(str).value;
+                                                                                        } catch (__) {
+                                                                                        }
 
-                    // Highlighter function. Should return escaped HTML,
-                    // or '' if input not changed
-                    highlight: function (str, lang) {
-                        if (lang && hljs.getLanguage(lang)) {
-                            try {
-                                return hljs.highlight(lang, str).value;
-                            } catch (__) {
-                            }
-                        }
+                                                                                        return ''; // use external default escaping
+                                                                                        }
+                                                                                });
+                                                                                md.use(linkify);
+                                                                                md.use(window.iframify);
+                                                                                md.use(function(md) {
+                                                                                md.renderer.rules.heading_open = function(tokens, idx) {
+                                                                                updateHeaders(tokens[idx].hLevel, tokens[idx + 1].content, true);
+                                                                                        return '<h' + tokens[idx].hLevel + ' id=' + slugifyHeader() + '>';
+                                                                                };
+                                                                                        md.renderer.rules.heading_close = function(tokens, idx) {
+                                                                                        updateHeaders(tokens[idx].hLevel, tokens[idx - 1].content, true);
+                                                                                                return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugifyHeader() + '\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
+                                                                                        }; });
+                                                                                md.use(function(md) {
+                                                                                let footnoterefs = {};
+                                                                                        md.renderer.rules.footnote_ref = function(tokens, idx) {
+                                                                                        let n = Number(tokens[idx].id + 1).toString();
+                                                                                                let id = 'fnref' + n;
+                                                                                                if (tokens[idx].subId > 0) {
+                                                                                        id += ':' + tokens[idx].subId;
+                                                                                        }
+                                                                                        if (!footnoterefs.hasOwnProperty(n)) {
+                                                                                        footnoterefs[n] = 0;
+                                                                                        }
+                                                                                        footnoterefs[n]++;
+                                                                                                return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ' ]</a></sup>';
+                                                                                        };
+                                                                                        md.renderer.rules.footnote_anchor = function(tokens, idx) {
+                                                                                        let n = Number(tokens[idx].id + 1).toString();
+                                                                                                if (footnoterefs.hasOwnProperty(n) && footnoterefs[n] > 10) {
+                                                                                        return '';
+                                                                                        }
+                                                                                        let id = 'fnref' + n;
+                                                                                                if (tokens[idx].subId > 0) {
+                                                                                        id += ':' + tokens[idx].subId;
+                                                                                        }
+                                                                                        return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
+                                                                                        };
+                                                                                });
+                                                                                function updateHeaders(hLevel, content, isNotToc) {
+                                                                                if (isNotToc && !pastFirstHeader && firstHeader !== null) {
+                                                                                if (firstHeader[hLevel] === undefined || firstHeader[hLevel] === null || firstHeader[hLevel] !== slugify(content)) {
+                                                                                return;
+                                                                                                                                        }
+                                                                                }
 
-                        try {
-                            return hljs.highlightAuto(str).value;
-                        } catch (__) {
-                        }
+                                                                                                                                                pastFirstHeader = true;
+                                                                                                                                                let newHeaders = {};
+                                                                                                                                                for (let x in headers) {                             if (x < hLevel) {
+                                                                                                                                                newHeaders[x] = headers[x];
+                                                                                                                                                }
+                                                                                                                                                }
 
-                        return ''; // use external default escaping
-                    }
-                });
-                md.use(linkify);
-                md.use(window.iframify);
-                md.use(function(md) {
-                    md.renderer.rules.heading_open = function(tokens, idx) {
-                        updateHeaders(tokens[idx].hLevel, tokens[idx + 1].content, true);
-                        return '<h' + tokens[idx].hLevel + ' id=' + slugifyHeader() + '>';
-                    };
-                    md.renderer.rules.heading_close = function(tokens, idx) {
-                        updateHeaders(tokens[idx].hLevel, tokens[idx - 1].content, true);
-                        return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugifyHeader() +'\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
-                    };
-                });
-                md.use(function(md) {
-                    let footnoterefs = {};
-                    md.renderer.rules.footnote_ref = function(tokens, idx) {
-                        let n = Number(tokens[idx].id + 1).toString();
-                        let id = 'fnref' + n;
-                        if (tokens[idx].subId > 0) {
-                            id += ':' + tokens[idx].subId;
-                        }
-                        if (!footnoterefs.hasOwnProperty(n)) {
-                            footnoterefs[n] = 0;
-                        }
-                        footnoterefs[n]++;
-                        return '<sup class="footnote-ref"><a href="#fn' + n + '" id="' + id + '">[' + n + ']</a></sup>';
-                    };
-                    md.renderer.rules.footnote_anchor = function(tokens, idx) {
-                        let n = Number(tokens[idx].id + 1).toString();
-                        if (footnoterefs.hasOwnProperty(n) && footnoterefs[n] > 10) {
-                            return '';
-                        }
-                        let id = 'fnref' + n;
-                        if (tokens[idx].subId > 0) {
-                            id += ':' + tokens[idx].subId;
-                        }
-                        return ' <a href="#' + id + '" class="footnote-backref">↩</a>';
-                    };
-                });
+                                                                                                                                                newHeaders[hLevel] = slugify(content);
+                                                                                        headers = newHeaders;
+                                                                                                                                                        if (firstHeader === null) {                             firstHeader = {};
+                                                                                                                                                        firstHeader[hLevel] = newHeaders[hLevel];
+                                                                                                                                                        }             }
 
-                function updateHeaders(hLevel, content, isNotToc) {
-                    if (isNotToc && !pastFirstHeader && firstHeader !== null) {
-                        if (firstHeader[hLevel] === undefined || firstHeader[hLevel] === null || firstHeader[hLevel] !== slugify(content)) {
-                            return;
-                        }
-                    }
+                                                                                                                                                        function slugifyHeader() {
+                                                                        let slug = "";
+                                                                                                                                                        for (let i = 1; i < 6; i++) {
+                                                                                                                                                        if (headers[i] !== undefined && headers[i] !== null) {
+                                                                        if (slug.length > 0) {
+                                                                                                                                                        slug = slug + "_";
+                                                                                                                                                        } slug = slug + headers[i];
+                                                                                                                                                        }
+                                                                        }
 
-                    pastFirstHeader = true;
-                
-                    let newHeaders = {};
-                    for (let x in headers) {
-                        if (x < hLevel) {
-                            newHeaders[x] = headers[x];
-                        }
-                    }
+                                                                                                                                                        return slug;
+                                                                                                                                                        }
 
-                    newHeaders[hLevel] = slugify(content);
-                    headers = newHeaders;
-                    
-                    if (firstHeader === null) {
-                        firstHeader = {};
-                        firstHeader[hLevel] = newHeaders[hLevel];
-                    }
-                }
+                                                                                                                                                        function slugify(content) {
+                                                                                                                                                        content = content.replace(/youtube/ig, 'you-tube').replace(/vimeo/ig, 'vim-eo').replace(/vine/ig, 'vi-ne');
+                                                                                                                                                        content = content.replace(/videopress/ig, 'video-press').replace(/wistia/ig, 'wis-tia');
+                                                                                                                                                        let slug = window.markdownToc.slugify(content);
+                                                                                                                                                        return encodeURIComponent(slug);
+                                                                                                                                                }
+                                                                                                                                                function loadMenuRecursive(path, tree) {
+                                                                                                                                                $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
+                                                                                                                                                        'dataType': 'json',
+                                                                                'global': false,
+                                                                                                                                                        'async': false,
+                                                                                                                                                        'success': function (data) {                             for (let x in data.subfolders) {
+                                                                                                                                                                addMenuFolder(path, tree, x, data.subfolders[x]);
+                                                                                        loadMenuRecursive(path + x + '/', path.replace(/\//g, '-') + x + '-tree');
+                                                                                }
+                                                                                                                                                        for (let x in data.pages) {
+                                                                                                                                                addMenuItem(path, tree, x, data.pages[x]);
+                                                                                                                                                        }
+                                                                                                                                                        }
+                                                                        });
+                                                                                                                                                                }
 
-                function slugifyHeader() {
-                    let slug = "";
+                                                                                                                                                                function addMenuItem(path, tree, file, title) {
+                                                                                                                                                        let elm = $('<li/>', {
+                                                                                                                                                        'html': $('<a/>', {
+                                                                                                                                                        'href': '#',
+                                                                                                                                                                'onclick': 'window.loadGuide(\'' + path + file + '\');'
+                                                                                                                                                        }).append($('<i/>', {                                                                         'class': 'far ion fa-circle'
+                                                                                                                                                        })).append(' ' + title),
+                                                                                                                                                                'id': path.replace(/\//g, '-') + file + '-menuitem'
+                                                                                                                                                        });
+                                                                                                                                                                if (tree.length === 0) {
+                                                                                                                                                        $('#guide-menu').prepend(elm);
+                                                                                                                                                        } else {
+                                                                                                                                                        $('#' + tree).append(elm);
+                                                                                                                                                }
+                                                                                                                                                }
 
-                    for (let i = 1; i < 6; i++) {
-                        if (headers[i] !== undefined && headers[i] !== null) {
-                            if (slug.length > 0) {
-                                slug = slug + "_";
-                            }
+                                                                                                                                                function addMenuFolder(path, tree, folder, title) {
+                                                                                                                                                if (tree.length === 0) {
+                                                                                                                                                tree = 'guide-menu';
+                                                                                                                                                        }
 
-                            slug = slug + headers[i];
-                        }
-                    }
+                                                                                                                                                        $('#' + tree).append($('<li/>', {
+                                                                                                                                                'class': 'treeview'
+                                                 }).append($('<a/>', {
+                                                                        'href': '#',
+                                                                                'text': title
+                                                                        }).append($('<span/>', {
+                                                                        'class': 'pull-right-container'
+                                                                        }).append($('<i/>', {
+                                                                        'class': 'fas fa-angle-left pull-right'
+                                                                        }))
+                                                                                )).append($('<ul/>', {
+                                                                        'class': 'treeview-menu',
+                                                                                'id': path.replace(/\//g, '-') + folder + '-tree'
+                                                                        })));
+                                                                        }
 
-                    return slug;
-                }
+                                                                        function setActiveRecursive(path, removing) {
+                                                                        let folder = path.substring(0, path.lastIndexOf('-'));
+                                                                                if (folder.includes('-')) {
+                                                                        if (removing) {
+                                                                        $('#' + folder + '-tree').removeClass('active');
+                                                                        } else {
+                                                                        $('#' + folder + '-tree').addClass('active');
+                                                                        }
 
-                function slugify(content) {
-                    content = content.replace(/youtube/ig, 'you-tube').replace(/vimeo/ig, 'vim-eo').replace(/vine/ig, 'vi-ne');
-                    content = content.replace(/videopress/ig, 'video-press').replace(/wistia/ig, 'wis-tia');
-                    let slug = window.markdownToc.slugify(content);
-                    return encodeURIComponent(slug);
-                }
+                                                                        setActiveRecursive(folder, removing);
+                                                                        }
+                                                                        }
 
-                function loadMenuRecursive(path, tree) {
-                    $.ajax(window.location.origin + window.location.pathname + path + 'toc.json', {
-                        'dataType': 'json',
-                        'global': false,
-                        'async': false,
-                        'success': function (data) {
-                            for (let x in data.subfolders) {
-                                addMenuFolder(path, tree, x, data.subfolders[x]);
-                                loadMenuRecursive(path + x + '/', path.replace(/\//g, '-') + x + '-tree');
-                            }
-                            for (let x in data.pages) {
-                                addMenuItem(path, tree, x, data.pages[x]);
-                            }
-                        }
-                    });
-                }
+                                                                        function loadGuide(path) {
+                                                                        Pace.track(function(){
+                                                                        $.ajax(window.location.origin + window.location.pathname + path + '.md', {
+                                                                        'dataType': 'text',
+                                                                                'cache': false,
+                                                                                'success': function (data) {
+                                                                                data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
+                                                                                        data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
+                                                                                                data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
+                                                                                                        headers = {};
+                                                                                                        firstHeader = null;
+                                                                                                        data = window.markdownToc.insert(data, {
+                                                                                                        filter: function(str, ele, arr) {
+                                                                                                        ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
+                                                                                                                return true;
+                                                                                                        },
+                                                                                                                linkify: function(token, anchor, slug, opts) {
+                                                                                                                updateHeaders(token.lvl, token.content, false);
+                                                                                                                        let newhash = 'guide=' + path;
+                                                                                                                        slug = slugifyHeader();
+                                                                                                                        for (let x in hashmap) {
+                                                                                                                if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
+                                                                                                                if (newhash.length > 0) {
+                                                                                                                newhash = newhash + '&';
+                                                                                                                }
 
-                function addMenuItem(path, tree, file, title) {
-                    let elm = $('<li/>', {
-                        'html': $('<a/>', {
-                            'href': '#',
-                            'onclick': 'window.loadGuide(\'' + path + file + '\');'
-                            }).append($('<i/>', {
-                                'class': 'far ion fa-circle'
-                            })).append(' ' + title),
-                        'id': path.replace(/\//g, '-') + file + '-menuitem'
-                    });
+                                                                                                                newhash = newhash + x + '=' + hashmap[x];
+                                                                                                                }
+                                                                                                                }
 
-                    if (tree.length === 0) {
-                        $('#guide-menu').prepend(elm);
-                    } else {
-                        $('#' + tree).append(elm);
-                    }
-                }
-
-                function addMenuFolder(path, tree, folder, title) {
-                    if (tree.length === 0) {
-                        tree = 'guide-menu';
-                    }
-
-                    $('#' + tree).append($('<li/>', {
-                        'class': 'treeview'
-                    }).append($('<a/>', {
-                        'href': '#',
-                        'text': title
-                        }).append($('<span/>', {
-                            'class': 'pull-right-container'
-                            }).append($('<i/>', {
-                                'class': 'fas fa-angle-left pull-right'
-                            }))
-                        )).append($('<ul/>', {
-                        'class': 'treeview-menu',
-                        'id': path.replace(/\//g, '-') + folder + '-tree'
-                    })));
-                }
-
-                function setActiveRecursive(path, removing) {
-                    let folder = path.substring(0, path.lastIndexOf('-'));
-
-                    if (folder.includes('-')) {
-                        if (removing) {
-                            $('#' + folder + '-tree').removeClass('active');
-                        } else {
-                            $('#' + folder + '-tree').addClass('active');
-                        }
-
-                        setActiveRecursive(folder, removing);
-                    }
-                }
-
-                function loadGuide(path) {
-                    Pace.track(function(){
-                        $.ajax(window.location.origin + window.location.pathname + path + '.md', {
-                            'dataType': 'text',
-                            'cache': false,
-                            'success': function (data) {
-                                data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
-                                data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
-                                data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
-                                headers = {};
-                                firstHeader = null;
-                                data = window.markdownToc.insert(data, {
-                                    filter: function(str, ele, arr) {
-                                        ele.content = ele.content.replace(/`/g, '').replace(/:\*\*]/, '**]').replace(/:\]/, ']');
-                                        return true;
-                                    },
-                                    linkify: function(token, anchor, slug, opts) {
-                                        updateHeaders(token.lvl, token.content, false);
-                                        let newhash = 'guide=' + path;
-                                        slug = slugifyHeader();
-                                        for (let x in hashmap) {
-                                            if (x !== 'jumpto' && x !== 'guide' && x.length > 0) {
-                                                if (newhash.length > 0) {
-                                                    newhash = newhash + '&';
-                                                }
-
-                                                newhash = newhash + x + '=' + hashmap[x];
-                                            }
-                                        }
-
-                                        let href = '#' + newhash + (newhash.length > 0 ? '&' : '') + 'jumpto=' + slug;
-                                        token.content = '[' + anchor + '](' + href + ')';
-                                        return token;
-                                    }
-                                });
-                                data = data.replace(/<!-- toc -->/, '').replace(/<!-- tocstop -->/, '');
-                                data = data.replace(/<!-- faketoc -->/ig, '<!-- toc -->').replace(/<!-- faketocstop -->/ig, '<!-- tocstop -->');
-                                data = data.replace(/<!-- notoc # -->/ig, '#').replace(/<!-- notoc ## -->/ig, '##').replace(/<!-- notoc ### -->/ig, '###');
-                                data = data.replace(/<!-- notoc #### -->/ig, '####').replace(/<!-- notoc ##### -->/ig, '#####').replace(/<!-- notoc ###### -->/ig, '######');
+                                                                                                                let href = '#' + newhash + (newhash.length > 0 ? '&' : '') + 'jumpto=' + slug;
+                                                                                                                        token.content = '[' + anchor + '](' + href + ')';
+                                                                                                                        return token;
+                                                                                                                }
+                                                                                                        });
+                                                                                                        data = data.replace(/<!-- toc -->/, '').replace(/<!-- tocstop -->/, '');
+                                                                                                                data = data.replace(/<!-- faketoc -->/ig, '<!-- toc -->').replace(/<!-- faketocstop -->/ig, '<!-- tocstop -->');
+                                                                                                                        data = data.replace(/<!-- notoc # -->/ig, '#').replace(/<!-- notoc ## -->/ig, '##').replace(/<!-- notoc ### -->/ig, '###');
+                                                                                                                                data = data.replace(/<!-- notoc #### -->/ig, '####').replace(/<!-- notoc ##### -->/ig, '#####').replace(/<!-- notoc ###### -->/ig, '######');
                                 window.renderdata = window.location.href.substring(0, (window.location.href + "#").indexOf('#')) + '#guide=' + path + '&channel=' + currentChannel;
                                 headers = {};
                                 pastFirstHeader = false;
@@ -549,6 +532,11 @@
                     }
                 });
                 $(document).ready(function() {
+                    $('#navbar-toggle').click(function() {
+                        event.preventDefault();
+                        $('#navbar-collapse').collapse('toggle');
+                        return false;
+                    });
                     $("#back2Top").click(function(event) {
                         event.preventDefault();
                         jumpToTop();
