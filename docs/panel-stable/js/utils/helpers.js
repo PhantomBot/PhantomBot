@@ -34,7 +34,15 @@ $(function () {
     // Debug types.
     helpers.LOG_TYPE = helpers.DEBUG_STATES;
 
-    helpers.hashmap = [];
+    helpers.querymap = {};
+    helpers.hashmap = {};
+    helpers.version = {};
+
+    helpers.getBotVersion = function () {
+        socket.getBotVersion('helpers_version', function (e) {
+            helpers.version = structuredClone(e);
+        });
+    };
 
     /*
      * @function adds commas to thousands.
@@ -569,9 +577,28 @@ $(function () {
             'disabled': 'true',
             'hidden': 'true'
         })).append(options.map(function (option) {
-            return $('<option/>', {
-                'html': option
-            });
+            let o = $('<option/>');
+
+            if (typeof (option) === 'object') {
+                o.html(option.name);
+                o.attr('id', option._id);
+
+                if (option.value !== undefined) {
+                    o.attr('value', option.value);
+                }
+
+                if (option.selected !== undefined && (option.selected === true || option.selected === 'true')) {
+                    o.attr('selected', 'selected');
+                }
+
+                if (option.disabled !== undefined && (option.disabled === true || option.disabled === 'true')) {
+                    o.attr('disabled', 'disabled');
+                }
+            } else {
+                o.html(option);
+            }
+
+            return o;
         }))));
     };
 
@@ -1269,18 +1296,43 @@ $(function () {
      * @param timeout the timespan to debounce in ms
      * @returns {(function(...[*]=): void)|*} the given function wrapped in the debounce functionality
      */
-    helpers.debounce = function(func, timeout = 300){
-      let timer;
-      return (...args) => {
-          window.clearInterval(timer);
-          timer = window.setTimeout(() => { func.apply(this, args); }, timeout);
-      }
+    helpers.debounce = function (func, timeout = 300) {
+        let timer;
+        return (...args) => {
+            window.clearInterval(timer);
+            timer = window.setTimeout(() => {
+                func.apply(this, args);
+            }, timeout);
+        };
+    };
+
+    helpers.parseQuerymap = function () {
+        if (window.location.search.length === 0) {
+            return;
+        }
+        var query = window.location.search.slice(1);
+        if (query.includes('?')) {
+            query = query.replace('?', '&');
+        }
+        var kvs = query.split('&');
+        var querymap = {};
+        var spl;
+
+        for (var i = 0; i < kvs.length; i++) {
+            spl = kvs[i].split('=', 2);
+            querymap[spl[0]] = spl[1];
+        }
+
+        helpers.querymap = querymap;
     };
 
     helpers.parseHashmap = function () {
+        if (window.location.hash.length === 0) {
+            return;
+        }
         var hash = window.location.hash.slice(1);
         var kvs = hash.split('&');
-        var hashmap = [];
+        var hashmap = {};
         var spl;
 
         for (var i = 0; i < kvs.length; i++) {
@@ -1379,6 +1431,14 @@ $(function () {
                 }
             }
         }
+    };
+
+    helpers.isNightly = function () {
+        return helpers.version.hasOwnProperty('build-type') && helpers.version['build-type'].startsWith('nightly');
+    };
+
+    helpers.getBranch = function () {
+        return helpers.isNightly() ? 'nightly' : 'stable';
     };
 
     // Export.

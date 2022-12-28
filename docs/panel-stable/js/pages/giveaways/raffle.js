@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that querys all of the data we need.
 $(run = function () {
     socket.getDBValues('raffle_module_status_toggle', {
@@ -50,8 +52,10 @@ $(run = function () {
                     if (length === 0) {
                         // No entries disallow drawing winners
                         $('#draw-raffle').prop('disabled', true);
+                        $('#opendraw-raffle').prop('disabled', true);
                     } else {
                         $('#draw-raffle').prop('disabled', false);
+                        $('#opendraw-raffle').prop('disabled', false);
                     }
 
                     if (e['hasDrawn'] !== undefined) {
@@ -101,7 +105,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds">this guide</a>.');
+            $('#raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
             $('#raffle-chat').addClass('box-body');
         }
 
@@ -228,8 +232,8 @@ $(function () {
     // Raffle settings button.
     $('#raffle-settings').on('click', function () {
         socket.getDBValues('get_raffle_settings', {
-            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
-            keys: ['raffleMSGToggle', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval']
+            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
+            keys: ['raffleMSGToggle', 'raffleOpenDraw', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval']
         }, true, function (e) {
             helpers.getModal('raffle-settings-modal', 'Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -253,6 +257,8 @@ $(function () {
             .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
                 'role': 'form'
             })
+            .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['raffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If disabled, the raffle will close automatically when drawing winners.'))
             // Add toggle for warning messages.
             .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['raffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
@@ -265,6 +271,7 @@ $(function () {
             function () {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
+                    openDraw = $('#opendraw').find(':selected').text() === 'Yes',
                     warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
                     drawToggle = $('#draw-toggle').find(':selected').text() !== 'Yes',
                     whisperWinner = $('#whisper-toggle').find(':selected').text() === 'Yes';
@@ -275,9 +282,9 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_raffle_settings_2', {
-                            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
-                            keys: ['raffleMSGToggle', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval'],
-                            values: [warningMsg, whisperWinner, drawToggle, raffleMessage.val(), raffleTimer.val()]
+                            tables: ['raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings', 'raffleSettings'],
+                            keys: ['raffleMSGToggle', 'raffleOpenDraw', 'raffleWhisperWinner', 'noRepickSame', 'raffleMessage', 'raffleMessageInterval'],
+                            values: [warningMsg, openDraw, whisperWinner, drawToggle, raffleMessage.val(), raffleTimer.val()]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadraffle', function () {
                                 // Close the modal.

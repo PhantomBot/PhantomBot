@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 $(run = function () {
     socket.getDBValues('traffle_module_status_toggle', {
         tables: ['modules', 'traffleState', 'traffleState'],
@@ -89,7 +91,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#ticket-raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds">this guide</a>.');
+            $('#ticket-raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
             $('#ticket-raffle-chat').addClass('box-body');
         }
 
@@ -117,6 +119,9 @@ $(run = function () {
             });
             $('#ticket-draw-raffle').ready(function(){
                 $('#ticket-draw-raffle').prop('disabled', true);
+            });
+            $('#ticket-opendraw-raffle').ready(function(){
+                $('#ticket-opendraw-raffle').prop('disabled', true);
             });
         }
     });
@@ -158,6 +163,7 @@ $(function () {
 
                     $('#traffle-list-title').text("Ticket Raffle List");
                     $('#ticket-draw-raffle').prop('disabled', false);
+                    $('#ticket-opendraw-raffle').prop('disabled', false);
 
                     // Reset the timer in case we destroyed it after the last draw
                     timers.push(setInterval(function () {
@@ -195,6 +201,7 @@ $(function () {
                     helpers.clearTimers();
 
                     $('#ticket-draw-raffle').prop('disabled', true);
+                    $('#ticket-opendraw-raffle').prop('disabled', true);
                     $('#ticket-open-or-close-raffle').html($('<i/>', {
                         'class': 'fa fa-unlock-alt'
                     })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
@@ -230,8 +237,8 @@ $(function () {
     // Raffle settings button.
     $('#ticket-raffle-settings').on('click', function () {
         socket.getDBValues('get_traffle_settings', {
-            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
-            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
+            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+            keys: ['traffleMSGToggle', 'traffleOpenDraw', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter']
         }, true, function (e) {
             helpers.getModal('traffle-settings-modal', 'Ticket Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -255,6 +262,8 @@ $(function () {
             .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
                 'role': 'form'
             })
+            .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['traffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                'If disabled, the raffle will close automatically when drawing winners.'))
             // Add toggle for warning messages.
             .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                 'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
@@ -264,6 +273,7 @@ $(function () {
             function () {
                 let raffleTimer = $('#msg-timer'),
                     raffleMessage = $('#msg-msg'),
+                    openDraw = $('#opendraw').find(':selected').text() === 'Yes',
                     warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
                     limiter = $('#limiter').find(':selected').text() === 'Yes';
 
@@ -273,9 +283,9 @@ $(function () {
                         break;
                     default:
                         socket.updateDBValues('update_traffle_settings_2', {
-                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
-                            keys: ['traffleMSGToggle', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
-                            values: [warningMsg, raffleMessage.val(), raffleTimer.val(), limiter]
+                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+                            keys: ['traffleMSGToggle', 'traffleOpenDraw', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
+                            values: [warningMsg, openDraw, raffleMessage.val(), raffleTimer.val(), limiter]
                         }, function () {
                             socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {
                                 // Close the modal.
