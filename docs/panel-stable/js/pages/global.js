@@ -20,6 +20,7 @@
 // Script that handles all of the global things.
 
 $(function () {
+    helpers.getBotVersion();
     socket.addListener('notification', function (e) {
         let options = {};
 
@@ -149,4 +150,8 @@ $(function () {
             }, 3e4);
         }
     });
+
+    if (helpers.querymap.hasOwnProperty('folder') && helpers.querymap.hasOwnProperty('page')) {
+        $.loadPage(helpers.querymap.folder, helpers.querymap.page, window.location + '#' + helpers.querymap.page);
+    }
 });

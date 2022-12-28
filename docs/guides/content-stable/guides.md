@@ -12,6 +12,8 @@ Guide files must be written in Markdown and have the extension _.md_
 
 You can use the [Remarkable demo](https://jonschlinkert.github.io/remarkable/demo/) to easily write out your Markdown while previewing how it will turn out
 
+**WARNING:** Do not alter the _docs/guides/content-stable_ folder in any way. This folder must only contain the guides associated with the latest stable release. This folder is updated automatically using GitHub Actions
+
 **NOTE:** The YouTube embed extension is not in the Remarkable demo, so those will just show as links until your upload to the PhantomBot docs
 
 If you are adding a new folder, remember to create a _toc.json_, and add the new subfolder to the _toc.json_ of the parent folder

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 $(function() {
     const loadExternalCommands = function() {
         // query external commands
@@ -58,7 +60,7 @@ $(function() {
                         'className': 'default-table',
                         'orderable': false,
                         'targets': 1
-                    },
+                    }
                 ],
                 'columns': [
                     {'title': 'External Command'},
