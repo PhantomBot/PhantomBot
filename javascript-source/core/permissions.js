@@ -1071,7 +1071,7 @@
                 }
             } else if (isVIP(username)) {
                 if (isSub(username)) {
-                    setUserGroupById(username, getHighestIDSubVIP());
+                    setUserGroupById(username, getLowestIDSubVIP());
                 } else {
                     setUserGroupById(username, PERMISSION.VIP);
                 }
