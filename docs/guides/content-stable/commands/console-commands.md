@@ -22,6 +22,14 @@ updategameslist - Force a full update of the games list.
 
 &nbsp;
 
+### twittersetup
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+twittersetup [newapp] - Authenticates Twitter. If the optional _newapp_ argument is set, also updates the Client ID and
+
+&nbsp;
+
 ### raidtest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
@@ -291,14 +299,6 @@ tipeeestreamsetup - Sets up TipeeeStream.
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 panelsetup - Sets up the panel.
-
-&nbsp;
-
-### twittersetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-twittersetup - Sets up Twitter.
 
 &nbsp;
 
