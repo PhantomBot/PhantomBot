@@ -100,7 +100,7 @@
      */
     function cpinput(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getUserInput()).replaceAll("\n", "%0A"),
+            result: $.replace($.jsString(args.customArgs.redemption.getUserInput()), '\n', '%0A'),
             cache: true
         };
     }
