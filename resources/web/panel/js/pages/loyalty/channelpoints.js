@@ -50,7 +50,7 @@ $(function () {
     };
 
     const reloadRedeemables = function (cb) {
-        socket.wsEvent('channelpoints_reload_redeemables_ws', './handlers/channelPointsHandler.js', null, ['redeemables-reload-managed'], function () {
+        socket.wsEvent('channelpoints_reload_redeemables_ws', './handlers/channelPointsHandler.js', null, ['redeemable-reload-managed'], function () {
             loadRedeemables(cb);
         }, true, true);
     };
