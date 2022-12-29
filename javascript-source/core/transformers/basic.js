@@ -96,7 +96,7 @@
                     } else {
                         $.say(argStr);
                     }
-                }, delay, 'delaysay ' + delay);
+                }, delay * 1000, 'delaysay ' + delay);
             }
         } catch (e) {
         }

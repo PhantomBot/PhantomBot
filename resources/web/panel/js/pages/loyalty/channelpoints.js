@@ -230,7 +230,7 @@ $(function () {
                                         data.push(structuredClone(ccommand));
                                     } else {
                                         let newdata = structuredClone(ccommand);
-                                        newdata.command = redemptionResponse;
+                                        newdata.command = redemptionResponse.val();
                                         data.push(newdata);
                                     }
                                 }
