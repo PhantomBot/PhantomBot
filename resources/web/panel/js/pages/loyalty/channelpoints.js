@@ -26,7 +26,7 @@ $(function () {
     const reloadRewards = function (cb) {
         socket.wsEvent('channelpoints_reload_rewards_ws', './handlers/channelPointsHandler.js', null, ['reward-reload'], function () {
             loadRewards(cb);
-        }, true);
+        }, true, true);
     };
 
     const updateRewards = function (data, cb) {
@@ -52,7 +52,7 @@ $(function () {
     const reloadRedeemables = function (cb) {
         socket.wsEvent('channelpoints_reload_redeemables_ws', './handlers/channelPointsHandler.js', null, ['redeemables-reload-managed'], function () {
             loadRedeemables(cb);
-        }, true);
+        }, true, true);
     };
 
     const findRedeemable = function (id) {
@@ -377,7 +377,7 @@ $(function () {
                                     socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null,
                                             ['redeemable-delete-managed', redeemable.id], function () {
                                         loadRedeemables();
-                                    }, true);
+                                    }, true, true);
                                 });
                     });
 
@@ -476,7 +476,7 @@ $(function () {
                                                 } else {
                                                     toastr.error('Failed to edit redeemable (' + redeemable.id + '): ' + e.error);
                                                 }
-                                            }, true);
+                                            }, true, true);
                             }
                         }).modal('toggle');
 
@@ -502,8 +502,8 @@ $(function () {
                 if (cb !== undefined && cb !== null) {
                     cb();
                 }
-            }, true);
-        });
+            }, true, true);
+        }, true);
     };
 
     const init = function () {
@@ -836,7 +836,7 @@ $(function () {
                                             } else {
                                                 toastr.error('Failed to convert redeemable: ' + e.error);
                                             }
-                                        }, true);
+                                        }, true, true);
                                     } else {
                                         loadRedeemables();
                                         $('#convert-channelpoints-redeemable').modal('hide');
@@ -846,7 +846,7 @@ $(function () {
                                             toastr.error('Failed to convert redeemable: ' + e.error);
                                         }
                                     }
-                                }, true);
+                                }, true, true);
                     }
                 });
             }
@@ -932,7 +932,7 @@ $(function () {
                                 } else {
                                     toastr.error('Failed to add redeemable: ' + e.error);
                                 }
-                            }, true);
+                            }, true, true);
             }
         }).modal('toggle');
 
