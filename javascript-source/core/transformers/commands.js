@@ -143,7 +143,7 @@
                         var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                         EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr, args.event.getTags()));
                     }
-                }, delay, 'delaycommand ' + cmd + ' ' + delay);
+                }, delay * 1000, 'delaycommand ' + cmd + ' ' + delay);
             }
         } catch (e) {
         }
