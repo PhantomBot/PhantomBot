@@ -442,13 +442,13 @@ $(function () {
                                     redeemableBgcolor = $('#redeemable-bgcolor'),
                                     redeemableInputRequired = $('#redeemable-input-required').is(':checked') ? 'true' : 'false',
                                     redeemablePrompt = $('#redeemable-prompt'),
-                                    redeemableMaxStreamEnabled = $('redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
-                                    redeemableMaxStream = $('redeemable-max-stream'),
-                                    redeemableMaxUserStreamEnabled = $('redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
-                                    redeemableMaxUserStream = $('redeemable-max-user-stream'),
-                                    redeemableCooldownEnabled = $('redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
-                                    redeemableCooldown = $('redeemable-cooldown'),
-                                    redeemableFulfill = $('redeemable-fulfill').is(':checked') ? 'true' : 'false';
+                                    redeemableMaxStreamEnabled = $('#redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemableMaxStream = $('#redeemable-max-stream'),
+                                    redeemableMaxUserStreamEnabled = $('#redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemableMaxUserStream = $('#redeemable-max-user-stream'),
+                                    redeemableCooldownEnabled = $('#redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
+                                    redeemableCooldown = $('#redeemable-cooldown'),
+                                    redeemableFulfill = $('#redeemable-fulfill').is(':checked') ? 'true' : 'false';
 
                             switch (false) {
                                 case helpers.handleInputString(redeemableTitle):
@@ -899,13 +899,13 @@ $(function () {
                     redeemableBgcolor = $('#redeemable-bgcolor'),
                     redeemableInputRequired = $('#redeemable-input-required').is(':checked') ? 'true' : 'false',
                     redeemablePrompt = $('#redeemable-prompt'),
-                    redeemableMaxStreamEnabled = $('redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
-                    redeemableMaxStream = $('redeemable-max-stream'),
-                    redeemableMaxUserStreamEnabled = $('redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
-                    redeemableMaxUserStream = $('redeemable-max-user-stream'),
-                    redeemableCooldownEnabled = $('redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
-                    redeemableCooldown = $('redeemable-cooldown'),
-                    redeemableFulfill = $('redeemable-fulfill').is(':checked') ? 'true' : 'false';
+                    redeemableMaxStreamEnabled = $('#redeemable-max-stream-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableMaxStream = $('#redeemable-max-stream'),
+                    redeemableMaxUserStreamEnabled = $('#redeemable-max-user-stream-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableMaxUserStream = $('#redeemable-max-user-stream'),
+                    redeemableCooldownEnabled = $('#redeemable-cooldown-enabled').is(':checked') ? 'true' : 'false',
+                    redeemableCooldown = $('#redeemable-cooldown'),
+                    redeemableFulfill = $('#redeemable-fulfill').is(':checked') ? 'true' : 'false';
 
             switch (false) {
                 case helpers.handleInputString(redeemableTitle):
