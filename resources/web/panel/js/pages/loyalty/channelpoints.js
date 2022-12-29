@@ -264,6 +264,9 @@ $(function () {
                 }
 
                 if (updateTable !== false) {
+                    if (e1.hasOwnProperty('error')) {
+                        toastr.error('HTTP ' + e1.status + ': ' + e1.message);
+                    }
                     let tableData = [];
                     for (const redeemable of redeemables) {
                         tableData.push([
