@@ -853,7 +853,7 @@ $(function () {
         }, false);
     });
 
-    $('addcpredeemable-button').on('click', function () {
+    $('#addcpredeemable-button').on('click', function () {
         helpers.getAdvanceModal('add-channelpoints-redeemable', 'Add Redeemable', 'Save', $('<form/>', {
             'role': 'form'
         })
