@@ -190,7 +190,10 @@ $(function () {
      * @param {Array}    args
      * @param {Function} callback
      */
-    socket.wsEvent = function (callback_id, script, argsString, args, callback, requiresReply) {
+    socket.wsEvent = function (callback_id, script, argsString, args, callback, requiresReply, makeUnique) {
+        if (makeUnique === true) {
+            callback_id = callback_id + '_' + helpers.getRandomString(4);
+        }
         // Genetate a callback.
         generateCallBack(callback_id, [], requiresReply !== true, true, callback);
 
@@ -497,7 +500,10 @@ $(function () {
      * @param {Function} callback Callback function
      * @returns {undefined}
      */
-    socket.query = function (type, query_id, params, callback) {
+    socket.query = function (type, query_id, params, callback, makeUnique) {
+        if (makeUnique === true) {
+            query_id = query_id + '_' + helpers.getRandomString(4);
+        }
         generateCallBack(query_id, [], false, true, callback);
 
         let param = {};
@@ -520,7 +526,10 @@ $(function () {
      * @param {Function} callback Callback function
      * @returns {undefined}
      */
-    socket.update = function (type, query_id, params, callback) {
+    socket.update = function (type, query_id, params, callback, makeUnique) {
+        if (makeUnique === true) {
+            query_id = query_id + '_' + helpers.getRandomString(4);
+        }
         generateCallBack(query_id, [], true, true, callback);
 
         let param = {};
