@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Main function that gets all of our data.
 $(function () {
     // Get all module toggles.
@@ -472,7 +474,7 @@ $(function () {
                                 socket.updateDBValues('discord_stream_alerts_updater', {
                                     tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
                                         'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
-                                        'discordSettings', ],
+                                        'discordSettings'],
                                     keys: ['onlineToggle', 'onlineMessage', 'offlineToggle', 'offlineMessage',
                                         'gameToggle', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle'],
                                     values: [onlineToggle, onlineMessage.val(), offlineToggle, offlineMessage.val(),
