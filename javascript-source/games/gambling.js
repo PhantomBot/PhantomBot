@@ -139,7 +139,7 @@
          * @commandpath gamblesetgainpercent [amount in percent] - Set the winning gain percent.
          */
         if (command.equalsIgnoreCase('gamblesetgainpercent')) {
-            if (action === undefined || isNaN(parseInt(action)) || action < 1 || action > 100) {
+            if (action === undefined || isNaN(parseInt(action)) || action < 1) {
                 $.say($.whisperPrefix(sender) + $.lang.get('gambling.percent.usage'));
                 return;
             }
