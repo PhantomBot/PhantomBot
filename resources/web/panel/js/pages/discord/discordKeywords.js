@@ -157,7 +157,7 @@ $(function() {
                     break;
                 default:
                     // Set the keyword.
-                    socket.updateDBValue('set_discord_keyword', 'discordKeywords', keyword.val(), response.val(), function() {
+                    socket.updateDBValue('set_discord_keyword', 'discordKeywords', keyword.val().toLowerCase(), response.val(), function() {
                         // Reload the table.
                         run();
                         // Close the modal.
