@@ -776,22 +776,23 @@ $(function () {
 
             if (otherHtml !== null) {
                 modal.on('shown.bs.modal', function () {
+                    let id = null;
                     $('#redemption-select').on('change', function () {
                         let val = $('#redemption-select').find(':selected').val();
                         if (val.length > 0) {
                             if (convert === null || convert.id !== val) {
-                                $('#start-convert-icon').removeClass('fa-check').addClass('fa-exchange');
+                                $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-check').addClass('fa-exchange');
                                 $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                                 $('#start-convert-button').prop('disabled', false);
                                 $('#finish-convert-button').prop('disabled', true);
                             } else {
-                                $('#start-convert-icon').removeClass('fa-exchange').addClass('fa-check');
+                                $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
                                 $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                                 $('#start-convert-button').prop('disabled', true);
                                 $('#finish-convert-button').prop('disabled', false);
                             }
                         } else {
-                            $('#start-convert-icon').removeClass('fa-check').addClass('fa-exchange');
+                            $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-check').addClass('fa-exchange');
                             $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                             $('#start-convert-button').prop('disabled', true);
                             $('#finish-convert-button').prop('disabled', true);
@@ -804,8 +805,27 @@ $(function () {
                         if (convert === null) {
                             loadRedeemables();
                             $('#convert-channelpoints-redeemble').modal('hide');
+                        } else if (redeemables.length < 50) {
+                            $('#start-convert-icon').removeClass('fa-exchange').removeClass('fa-check').addClass('fa-spinner');
+                            $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                            socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
+                                    [
+                                        'redeemable-add-managed', 'pbtemp_' + helpers.getRandomString(6), convert.cost, convert.is_enabled, convert.background_color,
+                                        convert.is_user_input_required, convert.prompt, convert.max_per_stream_setting.is_enabled,
+                                        convert.max_per_stream_setting.max_per_stream, convert.max_per_user_per_stream_setting.is_enabled,
+                                        convert.max_per_user_per_stream_setting.max_per_user_per_stream, convert.global_cooldown_setting.is_enabled,
+                                        convert.global_cooldown_setting.global_cooldown_seconds, convert.should_redemptions_skip_request_queue
+                                    ],
+                                    function (e) {
+                                        if (e.success) {
+                                            id = e.id;
+                                        }
+                                        $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
+                                        $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                                        $('#finish-convert-button').prop('disabled', false);
+                                    }, true, true);
                         } else {
-                            $('#start-convert-icon').removeClass('fa-exchange').addClass('fa-check');
+                            $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
                             $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                             $('#finish-convert-button').prop('disabled', false);
                         }
@@ -820,24 +840,34 @@ $(function () {
                             loadRedeemables();
                             $('#convert-channelpoints-redeemble').modal('hide');
                         } else {
-                            socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
-                                    [
-                                        'redeemable-add-managed', convert.title, convert.cost, convert.is_enabled, convert.background_color,
-                                        convert.is_user_input_required, convert.prompt, convert.max_per_stream_setting.is_enabled,
-                                        convert.max_per_stream_setting.max_per_stream, convert.max_per_user_per_stream_setting.is_enabled,
-                                        convert.max_per_user_per_stream_setting.max_per_user_per_stream, convert.global_cooldown_setting.is_enabled,
-                                        convert.global_cooldown_setting.global_cooldown_seconds, convert.should_redemptions_skip_request_queue
-                                    ],
-                                    function (e) {
-                                        let title = convert.title;
-                                        let paused = convert.is_paused;
-                                        convert = null;
+                            if (id === null) {
+                                socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
+                                        [
+                                            'redeemable-add-managed', convert.title, convert.cost, convert.is_enabled, convert.background_color,
+                                            convert.is_user_input_required, convert.prompt, convert.max_per_stream_setting.is_enabled,
+                                            convert.max_per_stream_setting.max_per_stream, convert.max_per_user_per_stream_setting.is_enabled,
+                                            convert.max_per_user_per_stream_setting.max_per_user_per_stream, convert.global_cooldown_setting.is_enabled,
+                                            convert.global_cooldown_setting.global_cooldown_seconds, convert.should_redemptions_skip_request_queue
+                                        ],
+                                        function (e) {
+                                            let title = convert.title;
+                                            let paused = convert.is_paused;
+                                            convert = null;
 
-                                        if (paused) {
-                                            socket.wsEvent('channelpoints_redeemable_convert_pause_ws', './handlers/channelPointsHandler.js', null,
-                                                    [
-                                                        'redeemable-update-managed', e.id, '', '', '', 'true', '', '', '', '', '', '', '', '', '', ''
-                                                    ], function (e) {
+                                            if (e.success && paused) {
+                                                socket.wsEvent('channelpoints_redeemable_convert_pause_ws', './handlers/channelPointsHandler.js', null,
+                                                        [
+                                                            'redeemable-update-managed', e.id, '', '', '', 'true', '', '', '', '', '', '', '', '', '', ''
+                                                        ], function (e2) {
+                                                    loadRedeemables();
+                                                    $('#convert-channelpoints-redeemable').modal('hide');
+                                                    if (e2.success) {
+                                                        toastr.success('Successfully converted redeemable ' + title + ' (' + e.id + ')');
+                                                    } else {
+                                                        toastr.error('Failed to transfer paused status to covnerted redeemable: ' + e2.error);
+                                                    }
+                                                }, true, true);
+                                            } else {
                                                 loadRedeemables();
                                                 $('#convert-channelpoints-redeemable').modal('hide');
                                                 if (e.success) {
@@ -845,17 +875,24 @@ $(function () {
                                                 } else {
                                                     toastr.error('Failed to convert redeemable: ' + e.error);
                                                 }
-                                            }, true, true);
-                                        } else {
-                                            loadRedeemables();
-                                            $('#convert-channelpoints-redeemable').modal('hide');
-                                            if (e.success) {
-                                                toastr.success('Successfully converted redeemable ' + title + ' (' + e.id + ')');
-                                            } else {
-                                                toastr.error('Failed to convert redeemable: ' + e.error);
                                             }
-                                        }
-                                    }, true, true);
+                                        }, true, true);
+                            } else {
+                                socket.wsEvent('channelpoints_redeemable_convert_pause_ws', './handlers/channelPointsHandler.js', null,
+                                        [
+                                            'redeemable-update-managed', id, convert.title, '', '', convert.is_paused ? 'true' : 'false', '', '', '', '', '', '', '', '', '', ''
+                                        ], function (e) {
+                                    let title = convert.title;
+                                    convert = null;
+                                    loadRedeemables();
+                                    $('#convert-channelpoints-redeemable').modal('hide');
+                                    if (e.success) {
+                                        toastr.success('Successfully converted redeemable ' + title + ' (' + e.id + ')');
+                                    } else {
+                                        toastr.error('Failed to convert redeemable: ' + e.error);
+                                    }
+                                }, true, true);
+                            }
                         }
                     });
                 });
