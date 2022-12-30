@@ -34,31 +34,31 @@
 
         for (i in keys) {
             // Some users use special symbols that may break regex so this will fix that.
+            let sent = false;
             try {
                 if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
-                    var kevent1 = new Packages.tv.phantombot.event.discord.channel.DiscordCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
+                    var kevent1 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
                             event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
                     var tag = $.transformers.tags(kevent1, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
                     if (tag !== null) {
                         $.discord.say(channel, tag);
                     }
+                    sent = true;
                     break;
                 }
-            } catch (ex) {
-                if (ex.message.toLowerCase().includes('invalid quantifier') || ex.message.toLowerCase().includes('syntax')) {
-                    if (message.includes(keys[i]) && !message.includes('!keyword')) {
-                        var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
-                                event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                        var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
-                        if (tag !== null) {
-                            $.discord.say(channel, tag);
-                        }
-                        break;
+            } catch (e) {
+            }
+            try {
+                if (!sent && message.includes(keys[i]) && !message.includes('!keyword')) {
+                    var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
+                            event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
+                    var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
+                    if (tag !== null) {
+                        $.discord.say(channel, tag);
                     }
-                } else {
-                    $.log.error('Failed to send keyword "' + keys[i] + '": ' + ex.message);
                     break;
                 }
+            } catch (e) {
             }
         }
     });
