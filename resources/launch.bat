@@ -35,7 +35,11 @@ IF %ERRORLEVEL% EQU 0 GOTO :SWITCHTOWT
 GOTO :LAUNCH
 
 :LAUNCH
+IF EXIST %CHECKLOC% GOTO :DODEL
+GOTO :SKIPDEL
+:DODEL
 del /q /f %CHECKLOC% > NUL
+:SKIPDEL
 setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
 ".\java-runtime\bin\java" --add-exports java.base/sun.security.x509=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
