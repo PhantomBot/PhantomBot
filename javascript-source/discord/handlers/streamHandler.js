@@ -220,12 +220,6 @@
                         liveMessages.push(msg);
                     }
 
-                    try {
-                        msg.publish().block();
-                    } catch (e) {
-                        $.log.error(e);
-                    }
-
                     $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
                 }
                 if (botGameToggle === true) {
