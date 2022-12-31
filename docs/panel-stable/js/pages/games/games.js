@@ -313,7 +313,7 @@ $(function() {
                     min = $('#gambling-min');
 
                 switch (false) {
-                    case helpers.handleInputNumber(winGain, 1, 100):
+                    case helpers.handleInputNumber(winGain, 1):
                     case helpers.handleInputNumber(winRange, 1, 100):
                     case helpers.handleInputNumber(max, 1):
                     case helpers.handleInputNumber(min, 1):
