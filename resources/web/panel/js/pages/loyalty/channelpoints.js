@@ -740,7 +740,7 @@ $(function () {
                                             + '<i class="fa fa-exchange" id="start-convert-icon"></i>&nbsp; Start Conversion</button> to start the conversion process'
                                 }),
                                 $('<li/>', {
-                                    'html': 'Delete the redeemable from the <a href="https://dashboard.twitch.tv/" target="_blank">Creator Dashboard</a> (requires broadcaster)'
+                                    'html': 'Delete the redeemable from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" target="_blank">Creator Dashboard</a> (requires broadcaster)'
                                 }),
                                 $('<li/>', {
                                     'html': 'Click <button class="btn btn-success btn-sm" type="button" id="finish-convert-button"'
@@ -748,7 +748,7 @@ $(function () {
                                             + '</i>&nbsp; Finish Conversion</button> to finish the conversion process'
                                 }),
                                 $('<li/>', {
-                                    'html': '(Optional) Upload an icon for the redeemable from the <a href="https://dashboard.twitch.tv/" target="_blank">Creator Dashboard</a> (requires broadcaster)'
+                                    'html': '(Optional) Upload an icon for the redeemable from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" target="_blank">Creator Dashboard</a> (requires broadcaster)'
                                 })
                             ])
                             )
