@@ -1374,11 +1374,17 @@ $(function () {
         var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
         var botport = window.localStorage.getItem('botport') || '25000';
 
-        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null;
+        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null && bothostname !== 'localhost';
     };
 
-    helpers.getBotSchemePath = function () {
-        return 'http' + (helpers.shouldUseHttpsPrefix() ? 's' : '') + '://' + helpers.getBotHost();
+    helpers.getBotSchemePath = function (sslSettings) {
+        let useSsl = helpers.shouldUseHttpsPrefix();
+
+        if (sslSettings !== undefined && sslSettings !== null) {
+            useSsl = helpers.shouldUseHttpsPrefix() && !sslSettings.autoSSL;
+        }
+
+        return 'http' + (useSsl ? 's' : '') + '://' + helpers.getBotHost();
     };
 
     helpers.getUserLogo = function () {

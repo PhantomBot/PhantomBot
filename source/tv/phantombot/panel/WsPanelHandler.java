@@ -404,6 +404,9 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
             jsonObject.key("botName").value(PhantomBot.instance().getBotName());
             jsonObject.key("displayName").value(TwitchCache.instance().getDisplayName());
+        } else if (query.equalsIgnoreCase("sslSettings")) {
+            jsonObject.key("sslEnabled").value(HTTPWSServer.instance().isSsl());
+            jsonObject.key("autoSSL").value(HTTPWSServer.instance().isAutoSsl());
         } else if (query.equalsIgnoreCase("userLogo")) {
             jsonObject.key("results").array();
             try ( InputStream inputStream = Files.newInputStream(Paths.get("./web/panel/img/logo.jpeg"))) {
