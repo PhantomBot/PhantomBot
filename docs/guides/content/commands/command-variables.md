@@ -406,6 +406,44 @@ No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### cpsetenabled
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpsetenabled redeemableId:str isEnabled:bool)` - sets the enabled state of the redeemable
+
+**Labels:** twitch discord noevent channelpoints
+
+
+_NOTE: disabled redeemables are not visible to viewers_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### cpsetpaused
+
+Defined in script: _./javascript-source/core/transformers/channelpoints.js_
+
+**Formulas:**
+
+- `(cpsetpaused redeemableId:str isPaused:bool)` - sets the paused state of the redeemable
+
+**Labels:** twitch discord noevent channelpoints
+
+
+_NOTE: paused redeemables are visible to viewers, but can not be redeemed_
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### cptitle
 
 Defined in script: _./javascript-source/core/transformers/channelpoints.js_
