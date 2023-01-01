@@ -842,7 +842,7 @@ $(function () {
                                 }),
                                 $('<li/>', {
                                     'html': 'Click <button class="btn btn-success btn-sm" type="button" id="finish-convert-button"'
-                                            + (convert === null ? ' disabled="disabled"' : '') + '><i class="fa fa-exchange" id="finish-convert-icon">'
+                                            + ' disabled="disabled"><i class="fa fa-exchange" id="finish-convert-icon">'
                                             + '</i>&nbsp; Finish Conversion</button> to finish the conversion process'
                                 }),
                                 $('<li/>', {
@@ -874,7 +874,13 @@ $(function () {
 
             if (otherHtml !== null) {
                 modal.on('shown.bs.modal', function () {
-                    let id = null;
+                    if (convert !== null) {
+                        $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
+                        $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                        $('#start-convert-button').prop('disabled', true);
+                        $('#finish-convert-button').prop('disabled', false);
+                    }
+
                     $('#redemption-select').on('change', function () {
                         let val = $('#redemption-select').find(':selected').val();
                         if (val.length > 0) {
@@ -904,6 +910,7 @@ $(function () {
                             loadRedeemables();
                             $('#convert-channelpoints-redeemble').modal('hide');
                         } else if (redeemables.length < 50) {
+                            convert.newid = null;
                             $('#start-convert-icon').removeClass('fa-exchange').removeClass('fa-check').addClass('fa-spinner');
                             $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                             socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
@@ -917,13 +924,14 @@ $(function () {
                                     ],
                                     function (e) {
                                         if (e.success) {
-                                            id = e.id;
+                                            convert.newid = e.id;
                                         }
                                         $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
                                         $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                                         $('#finish-convert-button').prop('disabled', false);
                                     }, true, true);
                         } else {
+                            convert.newid = null;
                             $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
                             $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                             $('#finish-convert-button').prop('disabled', false);
@@ -939,7 +947,7 @@ $(function () {
                             loadRedeemables();
                             $('#convert-channelpoints-redeemble').modal('hide');
                         } else {
-                            if (id === null) {
+                            if (convert.newid === null) {
                                 socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
                                         [
                                             'redeemable-add-managed', toString(convert.title), toString(convert.cost), toString(convert.is_enabled),
@@ -994,10 +1002,11 @@ $(function () {
                             } else {
                                 socket.wsEvent('channelpoints_redeemable_convert_pause_ws', './handlers/channelPointsHandler.js', null,
                                         [
-                                            'redeemable-update-managed', id, toString(convert.title), null, null, toString(convert.is_paused), null,
+                                            'redeemable-update-managed', convert.newid, toString(convert.title), null, null, toString(convert.is_paused), null,
                                             null, null, null, null, null, null, null, null, null
                                         ], function (e) {
                                     let oid = convert.id;
+                                    let nid = convert.newid;
                                     let title = convert.title;
                                     convert = null;
                                     let data = [];
@@ -1006,7 +1015,7 @@ $(function () {
                                             data.push(structuredClone(ccommand));
                                         } else {
                                             let newdata = structuredClone(ccommand);
-                                            newdata.id = id;
+                                            newdata.id = nid;
                                             data.push(newdata);
                                         }
                                     }
@@ -1014,7 +1023,7 @@ $(function () {
                                         loadRedeemables();
                                         $('#convert-channelpoints-redeemable').modal('hide');
                                         if (e.success) {
-                                            toastr.success('Successfully converted redeemable ' + title + ' (' + id + ')');
+                                            toastr.success('Successfully converted redeemable ' + title + ' (' + nid + ')');
                                         } else {
                                             toastr.error('Failed to convert redeemable: ' + e.error);
                                         }
