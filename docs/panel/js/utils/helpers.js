@@ -243,10 +243,19 @@ $(function () {
      * @param {Object} obj
      * @return {Boolean}
      */
-    helpers.handleInputString = function (obj) {
+    helpers.handleInputString = function (obj, min, max) {
+        if (min === undefined) {
+            min = 1;
+        }
+        if (max === undefined) {
+            max = Number.MAX_SAFE_INTEGER;
+        }
         return helpers.handleInput(obj, function (obj) {
-            if (obj.val().length < 1) {
-                return 'You cannot leave this field empty.';
+            if (obj.val().length < min) {
+                return 'You cannot have less than ' + min + ' characters.';
+            }
+            if (obj.val().length > max) {
+                return 'You cannot have more than ' + max + ' characters.';
             }
             return null;
         });
@@ -1365,11 +1374,17 @@ $(function () {
         var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
         var botport = window.localStorage.getItem('botport') || '25000';
 
-        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null;
+        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null && bothostname !== 'localhost';
     };
 
-    helpers.getBotSchemePath = function () {
-        return 'http' + (helpers.shouldUseHttpsPrefix() ? 's' : '') + '://' + helpers.getBotHost();
+    helpers.getBotSchemePath = function (sslSettings) {
+        let useSsl = helpers.shouldUseHttpsPrefix();
+
+        if (sslSettings !== undefined && sslSettings !== null) {
+            useSsl = helpers.shouldUseHttpsPrefix() && !sslSettings.autoSSL;
+        }
+
+        return 'http' + (useSsl ? 's' : '') + '://' + helpers.getBotHost();
     };
 
     helpers.getUserLogo = function () {
