@@ -1959,7 +1959,7 @@ public class Helix {
             throw new IllegalArgumentException("background_color must be a full hex format color, satisfying the regex ^#[0-9A-F]{6}$");
         }
 
-        if (prompt == null || prompt.length() > 200) {
+        if (prompt != null && prompt.length() > 200) {
             throw new IllegalArgumentException("prompt must be not be more than 200 characters");
         }
 
@@ -2134,7 +2134,7 @@ public class Helix {
             throw new IllegalArgumentException("background_color must be a full hex format color, satisfying the regex ^#[0-9A-F]{6}$");
         }
 
-        if (prompt == null || prompt.length() > 200) {
+        if (prompt != null && prompt.length() > 200) {
             throw new IllegalArgumentException("prompt must be not be more than 200 characters");
         }
 
