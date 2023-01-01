@@ -812,14 +812,14 @@ $(function () {
                     }).append($('<div/>', {
                         'class': 'box-body',
                         'html': 'Anyone with the panel login can use this dialog to perform the conversion, but the broadcaster is required to perform'
-                                + ' steps 3 and 5'
+                                + ' steps 3 and 6'
                     })),
                     $('<div/>', {
                         'class': 'box box-info'
                     }).append($('<div/>', {
                         'class': 'box-body',
                         'html': 'Due to limitations imposed by Twitch, the icon for the redeemable can not be transferred by this routine. The '
-                                + 'icon must manually be added from the Creator Dashboard after the conversion is completed (step 5)'
+                                + 'icon must manually be added from the Creator Dashboard after the conversion is completed (step 6)'
                     })),
                     $('<div/>', {
                         'class': 'box box-primary'
@@ -836,6 +836,9 @@ $(function () {
                                 $('<li/>', {
                                     'html': 'Click <button class="btn btn-primary btn-sm" type="button" id="start-convert-button" disabled="disabled">'
                                             + '<i class="fa fa-exchange" id="start-convert-icon"></i>&nbsp; Start Conversion</button> to start the conversion process'
+                                }),
+                                $('<li/>', {
+                                    'html': '(Optional) Download the old custom icons for the redeemable, if available: <span id="convert-download-images">no custom icons found</span>'
                                 }),
                                 $('<li/>', {
                                     'html': 'Delete the redeemable from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" target="_blank">Creator Dashboard</a> (requires broadcaster)'
@@ -875,6 +878,40 @@ $(function () {
             if (otherHtml !== null) {
                 modal.on('shown.bs.modal', function () {
                     if (convert !== null) {
+                        if (convert.image !== undefined && convert.image !== null) {
+                            let links = [];
+
+                            if (convert.image.url_1x !== undefined && convert.image.url_1x !== null) {
+                                links.push($('<a/>', {
+                                    'href': convert.image.url_1x,
+                                    'target': '_blank',
+                                    'html': '1x'
+                                }));
+                            }
+
+                            if (convert.image.url_2x !== undefined && convert.image.url_2x !== null) {
+                                links.push($('<a/>', {
+                                    'href': convert.image.url_2x,
+                                    'target': '_blank',
+                                    'html': '2x',
+                                    'style': links.length > 0 ? 'padding-left: 15px;' : null
+                                }));
+                            }
+
+                            if (convert.image.url_4x !== undefined && convert.image.url_4x !== null) {
+                                links.push($('<a/>', {
+                                    'href': convert.image.url_4x,
+                                    'target': '_blank',
+                                    'html': '4x',
+                                    'style': links.length > 0 ? 'padding-left: 15px;' : null
+                                }));
+                            }
+
+                            if (links.length > 0) {
+                                $('#convert-download-images').html('').append(links);
+                            }
+                        }
+
                         $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
                         $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
                         $('#start-convert-button').prop('disabled', true);
@@ -909,32 +946,68 @@ $(function () {
                         if (convert === null) {
                             loadRedeemables();
                             $('#convert-channelpoints-redeemble').modal('hide');
-                        } else if (redeemables.length < 50) {
-                            convert.newid = null;
-                            $('#start-convert-icon').removeClass('fa-exchange').removeClass('fa-check').addClass('fa-spinner');
-                            $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
-                            socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
-                                    [
-                                        'redeemable-add-managed', 'pbtemp_' + helpers.getRandomString(6), toString(convert.cost), toString(convert.is_enabled),
-                                        toString(convert.background_color), toString(convert.is_user_input_required), toString(convert.prompt),
-                                        toString(convert.max_per_stream_setting.is_enabled), toString(convert.max_per_stream_setting.max_per_stream),
-                                        toString(convert.max_per_user_per_stream_setting.is_enabled), toString(convert.max_per_user_per_stream_setting.max_per_user_per_stream),
-                                        toString(convert.global_cooldown_setting.is_enabled), toString(convert.global_cooldown_setting.global_cooldown_seconds),
-                                        toString(convert.should_redemptions_skip_request_queue)
-                                    ],
-                                    function (e) {
-                                        if (e.success) {
-                                            convert.newid = e.id;
-                                        }
-                                        $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
-                                        $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
-                                        $('#finish-convert-button').prop('disabled', false);
-                                    }, true, true);
                         } else {
                             convert.newid = null;
-                            $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
-                            $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
-                            $('#finish-convert-button').prop('disabled', false);
+
+                            if (convert.image !== undefined && convert.image !== null) {
+                                let links = [];
+
+                                if (convert.image.url_1x !== undefined && convert.image.url_1x !== null) {
+                                    links.push($('<a/>', {
+                                        'href': convert.image.url_1x,
+                                        'target': '_blank',
+                                        'html': '1x'
+                                    }));
+                                }
+
+                                if (convert.image.url_2x !== undefined && convert.image.url_2x !== null) {
+                                    links.push($('<a/>', {
+                                        'href': convert.image.url_2x,
+                                        'target': '_blank',
+                                        'html': '2x',
+                                        'style': links.length > 0 ? 'padding-left: 15px;' : null
+                                    }));
+                                }
+
+                                if (convert.image.url_4x !== undefined && convert.image.url_4x !== null) {
+                                    links.push($('<a/>', {
+                                        'href': convert.image.url_4x,
+                                        'target': '_blank',
+                                        'html': '4x',
+                                        'style': links.length > 0 ? 'padding-left: 15px;' : null
+                                    }));
+                                }
+
+                                if (links.length > 0) {
+                                    $('#convert-download-images').html('').append(links);
+                                }
+                            }
+
+                            if (redeemables.length < 50) {
+                                $('#start-convert-icon').removeClass('fa-exchange').removeClass('fa-check').addClass('fa-spinner');
+                                $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                                socket.wsEvent('channelpoints_redeemable_convert_ws', './handlers/channelPointsHandler.js', null,
+                                        [
+                                            'redeemable-add-managed', 'pbtemp_' + helpers.getRandomString(6), toString(convert.cost), toString(convert.is_enabled),
+                                            toString(convert.background_color), toString(convert.is_user_input_required), toString(convert.prompt),
+                                            toString(convert.max_per_stream_setting.is_enabled), toString(convert.max_per_stream_setting.max_per_stream),
+                                            toString(convert.max_per_user_per_stream_setting.is_enabled), toString(convert.max_per_user_per_stream_setting.max_per_user_per_stream),
+                                            toString(convert.global_cooldown_setting.is_enabled), toString(convert.global_cooldown_setting.global_cooldown_seconds),
+                                            toString(convert.should_redemptions_skip_request_queue)
+                                        ],
+                                        function (e) {
+                                            if (e.success) {
+                                                convert.newid = e.id;
+                                            }
+                                            $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
+                                            $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                                            $('#finish-convert-button').prop('disabled', false);
+                                        }, true, true);
+                            } else {
+                                $('#start-convert-icon').removeClass('fa-spinner').removeClass('fa-exchange').addClass('fa-check');
+                                $('#finish-convert-icon').removeClass('fa-spinner').addClass('fa-exchange');
+                                $('#finish-convert-button').prop('disabled', false);
+                            }
                         }
                     });
 
