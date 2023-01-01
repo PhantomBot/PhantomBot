@@ -22,10 +22,13 @@
  */
 (function () {
     var onlineToggle = $.getSetIniDbBoolean('discordSettings', 'onlineToggle', false),
+            onlinePublish = $.getSetIniDbBoolean('discordSettings', 'onlinePublish', false),
             onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!'),
             offlineToggle = $.getSetIniDbBoolean('discordSettings', 'offlineToggle', false),
+            offlinePublish = $.getSetIniDbBoolean('discordSettings', 'offlinePublish', false),
             offlineMessage = $.getSetIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.'),
             gameToggle = $.getSetIniDbBoolean('discordSettings', 'gameToggle', false),
+            gamePublish = $.getSetIniDbBoolean('discordSettings', 'gamePublish', false),
             gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!'),
             botGameToggle = $.getSetIniDbBoolean('discordSettings', 'botGameToggle', true),
             channelName = $.getSetIniDbString('discordSettings', 'onlineChannel', ''),
@@ -42,10 +45,13 @@
     $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/streamHandler.js')) {
             onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
+            onlinePublish = $.getIniDbBoolean('discordSettings', 'onlinePublish', false);
             onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!');
             offlineToggle = $.getIniDbBoolean('discordSettings', 'offlineToggle', false);
+            offlinePublish = $.getIniDbBoolean('discordSettings', 'offlinePublish', false);
             offlineMessage = $.getIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.');
             gameToggle = $.getIniDbBoolean('discordSettings', 'gameToggle', false);
+            gamePublish = $.getIniDbBoolean('discordSettings', 'gamePublish', false);
             gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!');
             botGameToggle = $.getIniDbBoolean('discordSettings', 'botGameToggle', true);
             channelName = $.getIniDbString('discordSettings', 'onlineChannel', '');
@@ -165,6 +171,14 @@
                     offlineMessages.push(msg);
                 }
 
+                if (offlinePublish && $.discordAPI.canChannelPublish(channelName)) {
+                    try {
+                        msg.publish().block();
+                    } catch (e) {
+                        $.log.error(e);
+                    }
+                }
+
                 $.inidb.RemoveFile('discordStreamStats');
             }
 
@@ -220,10 +234,12 @@
                         liveMessages.push(msg);
                     }
 
-                    try {
-                        msg.publish().block();
-                    } catch (e) {
-                        $.log.error(e);
+                    if (onlinePublish && $.discordAPI.canChannelPublish(channelName)) {
+                        try {
+                            msg.publish().block();
+                        } catch (e) {
+                            $.log.error(e);
+                        }
                     }
 
                     $.setIniDbNumber('discordSettings', 'lastOnlineEvent', $.systemTime());
@@ -283,6 +299,14 @@
                 .withFooterIcon($.twitchcache.getLogoLink())
                 .withImage($.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999)).build());
         liveMessages.push(msg);
+
+        if (gamePublish && $.discordAPI.canChannelPublish(channelName)) {
+            try {
+                msg.publish().block();
+            } catch (e) {
+                $.log.error(e);
+            }
+        }
     });
 
     /*
@@ -314,6 +338,15 @@
             }
 
             /*
+             * @discordcommandpath streamhandler toggleonlinepublish - Toggles stream online announcements being published in Discord Announcement channels.
+             */
+            if (action.equalsIgnoreCase('toggleonlinepublish')) {
+                onlinePublish = !onlinePublish;
+                $.inidb.set('discordSettings', 'onlinePublish', onlinePublish);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.publish.' + (onlinePublish === true ? 'on' : 'off')));
+            }
+
+            /*
              * @discordcommandpath streamhandler onlinemessage [message] - Sets the stream online announcement message.
              */
             if (action.equalsIgnoreCase('onlinemessage')) {
@@ -337,6 +370,15 @@
             }
 
             /*
+             * @discordcommandpath streamhandler toggleofflinepublish - Toggles stream offline announcements being published in Discord Announcement channels.
+             */
+            if (action.equalsIgnoreCase('toggleofflinepublish')) {
+                offlinePublish = !offlinePublish;
+                $.inidb.set('discordSettings', 'offlinePublish', offlinePublish);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.publish.' + (offlinePublish === true ? 'on' : 'off')));
+            }
+
+            /*
              * @discordcommandpath streamhandler offlinemessage [message] - Sets the stream offline announcement message.
              */
             if (action.equalsIgnoreCase('offlinemessage')) {
@@ -357,6 +399,15 @@
                 gameToggle = !gameToggle;
                 $.inidb.set('discordSettings', 'gameToggle', gameToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.game.toggle', (gameToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+            }
+
+            /*
+             * @discordcommandpath streamhandler togglegamepublish - Toggles stream game change announcements being published in Discord Announcement channels.
+             */
+            if (action.equalsIgnoreCase('togglegamepublish')) {
+                gamePublish = !gamePublish;
+                $.inidb.set('discordSettings', 'gamePublish', gamePublish);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.game.publish.' + (gamePublish === true ? 'on' : 'off')));
             }
 
             /*
