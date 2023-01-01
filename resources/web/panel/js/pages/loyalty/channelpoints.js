@@ -203,6 +203,8 @@ $(function () {
                         helpers.getModal('edit-channelpoints-reward', 'Edit Channel Points Reward', 'Save', $('<form/>', {
                             'role': 'form'
                         })
+                                .append(helpers.getInputGroup('redemption-id', 'text', 'Redeemable Id', '', command.id, 'Id of the linked '
+                                        + 'Channel Points redeemable.', true))
                                 .append(helpers.getInputGroup('redemption-name', 'text', 'Redeemable Title', '', command.title, 'Title of the linked '
                                         + 'Channel Points redeemable. This cannot be edited.', true))
                                 .append($('<div/>', {
@@ -280,6 +282,38 @@ $(function () {
                     } else {
                         let tableData = [];
                         for (const redeemable of redeemables) {
+                            let buttons = [];
+                            if (managed.includes(redeemable.id)) {
+                                buttons.push($('<button/>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-xs btn-danger',
+                                    'style': 'float: right',
+                                    'data-redeemableid': redeemable.id,
+                                    'html': $('<i/>', {
+                                        'class': 'fa fa-trash'
+                                    })
+                                }));
+                            }
+                            buttons.push($('<button/>', {
+                                'type': 'button',
+                                'class': 'btn btn-xs btn-' + managed.includes(redeemable.id) ? 'warning' : 'info',
+                                'style': 'float: right',
+                                'data-redeemableid': redeemable.id,
+                                'html': $('<i/>', {
+                                    'class': 'fa fa-' + managed.includes(redeemable.id) ? 'edit' : 'eye'
+                                })
+                            }));
+                            if (managed.includes(redeemable.id)) {
+                                buttons.push($('<button/>', {
+                                    'type': 'button',
+                                    'class': 'btn btn-xs btn-primary',
+                                    'style': 'float: right',
+                                    'data-redeemableid': redeemable.id,
+                                    'html': $('<i/>', {
+                                        'class': 'fa fa-' + (redeemable.is_paused ? 'play' : 'pause')
+                                    })
+                                }));
+                            }
                             tableData.push([
                                 redeemable.title,
                                 redeemable.cost,
@@ -288,40 +322,7 @@ $(function () {
                                 redeemable.is_user_input_required ? 'Yes' : 'No',
                                 $('<div/>', {
                                     'class': 'btn-group'
-                                }).append($('<button/>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-xs btn-danger',
-                                    'style': 'float: right',
-                                    'data-redeemableid': redeemable.id,
-                                    'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
-                                    'disabled': managed.includes(redeemable.id) ? null : 'disabled',
-                                    'title': managed.includes(redeemable.id) ? null : 'Can not delete redeemables that weren\'t created by the bot',
-                                    'html': $('<i/>', {
-                                        'class': 'fa fa-trash'
-                                    })
-                                })).append($('<button/>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-xs btn-warning',
-                                    'style': 'float: right',
-                                    'data-redeemableid': redeemable.id,
-                                    'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
-                                    'disabled': managed.includes(redeemable.id) ? null : 'disabled',
-                                    'title': managed.includes(redeemable.id) ? null : 'Can not edit redeemables that weren\'t created by the bot',
-                                    'html': $('<i/>', {
-                                        'class': 'fa fa-edit'
-                                    })
-                                })).append($('<button/>', {
-                                    'type': 'button',
-                                    'class': 'btn btn-xs btn-primary',
-                                    'style': 'float: right',
-                                    'data-redeemableid': redeemable.id,
-                                    'data-toggle': managed.includes(redeemable.id) ? null : 'tooltip',
-                                    'disabled': managed.includes(redeemable.id) ? null : 'disabled',
-                                    'title': managed.includes(redeemable.id) ? null : 'Can not edit redeemables that weren\'t created by the bot',
-                                    'html': $('<i/>', {
-                                        'class': 'fa fa-' + (redeemable.is_paused ? 'play' : 'pause')
-                                    })
-                                })).html()
+                                }).append(buttons).html()
                             ]);
                         }
 
@@ -405,6 +406,7 @@ $(function () {
                                 let modal = helpers.getAdvanceModal('edit-channelpoints-redeemable', 'Edit Redeemable', 'Save', $('<form/>', {
                                     'role': 'form'
                                 })
+                                        .append(helpers.getInputGroup('redeemable-id', 'text', 'Id', '', redeemable.id, 'Id of the custom redeemable.', true))
                                         .append(helpers.getInputGroup('redeemable-title', 'text', 'Title', 'Do Something Cool', redeemable.title,
                                                 'The custom redeemable\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the '
                                                 + 'broadcaster\'s custom redeemables.'))
@@ -508,6 +510,78 @@ $(function () {
                                         $('#redeemable-cooldown').prop('disabled', !$(this).is(':checked'));
                                     });
 
+                                    $('[data-toggle="tooltip"]').tooltip();
+                                });
+
+                                modal.modal('toggle');
+                            });
+
+                            // On view button.
+                            redeemablesTable.on('click', '.btn-info', function () {
+                                let redeemable = findRedeemable($(this).data('redeemableid'));
+
+                                if (redeemable === null) {
+                                    loadRedeemables();
+                                    return;
+                                }
+
+                                let modal = helpers.getAdvanceModal('view-channelpoints-redeemable', 'View Redeemable', 'Close', $('<form/>', {
+                                    'role': 'form'
+                                }).append($('<div/>', {
+                                    'class': 'box box-info'
+                                }).append($('<div/>', {
+                                    'class': 'box-body',
+                                    'html': 'Since this redeemable was not created by the bot, it can not be edited'
+                                }))
+                                        )
+                                        .append(helpers.getInputGroup('redeemable-id', 'text', 'Id', '', redeemable.id, 'Id of the custom redeemable.', true))
+                                        .append(helpers.getInputGroup('redeemable-title', 'text', 'Title', 'Do Something Cool', redeemable.title,
+                                                'The custom redeemable\'s title. The title may contain a maximum of 45 characters and it must be unique amongst all of the '
+                                                + 'broadcaster\'s custom redeemables.', true))
+                                        .append(helpers.getInputGroup('redeemable-cost', 'number', 'Cost', '50', redeemable.cost,
+                                                'The cost of the redeemable, in Channel Points. The minimum is 1 point.', true))
+                                        .append($('<div/>', {
+                                            'class': 'collapse',
+                                            'id': 'advance-collapse',
+                                            'html': $('<form/>', {
+                                                'role': 'form'
+                                            })
+                                                    .append(helpers.getCheckBox('redeemable-enabled', redeemable.is_enabled, 'Enabled',
+                                                            'Whether the redeemable is enabled. Viewers see only enabled redeemable.', true))
+                                                    .append(helpers.getCheckBox('redeemable-paused', redeemable.is_paused, 'Paused',
+                                                            'Whether the redeemable is currently paused. Viewers can\'t redeem paused redeemables.', true))
+                                                    .append(helpers.getInputGroup('redeemable-bgcolor', 'text', 'Background Color', '#9147FF', redeemable.background_color || '',
+                                                            'The background color to use for the redeemable. Specify the color using Hex format (for example, #9147FF).', true))
+                                                    .append(helpers.getCheckBox('redeemable-input-required', redeemable.is_user_input_required, 'Is User Input Required',
+                                                            'Whether the user needs to enter information when redeeming the redeemable.', true))
+                                                    .append(helpers.getTextAreaGroup('redeemable-prompt', 'text', 'Prompt', 'Does something really cool', redeemable.prompt || '',
+                                                            'The prompt shown to the viewer when they redeem the redeemable. The prompt is limited to a maximum of 200 '
+                                                            + 'characters.', true))
+                                                    .append(helpers.getCheckBox('redeemable-max-stream-enabled', redeemable.max_per_stream_setting.is_enabled,
+                                                            'Is Max-Per-Stream Enabled',
+                                                            'Whether to limit the maximum number of redemptions allowed per live stream.', true))
+                                                    .append(helpers.getInputGroup('redeemable-max-stream', 'number', 'Max-Per-Stream', '1',
+                                                            redeemable.max_per_stream_setting.max_per_stream || '1',
+                                                            'The maximum number of redemptions allowed per live stream. The minimum value is 1.', true))
+                                                    .append(helpers.getCheckBox('redeemable-max-user-stream-enabled', redeemable.max_per_user_per_stream_setting.is_enabled,
+                                                            'Is Max-Per-User-Per-Stream Enabled', 'Whether to limit the maximum number of redemptions allowed per user per stream.', true))
+                                                    .append(helpers.getInputGroup('redeemable-max-user-stream', 'number', 'Max-Per-User-Per-Stream', '1',
+                                                            redeemable.max_per_user_per_stream_setting.max_per_user_per_stream || '1',
+                                                            'The maximum number of redemptions allowed per user per stream. The minimum value is 1.', true))
+                                                    .append(helpers.getCheckBox('redeemable-cooldown-enabled', redeemable.global_cooldown_setting.is_enabled,
+                                                            'Is Global Cooldown Enabled', 'Whether to apply a cooldown period between redemptions.', true))
+                                                    .append(helpers.getInputGroup('redeemable-cooldown', 'number', 'Global Cooldown', '1',
+                                                            redeemable.global_cooldown_setting.global_cooldown_seconds || '1',
+                                                            'The cooldown period, in seconds. The minimum value is 1; however, the minimum value is 60 for it to be shown '
+                                                            + 'in the Twitch UX.', true))
+                                                    .append(helpers.getCheckBox('redeemable-fulfill', redeemable.should_redemptions_skip_request_queue,
+                                                            'Should Redemptions Skip Request Queue',
+                                                            'Whether redemptions should be set to fulfilled status immediately when a redeemable is redeemed.', true))
+                                        })), function () {
+                                    $('#view-channelpoints-redeemable').modal('hide');
+                                });
+
+                                modal.on('shown.bs.modal', function () {
                                     $('[data-toggle="tooltip"]').tooltip();
                                 });
 
