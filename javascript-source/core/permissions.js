@@ -446,7 +446,7 @@
         return getUserGroupId(username, tags) <= permission;
     }
 
-    /*
+    /**
      * @function permCom
      *
      * @export $
@@ -620,9 +620,7 @@
      * @param username
      */
     function addSubUsersList(username) {
-        if (!isSub(username.toLowerCase())) {
-            subUsers.add($.javaString(username.toLowerCase()));
-        }
+        subUsers.addIfAbsent($.javaString(username.toLowerCase()));
     }
 
     /**
@@ -640,9 +638,7 @@
      * @param username
      */
     function addVIPUsersList(username) {
-        if (!isVIP(username.toLowerCase())) {
-            vipUsers.add($.javaString(username.toLowerCase()));
-        }
+        vipUsers.addIfAbsent($.javaString(username.toLowerCase()));
     }
 
     /**
@@ -688,7 +684,7 @@
         var keys = $.inidb.GetKeyList('group', '');
 
         for (var i in keys) {
-            if (parseInt($.inidb.get('group', keys[i])) <= PERMISSION.Mod) {
+            if (getUserGroupId(keys[i], null) <= PERMISSION.Mod) {
                 addModeratorToCache(keys[i].toLowerCase());
             }
         }
@@ -1040,24 +1036,20 @@
             if (event.getAdd().toString().equals('true')) {
                 if (!hasModeO(username)) {
                     addModeratorToCache(username.toLowerCase());
+                    modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                     if (isOwner(username)) {
-                        modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                         setUserGroupById(username, PERMISSION.Caster);
                     } else if (isAdmin(username)) {
-                        modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                         setUserGroupById(username, PERMISSION.Admin);
                     } else {
-                        modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                         setUserGroupById(username, PERMISSION.Mod);
                     }
                 }
             } else if (hasModeO(username)) {
                 removeModeratorFromCache(username);
-
                 modeOUsers.remove($.javaString(username.toLowerCase()));
-
                 if (isSub(username) && isVIP(username)) {
-                    setUserGroupById(username, getHighestIDSubVIP());
+                    setUserGroupById(username, getLowestIDSubVIP()); // Do not lower permissions if is sub and vip
                 } else if (isSub(username)) {
                     setUserGroupById(username, PERMISSION.Sub);
                 } else if (isVIP(username)) {
@@ -1065,15 +1057,20 @@
                 }
             }
         } else if (event.getMode().equalsIgnoreCase('vip')) {
-            if (event.getAdd().toString().equals('true')) {
-                if (getUserGroupId(username) < PERMISSION.VIP) {
-                    setUserGroupById(username, PERMISSION.VIP);
-                }
-            } else if (isVIP(username)) {
-                if (isSub(username)) {
+            if (event.getAdd().toString().equals('true')) { // Add to VIP
+                addVIPUsersList(username);
+                if (isSub(username)) { // Subscriber and VIP - Assign the highest permission
+                    addSubUsersList(username); //Add to SubUserList if absent
                     setUserGroupById(username, getLowestIDSubVIP());
                 } else {
                     setUserGroupById(username, PERMISSION.VIP);
+                }
+            } else { //Remove from VIP
+                delVIPUsersList(username);
+                if (isSub(username)) { // Still subscriber - Remove only from VIP
+                    setUserGroupById(username, PERMISSION.Sub);
+                } else {
+                    setUserGroupById(username, PERMISSION.Viewer);
                 }
             }
         }
@@ -1093,8 +1090,7 @@
             if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    if (!subUsers.contains($.javaString(spl[1].toLowerCase()))) {
-                        subUsers.add($.javaString(spl[1].toLowerCase()));
+                    if (addSubUsersList(spl[1])) {
 
                         restoreSubscriberStatus(spl[1].toLowerCase());
                         for (i = 0; i < subUsers.size(); i++) {
