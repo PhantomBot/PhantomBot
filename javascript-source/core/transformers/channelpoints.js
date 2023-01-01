@@ -158,6 +158,40 @@
     }
 
     /*
+     * @transformer cpsetenabled
+     * @formula (cpsetenabled redeemableId:str isEnabled:bool) sets the enabled state of the redeemable
+     * @labels twitch discord noevent channelpoints
+     * @notes disabled redeemables are not visible to viewers
+     */
+    function cpsetenabled(args) {
+        var pargs = $.parseArgs(args.args, ' ', 2, false);
+        if (pargs !== null && pargs.length === 2) {
+            let isEnabled = pargs[1].toLowerCase();
+            $.channelpoints.setRedeemableEnabled(pargs[0], isEnabled === 'true' || isEnabled === 'yes' || isEnabled === '1');
+        }
+        return {
+            result: ''
+        };
+    }
+
+    /*
+     * @transformer cpsetpaused
+     * @formula (cpsetpaused redeemableId:str isPaused:bool) sets the paused state of the redeemable
+     * @labels twitch discord noevent channelpoints
+     * @notes paused redeemables are visible to viewers, but can not be redeemed
+     */
+    function cpsetpaused(args) {
+        var pargs = $.parseArgs(args.args, ' ', 2, false);
+        if (pargs !== null && pargs.length === 2) {
+            let isPaused = pargs[1].toLowerCase();
+            $.channelpoints.setRedeemablePaused(pargs[0], isPaused === 'true' || isPaused === 'yes' || isPaused === '1');
+        }
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @transformer cptitle
      * @formula (cptitle) the title of the redeemable that was redeemed
      * @labels twitch channelpointsevent channelpoints
@@ -207,6 +241,8 @@
         new $.transformers.transformer('cpprompt', ['twitch', 'channelpointsevent', 'channelpoints'], cpprompt),
         new $.transformers.transformer('cpredemptionid', ['twitch', 'channelpointsevent', 'channelpoints'], cpredemptionid),
         new $.transformers.transformer('cpredeemableid', ['twitch', 'channelpointsevent', 'channelpoints'], cpredeemableid),
+        new $.transformers.transformer('cpsetenabled', ['twitch', 'discord', 'noevent', 'channelpoints'], cpsetenabled),
+        new $.transformers.transformer('cpsetpaused', ['twitch', 'discord', 'noevent', 'channelpoints'], cpsetpaused),
         new $.transformers.transformer('cptitle', ['twitch', 'channelpointsevent', 'channelpoints'], cptitle),
         new $.transformers.transformer('cpuserid', ['twitch', 'channelpointsevent', 'channelpoints'], cpuserid),
         new $.transformers.transformer('cpusername', ['twitch', 'channelpointsevent', 'channelpoints'], cpusername)

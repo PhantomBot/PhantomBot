@@ -259,12 +259,12 @@
     /**
      * Marks a managed redemption as fulfilled
      *
-     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redeemableId The id of the redeemable that the user redeemed
      * @param {string} redemptionId The id of the redemption event
      */
-    function updateRedemptionStatusFulfilled(rewardId, redemptionId) {
-        if (managed.includes($.jsString(rewardId))) {
-            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
+    function updateRedemptionStatusFulfilled(redeemableId, redemptionId) {
+        if (managed.includes($.jsString(redeemableId))) {
+            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
                     Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
         }
     }
@@ -272,13 +272,39 @@
     /**
      * Marks a managed redemption as cancelled, refunding the users channel points
      *
-     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redeemableId The id of the redeemable that the user redeemed
      * @param {string} redemptionId The id of the redemption event
      */
-    function updateRedemptionStatusCancelled(rewardId, redemptionId) {
-        if (managed.includes($.jsString(rewardId))) {
-            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
+    function updateRedemptionStatusCancelled(redeemableId, redemptionId) {
+        if (managed.includes($.jsString(redeemableId))) {
+            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
                     Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+        }
+    }
+
+    /**
+     * Sets the enabled state of the redeemable
+     *
+     * @param {string} redeemableId The id of the redeemable that is being updated
+     * @param {boolean} isEnabled The new enabled state
+     */
+    function setRedeemableEnabled(redeemableId, isEnabled) {
+        if (managed.includes($.jsString(redeemableId))) {
+            $.helix.updateCustomReward(redeemableId, null, null, isEnabled, null, null,
+                    null, null, null, null, null, null, null, null, null);
+        }
+    }
+
+    /**
+     * Sets the paused state of the redeemable
+     *
+     * @param {string} redeemableId The id of the redeemable that is being updated
+     * @param {boolean} isPaused The new paused state
+     */
+    function setRedeemablePaused(redeemableId, isPaused) {
+        if (managed.includes($.jsString(redeemableId))) {
+            $.helix.updateCustomReward(redeemableId, null, null, null, isPaused, null,
+                    null, null, null, null, null, null, null, null, null);
         }
     }
 
@@ -317,8 +343,8 @@
                         var addrsp = $.helix.createCustomReward(args[1], parseInt(args[2]),
                                 //is_enabled                              background_color  is_user_input_required
                                 args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'),
-                                //prompt
-                                args[5].equals('true') ? args[6] : null,
+                                //                         prompt
+                                args[6].isBlank() ? null : args[6],
                                 //is_max_per_stream_enabled                      max_per_stream
                                 args[7].equals('true'), args[7].equals('true') ? parseInt(args[8]) : null,
                                 //is_max_per_user_per_stream_enabled             max_per_user_per_stream
@@ -352,22 +378,22 @@
                         }
                         break;
                     case 'redeemable-update-managed':
-                        //                                         id                                  title
-                        var updatersp = $.helix.updateCustomReward(args[1], args[2].isBlank() ? null : args[2],
-                                //                         cost                                          is_enabled
-                                args[3].isBlank() ? null : parseInt(args[3]), args[4].isBlank() ? null : args[4].equals('true'),
-                                //                         is_paused                                          background_color
-                                args[5].isBlank() ? null : args[5].equals('true'), args[6].isBlank() ? null : args[6],
-                                //                         is_user_input_required                           prompt
-                                args[7].isBlank() ? null : args[7].equals('true'), args[7].equals('true') ? args[8] : null,
-                                //                         is_max_per_stream_enabled                        max_per_stream
-                                args[9].isBlank() ? null : args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
-                                //                          is_max_per_user_per_stream_enabled                 max_per_user_per_stream
-                                args[11].isBlank() ? null : args[11].equals('true'), args[11].equals('true') ? parseInt(args[12]) : null,
-                                //                          is_global_cooldown_enabled                         global_cooldown_seconds
-                                args[13].isBlank() ? null : args[13].equals('true'), args[13].equals('true') ? parseInt(args[14]) : null,
-                                //                          should_redemptions_skip_request_queue
-                                args[15].isBlank() ? null : args[15].equals('true'));
+                        //                                         id                                 title
+                        var updatersp = $.helix.updateCustomReward(args[1], args[2] === null ? null : args[2],
+                                //                        cost                                         is_enabled
+                                args[3] === null ? null : parseInt(args[3]), args[4] === null ? null : args[4].equals('true'),
+                                //                        is_paused                                                              background_color
+                                args[5] === null ? null : args[5].equals('true'), args[6] === null || args[6].isBlank() ? null : args[6],
+                                //                        is_user_input_required                            prompt
+                                args[7] === null ? null : args[7].equals('true'), args[8] === null ? null : args[8],
+                                //                        is_max_per_stream_enabled                                            max_per_stream
+                                args[9] === null ? null : args[9].equals('true'), args[9] !== null && args[9].equals('true') ? parseInt(args[10]) : null,
+                                //                         is_max_per_user_per_stream_enabled                                      max_per_user_per_stream
+                                args[11] === null ? null : args[11].equals('true'), args[11] !== null && args[11].equals('true') ? parseInt(args[12]) : null,
+                                //                         is_global_cooldown_enabled                                              global_cooldown_seconds
+                                args[13] === null ? null : args[13].equals('true'), args[13] !== null && args[13].equals('true') ? parseInt(args[14]) : null,
+                                //                         should_redemptions_skip_request_queue
+                                args[15] === null ? null : args[15].equals('true'));
 
                         if (updatersp.getInt('_http') === 200 && updatersp.has('data')) {
                             $.panel.sendObject(event.getId(), {'success': true});
@@ -410,16 +436,30 @@
         /**
          * Marks a managed redemption as fulfilled
          *
-         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redeemableId The id of the redeemable that the user redeemed
          * @param {string} redemptionId The id of the redemption event
          */
         updateRedemptionStatusFulfilled: updateRedemptionStatusFulfilled,
         /**
          * Marks a managed redemption as cancelled, refunding the users channel points
          *
-         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redeemableId The id of the redeemable that the user redeemed
          * @param {string} redemptionId The id of the redemption event
          */
-        updateRedemptionStatusCancelled: updateRedemptionStatusCancelled
+        updateRedemptionStatusCancelled: updateRedemptionStatusCancelled,
+        /**
+         * Sets the enabled state of the redeemable
+         *
+         * @param {string} redeemableId The id of the redeemable that is being updated
+         * @param {boolean} isEnabled The new enabled state
+         */
+        setRedeemableEnabled: setRedeemableEnabled,
+        /**
+         * Sets the paused state of the redeemable
+         *
+         * @param {string} redeemableId The id of the redeemable that is being updated
+         * @param {boolean} isPaused The new paused state
+         */
+        setRedeemablePaused: setRedeemablePaused
     };
 })();
