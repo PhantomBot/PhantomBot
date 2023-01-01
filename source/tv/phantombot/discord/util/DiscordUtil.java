@@ -617,6 +617,28 @@ public class DiscordUtil {
     }
 
     /**
+     * *
+     * Indicates if the channel is a type that is allowed to publish crossposts
+     *
+     * @param channelName The channel to check
+     * @return
+     */
+    public boolean canChannelPublish(String channelName) {
+        return this.canChannelPublish(this.getChannel(channelName));
+    }
+
+    /**
+     * *
+     * Indicates if the channel is a type that is allowed to publish crossposts
+     *
+     * @param channel The channel to check
+     * @return
+     */
+    public boolean canChannelPublish(GuildMessageChannel channel) {
+        return channel.getType() == Channel.Type.GUILD_NEWS;
+    }
+
+    /**
      * Method to return a channel object by its name.
      *
      * @param channelName - The name of the channel.
