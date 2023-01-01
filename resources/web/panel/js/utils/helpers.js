@@ -243,10 +243,19 @@ $(function () {
      * @param {Object} obj
      * @return {Boolean}
      */
-    helpers.handleInputString = function (obj) {
+    helpers.handleInputString = function (obj, min, max) {
+        if (min === undefined) {
+            min = 1;
+        }
+        if (max === undefined) {
+            max = Number.MAX_SAFE_INTEGER;
+        }
         return helpers.handleInput(obj, function (obj) {
-            if (obj.val().length < 1) {
-                return 'You cannot leave this field empty.';
+            if (obj.val().length < min) {
+                return 'You cannot have less than ' + min + ' characters.';
+            }
+            if (obj.val().length > max) {
+                return 'You cannot have more than ' + max + ' characters.';
             }
             return null;
         });

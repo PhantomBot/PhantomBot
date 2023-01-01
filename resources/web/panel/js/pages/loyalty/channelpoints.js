@@ -466,9 +466,10 @@ $(function () {
                                             redeemableFulfill = $('#redeemable-fulfill').is(':checked') ? 'true' : 'false';
 
                                     switch (false) {
-                                        case helpers.handleInputString(redeemableTitle):
+                                        case helpers.handleInputString(redeemableTitle, 1, 45):
                                         case helpers.handleInputNumber(redeemableCost, 1):
                                         case handleInputColor(redeemableBgcolor):
+                                        case helpers.handleInputString(redeemablePrompt, 0, 200):
                                         case handleToggledInputNumber(redeemableMaxStreamEnabled, redeemableMaxStream, 1):
                                         case handleToggledInputNumber(redeemableMaxUserStreamEnabled, redeemableMaxUserStream, 1):
                                         case handleToggledInputNumber(redeemableCooldownEnabled, redeemableCooldown, 1):
@@ -1009,9 +1010,10 @@ $(function () {
                     redeemableFulfill = $('#redeemable-fulfill').is(':checked') ? 'true' : 'false';
 
             switch (false) {
-                case helpers.handleInputString(redeemableTitle):
+                case helpers.handleInputString(redeemableTitle, 1, 45):
                 case helpers.handleInputNumber(redeemableCost, 1):
                 case handleInputColor(redeemableBgcolor):
+                case helpers.handleInputString(redeemablePrompt, 0, 200):
                 case handleToggledInputNumber(redeemableMaxStreamEnabled, redeemableMaxStream, 1):
                 case handleToggledInputNumber(redeemableMaxUserStreamEnabled, redeemableMaxUserStream, 1):
                 case handleToggledInputNumber(redeemableCooldownEnabled, redeemableCooldown, 1):
