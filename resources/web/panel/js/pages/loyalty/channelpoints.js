@@ -418,6 +418,14 @@ $(function () {
                                             'html': $('<form/>', {
                                                 'role': 'form'
                                             })
+                                                    .append($('<div/>', {
+                                                        'class': 'box box-info'
+                                                    }).append($('<div/>', {
+                                                        'class': 'box-body',
+                                                        'html': 'Due to limitations imposed by Twitch, the icons for the redeemable can not be edited by this dialog. The '
+                                                                + 'icons must manually be edited from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" '
+                                                                + 'target="_blank">Creator Dashboard</a> after the redeemable is edited<span id="redeemable-images"></span>'
+                                                    })))
                                                     .append(helpers.getCheckBox('redeemable-enabled', redeemable.is_enabled, 'Enabled',
                                                             'Whether the redeemable is enabled. Viewers see only enabled redeemable.'))
                                                     .append(helpers.getCheckBox('redeemable-paused', redeemable.is_paused, 'Paused',
@@ -498,6 +506,55 @@ $(function () {
                                 });
 
                                 modal.on('shown.bs.modal', function () {
+                                    if (redeemable.image !== undefined && redeemable.image !== null) {
+                                        let images = [];
+
+                                        if (redeemable.image.url_1x !== undefined && redeemable.image.url_1x !== null) {
+                                            images.push($('<span/>', {
+                                                'html': '1x',
+                                                'style': 'padding-right: 5px;'
+                                            }));
+                                            images.push($('<img/>', {
+                                                'src': redeemable.image.url_1x
+                                            }));
+                                        }
+
+                                        if (redeemable.image.url_2x !== undefined && redeemable.image.url_2x !== null) {
+                                            if (images.length > 0) {
+                                                images.push($('<br/>'));
+                                            }
+                                            images.push($('<span/>', {
+                                                'html': '2x',
+                                                'style': 'padding-right: 5px;'
+                                            }));
+                                            images.push($('<img/>', {
+                                                'src': redeemable.image.url_2x
+                                            }));
+                                        }
+
+                                        if (redeemable.image.url_4 !== undefined && redeemable.image.url_4x !== null) {
+                                            if (images.length > 0) {
+                                                images.push($('<br/>'));
+                                            }
+                                            images.push($('<span/>', {
+                                                'html': '4x',
+                                                'style': 'padding-right: 5px;'
+                                            }));
+                                            images.push($('<img/>', {
+                                                'src': redeemable.image.url_4x
+                                            }));
+                                        }
+
+                                        if (images.length > 0) {
+                                            $('#redeemable-images').append($('<br/>')).append($('<br/>')).append($('<span/>')
+                                                    .append($('<b/>', {
+                                                        'html': 'Current Icons'
+                                                    })).append($('<br/>'))
+                                                    .append(images)
+                                                    );
+                                        }
+                                    }
+
                                     $('#redeemable-max-stream-enabled').on('click', function () {
                                         $('#redeemable-max-stream').prop('disabled', !$(this).is(':checked'));
                                     });
@@ -546,6 +603,9 @@ $(function () {
                                             'html': $('<form/>', {
                                                 'role': 'form'
                                             })
+                                                    .append($('<span/>', {
+                                                        'id': 'redeemable-images'
+                                                    }))
                                                     .append(helpers.getCheckBox('redeemable-enabled', redeemable.is_enabled, 'Enabled',
                                                             'Whether the redeemable is enabled. Viewers see only enabled redeemable.', true))
                                                     .append(helpers.getCheckBox('redeemable-paused', redeemable.is_paused, 'Paused',
@@ -582,6 +642,55 @@ $(function () {
                                 });
 
                                 modal.on('shown.bs.modal', function () {
+                                    if (redeemable.image !== undefined && redeemable.image !== null) {
+                                        let images = [];
+
+                                        if (redeemable.image.url_1x !== undefined && redeemable.image.url_1x !== null) {
+                                            images.push($('<span/>', {
+                                                'html': '1x',
+                                                'style': 'padding-right: 5px;'
+                                            }));
+                                            images.push($('<img/>', {
+                                                'src': redeemable.image.url_1x
+                                            }));
+                                        }
+
+                                        if (redeemable.image.url_2x !== undefined && redeemable.image.url_2x !== null) {
+                                            if (images.length > 0) {
+                                                images.push($('<br/>'));
+                                            }
+                                            images.push($('<span/>', {
+                                                'html': '2x',
+                                                'style': 'padding-right: 5px;'
+                                            }));
+                                            images.push($('<img/>', {
+                                                'src': redeemable.image.url_2x
+                                            }));
+                                        }
+
+                                        if (redeemable.image.url_4 !== undefined && redeemable.image.url_4x !== null) {
+                                            if (images.length > 0) {
+                                                images.push($('<br/>'));
+                                            }
+                                            images.push($('<span/>', {
+                                                'html': '4x',
+                                                'style': 'padding-right: 5px;'
+                                            }));
+                                            images.push($('<img/>', {
+                                                'src': redeemable.image.url_4x
+                                            }));
+                                        }
+
+                                        if (images.length > 0) {
+                                            $('#redeemable-images').append($('<span/>')
+                                                    .append($('<b/>', {
+                                                        'html': 'Current Icons'
+                                                    })).append($('<br/>'))
+                                                    .append(images)
+                                                    );
+                                        }
+                                    }
+
                                     $('[data-toggle="tooltip"]').tooltip();
                                 });
 
@@ -818,8 +927,9 @@ $(function () {
                         'class': 'box box-info'
                     }).append($('<div/>', {
                         'class': 'box-body',
-                        'html': 'Due to limitations imposed by Twitch, the icon for the redeemable can not be transferred by this routine. The '
-                                + 'icon must manually be added from the Creator Dashboard after the conversion is completed (step 6)'
+                        'html': 'Due to limitations imposed by Twitch, the icons for the redeemable can not be transferred by this routine. The '
+                                + 'icons must manually be added from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" '
+                                + 'target="_blank">Creator Dashboard</a> after the conversion is completed (step 6)'
                     })),
                     $('<div/>', {
                         'class': 'box box-primary'
@@ -849,7 +959,7 @@ $(function () {
                                             + '</i>&nbsp; Finish Conversion</button> to finish the conversion process'
                                 }),
                                 $('<li/>', {
-                                    'html': '(Optional) Upload an icon for the redeemable from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" target="_blank">Creator Dashboard</a> (requires broadcaster)'
+                                    'html': '(Optional) Upload icons for the redeemable from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" target="_blank">Creator Dashboard</a> (requires broadcaster)'
                                 })
                             ])
                             )
@@ -1126,6 +1236,14 @@ $(function () {
                     'html': $('<form/>', {
                         'role': 'form'
                     })
+                            .append($('<div/>', {
+                                'class': 'box box-info'
+                            }).append($('<div/>', {
+                                'class': 'box-body',
+                                'html': 'Due to limitations imposed by Twitch, the icon for the redeemable can not be added by this dialog. The '
+                                        + 'icon must manually be added from the <a href="https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards" '
+                                        + 'target="_blank">Creator Dashboard</a> after the redeemable is created'
+                            })))
                             .append(helpers.getCheckBox('redeemable-enabled', true, 'Enabled',
                                     'Whether the redeemable is enabled. Viewers see only enabled redeemable.'))
                             .append(helpers.getInputGroup('redeemable-bgcolor', 'text', 'Background Color', '#9147FF', '',
