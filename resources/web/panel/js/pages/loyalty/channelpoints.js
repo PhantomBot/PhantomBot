@@ -424,7 +424,7 @@ $(function () {
                                                             'The background color to use for the redeemable. Specify the color using Hex format (for example, #9147FF).'))
                                                     .append(helpers.getCheckBox('redeemable-input-required', redeemable.is_user_input_required, 'Is User Input Required',
                                                             'Whether the user needs to enter information when redeeming the redeemable.'))
-                                                    .append(helpers.getInputGroup('redeemable-prompt', 'text', 'Prompt', 'Enter the Really Cool Phrase', redeemable.prompt || '',
+                                                    .append(helpers.getTextAreaGroup('redeemable-prompt', 'text', 'Prompt', 'Does something really cool', redeemable.prompt || '',
                                                             'The prompt shown to the viewer when they redeem the redeemable. The prompt is limited to a maximum of 200 '
                                                             + 'characters.'))
                                                     .append(helpers.getCheckBox('redeemable-max-stream-enabled', redeemable.max_per_stream_setting.is_enabled,
@@ -975,7 +975,7 @@ $(function () {
                                     'The background color to use for the redeemable. Specify the color using Hex format (for example, #9147FF).'))
                             .append(helpers.getCheckBox('redeemable-input-required', false, 'Is User Input Required',
                                     'Whether the user needs to enter information when redeeming the redeemable.'))
-                            .append(helpers.getInputGroup('redeemable-prompt', 'text', 'Prompt', 'Enter the Really Cool Phrase', '',
+                            .append(helpers.getTextAreaGroup('redeemable-prompt', 'text', 'Prompt', 'Does something really cool', '',
                                     'The prompt shown to the viewer when they redeem the redeemable. The prompt is limited to a maximum of 200 '
                                     + 'characters.'))
                             .append(helpers.getCheckBox('redeemable-max-stream-enabled', false, 'Is Max-Per-Stream Enabled',
