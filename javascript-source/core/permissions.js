@@ -713,27 +713,33 @@
     /**
      * @function restoreSubscriberStatus
      * @param {String} username
+     *
+     * Actual twitch users subscription status can be out of sync with what the database reflects. This function remediates this but adjusting the saved permission accordingly.
+     * The subUsers cache should always be up-to-date with the users twitch subscription status and can thus be used to "fix" phantombot's permissions
+     * VIPs do get updated through OMode and thus shouldn't need to be fixed
      */
     function restoreSubscriberStatus(username) {
         username = username.toString().toLowerCase();
 
-        if (isMod(username) || isAdmin(username)) {
+        if (isMod(username) || isAdmin(username)) { //Ignore high privileged users
             return;
         }
 
-        if (isSub(username) && getUserGroupId(username) !== PERMISSION.Sub) {
-            $.setIniDbNumber('preSubGroup', username, getUserGroupId(username));
-            if (isVIP(username)) {
-                setUserGroupById(username, getHighestIDSubVIP());
-            } else {
+        var oldID = queryDBPermission(username),
+            isInCache = subUsers.contains(username);
+
+        if (isInCache && oldID !== PERMISSION.Sub) { //User got added to subscriber cache but it's database value is out of sync
+            if (isVIP(username) && oldID > PERMISSION.VIP) { //User is also a VIP - Only change permissions if needed
+                setUserGroupById(username, getLowestIDSubVIP());
+            } else if (!isVIP(username)){ //User is only a subscriber - Set permission accordingly
                 setUserGroupById(username, PERMISSION.Sub);
             }
-        }
 
-        if (!isSub(username) && getUserGroupId(username) === PERMISSION.Sub) {
-            if (isVIP(username)) {
+            $.setIniDbNumber('preSubGroup', username, oldID); //Save the old (permission) id for reference when the subscription runs out
+        } else if (!isInCache && oldID === PERMISSION.Sub) { //User is not in the subscriber cache but holds subscriber permissions according to the database
+            if (isVIP(username)) { //User is a VIP - Set permission to VIP
                 setUserGroupById(username, PERMISSION.VIP);
-            } else if ($.inidb.exists('preSubGroup', username)) {
+            } else if ($.inidb.exists('preSubGroup', username)) { //User is not a VIP but has a reference to his old permissions - Use those
                 setUserGroupById(username, $.getIniDbNumber('preSubGroup', username, PERMISSION.Viewer));
                 $.inidb.del('preSubGroup', username);
             } else {
@@ -1008,7 +1014,8 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        var username = event.getSender().toLowerCase();
+        var username = event.getSender().toLowerCase(),
+            tags = event.getTags();
 
         if (isTwitchBot(username)) {
             return;
@@ -1024,6 +1031,14 @@
                 users.push(username);
             } finally {
                 _usersLock.unlock();
+            }
+
+            // The subscriber Cache should always be up-to-date for restoreSubscriberStatus() to properly work
+            if (checkTags(tags) && tags.containsKey('subscriber') && tags.get('subscriber').equals('1')) {
+                addSubUsersList(username);
+            }
+            if (checkTags(tags) && tags.containsKey('vip') && tags.get('vip').equals('1')) {
+                addVIPUsersList(username);
             }
         }
     });
