@@ -681,13 +681,17 @@
      * @function loadModeratorsCache
      */
     function loadModeratorsCache() {
-        var keys = $.inidb.GetKeyList('group', '');
+        var keys = $.inidb.GetKeyValueList('group', ''),
+            a = new Packages.java.util.ArrayList();
 
         for (var i in keys) {
-            if (getUserGroupId(keys[i], null) <= PERMISSION.Mod) {
-                addModeratorToCache(keys[i].toLowerCase());
+            if (parseInt(keys[i].getValue()) <= PERMISSION.Mod) {
+                a.add(keys[i].getKey().toLowerCase());
             }
         }
+
+        $.consoleDebug("Adding the mods to the moderator cache: " + a.toString());
+        moderatorsCache.addAllAbsent(a);
     }
 
     /**
