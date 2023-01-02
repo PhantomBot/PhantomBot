@@ -469,6 +469,7 @@ sun/nio/fs/WindowsNativeDispatcher
 sun/nio/fs/WindowsNativeDispatcher$1
 java/lang/ClassLoader$2
 java/lang/ClassLoader$NativeLibrary
+java/lang/ClassLoaderHelper
 java/util/ArrayDeque$DeqIterator
 java/util/concurrent/ConcurrentHashMap$ValuesView
 java/util/concurrent/ConcurrentHashMap$ValueIterator
@@ -1128,9 +1129,14 @@ java/time/zone/ZoneRulesProvider$1
 java/time/zone/TzdbZoneRulesProvider
 java/time/zone/Ser
 java/io/Externalizable
+java/time/Month
+java/time/DayOfWeek
+java/time/zone/ZoneOffsetTransitionRule$TimeDefinition
 java/time/zone/ZoneOffsetTransition
 java/time/ZonedDateTime
 java/time/chrono/ChronoZonedDateTime
+java/time/temporal/TemporalAdjusters
+java/time/zone/ZoneOffsetTransitionRule$1
 java/util/logging/LogRecord$CallerFinder
 java/lang/StackWalker$Option
 java/lang/StackStreamFactory
