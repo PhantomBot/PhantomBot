@@ -686,7 +686,7 @@
 
         for (var i in keys) {
             if (parseInt(keys[i].getValue()) <= PERMISSION.Mod) {
-                a.add(keys[i].getKey().toLowerCase());
+                a.add($.javaString(keys[i].getKey().toLowerCase()));
             }
         }
 
