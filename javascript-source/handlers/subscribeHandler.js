@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@
             announce = false,
             types = {SUB: 0, RESUB: 1, GIFT: 2, GIFTANON: 3, MASSGIFT: 4, MASSGIFTANON: 5};
 
-    /*
+    /**
      * @function updateSubscribeConfig
      */
     function updateSubscribeConfig() {
@@ -101,7 +101,7 @@
         });
     }
 
-    /*
+    /**
      * Converts a Twitch plan name (eg. 1000) into a tier name (eg. 1)
      *
      * Returns null if plan name is invalid, or if tier is prime when allowPrime is set to false
@@ -136,7 +136,7 @@
         }
     }
 
-    /*
+    /**
      * Converts a Twitch tier number (eg. 1) into a plan name (eg. 1000)
      *
      * Returns null if tier number is invalid, or if tier is prime when allowPrime is set to false
@@ -171,7 +171,7 @@
         }
     }
 
-    /*
+    /**
      * @function getPlanName
      */
     function getPlanName(plan) {
@@ -187,7 +187,7 @@
     var transformers = function (type) {
         var transformers;
 
-        /*
+        /**
          * @localtransformer amount
          * @formula (amount) The number of subs given by a mass-giftsub event
          * @example Caster: !massgiftsubmessage 1000 (name) just gave away (amount) subs! Thank you!
@@ -202,7 +202,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer customemote
          * @formula (customemote) '<The Emote, Repeated Months Times (Max 12)>'
          * @example Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you! (customemote)
@@ -244,7 +244,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer giftmonths
          * @formula (giftmonths) '<Number of Months Gifted>'
          * @example Caster: !giftsubmessage 1000 (name) just gifted (giftmonths) months of (plan) to (recipient)! Thank you!
@@ -259,7 +259,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer giftreward
          * @formula (giftreward) '<Points Reward>'
          * @customarg (giftreward:int) The number of points awarded to the gifter for gifting a sub to someone else
@@ -276,7 +276,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer months
          * @formula (months) '<Total Months Subscribed>'
          * @example Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you!
@@ -291,7 +291,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer name
          * @formula (name) For subs/resubs, the subscriber's name. For gift subs, the name of the person gifting the sub
          * @example Caster: !submessage 1000 (name) just subscribed at Tier 1! Thank you!
@@ -306,7 +306,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer plan
          * @formula (plan) '<Subscription Tier>'
          * @example Caster: !submessage 1000 (name) just subscribed at (plan)! Thank you!
@@ -322,7 +322,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer recipient
          * @formula (recipient) The name of the recipient of a gift sub
          * @example Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! Thank you!
@@ -337,7 +337,7 @@
             };
         }
 
-        /*
+        /**
          * @localtransformer reward
          * @formula (reward) '<Points Reward>'
          * @customarg (reward:int) The number of points awarded for the sub
@@ -383,7 +383,37 @@
         return transformers;
     };
 
-    /*
+    /**
+     * @event twitchPrimeSubscriber
+     * @usestransformers local global twitch noevent
+     */
+    $.bind('twitchPrimeSubscriber', function (event) {
+        if (subWelcomeToggle === true && announce === true) {
+            var subscriber = event.getUsername(),
+                    plan = event.getPlan(),
+                    reward = subReward[plan],
+                    message = $.jsString(subMessage[plan]);
+
+            message = $.transformers.tags(event, message, ['twitch', 'noevent'], {localTransformers: transformers(types.SUB), customArgs: {'reward': reward}});
+
+            if ($.jsString(message).trim() !== '') {
+                $.say(message);
+            }
+
+            $.addSubUsersList(subscriber);
+            $.restoreSubscriberStatus(subscriber);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestSub.txt', false);
+            $.writeToFile(subscriber + ' ', './addons/subscribeHandler/latestOverallSub.txt', false);
+            $.inidb.set('streamInfo', 'lastSub', subscriber);
+            $.inidb.set('subplan', subscriber, plan);
+
+            if (reward > 0) {
+                $.inidb.incr('points', subscriber, reward);
+            }
+        }
+    });
+
+    /**
      * @event twitchSubscriber
      * @usestransformers local global twitch noevent
      */
@@ -413,7 +443,7 @@
         }
     });
 
-    /*
+    /**
      * @event twitchReSubscriber
      * @usestransformers local global twitch noevent
      */
@@ -444,7 +474,7 @@
         }
     });
 
-    /*
+    /**
      * @event twitchSubscriptionGift
      * @usestransformers local global twitch noevent
      */
@@ -480,7 +510,7 @@
         }
     });
 
-    /*
+    /**
      * @event twitchMassSubscriptionGifted
      * @usestransformers local global twitch noevent
      */
@@ -503,7 +533,7 @@
         }
     });
 
-    /*
+    /**
      * @event twitchAnonymousSubscriptionGift
      * @usestransformers local global twitch noevent
      */
@@ -533,7 +563,7 @@
         }
     });
 
-    /*
+    /**
      * @event twitchMassAnonymousSubscriptionGifted
      * @usestransformers local global twitch noevent
      */
@@ -549,7 +579,7 @@
         }
     });
 
-    /*
+    /**
      * @event command
      */
     $.bind('command', function (event) {
@@ -559,7 +589,7 @@
                 args = event.getArgs(),
                 planId;
 
-        /*
+        /**
          * @commandpath subwelcometoggle - Enable or disable subscription alerts.
          */
         if (command.equalsIgnoreCase('subwelcometoggle')) {
@@ -568,7 +598,7 @@
             $.say($.whisperPrefix(sender) + (subWelcomeToggle ? $.lang.get('subscribehandler.new.sub.toggle.on') : $.lang.get('subscribehandler.new.sub.toggle.off')));
         }
 
-        /*
+        /**
          * @commandpath resubwelcometoggle - Enable or disable resubsciption alerts.
          */
         if (command.equalsIgnoreCase('resubwelcometoggle')) {
@@ -577,7 +607,7 @@
             $.say($.whisperPrefix(sender) + (reSubWelcomeToggle ? $.lang.get('subscribehandler.resub.toggle.on') : $.lang.get('subscribehandler.resub.toggle.off')));
         }
 
-        /*
+        /**
          * @commandpath giftsubwelcometoggle - Enable or disable subgifting alerts.
          */
         if (command.equalsIgnoreCase('giftsubwelcometoggle')) {
@@ -586,7 +616,7 @@
             $.say($.whisperPrefix(sender) + (giftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')));
         }
 
-        /*
+        /**
          * @commandpath giftanonsubwelcometoggle - Enable or disable anonymous subgifting alerts.
          */
         if (command.equalsIgnoreCase('giftanonsubwelcometoggle')) {
@@ -595,7 +625,7 @@
             $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')));
         }
 
-        /*
+        /**
          * @commandpath massgiftsubwelcometoggle - Enable or disable subgifting alerts.
          */
         if (command.equalsIgnoreCase('massgiftsubwelcometoggle')) {
@@ -604,7 +634,7 @@
             $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.massgiftsub.toggle.on') : $.lang.get('subscribehandler.massgiftsub.toggle.off')));
         }
 
-        /*
+        /**
          * @commandpath massanongiftsubwelcometoggle - Enable or disable mass anonymous subgifting alerts.
          */
         if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
@@ -613,7 +643,7 @@
             $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anonmassgiftsub.toggle.on') : $.lang.get('subscribehandler.anonmassgiftsub.toggle.off')));
         }
 
-        /*
+        /**
          * @commandpath submessage [1|2|3|prime|all] [message] - Set a welcome message for new subscribers.
          */
         if (command.equalsIgnoreCase('submessage')) {
@@ -633,7 +663,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath resubmessage [1|2|3|prime|all] [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('resubmessage')) {
@@ -653,7 +683,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath giftsubmessage [1|2|3|all] [message] - Set a message for resubscribers.
          */
         if (command.equalsIgnoreCase('giftsubmessage')) {
@@ -673,7 +703,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath giftanonsubmessage [1|2|3|all] [message] - Set a message for anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('giftanonsubmessage')) {
@@ -693,7 +723,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath massgiftsubmessage [1|2|3|all] [message] - Set a message for gifting alerts.
          */
         if (command.equalsIgnoreCase('massgiftsubmessage')) {
@@ -713,7 +743,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath massanongiftsubmessage [1|2|3|all] [message] - Set a message for mass anonymous gifting alerts.
          */
         if (command.equalsIgnoreCase('massanongiftsubmessage')) {
@@ -813,7 +843,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.reward.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath subemote [1|2|3|prime|all] [emote] - The (customemote) tag will be replace with these emotes.  The emotes will be added the amount of months the user subscribed for.
          */
         if (command.equalsIgnoreCase('subemote') || command.equalsIgnoreCase('resubemote')) {
@@ -833,7 +863,7 @@
             $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.set', planId === null ? 'all tiers' : planId));
         }
 
-        /*
+        /**
          * @commandpath namesubplan [1|2|3|prime] [name of plan] - Name a subscription plan for the (plan) tag, Twitch provides three tiers plus prime.
          */
         if (command.equalsIgnoreCase('namesubplan')) {
