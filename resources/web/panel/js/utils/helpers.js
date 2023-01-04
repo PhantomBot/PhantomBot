@@ -886,10 +886,16 @@ $(function () {
             'dangerMode': true
         }).then(function (isRemoved) {
             if (isRemoved) {
-                onClose();
-                swal(closeMessage, {
-                    'icon': 'success'
-                });
+                let result = onClose();
+                if (result === undefined || result.message === undefined || result.icon === undefined) {
+                    swal(closeMessage, {
+                        'icon': 'success'
+                    });
+                } else {
+                    swal(result.message, {
+                        'icon': result.icon
+                    });
+                }
             }
         });
     };
