@@ -50,6 +50,14 @@ public final class RepoVersion {
         return buildType.equals("prerelease_build");
     }
 
+    public static boolean isCustomBuild() {
+        return phantomBotVersion.startsWith("custom") || buildType.startsWith("custom");
+    }
+
+    public static boolean isEdgeBuild() {
+        return buildType.startsWith("edge");
+    }
+
     public static boolean isDocker() {
         return isDocker;
     }

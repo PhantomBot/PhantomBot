@@ -1375,7 +1375,7 @@ public final class PhantomBot implements Listener {
      */
     private void doCheckPhantomBotUpdate() {
         ExecutorService.scheduleAtFixedRate(() -> {
-            if (!RepoVersion.getBuildType().startsWith("edge") && !RepoVersion.getBuildType().startsWith("custom")) {
+            if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
