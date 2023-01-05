@@ -296,11 +296,11 @@ $(function () {
                             }
                             buttons.push($('<button/>', {
                                 'type': 'button',
-                                'class': 'btn btn-xs btn-' + managed.includes(redeemable.id) ? 'warning' : 'info',
+                                'class': 'btn btn-xs btn-' + (managed.includes(redeemable.id) ? 'warning' : 'info'),
                                 'style': 'float: right',
                                 'data-redeemableid': redeemable.id,
                                 'html': $('<i/>', {
-                                    'class': 'fa fa-' + managed.includes(redeemable.id) ? 'edit' : 'eye'
+                                    'class': 'fa fa-' + (managed.includes(redeemable.id) ? 'edit' : 'eye')
                                 })
                             }));
                             if (managed.includes(redeemable.id)) {
@@ -385,11 +385,21 @@ $(function () {
                                 }
 
                                 helpers.getConfirmDeleteModal('channelpoints_redeemable_modal_remove', 'Are you sure you want to remove the redeemable '
-                                        + redeemable.title + '?', true,
-                                        'Successfully removed the redeemable ' + redeemable.title, function () {
+                                        + redeemable.title + '?', true, '', function () {
                                             socket.wsEvent('channelpoints_redeemable_delete_ws', './handlers/channelPointsHandler.js', null,
-                                                    ['redeemable-delete-managed', redeemable.id], function () {
+                                                    ['redeemable-delete-managed', redeemable.id], function (e) {
                                                 loadRedeemables();
+                                                if (e.success) {
+                                                    return {
+                                                        'message': 'Successfully deleted redeemable ' + redeemable.title + ' (' + redeemable.id + ')',
+                                                        'icon': 'success'
+                                                    };
+                                                } else {
+                                                    return {
+                                                        'message': 'Failed to delete redeemable (' + redeemable.id + '): ' + e.error,
+                                                        'icon': 'error'
+                                                    };
+                                                }
                                             }, true, true);
                                         });
                             });
