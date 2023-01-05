@@ -424,9 +424,12 @@ public final class PhantomBot implements Listener {
             if (ConfigurationManager.newSetup()) {
                 if (!ConfigurationManager.setupStarted()) {
                     com.gmt2001.Console.warn.println();
-                    com.gmt2001.Console.warn.println("Detected possible new setup, starting setup process...");
+                    com.gmt2001.Console.warn.println("Detected new installation, starting setup process...");
                     com.gmt2001.Console.warn.println();
                     ConfigurationManager.doSetup();
+                } else {
+                    com.gmt2001.Console.warn.println();
+                    com.gmt2001.Console.warn.println("Setup not completed yet");
                 }
             } else {
                 com.gmt2001.Console.warn.println();

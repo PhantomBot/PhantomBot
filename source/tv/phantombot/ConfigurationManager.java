@@ -255,61 +255,77 @@ public class ConfigurationManager {
 
         // OS guide links
         if (RepoVersion.isDocker()) {
-            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Docker.");
-            com.gmt2001.Console.out.println("We recommend using our official docker-compose.yml to setup");
-            com.gmt2001.Console.out.println("the container: https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml");
+            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Docker");
+            com.gmt2001.Console.out.println("We recommend using our official docker-compose.yml to setup the container:");
+            com.gmt2001.Console.out.println("    https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml");
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Please see the comments at the top of the file for the command to run it");
             com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("For automatic updates, see the comments at the top of the file for enabling the ouroboros profile");
+            com.gmt2001.Console.out.println("For automatic updates, see the comments at the top of the file");
+            com.gmt2001.Console.out.println("    for enabling the ouroboros profile");
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("To customize the settings within the file, see the comments throughout the file");
         } else if (SystemUtils.IS_OS_WINDOWS) {
-            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Windows.");
-            com.gmt2001.Console.out.println("Here's the setup guide for Windows: https://phantombot.dev/guides/#guide=content/setupbot/windows");
+            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Windows");
+            com.gmt2001.Console.out.println("Here's the setup guide for Windows:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/windows");
         } else if (SystemUtils.IS_OS_LINUX) {
-            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Linux.");
-            com.gmt2001.Console.out.println("Here's the setup guide for Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu");
-            com.gmt2001.Console.out.println("Here's the setup guide for CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
+            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Linux");
+            com.gmt2001.Console.out.println("Here's the setup guide for Ubuntu:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/ubuntu");
+            com.gmt2001.Console.out.println("Here's the setup guide for CentOS:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/centos");
         } else if (SystemUtils.IS_OS_MAC) {
-            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running macOS.");
-            com.gmt2001.Console.out.println("Here's the setup guide for macOS: https://phantombot.dev/guides/#guide=content/setupbot/macos");
+            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running macOS");
+            com.gmt2001.Console.out.println("Here's the setup guide for macOS:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/macos");
         } else if (SystemUtils.IS_OS_FREE_BSD || SystemUtils.IS_OS_NET_BSD || SystemUtils.IS_OS_OPEN_BSD) {
-            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running BSD.");
-            com.gmt2001.Console.out.println("Sorry, we do not have any setup guides for this OS.");
-            com.gmt2001.Console.out.println("It is probably similar to one of the Linux OSes, but may require tweaks.");
-            com.gmt2001.Console.out.println("Here's the setup guide for Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu");
-            com.gmt2001.Console.out.println("Here's the setup guide for CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
-            com.gmt2001.Console.out.println("If you are having trouble figuring it out, join Discord and someone will try to help.");
+            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running BSD");
+            com.gmt2001.Console.out.println("Sorry, we do not have any setup guides for this OS");
+            com.gmt2001.Console.out.println("It is probably similar to one of the Linux OSes, but may require tweaks");
+            com.gmt2001.Console.out.println("Here's the setup guide for Ubuntu:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/ubuntu");
+            com.gmt2001.Console.out.println("Here's the setup guide for CentOS:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/centos");
+            com.gmt2001.Console.out.println("If you are having trouble figuring it out, join Discord and someone will");
+            com.gmt2001.Console.out.println("  try to help");
         } else if (SystemUtils.IS_OS_UNIX) {
-            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Unix.");
-            com.gmt2001.Console.out.println("Sorry, we do not have any setup guides for this OS.");
-            com.gmt2001.Console.out.println("It is probably similar to one of the Linux OSes, but may require tweaks.");
-            com.gmt2001.Console.out.println("Here's the setup guide for Ubuntu: https://phantombot.dev/guides/#guide=content/setupbot/ubuntu");
-            com.gmt2001.Console.out.println("Here's the setup guide for CentOS: https://phantombot.dev/guides/#guide=content/setupbot/centos");
-            com.gmt2001.Console.out.println("If you are having trouble figuring it out, join Discord and someone will try to help.");
+            com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Unix");
+            com.gmt2001.Console.out.println("Sorry, we do not have any setup guides for this OS");
+            com.gmt2001.Console.out.println("It is probably similar to one of the Linux OSes, but may require tweaks");
+            com.gmt2001.Console.out.println("Here's the setup guide for Ubuntu:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/ubuntu");
+            com.gmt2001.Console.out.println("Here's the setup guide for CentOS:");
+            com.gmt2001.Console.out.println("    https://phantombot.dev/guides/#guide=content/setupbot/centos");
+            com.gmt2001.Console.out.println("If you are having trouble figuring it out, join Discord and someone will");
+            com.gmt2001.Console.out.println("  try to help");
         } else {
-            com.gmt2001.Console.out.println("PhantomBot is not able to detect your OS type.");
-            com.gmt2001.Console.out.println("Sorry, we do not have any setup guides for this OS.");
-            com.gmt2001.Console.out.println("If you are having trouble figuring it out, join Discord and someone will try to help.");
+            com.gmt2001.Console.out.println("PhantomBot is not able to detect your OS type");
+            com.gmt2001.Console.out.println("Sorry, we do not have any setup guides for this OS");
+            com.gmt2001.Console.out.println("If you are having trouble figuring it out, join Discord and someone will");
+            com.gmt2001.Console.out.println("  try to help");
         }
 
         // Contribute
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("See an issue with the setup guide for your OS? We welcome all contributies via GitHub: https://github.com/PhantomBot/PhantomBot");
+        com.gmt2001.Console.out.println("See an issue with the setup guide for your OS? We welcome all contributies via GitHub:");
+            com.gmt2001.Console.out.println("    https://github.com/PhantomBot/PhantomBot");
 
         // Webserver info
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("The default URL for the bots webserver is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000));
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("If you are hosting the bot remotely, please substitute \"localhost\" with the appropriate IP address, hostname, or domain name.");
-        com.gmt2001.Console.out.println("NOTE: The \":" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "\" part is still needed at the end.");
+        com.gmt2001.Console.out.println("If you are hosting the bot remotely, please substitute \"localhost\" with the");
+        com.gmt2001.Console.out.println("    appropriate IP address, hostname, or domain name");
+        com.gmt2001.Console.out.println("NOTE: The \":" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "\" part is still needed at the end");
         com.gmt2001.Console.out.println("For example, \"http://coolstreamer.tv:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "\"");
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("NOTE: Due to automatic self-signed SSL being enabled by default, your browser may complain about an insecure connection.");
-        com.gmt2001.Console.out.println("This error appears because a global certificate authority has not verified the self-signed certificate.");
+        com.gmt2001.Console.out.println("NOTE: Due to automatic self-signed SSL being enabled by default, your browser may");
+        com.gmt2001.Console.out.println("    complain about an insecure connection");
+        com.gmt2001.Console.out.println("This error appears because a global certificate authority has not verified");
+        com.gmt2001.Console.out.println("    the self-signed certificate");
         com.gmt2001.Console.out.println("It is safe to use the buttons provided by the browser to continue anyway");
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("On Firefox: ");
@@ -319,7 +335,8 @@ public class ConfigurationManager {
         com.gmt2001.Console.out.println("On Chrome/Edge: ");
         com.gmt2001.Console.out.println("    Message title: \"Your connection is not private\"");
         com.gmt2001.Console.out.println("    To continue: Click \"Advanced\", then click \"Proceed to localhost (unsafe)\"");
-        com.gmt2001.Console.out.println("    NOTE: If you are hosting remotely, \"localhost\" in the above proceed link will be substituted with the appropriate IP address, hostname, or domain name");
+        com.gmt2001.Console.out.println("    NOTE: If you are hosting remotely, \"localhost\" in the above proceed link will");
+        com.gmt2001.Console.out.println("    be substituted with the appropriate IP address, hostname, or domain name");
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("The current panel username is: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
@@ -331,30 +348,42 @@ public class ConfigurationManager {
         int step = 0;
         com.gmt2001.Console.out.println("Please perform these steps for first run setup:");
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println(++step + ". From the webserver homepage, click the \"Bot Setup\" button and login with the credentials above");
-        com.gmt2001.Console.out.println(++step + ". In the \"Admin\" section, set the radio button for \"channel\" to the right, enabling the textbox");
+        com.gmt2001.Console.out.println(++step + ". From the webserver homepage, click the \"Bot Setup\" button and login with");
+        com.gmt2001.Console.out.println("    the credentials above");
+        com.gmt2001.Console.out.println(++step + ". In the \"Admin\" section, set the radio button for \"channel\" to the right,");
+        com.gmt2001.Console.out.println("    enabling the textbox");
         com.gmt2001.Console.out.println(++step + ". In the textbox, fill in the name of the Twitch channel the bot will join");
-        com.gmt2001.Console.out.println(++step + ". (Optional) Expand the \"Panel Login\" section and change the login credentials for the bots webserver");
-        com.gmt2001.Console.out.println("    NOTE: All other sections are completely optional, we recommend finishing initial setup first and then returning to them later");
-        com.gmt2001.Console.out.println("    NOTE: If you change the values in some of the other sections, you may have to restart the bot for them to take effect.");
-        com.gmt2001.Console.out.println("          A restart is NOT required if only changing the values specified above for initial setup");
+        com.gmt2001.Console.out.println(++step + ". (Optional) Expand the \"Panel Login\" section and change the login credentials");
+        com.gmt2001.Console.out.println("    for the bots webserver");
+        com.gmt2001.Console.out.println("  NOTE: All other sections are completely optional, we recommend finishing initial");
+        com.gmt2001.Console.out.println("        setup first and then returning to them later");
+        com.gmt2001.Console.out.println("  NOTE: If you change the values in some of the other sections, you may have to");
+        com.gmt2001.Console.out.println("          restart the bot for them to take effect");
+        com.gmt2001.Console.out.println("        A restart is NOT required if only changing the values specified above for");
+        com.gmt2001.Console.out.println("          initial setup");
         com.gmt2001.Console.out.println(++step + ". Click the \"Save\" button at the top of the page, ensure a green success bar appears");
         com.gmt2001.Console.out.println(++step + ". Click the PhantomBot logo in the top-left to return to the homepage");
 
         // OAuth Setup page steps
-        com.gmt2001.Console.out.println(++step + ". From the webserver homepage, click the \"OAuth Setup\" button and login with the credentials above");
-        com.gmt2001.Console.out.println("    NOTE: If you changed the credentials in the \"Panel Login\" section, use the new credentials you created instead");
+        com.gmt2001.Console.out.println(++step + ". From the webserver homepage, click the \"OAuth Setup\" button and login with");
+        com.gmt2001.Console.out.println("    the credentials above");
+        com.gmt2001.Console.out.println("  NOTE: If you changed the credentials in the \"Panel Login\" section, use the");
+        com.gmt2001.Console.out.println("          new credentials you created instead");
         com.gmt2001.Console.out.println(++step + ". Follow the instructions on the page in order");
-        com.gmt2001.Console.out.println("    NOTE: The \"Connect With Twitch Bot\" button sets up the Bot account.");
-        com.gmt2001.Console.out.println("          This is the account that will send messages to chat");
-        com.gmt2001.Console.out.println("          Please ensure the correct account is selected at the top of the Twitch authorization page");
-        com.gmt2001.Console.out.println("          For the account you would like the bot to appear as when it sends messages to chat");
+        com.gmt2001.Console.out.println("  NOTE: The \"Connect With Twitch Bot\" button sets up the Bot account");
+        com.gmt2001.Console.out.println("        This is the account that will send messages to chat");
+        com.gmt2001.Console.out.println("        Please ensure the correct account is selected at the top of the Twitch");
+        com.gmt2001.Console.out.println("          authorization page");
+        com.gmt2001.Console.out.println("        For the account you would like the bot to appear as when it sends messages");
+        com.gmt2001.Console.out.println("          to chat");
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("    NOTE: The \"Connect With Twitch Broadcaster\" button sets up the Broadcaster/API account.");
-        com.gmt2001.Console.out.println("          This is the account that will send requests to the API and login to PubSub/EventSub");
-        com.gmt2001.Console.out.println("          You can use a moderators account instead if required, but some features may not work");
-        com.gmt2001.Console.out.println("          due to restrictions by Twitch. For example, Channel Points.");
-        com.gmt2001.Console.out.println("          Yes, we know that viewers on the website can see some of these events,");
+        com.gmt2001.Console.out.println("  NOTE: The \"Connect With Twitch Broadcaster\" button sets up the Broadcaster/API");
+        com.gmt2001.Console.out.println("          account");
+        com.gmt2001.Console.out.println("        This is the account that will send requests to the API and login to");
+        com.gmt2001.Console.out.println("          PubSub/EventSub");
+        com.gmt2001.Console.out.println("        You can use a moderators account instead if required, but some features");
+        com.gmt2001.Console.out.println("          may not work due to restrictions by Twitch. For example, Channel Points");
+        com.gmt2001.Console.out.println("        Yes, we know that viewers on the website can see some of these events,");
         com.gmt2001.Console.out.println("          but Twitch puts higher restrictions on the APIs to mitigate bad actors");
 
         // Spacers
