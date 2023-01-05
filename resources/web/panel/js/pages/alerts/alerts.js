@@ -910,12 +910,18 @@ $(function () {
         modal.on('shown.bs.modal', function () {
             $('#twitter-link-start-auth-button').on('click', function () {
                 socket.wsEvent('twitterhandler_start_auth_ws', './handlers/twitterHandler.js', null, ['start-auth', authUrl], function (e) {
-                    $('#twitter-link-auth').append($('<li/>', {
-                        'html': '<button class="btn btn-info btn-sm" type="button" id="twitter-link-do-auth-button"><i class="fa fa-twitter"></i>&nbsp; Connect with Twitter</button>'
-                    }));
-                    $('#twitter-link-do-auth-button').on('click', function () {
-                        window.open(e.authUrl, '_blank');
-                    });
+                    if (e.success) {
+                        $('#twitter-link-auth').append($('<li/>', {
+                            'html': '<button class="btn btn-info btn-sm" type="button" id="twitter-link-do-auth-button"><i class="fa fa-twitter"></i>&nbsp; Connect with Twitter</button>'
+                        }));
+                        $('#twitter-link-do-auth-button').on('click', function () {
+                            window.open(e.authUrl, '_blank');
+                        });
+                    } else if (e.hasOwnProperty('error')) {
+                        toastr.error(e.error, 'Failed to link Twitter');
+                    } else {
+                        toastr.error('Failed to link Twitter');
+                    }
                 }, true);
             });
         });

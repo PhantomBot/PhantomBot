@@ -563,8 +563,12 @@
             if (args.length > 0) {
                 switch ($.jsString(args[0])) {
                     case 'start-auth':
-                        authParams = $.twitter.startAuthorize(args[1]);
-                        $.panel.sendObject(event.getId(), {'success': true, 'authUrl': authParams.authorizationUrl()});
+                        try {
+                            authParams = $.twitter.startAuthorize(args[1]);
+                            $.panel.sendObject(event.getId(), {'success': true, 'authUrl': authParams.authorizationUrl()});
+                        } catch (e) {
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': e});
+                        }
                         break;
                     case 'complete-auth':
                         try {
