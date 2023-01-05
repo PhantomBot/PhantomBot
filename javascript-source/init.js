@@ -75,11 +75,16 @@
             }
             if (ex.javaException !== undefined) {
                 consoleLn("Sending stack trace to error log...");
-                Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, errmsg);
+                try {
+                    Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, errmsg);
+                } catch (e) {
+                    Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), errmsg);
+                }
             } else {
                 try {
                     Packages.com.gmt2001.Console.err.printStackTrace(ex, errmsg);
                 } catch (e) {
+                    Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), errmsg);
                 }
             }
         } catch (oops) {
