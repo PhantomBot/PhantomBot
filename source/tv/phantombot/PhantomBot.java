@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1375,7 +1375,7 @@ public final class PhantomBot implements Listener {
      */
     private void doCheckPhantomBotUpdate() {
         ExecutorService.scheduleAtFixedRate(() -> {
-            if (!RepoVersion.getBuildType().startsWith("edge") && !RepoVersion.getBuildType().startsWith("custom")) {
+            if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 

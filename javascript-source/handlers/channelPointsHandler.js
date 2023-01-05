@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -263,9 +263,22 @@
      * @param {string} redemptionId The id of the redemption event
      */
     function updateRedemptionStatusFulfilled(redeemableId, redemptionId) {
-        if (managed.includes($.jsString(redeemableId))) {
-            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
-                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
+        var rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
+                Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redemption Fulfilled (' + redeemableId + ', ' + redemptionId + '): ' + error);
+            $.consoleDebug(rsp.toString());
         }
     }
 
@@ -276,9 +289,24 @@
      * @param {string} redemptionId The id of the redemption event
      */
     function updateRedemptionStatusCancelled(redeemableId, redemptionId) {
-        if (managed.includes($.jsString(redeemableId))) {
-            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
-                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+        var rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
+                Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+
+
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redemption Cancelled (' + redeemableId + ', ' + redemptionId + '): ' + error);
+            $.consoleDebug(rsp.toString());
         }
     }
 
@@ -289,9 +317,22 @@
      * @param {boolean} isEnabled The new enabled state
      */
     function setRedeemableEnabled(redeemableId, isEnabled) {
-        if (managed.includes($.jsString(redeemableId))) {
-            $.helix.updateCustomReward(redeemableId, null, null, isEnabled, null, null,
-                    null, null, null, null, null, null, null, null, null);
+        var rsp = $.helix.updateCustomReward(redeemableId, null, null, isEnabled, null, null,
+                null, null, null, null, null, null, null, null, null);
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redeemable Enabled (' + redeemableId + ', ' + (isEnabled ? 'true' : 'false') + '): ' + error);
+            $.consoleDebug(rsp.toString());
         }
     }
 
@@ -302,9 +343,22 @@
      * @param {boolean} isPaused The new paused state
      */
     function setRedeemablePaused(redeemableId, isPaused) {
-        if (managed.includes($.jsString(redeemableId))) {
-            $.helix.updateCustomReward(redeemableId, null, null, null, isPaused, null,
-                    null, null, null, null, null, null, null, null, null);
+        var rsp = $.helix.updateCustomReward(redeemableId, null, null, null, isPaused, null,
+                null, null, null, null, null, null, null, null, null);
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redeemable Paused (' + redeemableId + ', ' + (isPaused ? 'true' : 'false') + '): ' + error);
+            $.consoleDebug(rsp.toString());
         }
     }
 
@@ -326,8 +380,8 @@
                         break;
                     case 'redeemable-delete-managed':
                         var rmid = $.jsString(args[1]);
-                        if (managed.includes(rmid)) {
-                            $.helix.deleteCustomReward(args[1]);
+                        var rsp = $.helix.deleteCustomReward(args[1]);
+                        if (rsp.getInt('_http') === 204) {
                             lock.lock();
                             try {
                                 var rmidx = managed.indexOf(rmid);
@@ -335,8 +389,20 @@
                             } finally {
                                 lock.unlock();
                             }
+                            $.panel.sendObject(event.getId(), {'success': true});
+                        } else {
+                            var error = 'Unknown Error';
+
+                            if (rsp.getInt('_http') > 0) {
+                                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+                            } else if (!rsp.getString('_exception').isBlank()) {
+                                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+                            }
+
+                            $.log.error('Failed to Redeemable Delete (' + rmid + '): ' + error);
+                            $.consoleDebug(rsp.toString());
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': error});
                         }
-                        $.panel.sendAck(event.getId());
                         break;
                     case 'redeemable-add-managed':
                         //                                      title    cost
@@ -374,6 +440,9 @@
                                 error = $.jsString(addrsp.getString('_exception')) + ' ' + $.jsString(addrsp.getString('_exceptionMessage'));
                             }
 
+                            $.log.error('Failed to Redeemable Add: ' + error);
+                            $.consoleDebug(addrsp.toString());
+
                             $.panel.sendObject(event.getId(), {'success': false, 'error': error});
                         }
                         break;
@@ -407,6 +476,9 @@
                             } else if (!updatersp.getString('_exception').isBlank()) {
                                 error = $.jsString(updatersp.getString('_exception')) + ' ' + $.jsString(updatersp.getString('_exceptionMessage'));
                             }
+
+                            $.log.error('Failed to Redeemable Update: ' + error);
+                            $.consoleDebug(addrsp.toString());
 
                             $.panel.sendObject(event.getId(), {'success': false, 'error': error});
                         }

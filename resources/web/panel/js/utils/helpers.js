@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -886,10 +886,16 @@ $(function () {
             'dangerMode': true
         }).then(function (isRemoved) {
             if (isRemoved) {
-                onClose();
-                swal(closeMessage, {
-                    'icon': 'success'
-                });
+                let result = onClose();
+                if (result === undefined || result.message === undefined || result.icon === undefined) {
+                    swal(closeMessage, {
+                        'icon': 'success'
+                    });
+                } else {
+                    swal(result.message, {
+                        'icon': result.icon
+                    });
+                }
             }
         });
     };
