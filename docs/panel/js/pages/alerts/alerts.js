@@ -860,7 +860,7 @@ $(function () {
         }
         let cp = $.currentPage();
         let authUrl = href + '?folder=' + cp.folder + '&page=' + cp.page + '&action=twitter-complete-auth';
-        let modal = helpers.getModal('twitter-link', 'Link Twitter Account', 'Close', $('<form/>', {
+        let modal = helpers.getModal('twitter-link', 'Link Twitter Account', null, $('<form/>', {
             'role': 'form'
         })
                 .append($('<div/>', {
@@ -904,9 +904,7 @@ $(function () {
             'html': '<ol id="twitter-link-auth">'
                     + '<li><button class="btn btn-info btn-sm" type="button" id="twitter-link-start-auth-button"><i class="fa fa-refresh"></i>&nbsp; Generate Auth Link</button></li>'
                     + '</ol>'
-        }))), function () {
-            $('#twitter-link').modal('hide');
-        });
+        }))), null, {'cancelclass': 'btn-primary', 'canceltext': 'Close'});
         modal.on('shown.bs.modal', function () {
             $('#twitter-link-start-auth-button').on('click', function () {
                 socket.wsEvent('twitterhandler_start_auth_ws', './handlers/twitterHandler.js', null, ['start-auth', authUrl], function (e) {
