@@ -567,7 +567,8 @@
                             authParams = $.twitter.startAuthorize(args[1]);
                             $.panel.sendObject(event.getId(), {'success': true, 'authUrl': authParams.authorizationUrl()});
                         } catch (e) {
-                            $.panel.sendObject(event.getId(), {'success': false, 'error': e});
+                            $.log.error('Failed to start auth ' + e.toString());
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': e.toString()});
                         }
                         break;
                     case 'complete-auth':
@@ -576,7 +577,8 @@
                             authParams = null;
                             $.panel.sendObject(event.getId(), {'success': $.twitter.authenticated()});
                         } catch (e) {
-                            $.panel.sendObject(event.getId(), {'success': false, 'error': e});
+                            $.log.error('Failed to complete auth ' + e.toString());
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': e.toString()});
                         }
                         break;
                 }
