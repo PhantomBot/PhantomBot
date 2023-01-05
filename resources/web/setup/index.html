@@ -52,6 +52,11 @@
                 display: inline-block;
                 margin-bottom:5px;
             }
+            .botproperty-restart {
+                display: inline-block;
+                margin-bottom:5px;
+                font-style: italic;
+            }
             .botproperty input[type=radio] {
                 margin-right: 3px;
             }
@@ -343,6 +348,11 @@
                                     break;
                             }
 
+                            if (prop.restart) {
+                                $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'restart')).addClass('botproperty-restart')
+                                        .html('This setting requires a restart to take effect')
+                                        .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                            }
 
                             settings[prop.botproperty] = prop;
                             settings[prop.botproperty].value = null;
