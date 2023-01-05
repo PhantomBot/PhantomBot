@@ -991,7 +991,7 @@ $(function () {
                     }))
                             )
                     .append(redeemableSelector)
-                    .append(otherHtml), null, {'cancelclass': 'primary', 'canceltext': 'Close'});
+                    .append(otherHtml), null, {'cancelclass': 'btn-primary', 'canceltext': 'Close'});
 
             if (otherHtml !== null) {
                 modal.on('shown.bs.modal', function () {

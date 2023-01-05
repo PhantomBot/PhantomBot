@@ -904,7 +904,7 @@ $(function () {
             'html': '<ol id="twitter-link-auth">'
                     + '<li><button class="btn btn-info btn-sm" type="button" id="twitter-link-start-auth-button"><i class="fa fa-refresh"></i>&nbsp; Generate Auth Link</button></li>'
                     + '</ol>'
-        }))), null, {'cancelclass': 'primary', 'canceltext': 'Close'});
+        }))), null, {'cancelclass': 'btn-primary', 'canceltext': 'Close'});
         modal.on('shown.bs.modal', function () {
             $('#twitter-link-start-auth-button').on('click', function () {
                 socket.wsEvent('twitterhandler_start_auth_ws', './handlers/twitterHandler.js', null, ['start-auth', authUrl], function (e) {
