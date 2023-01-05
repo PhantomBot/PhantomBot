@@ -978,7 +978,7 @@ $(function () {
             }
 
             // Get advance modal from our util functions in /utils/helpers.js
-            let modal = helpers.getModal('convert-channelpoints-redeemble', 'Convert Redeemable', 'Close', $('<form/>', {
+            let modal = helpers.getModal('convert-channelpoints-redeemble', 'Convert Redeemable', null, $('<form/>', {
                 'role': 'form'
             })
                     .append($('<div/>', {
@@ -991,9 +991,7 @@ $(function () {
                     }))
                             )
                     .append(redeemableSelector)
-                    .append(otherHtml), function () {
-                $('#convert-channelpoints-redeemble').modal('hide');
-            });
+                    .append(otherHtml), null, {'cancelclass': 'primary', 'canceltext': 'Close'});
 
             if (otherHtml !== null) {
                 modal.on('shown.bs.modal', function () {
