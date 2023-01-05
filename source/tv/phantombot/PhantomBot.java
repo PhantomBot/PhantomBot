@@ -421,11 +421,23 @@ public final class PhantomBot implements Listener {
     private void initChat() {
         this.validateOAuth();
         if (CaselessProperties.instance().getProperty("channel", "").isBlank()) {
-            com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println("Channel to join is not set");
-            com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
-            com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
-            com.gmt2001.Console.warn.println();
+            if (ConfigurationManager.newSetup()) {
+                if (!ConfigurationManager.setupStarted()) {
+                    com.gmt2001.Console.warn.println();
+                    com.gmt2001.Console.warn.println("Detected new installation, starting setup process...");
+                    com.gmt2001.Console.warn.println();
+                    ConfigurationManager.doSetup();
+                } else {
+                    com.gmt2001.Console.warn.println();
+                    com.gmt2001.Console.warn.println("Setup not completed yet");
+                }
+            } else {
+                com.gmt2001.Console.warn.println();
+                com.gmt2001.Console.warn.println("Channel to join is not set");
+                com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
+                com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
+                com.gmt2001.Console.warn.println();
+            }
             if (!this.initChatBackoff.GetIsBackingOff()) {
                 com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
@@ -1215,7 +1227,7 @@ public final class PhantomBot implements Listener {
     public static void main(String[] args) throws IOException {
         System.setProperty("io.netty.noUnsafe", "true");
 
-        if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 11) {
+        if (Float.parseFloat(System.getProperty("java.specification.version")) < (float) 11) {
             System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 11 or later.");
             PhantomBot.exitError();
         }
