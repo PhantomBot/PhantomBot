@@ -356,13 +356,9 @@
                 return;
             }
 
-            userLevel = -1;
-            for (var i = 0; i < ranksTimeTable.length; i++) {
-                if (userTime >= parseInt(ranksTimeTable[i])) {
-                    userLevel = i;
-                } else {
-                    i = ranksTimeTable.length;
-                }
+            userLevel = ranksTimeTable.length - 1;
+            while (userLevel >= 0 && parseInt(ranksTimeTable[userLevel]) > userTime) {
+                userLevel--;
             }
 
             if (userLevel <= ranksTimeTable.length - 2) {
