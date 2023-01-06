@@ -30,21 +30,7 @@ You will need a Twitch account for your bot. [Create one here](https://www.twitc
 
 6. Once that’s done, launch *PhantomBot*.
 
-8. Follow the steps on screen. It will ask you for the bot username, use the username you created earlier.
-After that it will ask you for a oauth token, paste the one you got from Twitch Apps.
-After that enter the channel you wish the bot to join. (Your channel)
-
-#### Automatically Refreshing OAuth
-
-You should now setup Automatically Refreshing OAuth tokens so your chat token does not expire.
-
-This also lets you connect the broadcaster account so the Twitch API works.
-
-Go to your panel on the bots webserver. If you installed the bot on the same machine you are currently using, the link is usually http://localhost:25000/
-
-If the bot is on a different computer, replace the IP/URL as neccessary.
-
-Click on the **OAuth Setup** link and follow the instructions to authorize your tokens.
+7. The bot will walk you through first time setup.
 
 ### Launch PhantomBot faster
 

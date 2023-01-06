@@ -55,23 +55,9 @@ Now we are ready to launch PhantomBot. You can run the bot with:
 
 `./launch.sh`
 
-Now PhantomBot should start and you can begin to use it. At this point you can enter the information it asks you for. As a reference, you can check the Windows guide for the bot account configuration.
+Now PhantomBot should start and walk you through first time setup.
 
-After the bot is configured you can press the following keys and follow the rest of the guide.
-
-`Ctrl + C`
-
-#### Automatically Refreshing OAuth
-
-You should now setup Automatically Refreshing OAuth tokens so your chat token does not expire.
-
-This also lets you connect the broadcaster account so the Twitch API works.
-
-Go to your panel on the bots webserver. If you installed the bot on the same machine you are currently using, the link is usually http://localhost:25000/
-
-If the bot is on a different computer, replace the IP/URL as neccessary.
-
-Click on the **OAuth Setup** link and follow the instructions to authorize your tokens.
+After the bot is configured you can press `Ctrl + C` to shut it down and follow the next steps to set it up as a background service.
 
 ### 4. Setting up a systemd Unit
 

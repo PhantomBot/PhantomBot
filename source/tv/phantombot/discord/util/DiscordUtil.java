@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -614,6 +614,28 @@ public class DiscordUtil {
                 this.addReaction(message, re);
             }
         }).subscribe();
+    }
+
+    /**
+     * *
+     * Indicates if the channel is a type that is allowed to publish crossposts
+     *
+     * @param channelName The channel to check
+     * @return
+     */
+    public boolean canChannelPublish(String channelName) {
+        return this.canChannelPublish(this.getChannel(channelName));
+    }
+
+    /**
+     * *
+     * Indicates if the channel is a type that is allowed to publish crossposts
+     *
+     * @param channel The channel to check
+     * @return
+     */
+    public boolean canChannelPublish(GuildMessageChannel channel) {
+        return channel.getType() == Channel.Type.GUILD_NEWS;
     }
 
     /**

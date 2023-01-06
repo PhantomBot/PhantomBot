@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,8 +81,8 @@
 
     /**
      * @function isTwitchBot
-     * @param {string} username
-     * @returns {Boolean}
+     * @param {String} username
+     * @returns {boolean}
      */
     function isTwitchBot(username) {
         return botList.contains($.javaString(username.toLowerCase()));
@@ -90,7 +90,7 @@
 
     /**
      * @function removeTwitchBot
-     *
+     * @param {String} username
      */
     function removeTwitchBot(username) {
         botList.remove($.javaString(username.toLowerCase()));
@@ -98,7 +98,7 @@
 
     /**
      * @function addTwitchBot
-     *
+     * @param {String} username
      */
     function addTwitchBot(username) {
         botList.addIfAbsent($.javaString(username.toLowerCase()));
@@ -131,7 +131,7 @@
 
     /**
      * @function updateUsersObject
-     * @param {Array} list
+     * @param {Array} newUsers
      *
      * This function properly rebuilds the users list from a list of usernames.
      * The $.users object cannot be modified and if the users object is replaced,
@@ -179,7 +179,7 @@
     /**
      * @function userExists
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function userExists(username) {
@@ -194,7 +194,7 @@
     /**
      * @function isBot
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isBot(username) {
@@ -204,7 +204,7 @@
     /**
      * @function isOwner
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isOwner(username) {
@@ -214,7 +214,7 @@
     /**
      * @function isCaster
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isCaster(username) {
@@ -224,7 +224,7 @@
     /**
      * @function isAdmin
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isAdmin(username) {
@@ -234,13 +234,20 @@
     /**
      * @function isModNoTags
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isModNoTags(username) {
         return isModeratorCache(username.toLowerCase()) || queryDBPermission(username.toLowerCase()) <= PERMISSION.Mod || isOwner(username);
     }
 
+    /**
+     * @function checkTags
+     * @param {Object} tags
+     * @returns {boolean}
+     *
+     * Checks if provided tags are not empty
+     */
     function checkTags(tags) {
         $.consoleDebug('Tags: ' + tags + ', isNull: ' + (tags === null) + ', isUndefined: ' + (tags === undefined) + ', strict -1: ' + (tags !== '-1') + ', strict {}: ' + (tags !== '{}'));
         return !(tags === null || tags !== '{}' || tags !== '-1' || tags === undefined);
@@ -249,7 +256,7 @@
     /**
      * @function isMod
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @param {Object} tags
      * @returns {boolean}
      */
@@ -267,7 +274,7 @@
     /**
      * @function isSubNoTags
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isSubNoTags(username) {
@@ -277,7 +284,7 @@
     /**
      * @function isSub
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @param {Object} tags
      * @returns {boolean}
      */
@@ -309,7 +316,7 @@
     /**
      * @function isDonator
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isDonator(username) {
@@ -319,7 +326,7 @@
     /**
      * @function isVIP
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isVIP(username, tags) {
@@ -335,7 +342,7 @@
     /**
      * @function isVIPNoTags
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isVIPNoTags(username) {
@@ -345,7 +352,7 @@
     /**
      * @function isRegular
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isRegular(username) {
@@ -357,7 +364,7 @@
      *
      * @function isReg
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isReg(username) {
@@ -367,7 +374,7 @@
     /**
      * @function isViewer
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function isViewer(username) {
@@ -377,7 +384,7 @@
     /**
      * @function hasPermissionLevel
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function hasPermissionLevel(username) {
@@ -387,7 +394,7 @@
     /**
      * @function hasModeO
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {boolean}
      */
     function hasModeO(username) {
@@ -397,9 +404,12 @@
     /**
      * @function getUserGroupId
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @param {Object} tags
      * @returns {Number}
+     *
+     * Gets the lowest group id of a users according to the PERMISSION enum
+     * A lower group id indicates a higher level of permissions
      */
     function getUserGroupId(username, tags) {
 
@@ -437,7 +447,7 @@
     /**
      * @function checkUserPermission
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @param {Object} tags
      * @returns {Number}
      */
@@ -446,14 +456,17 @@
         return getUserGroupId(username, tags) <= permission;
     }
 
-    /*
+    /**
      * @function permCom
      *
      * @export $
-     * @param {string} username
-     * @param {string} command
+     * @param {String} username
+     * @param {String} command
      * @param {sub} subcommand
-     * @returns 0 = good, 1 = command perm bad, 2 = subcommand perm bad
+     * @param {Object} tags
+     * @returns {Number} 0 = good, 1 = command perm bad, 2 = subcommand perm bad
+     *
+     * Checks if the user has adequate permission to execute a command or subcommand
      */
     function permCom(username, command, subcommand, tags) {
         $.consoleDebug($.findCaller());
@@ -479,7 +492,7 @@
     /**
      * @function queryDBPermission
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @returns {Number}
      */
     function queryDBPermission(username) {
@@ -493,8 +506,9 @@
     /**
      * @function getUserGroupName
      * @export $
-     * @param {string} username
-     * @returns {string}
+     * @param {String} username
+     * @param {Object} tags
+     * @returns {String}
      */
     function getUserGroupName(username, tags) {
         return getGroupNameById(getUserGroupId(username.toLowerCase(), tags));
@@ -504,7 +518,8 @@
      * @function getGroupNameById
      * @export $
      * @param {Number} groupId
-     * @returns {string}
+     * @param {String} defaultName
+     * @returns {String}
      */
     function getGroupNameById(groupId, defaultName) {
         _usersGroupsLock.lock();
@@ -518,7 +533,7 @@
     /**
      * @function getGroupIdByName
      * @export $
-     * @param {string} groupName
+     * @param {String} inGroupName
      * @returns {Number}
      */
     function getGroupIdByName(inGroupName) {
@@ -543,7 +558,7 @@
     /**
      * @function getGroupPointMultiplier
      * @export $
-     * @param username
+     * @param {String} username
      * @returns {Number}
      */
     function getGroupPointMultiplier(username) {
@@ -553,7 +568,7 @@
     /**
      * @function setUserGroupById
      * @export $
-     * @param {string} username
+     * @param {String} username
      * @param {Number} id
      */
     function setUserGroupById(username, id) {
@@ -563,8 +578,8 @@
     /**
      * @function setUserGroupByName
      * @export $
-     * @param username
-     * @param groupName
+     * @param {String} username
+     * @param {String} groupName
      */
     function setUserGroupByName(username, groupName) {
         setUserGroupById(username.toLowerCase(), getGroupIdByName(groupName.toLowerCase()));
@@ -590,7 +605,7 @@
 
     /**
      * @function getUsernamesArrayByGroupId
-     * @param {Number} [filterId]
+     * @param {Number} filterId
      * @returns {Array}
      */
     function getUsernamesArrayByGroupId(filterId) {
@@ -617,18 +632,16 @@
     /**
      * @function addSubUsersList
      * @export $
-     * @param username
+     * @param {String} username
      */
     function addSubUsersList(username) {
-        if (!isSub(username.toLowerCase())) {
-            subUsers.add($.javaString(username.toLowerCase()));
-        }
+        subUsers.addIfAbsent($.javaString(username.toLowerCase()));
     }
 
     /**
      * @function delSubUsersList
      * @export $
-     * @param username
+     * @param {String} username
      */
     function delSubUsersList(username) {
         subUsers.remove($.javaString(username.toLowerCase()));
@@ -637,18 +650,16 @@
     /**
      * @function addVIPUsersList
      * @export $
-     * @param username
+     * @param {String} username
      */
     function addVIPUsersList(username) {
-        if (!isVIP(username.toLowerCase())) {
-            vipUsers.add($.javaString(username.toLowerCase()));
-        }
+        vipUsers.addIfAbsent($.javaString(username.toLowerCase()));
     }
 
     /**
      * @function delVIPUsersList
      * @export $
-     * @param username
+     * @param {String} username
      */
     function delVIPUsersList(username) {
         vipUsers.remove($.javaString(username.toLowerCase()));
@@ -657,7 +668,8 @@
     /**
      * @function isModeratorCache
      * @export $
-     * @param username
+     * @param {String} username
+     * @returns {boolean}
      */
     function isModeratorCache(username) {
         return moderatorsCache.contains($.javaString(username.toLowerCase()));
@@ -666,7 +678,7 @@
     /**
      * @function addModeratorToCache
      * @export $
-     * @param username
+     * @param {String} username
      */
     function addModeratorToCache(username) {
         moderatorsCache.addIfAbsent($.javaString(username.toLowerCase()));
@@ -675,7 +687,7 @@
     /**
      * @function removeModeratorFromCache
      * @export $
-     * @param username
+     * @param {String} username
      */
     function removeModeratorFromCache(username) {
         moderatorsCache.remove($.javaString(username.toLowerCase()));
@@ -685,39 +697,49 @@
      * @function loadModeratorsCache
      */
     function loadModeratorsCache() {
-        var keys = $.inidb.GetKeyList('group', '');
+        var keys = $.inidb.GetKeyValueList('group', ''),
+            a = new Packages.java.util.ArrayList();
 
         for (var i in keys) {
-            if (parseInt($.inidb.get('group', keys[i])) <= PERMISSION.Mod) {
-                addModeratorToCache(keys[i].toLowerCase());
+            if (parseInt(keys[i].getValue()) <= PERMISSION.Mod) {
+                a.add($.javaString(keys[i].getKey().toLowerCase()));
             }
         }
+
+        $.consoleDebug("Adding the mods to the moderator cache: " + a.toString());
+        moderatorsCache.addAllAbsent(a);
     }
 
     /**
      * @function restoreSubscriberStatus
-     * @param username
+     * @param {String} username
+     *
+     * Actual twitch users subscription status can be out of sync with what the database reflects. This function remediates this but adjusting the saved permission accordingly.
+     * The subUsers cache should always be up-to-date with the users twitch subscription status and can thus be used to "fix" phantombot's permissions
+     * VIPs do get updated through OMode and thus shouldn't need to be fixed
      */
     function restoreSubscriberStatus(username) {
         username = username.toString().toLowerCase();
 
-        if (isMod(username) || isAdmin(username)) {
+        if (isMod(username) || isAdmin(username)) { //Ignore high privileged users
             return;
         }
 
-        if (isSub(username) && getUserGroupId(username) !== PERMISSION.Sub) {
-            $.setIniDbNumber('preSubGroup', username, getUserGroupId(username));
-            if (isVIP(username)) {
-                setUserGroupById(username, getHighestIDSubVIP());
-            } else {
+        var oldID = queryDBPermission(username),
+            isInCache = subUsers.contains(username);
+
+        if (isInCache && oldID !== PERMISSION.Sub) { //User got added to subscriber cache but it's database value is out of sync
+            if (isVIP(username) && oldID > PERMISSION.VIP) { //User is also a VIP - Only change permissions if needed
+                setUserGroupById(username, getLowestIDSubVIP());
+            } else if (!isVIP(username)){ //User is only a subscriber - Set permission accordingly
                 setUserGroupById(username, PERMISSION.Sub);
             }
-        }
 
-        if (!isSub(username) && getUserGroupId(username) === PERMISSION.Sub) {
-            if (isVIP(username)) {
+            $.setIniDbNumber('preSubGroup', username, oldID); //Save the old (permission) id for reference when the subscription runs out
+        } else if (!isInCache && oldID === PERMISSION.Sub) { //User is not in the subscriber cache but holds subscriber permissions according to the database
+            if (isVIP(username)) { //User is a VIP - Set permission to VIP
                 setUserGroupById(username, PERMISSION.VIP);
-            } else if ($.inidb.exists('preSubGroup', username)) {
+            } else if ($.inidb.exists('preSubGroup', username)) { //User is not a VIP but has a reference to his old permissions - Use those
                 setUserGroupById(username, $.getIniDbNumber('preSubGroup', username, PERMISSION.Viewer));
                 $.inidb.del('preSubGroup', username);
             } else {
@@ -726,6 +748,11 @@
         }
     }
 
+
+    /**
+     * @function getGroupList
+     * @returns {String}
+     */
     function getGroupList() {
         var keys = $.inidb.GetKeyList('groups', ''),
                 groups = [],
@@ -863,7 +890,7 @@
 
     /**
      * @function getHighestIDSubVIP
-     * @return {number}
+     * @return {Number}
      * @export $
      * @info Get the higher group ID of VIP or Sub (Higher = less permissions)
      */
@@ -873,7 +900,7 @@
 
     /**
      * @function getLowestIDSubVIP
-     * @return {number}
+     * @return {Number}
      * @export $
      * @info Get the lower group ID of VIP or Sub (Lower = more permissions)
      */
@@ -987,7 +1014,8 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        var username = event.getSender().toLowerCase();
+        var username = event.getSender().toLowerCase(),
+            tags = event.getTags();
 
         if (isTwitchBot(username)) {
             return;
@@ -1003,6 +1031,14 @@
                 users.push(username);
             } finally {
                 _usersLock.unlock();
+            }
+
+            // The subscriber Cache should always be up-to-date for restoreSubscriberStatus() to properly work
+            if (checkTags(tags) && tags.containsKey('subscriber') && tags.get('subscriber').equals('1')) {
+                addSubUsersList(username);
+            }
+            if (checkTags(tags) && tags.containsKey('vip') && tags.get('vip').equals('1')) {
+                addVIPUsersList(username);
             }
         }
     });
@@ -1040,24 +1076,20 @@
             if (event.getAdd().toString().equals('true')) {
                 if (!hasModeO(username)) {
                     addModeratorToCache(username.toLowerCase());
+                    modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                     if (isOwner(username)) {
-                        modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                         setUserGroupById(username, PERMISSION.Caster);
                     } else if (isAdmin(username)) {
-                        modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                         setUserGroupById(username, PERMISSION.Admin);
                     } else {
-                        modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                         setUserGroupById(username, PERMISSION.Mod);
                     }
                 }
             } else if (hasModeO(username)) {
                 removeModeratorFromCache(username);
-
                 modeOUsers.remove($.javaString(username.toLowerCase()));
-
                 if (isSub(username) && isVIP(username)) {
-                    setUserGroupById(username, getHighestIDSubVIP());
+                    setUserGroupById(username, getLowestIDSubVIP()); // Do not lower permissions if is sub and vip
                 } else if (isSub(username)) {
                     setUserGroupById(username, PERMISSION.Sub);
                 } else if (isVIP(username)) {
@@ -1065,15 +1097,20 @@
                 }
             }
         } else if (event.getMode().equalsIgnoreCase('vip')) {
-            if (event.getAdd().toString().equals('true')) {
-                if (getUserGroupId(username) < PERMISSION.VIP) {
-                    setUserGroupById(username, PERMISSION.VIP);
-                }
-            } else if (isVIP(username)) {
-                if (isSub(username)) {
+            if (event.getAdd().toString().equals('true')) { // Add to VIP
+                addVIPUsersList(username);
+                if (isSub(username)) { // Subscriber and VIP - Assign the highest permission
+                    addSubUsersList(username); //Add to SubUserList if absent
                     setUserGroupById(username, getLowestIDSubVIP());
                 } else {
                     setUserGroupById(username, PERMISSION.VIP);
+                }
+            } else { //Remove from VIP
+                delVIPUsersList(username);
+                if (isSub(username)) { // Still subscriber - Remove only from VIP
+                    setUserGroupById(username, PERMISSION.Sub);
+                } else {
+                    setUserGroupById(username, PERMISSION.Viewer);
                 }
             }
         }
@@ -1093,8 +1130,7 @@
             if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
                 if (spl[2].equalsIgnoreCase('subscriber')) {
-                    if (!subUsers.contains($.javaString(spl[1].toLowerCase()))) {
-                        subUsers.add($.javaString(spl[1].toLowerCase()));
+                    if (addSubUsersList(spl[1])) {
 
                         restoreSubscriberStatus(spl[1].toLowerCase());
                         for (i = 0; i < subUsers.size(); i++) {

@@ -1,4 +1,4 @@
-# Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+# Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,12 @@
 
 # /**
 #  * @botpropertycatsort propertyname propertySortInteger categorySortInteger categoryName
+#  */
+
+# Optional doc-comment to tag property as requiring a restart to take effect
+
+# /**
+#  * @botpropertyrestart propertyname
 #  */
 
 # Optional doc-comment to set data type when not retrieved via CaselessProperties.getProperty*
@@ -88,9 +94,18 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999})
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999, "restart": False})
                     else:
                         botproperties[idx]["type"] = type
+            if line.startswith("@botpropertyrestart"):
+                line = line[20:].strip()
+                prop = line.lower()
+                if not prop in ignoreproperties:
+                    idx = findprop(prop)
+                    if idx == -1:
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999, "restart": True})
+                    else:
+                        botproperties[idx]["restart"] = True
             if line.startswith("@botpropertycatsort"):
                 line = line[20:].strip()
                 prop_pos = line.find(" ")
@@ -123,7 +138,7 @@ def parse_file(lines):
                     if not prop in ignoreproperties:
                         idx = findprop(prop)
                         if idx == -1:
-                            botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": propSort, "category": catName, "category_sort": catSort})
+                            botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": propSort, "category": catName, "category_sort": catSort, "restart": False})
                         else:
                             botproperties[idx]["sort"] = propSort
                             botproperties[idx]["category"] = catName
@@ -144,7 +159,7 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": propdef, "type": "String", "sort": 9999, "category": "Uncategorized", "category_sort": 9999})
+                        botproperties.append({"botproperty": prop, "definition": propdef, "type": "String", "sort": 9999, "category": "Uncategorized", "category_sort": 9999, "restart": False})
                     else:
                         botproperties[idx]["definition"] = propdef
         if tgt in line:
@@ -164,7 +179,7 @@ def parse_file(lines):
                 if not prop in ignoreproperties:
                     idx = findprop(prop)
                     if idx == -1:
-                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999})
+                        botproperties.append({"botproperty": prop, "definition": "No definition", "type": type, "sort": 9999, "category": "Uncategorized", "category_sort": 9999, "restart": False})
                     else:
                         botproperties[idx]["type"] = type
 
@@ -190,6 +205,9 @@ def output_botproperty(botproperty, hlevel):
     lines.append("Data Type: _" + botproperty["type"] + "_" + '\n')
     lines.append('\n')
     lines.append(botproperty["definition"] + '\n')
+    if botproperty["restart"]: 
+        lines.append('\n')
+        lines.append('_NOTE: A restart is required for this property to take effect_\n')
     lines.append('\n')
     lines.append("&nbsp;" + '\n')
     lines.append('\n')

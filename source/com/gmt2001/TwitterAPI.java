@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -363,7 +363,7 @@ public class TwitterAPI implements ApiClientCallback, Listener {
             }
 
             if (startTime != null) {
-                req.startTime(startTime);
+                req.startTime(startTime.withNano(0));
             }
 
             try {
@@ -457,7 +457,7 @@ public class TwitterAPI implements ApiClientCallback, Listener {
             req.maxResults(sinceId != null && sinceId.isBlank()
                     ? CaselessProperties.instance().getPropertyAsInt("twittertimelinelimit", 15)
                     : CaselessProperties.instance().getPropertyAsInt("twittertimelineextendedlimit", 30))
-                    .startTime(OffsetDateTime.now().minusDays(1));
+                    .startTime(OffsetDateTime.now().minusDays(1).withNano(0));
 
             if (sinceId != null && !sinceId.isBlank()) {
                 req.sinceId(sinceId);
@@ -492,7 +492,7 @@ public class TwitterAPI implements ApiClientCallback, Listener {
      */
     public List<TweetToUser> getRetweetsOfMe(String sinceId) {
         if (this.authenticated()) {
-            List<Tweet> tweets = this.getUserTimeline(sinceId, OffsetDateTime.now().minusDays(1));
+            List<Tweet> tweets = this.getUserTimeline(sinceId, OffsetDateTime.now().minusDays(1).withNano(0));
 
             if (tweets != null && !tweets.isEmpty()) {
                 List<TweetToUser> ret = new ArrayList<>();

@@ -1,38 +1,66 @@
 # Channel Points
 
-There are currently four functions that PhantomBot can perform that can be configured as channel point rewards. These are:
-* __Transfer__: redeem a channel points reward which will reward that user with currency in the bot 
-* __Give all__: redeem a channel points reward which will reward all users in chat with currency in the bot
-* __Emote only__: redeem a channel points reward which will place the chat in emote only mode for a set duration
-* __Timeout__: redeem a channel points reward with user input which will timeout the user input for a set duration
+This module allows the bot to perform actions in response to a Twitch Channel Points redemtion
+
+### Terminology
+
+To reduce confusion when talking about Channel Points, PhantomBot uses the following terminology:
+
+- _redeemable_ - refers to a Twitch Channel Points Reward
+- _redemption_ - refers to an individual redemption of a Twitch Channel Points Reward
+- _redeeming_ - used in reference to the viewer who redeemed a Twitch Channel Points Reward
+- _reward_ - below this line, refers exclusively to a PhantomBot response to a redemption of a Twitch Channel Points Reward
+
+### Requirements
+
+Due to security restrictions put in place by Twitch, bots and other 3rd parties can only view and manage Channel Points with an OAuth belonging to the Broadcaster
+
+This is despite moderators being able to perform some of these functions on the Twitch website
+
+For PhantomBot, this means that the connection that is created on the OAuth page of the bots webserver for the **Connect with Twitch Broadcaster** button must be the actual broadcaster
 
 ### Setup
-1. Create the reward in 'Manage Rewards & Challenges', deciding on the channel point cost of the reward. Ensure that   
-    timeout is set up to require user input with a clear description stating that the user redeeming the reward is 
-    responsible for correct spelling. Manage Rewards & Challenges can be found using this link by replacing 'USERNAME' 
-    with your username https://dashboard.twitch.tv/u/USERNAME/community/channel-points/rewards
-2. Activate the "./handlers/channelPointsHandler.js" module either in the dashboard under Setting -> Modules or by 
-    typing "!module enable ./handlers/channelPointsHandler.js" in chat.
-3. Bind the desired function to the reward by typing "!channelpoints [transfer / giveall / emoteonly / timeout] config" 
-    in chat to put that function in configuration mode; then redeeming the reward and typing the same command to exit 
-    the configuration mode of the function. The bot will state at the end of the configuration the name of the reward
-    that it is bound to.
-4. Set the amount / duration of the action that the reward performs by typing  "!channelpoints [transfer / giveall] 
-    amount [number of points to award]" or "!channelpoints [emoteonly / timeout] duration [duration of action]".
-5. Activate the function by typing "!channelpoints [transfer / giveall / emoteonly / timeout] toggle"
 
-At any time you can type "!channelpoints [transfer / giveall / emoteonly / timeout] to check its current configuration.
+- Visit the **Channel Points** page on the panel of the bots webserver, available under the **Loyalty** section
+- To link a redeemable that already exists to an action
+  - Click _Add Reward_ on the _Rewards_ tab
+  - Select the redeemable to use from the drop-down. Each redeemable can only be linked to one reward
+  - In the response box, use text and command tags to craft a response, in the same style as you would for a custom command
+  - **Please take note of the warning and info messages in the dialog**
+- To convert an existing redeemable so that the bot can manage the paused status and mark redemptions as fulfilled
+  - Click _Convert Redeemable_ on the _Redeemables_ tab
+  - Follow the instructions in the dialog
+- To create a new redeemable that the bot can manage
+  - Click _Add Redeemable_ on the _Redeemables_ tab
+  - Fill in the title and cost
+    - NOTE: The title must be unique amongst all redeemables the broadcaster has on their channel, including redeemables which are disabled, paused, or not managed by the bot
+  - (Optional) Expand the advanced section and set additional options
+  - Click _Save_
+  - The redeemable should now be available to link to a reward
 
 ### Usage
-Once the reward is setup, as explained above, the bot will automatically perform the action requested through channel 
-points reward redemptions.
+Once the reward is setup, any redemption of the linked redeemable will trigger the tags to be processed and any text to be output in chat
 
-### Troubleshooting
+### Example Rewards
 
-**Bot Cannot See Channel Points Redemptions**
+#### Give 200 !Points and announce it in Chat
+```
+(addpoints 200 (cpusername))@(cpdisplayname), you have been awarded 200 (pointname 200) by redeeming (cptitle)
+```
 
-Reading channel point redemptions requires the bot to have more permissions that previous versions of PhantomBot. During 
-channel points config, if the bot is not able to read the redemption you may need to update your oath token with more 
-permissions.
+#### Give 200 !Points to all active Viewers
+```
+(addpointstoall 200)
+```
 
-If you need any more help please ask in the [PhantomBot Discord](https://discord.com/invite/YKvMd78). 
+#### Enable Emotes Only mode in chat for 60 seconds
+```
+(delaysay 60 /emoteonlyoff)/emoteonly
+```
+
+#### Timeout the Viewer of the redeeming users choosing for 30 seconds and announce it in chat
+```
+(delaysay 1 (cpinput) has been timed out for 30 seconds by (cpdisplayname))/timeout (sanitizeuser (cpinput)) 30
+```
+
+Note the use of `(delaysay)` with a 1 second delay to send multiple messages to chat; first the timeout itself, then the announcement

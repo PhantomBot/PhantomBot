@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,14 @@ public final class RepoVersion {
 
     public static boolean isPrereleaseBuild() {
         return buildType.equals("prerelease_build");
+    }
+
+    public static boolean isCustomBuild() {
+        return phantomBotVersion.startsWith("custom") || buildType.startsWith("custom");
+    }
+
+    public static boolean isEdgeBuild() {
+        return buildType.startsWith("edge");
     }
 
     public static boolean isDocker() {

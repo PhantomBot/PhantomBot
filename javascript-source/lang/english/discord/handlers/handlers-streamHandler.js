@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,18 @@
 
 $.lang.register('discord.streamhandler.usage', 'Usage: !streamhandler [toggleonline / onlinemessage / toggleoffline / offlinemessage / togglegame / gamemessage / togglebotstatus / channel / toggledeletemessage]');
 $.lang.register('discord.streamhandler.online.toggle', 'Online announcements have been $1.');
+$.lang.register('discord.streamhandler.online.publish.on', 'Online announcements are now published in Announcement channels.');
+$.lang.register('discord.streamhandler.online.publish.off', 'Online announcements are no longer published in Announcement channels.');
 $.lang.register('discord.streamhandler.online.message.usage', 'Usage: !streamhandler onlinemessage [message] - Tags: (name)');
 $.lang.register('discord.streamhandler.online.message.set', 'Online announcement message set to: $1');
 $.lang.register('discord.streamhandler.offline.toggle', 'Offline announcements have been $1.');
+$.lang.register('discord.streamhandler.offline.publish.on', 'Offline announcements are now published in Announcement channels.');
+$.lang.register('discord.streamhandler.offline.publish.off', 'Offline announcements are no longer published in Announcement channels.');
 $.lang.register('discord.streamhandler.offline.message.usage', 'Usage: !streamhandler offlinemessage [message] - Tags: (name)');
 $.lang.register('discord.streamhandler.offline.message.set', 'Offline announcement message set to: $1');
 $.lang.register('discord.streamhandler.game.toggle', 'Game change announcements have been $1');
+$.lang.register('discord.streamhandler.game.publish.on', 'Game change announcements are now published in Announcement channels.');
+$.lang.register('discord.streamhandler.game.publish.off', 'Game change announcements are no longer published in Announcement channels.');
 $.lang.register('discord.streamhandler.game.message.usage', 'Usage: !streamhandler gamemessage [message] - Tags: (name) (url)');
 $.lang.register('discord.streamhandler.game.message.set', 'Game change announcement message set to: $1');
 $.lang.register('discord.streamhandler.channel.usage', 'Usage: !streamhandler channel [channel name]');

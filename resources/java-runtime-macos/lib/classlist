@@ -201,14 +201,16 @@ java/nio/charset/spi/CharsetProvider
 java/lang/ThreadLocal
 java/util/concurrent/atomic/AtomicInteger
 sun/security/action/GetPropertyAction
-sun/nio/cs/UTF_8
-sun/nio/cs/Unicode
+sun/nio/cs/US_ASCII
 sun/nio/cs/HistoricallyNamedCharset
 sun/nio/cs/StreamEncoder
-sun/nio/cs/UTF_8$Encoder
+sun/nio/cs/US_ASCII$Encoder
 java/nio/charset/CharsetEncoder
 java/nio/charset/CodingErrorAction
 java/util/Arrays
+sun/nio/cs/Surrogate$Parser
+sun/nio/cs/Surrogate
+java/nio/charset/CoderResult
 java/nio/ByteBuffer
 java/nio/Buffer$1
 jdk/internal/misc/JavaNioAccess
@@ -282,8 +284,6 @@ jdk/internal/loader/AbstractClassLoaderValue
 jdk/internal/loader/ClassLoaders$BootClassLoader
 jdk/internal/reflect/Reflection
 java/util/HashMap$Node
-java/util/HashMap$TreeNode
-java/util/LinkedHashMap$Entry
 java/lang/ClassLoader$ParallelLoaders
 java/util/WeakHashMap
 java/util/WeakHashMap$Entry
@@ -301,6 +301,7 @@ java/net/URL$3
 jdk/internal/misc/JavaNetURLAccess
 java/io/File$PathStatus
 java/io/ExpiringCache$Entry
+java/util/LinkedHashMap$Entry
 sun/net/www/ParseUtil
 sun/net/www/protocol/file/Handler
 java/net/URLStreamHandler
@@ -329,6 +330,7 @@ java/util/ImmutableCollections$MapN$1
 java/util/ImmutableCollections$MapN$MapNIterator
 java/util/ImmutableCollections$Set12$1
 jdk/internal/module/ModuleLoaderMap
+java/util/HashMap$TreeNode
 jdk/internal/module/ModuleLoaderMap$Mapper
 java/util/function/Function
 java/lang/ModuleLayer
@@ -352,9 +354,10 @@ jdk/internal/module/ModuleBootstrap$2
 java/util/Collections$UnmodifiableMap
 jdk/internal/module/IllegalAccessLogger
 sun/launcher/LauncherHelper
+sun/nio/cs/UTF_8
+sun/nio/cs/Unicode
 java/lang/StringCoding
 sun/nio/cs/ISO_8859_1
-sun/nio/cs/US_ASCII
 java/lang/StringCoding$1
 java/lang/ThreadLocal$ThreadLocalMap
 java/lang/ThreadLocal$ThreadLocalMap$Entry
@@ -429,6 +432,7 @@ sun/nio/fs/UnixNativeDispatcher
 sun/nio/fs/UnixNativeDispatcher$1
 java/lang/ClassLoader$2
 java/lang/ClassLoader$NativeLibrary
+java/lang/ClassLoaderHelper
 java/util/ArrayDeque$DeqIterator
 java/util/concurrent/ConcurrentHashMap$ValuesView
 java/util/concurrent/ConcurrentHashMap$ValueIterator
@@ -438,10 +442,10 @@ java/nio/file/attribute/PosixFileAttributes
 java/nio/file/attribute/BasicFileAttributes
 sun/nio/fs/UnixFileStoreAttributes
 sun/nio/fs/UnixMountEntry
+sun/nio/cs/UTF_8$Encoder
 java/nio/CharBuffer
 java/lang/Readable
 java/nio/HeapCharBuffer
-java/nio/charset/CoderResult
 java/net/URI$Parser
 java/nio/file/LinkOption
 java/nio/file/CopyOption

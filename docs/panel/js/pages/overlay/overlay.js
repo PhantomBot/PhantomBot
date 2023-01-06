@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-$(function() {
+$(function () {
     // Constants
     // Meta information for the database and to connect it to HTML
     const moduleId = 'overlay';
@@ -51,7 +51,7 @@ $(function() {
                 enableGifAlerts, gifAlertVolume, enableDebug,
                 enableVideoClips, videoClipVolume
             ]
-        }, true, function(config) {
+        }, true, function (config) {
             // handle boolean values
             [
                 enableAudioHooks,
@@ -86,9 +86,9 @@ $(function() {
         inputElements = document.forms[formId].getElementsByClassName('trigger-update');
 
         Array.prototype.forEach.call(inputElements, (element) => {
-            element.addEventListener("change", (event) => {
-                buildOverlayUrl(event);
-                window.helpers.debounce(function() {
+            element.addEventListener("change", () => {
+                buildOverlayUrl();
+                window.helpers.debounce(function () {
                     save();
                 }, 1000)();
             });
@@ -96,25 +96,27 @@ $(function() {
 
         // finally generate the url once
         buildOverlayUrl();
-    };
+    }
 
 
     function buildOverlayUrl() {
-        outputElement.value = `${helpers.getBotSchemePath()}/alerts?`;
-        let stringSettings = Array.prototype.filter.call(inputElements, (element) => element.type !== 'checkbox')
-            .map((element) => {
-                let name = element.id.slice(moduleId.length);
-                return `${name[0].toLowerCase()}${name.slice(1)}=${element.value}`;
-            })
-            .join('&');
-        let booleanSettings = Array.prototype.filter.call(inputElements, (element) => element.type === 'checkbox')
-            .map((element) => {
-                let name = element.id.slice(moduleId.length);
-                return `${name[0].toLowerCase()}${name.slice(1)}=${element.checked}`;
-            })
-            .join('&');
-        outputElement.value += stringSettings + '&' + booleanSettings;
-    };
+        socket.doRemote('overlay_ssl_settings', 'sslSettings', null, function (d) {
+            outputElement.value = `${helpers.getBotSchemePath(d)}/alerts?`;
+            let stringSettings = Array.prototype.filter.call(inputElements, (element) => element.type !== 'checkbox')
+                    .map((element) => {
+                        let name = element.id.slice(moduleId.length);
+                        return `${name[0].toLowerCase()}${name.slice(1)}=${element.value}`;
+                    })
+                    .join('&');
+            let booleanSettings = Array.prototype.filter.call(inputElements, (element) => element.type === 'checkbox')
+                    .map((element) => {
+                        let name = element.id.slice(moduleId.length);
+                        return `${name[0].toLowerCase()}${name.slice(1)}=${element.checked}`;
+                    })
+                    .join('&');
+            outputElement.value += stringSettings + '&' + booleanSettings;
+        });
+    }
 
     function save() {
         // Collect values from the form with special caution to checkbox elements
@@ -133,8 +135,9 @@ $(function() {
             ],
             keys: keys,
             values: values
-        }, () => {});
-    };
+        }, () => {
+        });
+    }
 
     init();
 });

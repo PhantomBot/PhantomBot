@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1959,8 +1959,8 @@ public class Helix {
             throw new IllegalArgumentException("background_color must be a full hex format color, satisfying the regex ^#[0-9A-F]{6}$");
         }
 
-        if (is_user_input_required != null && is_user_input_required && (prompt == null || prompt.isBlank() || prompt.length() > 200)) {
-            throw new IllegalArgumentException("prompt must be not be blank or more than 200 characters");
+        if (prompt != null && prompt.length() > 200) {
+            throw new IllegalArgumentException("prompt must be not be more than 200 characters");
         }
 
         if (is_max_per_stream_enabled != null && is_max_per_stream_enabled && (max_per_stream == null || max_per_stream < 1)) {
@@ -1991,10 +1991,10 @@ public class Helix {
 
         if (is_user_input_required != null) {
             js.key("is_user_input_required").value(is_user_input_required);
+        }
 
-            if (is_user_input_required) {
-                js.key("prompt").value(prompt);
-            }
+        if (prompt != null) {
+            js.key("prompt").value(prompt);
         }
 
         if (is_max_per_stream_enabled != null) {
@@ -2134,8 +2134,8 @@ public class Helix {
             throw new IllegalArgumentException("background_color must be a full hex format color, satisfying the regex ^#[0-9A-F]{6}$");
         }
 
-        if (is_user_input_required != null && is_user_input_required && (prompt == null || prompt.isBlank() || prompt.length() > 200)) {
-            throw new IllegalArgumentException("prompt must be not be blank or more than 200 characters");
+        if (prompt != null && prompt.length() > 200) {
+            throw new IllegalArgumentException("prompt must be not be more than 200 characters");
         }
 
         if (is_max_per_stream_enabled != null && is_max_per_stream_enabled && (max_per_stream == null || max_per_stream < 1)) {
@@ -2184,10 +2184,10 @@ public class Helix {
         if (is_user_input_required != null) {
             hasUpdate = true;
             js.key("is_user_input_required").value(is_user_input_required);
+        }
 
-            if (is_user_input_required) {
-                js.key("prompt").value(prompt);
-            }
+        if (prompt != null) {
+            js.key("prompt").value(prompt);
         }
 
         if (is_max_per_stream_enabled != null) {

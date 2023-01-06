@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -267,6 +267,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty reactordebug - If `true`, internal debugging for Reactor HTTP and WS processing is sent to the console. Default `false`
          * @botpropertycatsort reactordebug 300 900 Debug
+         * @botpropertyrestart reactordebug
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("reactordebug", false)) {
             Loggers.useVerboseConsoleLoggers();
@@ -275,6 +276,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty internaldebug - If `true`, internal debugging from JDK and other libraries are sent to the console. Default `false`
          * @botpropertycatsort internaldebug 500 900 Debug
+         * @botpropertyrestart internaldebug
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("internaldebug", false)) {
             setLevel(java.util.logging.Level.ALL);
@@ -287,6 +289,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty userollbar - If `true`, Exceptions thrown during operation may be sent to Rollbar exception tracking. Default `true`
          * @botpropertycatsort userollbar 10 10 Admin
+         * @botpropertyrestart userollbar
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("userollbar", true)) {
             RollbarProvider.instance().enable();
@@ -322,31 +325,38 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty datastore - The type of DB to use. Valid values: `sqlite3store`, `mysqlstore`, `h2store`. Default `sqlite3store`
          * @botpropertycatsort datastore 10 30 Datastore
+         * @botpropertyrestart datastore
          */
         /**
          * @botproperty datastoreconfig - If set, H2Store: Overrides the DB file name; SQLiteStore: Links to a file containing config overrides
          * @botpropertycatsort datastoreconfig 900 30 Datastore
+         * @botpropertyrestart datastoreconfig
          */
         if (CaselessProperties.instance().getProperty("datastore", "sqlite3store").equalsIgnoreCase("mysqlstore")) {
             /**
              * @botproperty mysqlport - The port to use for MySQL connections. Default `3306`
              * @botpropertycatsort mysqlport 210 30 Datastore
+             * @botpropertyrestart mysqlport
              */
             /**
              * @botproperty mysqlhost - The IP, domain name, or hostname of the MySQL server
              * @botpropertycatsort mysqlhost 200 30 Datastore
+             * @botpropertyrestart mysqlhost
              */
             /**
              * @botproperty mysqlname - The schema where the tables for the bot will be created/located on the MySQL server
              * @botpropertycatsort mysqlname 220 30 Datastore
+             * @botpropertyrestart mysqlname
              */
             /**
              * @botproperty mysqluser - The username to login as to the MySQL server
              * @botpropertycatsort mysqluser 230 30 Datastore
+             * @botpropertyrestart mysqluser
              */
             /**
              * @botproperty mysqlpass - The password for `mysqluser`
              * @botpropertycatsort mysqlpass 240 30 Datastore
+             * @botpropertyrestart mysqlpass
              */
             String mySqlConn;
             if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
@@ -421,11 +431,23 @@ public final class PhantomBot implements Listener {
     private void initChat() {
         this.validateOAuth();
         if (CaselessProperties.instance().getProperty("channel", "").isBlank()) {
-            com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println("Channel to join is not set");
-            com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
-            com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
-            com.gmt2001.Console.warn.println();
+            if (ConfigurationManager.newSetup()) {
+                if (!ConfigurationManager.setupStarted()) {
+                    com.gmt2001.Console.warn.println();
+                    com.gmt2001.Console.warn.println("Detected new installation, starting setup process...");
+                    com.gmt2001.Console.warn.println();
+                    ConfigurationManager.doSetup();
+                } else {
+                    com.gmt2001.Console.warn.println();
+                    com.gmt2001.Console.warn.println("Setup not completed yet");
+                }
+            } else {
+                com.gmt2001.Console.warn.println();
+                com.gmt2001.Console.warn.println("Channel to join is not set");
+                com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
+                com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
+                com.gmt2001.Console.warn.println();
+            }
             if (!this.initChatBackoff.GetIsBackingOff()) {
                 com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
@@ -581,6 +603,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty channel - The Twitch channel the bot will operate in
          * @botpropertycatsort channel 30 10 Admin
+         * @botpropertyrestart channel
          */
         return CaselessProperties.instance().getProperty("channel").toLowerCase();
     }
@@ -711,6 +734,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty webenable - If `true`, the bots webserver is started. Default `true`
          * @botpropertycatsort webenable 300 700 HTTP/WS
+         * @botpropertyrestart webenable
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             this.checkPanelLogin();
@@ -768,6 +792,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty musicenable - If `true`, enables the websocket handler for the Song Request/YouTube player. Default `true`
          * @botpropertycatsort musicenable 500 50 Misc
+         * @botpropertyrestart musicenable
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("musicenable", true)) {
             this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).register();
@@ -776,6 +801,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty discord_token - The Bot token from the Discord Developer portal
          * @botpropertycatsort discord_token 10 200 Discord
+         * @botpropertyrestart discord_token
          */
         if (!CaselessProperties.instance().getProperty("discord_token", "").isEmpty()) {
             DiscordAPI.instance().connect(CaselessProperties.instance().getProperty("discord_token", ""));
@@ -790,10 +816,12 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty twitchalertskey - The access token for retrieving donations from StreamLabs
          * @botpropertycatsort twitchalertskey 20 260 StreamLabs
+         * @botpropertyrestart twitchalertskey
          */
         /**
          * @botproperty twitchalertslimit - The maximum number of donations to pull from StreamLabs when updating. Default `5`
          * @botpropertycatsort twitchalertslimit 30 260 StreamLabs
+         * @botpropertyrestart twitchalertslimit
          */
         if (!CaselessProperties.instance().getProperty("twitchalertskey", "").isEmpty()) {
             TwitchAlertsAPIv1.instance().SetAccessToken(CaselessProperties.instance().getProperty("twitchalertskey", ""));
@@ -804,6 +832,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty youtubekey - The access token for YouTube APIv3
          * @botpropertycatsort youtubekey 10 230 YouTube
+         * @botpropertyrestart youtubekey
          */
         if (!CaselessProperties.instance().getProperty("youtubekey", "").isEmpty()) {
             YouTubeAPIv3.instance().SetAPIKey(CaselessProperties.instance().getProperty("youtubekey", ""));
@@ -813,6 +842,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty tipeeestreamkey - The access token for retrieving donations from TipeeeStream
          * @botpropertycatsort tipeeestreamkey 20 220 TipeeeStream
+         * @botpropertyrestart tipeeestreamkey
          */
         /**
          * @botproperty tipeeestreamlimit - The maximum number of donations to pull from TipeeeStream when updating. Default `5`
@@ -827,14 +857,17 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty streamelementsjwt - The JWT token for retrieving donations from StreamElements
          * @botpropertycatsort streamelementsjwt 20 210 StreamElements
+         * @botpropertyrestart streamelementsjwt
          */
         /**
          * @botproperty streamelementsid - The user id for retrieving donations from StreamElements
          * @botpropertycatsort streamelementsid 10 210 StreamElements
+         * @botpropertyrestart streamelementsid
          */
         /**
          * @botproperty streamelementslimit - The maximum number of donations to pull from StreamElements when updating. Default `5`
          * @botpropertycatsort streamelementslimit 30 210 StreamElements
+         * @botpropertyrestart streamelementslimit
          */
         if (!CaselessProperties.instance().getProperty("streamelementsjwt", "").isEmpty() && !CaselessProperties.instance().getProperty("streamelementsid", "").isEmpty()) {
             StreamElementsAPIv2.instance().SetJWT(CaselessProperties.instance().getProperty("streamelementsjwt", ""));
@@ -940,6 +973,7 @@ public final class PhantomBot implements Listener {
         /**
          * @botproperty owner - The name of the bot owner, who has administrator privileges to the bot
          * @botpropertycatsort owner 40 10 Admin
+         * @botpropertyrestart owner
          */
         Script.global.defineProperty("inidb", this.dataStore, 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
@@ -1215,7 +1249,7 @@ public final class PhantomBot implements Listener {
     public static void main(String[] args) throws IOException {
         System.setProperty("io.netty.noUnsafe", "true");
 
-        if (Float.valueOf(System.getProperty("java.specification.version")) < (float) 11) {
+        if (Float.parseFloat(System.getProperty("java.specification.version")) < (float) 11) {
             System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 11 or later.");
             PhantomBot.exitError();
         }
@@ -1264,6 +1298,7 @@ public final class PhantomBot implements Listener {
          * @botproperty reloadscripts - If `true`, scripts which are changed while the bot is running will be reloaded. Default `false`
          * @botpropertytype reloadscripts Boolean
          * @botpropertycatsort reloadscripts 150 50 Misc
+         * @botpropertyrestart reloadscripts
          */
         PhantomBot.setReloadScripts(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RELOADSCRIPTS, false));
         /* Check to silence the loading of scripts at startup. */
@@ -1271,6 +1306,7 @@ public final class PhantomBot implements Listener {
          * @botproperty silentscriptsload - If `true`, the script loading messages during startup are suppressed. Default `false`
          * @botpropertytype silentscriptsload Boolean
          * @botpropertycatsort silentscriptsload 200 50 Misc
+         * @botpropertyrestart silentscriptsload
          */
         PhantomBot.setSilentScriptsLoad(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_SILENTSCRIPTSLOAD, false));
         /* Check to enable Rhino Debugger */
@@ -1278,6 +1314,7 @@ public final class PhantomBot implements Listener {
          * @botproperty rhinodebugger - If `true`, enables the Rhino debugger console. Default `false`
          * @botpropertytype rhinodebugger Boolean
          * @botpropertycatsort rhinodebugger 1000 900 Debug
+         * @botpropertyrestart rhinodebugger
          */
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
 
@@ -1285,6 +1322,7 @@ public final class PhantomBot implements Listener {
          * @botproperty rhino_es6 - If `true`, enables newer features from ECMAScript 6 in Rhino. Default `true`
          * @botpropertytype rhino_es6 Boolean
          * @botpropertycatsort rhino_es6 100 50 Misc
+         * @botpropertyrestart rhino_es6
          */
         PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", true));
     }
@@ -1375,7 +1413,7 @@ public final class PhantomBot implements Listener {
      */
     private void doCheckPhantomBotUpdate() {
         ExecutorService.scheduleAtFixedRate(() -> {
-            if (!RepoVersion.getBuildType().startsWith("edge") && !RepoVersion.getBuildType().startsWith("custom")) {
+            if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
                 try {
                     Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
 
@@ -1478,6 +1516,7 @@ public final class PhantomBot implements Listener {
             /**
              * @botproperty backupdbhourfrequency - The number of hours between DB backups, if enabled. Default `24`
              * @botpropertycatsort backupdbhourfrequency 420 30 Datastore
+             * @botpropertyrestart backupdbhourfrequency
              */
         }, 0, CaselessProperties.instance().getPropertyAsInt("backupdbhourfrequency", CaselessProperties.instance().getPropertyAsInt("backupsqlitehourfrequency", 24)), TimeUnit.HOURS);
     }

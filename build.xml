@@ -3,7 +3,7 @@
 
     <!--
 
-    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
-    <property name="version" value="3.7.1.0" />
+    <property name="version" value="custom" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />

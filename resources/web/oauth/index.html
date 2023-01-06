@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -119,7 +119,8 @@
                                             <li>Click the <i>Applications</i> tab</li>
                                             <li>Click <i>Register Your Application</i></li>
                                             <li>In the <i>Name</i> box, put the name of your bot, or another name that will be recognized</li>
-                                            <li>In the <i>OAuth Redirect URLs</i> box, put <input type="text" id="selfurl" class="form-control" readonly="readonly"></li>
+                                            <li>In the <i>OAuth Redirect URLs</i> box, put <input type="text" id="selfurl" class="form-control" readonly="readonly">
+                                                <em>NOTE:</em> <i>It is critically important that the URL is <em>EXACTLY</em> what is in the box above, otherwise, authorization may fail</i></li>
                                             <li>In the <i>Category</i> drop-down, select <i>Chat Bot</i></li>
                                             <li>Click <i>Create</i></li>
                                         </ol>
@@ -140,12 +141,12 @@
                                         <ol>
                                             <li>Click <i>New Secret</i></li>
                                             <li>Click <i>OK</i> when prompted to generate a new secret</li>
-                                            <li>Enter the Client Secret here: <input type="text" id="clientsecret" class="form-control" placeholder="Client Secret"></li>
-                                            <li id="secretmsg" class="hide"><em>NOTE:</em> <i>You already have a secret saved, it is hidden for security reasons. If you do not need to update the secret, skip ahead to the authorize buttons</i></li>
+                                            <li>Enter the Client Secret here: <input type="text" id="clientsecret" class="form-control" placeholder="Client Secret">
+                                            <span id="secretmsg" class="hide"><em>NOTE:</em> <i>You already have a secret saved, it is hidden for security reasons. If you do not need to update the secret, skip ahead to the authorize buttons</i></span></li>
                                         </ol>
                                     </li>
                                     <li>
-                                        Click the disk icon at the end of this line to save the Client ID and Client Secret: <i id="saveclient" class="fas fa-save"></i>
+                                        Click this button to save the Client ID and Client Secret: <button id="saveclient" class="btn btn-primary">Save Client ID and Secret</button>
                                     </li>
                                     <li>
                                         Re-authorize the bot <span id="auththebroadcaster">and broadcaster </span>using the buttons below
@@ -160,7 +161,7 @@
                                             <li>Next to the existing <i>OAuth Redirect URLs</i> box, click the <i>Add</i> button</li>
                                             <li>Put this URL into the new blank box that appeared <input type="text" id="selfurlbroadcaster" class="form-control" readonly="readonly"></li>
                                             <li>Click <i>Save</i></li>
-                                            <li>Click here to generate a broadcaster password for this page: <i id="resetbroadcastertoken" class="fas fa-sync"></i></li>
+                                            <li>Click this button generate a broadcaster password for this page: <button id="resetbroadcastertoken" class="btn btn-primary">Generate Broadcaster Temporary Password</button></li>
                                             <li>Have the broadcaster visit this link <input type="text" id="selfurlbroadcastervisit" class="form-control" readonly="readonly"></li>
                                             <li>Give the broadcaster this username <input type="text" value="broadcaster" class="form-control" readonly="readonly"> and this password <input type="text" id="broadcastertoken" class="form-control" readonly="readonly"></li>
                                             <li>After the broadcaster logs in, they just have to click the <i>Connect With Twitch Broadcaster</i> button and authorize it</li>
@@ -184,7 +185,11 @@
                                                 <ul><li>This is the account the bot will show up as in chat, and the account the bot will speak as.</li></ul>
                                             </li>
                                             <li id="connectbroadcasterinstruction"><div class="text-bold" style="display: inline;">Connect with Twitch Broadcaster</div> - make sure before you click the button that you are logged into the Twitch broadcaster account, if not, click the <div class="text-bold" style="display: inline;">"Not you?"</div> at the top of the Twitch page.
-                                                <ul><li>This is the account of the broadcaster, whose channel the bot will participate in and will be used to authorize API requests.</li></ul>
+                                                <ul>
+                                                    <li>This is the account of the broadcaster, whose channel the bot will participate in and will be used to authorize API requests.</li>
+                                                    <li>You can use a moderators account instead if required, but some features may not work. For example, Channel Points.</li>
+                                                    <li>Yes, we know that viewers on the website can see some of these events, but Twitch puts higher restrictions on the APIs to mitigate bad actors.</li>
+                                                </ul>
                                             </li>
                                         </ul>
                                     </div>

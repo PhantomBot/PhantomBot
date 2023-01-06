@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,26 +259,106 @@
     /**
      * Marks a managed redemption as fulfilled
      *
-     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redeemableId The id of the redeemable that the user redeemed
      * @param {string} redemptionId The id of the redemption event
      */
-    function updateRedemptionStatusFulfilled(rewardId, redemptionId) {
-        if (managed.includes($.jsString(rewardId))) {
-            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
-                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
+    function updateRedemptionStatusFulfilled(redeemableId, redemptionId) {
+        var rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
+                Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.FULFILLED);
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redemption Fulfilled (' + redeemableId + ', ' + redemptionId + '): ' + error);
+            $.consoleDebug(rsp.toString());
         }
     }
 
     /**
      * Marks a managed redemption as cancelled, refunding the users channel points
      *
-     * @param {string} rewardId The id of the redeemable that the user redeemed
+     * @param {string} redeemableId The id of the redeemable that the user redeemed
      * @param {string} redemptionId The id of the redemption event
      */
-    function updateRedemptionStatusCancelled(rewardId, redemptionId) {
-        if (managed.includes($.jsString(rewardId))) {
-            $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), rewardId,
-                    Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+    function updateRedemptionStatusCancelled(redeemableId, redemptionId) {
+        var rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
+                Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+
+
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redemption Cancelled (' + redeemableId + ', ' + redemptionId + '): ' + error);
+            $.consoleDebug(rsp.toString());
+        }
+    }
+
+    /**
+     * Sets the enabled state of the redeemable
+     *
+     * @param {string} redeemableId The id of the redeemable that is being updated
+     * @param {boolean} isEnabled The new enabled state
+     */
+    function setRedeemableEnabled(redeemableId, isEnabled) {
+        var rsp = $.helix.updateCustomReward(redeemableId, null, null, isEnabled, null, null,
+                null, null, null, null, null, null, null, null, null);
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redeemable Enabled (' + redeemableId + ', ' + (isEnabled ? 'true' : 'false') + '): ' + error);
+            $.consoleDebug(rsp.toString());
+        }
+    }
+
+    /**
+     * Sets the paused state of the redeemable
+     *
+     * @param {string} redeemableId The id of the redeemable that is being updated
+     * @param {boolean} isPaused The new paused state
+     */
+    function setRedeemablePaused(redeemableId, isPaused) {
+        var rsp = $.helix.updateCustomReward(redeemableId, null, null, null, isPaused, null,
+                null, null, null, null, null, null, null, null, null);
+
+        if (rsp.getInt('_http') !== 200 || !rsp.has('data')) {
+            var error = 'Unknown Error';
+
+            if (rsp.getInt('_http') === 200) {
+                error = 'Got HTTP 200 but invalid response body';
+            } else if (rsp.getInt('_http') > 0) {
+                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+            } else if (!rsp.getString('_exception').isBlank()) {
+                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+            }
+
+            $.log.error('Failed to set Redeemable Paused (' + redeemableId + ', ' + (isPaused ? 'true' : 'false') + '): ' + error);
+            $.consoleDebug(rsp.toString());
         }
     }
 
@@ -300,8 +380,8 @@
                         break;
                     case 'redeemable-delete-managed':
                         var rmid = $.jsString(args[1]);
-                        if (managed.includes(rmid)) {
-                            $.helix.deleteCustomReward(args[1]);
+                        var rsp = $.helix.deleteCustomReward(args[1]);
+                        if (rsp.getInt('_http') === 204) {
                             lock.lock();
                             try {
                                 var rmidx = managed.indexOf(rmid);
@@ -309,16 +389,28 @@
                             } finally {
                                 lock.unlock();
                             }
+                            $.panel.sendObject(event.getId(), {'success': true});
+                        } else {
+                            var error = 'Unknown Error';
+
+                            if (rsp.getInt('_http') > 0) {
+                                error = 'HTTP ' + rsp.getInt('_http') + ': ' + $.jsString(rsp.getString('message'));
+                            } else if (!rsp.getString('_exception').isBlank()) {
+                                error = $.jsString(rsp.getString('_exception')) + ' ' + $.jsString(rsp.getString('_exceptionMessage'));
+                            }
+
+                            $.log.error('Failed to Redeemable Delete (' + rmid + '): ' + error);
+                            $.consoleDebug(rsp.toString());
+                            $.panel.sendObject(event.getId(), {'success': false, 'error': error});
                         }
-                        $.panel.sendAck(event.getId());
                         break;
                     case 'redeemable-add-managed':
                         //                                      title    cost
                         var addrsp = $.helix.createCustomReward(args[1], parseInt(args[2]),
                                 //is_enabled                              background_color  is_user_input_required
                                 args[3].equals('true'), args[4].isBlank() ? null : args[4], args[5].equals('true'),
-                                //prompt
-                                args[5].equals('true') ? args[6] : null,
+                                //                         prompt
+                                args[6].isBlank() ? null : args[6],
                                 //is_max_per_stream_enabled                      max_per_stream
                                 args[7].equals('true'), args[7].equals('true') ? parseInt(args[8]) : null,
                                 //is_max_per_user_per_stream_enabled             max_per_user_per_stream
@@ -348,26 +440,29 @@
                                 error = $.jsString(addrsp.getString('_exception')) + ' ' + $.jsString(addrsp.getString('_exceptionMessage'));
                             }
 
+                            $.log.error('Failed to Redeemable Add: ' + error);
+                            $.consoleDebug(addrsp.toString());
+
                             $.panel.sendObject(event.getId(), {'success': false, 'error': error});
                         }
                         break;
                     case 'redeemable-update-managed':
-                        //                                         id                                  title
-                        var updatersp = $.helix.updateCustomReward(args[1], args[2].isBlank() ? null : args[2],
-                                //                         cost                                          is_enabled
-                                args[3].isBlank() ? null : parseInt(args[3]), args[4].isBlank() ? null : args[4].equals('true'),
-                                //                         is_paused                                          background_color
-                                args[5].isBlank() ? null : args[5].equals('true'), args[6].isBlank() ? null : args[6],
-                                //                         is_user_input_required                           prompt
-                                args[7].isBlank() ? null : args[7].equals('true'), args[7].equals('true') ? args[8] : null,
-                                //                         is_max_per_stream_enabled                        max_per_stream
-                                args[9].isBlank() ? null : args[9].equals('true'), args[9].equals('true') ? parseInt(args[10]) : null,
-                                //                          is_max_per_user_per_stream_enabled                 max_per_user_per_stream
-                                args[11].isBlank() ? null : args[11].equals('true'), args[11].equals('true') ? parseInt(args[12]) : null,
-                                //                          is_global_cooldown_enabled                         global_cooldown_seconds
-                                args[13].isBlank() ? null : args[13].equals('true'), args[13].equals('true') ? parseInt(args[14]) : null,
-                                //                          should_redemptions_skip_request_queue
-                                args[15].isBlank() ? null : args[15].equals('true'));
+                        //                                         id                                 title
+                        var updatersp = $.helix.updateCustomReward(args[1], args[2] === null ? null : args[2],
+                                //                        cost                                         is_enabled
+                                args[3] === null ? null : parseInt(args[3]), args[4] === null ? null : args[4].equals('true'),
+                                //                        is_paused                                                              background_color
+                                args[5] === null ? null : args[5].equals('true'), args[6] === null || args[6].isBlank() ? null : args[6],
+                                //                        is_user_input_required                            prompt
+                                args[7] === null ? null : args[7].equals('true'), args[8] === null ? null : args[8],
+                                //                        is_max_per_stream_enabled                                            max_per_stream
+                                args[9] === null ? null : args[9].equals('true'), args[9] !== null && args[9].equals('true') ? parseInt(args[10]) : null,
+                                //                         is_max_per_user_per_stream_enabled                                      max_per_user_per_stream
+                                args[11] === null ? null : args[11].equals('true'), args[11] !== null && args[11].equals('true') ? parseInt(args[12]) : null,
+                                //                         is_global_cooldown_enabled                                              global_cooldown_seconds
+                                args[13] === null ? null : args[13].equals('true'), args[13] !== null && args[13].equals('true') ? parseInt(args[14]) : null,
+                                //                         should_redemptions_skip_request_queue
+                                args[15] === null ? null : args[15].equals('true'));
 
                         if (updatersp.getInt('_http') === 200 && updatersp.has('data')) {
                             $.panel.sendObject(event.getId(), {'success': true});
@@ -381,6 +476,9 @@
                             } else if (!updatersp.getString('_exception').isBlank()) {
                                 error = $.jsString(updatersp.getString('_exception')) + ' ' + $.jsString(updatersp.getString('_exceptionMessage'));
                             }
+
+                            $.log.error('Failed to Redeemable Update: ' + error);
+                            $.consoleDebug(addrsp.toString());
 
                             $.panel.sendObject(event.getId(), {'success': false, 'error': error});
                         }
@@ -410,16 +508,30 @@
         /**
          * Marks a managed redemption as fulfilled
          *
-         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redeemableId The id of the redeemable that the user redeemed
          * @param {string} redemptionId The id of the redemption event
          */
         updateRedemptionStatusFulfilled: updateRedemptionStatusFulfilled,
         /**
          * Marks a managed redemption as cancelled, refunding the users channel points
          *
-         * @param {string} rewardId The id of the redeemable that the user redeemed
+         * @param {string} redeemableId The id of the redeemable that the user redeemed
          * @param {string} redemptionId The id of the redemption event
          */
-        updateRedemptionStatusCancelled: updateRedemptionStatusCancelled
+        updateRedemptionStatusCancelled: updateRedemptionStatusCancelled,
+        /**
+         * Sets the enabled state of the redeemable
+         *
+         * @param {string} redeemableId The id of the redeemable that is being updated
+         * @param {boolean} isEnabled The new enabled state
+         */
+        setRedeemableEnabled: setRedeemableEnabled,
+        /**
+         * Sets the paused state of the redeemable
+         *
+         * @param {string} redeemableId The id of the redeemable that is being updated
+         * @param {boolean} isPaused The new paused state
+         */
+        setRedeemablePaused: setRedeemablePaused
     };
 })();

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -859,7 +859,8 @@ $(function () {
             href = href.substring(0, href.indexOf('#'));
         }
         let cp = $.currentPage();
-        helpers.getModal('twitter-link', 'Link Twitter Account', 'Close', $('<form/>', {
+        let authUrl = href + '?folder=' + cp.folder + '&page=' + cp.page + '&action=twitter-complete-auth';
+        let modal = helpers.getModal('twitter-link', 'Link Twitter Account', null, $('<form/>', {
             'role': 'form'
         })
                 .append($('<div/>', {
@@ -878,34 +879,52 @@ $(function () {
                             + '<li>In the <i>User authentication settings</i> section, click <b>Set Up</b></li>'
                             + '<li>In the <i>App permissions</i> section, select <b>Read and write</b></li>'
                             + '<li>In the <i>Type of App</i> section, select <b>Web App, Automated App or Bot</b></li>'
-                            + '<li>In the <i>App info</i> section, set the <i>Callback URI / Redirect URL</i> to <b>' + href + '?folder=' + cp.folder + '&page=' + cp.page + '&action=twitter-complete-auth</b></li>'
+                            + '<li>In the <i>App info</i> section, set the <i>Callback URI / Redirect URL</i> to <b>' + authUrl + '</b></li>'
                             + '<li>In the <i>App info</i> section, set the <i>Website URL</i> to any valid URL</li>'
                             + '<li>Click <b>Save</b>. If a popup appears asking about changing permissions, click <b>Yes</b></li>'
                             + '<li>Copy the <i>Client ID</i> and <i>Client Secret</i></li>'
                             + '<li>Add these values to the <b>Twitter</b> section on the <a href="/setup/" target="_blank">Bot Setup</a> page, then click <b>Save</b></li>'
+                            + '<li>Continue below</li>'
                             + '</ol>'
-                })).append($('<div/>', {
-                    'class': 'box box-info'
-                }).append($('<div/>', {
-                    'class': 'box-header',
-                    'html': 'App Authorization'
-                })).append($('<div/>', {
-                    'class': 'box-body',
-                    'html': '<ol id="twitter-link-auth">'
-                            + '<li><button class="btn btn-info btn-sm" type="button" id="twitter-link-start-auth-button"><i class="fa fa-refresh"></i>&nbsp; Generate Auth Link</button></li>'
-                            + '</ol>'
-                })))
-                        ), function () {});
-        $('#twitter-link-start-auth-button').on('click', function () {
-            socket.wsEvent('twitterhandler_start_auth_ws', './handlers/twitterHandler.js', null, ['start-auth', href + '?folder=' + cp.folder + '&page=' + cp.page + '&action=twitter-complete-auth'], function (e) {
-                $('#twitter-link-auth').append($('<li/>', {
-                    'html': '<button class="btn btn-info btn-sm" type="button" id="twitter-link-do-auth-button"><i class="fa fa-twitter"></i>&nbsp; Connect with Twitter</button>'
-                }));
-                $('#twitter-link-do-auth-button').on('click', function () {
-                    window.open(e.authUrl, '_blank');
-                });
-            }, true);
+                }))).append($('<div/>', {
+            'class': 'box box-warning'
+        }).append($('<div/>', {
+            'class': 'box-header',
+            'html': 'Warning'
+        })).append($('<div/>', {
+            'class': 'box-body',
+            'html': 'Failure to set the <i>Callback URI / Redirect URL</i> exactly as instructed may result in Twitter giving a generic <b>Something went wrong</b> error'
+        }))).append($('<div/>', {
+            'class': 'box box-info'
+        }).append($('<div/>', {
+            'class': 'box-header',
+            'html': 'App Authorization'
+        })).append($('<div/>', {
+            'class': 'box-body',
+            'html': '<ol id="twitter-link-auth">'
+                    + '<li><button class="btn btn-info btn-sm" type="button" id="twitter-link-start-auth-button"><i class="fa fa-refresh"></i>&nbsp; Generate Auth Link</button></li>'
+                    + '</ol>'
+        }))), null, {'cancelclass': 'btn-primary', 'canceltext': 'Close'});
+        modal.on('shown.bs.modal', function () {
+            $('#twitter-link-start-auth-button').on('click', function () {
+                socket.wsEvent('twitterhandler_start_auth_ws', './handlers/twitterHandler.js', null, ['start-auth', authUrl], function (e) {
+                    if (e.success) {
+                        $('#twitter-link-auth').append($('<li/>', {
+                            'html': '<button class="btn btn-info btn-sm" type="button" id="twitter-link-do-auth-button"><i class="fa fa-twitter"></i>&nbsp; Connect with Twitter</button>'
+                        }));
+                        $('#twitter-link-do-auth-button').on('click', function () {
+                            window.open(e.authUrl, '_blank');
+                        });
+                    } else if (e.hasOwnProperty('error')) {
+                        toastr.error(e.error, 'Failed to link Twitter');
+                    } else {
+                        toastr.error('Failed to link Twitter');
+                    }
+                }, true);
+            });
         });
+
+        modal.modal('toggle');
     });
 
     if (helpers.querymap.hasOwnProperty('action') && helpers.querymap.action === 'twitter-complete-auth' && helpers.querymap.hasOwnProperty('code')) {

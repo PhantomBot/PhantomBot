@@ -201,7 +201,8 @@ jobs:
       env:
         ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
-      run: ant -noinput -Dbuildtype=stable -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml jar
+        VERSION: ${{ needs.workflowvars.outputs.version }}
+      run: ant -noinput -Dbuildtype=stable -Dversion=$VERSION -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml jar
     - name: Prep Assets
       env:
         FOLDERFULL: ${{ format('PhantomBot-{0}', needs.workflowvars.outputs.version) }}
@@ -381,7 +382,7 @@ jobs:
         push: true
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
-          ANT_ARGS=-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
+          ANT_ARGS=-Dbuildtype=stable -Dversion=${{ needs.workflowvars.outputs.version }} -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
         tags: |
           ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:${{ needs.workflowvars.outputs.version }}
           ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_REPO_STABLE }}:latest
@@ -394,7 +395,7 @@ jobs:
         push: true
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
-          ANT_ARGS=-Dbuildtype=stable -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
+          ANT_ARGS=-Dbuildtype=stable -Dversion=${{ needs.workflowvars.outputs.version }} -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
         tags: |
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:${{ needs.workflowvars.outputs.version }}
           ghcr.io/${{ needs.workflowvars.outputs.ghcrrepo }}:latest

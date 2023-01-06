@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2022 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -309,6 +309,14 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getClass().equals(java.lang.IllegalStateException.class) && error.getMessage().equals("failed to create a child event loop")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(com.github.scribejava.core.model.OAuth2AccessTokenErrorResponse.class)) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Keystore was tampered with, or password was incorrect")) {
                                     return true;
                                 }
                             }
