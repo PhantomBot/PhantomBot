@@ -363,7 +363,7 @@
 
             if (userLevel <= ranksTimeTable.length - 2) {
                 nextLevel = userLevel + 1;
-                timeUntilNextRank = Math.round((parseInt(ranksTimeTable[nextLevel]) - userTime) * 10) / 10; //toFixed() is not supported by Rhino
+                timeUntilNextRank = (parseInt(ranksTimeTable[nextLevel]) - userTime).toFixed(1);
                 if (userLevel === -1) {
                     $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
                 } else {
