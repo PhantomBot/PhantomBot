@@ -25,7 +25,6 @@
 
     var rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
         rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200),
-        time,
         ranksTimeTable;
 
     /**
@@ -36,11 +35,7 @@
         var numA = parseInt(a),
             numB = parseInt(b);
 
-        if (numA === numB) {
-            return 0;
-        }
-
-        return -1;
+        return numA - numB;
     }
 
     /**
@@ -60,8 +55,8 @@
      * @param {int} time (optional) Time for the user in seconds. If not set, read from the DB.
      * @returns {boolean}
      */
-    function hasRank(username) {
-        var userTime;
+    function hasRank(username, time) {
+        var userTime = 0;
 
         username = username.toLowerCase();
 
@@ -82,16 +77,14 @@
             time = parseInt($.inidb.get('time', username));
         }
 
-        userTime = parseInt(time / 3600);
-        if (isNaN(userTime)) {
-            userTime = 0;
+        if (!isNaN(time)) {
+            userTime = time / 3600;
         }
 
         for (var i = 0; i < ranksTimeTable.length; i++) {
-            if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
+            if (userTime >= parseInt(ranksTimeTable[i])) {
                 return true;
             }
-            i = ranksTimeTable.length;
         }
 
         return false;
@@ -105,7 +98,7 @@
      * @returns {string}
      */
     function getRank(username, time) {
-        var userTime,
+        var userTime = 0,
             userLevel;
 
         username = username.toLowerCase();
@@ -120,23 +113,20 @@
         }
 
         // Return System Rank
-        userLevel = -1;
         if (time === undefined) {
             time = parseInt($.inidb.get('time', username));
         }
 
-        userTime = parseInt(time / 3600);
-        if (isNaN(userTime)) {
-            userTime = 0;
+        if (!isNaN(time)) {
+            userTime = time / 3600;
         }
 
-        for (var i = 0; i < ranksTimeTable.length; i++) {
-            if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
-                userLevel = i;
-            }
+        userLevel = ranksTimeTable.length - 1;
+        while (userLevel >= 0 && parseInt(ranksTimeTable[userLevel]) > userTime) {
+            userLevel--;
         }
 
-        if (userLevel != -1) {
+        if (userLevel >= 0) {
             return $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString());
         }
         return '';
@@ -150,7 +140,7 @@
      * @returns {string}
      */
     function resolveRank(username) {
-        return (getRank(username.toLowerCase()) + ' ' + ($.username.hasUser(username) == true ? $.username.get(username) : username)).trim();
+        return (getRank(username.toLowerCase()) + ' ' + ($.username.hasUser(username) === true ? $.username.get(username) : username)).trim();
     }
 
     /**
@@ -163,9 +153,7 @@
             username = $.username.resolve(sender),
             levelTime,
             levelName,
-            userTime = parseInt(parseInt($.inidb.get('time', sender)) / 3600),
-            rankEligableTime = $.getIniDbNumber('settings', 'rankEligableTime', 50),
-            rankEligableCost = $.getIniDbNumber('settings', 'rankEligableCost', 200),
+            userTime = parseInt($.inidb.get('time', sender)) / 3600,
             userLevel,
             timeUntilNextRank,
             nextLevel,
@@ -177,7 +165,7 @@
             userTime = 0;
         }
 
-        /*
+        /**
          * @commandpath rankedit - Displays the usage of rankedit.
          * @commandpath rankedit add [time] [rankname] - Add a new rank. Time is in hours.
          * @commandpath rankedit del [time] - Deletes the rank associated with the given time
@@ -363,14 +351,14 @@
             if (ranksTimeTable === undefined) {
                 loadRanksTimeTable();
             }
-            if (ranksTimeTable.length == 0) {
+            if (ranksTimeTable.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ranks.rank.404'));
                 return;
             }
 
             userLevel = -1;
             for (var i = 0; i < ranksTimeTable.length; i++) {
-                if (parseInt(userTime) >= parseInt(ranksTimeTable[i])) {
+                if (userTime >= parseInt(ranksTimeTable[i])) {
                     userLevel = i;
                 } else {
                     i = ranksTimeTable.length;
@@ -378,9 +366,9 @@
             }
 
             if (userLevel <= ranksTimeTable.length - 2) {
-                nextLevel = parseInt(userLevel) + 1;
-                timeUntilNextRank = parseInt(ranksTimeTable[nextLevel]) - userTime;
-                if (userLevel == -1) {
+                nextLevel = userLevel + 1;
+                timeUntilNextRank = Math.round((parseInt(ranksTimeTable[nextLevel]) - userTime) * 10) / 10; //toFixed() is not supported by Rhino
+                if (userLevel === -1) {
                     $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
                 } else {
                     $.say($.lang.get('ranks.rank.success', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString()), timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
