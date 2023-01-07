@@ -357,30 +357,74 @@
         }
     }
 
-    /**
-     * @function timeoutUserFor
-     *
-     * @param {string} username
-     * @param {number} time
-     * @param {string} reason
-     * @param {map} tags
-     */
-    function timeoutUserFor(username, time, reason, tags) {
+    function timeoutDeleteUser(username, time, reason, tags) {
         if (time === 0) {
-            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.delete ' + tags.get('id')); // Cannot send a reason/time with this.
+            deleteMessage(tags);
         } else {
-            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.timeout ' + username + ' ' + time + ' ' + reason);
+            timeoutUser(username, time, reason);
         }
     }
 
-    /*
-     * @function banUser
+    /**
+     * @function timeoutUser Times out the user
      *
-     * @param {string} username
-     * @param {string} reason
+     * @param {string} username The user to time out
+     * @param {number} time The number of seconds to timeout for
+     * @param {string} reason An optional reason string for the timeout
+     */
+    function timeoutUser(username, time, reason) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/timeout ' + username + ' ' + time + ' ' + reason);
+    }
+
+    /**
+     * @function untimeoutUser Cancels a time out on the user
+     *
+     * @param {string} username The user to un-time out
+     */
+    function untimeoutUser(username) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/untimeout ' + username);
+    }
+
+    /**
+     * @function deleteMessage Deletes the message
+     *
+     * @param {jsString or Java JSONObject} tagsOrId Either the message id, or a Java JSONObject containing the message id
+     */
+    function deleteMessage(tagsOrId) {
+        if ((typeof tagsOrId) === 'string') {
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/delete ' + tagsOrId);
+        } else {
+            Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/delete ' + tagsOrId.get('id'));
+        }
+    }
+
+    /**
+     * @function purgeUser Purges the user (1 second timeout)
+     *
+     * @param {string} username The user to purge
+     * @param {string} reason An optional reason string for the purge
+     */
+    function purgeUser(username, reason) {
+        timeoutUser(username, 1, reason);
+    }
+
+    /*
+     * @function banUser Bans the user
+     *
+     * @param {string} username The user to ban
+     * @param {string} reason An optional reason string for the ban
      */
     function banUser(username, reason) {
-        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('.ban ' + username + ' ' + reason);
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/ban ' + username + ' ' + reason);
+    }
+
+    /**
+     * @function unbanUser Un-bans the user
+     *
+     * @param {string} username The user to un-ban
+     */
+    function unbanUser(username) {
+        Packages.tv.phantombot.PhantomBot.instance().getSession().sayNow('/unban ' + username);
     }
 
     /**
@@ -395,14 +439,14 @@
     function timeout(username, warningT, timeoutT, reason, tags) {
         if (timeouts[username] !== undefined) {
             if (timeouts[username] > $.systemTime()) {
-                timeoutUserFor(username, timeoutT, reason, tags);
+                timeoutDeleteUser(username, timeoutT, reason, tags);
                 warning = $.lang.get('chatmoderator.timeout');
             } else {
-                timeoutUserFor(username, warningT, reason, tags);
+                timeoutDeleteUser(username, warningT, reason, tags);
                 warning = $.lang.get('chatmoderator.warning');
             }
         } else {
-            timeoutUserFor(username, warningT, reason, tags);
+            timeoutDeleteUser(username, warningT, reason, tags);
             warning = $.lang.get('chatmoderator.warning');
         }
         timeouts[username] = ($.systemTime() + resetTime);
@@ -481,7 +525,7 @@
                             warning = $.lang.get('chatmoderator.ban');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         } else {
-                            timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
+                            timeoutUser(sender, blackList[i].timeout, blackList[i].banReason, tags);
                             warning = $.lang.get('chatmoderator.timeout');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         }
@@ -502,7 +546,7 @@
                             warning = $.lang.get('chatmoderator.ban');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         } else {
-                            timeoutUserFor(sender, blackList[i].timeout, blackList[i].banReason, tags);
+                            timeoutUser(sender, blackList[i].timeout, blackList[i].banReason, tags);
                             warning = $.lang.get('chatmoderator.timeout');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         }
@@ -1174,15 +1218,6 @@
             return;
         }
     }
-
-    /**
-     * @event ircClearchat
-     */
-    /* Removed this for now because sometimes it fails and  it fails to send the moderation timeout and message because of it.
-     $.bind('ircClearchat', function(event) {
-     $.log.event(event.getUser() + ' has been timed out for ' + String(event.getDuration()) + ' seconds. Reason: ' + event.getReason());
-     });
-     */
 
     /*
      * @event command
@@ -2239,8 +2274,12 @@
     });
 
     /** Export functions to API */
-    $.timeoutUser = timeoutUserFor;
+    $.timeoutUser = timeoutUser;
+    $.untimeoutUser = untimeoutUser;
     $.banUser = banUser;
+    $.unbanUser = unbanUser;
+    $.purgeUser = purgeUser;
+    $.deleteMessage = deleteMessage;
     $.permitUserLink = permitUser;
     $.reloadModeration = reloadModeration;
 })();

@@ -3,6 +3,7 @@
 
     },
     "pages": {
+        "moderation": "Custom Moderation Scripts",
         "channelpoints": "Channel Points Handler",
         "streamoverlay": "Stream Overlay"
     }
