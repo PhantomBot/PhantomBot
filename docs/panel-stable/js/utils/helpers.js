@@ -243,10 +243,19 @@ $(function () {
      * @param {Object} obj
      * @return {Boolean}
      */
-    helpers.handleInputString = function (obj) {
+    helpers.handleInputString = function (obj, min, max) {
+        if (min === undefined) {
+            min = 1;
+        }
+        if (max === undefined) {
+            max = Number.MAX_SAFE_INTEGER;
+        }
         return helpers.handleInput(obj, function (obj) {
-            if (obj.val().length < 1) {
-                return 'You cannot leave this field empty.';
+            if (obj.val().length < min) {
+                return 'You cannot have less than ' + min + ' characters.';
+            }
+            if (obj.val().length > max) {
+                return 'You cannot have more than ' + max + ' characters.';
             }
             return null;
         });
@@ -361,14 +370,58 @@ $(function () {
     /*
      * @function Generates a basic modal, you have to append your own body with jQuery.
      *
-     * @param  {String}   id
-     * @param  {String}   title
-     * @param  {String}   btn
-     * @param  {Object}   body
-     * @param  {Function} onClose
-     * @return {Object}
+     * @param  {String}        id - Element ID for the modal
+     * @param  {String}        title - Dialog title
+     * @param  {String}        btn - The text displayed on the priamry button, typically "Save". Use `null` to remove
+     * @param  {jQuery Object} body - HTML for the modal body
+     * @param  {Function}      onClose - Executes when `btn` is pressed. Does nothing if `btn` is `null`
+     * @param  {JS Object}     override - optionally overrides some options of the dialog
+     * {
+     *      footerpre: [],                 // Array of additional HTML elements for the footer, appended before the `btn` button
+     *      footercenter: [],              // Array of additional HTML elements for the footer, appended in between the `btn` button and the "Cancel" button
+     *      footerpost: [],                // Array of additional HTML elements for the footer, appended after the "Cancel" button
+     *      cancelclass: 'primary',        // Overrides the `btn-default` class on the "Cancel" button. Can be used to add other classes as well
+     *      canceltext: 'Close',           // Overrides the text displayed on the "Cancel" button
+     *      cancelclick: function(){}      // Overrides the function triggered on click for the "Cancel" button. Default `undefined`
+     * }
+     * @return {jQuery Object} A modal which is ready to be shown using `.modal('show')`
      */
-    helpers.getModal = function (id, title, btn, body, onClose) {
+    helpers.getModal = function (id, title, btn, body, onClose, override) {
+        if (override === undefined || override === null) {
+            override = {};
+        }
+
+        let footerbuttons = [];
+
+        if (override.hasOwnProperty('footerpre') && override.footerpre.length > 0) {
+            footerbuttons.push(...override.footerpre);
+        }
+
+        if (btn !== undefined && btn !== null) {
+            footerbuttons.push($('<button/>', {
+                'class': 'btn btn-primary',
+                'type': 'button',
+                'text': btn,
+                'click': onClose
+            }));
+        }
+
+        if (override.hasOwnProperty('footercenter') && override.footercenter.length > 0) {
+            footerbuttons.push(...override.footercenter);
+        }
+
+        footerbuttons.push($('<button/>', {
+            'class': 'btn ' + (override.hasOwnProperty('cancelclass') ? override.cancelclass : 'btn-default'),
+            'type': 'button',
+            'text': (override.hasOwnProperty('canceltext') ? override.canceltext : 'Cancel'),
+            'data-dismiss': 'modal',
+            'click': (override.hasOwnProperty('cancelclick') ? override.cancelclick : undefined)
+        }));
+
+        if (override.hasOwnProperty('footerpost') && override.footerpost.length > 0) {
+            footerbuttons.push(...override.footerpost);
+        }
+
         return $('<div/>', {
             'class': 'modal fade',
             'tabindex': '99',
@@ -392,17 +445,7 @@ $(function () {
             'html': body
         })).append($('<div/>', {
             'class': 'modal-footer'
-        }).append($('<button/>', {
-            'class': 'btn btn-primary',
-            'type': 'button',
-            'text': btn,
-            'click': onClose
-        })).append($('<button/>', {
-            'class': 'btn btn-default',
-            'type': 'button',
-            'text': 'Cancel',
-            'data-dismiss': 'modal'
-        }))))).on('shown.bs.modal', function () {
+        }).append(footerbuttons)))).on('shown.bs.modal', function () {
             $('#' + id).focus();
         }).on('hidden.bs.modal', function () {
             $('#' + id).remove();
@@ -410,16 +453,72 @@ $(function () {
     };
 
     /*
-     * @function Generates an advance modal, you have to append your own body with jQuery.
+     * @function Generates an advanced modal, you have to append your own body with jQuery.
      *
-     * @param  {String}   id
-     * @param  {String}   title
-     * @param  {String}   btn
-     * @param  {Object}   body
-     * @param  {Function} onClose
-     * @return {Object}
+     * Elements which should be hidden behind the "Show Advanced" collapse section should be enclosed in an element defined as
+     * $('<div/>', {
+     *    'class': 'collapse',
+     *    'id': 'advance-collapse',
+     *    'html': $('<form/>', {
+     *    'role': 'form'
+     *    })
+     *    // jQuery .append() elements here
+     * })
+     *
+     * @param  {String}        id - Element ID for the modal
+     * @param  {String}        title - Dialog title
+     * @param  {String}        btn - The text displayed on the priamry button, typically "Save". Use `null` to remove
+     * @param  {jQuery Object} body - HTML for the modal body
+     * @param  {Function}      onClose - Executes when `btn` is pressed. Does nothing if `btn` is `null`
+     * @param  {JS Object}     override - optionally overrides some options of the dialog
+     * {
+     *      footerpre: [],                 // Array of additional HTML elements for the footer, appended before the `btn` button
+     *      footercenter: [],              // Array of additional HTML elements for the footer, appended in between the `btn` button and the "Cancel" button
+     *      footerpost: [],                // Array of additional HTML elements for the footer, appended after the "Cancel" button
+     *      cancelclass: 'primary',        // Overrides the `btn-default` class on the "Cancel" button. Can be used to add other classes as well
+     *      canceltext: 'Close',           // Overrides the text displayed on the "Cancel" button
+     *      cancelclick: function(){},     // Overrides the function triggered on click for the "Cancel" button. Default `undefined`
+     *      advancedshowtext: 'Show More', // Overrides the "Show Advanced" text
+     *      advancedhidetext: 'Hide More'  // Overrides the "Hide Advanced" text
+     * }
+     * @return {jQuery Object} A modal which is ready to be shown using `.modal('show')`
      */
-    helpers.getAdvanceModal = function (id, title, btn, body, onClose) {
+    helpers.getAdvanceModal = function (id, title, btn, body, onClose, override) {
+        if (override === undefined || override === null) {
+            override = {};
+        }
+
+        let footerbuttons = [];
+
+        if (override.hasOwnProperty('footerpre') && override.footerpre.length > 0) {
+            footerbuttons.push(...override.footerpre);
+        }
+
+        if (btn !== undefined && btn !== null) {
+            footerbuttons.push($('<button/>', {
+                'class': 'btn btn-primary',
+                'type': 'button',
+                'text': btn,
+                'click': onClose
+            }));
+        }
+
+        if (override.hasOwnProperty('footercenter') && override.footercenter.length > 0) {
+            footerbuttons.push(...override.footercenter);
+        }
+
+        footerbuttons.push($('<button/>', {
+            'class': 'btn btn-' + (override.hasOwnProperty('cancelclass') ? override.cancelclass : 'default'),
+            'type': 'button',
+            'text': (override.hasOwnProperty('canceltext') ? override.canceltext : 'Cancel'),
+            'data-dismiss': 'modal',
+            'click': (override.hasOwnProperty('cancelclick') ? override.cancelclick : null)
+        }));
+
+        if (override.hasOwnProperty('footerpost') && override.footerpost.length > 0) {
+            footerbuttons.push(...override.footerpost);
+        }
+
         return $('<div/>', {
             'class': 'modal fade',
             'tabindex': '99',
@@ -454,27 +553,19 @@ $(function () {
             })
         }).append($('<span/>', {
             'class': 'collapse-btn',
-            'html': 'Show Advanced'
-        }))).append($('<button/>', {
-            'class': 'btn btn-primary',
-            'type': 'button',
-            'text': btn,
-            'click': onClose
-        })).append($('<button/>', {
-            'class': 'btn btn-default',
-            'type': 'button',
-            'text': 'Cancel',
-            'data-dismiss': 'modal'
-        }))))).on('shown.bs.modal', function () {
+            'html': (override.hasOwnProperty('advancedshowtext') ? override.advancedshowtext : 'Show Advanced'),
+            'data-showtext': (override.hasOwnProperty('advancedshowtext') ? override.advancedshowtext : 'Show Advanced'),
+            'data-hidetext': (override.hasOwnProperty('advancedhidetext') ? override.advancedhidetext : 'Hide Advanced')
+        }))).append(footerbuttons)))).on('shown.bs.modal', function () {
             $('#' + id).focus();
         }).on('hidden.bs.modal', function () {
             $('#' + id).remove();
         }).on('show.bs.collapse', function () {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
-            $(this).find('.collapse-btn').html('Hide Advanced');
+            $(this).find('.collapse-btn').html($(this).find('.collapse-btn').data('hidetext'));
         }).on('hide.bs.collapse', function () {
             $(this).find('.glyphicon').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
-            $(this).find('.collapse-btn').html('Show Advanced');
+            $(this).find('.collapse-btn').html($(this).find('.collapse-btn').data('showtext'));
         });
     };
 
@@ -877,10 +968,16 @@ $(function () {
             'dangerMode': true
         }).then(function (isRemoved) {
             if (isRemoved) {
-                onClose();
-                swal(closeMessage, {
-                    'icon': 'success'
-                });
+                let result = onClose();
+                if (result === undefined || result.message === undefined || result.icon === undefined) {
+                    swal(closeMessage, {
+                        'icon': 'success'
+                    });
+                } else {
+                    swal(result.message, {
+                        'icon': result.icon
+                    });
+                }
             }
         });
     };
@@ -1365,11 +1462,17 @@ $(function () {
         var bothostname = window.localStorage.getItem('bothostname') || 'localhost';
         var botport = window.localStorage.getItem('botport') || '25000';
 
-        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null;
+        return botport === '443' && bothostname.match(/(([0-9]{1,3})\.){3}([0-9]{1,3})/) === null && bothostname !== 'localhost';
     };
 
-    helpers.getBotSchemePath = function () {
-        return 'http' + (helpers.shouldUseHttpsPrefix() ? 's' : '') + '://' + helpers.getBotHost();
+    helpers.getBotSchemePath = function (sslSettings) {
+        let useSsl = helpers.shouldUseHttpsPrefix();
+
+        if (sslSettings !== undefined && sslSettings !== null) {
+            useSsl = helpers.shouldUseHttpsPrefix() && !sslSettings.autoSSL;
+        }
+
+        return 'http' + (useSsl ? 's' : '') + '://' + helpers.getBotHost();
     };
 
     helpers.getUserLogo = function () {
