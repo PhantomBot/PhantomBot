@@ -575,7 +575,22 @@
                         try {
                             $.twitter.completeAuthorize(authParams, args[1]);
                             authParams = null;
-                            $.panel.sendObject(event.getId(), {'success': $.twitter.authenticated()});
+                            var i = 0;
+                            var cb = function () {
+                                if ($.twitter.authenticated()) {
+                                    $.panel.sendObject(event.getId(), {'success': true});
+                                } else if (i >= 14) {
+                                    $.panel.sendObject(event.getId(), {'success': false, 'error': 'Timed out waiting for authentication'});
+                                } else {
+                                    i++;
+                                    var time = 1000;
+                                    if (i < 4) {
+                                        time = 250;
+                                    }
+                                    setTimeout(cb, time);
+                                }
+                            };
+                            setTimeout(cb, 250);
                         } catch (e) {
                             $.log.error('Failed to complete auth ' + e.toString());
                             $.panel.sendObject(event.getId(), {'success': false, 'error': e.toString()});
