@@ -18,6 +18,7 @@ package com.gmt2001.httpwsserver;
 
 import com.gmt2001.Console.err;
 import com.gmt2001.ExecutorService;
+import com.gmt2001.PathValidator;
 import com.gmt2001.dns.EventLoopDetector;
 import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
 import io.netty.bootstrap.ServerBootstrap;
@@ -32,7 +33,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
@@ -183,7 +183,7 @@ public final class HTTPWSServer {
             if (useHttps) {
                 if (sslFile.isBlank()) {
                     this.autoSSL = true;
-                    if (!Files.exists(Paths.get(AUTOSSLFILE))) {
+                    if (!Files.exists(PathValidator.getRealPath(AUTOSSLFILE))) {
                         com.gmt2001.Console.debug.println("No Auto-SSL File. Generating...");
                         this.generateAutoSsl(botName);
                     }
@@ -282,8 +282,8 @@ public final class HTTPWSServer {
             try {
                 Instant lastModified;
                 boolean reload = false;
-                if (Files.exists(Paths.get(sslFile))) {
-                    lastModified = Files.getLastModifiedTime(Paths.get(sslFile)).toInstant();
+                if (Files.exists(PathValidator.getRealPath(sslFile))) {
+                    lastModified = Files.getLastModifiedTime(PathValidator.getRealPath(sslFile)).toInstant();
                     if (lastModified.isAfter(this.lastSslModified)) {
                         if (this.lastSslModified != Instant.MIN) {
                             reload = true;
@@ -293,8 +293,8 @@ public final class HTTPWSServer {
                     }
                 }
 
-                if (!sslKeyFile.isBlank() && Files.exists(Paths.get(sslKeyFile))) {
-                    lastModified = Files.getLastModifiedTime(Paths.get(sslKeyFile)).toInstant();
+                if (!sslKeyFile.isBlank() && Files.exists(PathValidator.getRealPath(sslKeyFile))) {
+                    lastModified = Files.getLastModifiedTime(PathValidator.getRealPath(sslKeyFile)).toInstant();
                     if (lastModified.isAfter(this.lastSslKeyModified)) {
                         if (this.lastSslKeyModified != Instant.MIN) {
                             reload = true;
@@ -337,8 +337,8 @@ public final class HTTPWSServer {
             KeyPair kp = null;
 
             try {
-                if (Files.exists(Paths.get(sslFile))) {
-                    try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+                if (Files.exists(PathValidator.getRealPath(sslFile))) {
+                    try ( InputStream inputStream = Files.newInputStream(PathValidator.getRealPath(sslFile))) {
                         ks.load(inputStream, sslPass.toCharArray());
                     }
                 }
@@ -371,7 +371,7 @@ public final class HTTPWSServer {
 
                 ks.setKeyEntry(AUTOSSLKEYALIAS, kp.getPrivate(), sslPass.toCharArray(), new Certificate[]{cert});
 
-                try ( OutputStream outputStream = Files.newOutputStream(Paths.get(sslFile))) {
+                try ( OutputStream outputStream = Files.newOutputStream(PathValidator.getRealPath(sslFile))) {
                     ks.store(outputStream, sslPass.toCharArray());
                 }
 
@@ -392,7 +392,7 @@ public final class HTTPWSServer {
         String sslKeyFile = CaselessProperties.instance().getProperty("httpsKeyFileName", "");
 
         if (sslFile.isBlank()) {
-            if (Files.exists(Paths.get(AUTOSSLFILE))) {
+            if (Files.exists(PathValidator.getRealPath(AUTOSSLFILE))) {
                 com.gmt2001.Console.debug.println("Using Auto-SSL");
                 this.reloadSslContextJKS();
             }
@@ -426,7 +426,7 @@ public final class HTTPWSServer {
         com.gmt2001.Console.debug.println("Opening JKS at " + sslFile);
 
         KeyStore ks = KeyStore.getInstance("JKS");
-        try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+        try ( InputStream inputStream = Files.newInputStream(PathValidator.getRealPath(sslFile))) {
             ks.load(inputStream, sslPass.toCharArray());
 
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
@@ -454,9 +454,9 @@ public final class HTTPWSServer {
         String sslKeyFile = CaselessProperties.instance().getProperty("httpsKeyFileName", "");
         String sslPass = CaselessProperties.instance().getProperty("httpsPassword", "");
         com.gmt2001.Console.debug.println("Opening chain PEM at " + sslFile);
-        try ( InputStream inputStreamX = Files.newInputStream(Paths.get(sslFile))) {
+        try ( InputStream inputStreamX = Files.newInputStream(PathValidator.getRealPath(sslFile))) {
             com.gmt2001.Console.debug.println("Opening key PEM at " + sslKeyFile);
-            try ( InputStream inputStreamK = Files.newInputStream(Paths.get(sslKeyFile))) {
+            try ( InputStream inputStreamK = Files.newInputStream(PathValidator.getRealPath(sslKeyFile))) {
                 com.gmt2001.Console.debug.println("Building context with streams");
                 this.sslCtx = SslContextBuilder.forServer(inputStreamX, inputStreamK, sslPass.isBlank() ? null : sslPass).build();
             }
@@ -471,12 +471,12 @@ public final class HTTPWSServer {
         String sslPass = AUTOSSLPASSWORD;
 
         try {
-            if (!Files.exists(Paths.get(sslFile))) {
+            if (!Files.exists(PathValidator.getRealPath(sslFile))) {
                 com.gmt2001.Console.debug.println("Auto-SSL JKS missing, generating a new one...");
                 this.generateAutoSsl();
             } else {
                 KeyStore ks = KeyStore.getInstance("JKS");
-                try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
+                try ( InputStream inputStream = Files.newInputStream(PathValidator.getRealPath(sslFile))) {
                     ks.load(inputStream, sslPass.toCharArray());
                     Key key = ks.getKey(AUTOSSLKEYALIAS, sslPass.toCharArray());
                     if (key instanceof PrivateKey) {
