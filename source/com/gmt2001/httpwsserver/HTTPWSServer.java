@@ -184,6 +184,7 @@ public final class HTTPWSServer {
                 if (sslFile.isBlank()) {
                     this.autoSSL = true;
                     if (!Files.exists(Paths.get(AUTOSSLFILE))) {
+                        com.gmt2001.Console.debug.println("No Auto-SSL File. Generating...");
                         this.generateAutoSsl(botName);
                     }
                 }
@@ -392,11 +393,14 @@ public final class HTTPWSServer {
 
         if (sslFile.isBlank()) {
             if (Files.exists(Paths.get(AUTOSSLFILE))) {
+                com.gmt2001.Console.debug.println("Using Auto-SSL");
                 this.reloadSslContextJKS();
             }
         } else if (sslFile.toLowerCase().endsWith(".jks") || sslKeyFile.isBlank()) {
+            com.gmt2001.Console.debug.println("Using JKS");
             this.reloadSslContextJKS();
         } else {
+            com.gmt2001.Console.debug.println("Using X.509");
             this.reloadSslContextX509();
         }
     }
@@ -419,6 +423,8 @@ public final class HTTPWSServer {
             sslPass = AUTOSSLPASSWORD;
         }
 
+        com.gmt2001.Console.debug.println("Opening JKS at " + sslFile);
+
         KeyStore ks = KeyStore.getInstance("JKS");
         try ( InputStream inputStream = Files.newInputStream(Paths.get(sslFile))) {
             ks.load(inputStream, sslPass.toCharArray());
@@ -429,6 +435,7 @@ public final class HTTPWSServer {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
             tmf.init(ks);
 
+            com.gmt2001.Console.debug.println("Building context with KMF/TMF");
             this.sslCtx = SslContextBuilder.forServer(kmf).trustManager(tmf).build();
         }
     }
@@ -446,8 +453,11 @@ public final class HTTPWSServer {
         String sslFile = CaselessProperties.instance().getProperty("httpsFileName", "");
         String sslKeyFile = CaselessProperties.instance().getProperty("httpsKeyFileName", "");
         String sslPass = CaselessProperties.instance().getProperty("httpsPassword", "");
+        com.gmt2001.Console.debug.println("Opening chain PEM at " + sslFile);
         try ( InputStream inputStreamX = Files.newInputStream(Paths.get(sslFile))) {
+            com.gmt2001.Console.debug.println("Opening key PEM at " + sslKeyFile);
             try ( InputStream inputStreamK = Files.newInputStream(Paths.get(sslKeyFile))) {
+                com.gmt2001.Console.debug.println("Building context with streams");
                 this.sslCtx = SslContextBuilder.forServer(inputStreamX, inputStreamK, sslPass.isBlank() ? null : sslPass).build();
             }
         }
@@ -462,6 +472,7 @@ public final class HTTPWSServer {
 
         try {
             if (!Files.exists(Paths.get(sslFile))) {
+                com.gmt2001.Console.debug.println("Auto-SSL JKS missing, generating a new one...");
                 this.generateAutoSsl();
             } else {
                 KeyStore ks = KeyStore.getInstance("JKS");
@@ -474,6 +485,7 @@ public final class HTTPWSServer {
                         this.nextAutoSslCheck = Instant.now().plus(1, ChronoUnit.DAYS);
 
                         if (Instant.now().plus(29, ChronoUnit.DAYS).isAfter(cert.getNotAfter().toInstant())) {
+                            com.gmt2001.Console.debug.println("Auto-SSL JKS expiration approaching, renewing...");
                             this.generateAutoSsl();
                         }
                     }
