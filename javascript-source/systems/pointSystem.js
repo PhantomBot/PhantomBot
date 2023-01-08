@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * pointSystem.js
  *
@@ -454,6 +456,7 @@
             action = $.user.sanitize(action);
             if ($.user.isKnown(action)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.username.resolve(action), getPointsString(getUserPoints(action))));
+                return;
             }
 
             /**
@@ -774,7 +777,7 @@
                 return;
             }
 
-            $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.usage.invalid", "!" + command));
+            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.usage.invalid', '!' + command));
         }
 
 
