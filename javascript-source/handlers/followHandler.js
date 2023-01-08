@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * followHandler.js
  *
@@ -27,31 +29,6 @@
  * anymore to reduce spam. Unless the 5 minutes have past, then it will start over.
  *
  */
-
-function alertFollow(announceFollows, followToggle, s, follower, followReward, followQueue, replay) {
-    if (announceFollows === true && followToggle === true) {
-        if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', $.username.resolve(follower));
-        }
-
-        if (s.match(/\(reward\)/)) {
-            s = $.replace(s, '(reward)', $.getPointsString(followReward));
-        }
-
-        if (s.match(/^\/w/)) {
-            s = s.replace('/w', ' /w');
-        }
-
-        followQueue.add(s);
-
-        if (followReward > 0 && !replay) {
-            $.inidb.incr('points', follower, followReward);
-        }
-
-        $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
-        $.inidb.set('streamInfo', 'lastFollow', follower);
-    }
-}
 
 (function () {
     var followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
@@ -70,6 +47,32 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
         followMessage = $.getIniDbString('settings', 'followMessage');
         followToggle = $.getIniDbBoolean('settings', 'followToggle');
         followDelay = $.getIniDbNumber('settings', 'followDelay');
+    }
+
+    function alertFollow(follower, replay) {
+        if (announceFollows && followToggle) {
+            var s = followMessage;
+            if (s.match(/\(name\)/)) {
+                s = $.replace(s, '(name)', $.username.resolve(follower));
+            }
+
+            if (s.match(/\(reward\)/)) {
+                s = $.replace(s, '(reward)', $.getPointsString(followReward));
+            }
+
+            if (s.match(/^\/w/)) {
+                s = s.replace('/w', ' /w');
+            }
+
+            followQueue.add(s);
+
+            if (followReward > 0 && !replay) {
+                $.inidb.incr('points', follower, followReward);
+            }
+
+            $.writeToFile(follower + ' ', './addons/followHandler/latestFollower.txt', false);
+            $.inidb.set('streamInfo', 'lastFollow', follower);
+        }
     }
 
     /*
@@ -97,7 +100,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
                 s = $.replace(s, s.match(/\(playsound\s([a-zA-Z1-9_]+)\)/)[0], '');
             }
 
-            if (s != '') {
+            if (s !== '') {
                 $.say(s);
             }
             lastFollow = $.systemTime();
@@ -118,7 +121,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
      */
     $.bind('twitchFollow', function (event) {
         var follower = event.getFollower();
-        alertFollow(announceFollows, followToggle, followMessage, follower, followReward, followQueue, false);
+        alertFollow(follower, false);
     });
 
     /*
@@ -206,7 +209,7 @@ function alertFollow(announceFollows, followToggle, s, follower, followReward, f
             if (action === undefined) {
                 return;
             }
-            alertFollow(announceFollows, followToggle, followMessage, action, followReward, followQueue, true);
+            alertFollow(action, true);
         }
     });
 
