@@ -1163,7 +1163,7 @@ public class DiscordUtil {
     public boolean isAdministrator(User user) {
         this.validateParams(user);
         try {
-            return this.isAdministratorAsync(user).onErrorReturn(null).block();
+            return this.isAdministratorAsync(user).block();
         } catch (NullPointerException ex) {
             return false;
         }
@@ -1172,7 +1172,7 @@ public class DiscordUtil {
     public Mono<Boolean> isAdministratorAsync(User user) {
         this.validateParams(user);
 
-        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR));
+        return user.asMember(DiscordAPI.getGuildId()).flatMap(m -> m.getBasePermissions()).map(ps -> ps != null && ps.contains(Permission.ADMINISTRATOR)).onErrorReturn(false);
     }
 
     /**
@@ -1184,7 +1184,7 @@ public class DiscordUtil {
     @Deprecated
     public boolean isAdministrator(String userName) {
         try {
-            return this.isAdministratorAsync(userName).onErrorReturn(null).block();
+            return this.isAdministratorAsync(userName).block();
         } catch (NullPointerException ex) {
             return false;
         }

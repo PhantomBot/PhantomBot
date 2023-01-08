@@ -481,7 +481,7 @@ public class DiscordAPI extends DiscordUtil {
 
                 com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
 
-                boolean isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser).or(Mono.delay(Duration.ofSeconds(DiscordAPI.ISADMINTIMEOUT)).thenReturn(false)).block();
+                boolean isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser).or(Mono.delay(Duration.ofSeconds(DiscordAPI.ISADMINTIMEOUT)).thenReturn(false)).onErrorReturn(false).block();
 
                 if (message.charAt(0) == '!') {
                     DiscordAPI.instance().parseCommand(iUser, iChannel, iMessage, isAdmin);

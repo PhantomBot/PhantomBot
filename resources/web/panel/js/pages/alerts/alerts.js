@@ -871,19 +871,40 @@ $(function () {
                 })).append($('<div/>', {
                     'class': 'box-body',
                     'html': '<ol>'
-                            + '<li>Login to the <a href="https://developer.twitter.com/en/portal/dashboard" target="_blank">Twitter Develoepr Portal</a></li>'
-                            + '<li>If this is your first time to the portal, you may be asked to enter some personal information to register as a developer</li>'
+                            + '<li>Login to the <a href="https://developer.twitter.com/en/portal/dashboard" target="_blank">Twitter Developer Portal</a>'
+                            + '<ul><li>If this is your first time to the portal, you may be asked to enter some personal information to register as a developer</li></ul>'
+                            + '</li>'
+                            + '<li>Open the <b>App settings</b> page:'
+                            + '<ul>'
+                            + '<li>To use an existing app:'
+                            + '<ol>'
+                            + '<li>Select the project under <b>Projects</b></li>'
+                            + '<li>Open the <b>User authentication settings</b> page'
+                            + '<ul><li>From the project page: Click the <i class="fa fa-gear"></i> under <i>Project App</i></li>'
+                            + '<li>From the app page: Click <b>Edit</b> under <i>User authentication settings</i> on the <i>Settings</i> tab</li></ul></li>'
+                            + '</ol></li>'
+                            + '<li>To create a new app:'
+                            + '<ol>'
                             + '<li>Click <b>New Project</b>, fill in the requested fields, and click <b>Next</b></li>'
-                            + '<li>Fill in the App name and click <b>Next</b></li>'
+                            + '<li>Fill in the <i>App name</i> and click <b>Next</b></li>'
                             + '<li>Click <b>App Settings</b></li>'
-                            + '<li>In the <i>User authentication settings</i> section, click <b>Set Up</b></li>'
+                            + '<li>Click <b>Set Up</b> under <i>User authentication settings</i> on the <i>Settings</i> tab</li></li>'
+                            + '</ol></li>'
+                            + '</ul>'
+                            + '</li>'
                             + '<li>In the <i>App permissions</i> section, select <b>Read and write</b></li>'
                             + '<li>In the <i>Type of App</i> section, select <b>Web App, Automated App or Bot</b></li>'
                             + '<li>In the <i>App info</i> section, set the <i>Callback URI / Redirect URL</i> to <b>' + authUrl + '</b></li>'
                             + '<li>In the <i>App info</i> section, set the <i>Website URL</i> to any valid URL</li>'
                             + '<li>Click <b>Save</b>. If a popup appears asking about changing permissions, click <b>Yes</b></li>'
-                            + '<li>Copy the <i>Client ID</i> and <i>Client Secret</i></li>'
-                            + '<li>Add these values to the <b>Twitter</b> section on the <a href="/setup/" target="_blank">Bot Setup</a> page, then click <b>Save</b></li>'
+                            + '<li>You should be returned to the app page</li>'
+                            + '<li>Switch to the <i>Keys and tokens</i> tab</li>'
+                            + '<li>Expand the <b>Twitter</b> section on the <a href="/setup/" target="_blank">Bot Setup</a> page in a separate tab/window</li>'
+                            + '<li>On the Bot Setup page, set the radio button for <i>twitter_client_id</i> to the one on the right to enable the textbox, then fill in the <b>Client ID</b> from the <i>OAuth 2.0 Client ID and Client Secret</i> section of the Twitter app</li>'
+                            + '<li>On the Bot Setup page, set the radio button for <i>twitter_client_secret</i> to the one on the right to enable the textbox, then fill in the <b>Client Secret</b> from the <i>OAuth 2.0 Client ID and Client Secret</i> section of the Twitter app'
+                            + '<ul><li>If the secret is hidden, click <b>Regenerate</b> then <b>Yes, regenerate</b>. This will invalidate the old Client Secret if you had other apps using this Twitter project</li></ul>'
+                            + '</li>'
+                            + '<li>On the Bot Setup page, scroll back to the top and click <b>Save</b>, ensure a green success bar appears</li>'
                             + '<li>Continue below</li>'
                             + '</ol>'
                 }))).append($('<div/>', {
@@ -928,13 +949,24 @@ $(function () {
     });
 
     if (helpers.querymap.hasOwnProperty('action') && helpers.querymap.action === 'twitter-complete-auth' && helpers.querymap.hasOwnProperty('code')) {
+        window.history.replaceState(null, '', window.location.origin + window.location.pathname);
         socket.wsEvent('twitterhandler_complete_auth_ws', './handlers/twitterHandler.js', null, ['complete-auth', helpers.querymap.code], function (e) {
             if (e.success) {
-                toastr.success('Successfully linked Twitter!');
+                swal({
+                    'text': 'Successfully linked Twitter!',
+                    'icon': 'success'
+                });
             } else if (e.hasOwnProperty('error')) {
-                toastr.error(e.error, 'Failed to link Twitter');
+                swal({
+                    'title': 'Failed to linked Twitter!',
+                    'text': e.error,
+                    'icon': 'error'
+                });
             } else {
-                toastr.error('Failed to link Twitter');
+                swal({
+                    'text': 'Failed to linked Twitter!',
+                    'icon': 'error'
+                });
             }
         }, true);
     }

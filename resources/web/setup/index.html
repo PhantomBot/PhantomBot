@@ -349,6 +349,7 @@
                             }
 
                             if (prop.restart) {
+                                $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
                                 $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'restart')).addClass('botproperty-restart')
                                         .html('This setting requires a restart to take effect')
                                         .appendTo(cat(prop.category, prop.botproperty, true, 'li'));

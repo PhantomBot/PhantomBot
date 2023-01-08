@@ -27,6 +27,8 @@ Data Type: _Boolean_
 
 if `true`, exceptions thrown during operation may be sent to rollbar exception tracking. default `true`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### allowpanelusertosetup
@@ -43,6 +45,8 @@ Data Type: _String_
 
 the twitch channel the bot will operate in
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### owner
@@ -50,6 +54,8 @@ the twitch channel the bot will operate in
 Data Type: _String_
 
 the name of the bot owner, who has administrator privileges to the bot
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -101,6 +107,8 @@ Data Type: _String_
 
 the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. default `sqlite3store`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### mysqlhost
@@ -108,6 +116,8 @@ the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. de
 Data Type: _String_
 
 the ip, domain name, or hostname of the mysql server
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -117,6 +127,8 @@ Data Type: _String_
 
 the port to use for mysql connections. default `3306`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### mysqlname
@@ -124,6 +136,8 @@ the port to use for mysql connections. default `3306`
 Data Type: _String_
 
 the schema where the tables for the bot will be created/located on the mysql server
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -133,6 +147,8 @@ Data Type: _String_
 
 the username to login as to the mysql server
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### mysqlpass
@@ -140,6 +156,8 @@ the username to login as to the mysql server
 Data Type: _String_
 
 the password for `mysqluser`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -165,6 +183,8 @@ Data Type: _Int_
 
 the number of hours between db backups, if enabled. default `24`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### datastoreconfig
@@ -172,6 +192,8 @@ the number of hours between db backups, if enabled. default `24`
 Data Type: _String_
 
 if set, h2store: overrides the db file name; sqlitestore: links to a file containing config overrides
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -215,6 +237,8 @@ Data Type: _Boolean_
 
 if `true`, enables newer features from ecmascript 6 in rhino. default `true`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### reloadscripts
@@ -222,6 +246,8 @@ if `true`, enables newer features from ecmascript 6 in rhino. default `true`
 Data Type: _Boolean_
 
 if `true`, scripts which are changed while the bot is running will be reloaded. default `false`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -231,6 +257,8 @@ Data Type: _Boolean_
 
 if `true`, the script loading messages during startup are suppressed. default `false`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### musicenable
@@ -238,6 +266,8 @@ if `true`, the script loading messages during startup are suppressed. default `f
 Data Type: _Boolean_
 
 if `true`, enables the websocket handler for the song request/youtube player. default `true`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -247,6 +277,8 @@ if `true`, enables the websocket handler for the song request/youtube player. de
 Data Type: _String_
 
 the bot token from the discord developer portal
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -265,6 +297,8 @@ Data Type: _String_
 
 the user id for retrieving donations from streamelements
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### streamelementsjwt
@@ -272,6 +306,8 @@ the user id for retrieving donations from streamelements
 Data Type: _String_
 
 the jwt token for retrieving donations from streamelements
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -281,6 +317,8 @@ Data Type: _Int_
 
 the maximum number of donations to pull from streamelements when updating. default `5`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 ### TipeeeStream
@@ -289,6 +327,8 @@ the maximum number of donations to pull from streamelements when updating. defau
 Data Type: _String_
 
 the access token for retrieving donations from tipeeestream
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -307,6 +347,8 @@ Data Type: _String_
 
 the access token for youtube apiv3
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 ### StreamLabs
@@ -316,6 +358,8 @@ Data Type: _String_
 
 the access token for retrieving donations from streamlabs
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### twitchalertslimit
@@ -323,6 +367,8 @@ the access token for retrieving donations from streamlabs
 Data Type: _Int_
 
 the maximum number of donations to pull from streamlabs when updating. default `5`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -382,6 +428,8 @@ Data Type: _Int_
 
 the port the bots webserver runs on. default `25000`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### usehttps
@@ -389,6 +437,8 @@ the port the bots webserver runs on. default `25000`
 Data Type: _Boolean_
 
 if `true`, the bots webserver uses https to secure the connection. default `true`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -398,6 +448,8 @@ Data Type: _String_
 
 if httpskeyfilename is unset/blank, a jks containing the certificate; else, an x509 certificate in pem format
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### httpskeyfilename
@@ -405,6 +457,8 @@ if httpskeyfilename is unset/blank, a jks containing the certificate; else, an x
 Data Type: _String_
 
 the pkcs#8 private key in pem format for httpsfilename; if unset/blank, httpsfilename is loaded as a jks
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -414,6 +468,8 @@ Data Type: _String_
 
 the password, if any, to _httpsfilename_
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### proxybypasshttps
@@ -421,6 +477,8 @@ the password, if any, to _httpsfilename_
 Data Type: _Boolean_
 
 if `true`, the http server reports ssl is enabled, even if `usessl` is `false`. default `true`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -438,6 +496,8 @@ Data Type: _String_
 
 the ip address the bots webserver runs on. default all
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### webenable
@@ -445,6 +505,8 @@ the ip address the bots webserver runs on. default all
 Data Type: _Boolean_
 
 if `true`, the bots webserver is started. default `true`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -495,6 +557,8 @@ Data Type: _Boolean_
 
 if `true`, internal debugging for reactor http and ws processing is sent to the console. default `false`
 
+_NOTE: A restart is required for this property to take effect_
+
 &nbsp;
 
 #### internaldebug
@@ -502,6 +566,8 @@ if `true`, internal debugging for reactor http and ws processing is sent to the 
 Data Type: _Boolean_
 
 if `true`, internal debugging from jdk and other libraries are sent to the console. default `false`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -542,6 +608,8 @@ if `true`, prints debug information for the path validator to the debug log. def
 Data Type: _Boolean_
 
 if `true`, enables the rhino debugger console. default `false`
+
+_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
