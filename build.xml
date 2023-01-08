@@ -26,6 +26,7 @@
     <property environment="env" />
     <!-- Please see this for version numbers: https://semver.org/ -->
     <property name="version" value="custom" />
+    <property name="fallback.revision" value="unknown" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
     <property name="build" location="build" />
@@ -166,7 +167,7 @@
             <arg value="--short"/>
             <arg value="HEAD"/>
         </exec>
-        <condition property="repository.version" value="${git.revision}" else="unknown">
+        <condition property="repository.version" value="${git.revision}" else="${fallback.revision}">
             <and>
                 <isset property="git.revision"/>
                 <length string="${git.revision}" trim="yes" length="0" when="greater"/>
