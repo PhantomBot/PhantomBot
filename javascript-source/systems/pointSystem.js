@@ -384,7 +384,7 @@
         var s = pointsMessage;
 
         if (s.match(/\(userprefix\)/)) {
-            s = $.replace(s, '(userprefix)', $.whisperPrefix(username));
+            s = $.replace(s, '(userprefix)', $.whisperPrefix(username).trim());
         }
 
         if (s.match(/\(user\)/)) {
@@ -404,7 +404,7 @@
         }
 
         if (s.match(/\(time\)/)) {
-            s = $.replace(s, '(time)', $.getUserTimeString(username));
+            s = $.replace(s, '(time)', $.getUserTimeString(username).trim());
         }
 
         if (s.match(/\(rank\)/)) {
