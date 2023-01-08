@@ -43,8 +43,8 @@
 
         if (event.getMentionUser() != null) {
             $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
-                .withTitle($.twitter.getUsername())
-                .withUrl('https://twitter.com/' + $.twitter.getUsername())
+                .withTitle($.twitter.username())
+                .withUrl('https://twitter.com/' + $.twitter.username())
                 .withColor(31, 158, 242)
                 .withTimestamp(Date.now())
                 .withFooterText('Twitter')
@@ -55,8 +55,8 @@
         } else {
             // Send the message as an embed.
             $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
-                .withTitle($.twitter.getUsername())
-                .withUrl('https://twitter.com/' + $.twitter.getUsername())
+                .withTitle($.twitter.username())
+                .withUrl('https://twitter.com/' + $.twitter.username())
                 .withColor(31, 158, 242)
                 .withTimestamp(Date.now())
                 .withFooterText('Twitter')
