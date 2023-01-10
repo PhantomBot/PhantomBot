@@ -85,7 +85,8 @@ jobs:
         BUILDTYPE: ${{ format('{0}_build', steps.build_env.outputs.branch) }}
         ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
-      run: ant -noinput -Dbuildtype=$BUILDTYPE -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml dist
+        BRANCH: ${{ steps.build_env.outputs.branch }}
+      run: ant -noinput -Dversion=$BRANCH -Dbuildtype=$BUILDTYPE -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml dist
     - name: Prep Artifacts
       env:
         FOLDERFULL: ${{ format('PhantomBot-{0}', steps.build_env.outputs.branch) }}
