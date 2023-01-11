@@ -52,10 +52,8 @@ $(run = function () {
                     if (length === 0) {
                         // No entries disallow drawing winners
                         $('#draw-raffle').prop('disabled', true);
-                        $('#opendraw-raffle').prop('disabled', true);
                     } else {
                         $('#draw-raffle').prop('disabled', false);
-                        $('#opendraw-raffle').prop('disabled', false);
                     }
 
                     if (e['hasDrawn'] !== undefined) {
