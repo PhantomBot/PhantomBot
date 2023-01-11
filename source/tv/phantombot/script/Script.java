@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -159,7 +160,7 @@ public class Script {
         try {
             context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (EvaluatorException | IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.printStackTrace(ex, Collections.singletonMap("file", this.getPath()));
         }
     }
 
