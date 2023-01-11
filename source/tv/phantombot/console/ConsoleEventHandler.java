@@ -440,6 +440,7 @@ public final class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("[CONSOLE] Executing primesubscribertest (User: " + randomUser + ", months: " + months + ")");
 
             EventBus.instance().postAsync(new TwitchPrimeSubscriberEvent(randomUser, months));
+            EventBus.instance().postAsync(new TwitchSubscriberEvent(randomUser, "Prime", months, ""));
             return;
         }
 

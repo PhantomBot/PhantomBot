@@ -236,7 +236,7 @@
                     var candidate;
                     do {
                         candidate = $.randElement(entries);
-                    } while (newWinners.includes(candidate));
+                    } while (newWinners.includes(candidate) || lastWinners.includes(candidate));
 
                     newWinners.push(candidate);
                 }
@@ -251,6 +251,8 @@
 
         $.inidb.set('traffleresults', 'winner', JSON.stringify(lastWinners));
         $.log.event('Winner of the ticket raffle was ' + newWinners.join(', '));
+
+        return newWinners;
     }
 
     function winningMsg(winners) {
@@ -444,13 +446,12 @@
         return Math.round(bonus - tickets);
     }
 
-    function awardWinners(prize) {
-
-        for (var i = 0; i < lastWinners.length; i++) {
-            $.inidb.incr('points', lastWinners[i], prize);
+    function awardWinners(prize, winners) {
+        for (var i = 0; i < winners.length; i++) {
+            $.inidb.incr('points', winners[i], prize);
         }
 
-        if (lastWinners.length > 1) {
+        if (winners.length > 1) {
             $.say($.lang.get('ticketrafflesystem.winner.multiple.award', $.getPointsString(prize)));
         } else {
             $.say($.lang.get('ticketrafflesystem.winner.single.award', $.getPointsString(prize)));
@@ -529,10 +530,10 @@
                     return;
                 }
 
-                winner(amount);
+                var winners = winner(amount);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
-                    awardWinners(parseInt(args[2]));
+                    awardWinners(parseInt(args[2]), winners);
                 }
 
                 return;

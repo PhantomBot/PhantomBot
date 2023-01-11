@@ -524,10 +524,21 @@ public final class PhantomBot implements Listener {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }
 
-        this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
-        this.oauthHandler.updateAuth();
-        this.httpPanelHandler.updateAuth();
-        this.httpSetupHandler.updateAuth();
+        if (this.httpAuthenticatedHandler != null) {
+            this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
+        }
+
+        if (this.oauthHandler != null) {
+            this.oauthHandler.updateAuth();
+        }
+
+        if (this.httpPanelHandler != null) {
+            this.httpPanelHandler.updateAuth();
+        }
+
+        if (this.httpSetupHandler != null) {
+            this.httpSetupHandler.updateAuth();
+        }
 
         EventBus.instance().postAsync(new PropertiesReloadedEvent());
     }
@@ -605,7 +616,7 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort channel 30 10 Admin
          * @botpropertyrestart channel
          */
-        return CaselessProperties.instance().getProperty("channel").toLowerCase();
+        return CaselessProperties.instance().getProperty("channel", "").toLowerCase();
     }
 
     /**
