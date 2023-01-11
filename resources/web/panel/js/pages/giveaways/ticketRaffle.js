@@ -114,14 +114,11 @@ $(run = function () {
         if ((e['hasDrawn'] === 'true' || e['hasDrawn'] === '1') && (e['isActive'] === '0' || e['isActive'] === 'false')) {
             helpers.clearTimers();
             //We're zooming wait till the table is ready
-            $('#ticket-raffle-table').ready(function(){
+            $('#ticket-raffle-table').ready(function () {
                 helpers.temp.loadWinners();
             });
-            $('#ticket-draw-raffle').ready(function(){
+            $('#ticket-draw-raffle').ready(function () {
                 $('#ticket-draw-raffle').prop('disabled', true);
-            });
-            $('#ticket-opendraw-raffle').ready(function(){
-                $('#ticket-opendraw-raffle').prop('disabled', true);
             });
         }
     });
@@ -132,7 +129,7 @@ $(function () {
     // Module toggle.
     $('#ticketRaffleModuleToggle').on('change', function () {
         socket.sendCommandSync('traffle_system_module_toggle_cmd',
-            'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/ticketraffleSystem.js', run);
+                'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/ticketraffleSystem.js', run);
     });
 
     // Open/close raffle button.
@@ -163,7 +160,6 @@ $(function () {
 
                     $('#traffle-list-title').text("Ticket Raffle List");
                     $('#ticket-draw-raffle').prop('disabled', false);
-                    $('#ticket-opendraw-raffle').prop('disabled', false);
 
                     // Reset the timer in case we destroyed it after the last draw
                     timers.push(setInterval(function () {
@@ -194,20 +190,25 @@ $(function () {
             case helpers.handleInputNumber(prize, 0):
                 break;
             default:
-                socket.sendCommandSync('draw_raffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val(), function () {
+                socket.sendCommandSync('draw_traffle_cmd', 'traffle draw ' + drawAmount.val() + ' ' + prize.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully drew a winner!');
 
-                    helpers.clearTimers();
+                    socket.getDBValues('traffle_status_postdraw', {
+                        tables: ['traffleState', 'traffleState'],
+                        keys: ['isActive', 'hasDrawn']
+                    }, true, function (e) {
+                        if ((e['hasDrawn'] === 'true' || e['hasDrawn'] === '1') && (e['isActive'] === '0' || e['isActive'] === 'false')) {
+                            helpers.clearTimers();
 
-                    $('#ticket-draw-raffle').prop('disabled', true);
-                    $('#ticket-opendraw-raffle').prop('disabled', true);
-                    $('#ticket-open-or-close-raffle').html($('<i/>', {
-                        'class': 'fa fa-unlock-alt'
-                    })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
-
-                    //Show the winners
-                    helpers.temp.loadWinners();
+                            $('#ticket-draw-raffle').prop('disabled', true);
+                            $('#ticket-open-or-close-raffle').html($('<i/>', {
+                                'class': 'fa fa-unlock-alt'
+                            })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
+                        }
+                        //Show the winners
+                        helpers.temp.loadWinners();
+                    });
                 });
         }
     });
@@ -221,6 +222,8 @@ $(function () {
         $('#ticket-raffle-table').find('tr:gt(0)').remove();
         $('#ticket-raffle-draw').val('1');
         $('#ticket-raffle-prize').val('0');
+        $('#ticket-draw-raffle').prop('disabled', true);
+        helpers.clearTimers();
 
         $('#ticket-open-or-close-raffle').html($('<i/>', {
             'class': 'fa fa-unlock-alt'
@@ -243,59 +246,59 @@ $(function () {
             helpers.getModal('traffle-settings-modal', 'Ticket Raffle Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
-            // Add the div for the col boxes.
-            .append($('<div/>', {
-                'class': 'panel-group',
-                'id': 'accordion'
-            })
-            // Append first collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-1', 'Timed Message Settings', $('<form/>', {
-                'role': 'form'
-            })
-            // Append interval box for the message
-            .append(helpers.getInputGroup('msg-timer', 'number', 'Message Interval (Minutes)', '', e['traffleMessageInterval'],
-                'How often the raffle message is said in chat while a raffle is active.'))
-            // Append message box for the message
-            .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Raffle Message', '', e['traffleMessage'],
-                'What message is said at every interval while the raffle is active. Tags: (amount) and (entries)'))))
-            // Append second collapsible accordion.
-            .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
-                'role': 'form'
-            })
-            .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['traffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If disabled, the raffle will close automatically when drawing winners.'))
-            // Add toggle for warning messages.
-            .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
-            // Add toggle for the limiter.
-            .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['traffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                'ON: Limit the total amount of tickets (bought tickets + bonus tickets) to the set limit. OFF: Limit only the amount of bought tickets.'))))),
-            function () {
-                let raffleTimer = $('#msg-timer'),
-                    raffleMessage = $('#msg-msg'),
-                    openDraw = $('#opendraw').find(':selected').text() === 'Yes',
-                    warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
-                    limiter = $('#limiter').find(':selected').text() === 'Yes';
+                    // Add the div for the col boxes.
+                    .append($('<div/>', {
+                        'class': 'panel-group',
+                        'id': 'accordion'
+                    })
+                            // Append first collapsible accordion.
+                            .append(helpers.getCollapsibleAccordion('main-1', 'Timed Message Settings', $('<form/>', {
+                                'role': 'form'
+                            })
+                                    // Append interval box for the message
+                                    .append(helpers.getInputGroup('msg-timer', 'number', 'Message Interval (Minutes)', '', e['traffleMessageInterval'],
+                                            'How often the raffle message is said in chat while a raffle is active.'))
+                                    // Append message box for the message
+                                    .append(helpers.getTextAreaGroup('msg-msg', 'text', 'Raffle Message', '', e['traffleMessage'],
+                                            'What message is said at every interval while the raffle is active. Tags: (amount) and (entries)'))))
+                            // Append second collapsible accordion.
+                            .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
+                                'role': 'form'
+                            })
+                                    .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['traffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                            'If disabled, the raffle will close automatically when drawing winners.'))
+                                    // Add toggle for warning messages.
+                                    .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                            'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
+                                    // Add toggle for the limiter.
+                                    .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['traffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                            'ON: Limit the total amount of tickets (bought tickets + bonus tickets) to the set limit. OFF: Limit only the amount of bought tickets.'))))),
+                    function () {
+                        let raffleTimer = $('#msg-timer'),
+                                raffleMessage = $('#msg-msg'),
+                                openDraw = $('#opendraw').find(':selected').text() === 'Yes',
+                                warningMsg = $('#warning-msg').find(':selected').text() === 'Yes',
+                                limiter = $('#limiter').find(':selected').text() === 'Yes';
 
-                switch (false) {
-                    case helpers.handleInputNumber(raffleTimer):
-                    case helpers.handleInputString(raffleMessage):
-                        break;
-                    default:
-                        socket.updateDBValues('update_traffle_settings_2', {
-                            tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
-                            keys: ['traffleMSGToggle', 'traffleOpenDraw', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
-                            values: [warningMsg, openDraw, raffleMessage.val(), raffleTimer.val(), limiter]
-                        }, function () {
-                            socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {
-                                // Close the modal.
-                                $('#traffle-settings-modal').modal('toggle');
-                                // Warn the user.
-                                toastr.success('Successfully updated ticket raffle settings!');
-                            });
-                        });
-                }
-            }).modal('toggle');
+                        switch (false) {
+                            case helpers.handleInputNumber(raffleTimer):
+                            case helpers.handleInputString(raffleMessage):
+                                break;
+                            default:
+                                socket.updateDBValues('update_traffle_settings_2', {
+                                    tables: ['traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings', 'traffleSettings'],
+                                    keys: ['traffleMSGToggle', 'traffleOpenDraw', 'traffleMessage', 'traffleMessageInterval', 'traffleLimiter'],
+                                    values: [warningMsg, openDraw, raffleMessage.val(), raffleTimer.val(), limiter]
+                                }, function () {
+                                    socket.sendCommand('raffle_reload_cmd', 'reloadtraffle', function () {
+                                        // Close the modal.
+                                        $('#traffle-settings-modal').modal('toggle');
+                                        // Warn the user.
+                                        toastr.success('Successfully updated ticket raffle settings!');
+                                    });
+                                });
+                        }
+                    }).modal('toggle');
         });
     });
 });
