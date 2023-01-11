@@ -2178,6 +2178,221 @@ _These command tags are only available in the scripts which defined them_
 
 _Some scripts may also restrict the use of global command tags_
 
+### subscribeHandler.js
+
+#### amount
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(amount)` - The number of subs given by a mass-giftsub event
+
+
+**Example:**
+```text
+Caster: !massgiftsubmessage 1000 (name) just gave away (amount) subs! Thank you!
+Twitch: User has just gifted 20 subs at Tier 1 to the community!
+Bot: User just gave away 20 subs! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### customemote
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(customemote)` - '<The Emote, Repeated Months Times (Max 12)>'
+
+
+**Example:**
+```text
+Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you! (customemote)
+Caster: !subemote 1000 BloodTrail
+Twitch: User has just subscriber at Tier 1! They have been subscribed for 3 months!
+Bot: User just subscribed! They have been subscribed for 3 months! Thank you! BloodTrail BloodTrail BloodTrail
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### giftmonths
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(giftmonths)` - '<Number of Months Gifted>'
+
+
+**Example:**
+```text
+Caster: !giftsubmessage 1000 (name) just gifted (giftmonths) months of (plan) to (recipient)! Thank you!
+Twitch: User has just gifted a 6 month sub to OtherUser at Tier 1!
+Bot: User just gifted 6 months of Tier 1 to OtherUser! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### giftreward
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(giftreward)` - '<Points Reward>'
+
+**Custom Arguments:**
+
+- `(giftreward:int)` - The number of points awarded to the gifter for gifting a sub to someone else
+
+
+**Example:**
+```text
+Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! (name) gets (giftreward) points! Thank you!
+```
+
+**Example:**
+```text
+Caster: !giftsubreward 1000 25
+Twitch: User has just gifted a sub to OtherUser at Tier 1!
+Bot: OtherUser just received a sub from User! User gets 25 points! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### months
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(months)` - '<Total Months Subscribed>'
+
+
+**Example:**
+```text
+Caster: !resubmessage 1000 (name) just subscribed! They have been subscribed for (months) months! Thank you!
+Twitch: User has just subscriber at Tier 1! They have been subscribed for 12 months!
+Bot: User just subscribed! They have been subscribed for 12 months! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### name
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(name)` - For subs/resubs, the subscriber's name. For gift subs, the name of the person gifting the sub
+
+
+**Example:**
+```text
+Caster: !submessage 1000 (name) just subscribed at Tier 1! Thank you!
+Twitch: User has just subscriber at Tier 1!
+Bot: User just subscribed at Tier 1! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### plan
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(plan)` - '<Subscription Tier>'
+
+
+**Example:**
+```text
+Caster: !submessage 1000 (name) just subscribed at (plan)! Thank you!
+Caster: !namesubplan 1000 Friendo Tier
+Twitch: User has just subscriber at Tier 1!
+Bot: User just subscribed at Friendo Tier! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### recipient
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(recipient)` - The name of the recipient of a gift sub
+
+
+**Example:**
+```text
+Caster: !giftsubmessage 1000 (recipient) just received a sub from (name)! Thank you!
+Twitch: User has just gifted a sub to OtherUser at Tier 1!
+Bot: OtherUser just received a sub from User! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### reward
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+**Formulas:**
+
+- `(reward)` - '<Points Reward>'
+
+**Custom Arguments:**
+
+- `(reward:int)` - The number of points awarded for the sub
+
+
+**Example:**
+```text
+Caster: !submessage 1000 (name) just subscribed at Tier 1! They get (reward) points! Thank you!
+Twitch: User has just subscriber at Tier 1!
+Bot: User just subscribed at Tier 1! They get 100 points! Thank you!
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### welcomeSystem.js
 
 #### names
@@ -2335,6 +2550,60 @@ Global&nbsp;&nbsp; | Local
 Yes&nbsp;&nbsp; | No
 
 **Labels Used:** twitch commandevent keywordevent noevent
+
+&nbsp;
+
+### subscribeHandler.js
+
+Defined in script: _./javascript-source/handlers/subscribeHandler.js_
+
+#### Hook: twitchSubscriber
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
+
+#### Hook: twitchReSubscriber
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
+
+#### Hook: twitchSubscriptionGift
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
+
+#### Hook: twitchMassSubscriptionGifted
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
+
+#### Hook: twitchAnonymousSubscriptionGift
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
+
+#### Hook: twitchMassAnonymousSubscriptionGifted
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | Yes
+
+**Labels Used:** twitch noevent
 
 &nbsp;
 
