@@ -616,7 +616,7 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort channel 30 10 Admin
          * @botpropertyrestart channel
          */
-        return CaselessProperties.instance().getProperty("channel").toLowerCase();
+        return CaselessProperties.instance().getProperty("channel", "").toLowerCase();
     }
 
     /**
