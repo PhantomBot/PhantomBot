@@ -521,7 +521,7 @@ public class TwitterAPI implements ApiClientCallback, Listener {
      */
     public List<Tweet> getMentions(String sinceId) {
         if (this.authenticated()) {
-            APIusersIdMentionsRequest req = this.twitterApi.tweets().usersIdMentions(this.self.getId()).maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
+            APIusersIdMentionsRequest req = this.twitterApi.tweets().usersIdMentions(this.self.getId()).tweetFields(Collections.singleton("author_id")).maxResults(CaselessProperties.instance().getPropertyAsInt("twitterusertimelinelimit", 15));
 
             if (sinceId != null && !sinceId.isBlank()) {
                 req.sinceId(sinceId);
