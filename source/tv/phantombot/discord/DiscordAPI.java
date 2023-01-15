@@ -95,6 +95,7 @@ import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartE
 public class DiscordAPI extends DiscordUtil {
 
     private final Object mutex = new Object();
+    private static final int GUILDIDTIMEOUT = 5;
     private static final int PROCESSMESSAGETIMEOUT = 5;
     private static final int ISADMINTIMEOUT = 3;
     private static DiscordAPI instance;
@@ -283,7 +284,7 @@ public class DiscordAPI extends DiscordUtil {
     @SuppressWarnings("null")
     public void testJoin() {
         try {
-            DiscordEventListener.onDiscordUserJoinEvent(new MemberJoinEvent(DiscordAPI.gateway, null, DiscordAPI.gateway.getSelf().block(Duration.ofSeconds(5)).asMember(DiscordAPI.guildId).block(Duration.ofSeconds(5)), 0));
+            DiscordEventListener.onDiscordUserJoinEvent(new MemberJoinEvent(DiscordAPI.gateway, null, DiscordAPI.gateway.getSelf().block(Duration.ofSeconds(5)).asMember(DiscordAPI.getGuildId()).block(Duration.ofSeconds(5)), 0));
         } catch (Exception e) {
             com.gmt2001.Console.debug.printStackTrace(e);
         }
@@ -308,10 +309,27 @@ public class DiscordAPI extends DiscordUtil {
      * @return
      */
     public static Guild getGuild() {
-        return DiscordAPI.gateway.getGuildById(DiscordAPI.guildId).block(Duration.ofSeconds(5L));
+        return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId()).block(Duration.ofSeconds(5L));
     }
 
     public static Snowflake getGuildId() {
+        if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
+            if (DiscordAPI.gateway != null) {
+                try {
+                    Guild guild = DiscordAPI.getGateway().getGuilds().blockFirst(Duration.ofSeconds(DiscordAPI.GUILDIDTIMEOUT));
+                    if (guild != null) {
+                        DiscordAPI.guildId = guild.getId();
+                    }
+                } catch (Exception e) {
+                    com.gmt2001.Console.err.printStackTrace(e);
+                }
+            }
+        }
+
+        if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
+            return Snowflake.of(0L);
+        }
+
         return DiscordAPI.guildId;
     }
 
@@ -413,7 +431,7 @@ public class DiscordAPI extends DiscordUtil {
                 DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
             }
 
-            com.gmt2001.Console.debug.println("guildid=" + DiscordAPI.guildId);
+            com.gmt2001.Console.debug.println("guildid=" + DiscordAPI.getGuildId());
 
             // Set a timer that checks our connection status with Discord every 60 seconds
             ExecutorService.scheduleAtFixedRate(() -> {
