@@ -319,6 +319,7 @@ public class DiscordAPI extends DiscordUtil {
                 if (guild != null) {
                     Snowflake snowflake = guild.getId();
                     if (snowflake != null && snowflake.asLong() > 0L) {
+                        com.gmt2001.Console.out.println("[Discord] Guild ID updated");
                         DiscordAPI.guildId = snowflake;
                     }
                 }
@@ -330,10 +331,12 @@ public class DiscordAPI extends DiscordUtil {
 
     public static Snowflake getGuildId() {
         if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
+            com.gmt2001.Console.warn.println("[Discord] Got an invalid Guild ID, trying to request it...");
             DiscordAPI.updateGuildId();
         }
 
         if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
+            com.gmt2001.Console.err.println("[Discord] Failed to get a valid Guild ID");
             return Snowflake.of(0L);
         }
 
@@ -441,6 +444,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.debug.println("guildid=" + DiscordAPI.getGuildId());
 
             if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
+                com.gmt2001.Console.warn.println("[Discord] Got an invalid Guild ID, trying to request it in " + GUILDIDTIMEOUT + " seconds...");
                 ExecutorService.schedule(DiscordAPI::updateGuildId, GUILDIDTIMEOUT, TimeUnit.SECONDS);
             }
 
