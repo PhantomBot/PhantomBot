@@ -698,6 +698,14 @@
                     // Check permissions.
                     var perm = $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''));
                     var hasPerms = false;
+                    var twitchName = $.discord.resolveTwitchName(senderId);
+
+                    if (!isAdmin && twitchName !== null) {
+                        isAdmin = $.isAdmin(twitchName);
+                        if (isAdmin) {
+                            consoleDebug('Set Discord isAdmin via accountLink');
+                        }
+                    }
 
                     // If more permissions are added, we'll have to use a loop here.
                     if (perm.permissions.length > 0 && perm.permissions[0].selected.equals('true') && isAdmin === true) {
@@ -734,7 +742,7 @@
 
                     if (isAdmin === false && cooldownDuration > 0) {
                         if ($.getIniDbBoolean('discordCooldownSettings', 'coolDownMsgEnabled')) {
-                            consoleDebug('Discord command ! ' + command + ' was not sent due to it being on cooldown ' + (isGlobalCooldown ? 'globally' : 'for user' + username) + '.');
+                            consoleDebug('Discord command !' + command + ' was not sent due to it being on cooldown ' + (isGlobalCooldown ? 'globally' : 'for user' + username) + '.');
                             if (isGlobalCooldown) {
                                 $.discord.say(channelId, $.discord.userPrefix(username) + $.lang.get('init.cooldown.msg.global', command, cooldownDuration));
                             } else {
