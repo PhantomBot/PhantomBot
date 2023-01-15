@@ -312,18 +312,25 @@ public class DiscordAPI extends DiscordUtil {
         return DiscordAPI.gateway.getGuildById(DiscordAPI.getGuildId()).block(Duration.ofSeconds(5L));
     }
 
+    public static void updateGuildId() {
+        if (DiscordAPI.gateway != null) {
+            try {
+                Guild guild = DiscordAPI.getGateway().getGuilds().blockFirst(Duration.ofSeconds(DiscordAPI.GUILDIDTIMEOUT));
+                if (guild != null) {
+                    Snowflake snowflake = guild.getId();
+                    if (snowflake != null && snowflake.asLong() > 0L) {
+                        DiscordAPI.guildId = snowflake;
+                    }
+                }
+            } catch (Exception e) {
+                com.gmt2001.Console.err.printStackTrace(e);
+            }
+        }
+    }
+
     public static Snowflake getGuildId() {
         if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
-            if (DiscordAPI.gateway != null) {
-                try {
-                    Guild guild = DiscordAPI.getGateway().getGuilds().blockFirst(Duration.ofSeconds(DiscordAPI.GUILDIDTIMEOUT));
-                    if (guild != null) {
-                        DiscordAPI.guildId = guild.getId();
-                    }
-                } catch (Exception e) {
-                    com.gmt2001.Console.err.printStackTrace(e);
-                }
-            }
+            DiscordAPI.updateGuildId();
         }
 
         if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
@@ -432,6 +439,10 @@ public class DiscordAPI extends DiscordUtil {
             }
 
             com.gmt2001.Console.debug.println("guildid=" + DiscordAPI.getGuildId());
+
+            if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
+                ExecutorService.schedule(DiscordAPI::updateGuildId, GUILDIDTIMEOUT, TimeUnit.SECONDS);
+            }
 
             // Set a timer that checks our connection status with Discord every 60 seconds
             ExecutorService.scheduleAtFixedRate(() -> {
