@@ -98,6 +98,7 @@ public class DiscordAPI extends DiscordUtil {
     private static final int GUILDIDTIMEOUT = 5;
     private static final int PROCESSMESSAGETIMEOUT = 5;
     private static final int ISADMINTIMEOUT = 3;
+    private static String lastDisconnectReason = "Unknown";
     private static DiscordAPI instance;
     private static DiscordClient client;
     private static GatewayDiscordClient gateway;
@@ -213,6 +214,7 @@ public class DiscordAPI extends DiscordUtil {
             com.gmt2001.Console.debug.println("selfid=" + DiscordAPI.selfId);
         }).doOnError(e -> {
             synchronized (this.mutex) {
+                DiscordAPI.lastDisconnectReason = "FailedOnConnect";
                 this.connectionState = ConnectionState.DISCONNECTED;
                 this.nextReconnect = Instant.now().plusSeconds(30);
             }
@@ -330,6 +332,10 @@ public class DiscordAPI extends DiscordUtil {
     }
 
     public static Snowflake getGuildId() {
+        if (DiscordAPI.instance().connectionState != ConnectionState.CONNECTED) {
+            throw new IllegalStateException("Not connected to Discord. (" + DiscordAPI.instance().connectionState.name() + ") Last disconnect reason: " + DiscordAPI.lastDisconnectReason);
+        }
+
         if (DiscordAPI.guildId == null || DiscordAPI.guildId.asLong() <= 0L) {
             com.gmt2001.Console.warn.println("[Discord] Got an invalid Guild ID, trying to request it...");
             DiscordAPI.updateGuildId();
@@ -392,6 +398,7 @@ public class DiscordAPI extends DiscordUtil {
 
         public static void onDiscordDisconnectEvent(DisconnectEvent event) {
             synchronized (DiscordAPI.instance().mutex) {
+                DiscordAPI.lastDisconnectReason = "Disconnected";
                 DiscordAPI.instance().connectionState = ConnectionState.DISCONNECTED;
                 DiscordAPI.instance().nextReconnect = Instant.now().plusSeconds(30);
             }
@@ -414,6 +421,7 @@ public class DiscordAPI extends DiscordUtil {
                     com.gmt2001.Console.err.println("https://phantombot.dev/guides/#guide=content/integrations/discordintegrationsetup");
                     DiscordAPI.gateway.logout();
                     synchronized (DiscordAPI.instance().mutex) {
+                        DiscordAPI.lastDisconnectReason = "TokenRejected";
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
                     }
                 } else {
@@ -427,6 +435,7 @@ public class DiscordAPI extends DiscordUtil {
                 com.gmt2001.Console.err.println("PhantomBot can only be in 1 Discord server at a time, detected " + event.getGuilds().size() + ". Disconnecting Discord...");
                 DiscordAPI.gateway.logout();
                 synchronized (DiscordAPI.instance().mutex) {
+                    DiscordAPI.lastDisconnectReason = "TooManyGuilds";
                     DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
                 }
                 return;
