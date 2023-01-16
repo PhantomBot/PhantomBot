@@ -19,9 +19,9 @@
  * Handles linking of a Discord account to a Twitch account.
  *
  */
-(function() {
+(function () {
     var accounts = {},
-        interval;
+            interval;
 
     /**
      * @function resolveTwitchName
@@ -38,21 +38,21 @@
     /**
      * @event discordChannelCommand
      */
-    $.bind('discordChannelCommand', function(event) {
+    $.bind('discordChannelCommand', function (event) {
         var sender = event.getSender(),
-            user = event.getDiscordUser(),
-            channel = event.getDiscordChannel(),
-            command = event.getCommand(),
-            mention = event.getMention(),
-            args = event.getArgs(),
-            action = args[0];
+                user = event.getDiscordUser(),
+                channel = event.getDiscordChannel(),
+                command = event.getCommand(),
+                mention = event.getMention(),
+                args = event.getArgs(),
+                action = args[0];
 
         /**
          * @discordcommandpath account - Checks the current account linking status of the sender.
          */
         if (command.equalsIgnoreCase('account')) {
             var userId = event.getSenderId(),
-                islinked = $.inidb.exists('discordToTwitch', userId);
+                    islinked = $.inidb.exists('discordToTwitch', userId);
 
             if (action === undefined) {
                 if (islinked) {
@@ -66,8 +66,8 @@
                  */
             } else if (action.equalsIgnoreCase('link')) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+',
-                    text = '',
-                    i;
+                        text = '',
+                        i;
 
                 for (i = 0; i < 10; i++) {
                     text += code.charAt(Math.floor(Math.random() * code.length));
@@ -97,28 +97,27 @@
     /**
      * @event command
      */
-    $.bind('command', function(event) {
+    $.bind('command', function (event) {
         var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs(),
-            action = args[0];
+                command = event.getCommand(),
+                args = event.getArgs(),
+                action = args[0];
 
         /**
          * @commandpath account link [code] - Completes an account link for Discord.
          */
         if (command.equalsIgnoreCase('account')) {
             if (action !== undefined && action.equalsIgnoreCase('link')) {
-                var code = args[1];
-                if (code === undefined || code.length() < 10) {
+                if (args[1] === undefined || $.jsString(args[1]).length < 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('discord.accountlink.link.fail'));
                     return;
                 }
 
                 var keys = Object.keys(accounts),
-                    i;
+                        i;
 
                 for (i in keys) {
-                    if (accounts[keys[i]].code == code && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
+                    if (accounts[keys[i]].code === $.jsString(args[1]) && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
                         $.inidb.set('discordToTwitch', keys[i], sender.toLowerCase());
 
                         $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', sender.toLowerCase()));
@@ -135,7 +134,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.discord.registerCommand('./discord/core/accountLink.js', 'account', 0);
         $.discord.registerSubCommand('accountlink', 'link', 0);
         $.discord.registerSubCommand('accountlink', 'remove', 0);
@@ -144,9 +143,9 @@
 
 
         // Interval to clear our old codes that have not yet been registered.
-        interval = setInterval(function() {
+        interval = setInterval(function () {
             var keys = Object.keys(accounts),
-                i;
+                    i;
 
             for (i in keys) {
                 if ((accounts[keys[i]].time + 6e5) < $.systemTime()) {
