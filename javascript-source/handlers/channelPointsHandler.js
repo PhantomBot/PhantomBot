@@ -290,7 +290,7 @@
      */
     function updateRedemptionStatusCancelled(redeemableId, redemptionId) {
         var rsp = $.helix.updateRedemptionStatus(Packages.java.util.Collections.singletonList(redemptionId), redeemableId,
-                Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELLED);
+                Packages.tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus.CANCELED);
 
 
 
