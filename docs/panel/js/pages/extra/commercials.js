@@ -16,12 +16,12 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Check if the module is enabled.
     socket.getDBValues('commercials_module', {
         tables: ['modules', 'commercialSettings', 'commercialSettings', 'commercialSettings', 'commercialSettings'],
         keys: ['./systems/commercialSystem.js', 'commercialtimer', 'length', 'interval', 'message']
-    }, true, function(e) {
+    }, true, function (e) {
         if (!helpers.handleModuleLoadUp('commercialsModule', e['./systems/commercialSystem.js'], 'commercialsModuleToggle')) {
             return;
         }
@@ -40,27 +40,27 @@ $(run = function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     const COMMERCIAL_SCRIPT = './systems/commercialSystem.js';
 
     // Toggle for the module.
-    $('#commercialsModuleToggle').on('change', function() {
+    $('#commercialsModuleToggle').on('change', function () {
         // Toggle the module
         socket.sendCommandSync('commercial_module_toggle_cmd',
-            'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/commercialSystem.js', run);
+                'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/commercialSystem.js', run);
     });
 
     // Set/Update autotimer button.
-    $('#commercials-autotimer-on').on('click', function() {
+    $('#commercials-autotimer-on').on('click', function () {
         let cinterval = $('#commercial-interval'),
-            clength = $('#commercial-length').find(':selected').text(),
-            cmessage = $('#commercial-message');
+                clength = $('#commercial-length').find(':selected').text(),
+                cmessage = $('#commercial-message');
 
         switch (false) {
             case helpers.handleInputNumber(cinterval, 8):
                 break;
             default:
-                socket.wsEvent('commercials_setautotimer_ws', COMMERCIAL_SCRIPT, null, ['setautotimer', cinterval.val(), clength, cmessage.val()], function() {
+                socket.wsEvent('commercials_setautotimer_ws', COMMERCIAL_SCRIPT, null, ['setautotimer', cinterval.val(), clength, cmessage.val()], function () {
                     toastr.success('Successfully set the autotimer!');
                     // Update the button.
                     $('#commercials-autotimer-on').html($('<i/>', {
@@ -72,8 +72,8 @@ $(function() {
     });
 
     // Disable autotimer button.
-    $('#commercials-autotimer-off').on('click', function() {
-        socket.wsEvent('commercials_autotimeroff_ws', COMMERCIAL_SCRIPT, null, ['autotimeroff'], function() {
+    $('#commercials-autotimer-off').on('click', function () {
+        socket.wsEvent('commercials_autotimeroff_ws', COMMERCIAL_SCRIPT, null, ['autotimeroff'], function () {
             toastr.success('Successfully turned off autotimer!');
             // Update the button.
             $('#commercials-autotimer-on').html($('<i/>', {

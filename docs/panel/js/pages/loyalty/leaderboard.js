@@ -16,9 +16,9 @@
  */
 
 // Function that querys all of the data we need.
-$(function() {
+$(function () {
     // Get top points.
-    socket.getDBTableValuesByOrder('points_top_get_order', 'points', 100, 0, 'DESC', true, function(results) {
+    socket.getDBTableValuesByOrder('points_top_get_order', 'points', 100, 0, 'DESC', true, function (results) {
         let tableData = [];
 
         for (let i = 0; i < results.length; i++) {
@@ -31,9 +31,8 @@ $(function() {
 
         // if the table exists, destroy it.
         if ($.fn.DataTable.isDataTable('#leaderboard-points')) {
-            $('#leaderboard-points').DataTable().destroy();
-            // Remove all of the old events.
-            $('#leaderboard-points').off();
+            $('#leaderboard-points').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+            return;
         }
 
         // Create table.
@@ -44,12 +43,12 @@ $(function() {
             'data': tableData,
             'pageLength': 15,
             'columnDefs': [
-                { 'width': '15%', 'targets': 0 }
+                {'width': '15%', 'targets': 0}
             ],
             'columns': [
-                { 'title': 'Position' },
-                { 'title': 'Username' },
-                { 'title': 'Currency' }
+                {'title': 'Position'},
+                {'title': 'Username'},
+                {'title': 'Currency'}
             ]
         });
 
@@ -58,7 +57,7 @@ $(function() {
     });
 
     // Get top time.
-    socket.getDBTableValuesByOrder('time_top_get_order', 'time', 100, 0, 'DESC', true, function(results) {
+    socket.getDBTableValuesByOrder('time_top_get_order', 'time', 100, 0, 'DESC', true, function (results) {
         let tableData = [];
 
         for (let i = 0; i < results.length; i++) {
@@ -72,9 +71,8 @@ $(function() {
 
         // if the table exists, destroy it.
         if ($.fn.DataTable.isDataTable('#leaderboard-time')) {
-            $('#leaderboard-time').DataTable().destroy();
-            // Remove all of the old events.
-            $('#leaderboard-time').off();
+            $('#leaderboard-time').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+            return;
         }
 
         // Create table.
@@ -85,14 +83,14 @@ $(function() {
             'data': tableData,
             'pageLength': 15,
             'columnDefs': [
-                { 'width': '15%', 'targets': 0 },
-                { 'width': '25%', 'targets': 1 }
+                {'width': '15%', 'targets': 0},
+                {'width': '25%', 'targets': 1}
             ],
             'columns': [
-                { 'title': 'Position' },
-                { 'title': 'Username' },
-                { 'title': 'Time (Seconds)' },
-                { 'title': 'Time (Hours)' }
+                {'title': 'Position'},
+                {'title': 'Username'},
+                {'title': 'Time (Seconds)'},
+                {'title': 'Time (Hours)'}
             ]
         });
 
@@ -102,22 +100,22 @@ $(function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     var currencyOffset = 100,
-        loyaltyOffset = 100;
+            loyaltyOffset = 100;
 
     // On load more points button.
-    $('#currency-load-more').on('click', function() {
+    $('#currency-load-more').on('click', function () {
         let table = $('#leaderboard-points').DataTable(),
-            dataCount = table.rows().count(),
-            tableData = [];
+                dataCount = table.rows().count(),
+                tableData = [];
 
         // Only allow more data to be loaded once the last click was fully loaded.
         if (currencyOffset === dataCount) {
             toastr.success('Loading more users into the currency table.');
 
             // Get the next 100 users.
-            socket.getDBTableValuesByOrder('points_top_get_order_btn', 'points', 100, (currencyOffset + 100), 'DESC', true, function(results) {
+            socket.getDBTableValuesByOrder('points_top_get_order_btn', 'points', 100, (currencyOffset + 100), 'DESC', true, function (results) {
                 for (let i = 0; i < results.length; i++) {
                     tableData.push([
                         (++currencyOffset),
@@ -137,17 +135,17 @@ $(function() {
     });
 
     // On load more time button.
-    $('#loyalty-load-more').on('click', function() {
+    $('#loyalty-load-more').on('click', function () {
         let table = $('#leaderboard-time').DataTable(),
-            dataCount = table.rows().count(),
-            tableData = [];
+                dataCount = table.rows().count(),
+                tableData = [];
 
         // Only allow more data to be loaded once the last click was fully loaded.
         if (loyaltyOffset === dataCount) {
             toastr.success('Loading more users into the loyalty table.');
 
             // Get the next 100 users.
-            socket.getDBTableValuesByOrder('time_top_get_order_btn', 'time', 100, (loyaltyOffset + 100), 'DESC', true, function(results) {
+            socket.getDBTableValuesByOrder('time_top_get_order_btn', 'time', 100, (loyaltyOffset + 100), 'DESC', true, function (results) {
                 for (let i = 0; i < results.length; i++) {
                     tableData.push([
                         (++loyaltyOffset),

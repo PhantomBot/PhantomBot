@@ -16,12 +16,12 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Get time settings.
     socket.getDBValues('time_get_settings', {
         tables: ['timeSettings', 'timeSettings', 'timeSettings', 'timeSettings', 'settings', 'settings'],
         keys: ['timeLevel', 'timeLevelWarning', 'keepTimeWhenOffline', 'timePromoteHours', 'topListAmountTime', 'timezone']
-    }, true, function(e) {
+    }, true, function (e) {
         // Set the bot timezone.
         $('#loyalty-timezone').val((e.timezone === null ? 'GMT' : e.timezone));
         // Auto add time when offline.
@@ -38,9 +38,9 @@ $(run = function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     // Button that reloads the time top 100.
-    $('#loyalty-reload').on('click', function() {
+    $('#loyalty-reload').on('click', function () {
         // Reload all.
         run();
         // Alert the user.
@@ -48,20 +48,20 @@ $(function() {
     });
 
     // Get user time button.
-    $('#time-get-user').on('click', function() {
+    $('#time-get-user').on('click', function () {
         let username = $('#time-username').val().toLowerCase();
 
         if (username.length > 0) {
-            socket.getDBValue('time_get_user_total', 'time', username, function(e) {
+            socket.getDBValue('time_get_user_total', 'time', username, function (e) {
                 $('#time-username-time').val((e.time === null ? '0' : e.time));
             });
         }
     });
 
     // Save user points.
-    $('#time-save-user').on('click', function() {
+    $('#time-save-user').on('click', function () {
         let username = $('#time-username'),
-            time = $('#time-username-time');
+                time = $('#time-username-time');
 
         // Make sure both input have something.
         switch (false) {
@@ -70,7 +70,7 @@ $(function() {
                 break;
             default:
                 // Save user time.
-                socket.updateDBValue('time_update_user', 'time', username.val().toLowerCase(), time.val(), function() {
+                socket.updateDBValue('time_update_user', 'time', username.val().toLowerCase(), time.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully updated user time!');
 
@@ -82,13 +82,13 @@ $(function() {
     });
 
     // Save time settings.
-    $('#loyalty-save-all').on('click', function() {
+    $('#loyalty-save-all').on('click', function () {
         let timeZone = $('#loyalty-timezone'),
-            countOfflineTime = $('#time-offline').find(':selected').text() === 'Yes',
-            timePromote = $('#time-promote').find(':selected').text() === 'Yes',
-            timePromoteNotice = $('#time-promote-notice').find(':selected').text() === 'Yes',
-            regHours = $('#loyalty-promotion'),
-            timeTop = $('#loyalty-top');
+                countOfflineTime = $('#time-offline').find(':selected').text() === 'Yes',
+                timePromote = $('#time-promote').find(':selected').text() === 'Yes',
+                timePromoteNotice = $('#time-promote-notice').find(':selected').text() === 'Yes',
+                regHours = $('#loyalty-promotion'),
+                timeTop = $('#loyalty-top');
 
         // Make sure everything has a value.
         switch (false) {
@@ -102,8 +102,8 @@ $(function() {
                     tables: ['timeSettings', 'timeSettings', 'timeSettings', 'timeSettings', 'settings', 'settings'],
                     keys: ['timeLevel', 'timeLevelWarning', 'keepTimeWhenOffline', 'timePromoteHours', 'topListAmountTime', 'timezone'],
                     values: [timePromote, timePromoteNotice, countOfflineTime, regHours.val(), (parseInt(timeTop.val()) > 15 ? 15 : timeTop.val()), timeZone.val()]
-                }, function() {
-                    socket.sendCommand('update_time_settings_cmd', 'reloadtop', function() {
+                }, function () {
+                    socket.sendCommand('update_time_settings_cmd', 'reloadtop', function () {
                         toastr.success('Successfully updated time settings!');
                     });
                 });

@@ -16,9 +16,9 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Query blacklist.
-    socket.getDBTableValues('moderation_blacklist_get', 'blackList', function(results) {
+    socket.getDBTableValues('moderation_blacklist_get', 'blackList', function (results) {
         let tableData = [];
 
         for (let i = 0; i < results.length; i++) {
@@ -54,9 +54,8 @@ $(run = function() {
 
         // if the table exists, destroy it.
         if ($.fn.DataTable.isDataTable('#blacklistTable')) {
-            $('#blacklistTable').DataTable().destroy();
-            // Remove all of the old events.
-            $('#blacklistTable').off();
+            $('#blacklistTable').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+            return;
         }
 
         // Create table.
@@ -66,92 +65,92 @@ $(run = function() {
             'lengthChange': false,
             'data': tableData,
             'columnDefs': [
-                { 'className': 'default-table', 'orderable': false, 'targets': 5 },
-                { 'width': '35%', 'targets': 0 },
-                { 'width': '25%', 'targets': 3 },
-                { 'width': '25%', 'targets': 4 }
+                {'className': 'default-table', 'orderable': false, 'targets': 5},
+                {'width': '35%', 'targets': 0},
+                {'width': '25%', 'targets': 3},
+                {'width': '25%', 'targets': 4}
             ],
             'columns': [
-                { 'title': 'Blacklist' },
-                { 'title': 'Regex' },
-                { 'title': 'Timeout' },
-                { 'title': 'Message' },
-                { 'title': 'Reason' },
-                { 'title': 'Actions' }
+                {'title': 'Blacklist'},
+                {'title': 'Regex'},
+                {'title': 'Timeout'},
+                {'title': 'Message'},
+                {'title': 'Reason'},
+                {'title': 'Actions'}
             ]
         });
 
         // On delete button.
-        table.on('click', '.btn-danger', function() {
+        table.on('click', '.btn-danger', function () {
             let blacklist = $(this).data('blacklist'),
-                row = $(this).parents('tr');
+                    row = $(this).parents('tr');
 
             // Ask the user if he wants to delete the blacklist.
             helpers.getConfirmDeleteModal('blacklist_modal_remove', 'Are you sure you want to remove this blacklist?', true,
-                'The blacklist has been successfully removed!', function() { // Callback if the user clicks delete.
-                socket.removeDBValue('moderation_blacklist_rm', 'blackList', blacklist, function() {
-                    socket.sendCommand('moderation_blacklist_rm_cmd', 'reloadmod', function() {
-                        // Remove the table row.
-                        table.row(row).remove().draw(false);
+                    'The blacklist has been successfully removed!', function () { // Callback if the user clicks delete.
+                        socket.removeDBValue('moderation_blacklist_rm', 'blackList', blacklist, function () {
+                            socket.sendCommand('moderation_blacklist_rm_cmd', 'reloadmod', function () {
+                                // Remove the table row.
+                                table.row(row).remove().draw(false);
+                            });
+                        });
                     });
-                });
-            });
         });
 
         // On edit button.
-        table.on('click', '.btn-warning', function() {
+        table.on('click', '.btn-warning', function () {
             let blacklist = $(this).data('blacklist');
 
-            socket.getDBValue('moderation_blacklist_edit_get', 'blackList', blacklist, function(e) {
+            socket.getDBValue('moderation_blacklist_edit_get', 'blackList', blacklist, function (e) {
                 e = JSON.parse(e.blackList);
                 // Get advance modal from our util functions in /utils/helpers.js
                 helpers.getAdvanceModal('blacklist-edit-modal', 'Edit Blacklist', 'Save', $('<form/>', {
                     'role': 'form'
                 })
-                // Append a text area box for the phrase.
-                .append(helpers.getTextAreaGroup('ban-phrase', 'text', 'Blacklist Phrase', '', e.phrase, 'Phrase, word, or regex that should be blacklisted.', true)
-                // Append checkbox for if this should be regex or not.
-                .append(helpers.getCheckBox('is-regex', e.isRegex, 'Regex', 'If the blacklist phrase should be using regex.')))
-                // Append ban reason. This is the message Twitch shows with the timeout.
-                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Message', '', e.message, 'Message said in chat when a user gets timed-out.')
-                // Append checkbox for if this should be regex or not.
-                .append(helpers.getCheckBox('timeout-message-toggle', e.isSilent, 'Silent', 'If the warning message should be said or not.')))
-                // Append input box for the timeout time.
-                .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeout,
-                    'How long in seconds the user gets timed-out for when using the phrase in chat. -1 will ban the user and 0 will just delete the message.'))
-                // Add an advance section that can be opened with a button toggle.
-                .append($('<div/>', {
-                    'class': 'collapse',
-                    'id': 'advance-collapse',
-                    'style': 'margin-top: 10px;',
-                    'html': $('<form/>', {
-                        'role': 'form'
-                    })
-                    // Append ban reason. This is the message Twitch shows with the timeout.
-                    .append(helpers.getInputGroup('timeout-reason', 'text', 'Timeout Reason', '', e.banReason, 'Message shown to all moderators when the user gets timed-out.'))
-                    // Add group for toggles.
-                    .append($('<div/>', {
-                        'class': 'form-group'
-                    })
-                    // Tooltip to toggle for regulars to bypass this filter.
-                    .append(helpers.getCheckBox('exclude-regulars', e.excludeRegulars, 'Exclude Regulars', 'If regulars should be allowed to bypass this filter.'))
-                    // Tooltip to toggle for subs to bypass this filter.
-                    .append(helpers.getCheckBox('exclude-subscribers', e.excludeSubscribers, 'Exclude Subscribers',
-                        'If subscribers should be allowed to bypass this filter.'))
-                    // Tooltip to toggle for subs to bypass this filter.
-                    .append(helpers.getCheckBox('exclude-vips', e.excludeVips, 'Exclude VIPs',
-                        'If vips should be allowed to bypass this filter.')))
-                // Callback function to be called once we hit the save button on the modal.
-                })), function() {
+                        // Append a text area box for the phrase.
+                        .append(helpers.getTextAreaGroup('ban-phrase', 'text', 'Blacklist Phrase', '', e.phrase, 'Phrase, word, or regex that should be blacklisted.', true)
+                                // Append checkbox for if this should be regex or not.
+                                .append(helpers.getCheckBox('is-regex', e.isRegex, 'Regex', 'If the blacklist phrase should be using regex.')))
+                        // Append ban reason. This is the message Twitch shows with the timeout.
+                        .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Message', '', e.message, 'Message said in chat when a user gets timed-out.')
+                                // Append checkbox for if this should be regex or not.
+                                .append(helpers.getCheckBox('timeout-message-toggle', e.isSilent, 'Silent', 'If the warning message should be said or not.')))
+                        // Append input box for the timeout time.
+                        .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeout,
+                                'How long in seconds the user gets timed-out for when using the phrase in chat. -1 will ban the user and 0 will just delete the message.'))
+                        // Add an advance section that can be opened with a button toggle.
+                        .append($('<div/>', {
+                            'class': 'collapse',
+                            'id': 'advance-collapse',
+                            'style': 'margin-top: 10px;',
+                            'html': $('<form/>', {
+                                'role': 'form'
+                            })
+                                    // Append ban reason. This is the message Twitch shows with the timeout.
+                                    .append(helpers.getInputGroup('timeout-reason', 'text', 'Timeout Reason', '', e.banReason, 'Message shown to all moderators when the user gets timed-out.'))
+                                    // Add group for toggles.
+                                    .append($('<div/>', {
+                                        'class': 'form-group'
+                                    })
+                                            // Tooltip to toggle for regulars to bypass this filter.
+                                            .append(helpers.getCheckBox('exclude-regulars', e.excludeRegulars, 'Exclude Regulars', 'If regulars should be allowed to bypass this filter.'))
+                                            // Tooltip to toggle for subs to bypass this filter.
+                                            .append(helpers.getCheckBox('exclude-subscribers', e.excludeSubscribers, 'Exclude Subscribers',
+                                                    'If subscribers should be allowed to bypass this filter.'))
+                                            // Tooltip to toggle for subs to bypass this filter.
+                                            .append(helpers.getCheckBox('exclude-vips', e.excludeVips, 'Exclude VIPs',
+                                                    'If vips should be allowed to bypass this filter.')))
+                                    // Callback function to be called once we hit the save button on the modal.
+                        })), function () {
                     let phrase = $('#ban-phrase'),
-                        isRegex = $('#is-regex').is(':checked'),
-                        banMsg = $('#timeout-banmsg'),
-                        isSilent = $('#timeout-message-toggle').is(':checked'),
-                        timeoutTime = $('#timeout-timeout-time'),
-                        timeoutMsg = $('#timeout-reason'),
-                        isReg = $('#exclude-regulars').is(':checked'),
-                        isSub = $('#exclude-subscribers').is(':checked'),
-                        isVip = $('#exclude-vips').is(':checked');
+                            isRegex = $('#is-regex').is(':checked'),
+                            banMsg = $('#timeout-banmsg'),
+                            isSilent = $('#timeout-message-toggle').is(':checked'),
+                            timeoutTime = $('#timeout-timeout-time'),
+                            timeoutMsg = $('#timeout-reason'),
+                            isReg = $('#exclude-regulars').is(':checked'),
+                            isSub = $('#exclude-subscribers').is(':checked'),
+                            isVip = $('#exclude-vips').is(':checked');
 
                     // Add regex prefix is regex.
                     if (isRegex && !phrase.val().startsWith('regex:')) {
@@ -167,7 +166,7 @@ $(run = function() {
                             break;
                         default:
                             // Delete the old blacklist
-                            socket.removeDBValue('rm_moderation_blacklist', 'blackList', blacklist, function() {
+                            socket.removeDBValue('rm_moderation_blacklist', 'blackList', blacklist, function () {
                                 // Update the blacklist
                                 socket.updateDBValue('update_moderation_blacklist', 'blackList', phrase.val(), JSON.stringify({
                                     id: 'panel_' + phrase.val(),
@@ -180,8 +179,8 @@ $(run = function() {
                                     excludeVips: isVip,
                                     message: banMsg.val(),
                                     banReason: timeoutMsg.val()
-                                }), function() {
-                                    socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function() {
+                                }), function () {
+                                    socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function () {
                                         // Update the table.
                                         run();
                                         // Close the modal.
@@ -199,58 +198,58 @@ $(run = function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     // Add blacklist button
-    $('#add-blacklist-button').on('click', function() {
+    $('#add-blacklist-button').on('click', function () {
         // Get advance modal from our util functions in /utils/helpers.js
         helpers.getAdvanceModal('blacklist-add-modal', 'Add Blacklist', 'Save', $('<form/>', {
             'role': 'form'
         })
-        // Append a text area box for the phrase.
-        .append(helpers.getTextAreaGroup('ban-phrase', 'text', 'Blacklist Phrase', 'Kappa 123', '', 'Phrase, word, or regex that should be blacklisted.', true)
-        // Append checkbox for if this should be regex or not.
-        .append(helpers.getCheckBox('is-regex', false, 'Regex', 'If the blacklist phrase should be using regex.')))
-        // Append ban reason. This is the message Twitch shows with the timeout.
-        .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Message', '',
-            'You were timed-out for using a blacklisted phrase.', 'Message said in chat when a user gets timed-out.')
-        // Append checkbox for if this should be regex or not.
-        .append(helpers.getCheckBox('timeout-message-toggle', false, 'Silent', 'If the warning message should be said or not.')))
-        // Append input box for the timeout time.
-        .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration', '0', '600',
-            'How long in seconds the user gets timed-out for when using the phrase in chat. -1 will ban the user.'))
-        // Add an advance section that can be opened with a button toggle.
-        .append($('<div/>', {
-            'class': 'collapse',
-            'id': 'advance-collapse',
-            'style': 'margin-top: 10px;',
-            'html': $('<form/>', {
-                'role': 'form'
-            })
-            // Append ban reason. This is the message Twitch shows with the timeout.
-            .append(helpers.getInputGroup('timeout-reason', 'text', 'Timeout Reason', '', 'Using a blacklisted phrase',
-                'Message shown to all moderators when the user gets timed-out.'))
-            // Add group for toggles.
-            .append($('<div/>', {
-                'class': 'form-group'
-            })
-            // Tooltip to toggle for regulars to bypass this filter.
-            .append(helpers.getCheckBox('exclude-regulars', false, 'Exclude Regulars', 'If regulars should be allowed to bypass this filter.'))
-            // Tooltip to toggle for subs to bypass this filter.
-            .append(helpers.getCheckBox('exclude-subscribers', false, 'Exclude Subscribers',
-                'If subscribers should be allowed to bypass this filter.'))
-            // Tooltip to toggle for vips to bypass this filter.
-            .append(helpers.getCheckBox('exclude-vips', false, 'Exclude VIPs',
-                'If vips should be allowed to bypass this filter.')))
-        })), function() {
+                // Append a text area box for the phrase.
+                .append(helpers.getTextAreaGroup('ban-phrase', 'text', 'Blacklist Phrase', 'Kappa 123', '', 'Phrase, word, or regex that should be blacklisted.', true)
+                        // Append checkbox for if this should be regex or not.
+                        .append(helpers.getCheckBox('is-regex', false, 'Regex', 'If the blacklist phrase should be using regex.')))
+                // Append ban reason. This is the message Twitch shows with the timeout.
+                .append(helpers.getInputGroup('timeout-banmsg', 'text', 'Timeout Message', '',
+                        'You were timed-out for using a blacklisted phrase.', 'Message said in chat when a user gets timed-out.')
+                        // Append checkbox for if this should be regex or not.
+                        .append(helpers.getCheckBox('timeout-message-toggle', false, 'Silent', 'If the warning message should be said or not.')))
+                // Append input box for the timeout time.
+                .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration', '0', '600',
+                        'How long in seconds the user gets timed-out for when using the phrase in chat. -1 will ban the user.'))
+                // Add an advance section that can be opened with a button toggle.
+                .append($('<div/>', {
+                    'class': 'collapse',
+                    'id': 'advance-collapse',
+                    'style': 'margin-top: 10px;',
+                    'html': $('<form/>', {
+                        'role': 'form'
+                    })
+                            // Append ban reason. This is the message Twitch shows with the timeout.
+                            .append(helpers.getInputGroup('timeout-reason', 'text', 'Timeout Reason', '', 'Using a blacklisted phrase',
+                                    'Message shown to all moderators when the user gets timed-out.'))
+                            // Add group for toggles.
+                            .append($('<div/>', {
+                                'class': 'form-group'
+                            })
+                                    // Tooltip to toggle for regulars to bypass this filter.
+                                    .append(helpers.getCheckBox('exclude-regulars', false, 'Exclude Regulars', 'If regulars should be allowed to bypass this filter.'))
+                                    // Tooltip to toggle for subs to bypass this filter.
+                                    .append(helpers.getCheckBox('exclude-subscribers', false, 'Exclude Subscribers',
+                                            'If subscribers should be allowed to bypass this filter.'))
+                                    // Tooltip to toggle for vips to bypass this filter.
+                                    .append(helpers.getCheckBox('exclude-vips', false, 'Exclude VIPs',
+                                            'If vips should be allowed to bypass this filter.')))
+                })), function () {
             let phrase = $('#ban-phrase'),
-                isRegex = $('#is-regex').is(':checked'),
-                banMsg = $('#timeout-banmsg'),
-                isSilent = $('#timeout-message-toggle').is(':checked'),
-                timeoutTime = $('#timeout-timeout-time'),
-                timeoutMsg = $('#timeout-reason'),
-                isReg = $('#exclude-regulars').is(':checked'),
-                isSub = $('#exclude-subscribers').is(':checked'),
-                isVip = $('#exclude-vips').is(':checked');
+                    isRegex = $('#is-regex').is(':checked'),
+                    banMsg = $('#timeout-banmsg'),
+                    isSilent = $('#timeout-message-toggle').is(':checked'),
+                    timeoutTime = $('#timeout-timeout-time'),
+                    timeoutMsg = $('#timeout-reason'),
+                    isReg = $('#exclude-regulars').is(':checked'),
+                    isSub = $('#exclude-subscribers').is(':checked'),
+                    isVip = $('#exclude-vips').is(':checked');
 
             // Add regex prefix is regex.
             if (isRegex && !phrase.val().startsWith('regex:')) {
@@ -277,8 +276,8 @@ $(function() {
                         excludeVips: isVip,
                         message: banMsg.val(),
                         banReason: timeoutMsg.val()
-                    }), function() {
-                        socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function() {
+                    }), function () {
+                        socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function () {
                             // Update the table.
                             run();
                             // Close the modal.

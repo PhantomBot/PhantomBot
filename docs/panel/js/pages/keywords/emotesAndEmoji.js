@@ -31,7 +31,7 @@ $(function () {
         checkboxBttv: 'enableBttv',
         checkboxFfz: 'enableFfz',
         checkboxKeywordEmotes: 'enableKeywordEmotes',
-};
+    };
 
     page.init = function () {
         let closure = this;
