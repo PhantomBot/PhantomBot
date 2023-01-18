@@ -314,9 +314,8 @@ $(function () {
 
                 // if the table exists, destroy it.
                 if ($.fn.DataTable.isDataTable('#discordCustomCommandsTable')) {
-                    $('#discordCustomCommandsTable').DataTable().destroy();
-                    // Remove all of the old events.
-                    $('#discordCustomCommandsTable').off();
+                    $('#discordCustomCommandsTable').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+                    return;
                 }
 
                 // Create table.

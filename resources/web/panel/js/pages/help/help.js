@@ -16,14 +16,14 @@
  */
 
 // Function that querys all of the data we need.
-$(function() {
-	// Get the version
-	socket.getBotVersion('get_panel_info_version', function(e) {
-		// Set bot version
-		$('#panel-bot-version').html(e['version'].substring(20));
-		// Set the java version.
-		$('#panel-java-version').html(e['java-version']);
-		// Set the OS version.
-		$('#panel-os-version').html(e['os-version']);
-	});
+$(function () {
+    // Get the version
+    socket.getBotVersion('get_panel_info_version', function (e) {
+        // Set bot version
+        $('#panel-bot-version').html(e['version'].substring(20));
+        // Set the java version.
+        $('#panel-java-version').html(e['java-version']);
+        // Set the OS version.
+        $('#panel-os-version').html(e['os-version']);
+    });
 });
