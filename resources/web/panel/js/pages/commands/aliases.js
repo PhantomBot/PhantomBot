@@ -132,9 +132,8 @@ $(function () {
 
             // if the table exists, destroy it.
             if ($.fn.DataTable.isDataTable('#aliasesTable')) {
-                $aliasesTable.DataTable().destroy();
-                // Remove all of the old events.
-                $aliasesTable.off();
+                $aliasesTable.DataTable().clear().rows.add(tableData).invalidate().draw(false);
+                return;
             }
 
             // Create table.

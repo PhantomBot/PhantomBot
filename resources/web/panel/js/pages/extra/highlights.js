@@ -16,22 +16,22 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Check if the module is enabled.
-    socket.getDBValue('highlight_command_module', 'modules', './commands/highlightCommand.js', function(e) {
+    socket.getDBValue('highlight_command_module', 'modules', './commands/highlightCommand.js', function (e) {
         // If the module is off, don't load any data.
         if (!helpers.handleModuleLoadUp('highlightsModule', e.modules)) {
             return;
         }
 
         // Get all highlights.
-        socket.getDBTableValues('get_highlights', 'highlights', function(results) {
+        socket.getDBTableValues('get_highlights', 'highlights', function (results) {
             let tableData = [];
 
             for (let i = 0; i < results.length; i++) {
                 let date = new Date(helpers.getEpochFromDate(results[i].key.substring(0, results[i].key.indexOf(' ')), true)),
-                    url = results[i].value.substring(0, results[i].value.indexOf(' :')),
-                    comment = results[i].value.substring(results[i].value.indexOf(': ') + 2, results[i].value.length);
+                        url = results[i].value.substring(0, results[i].value.indexOf(' :')),
+                        comment = results[i].value.substring(results[i].value.indexOf(': ') + 2, results[i].value.length);
 
                 tableData.push([
                     date.toLocaleDateString(),
@@ -66,9 +66,8 @@ $(run = function() {
 
             // if the table exists, destroy it.
             if ($.fn.DataTable.isDataTable('#highlightsTable')) {
-                $('#highlightsTable').DataTable().destroy();
-                // Remove all of the old events.
-                $('#highlightsTable').off();
+                $('#highlightsTable').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+                return;
             }
 
             // Create table.
@@ -78,67 +77,67 @@ $(run = function() {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    { 'className': 'default-table', 'orderable': false, 'targets': 3 },
-                    { 'width': '7%', 'targets': 0 },
-                    { 'width': '25%', 'targets': 1 }
+                    {'className': 'default-table', 'orderable': false, 'targets': 3},
+                    {'width': '7%', 'targets': 0},
+                    {'width': '25%', 'targets': 1}
                 ],
                 'columns': [
-                    { 'title': 'Date' },
-                    { 'title': 'URL' },
-                    { 'title': 'Comment' },
-                    { 'title': 'Actions' }
+                    {'title': 'Date'},
+                    {'title': 'URL'},
+                    {'title': 'Comment'},
+                    {'title': 'Actions'}
                 ]
             });
 
             // On delete button.
-            table.on('click', '.btn-danger', function() {
+            table.on('click', '.btn-danger', function () {
                 let key = $(this).data('key'),
-                    row = $(this).parents('tr');
+                        row = $(this).parents('tr');
 
                 // Ask the user if he wants to delete the highlight.
                 helpers.getConfirmDeleteModal('highlight_modal_remove', 'Are you sure you want to remove this highlight?', true,
-                    'The highlight has been successfully removed!', function() { // Callback if the user clicks delete.
-                    // Remove the highlight.
-                    socket.removeDBValue('highlight_remove', 'highlights', key, function() {
-                        // Remove the table row.
-                        table.row(row).remove().draw(false);
-                    });
-                });
+                        'The highlight has been successfully removed!', function () { // Callback if the user clicks delete.
+                            // Remove the highlight.
+                            socket.removeDBValue('highlight_remove', 'highlights', key, function () {
+                                // Remove the table row.
+                                table.row(row).remove().draw(false);
+                            });
+                        });
             });
 
             // On edit button.
-            table.on('click', '.btn-warning', function() {
+            table.on('click', '.btn-warning', function () {
                 let key = $(this).data('key'),
-                    t = $(this);
+                        t = $(this);
 
-                socket.getDBValue('get_highlight_edit', 'highlights', key, function(e) {
+                socket.getDBValue('get_highlight_edit', 'highlights', key, function (e) {
                     let spl = e.highlights.replace(/\s/, '').split(': ');
 
                     helpers.getModal('edit-highlight', 'Edit Highlight', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                    // Append highlight text box.
-                    .append(helpers.getTextAreaGroup('highlight-text', 'text', 'Highlight', '', spl[1],
-                        'Comment to give to the current highlight.', false)),
-                    function() {
-                        let highlight = $('#highlight-text');
+                            // Append highlight text box.
+                            .append(helpers.getTextAreaGroup('highlight-text', 'text', 'Highlight', '', spl[1],
+                                    'Comment to give to the current highlight.', false)),
+                            function () {
+                                let highlight = $('#highlight-text');
 
-                        switch (false) {
-                            case helpers.handleInputString(highlight):
-                                break;
-                            default:
-                                spl[1] = highlight.val();
+                                switch (false) {
+                                    case helpers.handleInputString(highlight):
+                                        break;
+                                    default:
+                                        spl[1] = highlight.val();
 
-                                socket.updateDBValue('update_highlight', 'highlights', key, spl.join(' : '), function() {
-                                    // Update the table.
-                                    t.parents('tr').find('td:eq(2)').text(spl[1]);
-                                    // Close the modal.
-                                    $('#edit-highlight').modal('toggle');
-                                    // Alert the user.
-                                    toastr.success('Successfully edited the highlight.');
-                                });
-                        }
-                    }).modal('toggle');
+                                        socket.updateDBValue('update_highlight', 'highlights', key, spl.join(' : '), function () {
+                                            // Update the table.
+                                            t.parents('tr').find('td:eq(2)').text(spl[1]);
+                                            // Close the modal.
+                                            $('#edit-highlight').modal('toggle');
+                                            // Alert the user.
+                                            toastr.success('Successfully edited the highlight.');
+                                        });
+                                }
+                            }).modal('toggle');
                 });
             });
         });
@@ -146,43 +145,43 @@ $(run = function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     // Toggle for the module.
-    $('#highlightsModuleToggle').on('change', function() {
+    $('#highlightsModuleToggle').on('change', function () {
         // Enable the module then query the data.
         socket.sendCommandSync('highlight_module_toggle_cmd',
-            'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./commands/highlightCommand.js', run);
+                'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./commands/highlightCommand.js', run);
     });
 
     // Delete all highlights button.
-    $('#delete-highlights-button').on('click', function() {
+    $('#delete-highlights-button').on('click', function () {
         // Ask the user if he want to remove all highlights.
         helpers.getConfirmDeleteModal('highlights_modal_remove', 'Are you sure you want to remove all highlights?', false,
-            'Successfully remove all highlights!', function() {
-            socket.sendCommandSync('rm_all_highlights_cmd', 'clearhighlightspanel', run);
-        });
+                'Successfully remove all highlights!', function () {
+                    socket.sendCommandSync('rm_all_highlights_cmd', 'clearhighlightspanel', run);
+                });
     });
 
     // Add highlight.
-    $('#add-highlight-button').on('click', function() {
+    $('#add-highlight-button').on('click', function () {
         helpers.getModal('add-highlight', 'Add Highlight', 'Save', $('<form/>', {
             'role': 'form'
         })
-        // Append highlight text box.
-        .append(helpers.getTextAreaGroup('highlight-text', 'text', 'Highlight', 'PogChamp moment.', '',
-            'Comment to give to the current highlight. This only works while the stream is online.', false)),
-        function() { // Callback for when the user clicks save.
-            let highlight = $('#highlight-text');
+                // Append highlight text box.
+                .append(helpers.getTextAreaGroup('highlight-text', 'text', 'Highlight', 'PogChamp moment.', '',
+                        'Comment to give to the current highlight. This only works while the stream is online.', false)),
+                function () { // Callback for when the user clicks save.
+                    let highlight = $('#highlight-text');
 
-            switch (false) {
-                case helpers.handleInputString(highlight):
-                    break;
-                default:
-                    socket.sendCommandSync('add_highlight_cmd', 'highlight ' + highlight.val(), function() {
-                        toastr.success('Successfully created a new highlight!');
-                    });
-                    $('#add-highlight').modal('toggle');
-            }
-        }).modal('toggle');
+                    switch (false) {
+                        case helpers.handleInputString(highlight):
+                            break;
+                        default:
+                            socket.sendCommandSync('add_highlight_cmd', 'highlight ' + highlight.val(), function () {
+                                toastr.success('Successfully created a new highlight!');
+                            });
+                            $('#add-highlight').modal('toggle');
+                    }
+                }).modal('toggle');
     });
 });

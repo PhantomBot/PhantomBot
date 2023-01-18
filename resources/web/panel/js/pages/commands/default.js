@@ -18,18 +18,18 @@
 /* global toastr */
 
 // Function that querys all of the data we need.
-$(function() {
-    const getDisabledIconAttr = function(disabled) {
+$(function () {
+    const getDisabledIconAttr = function (disabled) {
         return {
             class: 'fa disabled-status-icon ' + (disabled ? 'fa-ban text-muted' : 'fa-check'),
             title: disabled ? 'disabled' : 'enabled'
         };
     };
 
-    const updateCommandDisabled = function(name, disabled, callback) {
+    const updateCommandDisabled = function (name, disabled, callback) {
         const wsUpdate = function () {
             socket.wsEvent('command_disabled_update_ws', './core/commandRegister.js', null,
-              [disabled ? 'disable' : 'enable', name], callback);
+                    [disabled ? 'disable' : 'enable', name], callback);
         };
 
         if (disabled) {
@@ -40,12 +40,12 @@ $(function() {
     };
 
     // Query all commands.
-    socket.getDBTableValues('commands_get_all', 'permcom', function(results) {
-        socket.getDBTableValues('custom_commands_get_all', 'command', function(customCommands) {
-            socket.getDBTableValues('disabled_commands_get_all', 'disabledCommands', function(disabledCommands) {
+    socket.getDBTableValues('commands_get_all', 'permcom', function (results) {
+        socket.getDBTableValues('custom_commands_get_all', 'command', function (customCommands) {
+            socket.getDBTableValues('disabled_commands_get_all', 'disabledCommands', function (disabledCommands) {
                 let tableData = [],
-                    cmds = {},
-                    disabled = {};
+                        cmds = {},
+                        disabled = {};
 
                 for (let i = 0; i < customCommands.length; i++) {
                     cmds[customCommands[i].key] = true;
@@ -64,10 +64,10 @@ $(function() {
                         '!' + results[i].key,
                         helpers.getGroupNameById(results[i].value),
                         $('<div/>')
-                          .append($('<i/>',
-                              getDisabledIconAttr(disabled.hasOwnProperty(results[i].key))
-                          ))
-                          .html(),
+                                .append($('<i/>',
+                                        getDisabledIconAttr(disabled.hasOwnProperty(results[i].key))
+                                        ))
+                                .html(),
                         $('<div/>', {
                             'class': 'btn-group'
                         }).append($('<button/>', {
@@ -94,9 +94,8 @@ $(function() {
 
                 // if the table exists, destroy it.
                 if ($.fn.DataTable.isDataTable('#defaultCommandsTable')) {
-                    $('#defaultCommandsTable').DataTable().destroy();
-                    // Remove all of the old events.
-                    $('#defaultCommandsTable').off();
+                    $('#defaultCommandsTable').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+                    return;
                 }
 
                 // Create table.
@@ -105,96 +104,96 @@ $(function() {
                     'autoWidth': false,
                     'data': tableData,
                     'columnDefs': [
-                        { 'className': 'default-table-large', 'orderable': false, 'targets': [2, 3] },
-                        { 'width': '45%', 'targets': 0 }
+                        {'className': 'default-table-large', 'orderable': false, 'targets': [2, 3]},
+                        {'width': '45%', 'targets': 0}
                     ],
                     'columns': [
-                        { 'title': 'Command', 'defaultContent': '<i>null</i>' },
-                        { 'title': 'User Level', 'defaultContent': '<i>null</i>' },
-                        { 'title': 'Status' },
-                        { 'title': 'Actions' }
+                        {'title': 'Command', 'defaultContent': '<i>null</i>'},
+                        {'title': 'User Level', 'defaultContent': '<i>null</i>'},
+                        {'title': 'Status'},
+                        {'title': 'Actions'}
                     ]
                 });
 
                 // On delete button.
-                table.on('click', '.btn-danger', function() {
+                table.on('click', '.btn-danger', function () {
                     let command = $(this).data('command'),
-                        row = $(this).parents('tr'),
-                        t = $(this);
+                            row = $(this).parents('tr'),
+                            t = $(this);
 
                     // Ask the user if he want to reset the command.
                     helpers.getConfirmDeleteModal('default_command_modal_remove', 'Are you sure you want to reset the command\'s permission?', false,
-                            'The command\'s permission has been reset!', function() {
-                        socket.removeDBValue('permcom_temp_del', 'permcom', command, function(e) {
-                            // Hide tooltip.
-                            t.tooltip('hide');
-                            // Remove the table row.
-                            table.row(row).remove().draw(false);
-                        });
-                    });
+                            'The command\'s permission has been reset!', function () {
+                                socket.removeDBValue('permcom_temp_del', 'permcom', command, function (e) {
+                                    // Hide tooltip.
+                                    t.tooltip('hide');
+                                    // Remove the table row.
+                                    table.row(row).remove().draw(false);
+                                });
+                            });
                 });
 
                 // On edit button.
-                table.on('click', '.btn-warning', function() {
+                table.on('click', '.btn-warning', function () {
                     let command = $(this).data('command'),
-                        t = $(this);
+                            t = $(this);
 
                     // Get all the info about the command.
                     socket.getDBValues('default_command_edit', {
                         tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands'],
                         keys: [command, command, command, command, command]
-                    }, function(e) {
-                        let cooldownJson = (e.cooldown === null ? { globalSec: -1, userSec: -1, modsSkip: false } : JSON.parse(e.cooldown));
+                    }, function (e) {
+                        let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false} : JSON.parse(e.cooldown));
 
                         // Get advance modal from our util functions in /utils/helpers.js
                         helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
                             'role': 'form'
                         })
-                        // Append input box for the command name. This one is disabled.
-                        .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
-                        // Append a select option for the command permission.
-                        .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
-                            helpers.getPermGroupNames()))
-                        // Add an advance section that can be opened with a button toggle.
-                        .append($('<div/>', {
-                            'class': 'collapse',
-                            'id': 'advance-collapse',
-                            'html': $('<form/>', {
-                                    'role': 'form'
-                                })
-                                // Append input box for the command cost.
-                                .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
-                                    'Cost in points that will be taken from the user when running the command.'))
-                                // Append input box for the command reward.
-                                .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
-                                    'Reward in points the user will be given when running the command.'))
-                                // Append input box for the global command cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
-                                    'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
-                                // Append input box for per-user cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
-                                    'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
-                                 // Append input box for mods skip cooldown.
-                                .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
-                                    'If checked, moderators are exempt from cooldowns on this command.'))
-                                .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
-                                    'If checked, the command cannot be used in chat.'))
-                                // Callback function to be called once we hit the save button on the modal.
-                        })), function() {
+                                // Append input box for the command name. This one is disabled.
+                                .append(helpers.getInputGroup('command-name', 'text', 'Command', '', '!' + command, 'Name of the command. This cannot be edited.', true))
+                                // Append a select option for the command permission.
+                                .append(helpers.getDropdownGroup('command-permission', 'User Level', helpers.getGroupNameById(e.permcom),
+                                        helpers.getPermGroupNames()))
+                                // Add an advance section that can be opened with a button toggle.
+                                .append($('<div/>', {
+                                    'class': 'collapse',
+                                    'id': 'advance-collapse',
+                                    'html': $('<form/>', {
+                                        'role': 'form'
+                                    })
+                                            // Append input box for the command cost.
+                                            .append(helpers.getInputGroup('command-cost', 'number', 'Cost', '0', helpers.getDefaultIfNullOrUndefined(e.pricecom, '0'),
+                                                    'Cost in points that will be taken from the user when running the command.'))
+                                            // Append input box for the command reward.
+                                            .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', helpers.getDefaultIfNullOrUndefined(e.paycom, '0'),
+                                                    'Reward in points the user will be given when running the command.'))
+                                            // Append input box for the global command cooldown.
+                                            .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', cooldownJson.globalSec,
+                                                    'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
+                                            // Append input box for per-user cooldown.
+                                            .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
+                                                    'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
+                                            // Append input box for mods skip cooldown.
+                                            .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
+                                                    'If checked, moderators are exempt from cooldowns on this command.'))
+                                            .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
+                                                    'If checked, the command cannot be used in chat.'))
+                                            // Callback function to be called once we hit the save button on the modal.
+                                })), function () {
                             let commandPermission = $('#command-permission'),
-                                commandCost = $('#command-cost'),
-                                commandReward = $('#command-reward'),
-                                commandCooldownGlobal = $('#command-cooldown-global'),
-                                commandCooldownUser = $('#command-cooldown-user'),
-                                commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
-                                commandDisabled = $('#command-disabled').is(':checked');
+                                    commandCost = $('#command-cost'),
+                                    commandReward = $('#command-reward'),
+                                    commandCooldownGlobal = $('#command-cooldown-global'),
+                                    commandCooldownUser = $('#command-cooldown-user'),
+                                    commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
+                                    commandDisabled = $('#command-disabled').is(':checked');
 
                             // Handle each input to make sure they have a value.
                             switch (false) {
                                 case helpers.handleInputNumber(commandCost):
                                 case helpers.handleInputNumber(commandReward):
-                                case helpers.handleInputNumber(commandCooldownGlobal, -1):
-                                case helpers.handleInputNumber(commandCooldownUser, -1):
+                                case helpers.handleInputNumber(commandCooldownGlobal, - 1):
+                                case helpers.handleInputNumber(commandCooldownUser, - 1):
                                     break;
                                 default:
                                     // Save command information here and close the modal.
@@ -202,14 +201,14 @@ $(function() {
                                         tables: ['pricecom', 'paycom'],
                                         keys: [command, command],
                                         values: [commandCost.val(), commandReward.val()]
-                                    }, function() {
+                                    }, function () {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function() {
+                                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function () {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
-                                                    helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function() {
+                                                        helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
                                                     const $tr = t.parents('tr');
                                                     // Update user level value.
                                                     $tr.find('td:eq(1)').text(commandPermission.find(':selected').text());
