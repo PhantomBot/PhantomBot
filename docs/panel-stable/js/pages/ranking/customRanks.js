@@ -16,16 +16,16 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Check if the module is enabled.
-    socket.getDBValue('ranks_module_toggle', 'modules', './systems/ranksSystem.js', function(e) {
+    socket.getDBValue('ranks_module_toggle', 'modules', './systems/ranksSystem.js', function (e) {
         // If the module is off, don't load any data.
         if (!helpers.handleModuleLoadUp('ranksCustomModule', e.modules)) {
             return;
         }
 
         // Get all ranks.
-        socket.getDBTableValues('custom_get_ranks', 'viewerRanks', function(results) {
+        socket.getDBTableValues('custom_get_ranks', 'viewerRanks', function (results) {
             let tableData = [];
 
             for (let i = 0; i < results.length; i++) {
@@ -56,9 +56,8 @@ $(run = function() {
 
             // if the table exists, destroy it.
             if ($.fn.DataTable.isDataTable('#ranksCustomTable')) {
-                $('#ranksCustomTable').DataTable().destroy();
-                // Remove all of the old events.
-                $('#ranksCustomTable').off();
+                $('#ranksCustomTable').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+                return;
             }
 
             // Create table.
@@ -68,47 +67,47 @@ $(run = function() {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    { 'className': 'default-table', 'orderable': false, 'targets': 2 },
-                    { 'width': '45%', 'targets': 0 }
+                    {'className': 'default-table', 'orderable': false, 'targets': 2},
+                    {'width': '45%', 'targets': 0}
                 ],
                 'columns': [
-                    { 'title': 'Username' },
-                    { 'title': 'Rank' },
-                    { 'title': 'Actions' }
+                    {'title': 'Username'},
+                    {'title': 'Rank'},
+                    {'title': 'Actions'}
                 ]
             });
 
             // On delete button.
-            table.on('click', '.btn-danger', function() {
+            table.on('click', '.btn-danger', function () {
                 let username = $(this).data('user'),
-                    row = $(this).parents('tr');
+                        row = $(this).parents('tr');
 
                 helpers.getConfirmDeleteModal('custom_rank_modal_remove', 'Are you sure you want to remove ' + username + '\'s custom rank?', true,
-                    'You\'ve successfully removed ' + username + '\'s custom rank!', function() {
-                    // Delete the rank
-                    socket.removeDBValue('rm_custom_rank', 'viewerRanks', username, function() {
-                        // Remove the table row.
-                        table.row(row).remove().draw(false);
-                    });
-                });
+                        'You\'ve successfully removed ' + username + '\'s custom rank!', function () {
+                            // Delete the rank
+                            socket.removeDBValue('rm_custom_rank', 'viewerRanks', username, function () {
+                                // Remove the table row.
+                                table.row(row).remove().draw(false);
+                            });
+                        });
             });
 
             // On edit button.
-            table.on('click', '.btn-warning', function() {
+            table.on('click', '.btn-warning', function () {
                 let user = $(this).data('user'),
-                    t = $(this);
+                        t = $(this);
 
                 // Get the rank info.
-                socket.getDBValue('rank_get_name', 'viewerRanks', user, function(e) {
+                socket.getDBValue('rank_get_name', 'viewerRanks', user, function (e) {
                     helpers.getModal('edit-set-rank', 'Edit User Rank', 'Save', $('<form/>', {
                         'role': 'form'
                     })
-                    // Append alias name.
-                    .append(helpers.getInputGroup('rank-user', 'text', 'Username', '', user, 'Name of the user for the rank to be set on.'))
-                    // Append alias.
-                    .append(helpers.getInputGroup('rank-name', 'text', 'Rank', '', e.viewerRanks, 'Rank name to give to the user')), function() {// Callback once we click the save button.
+                            // Append alias name.
+                            .append(helpers.getInputGroup('rank-user', 'text', 'Username', '', user, 'Name of the user for the rank to be set on.'))
+                            // Append alias.
+                            .append(helpers.getInputGroup('rank-name', 'text', 'Rank', '', e.viewerRanks, 'Rank name to give to the user')), function () {// Callback once we click the save button.
                         let rankUser = $('#rank-user'),
-                            rankName = $('#rank-name');
+                                rankName = $('#rank-name');
 
                         // Make sure all boxes have an input.
                         switch (false) {
@@ -116,9 +115,9 @@ $(run = function() {
                             case helpers.handleInputString(rankName):
                                 break;
                             default:
-                                socket.removeDBValue('del_rank_custom', 'viewerRanks', user, function() {
+                                socket.removeDBValue('del_rank_custom', 'viewerRanks', user, function () {
                                     // Add the rank.
-                                    socket.updateDBValue('edit_rank_custom', 'viewerRanks', rankUser.val().toLowerCase(), rankName.val(), function() {
+                                    socket.updateDBValue('edit_rank_custom', 'viewerRanks', rankUser.val().toLowerCase(), rankName.val(), function () {
                                         // Update the table name.
                                         t.parents('tr').find('td:eq(0)').text(rankUser.val().toLowerCase());
                                         // Update the table hours.
@@ -139,23 +138,23 @@ $(run = function() {
 
 
 // Function that handlers the loading of events.
-$(function() {
-    $('#ranksCustomModuleToggle').on('change', function() {
+$(function () {
+    $('#ranksCustomModuleToggle').on('change', function () {
         // Enable the module then query the data.
         socket.sendCommandSync('ranks_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/ranksSystem.js', run);
     });
 
     // Add user rank button.
-    $('#rank-user-button').on('click', function() {
+    $('#rank-user-button').on('click', function () {
         helpers.getModal('set-rank', 'Set User Rank', 'Save', $('<form/>', {
             'role': 'form'
         })
-        // Append alias name.
-        .append(helpers.getInputGroup('rank-user', 'text', 'Username', 'PhantomBot', '', 'Name of the user for the rank to be set on.'))
-        // Append alias.
-        .append(helpers.getInputGroup('rank-name', 'text', 'Rank', 'Bot', '', 'Rank name to give to the user.')), function() {// Callback once we click the save button.
+                // Append alias name.
+                .append(helpers.getInputGroup('rank-user', 'text', 'Username', 'PhantomBot', '', 'Name of the user for the rank to be set on.'))
+                // Append alias.
+                .append(helpers.getInputGroup('rank-name', 'text', 'Rank', 'Bot', '', 'Rank name to give to the user.')), function () {// Callback once we click the save button.
             let rankUser = $('#rank-user'),
-                rankName = $('#rank-name');
+                    rankName = $('#rank-name');
 
             // Make sure all boxes have an input.
             switch (false) {
@@ -164,7 +163,7 @@ $(function() {
                     break;
                 default:
                     // Add the rank.
-                    socket.updateDBValue('set_rank_custom', 'viewerRanks', rankUser.val().toLowerCase(), rankName.val(), function() {
+                    socket.updateDBValue('set_rank_custom', 'viewerRanks', rankUser.val().toLowerCase(), rankName.val(), function () {
                         // Update the table name.
                         run();
                         // Close the modal.
@@ -177,20 +176,20 @@ $(function() {
     });
 
     // Rank settings button.
-    $('#rank-settings-button').on('click', function() {
+    $('#rank-settings-button').on('click', function () {
         socket.getDBValues('get_custom_rank_settings', {
             tables: ['settings', 'settings'],
             keys: ['rankEligableTime', 'rankEligableCost']
-        }, true, function(e) {
+        }, true, function (e) {
             helpers.getModal('settings-rank', 'Rank Settings', 'Save', $('<form/>', {
                 'role': 'form'
             })
-            // Append alias name.
-            .append(helpers.getInputGroup('rank-cost', 'number', 'Rank Cost', '', e.rankEligableCost, 'How much a custom rank will cost for a user.'))
-            // Append alias.
-            .append(helpers.getInputGroup('rank-time', 'number', 'Rank Hours', '', e.rankEligableTime, 'How many hours a user needs before they can buy a custom rank.')), function() {// Callback once we click the save button.
+                    // Append alias name.
+                    .append(helpers.getInputGroup('rank-cost', 'number', 'Rank Cost', '', e.rankEligableCost, 'How much a custom rank will cost for a user.'))
+                    // Append alias.
+                    .append(helpers.getInputGroup('rank-time', 'number', 'Rank Hours', '', e.rankEligableTime, 'How many hours a user needs before they can buy a custom rank.')), function () {// Callback once we click the save button.
                 let rankCost = $('#rank-cost'),
-                    rankTime = $('#rank-time');
+                        rankTime = $('#rank-time');
 
                 // Make sure all boxes have an input.
                 switch (false) {
@@ -203,7 +202,7 @@ $(function() {
                             tables: ['settings', 'settings'],
                             keys: ['rankEligableTime', 'rankEligableCost'],
                             values: [rankTime.val(), rankCost.val()]
-                        }, function() {
+                        }, function () {
                             // Close the modal.
                             $('#settings-rank').modal('hide');
                             // Alert the user.

@@ -78,10 +78,8 @@ $(function () {
 
         // if the table exists, destroy it.
         if ($.fn.DataTable.isDataTable('#keywordsTable')) {
-
-            this.keywordsTable.DataTable().destroy();
-            // Remove all of the old events.
-            this.keywordsTable.off();
+            this.keywordsTable.DataTable().clear().rows.add(tableData).invalidate().draw(false);
+            return;
         }
         // Create table.
         let table = this.keywordsTable.DataTable({
@@ -203,22 +201,22 @@ $(function () {
         let row = event.currentTarget.parentElement.parentElement.parentElement;
 
         helpers.getConfirmDeleteModal(
-            'keywordEmote_modal_remove',
-            `Are you sure you want to remove the keyword '${keyword}'?`,
-            true,
-            `The keyword '${keyword} was successfully removed`,
-            function () {
-                socket.removeDBValues(closure.moduleId + '_delete', {
-                    tables: [closure.databaseModuleId],
-                    keys: [keyword]
-                }, function () {
-                    socket.wsEvent(closure.wsEventRemoveKeyword, closure.handlerModule, null, [], function () {
-                        // Remove the table row
-                        console.log(row);
-                        closure.keywordsTable.row(row).remove().draw(false);
+                'keywordEmote_modal_remove',
+                `Are you sure you want to remove the keyword '${keyword}'?`,
+                true,
+                `The keyword '${keyword} was successfully removed`,
+                function () {
+                    socket.removeDBValues(closure.moduleId + '_delete', {
+                        tables: [closure.databaseModuleId],
+                        keys: [keyword]
+                    }, function () {
+                        socket.wsEvent(closure.wsEventRemoveKeyword, closure.handlerModule, null, [], function () {
+                            // Remove the table row
+                            console.log(row);
+                            closure.keywordsTable.row(row).remove().draw(false);
+                        });
                     });
                 });
-            });
     };
 
     page.onCLickAdd = function (event) {

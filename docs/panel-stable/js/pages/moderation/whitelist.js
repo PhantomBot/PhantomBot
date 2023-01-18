@@ -16,9 +16,9 @@
  */
 
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Query whitelist.
-    socket.getDBTableValues('moderation_whitelist_get', 'whiteList', function(results) {
+    socket.getDBTableValues('moderation_whitelist_get', 'whiteList', function (results) {
         let tableData = [];
 
         for (let i = 0; i < results.length; i++) {
@@ -48,9 +48,8 @@ $(run = function() {
 
         // if the table exists, destroy it.
         if ($.fn.DataTable.isDataTable('#whitelistTable')) {
-            $('#whitelistTable').DataTable().destroy();
-            // Remove all of the old events.
-            $('#whitelistTable').off();
+            $('#whitelistTable').DataTable().clear().rows.add(tableData).invalidate().draw(false);
+            return;
         }
 
         // Create table.
@@ -60,42 +59,42 @@ $(run = function() {
             'lengthChange': false,
             'data': tableData,
             'columnDefs': [
-                { 'className': 'default-table', 'orderable': false, 'targets': 1 }
+                {'className': 'default-table', 'orderable': false, 'targets': 1}
             ],
             'columns': [
-                { 'title': 'Whitelist' },
-                { 'title': 'Actions' }
+                {'title': 'Whitelist'},
+                {'title': 'Actions'}
             ]
         });
 
         // On delete button.
-        table.on('click', '.btn-danger', function() {
+        table.on('click', '.btn-danger', function () {
             let whitelist = $(this).data('whitelist'),
-                row = $(this).parents('tr');
+                    row = $(this).parents('tr');
 
             // Ask the user if he wants to delete the blacklist.
             helpers.getConfirmDeleteModal('blacklist_modal_remove', 'Are you sure you want to remove this whitelist?', true,
-                'The whitelist has been successfully removed!', function() { // Callback if the user clicks delete.
-                // Delete all information about the alias.
-                socket.removeDBValue('whitelist_remove', 'whiteList', whitelist, function() {
-                    socket.sendCommand('whitelist_remove_cmd', 'reloadmod', function() {
-                        // Remove the table row.
-                        table.row(row).remove().draw(false);
+                    'The whitelist has been successfully removed!', function () { // Callback if the user clicks delete.
+                        // Delete all information about the alias.
+                        socket.removeDBValue('whitelist_remove', 'whiteList', whitelist, function () {
+                            socket.sendCommand('whitelist_remove_cmd', 'reloadmod', function () {
+                                // Remove the table row.
+                                table.row(row).remove().draw(false);
+                            });
+                        });
                     });
-                });
-            });
         });
 
         // On edit button.
-        table.on('click', '.btn-warning', function() {
+        table.on('click', '.btn-warning', function () {
             let whitelist = $(this).data('whitelist'),
-                t = $(this);
+                    t = $(this);
 
             helpers.getModal('edit-whitelist', 'Edit Whitelist', 'Save', $('<form/>', {
                 'role': 'form'
             })
-            // Append box for the whitelist.
-            .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', '', whitelist, 'Url that is whitelisted.')), function() {
+                    // Append box for the whitelist.
+                    .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', '', whitelist, 'Url that is whitelisted.')), function () {
                 let w = $('#whitelist-name');
 
                 // Handle each input to make sure they have a value.
@@ -104,11 +103,11 @@ $(run = function() {
                         break;
                     default:
                         // Delete old whitelist.
-                        socket.removeDBValue('whitelist_remove', 'whiteList', whitelist, function() {
+                        socket.removeDBValue('whitelist_remove', 'whiteList', whitelist, function () {
                             // Add the whitelist
-                            socket.updateDBValue('whitelist_edit', 'whiteList', w.val().toLowerCase(), 'true', function() {
+                            socket.updateDBValue('whitelist_edit', 'whiteList', w.val().toLowerCase(), 'true', function () {
                                 // Reload the script cache.
-                                socket.sendCommand('whitelist_remove_cmd', 'reloadmod', function() {
+                                socket.sendCommand('whitelist_remove_cmd', 'reloadmod', function () {
                                     // Edit the table row.
                                     t.parents('tr').find('td:eq(0)').text(w.val());
                                     // Close the modal.
@@ -125,14 +124,14 @@ $(run = function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     // Add whitelist button.
-    $('#add-whitelist-button').on('click', function() {
+    $('#add-whitelist-button').on('click', function () {
         helpers.getModal('add-whitelist', 'Add Whitelist', 'Save', $('<form/>', {
             'role': 'form'
         })
-        // Append box for the whitelist.
-        .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', 'https://phantombot.github.io/PhantomBot', '', 'Url that will be whitelisted.')), function() {
+                // Append box for the whitelist.
+                .append(helpers.getInputGroup('whitelist-name', 'text', 'Url', 'https://phantombot.github.io/PhantomBot', '', 'Url that will be whitelisted.')), function () {
             let whitelist = $('#whitelist-name');
 
             // Handle each input to make sure they have a value.
@@ -141,9 +140,9 @@ $(function() {
                     break;
                 default:
                     // Add the whitelist
-                    socket.updateDBValue('whitelist_add', 'whiteList', whitelist.val().toLowerCase(), 'true', function() {
+                    socket.updateDBValue('whitelist_add', 'whiteList', whitelist.val().toLowerCase(), 'true', function () {
                         // Reload the script cache.
-                        socket.sendCommand('whitelist_add_cmd', 'reloadmod', function() {
+                        socket.sendCommand('whitelist_add_cmd', 'reloadmod', function () {
                             // Reload the table.
                             run();
                             // Close the modal.

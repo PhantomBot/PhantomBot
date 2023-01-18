@@ -15,10 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that querys all of the data we need.
-$(run = function() {
+$(run = function () {
     // Get module status.
-    socket.getDBValue('get_points_module_status', 'modules', './systems/pointSystem.js', function(e) {
+    socket.getDBValue('get_points_module_status', 'modules', './systems/pointSystem.js', function (e) {
         // If the module is off, don't load any data.
         if (!helpers.handleModuleLoadUp('pointsModule', e.modules)) {
             return;
@@ -28,7 +30,7 @@ $(run = function() {
         socket.getDBValues('get_points_settings', {
             tables: ['pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'settings'],
             keys: ['onlineGain', 'offlineGain', 'onlinePayoutInterval', 'offlinePayoutInterval', 'activeBonus', 'pointNameSingle', 'pointNameMultiple', 'pointsMessage', 'topListAmountPoints']
-        }, true, function(e) {
+        }, true, function (e) {
             // Set the points message.
             $('#points-message').val(e.pointsMessage);
             // Set the currency name single.
@@ -50,14 +52,14 @@ $(run = function() {
         });
 
         // Get online group payout.
-        socket.getDBTableValues('get_points_online_group_payout', 'grouppoints', function(results) {
+        socket.getDBTableValues('get_points_online_group_payout', 'grouppoints', function (results) {
             for (let i = 0; i < results.length; i++) {
                 $('#points-payout-' + results[i].key.toLowerCase() + '-on').val(results[i].value);
             }
         });
 
         // Get offline group payout.
-        socket.getDBTableValues('get_points_offline_group_payout', 'grouppointsoffline', function(results) {
+        socket.getDBTableValues('get_points_offline_group_payout', 'grouppointsoffline', function (results) {
             for (let i = 0; i < results.length; i++) {
                 $('#points-payout-' + results[i].key.toLowerCase() + '-off').val(results[i].value);
             }
@@ -66,28 +68,28 @@ $(run = function() {
 });
 
 // Function that handlers the loading of events.
-$(function() {
+$(function () {
     // Module toggle.
-    $('#pointsModuleToggle').on('change', function() {
+    $('#pointsModuleToggle').on('change', function () {
         // Enable the module then query the data.
         socket.sendCommand('points_module_toggle_cmd', 'module ' + ($(this).is(':checked') ? 'enablesilent' : 'disablesilent') + ' ./systems/pointSystem.js', run);
     });
 
     // Get user points button.
-    $('#points-get-user').on('click', function() {
+    $('#points-get-user').on('click', function () {
         let username = $('#points-username').val().toLowerCase();
 
         if (username.length > 0) {
-            socket.getDBValue('points_get_user_total', 'points', username, function(e) {
+            socket.getDBValue('points_get_user_total', 'points', username, function (e) {
                 $('#points-username-points').val((e.points === null ? '0' : e.points));
             });
         }
     });
 
     // Save user points.
-    $('#points-save-user').on('click', function() {
+    $('#points-save-user').on('click', function () {
         let username = $('#points-username'),
-            points = $('#points-username-points');
+                points = $('#points-username-points');
 
         // Make sure both input have something.
         switch (false) {
@@ -96,7 +98,7 @@ $(function() {
                 break;
             default:
                 // Save user points.
-                socket.updateDBValue('points_update_user', 'points', username.val().toLowerCase(), points.val(), function() {
+                socket.updateDBValue('points_update_user', 'points', username.val().toLowerCase(), points.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully updated user points!');
 
@@ -108,9 +110,9 @@ $(function() {
     });
 
     // Handle penalty button.
-    $('#points-panalty-btn').on('click', function() {
+    $('#points-panalty-btn').on('click', function () {
         let username = $('#points-panalty-user'),
-            time = $('#points-panalty-time');
+                time = $('#points-panalty-time');
 
         // Make sure both input have something.
         switch (false) {
@@ -119,7 +121,7 @@ $(function() {
                 break;
             default:
                 // Set penalty.
-                socket.sendCommand('set_penalty_user', 'penalty ' + username.val().toLowerCase() + ' ' + time.val(), function() {
+                socket.sendCommand('set_penalty_user', 'penalty ' + username.val().toLowerCase() + ' ' + time.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully set penalty on user!');
 
@@ -131,9 +133,9 @@ $(function() {
     });
 
     // Handle points bonus button.
-    $('#points-bonus-btn').on('click', function() {
+    $('#points-bonus-btn').on('click', function () {
         let amount = $('#points-bonus-amount'),
-            time = $('#points-bonus-time');
+                time = $('#points-bonus-time');
 
         // Make sure both input have something.
         switch (false) {
@@ -142,7 +144,7 @@ $(function() {
                 break;
             default:
                 // Set bonus.
-                socket.sendCommand('set_bonus_all', 'pointsbonuspanel ' + amount.val() + ' ' + time.val(), function() {
+                socket.sendCommand('set_bonus_all', 'pointsbonuspanel ' + amount.val() + ' ' + time.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully set the points bonus!');
 
@@ -154,7 +156,7 @@ $(function() {
     });
 
     // Handle make it rain button.
-    $('#points-makeitrain-btn').on('click', function() {
+    $('#points-makeitrain-btn').on('click', function () {
         let amount = $('#points-bonus-amount');
 
         // Make sure both input have something.
@@ -163,7 +165,7 @@ $(function() {
                 break;
             default:
                 // Set bonus.
-                socket.sendCommand('main_it_rain_all', 'makeitrain ' + amount.val(), function() {
+                socket.sendCommand('main_it_rain_all', 'makeitrain ' + amount.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully made it rain!');
 
@@ -174,7 +176,7 @@ $(function() {
     });
 
     // Handle give all button.
-    $('#points-giveall-btn').on('click', function() {
+    $('#points-giveall-btn').on('click', function () {
         let amount = $('#points-bonus-amount');
 
         // Make sure both input have something.
@@ -183,7 +185,7 @@ $(function() {
                 break;
             default:
                 // Set bonus.
-                socket.sendCommand('set_give_all', 'pointsallpanel ' + amount.val(), function() {
+                socket.sendCommand('set_give_all', 'pointsallpanel ' + amount.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully gave everyone points!');
 
@@ -194,7 +196,7 @@ $(function() {
     });
 
     // Handle take all button.
-    $('#points-takeall-btn').on('click', function() {
+    $('#points-takeall-btn').on('click', function () {
         let amount = $('#points-bonus-amount');
 
         // Make sure both input have something.
@@ -203,7 +205,7 @@ $(function() {
                 break;
             default:
                 // Set bonus.
-                socket.sendCommand('set_give_all', 'pointstakepanel ' + amount.val(), function() {
+                socket.sendCommand('set_give_all', 'pointstakepanel ' + amount.val(), function () {
                     // Alert the user.
                     toastr.success('Successfully took points from everyone!');
 
@@ -214,25 +216,25 @@ $(function() {
     });
 
     // Button that reloads the points top 100.
-    $('#currency-reload').on('click', function() {
+    $('#currency-reload').on('click', function () {
         // Reload all.
         run();
         toastr.success('Successfully updated the top 100 table.');
     });
 
     // Save all points settings.
-    $('#points-save-all').on('click', function() {
+    $('#points-save-all').on('click', function () {
         // Save either advanced settings or normal depending on which tab is active.
         if ($('#main-settings').hasClass('active')) {
             let pointsMessage = $('#points-message'),
-                pointsSingle = $('#points-name-single'),
-                pointsMultiple = $('#points-name-multiple'),
-                pointsOnlineInt = $('#points-interval-online'),
-                pointsOfflineInt = $('#points-interval-offline'),
-                pointsOnlinePay = $('#points-payout-online'),
-                pointsOfflinePay = $('#points-payout-offline'),
-                pointsActive = $('#points-active'),
-                topList = $('#points-top');
+                    pointsSingle = $('#points-name-single'),
+                    pointsMultiple = $('#points-name-multiple'),
+                    pointsOnlineInt = $('#points-interval-online'),
+                    pointsOfflineInt = $('#points-interval-offline'),
+                    pointsOnlinePay = $('#points-payout-online'),
+                    pointsOfflinePay = $('#points-payout-offline'),
+                    pointsActive = $('#points-active'),
+                    topList = $('#points-top');
 
             // Make sure both input have something.
             switch (false) {
@@ -251,16 +253,16 @@ $(function() {
                     socket.updateDBValues('update_points_settings', {
                         tables: ['pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'pointSettings', 'settings'],
                         keys: ['onlineGain', 'offlineGain', 'onlinePayoutInterval', 'offlinePayoutInterval', 'activeBonus', 'pointNameSingle', 'pointNameMultiple', 'pointsMessage', 'topListAmountPoints'],
-                        values: [pointsOnlinePay.val(), pointsOfflinePay.val(), pointsOnlineInt.val(), pointsOfflineInt.val(), pointsActive.val(), pointsSingle.val(), pointsMultiple.val(), pointsMessage.val(), (parseInt(topList.val()) > 15 ? '15': topList.val())]
-                    }, function() {
-                        socket.sendCommand('update_points_settings_cmd', 'reloadpoints', function() {
+                        values: [pointsOnlinePay.val(), pointsOfflinePay.val(), pointsOnlineInt.val(), pointsOfflineInt.val(), pointsActive.val(), pointsSingle.val(), pointsMultiple.val(), pointsMessage.val(), (parseInt(topList.val()) > 15 ? '15' : topList.val())]
+                    }, function () {
+                        socket.sendCommand('update_points_settings_cmd', 'reloadpoints', function () {
                             toastr.success('Successfully updated points settings!');
                         });
                     });
             }
         } else {
             let groups = ['caster', 'administrator', 'moderator', 'subscriber', 'donator', 'regular', 'viewer'], //Hardcoded in order to keep the logic and still have consistent ordering
-                temp = [];
+                    temp = [];
 
             // Make sure that all groups have a value.
             for (let i = 0; i < groups.length; i++) {
@@ -284,7 +286,7 @@ $(function() {
                 tables: ['grouppoints', 'grouppoints', 'grouppoints', 'grouppoints', 'grouppoints', 'grouppoints', 'grouppoints'],
                 keys: ['Caster', 'Administrator', 'Moderator', 'Subscriber', 'Donator', 'Regular', 'Viewer'],
                 values: temp
-            }, function() {
+            }, function () {
                 temp = [];
 
                 // Get all values offline online.
@@ -297,7 +299,7 @@ $(function() {
                     tables: ['grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline', 'grouppointsoffline'],
                     keys: ['Caster', 'Administrator', 'Moderator', 'Subscriber', 'Donator', 'Regular', 'Viewer'],
                     values: temp
-                }, function() {
+                }, function () {
                     toastr.success('Successfully updated advanced points settings!');
                 });
             });
