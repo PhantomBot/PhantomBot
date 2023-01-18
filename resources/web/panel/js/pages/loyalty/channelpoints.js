@@ -540,7 +540,7 @@ $(function () {
                                         }));
                                     }
 
-                                    if (redeemable.image.url_4 !== undefined && redeemable.image.url_4x !== null) {
+                                    if (redeemable.image.url_4x !== undefined && redeemable.image.url_4x !== null) {
                                         if (images.length > 0) {
                                             images.push($('<br/>'));
                                         }
