@@ -47,18 +47,18 @@
                     break;
                 }
             } catch (e) {
-            }
-            try {
-                if (!sent && message.includes(keys[i]) && !message.includes('!keyword')) {
-                    var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
-                            event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                    var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
-                    if (tag !== null) {
-                        $.discord.say(channel, tag);
+                try {
+                    if (!sent && message.includes(keys[i]) && !message.includes('!keyword')) {
+                        var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
+                                event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
+                        var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
+                        if (tag !== null) {
+                            $.discord.say(channel, tag);
+                        }
+                        break;
                     }
-                    break;
+                } catch (e) {
                 }
-            } catch (e) {
             }
         }
     });
