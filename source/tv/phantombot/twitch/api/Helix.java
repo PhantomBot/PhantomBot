@@ -1986,7 +1986,7 @@ public class Helix {
         }
 
         if (background_color != null) {
-            js.key("background_color").value(background_color);
+            js.key("background_color").value(background_color.toUpperCase());
         }
 
         if (is_user_input_required != null) {
@@ -2000,25 +2000,31 @@ public class Helix {
         if (is_max_per_stream_enabled != null) {
             js.key("is_max_per_stream_enabled").value(is_max_per_stream_enabled);
 
-            if (is_max_per_stream_enabled) {
-                js.key("max_per_stream").value(max_per_stream);
+            if (max_per_stream == null) {
+                max_per_stream = 1;
             }
+
+            js.key("max_per_stream").value(max_per_stream);
         }
 
         if (is_max_per_user_per_stream_enabled != null) {
             js.key("is_max_per_user_per_stream_enabled").value(is_max_per_user_per_stream_enabled);
 
-            if (is_max_per_user_per_stream_enabled) {
-                js.key("max_per_user_per_stream").value(max_per_user_per_stream);
+            if (max_per_user_per_stream == null) {
+                max_per_user_per_stream = 1;
             }
+
+            js.key("max_per_user_per_stream").value(max_per_user_per_stream);
         }
 
         if (is_global_cooldown_enabled != null) {
             js.key("is_global_cooldown_enabled").value(is_global_cooldown_enabled);
 
-            if (is_global_cooldown_enabled) {
-                js.key("global_cooldown_seconds").value(global_cooldown_seconds);
+            if (global_cooldown_seconds == null) {
+                global_cooldown_seconds = 1;
             }
+
+            js.key("global_cooldown_seconds").value(global_cooldown_seconds);
         }
 
         if (should_redemptions_skip_request_queue != null) {
@@ -2178,7 +2184,7 @@ public class Helix {
 
         if (background_color != null) {
             hasUpdate = true;
-            js.key("background_color").value(background_color);
+            js.key("background_color").value(background_color.toUpperCase());
         }
 
         if (is_user_input_required != null) {
