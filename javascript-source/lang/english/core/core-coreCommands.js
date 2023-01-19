@@ -17,6 +17,8 @@
 $.lang.register('corecommands.shoutout.usage', 'Usage: !$1 (streamer)');
 $.lang.register('corecommands.shoutout.offline', 'Go give $1 a follow at $2 - they were last seen playing: $3!');
 $.lang.register('corecommands.shoutout.online', 'Go give $1 a follow at $2 - they are currently playing: $3!');
+$.lang.register('corecommands.shoutoutapi.enable', '!shoutout will now also trigger the Twitch /shoutout command');
+$.lang.register('corecommands.shoutoutapi.disable', '!shoutout will not trigger the Twitch /shoutout command');
 $.lang.register('corecommands.shoutout.no.game', 'Hey! Go give $1 a follow at $2!');
 $.lang.register('corecommands.settimevar.usage', 'Usage: !settimevar (varName) (Optional: Time to Set)');
 $.lang.register('corecommands.settimevar.success', 'Set the timevar $1 to the time $2');
