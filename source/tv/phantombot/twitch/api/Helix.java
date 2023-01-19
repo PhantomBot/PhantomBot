@@ -2418,6 +2418,50 @@ public class Helix {
         });
     }
 
+    /**
+     * Sends a Shoutout to the specified broadcaster.
+     *
+     * Rate Limits: The broadcaster may send a Shoutout once every 2 minutes. They may send the same broadcaster a Shoutout once every 60 minutes.
+     *
+     * @param from_broadcaster_id The ID of the broadcaster that's sending the Shoutout.
+     * @param to_broadcaster_id The ID of the broadcaster that's receiving the Shoutout.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendShoutout(String from_broadcaster_id, String to_broadcaster_id)
+            throws JSONException, IllegalArgumentException {
+        return this.sendShoutoutAsync(from_broadcaster_id, to_broadcaster_id).block();
+    }
+
+    /**
+     * Sends a Shoutout to the specified broadcaster.
+     *
+     * Rate Limits: The broadcaster may send a Shoutout once every 2 minutes. They may send the same broadcaster a Shoutout once every 60 minutes.
+     *
+     * @param from_broadcaster_id The ID of the broadcaster that's sending the Shoutout.
+     * @param to_broadcaster_id The ID of the broadcaster that's receiving the Shoutout.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendShoutoutAsync(String from_broadcaster_id, String to_broadcaster_id)
+            throws JSONException, IllegalArgumentException {
+        if (from_broadcaster_id == null || from_broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("from_broadcaster_id");
+        }
+
+        if (to_broadcaster_id == null || to_broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("to_broadcaster_id");
+        }
+
+        String endpoint = "/chat/shoutouts?" + this.qspValid("from_broadcaster_id", from_broadcaster_id) + this.qspValid("&to_broadcaster_id", to_broadcaster_id) + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID());
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint);
+        });
+    }
+
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`
