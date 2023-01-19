@@ -51,6 +51,10 @@ final class TMISlashCommands {
             case ".announceorange":
                 announce(channel, message);
                 break;
+            case "/shoutout":
+            case ".shoutout":
+                shoutout(channel, message);
+                break;
             case "/timeout":
             case ".timeout":
                 timeout(channel, message);
@@ -167,6 +171,39 @@ final class TMISlashCommands {
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to send an /announce: " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void shoutout(String channel, String message) {
+        String[] params = message.split(" ", 2);
+
+        if (params.length < 2) {
+            com.gmt2001.Console.err.println("Failed to /timeout due to missing param");
+            return;
+        }
+
+        String from_user_id = UsernameCache.instance().getID(channel);
+
+        if (from_user_id.equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + channel + ", can not /shoutout");
+            return;
+        }
+
+        String to_user_id = UsernameCache.instance().getID(params[1]);
+
+        if (to_user_id.equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /shoutout");
+            return;
+        }
+
+        Helix.instance().sendShoutoutAsync(from_user_id, to_user_id)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") == 429) {
+                        com.gmt2001.Console.err.println("Failed to /shoutout " + params[1] + " due to rate limit (2/min, 60 min cooldown for same target): " + jso.toString());
+                    } else if (jso.getInt("_http") != 204) {
+                        com.gmt2001.Console.err.println("Failed to /shoutout " + params[1] + ": " + jso.toString());
                     }
                 })
                 .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
