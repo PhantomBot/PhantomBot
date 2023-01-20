@@ -14,6 +14,14 @@ Parameters enclosed in square brackets `[ ]` are required when using the command
 
 Parameters enclosed in parenthesis `( )` are optional when using the command
 
+### forceoauthrefresh
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+forceoauthrefresh - Force a refresh of both Twitch OAuth tokens.
+
+&nbsp;
+
 ### updategameslist
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
