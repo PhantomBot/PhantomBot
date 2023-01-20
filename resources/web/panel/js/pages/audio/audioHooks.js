@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that queries all of the data we need.
 $(run = function () {
     // Check if the module is enabled.
@@ -310,7 +312,7 @@ $(function () {
         })
                 // Main div for the browser source link.
                 .append($('<div/>', {
-                    'class': 'form-group',
+                    'class': 'form-group'
                 })
                         // Append the lable.
                         .append($('<label/>', {
@@ -406,10 +408,10 @@ $(function () {
                                 .append(helpers.getInputGroup('command-reward', 'number', 'Reward', '0', '0',
                                         'Reward in points the user will be given when running the command.'))
                                 // Append input box for the global command cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', undefined,
+                                .append(helpers.getInputGroup('command-cooldown-global', 'number', 'Global Cooldown (Seconds)', '-1', '-1',
                                         'Global Cooldown of the command in seconds. -1 Uses the bot-wide settings.'))
                                 // Append input box for per-user cooldown.
-                                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', undefined,
+                                .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', '-1',
                                         'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
                                 // Append input box for mods skip cooldown.
                                 .append(helpers.getCheckBox('command-cooldown-modsskip', false, 'Mods Skip Cooldown',
