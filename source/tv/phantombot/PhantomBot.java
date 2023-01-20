@@ -519,7 +519,9 @@ public final class PhantomBot implements Listener {
 
     public void reloadProperties() {
         this.checkPanelLogin();
+
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
+
         if (this.pubSubEdge != null) {
             this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
         }
