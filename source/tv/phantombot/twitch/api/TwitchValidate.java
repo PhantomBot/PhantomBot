@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import tv.phantombot.PhantomBot;
 
 /**
  * Handle Validate requests of the OAUTH2 token from Twitch.
@@ -44,6 +45,7 @@ public class TwitchValidate {
     private static final String BASE_URL = "https://id.twitch.tv/oauth2/validate";
     private static final long REFRESH_INTERVAL = 3600000L;
     private static final long TIMEOUT_TIME = 5000L;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<String> scopesC = new CopyOnWriteArrayList<>();
     private String clientidC = "";
     private String loginC = "";
@@ -51,6 +53,7 @@ public class TwitchValidate {
     public boolean validC = false;
     private Thread validateC = null;
     private ValidateRunnable validaterC = null;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<String> scopesA = new CopyOnWriteArrayList<>();
     private String clientidA = "";
     private String loginA = "";
@@ -58,6 +61,7 @@ public class TwitchValidate {
     public boolean validA = false;
     private Thread validateA = null;
     private ValidateRunnable validaterA = null;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<String> scopesT = new CopyOnWriteArrayList<>();
     private String clientidT = "";
     private String loginT = "";
@@ -348,6 +352,7 @@ public class TwitchValidate {
         private final String type;
         private final int tokenType;
         private boolean firstRun = true;
+        private boolean lastFail = false;
 
         public ValidateRunnable(String oAuthToken, String type, int tokenType) {
             this.oAuthToken = oAuthToken.replace("oauth:", "");
@@ -370,11 +375,18 @@ public class TwitchValidate {
                 com.gmt2001.Console.debug.println(type + requestObj.toString(4));
 
                 if (requestObj.has("message") && requestObj.getString("message").equals("invalid access token")) {
-                    com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, "
-                            + "been disabled, or the Twitch API is experiencing issues.");
-                    com.gmt2001.Console.debug.println(requestObj.toString(4));
+                    if (lastFail || tokenType == 2) {
+                        com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, "
+                                + "been disabled, or the Twitch API is experiencing issues.");
+                        com.gmt2001.Console.debug.println(requestObj.toString(4));
+                    } else {
+                        lastFail = true;
+                        PhantomBot.instance().getAuthFlow().refresh(tokenType == 1, tokenType == 0);
+                    }
                     return;
                 }
+
+                lastFail = false;
 
                 if (!requestObj.getBoolean("_success")) {
                     com.gmt2001.Console.err.println("Attempt to validate " + type + " OAUTH token failed.");

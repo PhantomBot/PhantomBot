@@ -116,6 +116,13 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
+         * @consolecommand forceoauthrefresh - Force a refresh of both Twitch OAuth tokens.
+         */
+        if (message.equalsIgnoreCase("forceoauthrefresh")) {
+            PhantomBot.instance().getAuthFlow().refresh();
+        }
+
+        /**
          * @consolecommand updategameslist - Force a full update of the games list.
          */
         if (message.equalsIgnoreCase("updategameslist")) {
