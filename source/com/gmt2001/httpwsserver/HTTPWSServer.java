@@ -247,7 +247,7 @@ public final class HTTPWSServer {
 
     public boolean isSsl() {
         /**
-         * @botproperty proxybypasshttps - If `true`, the HTTP server reports SSL is enabled, even if `usessl` is `false`. Default `true`
+         * @botproperty proxybypasshttps - If `true`, the HTTP server reports SSL is enabled, even if `usessl` is `false`. Default `false`
          * @botpropertycatsort proxybypasshttps 80 700 HTTP/WS
          * @botpropertyrestart proxybypasshttps
          */
