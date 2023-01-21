@@ -23,6 +23,16 @@ $(function () {
             isDebug = localStorage.getItem('phantombot_alerts_debug') === 'true' || false;
     let queue = [];
 
+    let audioFormats = {
+        maybe: [],
+        probably: []
+    };
+
+    let videoFormats = {
+        maybe: [],
+        probably: []
+    };
+
     let queueProcessing = false;
     let playingAudioFiles = [];
 
@@ -37,6 +47,86 @@ $(function () {
     const PROVIDER_MAXCDN = 'maxcdn';
     const PROVIDER_FFZ = 'ffz';
     const PROVIDER_BTTV = 'bttv';
+
+    //Copied from https://davidwalsh.name/detect-supported-audio-formats-javascript
+    function populateSupportedAudioTypes() {
+        let audio = new Audio();
+
+        let formats = {
+            wav: 'audio/wav',
+            mp3: 'audio/mpeg',
+            mp4: 'audio/mp4',
+            m4a: 'audio/mp4',
+            aac: 'audio/aac',
+            opus: 'audio/ogg; codecs="opus"',
+            ogg: 'audio/ogg; codecs="vorbis"',
+            oga: 'audio/ogg; codecs="vorbis"',
+            webm: 'audio/webm; codecs="vorbis"'
+        };
+
+        for (let x in formats) {
+            let ret = audio.canPlayType(formats[x]);
+            printDebug('supportsAudioType(' + x + '): ' + ret);
+
+            if (ret === 'maybe') {
+                audioFormats.maybe.push(x);
+            } else if (ret === 'probably') {
+                audioFormats.probably.push(x);
+            }
+        }
+    }
+    populateSupportedAudioTypes();
+
+    //Copied from https://davidwalsh.name/detect-supported-video-formats-javascript
+    function populateSupportedVideoTypes() {
+        let video = document.createElement('video');
+
+        let formats = {
+            ogg: 'video/ogg; codecs="theora"',
+            ogv: 'video/ogg; codecs="theora"',
+            webm: 'video/webm; codecs="vp8"',
+            mp4: 'video/mp4'
+        };
+
+        for (let x in formats) {
+            let ret = video.canPlayType(formats[x]);
+            printDebug('supportsVideoType(' + x + '): ' + ret);
+
+            if (ret === 'maybe') {
+                videoFormats.maybe.push(x);
+            } else if (ret === 'probably') {
+                videoFormats.probably.push(x);
+            }
+        }
+    }
+    populateSupportedVideoTypes();
+
+
+
+    function findFirstFile(filePath, fileName, extensions) {
+        let ret = '';
+
+        if (!filePath.endsWith('/')) {
+            filePath = filePath + '/';
+        }
+
+        for (let x in extensions) {
+            if (ret.length > 0) {
+                return ret;
+            }
+
+            $.ajax({
+                async: false,
+                method: 'HEAD',
+                url: filePath + fileName + '.' + extensions[x],
+                success: function () {
+                    ret = filePath + fileName + '.' + extensions[x];
+                }
+            });
+        }
+
+        return ret;
+    }
 
     /*
      * @function Gets a new instance of the websocket.
@@ -123,59 +213,6 @@ $(function () {
         } catch (ex) {
             printDebug('Failed to send a message to the socket: ' + ex.stack);
         }
-    }
-
-    //Copied from https://davidwalsh.name/detect-supported-audio-formats-javascript
-    function supportsAudioType(type) {
-        let audio;
-
-        // Allow user to create shortcuts, i.e. just "mp3"
-        let formats = {
-            mp3: 'audio/mpeg',
-            aac: 'audio/aac',
-            ogg: 'audio/ogg; codecs="vorbis"'
-        };
-
-        if (!audio) {
-            audio = document.createElement('audio');
-        }
-
-        let ret = audio.canPlayType(formats[type] || type);
-
-        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true') {
-            $('.main-alert').append('<br />supportsAudioType(' + type + '): ' + ret);
-        }
-
-        printDebug('supportsAudioType(' + type + '): ' + ret);
-
-        return ret;
-    }
-
-    //Copied from https://davidwalsh.name/detect-supported-video-formats-javascript
-    function supportsVideoType(type) {
-        let video;
-
-        // Allow user to create shortcuts, i.e. just "webm"
-        let formats = {
-            ogg: 'video/ogg; codecs="theora"',
-            ogv: 'video/ogg; codecs="theora"',
-            webm: 'video/webm; codecs="vp8, vorbis"',
-            mp4: 'video/mp4'
-        };
-
-        if (!video) {
-            video = document.createElement('video');
-        }
-
-        let ret = video.canPlayType(formats[type] || type);
-
-        if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true') {
-            $('.main-alert').append('<br />supportsVideoType(' + type + '): ' + ret);
-        }
-
-        printDebug('supportsVideoType(' + type + '): ' + ret);
-
-        return ret;
     }
 
     /*
@@ -286,27 +323,16 @@ $(function () {
      */
     function getAudioFile(name, path) {
         let defaultPath = '/config/audio-hooks/',
-                fileName = '',
-                extensions = ['mp3', 'aac', 'ogg'];
+                fileName = '';
 
         if (path !== undefined) {
             defaultPath = path;
         }
 
-        for (let x in extensions) {
-            if (fileName.length > 0) {
-                break;
-            }
-            if (supportsAudioType(extensions[x]) !== '') {
-                $.ajax({
-                    async: false,
-                    method: 'HEAD',
-                    url: defaultPath + name + '.' + extensions[x],
-                    success: function () {
-                        fileName = (defaultPath + name + '.' + extensions[x]);
-                    }
-                });
-            }
+        fileName = findFirstFile(defaultPath, name, audioFormats.probably);
+
+        if (fileName.length === 0) {
+            fileName = findFirstFile(defaultPath, name, audioFormats.maybe);
         }
 
         if (fileName.length === 0) {
@@ -640,8 +666,9 @@ $(function () {
                 htmlObj.prop('volume', gifVolume);
                 isVideo = true;
 
-                if (supportsVideoType(gifFile.substring(gifFile.lastIndexOf('.') + 1)) === '') {
-                    printDebug('Video format was not supported by the browser!', true);
+                let ext = gifFile.substring(gifFile.lastIndexOf('.') + 1);
+                if (!videoFormats.probably.includes(ext) && !videoFormats.maybe.includes(ext)) {
+                    printDebug('Video format ' + ext + ' was not supported by the browser!', true);
                 }
             } else {
                 htmlObj = $('<img/>', {
