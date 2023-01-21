@@ -476,7 +476,7 @@ _NOTE: A restart is required for this property to take effect_
 
 Data Type: _Boolean_
 
-if `true`, the http server reports ssl is enabled, even if `usessl` is `false`. default `true`
+if `true`, the http server reports ssl is enabled, even if `usessl` is `false`. default `false`
 
 _NOTE: A restart is required for this property to take effect_
 
