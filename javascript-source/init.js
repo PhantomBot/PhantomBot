@@ -44,9 +44,9 @@
     }
 
     function handleException(where, ex) {
+        var loc = 0;
+        var errmsg = null;
         try {
-            var errmsg;
-
             if (where === undefined || where === null || (typeof where) !== 'string') {
                 try {
                     where = '' + where;
@@ -55,6 +55,7 @@
                 }
             }
 
+            loc = 1;
             try {
                 errmsg = 'Exception [' + ex + '] Location[' + where + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + ']';
             } catch (e) {
@@ -64,34 +65,64 @@
                     errmsg = 'Exception [Unknown] Location[' + where + ']';
                 }
             }
+
+            loc = 2;
             if ($.log !== undefined && $.log.error !== undefined) {
                 try {
+                    loc = 3;
                     $.log.error(errmsg);
                 } catch (e) {
+                    loc = 4;
                     Packages.com.gmt2001.Console.err.printLn(errmsg);
                 }
             } else {
+                loc = 5;
                 Packages.com.gmt2001.Console.err.printLn(errmsg);
             }
             if (ex.javaException !== undefined) {
                 consoleLn("Sending stack trace to error log...");
                 try {
+                    loc = 6;
                     Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, errmsg);
                 } catch (e) {
+                    loc = 7;
                     Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), errmsg);
                 }
             } else {
                 try {
+                    loc = 8;
                     Packages.com.gmt2001.Console.err.printStackTrace(ex, errmsg);
                 } catch (e) {
+                    loc = 9;
                     Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), errmsg);
                 }
             }
         } catch (oops) {
             var oopsmsg = "Location[handleException] Encountered an unrecoverable exception while trying to handle another exception";
+            var data = new Packages.java.util.HashMap();
+            try {
+                data.put("loc", loc);
+            } catch (e) {
+            }
+            try {
+                data.put("where", where);
+            } catch (e) {
+            }
+            try {
+                data.put("errmsg", errmsg);
+            } catch (e) {
+            }
+            try {
+                data.put("ex", ex);
+            } catch (e) {
+            }
+            try {
+                data.put("exstr", ex.toString());
+            } catch (e) {
+            }
             Packages.com.gmt2001.Console.err.println(oopsmsg);
             Packages.com.gmt2001.Console.err.println(oops);
-            Packages.com.gmt2001.Console.err.printStackTrace(oops, oopsmsg);
+            Packages.com.gmt2001.Console.err.printStackTrace(oops, data, oopsmsg, false);
         }
     }
 
