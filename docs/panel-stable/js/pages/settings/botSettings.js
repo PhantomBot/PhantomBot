@@ -15,14 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global toastr */
+
 // Function that querys all of the data we need.
 $(function () {
     // Get logging settings.
     socket.getDBValues('get_logging_settings', {
         tables: ['settings', 'settings', 'settings', 'settings', 'settings',
-            'settings', 'settings'],
+            'settings', 'settings', 'settings'],
         keys: ['log.file', 'log.event', 'log.error', 'log_rotate_days',
-            'response_@chat', 'response_action', 'whisperMode']
+            'response_@chat', 'response_action', 'whisperMode', 'shoutoutapi']
     }, true, function (e) {
         // Update log event toggle.
         $('#logging-events').val((e['log.event'] === 'true' ? 'Yes' : 'No'));
@@ -38,6 +40,8 @@ $(function () {
         $('#bot-action-mode').val((e['response_action'] === 'true' ? 'Yes' : 'No'));
         // Set whisper mode.
         $('#bot-whisper-mode').val((e['whisperMode'] === 'true' ? 'Yes' : 'No'));
+        // Set shoutout mode.
+        $('#bot-shoutout-api').val((e['shoutoutapi'] === 'true' ? 'Yes' : 'No'));
     });
 });
 
@@ -51,6 +55,7 @@ $(function () {
                 muteMode = $('#bot-mute-mode').find(':selected').text() !== 'Yes',
                 actionMode = $('#bot-action-mode').find(':selected').text() === 'Yes',
                 whisperMode = $('#bot-whisper-mode').find(':selected').text() === 'Yes',
+                shoutoutMode = $('#bot-shoutout-api').find(':selected').text() === 'Yes',
                 logDays = $('#log-days');
 
         switch (false) {
@@ -59,15 +64,17 @@ $(function () {
             default:
                 socket.updateDBValues('update_logging_settings', {
                     tables: ['settings', 'settings', 'settings', 'settings', 'settings',
-                        'settings', 'settings'],
+                        'settings', 'settings', 'settings'],
                     keys: ['log.file', 'log.event', 'log.error', 'log_rotate_days',
-                        'response_@chat', 'response_action', 'whisperMode'],
+                        'response_@chat', 'response_action', 'whisperMode', 'shoutoutapi'],
                     values: [logChat, logEvents, logErrors, logDays.val(),
-                        muteMode, actionMode, whisperMode]
+                        muteMode, actionMode, whisperMode, shoutoutMode]
                 }, function () {
                     socket.sendCommand('update_logging_settings_cmd', 'reloadlogs', function () {
                         socket.sendCommand('update_misc_settings_cmd', 'reloadmisc', function () {
-                            toastr.success('Successfully updated log settings!');
+                            socket.wsEvent('update_shoutout_settings_ws', './core/coreCommands.js', null, [], function () {
+                                toastr.success('Successfully updated log and output settings!');
+                            });
                         });
                     });
                 });
