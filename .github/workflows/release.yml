@@ -250,51 +250,15 @@ jobs:
         cd ..
         mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
         rm -rf $FOLDERFULL
-    - name: Upload Asset (Full)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload Assets
+      uses: softprops/action-gh-release@v1
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}.zip', needs.workflowvars.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}.zip', needs.workflowvars.outputs.version) }}
-        asset_content_type: application/zip
-    - name: Upload Asset (Linux)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}-lin.zip', needs.workflowvars.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}-lin.zip', needs.workflowvars.outputs.version) }}
-        asset_content_type: application/zip
-    - name: Upload Asset (Windows)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}-win.zip', needs.workflowvars.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}-win.zip', needs.workflowvars.outputs.version) }}
-        asset_content_type: application/zip
-    - name: Upload Asset (macOS)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}-mac.zip', needs.workflowvars.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}-mac.zip', needs.workflowvars.outputs.version) }}
-        asset_content_type: application/zip
-    - name: Upload Asset (ARM/BSD/Other)
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ${{ format('dist/PhantomBot-{0}-arm-bsd-other.zip', needs.workflowvars.outputs.version) }}
-        asset_name: ${{ format('PhantomBot-{0}-arm-bsd-other.zip', needs.workflowvars.outputs.version) }}
-        asset_content_type: application/zip
+        files: |
+          ${{ format('dist/PhantomBot-{0}.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-lin.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-win.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-mac.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-arm-bsd-other.zip', needs.workflowvars.outputs.version) }}
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
       uses: rollbar/github-deploy-action@2.1.1
