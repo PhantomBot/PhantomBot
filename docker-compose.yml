@@ -116,9 +116,15 @@ services:
       - /app/pyouroboros/hooks:/app/pyouroboros/hooks
 
 volumes:
-  # It is recommended to leave this as it is with nothing after the colon (:)
+  # It is recommended to leave this as it is with the lines commented out
   # This allows Docker to handle your data volume and associated permissions
   # with a guarantee that they will work properly
   #
-  # If you still want mount to a host directory, this is where you do it, after the colon (:)
+  # If you still want mount to a host directory, this is where you do it
+  # Remove the # symbols from all 4 lines below, then change the path on the last line
+  # NOTE: It is important that you do not add or remove any spaces
   PhantomBot_data:
+  #  driver: local
+  #  driver_opts:
+  #    o: bind
+  #    device: /home/someuser/phantombot
