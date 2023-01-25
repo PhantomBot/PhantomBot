@@ -31,7 +31,7 @@ public class ConsoleInputListener extends Thread {
                 String msg = com.gmt2001.Console.in.readLine();
                 EventBus.instance().postAsync(new ConsoleInputEvent(msg));
                 Thread.sleep(10);
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 com.gmt2001.Console.err.printStackTrace(e);
             }
         }
