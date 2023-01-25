@@ -22,6 +22,9 @@ public class TwitterEvent extends Event {
 
     private final String tweet;
     private final String mention;
+    private final String text;
+    private final String url;
+    private final boolean isRt;
 
     /**
      * Class constructor.
@@ -32,6 +35,9 @@ public class TwitterEvent extends Event {
         super();
         this.tweet = tweet;
         this.mention = null;
+        this.text = null;
+        this.url = null;
+        this.isRt = false;
     }
 
     /**
@@ -44,6 +50,27 @@ public class TwitterEvent extends Event {
         super();
         this.tweet = tweet;
         this.mention = mention;
+        this.text = null;
+        this.url = null;
+        this.isRt = false;
+    }
+
+    public TwitterEvent(String tweet, String text, String url, boolean isRt) {
+        super();
+        this.tweet = tweet;
+        this.mention = null;
+        this.text = text;
+        this.url = url;
+        this.isRt = isRt;
+    }
+
+    public TwitterEvent(String tweet, String text, String url, boolean isRt, String mention) {
+        super();
+        this.tweet = tweet;
+        this.mention = mention;
+        this.text = text;
+        this.url = url;
+        this.isRt = isRt;
     }
 
     /**
@@ -62,5 +89,17 @@ public class TwitterEvent extends Event {
      */
     public String getMentionUser() {
         return this.mention;
+    }
+
+    public String text() {
+        return this.text;
+    }
+
+    public String url() {
+        return this.url;
+    }
+
+    public boolean isRt() {
+        return this.isRt;
     }
 }

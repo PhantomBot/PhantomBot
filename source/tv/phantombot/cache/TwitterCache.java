@@ -212,7 +212,7 @@ public class TwitterCache implements Runnable {
         /* Poll latest retweet. */
         String tweet = "[RT] " + statuses.get(0).tweet().getText() + " " + Character.toString(0x1F517) + " " + TwitterAPI.instance().getTwitterURLFromId(twitterID);
         updateDBString("last_retweets", tweet);
-        EventBus.instance().postAsync(new TwitterEvent(tweet));
+        EventBus.instance().postAsync(new TwitterEvent(tweet, statuses.get(0).tweet().getText(), TwitterAPI.instance().getTwitterURLFromId(twitterID), true));
 
         /* Update DB with the last Tweet ID processed. */
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_retweets", twitterID);
@@ -284,7 +284,7 @@ public class TwitterCache implements Runnable {
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_mentions", twitterID);
         updateDBString("last_mentions", tweet);
-        EventBus.instance().postAsync(new TwitterEvent(tweet, name));
+        EventBus.instance().postAsync(new TwitterEvent(tweet, statuses.get(0).getText(), TwitterAPI.instance().getTwitterURLFromId(twitterID), false, name));
     }
 
     /**
@@ -312,7 +312,7 @@ public class TwitterCache implements Runnable {
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
-        EventBus.instance().postAsync(new TwitterEvent(tweet));
+        EventBus.instance().postAsync(new TwitterEvent(tweet, statuses.get(0).getText(), TwitterAPI.instance().getTwitterURLFromId(twitterID), false));
     }
 
     /**
@@ -340,7 +340,7 @@ public class TwitterCache implements Runnable {
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);
-        EventBus.instance().postAsync(new TwitterEvent(tweet));
+        EventBus.instance().postAsync(new TwitterEvent(tweet, statuses.get(0).getText(), TwitterAPI.instance().getTwitterURLFromId(twitterID), false));
     }
 
     /**
