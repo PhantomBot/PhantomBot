@@ -37,7 +37,9 @@ import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
+import tv.phantombot.event.jvm.PropertiesLoadedEvent;
 import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 
 public final class Logger extends SubmissionPublisher<Logger.LogItem> implements Flow.Processor<Logger.LogItem, Logger.LogItem>, Listener {
@@ -120,6 +122,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
                 try {
                     if (!subscribed) {
                         INSTANCE.subscribe(INSTANCE);
+                        EventBus.instance().register(INSTANCE);
                     }
                     subscribed = true;
                 } catch (IllegalStateException ex) {
@@ -152,7 +155,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
     }
 
     @Handler
-    public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
+    public void onPropertiesLoadedEvent(PropertiesLoadedEvent event) {
         this.zoneId = PhantomBot.getTimeZoneId();
     }
 

@@ -16,5 +16,5 @@
  */
 package tv.phantombot.event.jvm;
 
-public class PropertiesReloadedEvent extends PropertiesLoadedEvent {
+public class PropertiesLoadedEvent extends JVMEvent {
 }

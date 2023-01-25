@@ -87,6 +87,7 @@ import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
+import tv.phantombot.event.jvm.PropertiesLoadedEvent;
 import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.jvm.ShutdownEvent;
 import tv.phantombot.httpserver.HTTPAuthenticatedHandler;
@@ -1286,6 +1287,8 @@ public final class PhantomBot implements Listener {
         CaselessProperties startProperties = ConfigurationManager.getConfiguration();
 
         setStaticFields(startProperties);
+
+        EventBus.instance().postAsync(new PropertiesLoadedEvent());
 
         /* Start PhantomBot */
         PhantomBot.instance = new PhantomBot();
