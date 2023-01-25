@@ -17,6 +17,8 @@
 
 $.lang.register('twitter.tweet', '[Twitter Feed From @(twitterid)] $1');
 $.lang.register('twitter.tweet.mention', '[Twitter Feed From @(twitterid)] @$1: $2');
+$.lang.register('twitter.tweet.rt', '[RT] $1 🔗 $2');
+$.lang.register('twitter.tweet.tweet', '$1 🔗 $2');
 $.lang.register('twitter.reward.announcement', 'Retweets from $1! Reward of $2 given!');
 $.lang.register('twitter.usage', 'usage: !twitter [lasttweet | lastmention | lastretweet | set | post | id]');
 $.lang.register('twitter.id', '$1 is on Twitter @$2: twitter.com/$2');

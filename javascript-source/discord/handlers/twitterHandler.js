@@ -15,70 +15,78 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * This module is to handle Twitter notifications.
  */
-(function() {
+(function () {
     var toggle = $.getSetIniDbBoolean('discordSettings', 'twitterToggle', false),
-        channelName = $.getSetIniDbString('discordSettings', 'twitterChannel', ''),
-        announce = false;
+            channelName = $.getSetIniDbString('discordSettings', 'twitterChannel', ''),
+            announce = false;
 
-    /**
+    /*
      * @event webPanelSocketUpdate
      */
-    $.bind('webPanelSocketUpdate', function(event) {
+    $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./discord/handlers/twitterHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'twitterToggle', false);
             channelName = $.getIniDbString('discordSettings', 'twitterChannel', '');
         }
     });
 
-    /**
+    /*
      * @event twitter
      */
-    $.bind('twitter', function(event) {
-        if (toggle === false || announce === false || channelName == '') {
+    $.bind('twitter', function (event) {
+        if (toggle === false || announce === false || channelName === '') {
             return;
         }
 
-        if (event.getMentionUser() != null) {
+        var tweet = event.getTweet();
+
+        if (event.text() !== null) {
+            tweet = $.lang.get('discord.twitterhandler.tweet.' + (event.isRt() ? 'rt' : 'tweet'), event.text(), event.url());
+        }
+
+        if (event.getMentionUser() !== null) {
             $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
-                .withTitle($.twitter.username())
-                .withUrl('https://twitter.com/' + $.twitter.username())
-                .withColor(31, 158, 242)
-                .withTimestamp(Date.now())
-                .withFooterText('Twitter')
-                .withFooterIcon('https://abs.twimg.com/icons/apple-touch-icon-192x192.png')
-                .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
-                .withDesc('[' + event.getMentionUser() + '](https://twitter.com/' + event.getMentionUser() + '): ' + event.getTweet())
-                .build());
+                    .withTitle($.twitter.username())
+                    .withUrl('https://twitter.com/' + $.twitter.username())
+                    .withColor(31, 158, 242)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitter')
+                    .withFooterIcon('https://abs.twimg.com/icons/apple-touch-icon-192x192.png')
+                    .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
+                    .withDesc('[' + event.getMentionUser() + '](https://twitter.com/' + event.getMentionUser() + '): ' + tweet)
+                    .build());
         } else {
             // Send the message as an embed.
             $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
-                .withTitle($.twitter.username())
-                .withUrl('https://twitter.com/' + $.twitter.username())
-                .withColor(31, 158, 242)
-                .withTimestamp(Date.now())
-                .withFooterText('Twitter')
-                .withFooterIcon('https://abs.twimg.com/icons/apple-touch-icon-192x192.png')
-                .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
-                .withDesc(event.getTweet())
-                .build());
+                    .withTitle($.twitter.username())
+                    .withUrl('https://twitter.com/' + $.twitter.username())
+                    .withColor(31, 158, 242)
+                    .withTimestamp(Date.now())
+                    .withFooterText('Twitter')
+                    .withFooterIcon('https://abs.twimg.com/icons/apple-touch-icon-192x192.png')
+                    .withAuthorName($.lang.get('discord.twitterhandler.tweet'))
+                    .withDesc(tweet)
+                    .build());
         }
     });
 
-    /**
+    /*
      * @event discordChannelCommand
      */
-    $.bind('discordChannelCommand', function(event) {
+    $.bind('discordChannelCommand', function (event) {
         var sender = event.getSender(),
-            channel = event.getDiscordChannel(),
-            command = event.getCommand(),
-            mention = event.getMention(),
-            arguments = event.getArguments(),
-            args = event.getArgs(),
-            action = args[0],
-            subAction = args[1];
+                channel = event.getDiscordChannel(),
+                command = event.getCommand(),
+                mention = event.getMention(),
+                arguments = event.getArguments(),
+                args = event.getArgs(),
+                action = args[0],
+                subAction = args[1];
 
         if (command.equalsIgnoreCase('twitterhandler')) {
             if (action === undefined) {
@@ -114,7 +122,7 @@
     /**
      * @event initReady
      */
-    $.bind('initReady', function() {
+    $.bind('initReady', function () {
         $.discord.registerCommand('./discord/handlers/twitterHandler.js', 'twitterhandler', 1);
         $.discord.registerSubCommand('twitterhandler', 'toggle', 1);
         $.discord.registerSubCommand('twitterhandler', 'channel', 1);

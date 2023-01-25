@@ -64,10 +64,17 @@
         if (!$.bot.isModuleEnabled('./handlers/twitterHandler.js')) {
             return;
         }
+
+        var tweet = event.getTweet();
+
+        if (event.text() !== null) {
+            tweet = $.lang.get('twitter.tweet.' + (event.isRt() ? 'rt' : 'tweet'), event.text(), event.url());
+        }
+
         if (event.getMentionUser() !== null) {
-            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), event.getTweet()).replace('(twitterid)', $.twitter.username() + ''));
+            $.say($.lang.get('twitter.tweet.mention', event.getMentionUser(), tweet).replace('(twitterid)', $.twitter.username() + ''));
         } else {
-            $.say($.lang.get('twitter.tweet', event.getTweet()).replace('(twitterid)', $.twitter.username() + ''));
+            $.say($.lang.get('twitter.tweet', tweet).replace('(twitterid)', $.twitter.username() + ''));
         }
     });
 
