@@ -331,8 +331,9 @@ public class WsPanelHandler implements WsFrameHandler {
                 json.getJSONArray("data").forEach(jsonObject::value);
                 jsonObject.endArray();
             } else {
-                jsonObject.key("error").value(json.getString("error")).key("message").value(json.getString("message"));
-                jsonObject.key("status").value(json.getInt("status"));
+                jsonObject.key("error").value(json.has("error") ? json.getString("error") : "UNKWN");
+                jsonObject.key("message").value(json.has("message") ? json.getString("message") : "UNKNOWN");
+                jsonObject.key("status").value(json.has("status") ? json.getInt("status") : -1);
             }
             jsonObject.endObject().endObject();
             WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
