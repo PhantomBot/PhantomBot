@@ -44,6 +44,10 @@ public final class in {
 
             return s;
         } catch (IOException ex) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex2) {
+            }
         }
 
         return "";
