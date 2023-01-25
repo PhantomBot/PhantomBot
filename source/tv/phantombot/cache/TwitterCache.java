@@ -210,7 +210,7 @@ public class TwitterCache implements Runnable {
         String twitterID = statuses.get(0).tweet().getId();
 
         /* Poll latest retweet. */
-        String tweet = "[RT] " + statuses.get(0).tweet().getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = "[RT] " + statuses.get(0).tweet().getText() + " " + Character.toString(0x1F517) + " " + TwitterAPI.instance().getTwitterURLFromId(twitterID);
         updateDBString("last_retweets", tweet);
         EventBus.instance().postAsync(new TwitterEvent(tweet));
 
@@ -272,7 +272,7 @@ public class TwitterCache implements Runnable {
         }
 
         String twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " " + Character.toString(0x1F517) + " " + TwitterAPI.instance().getTwitterURLFromId(twitterID);
         String authorId = statuses.get(0).getAuthorId();
         User u = TwitterAPI.instance().getUser(authorId);
 
@@ -308,7 +308,7 @@ public class TwitterCache implements Runnable {
         }
 
         String twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " " + Character.toString(0x1F517) + " " + TwitterAPI.instance().getTwitterURLFromId(twitterID);
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_hometimeline", twitterID);
         updateDBString("last_hometimeline", tweet);
@@ -336,7 +336,7 @@ public class TwitterCache implements Runnable {
         }
 
         String twitterID = statuses.get(0).getId();
-        String tweet = statuses.get(0).getText() + " [" + TwitterAPI.instance().getTwitterURLFromId(twitterID) + "]";
+        String tweet = statuses.get(0).getText() + " " + Character.toString(0x1F517) + " " + TwitterAPI.instance().getTwitterURLFromId(twitterID);
 
         PhantomBot.instance().getDataStore().SetString("twitter", "", "lastid_usertimeline", twitterID);
         updateDBString("last_usertimeline", tweet);
