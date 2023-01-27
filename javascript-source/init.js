@@ -122,7 +122,11 @@
             }
             Packages.com.gmt2001.Console.err.println(oopsmsg);
             Packages.com.gmt2001.Console.err.println(oops);
-            Packages.com.gmt2001.Console.err.printStackTrace(oops, data, oopsmsg, false);
+            try {
+                Packages.com.gmt2001.Console.err.printStackTrace(oops, data, oopsmsg, false);
+            } catch (e) {
+                Packages.com.gmt2001.Console.err.oops(oops, data, oopsmsg, false);
+            }
         }
     }
 

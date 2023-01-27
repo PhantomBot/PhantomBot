@@ -97,6 +97,14 @@ public final class err {
         printStackTrace(e, custom, description, isUncaught, false);
     }
 
+    public static void oops(Object o, Map<String, Object> custom, String description, boolean isUncaught) {
+        try {
+            throw new RuntimeException(o.toString());
+        } catch (RuntimeException e) {
+            printStackTrace(e, custom, description, isUncaught);
+        }
+    }
+
     public static void printStackTrace(Throwable e, Map<String, Object> custom, String description, boolean isUncaught, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
             e.printStackTrace(System.err);
