@@ -1,0 +1,23 @@
+name: Release Docs
+on:
+  workflow_dispatch:
+
+jobs:
+  updateguides:
+    name: Update Guides (Stable)
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Copy Files
+      run: |
+        mkdir -p docs/guides/content-stable/
+        rsync -rv --delete-during --progress docs/guides/content/ docs/guides/content-stable/
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Updated the guides (stable)'
