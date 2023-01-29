@@ -169,8 +169,12 @@
 
     /*
      * @transformer unescape
-     * @formula (unescape str:str) unescape \\\( \\\) to \( \) respectively
+     * @formula (unescape str:str) unescape \\\( \\\) to \( \) respectively, allowing tags returned after processing other tags to run
      * @labels twitch discord noevent misc
+     * @example Caster: !addcom !getrandom (unescape (readfilerand randomcommands.txt))
+     * // randomcommands.txt: (command shoutout (sender))
+     * User: !getrandom
+     * Bot: You should check out User! They were last playing Just Chatting! twitch.tv/User
      * @raw
      * @cached
      */

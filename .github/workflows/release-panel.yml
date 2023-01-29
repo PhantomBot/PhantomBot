@@ -1,0 +1,24 @@
+name: Release Panel
+on:
+  workflow_dispatch:
+
+jobs:
+  updateremotepanel:
+    name: Update Remote Panel (Stable)
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Copy Files
+      run: |
+        mkdir -p docs/panel-stable/
+        rsync -rv --delete-during --progress resources/web/panel/ docs/panel-stable/
+        rsync -rv --delete-during --progress resources/web/common docs
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Updated the remote panel (stable)'
