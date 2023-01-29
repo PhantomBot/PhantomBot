@@ -1544,9 +1544,18 @@ Defined in script: _./javascript-source/core/transformers/misc.js_
 
 **Formulas:**
 
-- `(unescape str:str)` - unescape \\\( \\\) to \( \) respectively
+- `(unescape str:str)` - unescape \\\( \\\) to \( \) respectively, allowing tags returned after processing other tags to run
 
 **Labels:** twitch discord noevent misc
+
+
+**Example:**
+```text
+Caster: !addcom !getrandom (unescape (readfilerand randomcommands.txt))
+// randomcommands.txt: (command shoutout (sender))
+User: !getrandom
+Bot: You should check out User! They were last playing Just Chatting! twitch.tv/User
+```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
