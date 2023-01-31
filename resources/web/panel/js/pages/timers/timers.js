@@ -19,17 +19,18 @@
 
 (function () {
     let selected = null;
+    let groupData = null;
 
-    function openGroupModal(groupData, cb) {
-        const idPrefix = groupData === null ? 'add-' : 'edit-';
-        const title = groupData === null ? 'Add Group' : 'Edit Group',
-                name = groupData === null ? '' : groupData.name,
-                noticeToggle = groupData === null ? 'Yes' : (groupData.noticeToggle === true ? 'Yes' : 'No'),
-                noticeOfflineToggle = groupData === null ? 'No' : (groupData.noticeOfflineToggle === true ? 'Yes' : 'No'),
-                intervalMin = groupData === null ? '10' : groupData.intervalMin,
-                intervalMax = groupData === null ? '' : (intervalMin === groupData.intervalMax ? '' : groupData.intervalMax),
-                reqMessages = groupData === null ? '0' : groupData.reqMessages,
-                shuffle = groupData === null ? 'No' : (groupData.shuffle === true ? 'Yes' : 'No');
+    function openGroupModal(modalGroupData, cb) {
+        const idPrefix = modalGroupData === null ? 'add-' : 'edit-';
+        const title = modalGroupData === null ? 'Add Group' : 'Edit Group',
+                name = modalGroupData === null ? '' : modalGroupData.name,
+                noticeToggle = modalGroupData === null ? 'Yes' : (modalGroupData.noticeToggle === true ? 'Yes' : 'No'),
+                noticeOfflineToggle = modalGroupData === null ? 'No' : (modalGroupData.noticeOfflineToggle === true ? 'Yes' : 'No'),
+                intervalMin = modalGroupData === null ? '10' : modalGroupData.intervalMin,
+                intervalMax = modalGroupData === null ? '' : (intervalMin === modalGroupData.intervalMax ? '' : modalGroupData.intervalMax),
+                reqMessages = modalGroupData === null ? '0' : modalGroupData.reqMessages,
+                shuffle = modalGroupData === null ? 'No' : (modalGroupData.shuffle === true ? 'Yes' : 'No');
 
         helpers.getModal(idPrefix + 'group-modal', title, 'Save',
                 $('<form/>', {'role': 'form'})
@@ -199,8 +200,7 @@
                                         ['removeGroup', groupId], function () {
                                     // Reload the table.
                                     run();
-                                }
-                                );
+                                });
                             }
                     );
                 });
@@ -211,12 +211,12 @@
                             $this = $(this);
 
                     socket.getDBValue('timer_group_edit_get', 'notices', groupId, function (e) {
-                        let groupData = e.notices;
-                        if (groupData === null) {
+                        let modalGroupData = e.notices;
+                        if (modalGroupData === null) {
                             run(); // group doesn't exist anymore => reload
                         }
-                        groupData = JSON.parse(groupData);
-                        openGroupModal(groupData, function (result) {
+                        modalGroupData = JSON.parse(modalGroupData);
+                        openGroupModal(modalGroupData, function (result) {
                             socket.updateDBValue('timer_group_edit_update', 'notices', groupId, JSON.stringify({
                                 name: result.groupName,
                                 noticeToggle: result.noticeToggle,
@@ -225,11 +225,11 @@
                                 intervalMax: result.noticeIntervalMax,
                                 reqMessages: result.noticeReqMsg,
                                 shuffle: result.groupShuffle,
-                                messages: groupData.messages,
-                                disabled: groupData.disabled
+                                messages: modalGroupData.messages,
+                                disabled: modalGroupData.disabled
                             }), function () {
                                 socket.wsEvent('timer_group_edit_ws', './systems/noticeSystem.js', null,
-                                        ['reloadGroup', groupId, (groupData.intervalMin !== result.noticeIntervalMin || groupData.intervalMax !== result.noticeIntervalMax) ? 'true' : 'false'], function () {
+                                        ['reloadGroup', groupId, (modalGroupData.intervalMin !== result.noticeIntervalMin || modalGroupData.intervalMax !== result.noticeIntervalMax) ? 'true' : 'false'], function () {
                                     // Update group name in table.
                                     $this.parents('tr').find('td:eq(1)').text(result.groupName);
                                     if (selected === Number(groupId)) {
@@ -240,8 +240,7 @@
                                     $('#edit-group-modal').modal('hide');
                                     // Alert the user.
                                     toastr.success('Successfully edited the timer group!');
-                                }
-                                );
+                                });
                             });
                         });
                     });
@@ -277,18 +276,18 @@
         selected = groupId;
         const $messageBox = $('#messages-box');
         const $messagesTable = $('#messages-table');
-        if (groupId === null) {
+        if (selected === null) {
             $messageBox.addClass("hidden");
             return;
         }
 
-        socket.getDBValue('timer_messages_edit_get', 'notices', String(groupId), function (e) {
-            let groupData = e.notices;
-            if (groupData === null) {
+        socket.getDBValue('timer_messages_edit_get', 'notices', String(selected), function (e) {
+            let tempGroupData = e.notices;
+            if (tempGroupData === null) {
                 run(); // group doesn't exist anymore => reload
                 return;
             }
-            groupData = JSON.parse(groupData);
+            groupData = JSON.parse(tempGroupData);
 
             function messageRowData(i) {
                 return [
@@ -369,9 +368,9 @@
                                         default:
                                             groupData.messages.push($messageText.val());
                                             groupData.disabled.push(false);
-                                            socket.updateDBValue('timer_group_add_message_update', 'notices', String(groupId), JSON.stringify(groupData), function () {
+                                            socket.updateDBValue('timer_group_add_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
                                                 socket.wsEvent('timer_group_add_message_ws', './systems/noticeSystem.js', null,
-                                                        ['reloadGroup', String(groupId)], function () {
+                                                        ['reloadGroup', String(selected)], function () {
                                                     // Update group name in table.
                                                     table.rows.add([messageRowData(groupData.messages.length - 1)]);
                                                     table.draw(false);
@@ -379,8 +378,7 @@
                                                     $('#add-message').modal('hide');
                                                     // Alert the user.
                                                     toastr.success('Successfully added message!');
-                                                }
-                                                );
+                                                });
                                             });
                                     }
                                 }
@@ -399,10 +397,11 @@
                             groupData.disabled.splice(messageId, 1);
                             table.rows(messageId).remove();
                             table.draw(false);
-                            socket.updateDBValue('timer_group_remove_message_update', 'notices', String(groupId), JSON.stringify(groupData), function () {
+                            socket.updateDBValue('timer_group_remove_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
                                 socket.wsEvent('timer_group_remove_message_ws', './systems/noticeSystem.js', null,
-                                        ['reloadGroup', String(groupId)], function () { }
-                                );
+                                        ['reloadGroup', String(selected)], function () {
+                                            showGroupMessages(selected);
+                                        });
                             });
                         }
                 );
@@ -425,9 +424,9 @@
                                             break;
                                         default:
                                             groupData.messages[messageId] = $messageText.val();
-                                            socket.updateDBValue('timer_group_add_message_update', 'notices', String(groupId), JSON.stringify(groupData), function () {
+                                            socket.updateDBValue('timer_group_add_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
                                                 socket.wsEvent('timer_group_add_message_ws', './systems/noticeSystem.js', null,
-                                                        ['reloadGroup', String(groupId)], function () {
+                                                        ['reloadGroup', String(selected)], function () {
                                                     // Update group name in table.
                                                     table.row(messageId).data(messageRowData(messageId));
                                                     table.draw(false);
@@ -435,8 +434,7 @@
                                                     $('#edit-message').modal('hide');
                                                     // Alert the user.
                                                     toastr.success('Successfully edited message!');
-                                                }
-                                                );
+                                                });
                                             });
                                     }
                                 }
@@ -448,9 +446,9 @@
                 const $this = $(this);
                 const messageId = Number($this.data('messageId'));
                 groupData.disabled[messageId] = !groupData.disabled[messageId];
-                socket.updateDBValue('timer_group_toggle_message_update', 'notices', String(groupId), JSON.stringify(groupData), function () {
+                socket.updateDBValue('timer_group_toggle_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
                     socket.wsEvent('timer_group_toggle_message_ws', './systems/noticeSystem.js', null,
-                            ['reloadGroup', String(groupId)], function () {
+                            ['reloadGroup', String(selected)], function () {
                         toastr.success('successfully ' + (!groupData.disabled[messageId] ? 'enabled' : 'disabled') + ' the notice.');
                         // Update the button.
                         if (groupData.disabled[messageId]) {
@@ -498,8 +496,7 @@
                     selected = -1;
                     // Reload the table.
                     run();
-                }
-                );
+                });
             });
         });
     });
