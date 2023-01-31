@@ -62,26 +62,39 @@
 
     /*
      * @transformer pointtouser
-     * @formula (pointtouser) user + ' -> '; uses sender's display name if no other is provided
+     * @formula (pointtouser) user + ' -> '; uses sender's display name if no target is provided
+     * @formula (pointtouser true) user + ' -> '; outputs blank instead if no target is provided
      * @labels twitch commandevent user
      * @example Caster: !addcom !facebook (pointtouser) like my Facebook page!
      * User: !facebook
      * Bot: User ->  like my Facebook page!
      *
      * User: !facebook User2
-     * Bot: User2 -> like my Facebook  page!
+     * Bot: User2 -> like my Facebook page!
+     * @example Caster: !addcom !insta (pointtouser true) Follow me on Instagram!
+     * User: !insta
+     * Bot: Follow me on Instagram!
+     *
+     * User: !insta User2
+     * Bot: User2 -> Follow me on Instagram!
      * @cached
      */
     function pointtouser(args) {
         temp = '';
+        let res = '';
         if (args.event.getArgs().length > 0) {
             temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
-            temp = args.event.getSender();
+            if (args.args.length === 0 || args.args.trim() !== 'true') {
+                temp = args.event.getSender();
+                res = $.jsString($.usernameResolveIgnoreEx(temp)) + ' -> ';
+            }
+        } else {
+            res = $.jsString($.usernameResolveIgnoreEx(temp)) + ' -> ';
         }
         return {
-            result: $.jsString($.usernameResolveIgnoreEx(temp)) + ' -> ',
+            result: res,
             cache: true
         };
     }
@@ -146,7 +159,8 @@
 
     /*
      * @transformer touser
-     * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no other is provided
+     * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no target is provided
+     * @formula (touser true) display name of the user provided as an argument by the sender; outputs blank instead if no target is provided
      * @labels twitch discord commandevent user
      * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
      * User: !twitter
@@ -154,10 +168,17 @@
      *
      * User: !twitter User2
      * Bot: User2 Hey! Follow my Twitter!
+     * @example Caster: !addcom !tiktok (touser true) Hey! Follow me on TikTok!
+     * User: !tiktok
+     * Bot: Hey! Follow me on TikTok!
+     *
+     * User: !tiktok User2
+     * Bot: User2 Hey! Follow me on TikTok!
      * @cached
      */
     function touser(args) {
         temp = '';
+        let res = '';
         if (args.event.getArgs().length > 0) {
             temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
@@ -167,15 +188,21 @@
             } else {
                 temp = $.usernameResolveIgnoreEx(args.event.getSender());
             }
+
+            if (args.args.length === 0 || args.args.trim() !== 'true') {
+                res = temp;
+            }
         } else {
             if (args.platform === 'discord') {
                 temp = $.discord.username.resolve(temp);
             } else {
                 temp = $.usernameResolveIgnoreEx(temp);
             }
+
+            res = temp;
         }
         return {
-            result: temp,
+            result: res,
             cache: true
         };
     }
