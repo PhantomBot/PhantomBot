@@ -57,7 +57,7 @@ public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
     protected void onSubscribeSuccess() {
         com.gmt2001.Console.out.println("Connected to Twitch Stream Up/Down Data Feed for " + this.channelId);
         Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
-            TwitchCache.instance().syncStreamStatus();
+            TwitchCache.instance().syncStreamStatus(true);
         }).subscribe();
     }
 
@@ -73,8 +73,15 @@ public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
             case "stream-up":
                 if (this.isCaster) {
                     Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
-                        TwitchCache.instance().syncStreamStatus(true);
-                        TwitchCache.instance().goOnline(true);
+                        TwitchCache.instance().syncStreamStatus(false, (hasStream) -> {
+                            if (!hasStream) {
+                                TwitchCache.instance().syncStreamInfoFromChannel(false, (hasChannel) -> {
+                                    TwitchCache.instance().goOnline(true);
+                                });
+                            } else {
+                                TwitchCache.instance().goOnline(true);
+                            }
+                        });
                     }).subscribe();
                 }
                 EventBus.instance().postAsync(new PubSubStreamUpEvent(this.channelId, srvtime, body.getInt("play_delay")));
