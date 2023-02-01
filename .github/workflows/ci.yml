@@ -52,6 +52,8 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64
         push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         build-args: |
           PROJECT_VERSION=0.0.0
           ANT_ARGS=-Dbuildtype=test -Dversion=0.0.0
