@@ -74,17 +74,6 @@ ARG DATADIR=${BASEDIR}_data
 
 USER root
 
-RUN set -eux; \
-    groupadd -r phantombot -g 900; \
-    useradd -u 901 -r -g phantombot -s /sbin/nologin -c "PhantomBot Daemon User" phantombot
-
-RUN set -eux; \
-    mkdir -p "${BASEDIR}" "${DATADIR}"; \
-    chown phantombot:phantombot "${BASEDIR}"; \
-    chown phantombot:phantombot "${DATADIR}"
-
-ENV PATH="${BASEDIR}:$PATH"
-
 ENV GOSU_VERSION 1.14
 
 RUN set -eux; \
@@ -121,6 +110,24 @@ RUN set -eux; \
 	gosu --version; \
 	gosu nobody true
 
+RUN set -eux;  \
+    apt-get update; \
+    apt-get install -y --no-install-recommends python3; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+
+RUN set -eux; \
+    groupadd -r phantombot -g 900; \
+    useradd -u 901 -r -g phantombot -s /sbin/nologin -c "PhantomBot Daemon User" phantombot
+
+RUN set -eux; \
+    mkdir -p "${BASEDIR}" "${DATADIR}"; \
+    chown phantombot:phantombot "${BASEDIR}"; \
+    chown phantombot:phantombot "${DATADIR}"
+
+ENV PATH="${BASEDIR}:$PATH"
+
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
 COPY --from=builder --chown=phantombot:phantombot "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
@@ -144,7 +151,7 @@ RUN set -eux; \
 
 RUN set -eux;  \
     apt-get update; \
-    apt-get install -y --no-install-recommends python3 python3-pip; \
+    apt-get install -y --no-install-recommends python3-pip; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*; \
     pip3 install --no-cache-dir -r "${BASEDIR}/config/healthcheck/requirements.txt"; \
