@@ -40,6 +40,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,8 +66,6 @@ public final class TwitchCache {
 
     /* Cached data */
     private boolean isOnline = false;
-    private boolean forcedGameTitleUpdate = false;
-    private boolean forcedStreamTitleUpdate = false;
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
@@ -218,9 +217,7 @@ public final class TwitchCache {
 
                         if (!this.isOnline && isOnlinen) {
                             if (Instant.now().isAfter(this.offlineTimeout)) {
-                                this.isOnline = true;
                                 this.offlineDelay = null;
-                                EventBus.instance().postAsync(new TwitchOnlineEvent());
                                 sentTwitchOnlineEvent = true;
                             }
                         } else if (this.isOnline && !isOnlinen) {
@@ -228,9 +225,7 @@ public final class TwitchCache {
                                 this.offlineDelay = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinedelay", 30));
                             } else if (Instant.now().isAfter(this.offlineDelay)) {
                                 this.offlineDelay = null;
-                                this.isOnline = false;
-                                this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
-                                EventBus.instance().postAsync(new TwitchOfflineEvent());
+                                this.goOffline(true);
                             }
                         }
 
@@ -248,35 +243,14 @@ public final class TwitchCache {
 
                             String gameTitlen = data.getString("game_name");
 
-                            if (!forcedGameTitleUpdate && !this.gameTitle.equals(gameTitlen)) {
-                                setDBString("game", gameTitlen);
-                                /* Send an event if we did not just send a TwitchOnlineEvent. */
-                                if (!sentTwitchOnlineEvent) {
-                                    this.gameTitle = gameTitlen;
-                                    EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitlen));
-                                }
-                                this.gameTitle = gameTitlen;
-                            }
-
-                            if (forcedGameTitleUpdate && this.gameTitle.equals(gameTitlen)) {
-                                forcedGameTitleUpdate = false;
-                            }
+                            this.setGameTitle(gameTitlen, !sentTwitchOnlineEvent);
 
                             String streamTitlen = data.getString("title");
 
-                            if (!forcedStreamTitleUpdate && !this.streamTitle.equals(streamTitlen)) {
-                                setDBString("title", streamTitlen);
-                                this.streamTitle = streamTitlen;
-                                /* Send an event if we did not just send a TwitchOnlineEvent. */
-                                if (!sentTwitchOnlineEvent) {
-                                    this.streamTitle = streamTitlen;
-                                    EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitlen));
-                                }
-                                this.streamTitle = streamTitlen;
-                            }
+                            this.setStreamStatus(streamTitlen, !sentTwitchOnlineEvent);
 
-                            if (forcedStreamTitleUpdate && this.streamTitle.equals(streamTitlen)) {
-                                forcedStreamTitleUpdate = false;
+                            if (sentTwitchOnlineEvent) {
+                                this.goOnline(true);
                             }
                         } else if (!this.isOnline && !isOnlinen) {
                             this.streamUptime = null;
@@ -399,7 +373,6 @@ public final class TwitchCache {
     public void setGameTitle(String gameTitle, boolean sendEvent) {
         boolean changed = !this.gameTitle.equals(gameTitle);
         setDBString("game", gameTitle);
-        forcedGameTitleUpdate = true;
         this.gameTitle = gameTitle;
         if (changed && sendEvent) {
             EventBus.instance().postAsync(new TwitchGameChangeEvent(gameTitle));
@@ -433,7 +406,6 @@ public final class TwitchCache {
     public void setStreamStatus(String streamTitle, boolean sendEvent) {
         boolean changed = !this.streamTitle.equals(streamTitle);
         setDBString("title", streamTitle);
-        forcedStreamTitleUpdate = true;
         this.streamTitle = streamTitle;
         if (changed && sendEvent) {
             EventBus.instance().postAsync(new TwitchTitleChangeEvent(streamTitle));
@@ -550,36 +522,68 @@ public final class TwitchCache {
     /**
      * Updates the stream status
      *
-     * @param isFromPubSubEvent
+     * @param shouldSendEvent
      */
-    public void syncStreamStatus(boolean isFromPubSubEvent) {
-        Helix.instance().getStreamsAsync(20, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null).doOnSuccess(streams -> {
+    public void syncStreamStatus(boolean shouldSendEvent) {
+        this.syncStreamStatus(shouldSendEvent, null);
+    }
+
+    public void syncStreamStatus(boolean shouldSendEvent, Consumer<Boolean> callback) {
+        Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null).doOnSuccess(streams -> {
+            boolean hasData = false;
             if (streams != null && streams.has("data")) {
                 if (streams.getJSONArray("data").length() > 0) {
+                    hasData = true;
                     JSONObject stream = streams.getJSONArray("data").getJSONObject(0);
                     boolean sendingOnline = false;
 
-                    if (!isFromPubSubEvent) {
+                    if (shouldSendEvent) {
                         if (!this.isOnline) {
-                            this.goOnline(true);
-                            this.offlineDelay = null;
                             sendingOnline = true;
                         }
                     }
 
-                    this.setStreamStatus(stream.optString("title", ""), !isFromPubSubEvent && !sendingOnline);
-                    this.setGameTitle(stream.optString("game_name", ""), !isFromPubSubEvent && !sendingOnline);
+                    this.setStreamStatus(stream.optString("title", ""), shouldSendEvent && !sendingOnline);
+                    this.setGameTitle(stream.optString("game_name", ""), shouldSendEvent && !sendingOnline);
                     this.updateViewerCount(stream.optInt("viewer_count", 0));
                     this.streamCreatedAt = stream.optString("started_at", "");
                     this.previewLink = stream.optString("thumbnail_url", "").replace("{width}", "1920").replace("{height}", "1080");
+
+                    if (sendingOnline) {
+                        this.goOnline(true);
+                        this.offlineDelay = null;
+                    }
                 } else {
-                    if (!isFromPubSubEvent) {
+                    if (shouldSendEvent) {
                         if (this.isOnline) {
                             this.goOffline(true);
                             this.offlineDelay = null;
                         }
                     }
                 }
+            }
+
+            if (callback != null) {
+                callback.accept(hasData);
+            }
+        }).subscribe();
+    }
+
+    public void syncStreamInfoFromChannel(boolean shouldSendEvent, Consumer<Boolean> callback) {
+        Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).doOnSuccess(channels -> {
+            boolean hasData = false;
+            if (channels != null && channels.has("data")) {
+                if (channels.getJSONArray("data").length() > 0) {
+                    hasData = true;
+                    JSONObject channel = channels.getJSONArray("data").getJSONObject(0);
+
+                    this.setStreamStatus(channel.optString("title", ""), shouldSendEvent);
+                    this.setGameTitle(channel.optString("game_name", ""), shouldSendEvent);
+                }
+            }
+
+            if (callback != null) {
+                callback.accept(hasData);
             }
         }).subscribe();
     }
