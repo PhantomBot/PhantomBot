@@ -1191,6 +1191,10 @@ Defined in script: _./javascript-source/core/transformers/file.js_
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
 
+_NOTE: file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed._
+
+_Use `(unescape (readfile filename))` to enable processing the returned tags_
+
 
 **Example:**
 ```text
@@ -1222,6 +1226,10 @@ _NOTE: empty lines may be ignored_
 
 _NOTE: WARNING: this can cause spam and block the bots message queue_
 
+_NOTE: file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed._
+
+_Use `(unescape (readfileall filename))` to enable processing the returned tags_
+
 
 **Example:**
 ```text
@@ -1251,6 +1259,10 @@ Defined in script: _./javascript-source/core/transformers/file.js_
 
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
+
+_NOTE: file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed._
+
+_Use `(unescape (readfilerand filename))` to enable processing the returned tags_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
@@ -2055,7 +2067,8 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
-- `(pointtouser)` - user + ' -> '; uses sender's display name if no other is provided
+- `(pointtouser)` - user + ' -> '; uses sender's display name if no target is provided
+- `(pointtouser true)` - user + ' -> '; outputs blank instead if no target is provided
 
 **Labels:** twitch commandevent user
 
@@ -2066,7 +2079,16 @@ Caster: !addcom !facebook (pointtouser) like my Facebook page!
 User: !facebook
 Bot: User ->  like my Facebook page!
 User: !facebook User2
-Bot: User2 -> like my Facebook  page!
+Bot: User2 -> like my Facebook page!
+```
+
+**Example:**
+```text
+Caster: !addcom !insta (pointtouser true) Follow me on Instagram!
+User: !insta
+Bot: Follow me on Instagram!
+User: !insta User2
+Bot: User2 -> Follow me on Instagram!
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
@@ -2161,7 +2183,8 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Formulas:**
 
-- `(touser)` - display name of the user provided as an argument by the sender; sender's display name if no other is provided
+- `(touser)` - display name of the user provided as an argument by the sender; sender's display name if no target is provided
+- `(touser true)` - display name of the user provided as an argument by the sender; outputs blank instead if no target is provided
 
 **Labels:** twitch discord commandevent user
 
@@ -2173,6 +2196,15 @@ User: !twitter
 Bot: User Hey! Follow my Twitter!
 User: !twitter User2
 Bot: User2 Hey! Follow my Twitter!
+```
+
+**Example:**
+```text
+Caster: !addcom !tiktok (touser true) Hey! Follow me on TikTok!
+User: !tiktok
+Bot: Hey! Follow me on TikTok!
+User: !tiktok User2
+Bot: User2 Hey! Follow me on TikTok!
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
