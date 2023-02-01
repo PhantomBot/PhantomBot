@@ -47,6 +47,8 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64
         push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         build-args: |
           PROJECT_VERSION=0.0.0
           ANT_ARGS=-Dbuildtype=test -Dversion=0.0.0
@@ -344,6 +346,8 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
           ANT_ARGS=-Dbuildtype=stable -Dfallback.revision=${{ needs.workflowvars.outputs.revision }} -Dversion=${{ needs.workflowvars.outputs.version }} -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
@@ -357,6 +361,8 @@ jobs:
         file: ./Dockerfile
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         build-args: |
           PROJECT_VERSION=${{ needs.workflowvars.outputs.version }}
           ANT_ARGS=-Dbuildtype=stable -Dfallback.revision=${{ needs.workflowvars.outputs.revision }} -Dversion=${{ needs.workflowvars.outputs.version }} -Drollbar_token=${{ secrets.ROLLBAR_TOKEN }} -Drollbar_endpoint=${{ secrets.ROLLBAR_ENDPOINT }}
