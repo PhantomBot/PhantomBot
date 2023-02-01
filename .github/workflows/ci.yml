@@ -45,7 +45,8 @@ jobs:
       with:
         version: latest
         driver-opts: network=host
-    - name: Build Docker
+    - name: Build Docker (cached)
+      if: github.ref_name == 'master'
       uses: docker/build-push-action@v4
       with:
         context: .
@@ -54,6 +55,18 @@ jobs:
         push: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
+        build-args: |
+          PROJECT_VERSION=0.0.0
+          ANT_ARGS=-Dbuildtype=test -Dversion=0.0.0
+        tags: localhost:5000/tester/phantombot:test
+    - name: Build Docker
+      if: github.ref_name != 'master'
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: linux/amd64
+        push: true
         build-args: |
           PROJECT_VERSION=0.0.0
           ANT_ARGS=-Dbuildtype=test -Dversion=0.0.0
