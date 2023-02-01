@@ -23,6 +23,8 @@
      * @formula (readfile filename:str) first line of the specified file
      * @labels twitch discord noevent file
      * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+     * @notes file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed.
+     * Use `(unescape (readfile filename))` to enable processing the returned tags
      * @example Caster: !addcom !lastfollow Last follower was (readfile ./followHandler/latestFollower.txt)
      * User: !lastfollow
      * Bot: Last follower was User
@@ -52,6 +54,8 @@
      * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
      * @notes empty lines may be ignored
      * @notes WARNING: this can cause spam and block the bots message queue
+     * @notes file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed.
+     * Use `(unescape (readfileall filename))` to enable processing the returned tags
      * @example Caster: !addcom !story (readfileall ./nightBeforeXmas.txt)
      * User: !story
      * Bot: 'Twas the night before Christmas, when all through the house
@@ -82,6 +86,8 @@
      * @formula (readfilerand filename:str) random line of the specified file
      * @labels twitch discord noevent file
      * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
+     * @notes file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed.
+     * Use `(unescape (readfilerand filename))` to enable processing the returned tags
      */
     function readfilerand(args) {
         var fileName;
