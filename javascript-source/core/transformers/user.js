@@ -162,12 +162,12 @@
      * @formula (touser) display name of the user provided as an argument by the sender; sender's display name if no target is provided
      * @formula (touser true) display name of the user provided as an argument by the sender; outputs blank instead if no target is provided
      * @labels twitch discord commandevent user
-     * @example Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
-     * User: !twitter
-     * Bot: User Hey! Follow my Twitter!
+     * @example Caster: !addcom !mastadon (touser) Hey! Follow my Mastadon!
+     * User: !mastadon
+     * Bot: User Hey! Follow my Mastadon
      *
-     * User: !twitter User2
-     * Bot: User2 Hey! Follow my Twitter!
+     * User: !mastadon User2
+     * Bot: User2 Hey! Follow my Mastadon!
      * @example Caster: !addcom !tiktok (touser true) Hey! Follow me on TikTok!
      * User: !tiktok
      * Bot: Hey! Follow me on TikTok!

@@ -7,7 +7,7 @@
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/PhantomBot/PhantomBot?sort=semver)](https://github.com/PhantomBot/PhantomBot/releases/latest)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/YKvMd78)
 
-[**PhantomBot**](https://phantombot.dev) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more. PhantomBot can also be integrated with many services such as [Discord](https://discordapp.com/), [Twitter](https://twitter.com), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) and [StreamElements](https://streamelements.com)!
+[**PhantomBot**](https://phantombot.dev) is a Twitch chat bot powered by Java. PhantomBot has many modern features out of the box such as a built-in webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more. PhantomBot can also be integrated with many services such as [Discord](https://discordapp.com/), [TipeeeStream](https://tipeeestream.com), [StreamLabs](https://streamlabs.com) and [StreamElements](https://streamelements.com)!
 
 Additional functionality is enabled through the use of third-party modules.
 

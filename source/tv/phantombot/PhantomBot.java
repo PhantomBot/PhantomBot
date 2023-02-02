@@ -23,7 +23,6 @@ import com.gmt2001.Reflect;
 import com.gmt2001.RestartRunner;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.TwitterAPI;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.datastore.H2Store;
@@ -43,7 +42,6 @@ import com.illusionaryone.YouTubeAPIv3;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.StreamElementsAPIv2;
 import com.scaniatv.TipeeeStreamAPIv1;
-import com.twitter.clientlib.ApiException;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
 import java.io.File;
@@ -76,7 +74,6 @@ import tv.phantombot.cache.StreamElementsCache;
 import tv.phantombot.cache.TipeeeStreamCache;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.cache.TwitchTeamsCache;
-import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.cache.ViewerListCache;
 import tv.phantombot.console.ConsoleEventHandler;
@@ -889,16 +886,6 @@ public final class PhantomBot implements Listener {
             StreamElementsAPIv2.instance().SetLimit(CaselessProperties.instance().getPropertyAsInt("streamelementslimit", 5));
         }
 
-        if (!CaselessProperties.instance().getProperty("twitter_access_token", "").isEmpty()) {
-            try {
-                TwitterAPI.instance().authenticate();
-                TwitterCache.instance(this.getChannelName());
-            } catch (ApiException ex) {
-                com.gmt2001.Console.err.println("TwitterAPI authentication failed. Try re-authenticating with twittersetup console command");
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }
-
         /* print a extra line in the console. */
         this.print("");
 
@@ -1001,7 +988,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("alertspollssocket", this.alertsPollsHandler, 0);
         Script.global.defineProperty("random", this.random, 0);
         Script.global.defineProperty("youtube", YouTubeAPIv3.instance(), 0);
-        Script.global.defineProperty("twitter", TwitterAPI.instance(), 0);
         Script.global.defineProperty("twitchCacheReady", PhantomBot.twitchCacheReady, 0);
         Script.global.defineProperty("isNightly", this.isNightly(), 0);
         Script.global.defineProperty("isPrerelease", this.isPrerelease(), 0);

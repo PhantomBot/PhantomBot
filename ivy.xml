@@ -28,8 +28,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             PhantomBot is a Twitch chat bot powered by Java.
             PhantomBot has many modern features out of the box such as a built-in webpanel,
             enhanced moderation, games, a point system, raffles, custom commands, a music player, and more!
-            PhantomBot can also be integrated with many services such as Discord, Twitter, TipeeeStream,
-            StreamLabs and StreamElements!
+            PhantomBot can also be integrated with many services such as Discord, TipeeeStream,
+            StreamLabs, and StreamElements!
 
             Additional functionality is enabled through the use of third-party modules.
         </description>
@@ -51,7 +51,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="org.json" name="json" rev="20200518"/>
         <dependency org="org.mozilla" name="rhino" rev="1.7.14"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
-        <dependency org="com.twitter" name="twitter-api-java-sdk" rev="2.0.2" />
         <dependency org="org.xerial" name="sqlite-jdbc" rev="3.39.4.1"/>
         <dependency org="com.vdurmont" name="emoji-java" rev="5.1.1" />
     </dependencies>

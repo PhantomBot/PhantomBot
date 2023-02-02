@@ -21,11 +21,11 @@
 $(function () {
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
-        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
+        tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],
         keys: ['./discord/handlers/followHandler.js', './discord/handlers/subscribeHandler.js',
             './discord/handlers/bitsHandler.js', './discord/handlers/clipHandler.js', './discord/systems/greetingsSystem.js', './discord/handlers/streamlabsHandler.js',
             './discord/handlers/raidHandler.js', './discord/handlers/tipeeeStreamHandler.js', './discord/handlers/streamElementsHandler.js',
-            './discord/handlers/twitterHandler.js', './discord/handlers/streamHandler.js']
+            './discord/handlers/streamHandler.js']
     }, true, function (e) {
         // Handle the settings button.
         let keys = Object.keys(e),
@@ -746,54 +746,6 @@ $(function () {
                 refreshChannels(function () {
                     if (discordChannels !== null) {
                         $('#streamelements-channel').select2({templateResult: discordChannelTemplate});
-                    }
-                });
-            }).modal('toggle');
-        });
-    });
-
-    // Twitter settings.
-    $('#discordTwitterHandlerSettings').on('click', function () {
-        socket.getDBValues('discord_alerts_twitter_get_settings', {
-            tables: ['discordSettings', 'discordSettings'],
-            keys: ['twitterToggle', 'twitterChannel']
-        }, true, function (e) {
-            helpers.getModal('twitter-alert', 'Twitter Alert Settings', 'Save', $('<form/>', {
-                'role': 'form'
-            })
-                    // Add the toggle for follow alerts.
-                    .append(helpers.getDropdownGroup('twitter-toggle', 'Enable Twitter Alerts', (e.twitterToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
-                            'If your Tweets should be posted in Discord. Please note that the Twitch Twitter module needs to be setup for this to work.'))
-                    // Add the the box for the reward.
-                    .append(getChannelSelector('twitter-channel', 'Alert Channel', '#alerts', e.twitterChannel,
-                            'Channel where all alerts should go to.', allowedChannelTypes)),
-                    function () { // Callback once the user clicks save.
-                        let twitterToggle = $('#twitter-toggle').find(':selected').text() === 'Yes',
-                                twitterChannel = $('#twitter-channel');
-
-                        // Make sure everything has been filled it correctly.
-                        switch (false) {
-                            case helpers.handleInputString(twitterChannel):
-                                break;
-                            default:
-                                // Update settings.
-                                socket.updateDBValues('discord_alerts_twitter_update_settings', {
-                                    tables: ['discordSettings', 'discordSettings'],
-                                    keys: ['twitterToggle', 'twitterChannel'],
-                                    values: [twitterToggle, twitterChannel.val()]
-                                }, function () {
-                                    socket.wsEvent('discord', './discord/handlers/twitterHandler.js', '', [], function () {
-                                        // Close the modal.
-                                        $('#twitter-alert').modal('toggle');
-                                        // Alert the user.
-                                        toastr.success('Successfully updated the Twitter alert settings!');
-                                    });
-                                });
-                        }
-                    }).on('shown.bs.modal', function (e) {
-                refreshChannels(function () {
-                    if (discordChannels !== null) {
-                        $('#twitter-channel').select2({templateResult: discordChannelTemplate});
                     }
                 });
             }).modal('toggle');
