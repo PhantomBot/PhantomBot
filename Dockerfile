@@ -29,12 +29,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -eux; \
     mkdir -p "${BUILDDIR}" "${DATADIR}"; \
     apt-get update; \
-    apt-get install -y --no-install-recommends ant; \
+    cd root; apt-get download ant; \
+    dpkg --ignore-depends=default-jre-headless --install ant_*.deb; \
     apt-get clean; \
     rm -rf \
         /var/lib/apt/lists/* \
         /tmp/* \
-        /var/tmp/*
+        /var/tmp/* \
+        /root/*.deb
 
 COPY . "${BUILDDIR}"
 
