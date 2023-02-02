@@ -133,6 +133,10 @@
         <ivy:checkdepsupdate/>
     </target>
 
+    <target depends="init-ivy" name="ivy-show-tree">
+        <ivy:dependencytree/>
+    </target>
+
     <target name="clearlib">
         <delete>
             <fileset dir="${reference}" includes="**/*.jar" />
