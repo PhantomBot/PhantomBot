@@ -16,7 +16,7 @@ if [ "$(id -u)" = '0' -a ! -v ALLOW_ROOT ]; then
 	chown -R phantombot:phantombot /opt/PhantomBot_data;
 	find /opt/PhantomBot \! -type l \! -user phantombot -exec chown phantombot:phantombot '{}' +
 	find /opt/PhantomBot_data \! -type l \! -user phantombot -exec chown phantombot:phantombot '{}' +
-	exec gosu phantombot "$0" "$@"
+	exec setpriv --reuid phantombot --regid phantombot --init-groups "$0" "$@"
 fi
 
 exec "$@"
