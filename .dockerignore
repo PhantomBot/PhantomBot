@@ -1,2 +1,9 @@
 Dockerfile
 docker-compose.yml
+
+lib
+
+bin
+build
+dist
+out

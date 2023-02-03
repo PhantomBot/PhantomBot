@@ -22,6 +22,7 @@ ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
+ARG LIBDIR=${BASEDIR}_lib
 ARG DATADIR=${BASEDIR}_data
 ARG ANT_ARGS=
 
@@ -38,11 +39,18 @@ RUN set -eux; \
         /var/tmp/* \
         /root/*.deb
 
+COPY build.xml ivysettings.xml ivy.xml "${BUILDDIR}/"
+RUN set -eux; \
+    cd "${BUILDDIR}"; \
+    ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} ivy-retrieve
+
 COPY . "${BUILDDIR}"
 
 RUN set -eux; \
     cd "${BUILDDIR}"; \
-    ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} jar
+    ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} jar; \
+    cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}"; \
+    mv "./lib" "${LIBDIR}"; ln -s "${LIBDIR}" "./lib"
 
 RUN set -eux; \
     cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/"; \
@@ -63,7 +71,8 @@ RUN set -eux; \
     mv "./logs" "${DATADIR}/"; \
     mv "./scripts/custom" "${DATADIR}/scripts/custom/"; \
     mv "./scripts/discord/custom" "${DATADIR}/scripts/discord/"; \
-    mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"
+    mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"; \
+    rm "./lib"
 
 # Application container
 FROM eclipse-temurin:11-jre-focal as publish
@@ -72,6 +81,7 @@ ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
+ARG LIBDIR=${BASEDIR}_lib
 ARG DATADIR=${BASEDIR}_data
 
 USER root
@@ -94,6 +104,19 @@ RUN set -eux; \
 
 ENV PATH="${BASEDIR}:$PATH"
 
+COPY --from=builder --chown=phantombot:phantombot "${LIBDIR}" "${BASEDIR}/lib"
+
+COPY --from=builder "${DATADIR}/config/healthcheck/requirements.txt" "${DATADIR}/config/healthcheck/"
+
+RUN set -eux;  \
+    apt-get update; \
+    apt-get install -y --no-install-recommends python3-pip; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*; \
+    pip3 install --no-cache-dir -r "${DATADIR}/config/healthcheck/requirements.txt"; \
+    apt-get remove -y python3-pip; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
 COPY --from=builder --chown=phantombot:phantombot "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
@@ -114,15 +137,6 @@ RUN set -eux; \
     chmod u+x "${BASEDIR}/restartbot-docker.sh"; \
     chmod u+x "${BASEDIR}/launch-docker.sh"; \
     chmod u+x "${BASEDIR}/docker-entrypoint.sh"
-
-RUN set -eux;  \
-    apt-get update; \
-    apt-get install -y --no-install-recommends python3-pip; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*; \
-    pip3 install --no-cache-dir -r "${BASEDIR}/config/healthcheck/requirements.txt"; \
-    apt-get remove -y python3-pip; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
 VOLUME "${DATADIR}"
 
