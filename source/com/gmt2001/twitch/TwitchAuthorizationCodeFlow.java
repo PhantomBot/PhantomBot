@@ -47,7 +47,7 @@ public class TwitchAuthorizationCodeFlow {
 
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
     private static final long REFRESH_INTERVAL = 900000L;
-    private static final int DEFAULT_EXPIRE_TIME = 900000;
+    private static final int DEFAULT_EXPIRE_TIME = 15000;
     private boolean timerStarted = false;
 
     public TwitchAuthorizationCodeFlow(String clientid, String clientsecret) {
@@ -254,7 +254,7 @@ public class TwitchAuthorizationCodeFlow {
                 } else {
                     Transaction newTransaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_HIGH);
                     Calendar c = Calendar.getInstance(TimeZone.getTimeZone(ZoneOffset.UTC));
-                    c.add(Calendar.SECOND, result.getInt("expires_in"));
+                    c.add(Calendar.SECOND, result.optInt("expires_in", DEFAULT_EXPIRE_TIME));
                     newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "oauth", "oauth:" + result.getString("access_token"));
                     newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "" : "api") + "refresh", result.getString("refresh_token"));
                     newTransaction.setProperty((qsd.parameters().get("type").get(0).equals("bot") ? "oauth" : "api") + "expires", c.getTimeInMillis() + "");

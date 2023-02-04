@@ -86,8 +86,14 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         HttpRequestHandler h = determineHttpRequestHandler(qsd.path());
 
         if (h != null) {
-            if (h.getAuthHandler().checkAuthorization(ctx, req)) {
-                h.handleRequest(ctx, req);
+            try {
+                if (h.getAuthHandler().checkAuthorization(ctx, req)) {
+                    h.handleRequest(ctx, req);
+                }
+            } catch (Exception ex) {
+                sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
+                com.gmt2001.Console.err.println("500 " + req.method().asciiName() + ": " + qsd.path() + " >> " + ex.toString());
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         } else {
             com.gmt2001.Console.debug.println("404 " + req.method().asciiName() + ": " + qsd.path());
