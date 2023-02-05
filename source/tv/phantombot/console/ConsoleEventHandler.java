@@ -21,16 +21,12 @@ import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
 import com.gmt2001.Reflect;
 import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.TwitterAPI;
-import com.twitter.clientlib.ApiException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import net.engio.mbassy.listener.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +34,6 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 import static tv.phantombot.PhantomBot.getTimeZoneId;
-import tv.phantombot.cache.TwitterCache;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
@@ -57,7 +52,6 @@ import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
-import tv.phantombot.event.twitter.TwitterRetweetEvent;
 import tv.phantombot.script.Script;
 
 public final class ConsoleEventHandler implements Listener {
@@ -130,69 +124,6 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("updategameslist")) {
             GamesListUpdater.update(true);
-        }
-
-        /**
-         * @consolecommand twittersetup [newapp] - Authenticates Twitter. If the optional _newapp_ argument is set, also updates the Client ID and
-         * Secret
-         */
-        if (message.equalsIgnoreCase("twittersetup")) {
-            boolean isNewTwitter = false;
-            if (CaselessProperties.instance().getProperty("twitter_client_id", "").isBlank()
-                    || CaselessProperties.instance().getProperty("twitter_client_secret", "").isBlank()
-                    || arguments.startsWith("newapp")) {
-                isNewTwitter = true;
-                com.gmt2001.Console.out.println("Please create a Twitter application at https://developer.twitter.com/en/portal/dashboard");
-                com.gmt2001.Console.out.println("Then, activate User Authentication in the App, with the settings below");
-            } else {
-                com.gmt2001.Console.out.println("Please ensure your Twitter application has the settings listed below");
-                com.gmt2001.Console.out.println("You can edit your Twitter application at https://developer.twitter.com/en/portal/dashboard");
-            }
-            com.gmt2001.Console.out.println("--- App permissions: Read and write");
-            com.gmt2001.Console.out.println("--- Type of app: Web App, Automated App or Bot");
-            com.gmt2001.Console.out.println("--- Callback URI / Redirect URL: http://localhost:25000");
-            com.gmt2001.Console.out.println("--- Website URL: Put your own URL, or use http://phantombot.dev");
-            com.gmt2001.Console.out.println();
-            if (isNewTwitter) {
-                com.gmt2001.Console.out.println("Once this is done, you should see your Client ID and Secret.");
-                com.gmt2001.Console.out.println("If you don't see it, go back to the dashboard, select the App,");
-                com.gmt2001.Console.out.println("and then switch to the Keys and tokens tab.");
-                com.gmt2001.Console.out.println();
-                System.out.print("Please enter the Client ID: ");
-                String clientid = com.gmt2001.Console.in.readLine().trim();
-                transaction.setProperty("twitter_client_id", clientid);
-                System.out.print("Please enter the Client Secret: ");
-                String clientsecret = com.gmt2001.Console.in.readLine().trim();
-                transaction.setProperty("twitter_client_secret", clientsecret);
-                transaction.commit();
-                com.gmt2001.Console.out.println();
-                transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
-                TwitterAPI.instance().updateClientIdSecret();
-            }
-
-            TwitterAPI.AuthorizationParameters params = TwitterAPI.instance().startAuthorize();
-            com.gmt2001.Console.out.println("To authorize Twitter, please visit this URL: " + params.authorizationUrl());
-            com.gmt2001.Console.out.println();
-            System.out.println("After approving the authorization, Twitter will send you back to http://localhost:25000");
-            System.out.println("You can find the authorization code in the URL");
-            System.out.print("Please enter the authorization code, the entire URL, or 'exit': ");
-            try {
-                String code = com.gmt2001.Console.in.readLine().trim();
-
-                if (!code.equalsIgnoreCase("exit")) {
-                    if (code.startsWith("http://") || code.startsWith("https://")) {
-                        code = code.substring(code.indexOf("code=") + 5);
-                    }
-
-                    com.gmt2001.Console.debug.println("code=" + code);
-
-                    TwitterAPI.instance().completeAuthorize(params, code);
-
-                    TwitterCache.instance(PhantomBot.instance().getChannelName());
-                }
-            } catch (ApiException | IOException | InterruptedException | ExecutionException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
         }
 
         /**
@@ -284,19 +215,6 @@ public final class ConsoleEventHandler implements Listener {
             // Export to CSV
             PhantomBot.instance().toCSV(headers, values, "command_list.csv");
             com.gmt2001.Console.out.println("[CONSOLE] Command list has been created under command_list.csv");
-            return;
-        }
-
-        /**
-         * @consolecommand retweettest [Twitter ID] - Sends a fake test Retweet event.
-         */
-        if (message.equalsIgnoreCase("retweettest")) {
-            if (argument == null || argument.length == 0 || argument[0].isBlank()) {
-                com.gmt2001.Console.out.println(">> retweettest requires a Twitter ID (or Twitter IDs)");
-                return;
-            }
-            com.gmt2001.Console.out.println(">> Sending retweet test event");
-            EventBus.instance().postAsync(new TwitterRetweetEvent(argument));
             return;
         }
 

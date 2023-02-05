@@ -321,12 +321,6 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'class' => 'twitter4j.TwitterException',
-            'message' => '401:Authentication credentials*'
-        )
-    ),
-    array(
-        'exception' => array(
             'message' => 'regex:/Failed to get donations.*404.*Not found/'
         )
     ),
