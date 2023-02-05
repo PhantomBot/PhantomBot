@@ -372,47 +372,6 @@ _NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
-### Twitter
-#### twitter_client_id
-
-Data Type: _String_
-
-the client id for twitter api
-
-&nbsp;
-
-#### twitter_client_secret
-
-Data Type: _String_
-
-the client secret for twitter api
-
-&nbsp;
-
-#### twittertimelinelimit
-
-Data Type: _Int_
-
-the maximum number of tweets to retrieve with a latest tweets request. default `15`
-
-&nbsp;
-
-#### twittertimelineextendedlimit
-
-Data Type: _Int_
-
-the maximum number of tweets to retrieve with a sinceid. default `30`
-
-&nbsp;
-
-#### twitterusertimelinelimit
-
-Data Type: _Int_
-
-the maximum number of tweets to retrieve per follower, when grabbing retweets. default `15`
-
-&nbsp;
-
 ### HTTP/WS
 #### usedefaultdnsresolver
 

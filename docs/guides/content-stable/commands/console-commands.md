@@ -30,14 +30,6 @@ updategameslist - Force a full update of the games list.
 
 &nbsp;
 
-### twittersetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-twittersetup [newapp] - Authenticates Twitter. If the optional _newapp_ argument is set, also updates the Client ID and
-
-&nbsp;
-
 ### raidtest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
@@ -67,14 +59,6 @@ exportpoints - This command exports points and time to a CSV file.
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 createcmdlist - Creates a list of all commands with their permissions as a CSV.
-
-&nbsp;
-
-### retweettest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-retweettest [Twitter ID] - Sends a fake test Retweet event.
 
 &nbsp;
 

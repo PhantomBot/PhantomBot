@@ -5,7 +5,7 @@ PhantomBot is an actively developed open source interactive Twitch bot with a vi
 entertainment and moderation for your channel, allowing you to focus on what matters the most to you - your game and 
 your viewers. PhantomBot is a bot powered by Java. PhantomBot has many modern features out of the box such as a built-in 
 webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot 
-can also be integrated with many services such as [Twitter](https://twitter.com/), [GameWisp](https://gamewisp.com/), 
+can also be integrated with many services such as [GameWisp](https://gamewisp.com/), 
 [StreamTip](https://streamtip.com/) and [TwitchAlerts](https://twitchalerts.com/)!
 
 ## What do I need to run PhantomBot?
@@ -89,21 +89,3 @@ When you issue a command to the bot, you see the response in the console, but it
 **Fix:**
 Ensure that you have made the bot a moderator in chat by typing the following below.
 /mod MyBotName
-
-## Twitter: Hashtags and Mentions
-
-The question often comes up: "Why has PhantomBot restricted the use of hash tags and mentions in Twitter?" There was a 
-time where we provided a PhantomBot application for Twitter that folks could use for reading and posting tweets. However, 
-at one point, our account was banned from posting. After talking with Twitter, it was banned for hash tag and mention 
-use. As such, they recommended not allowing our application to post hash tags or mentions.
-
-Essentially, Twitter has automated systems that are scanning for the overuse of hash tags and their automated rules 
-(https://support.twitter.com/articles/76915) mention that they frown upon mentions. So, we have made the decision to 
-not allow hash tags or mentions from our module at this time.
-
-Being that PhantomBot is open source, you of course may change your installation and ignore this. We, however, cannot 
-recommend this and cannot be held responsible if your account or application account are banned by Twitter. We understand 
-that this is a very frustrating item, trust us, this was very frustrating for us when we were trying to determine how 
-our initial application account was banned.
-
-Rest assured that we only want to provide you the best experience possible and are looking out for you!
