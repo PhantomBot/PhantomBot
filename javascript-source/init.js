@@ -117,7 +117,7 @@
             } catch (e) {
             }
             try {
-                data.put("exstr", ex.toString());
+                data.put("trace", Packages.com.gmt2001.Console.err.getStackTrace(ex));
             } catch (e) {
             }
             Packages.com.gmt2001.Console.err.println(oopsmsg);
