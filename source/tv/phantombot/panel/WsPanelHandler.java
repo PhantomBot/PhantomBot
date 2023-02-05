@@ -248,7 +248,7 @@ public class WsPanelHandler implements WsFrameHandler {
     private void handleSocketEvent(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         String script = jso.getString("script");
         JSONObject jargs = jso.getJSONObject("args");
-        String arguments = jargs.isNull("arguments") ? null : jargs.getString("arguments");
+        String arguments = jargs.isNull("arguments") ? null : jargs.get("arguments").toString();
         JSONArray jsonArray = jargs.isNull("args") ? null : jargs.getJSONArray("args");
         String uniqueID = jso.has("socket_event") ? jso.getString("socket_event") : "";
         boolean requiresReply = jso.has("requiresReply") ? jso.getBoolean("requiresReply") : false;
@@ -262,7 +262,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 if (jsonArray.isNull(i)) {
                     tempArgs.add(null);
                 } else {
-                    tempArgs.add(jsonArray.getString(i));
+                    tempArgs.add(jsonArray.get(i).toString());
                 }
             }
 
