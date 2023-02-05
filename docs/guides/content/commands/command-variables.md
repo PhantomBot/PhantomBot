@@ -2191,11 +2191,11 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 
 **Example:**
 ```text
-Caster: !addcom !twitter (touser) Hey! Follow my Twitter!
-User: !twitter
-Bot: User Hey! Follow my Twitter!
-User: !twitter User2
-Bot: User2 Hey! Follow my Twitter!
+Caster: !addcom !mastadon (touser) Hey! Follow my Mastadon!
+User: !mastadon
+Bot: User Hey! Follow my Mastadon
+User: !mastadon User2
+Bot: User2 Hey! Follow my Mastadon!
 ```
 
 **Example:**
