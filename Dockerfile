@@ -22,6 +22,7 @@ ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
+ARG LIBDIR=${BASEDIR}_lib
 ARG DATADIR=${BASEDIR}_data
 ARG ANT_ARGS=
 
@@ -29,18 +30,27 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN set -eux; \
     mkdir -p "${BUILDDIR}" "${DATADIR}"; \
     apt-get update; \
-    apt-get install -y --no-install-recommends ant; \
+    cd root; apt-get download ant; \
+    dpkg --ignore-depends=default-jre-headless --install ant_*.deb; \
     apt-get clean; \
     rm -rf \
         /var/lib/apt/lists/* \
         /tmp/* \
-        /var/tmp/*
+        /var/tmp/* \
+        /root/*.deb
+
+COPY build.xml ivysettings.xml ivy.xml "${BUILDDIR}/"
+RUN set -eux; \
+    cd "${BUILDDIR}"; \
+    ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} ivy-retrieve
 
 COPY . "${BUILDDIR}"
 
 RUN set -eux; \
     cd "${BUILDDIR}"; \
-    ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} jar
+    ant -noinput -buildfile build.xml -Disdocker=true ${ANT_ARGS} jar; \
+    cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}"; \
+    mv "./lib" "${LIBDIR}"; ln -s "${LIBDIR}" "./lib"
 
 RUN set -eux; \
     cd "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/"; \
@@ -61,7 +71,8 @@ RUN set -eux; \
     mv "./logs" "${DATADIR}/"; \
     mv "./scripts/custom" "${DATADIR}/scripts/custom/"; \
     mv "./scripts/discord/custom" "${DATADIR}/scripts/discord/"; \
-    mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"
+    mv "./scripts/lang/custom" "${DATADIR}/scripts/lang/"; \
+    rm "./lib"
 
 # Application container
 FROM eclipse-temurin:11-jre-focal as publish
@@ -70,49 +81,14 @@ ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
 ARG BASEDIR=/opt/${PROJECT_NAME}
 ARG BUILDDIR=${BASEDIR}_build
+ARG LIBDIR=${BASEDIR}_lib
 ARG DATADIR=${BASEDIR}_data
 
 USER root
 
-ENV GOSU_VERSION 1.14
-
-RUN set -eux; \
-# save list of currently installed packages for later so we can clean up
-	savedAptMark="$(apt-mark showmanual)"; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends ca-certificates wget; \
-	if ! command -v gpg; then \
-		apt-get install -y --no-install-recommends gnupg2 dirmngr; \
-	elif gpg --version | grep -q '^gpg (GnuPG) 1\.'; then \
-# "This package provides support for HKPS keyservers." (GnuPG 1.x only)
-		apt-get install -y --no-install-recommends gnupg-curl; \
-	fi; \
-	rm -rf /var/lib/apt/lists/*; \
-	\
-	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
-	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
-	\
-# verify the signature
-	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
-	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-	command -v gpgconf && gpgconf --kill all || :; \
-	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
-	\
-# clean up fetch dependencies
-	apt-mark auto '.*' > /dev/null; \
-	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
-	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-	\
-	chmod +x /usr/local/bin/gosu; \
-# verify that the binary works
-	gosu --version; \
-	gosu nobody true
-
 RUN set -eux;  \
     apt-get update; \
-    apt-get install -y --no-install-recommends python3; \
+    apt-get install -y --no-install-recommends util-linux python3; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
@@ -127,6 +103,19 @@ RUN set -eux; \
     chown phantombot:phantombot "${DATADIR}"
 
 ENV PATH="${BASEDIR}:$PATH"
+
+COPY --from=builder --chown=phantombot:phantombot "${LIBDIR}" "${BASEDIR}/lib"
+
+COPY --from=builder "${DATADIR}/config/healthcheck/requirements.txt" "${DATADIR}/config/healthcheck/"
+
+RUN set -eux;  \
+    apt-get update; \
+    apt-get install -y --no-install-recommends python3-pip; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*; \
+    pip3 install --no-cache-dir -r "${DATADIR}/config/healthcheck/requirements.txt"; \
+    apt-get remove -y python3-pip; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
@@ -148,15 +137,6 @@ RUN set -eux; \
     chmod u+x "${BASEDIR}/restartbot-docker.sh"; \
     chmod u+x "${BASEDIR}/launch-docker.sh"; \
     chmod u+x "${BASEDIR}/docker-entrypoint.sh"
-
-RUN set -eux;  \
-    apt-get update; \
-    apt-get install -y --no-install-recommends python3-pip; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*; \
-    pip3 install --no-cache-dir -r "${BASEDIR}/config/healthcheck/requirements.txt"; \
-    apt-get remove -y python3-pip; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
 VOLUME "${DATADIR}"
 

@@ -1,2 +1,11 @@
 Dockerfile
 docker-compose.yml
+.git*
+
+resources/java-runtime*
+lib
+
+bin
+build
+dist
+out

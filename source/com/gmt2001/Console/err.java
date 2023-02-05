@@ -144,16 +144,22 @@ public final class err {
 
         RollbarProvider.instance().error(e, custom, description, isUncaught);
 
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + getStackTrace(e));
+        Logger.instance().log(Logger.LogType.Error, "");
+    }
+
+    public static String getStackTrace(Throwable e) {
         try ( Writer trace = new StringWriter()) {
             try ( PrintWriter ptrace = new PrintWriter(trace)) {
 
                 e.printStackTrace(ptrace);
 
-                Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + trace.toString());
-                Logger.instance().log(Logger.LogType.Error, "");
+                return trace.toString();
             }
         } catch (IOException ex) {
             ex.printStackTrace(System.err);
         }
+
+        return "";
     }
 }
