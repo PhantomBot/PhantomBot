@@ -1,6 +1,8 @@
 Dockerfile
 docker-compose.yml
+.git*
 
+resources/java-runtime*
 lib
 
 bin
