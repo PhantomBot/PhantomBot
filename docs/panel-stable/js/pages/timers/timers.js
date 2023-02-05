@@ -356,7 +356,7 @@
                 helpers.getModal('add-message', 'Add Message', 'Save',
                         $('<form/>', {'role': 'form'})
                         // Append timer text.
-                        .append(helpers.getTextAreaGroup('message-text', 'text', 'Message', 'Follow me on Twitter! https://twitter.com/PhantomBotApp', '', 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
+                        .append(helpers.getTextAreaGroup('message-text', 'text', 'Message', 'Follow me on Instagram! https://instagram.com/CoolPerson', '', 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
                         // Callback once the user clicks save.
                                 function () {// Callback once we click the save button.
                                     const $messageText = $('#message-text');
@@ -413,7 +413,7 @@
                 helpers.getModal('edit-message', 'Edit Message', 'Save',
                         $('<form/>', {'role': 'form'})
                         // Append timer text.
-                        .append(helpers.getTextAreaGroup('message-text', 'text', 'Message', 'Follow me on Twitter! https://twitter.com/PhantomBotApp', groupData.messages[messageId], 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
+                        .append(helpers.getTextAreaGroup('message-text', 'text', 'Message', 'Follow me on Instagram! https://instagram.com/CoolPerson', groupData.messages[messageId], 'Message of this timer. Use the "command:" prefix then the name of the command to run a command.')),
                         // Callback once the user clicks save.
                                 function () {// Callback once we click the save button.
                                     const $messageText = $('#message-text');
