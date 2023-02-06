@@ -9,6 +9,13 @@ if [[ ${UID+x} && ${GID+x} ]]; then
 	fi
 fi
 
+sha256sum --status --check /opt/PhantomBot/healthcheck.old.py.sha256
+healthcheck_isnew="$?"
+
+if [ "${healthcheck_isnew}" = '0' ]; then
+	wget --output-document=/opt/PhantomBot/config/healthcheck/healthcheck.py https://raw.githubusercontent.com/PhantomBot/PhantomBot/master/resources/config/healthcheck/healthcheck.py
+fi
+
 # allow the container to be started with `--user`
 if [ "$(id -u)" = '0' -a ! -v ALLOW_ROOT ]; then
 	mkdir -p /opt/PhantomBot_data/logs /opt/PhantomBot_data/dbbackup /opt/PhantomBot_data/addons /opt/PhantomBot_data/config /opt/PhantomBot_data/gameslist
