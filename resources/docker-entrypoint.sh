@@ -9,7 +9,7 @@ if [[ ${UID+x} && ${GID+x} ]]; then
 	fi
 fi
 
-sha256sum --status --check /opt/PhantomBot/healthcheck.old.py.sha256
+! sha256sum --status --check /opt/PhantomBot/healthcheck.old.py.sha256
 healthcheck_isnew="$?"
 
 if [ "${healthcheck_isnew}" = '0' ]; then
