@@ -38,14 +38,14 @@
 ## noservicename - The --is-docker flag was set, but --service-name was missing or empty
 ## noconfig - The botlogin.txt file was not found (it must be located at ../botlogin.txt relative to this script). This may also indicate a permissions issue
 ## noauth - The `webauth=` line was not found or was empty in botlogin.txt
-## nopresencecode - The HTTP GET request to the /presence endpoint on the bots webserver did not return HTTP 200 OK. For this endpoint, this means the webserver is failing
+## nopresencecode - The HTTP GET request to the /presence endpoint on the bots webserver did not return HTTP 200 OK. The webserver is failing, "message" will include the code
 ## nopresence - The HTTP GET request to the /presence endpoint returned HTTP 200 OK, but the content was not `PBok`. The webserver is malfunctioning or another webserver responded
-## noputcode - The HTTP PUT request to the /dbquery endpoint, to send `.ping` to chat, did not return HTTP 200 OK. Probably returned 401 Unauthorized, message will include the code
+## noputcode - The HTTP PUT request to the /dbquery endpoint, to send `!pbinternalping` to chat, did not return HTTP 200 OK. Probably returned 401 Unauthorized, "message" will include the code
 ## noput - The HTTP PUT request to the /dbquery endpoint returned HTTP 200 OK, but the content was not `event posted`. The webserver is malfunctioning or another webserver responded
-## nohealthcheckcode - The HTTP GET request to healthcheck.txt on the bots webserver did not return HTTP 200 OK. Possibly a 404, message will include the code
-## nohealthcheck - A ValueError was raised trying to convert the healthcheck.txt timestamp into an integer. A blank or invalid output was probably returned
+## nohealthcheckcode - The HTTP GET request to healthcheck.txt on the bots webserver did not return HTTP 200 OK. Possibly a 404, "message" will include the code
+## nohealthcheck - A ValueError was raised trying to convert the healthcheck.txt timestamp into an integer. A blank or invalid output was probably returned, or another webserver responded
 ## lastalive - The timestamp from healthcheck.txt is more than 10 seconds old, the health check has failed and the Twitch TMI connection is probably down
-## exception - An exception was raised, the `message` value will contain the caught exception
+## exception - An exception was raised, "message" will contain the caught exception
 ## success - Success, the bot is online
 
 import argparse
