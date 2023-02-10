@@ -570,28 +570,21 @@
             loadedHooks.push('ircModeration');
 
             /*
-             * @event ircChannelUserMode
+             * @event ircChannelJoin
              */
-            $api.on($script, 'ircChannelUserMode', function (event) {
+            $api.on($script, 'ircChannelJoin', function (event) {
                 try {
-                    callHook('ircChannelUserMode', event, false);
-
-                    if (event.getUser().equalsIgnoreCase($.botName) && event.getMode().equalsIgnoreCase('O')) {
-                        if (event.getAdd().toString().equals('true')) {
-                            if (isReady === false) {
-                                isReady = true;
-                                // Bot is now ready.
-                                consoleLn($.botName + ' ready!');
-                                // Call the initReady event.
-                                callHook('initReady', null, false);
-                            }
-                        }
+                    if (event.getUser().equalsIgnoreCase($.botName) && isReady === false) {
+                        isReady = true;
+                        consoleLn($.botName + ' ready!');
+                        callHook('initReady', null, false);
                     }
+                    callHook('ircChannelJoin', event, false);
                 } catch (ex) {
-                    handleException('ircChannelUserMode', ex);
+                    handleException('ircChannelJoin', ex);
                 }
             });
-            loadedHooks.push('ircChannelUserMode');
+            loadedHooks.push('ircChannelJoin');
 
             /*
              * @event command
