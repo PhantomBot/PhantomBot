@@ -39,6 +39,19 @@ public class WindowedSwitchingRateLimiter extends WindowedRateLimiter {
     }
 
     /**
+     * @param windowMS The length of the window, in milliseconds
+     * @param mainLimit The normal maximum number of tokens available during the window
+     * @param alternateLimit The alternate maximum number of tokens available during the window
+     * @param isMain {@code true} to select mainLimit; {@code false} to select alternateLimit
+     */
+    public WindowedSwitchingRateLimiter(long windowMS, int mainLimit, int alternateLimit, boolean isMain) {
+        super(windowMS, mainLimit);
+        this.mainLimit = mainLimit;
+        this.alternateLimit = alternateLimit;
+        this.usingMain = isMain;
+    }
+
+    /**
      * Switches which limit is active
      *
      * @param isMain {@code true} to select mainLimit; {@code false} to select alternateLimit
