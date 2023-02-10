@@ -18,7 +18,7 @@ package com.gmt2001.twitch.tmi;
 
 import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
-import com.gmt2001.ratelimiters.WindowedRateLimiter;
+import com.gmt2001.ratelimiters.WindowedSwitchingRateLimiter;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
 import com.gmt2001.twitch.tmi.processors.AbstractTMIProcessor;
 import com.gmt2001.wsclient.WSClient;
@@ -54,9 +54,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     private static final String TMI_URI = "wss://irc-ws.chat.twitch.tv:443";
     /**
-     * A {@link WindowedRateLimiter} to handle the PRIVMSG rate limit
+     * A {@link WindowedSwitchingRateLimiter} to handle the PRIVMSG rate limit
      */
-    private final WindowedRateLimiter rateLimiter = new WindowedRateLimiter(30000L, 100);
+    private final WindowedSwitchingRateLimiter rateLimiter = new WindowedSwitchingRateLimiter(30000L, 100, 20, false);
     /**
      * A {@link WSPinger} to handle pinging to detect connection failure
      */
@@ -111,11 +111,11 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     }
 
     /**
-     * Returns the {@link WindowedRateLimiter} used to prevent PRIVMSG spam
+     * Returns the {@link WindowedSwitchingRateLimiter} used to prevent PRIVMSG spam
      *
      * @return The rate limiter
      */
-    public WindowedRateLimiter rateLimiter() {
+    public WindowedSwitchingRateLimiter rateLimiter() {
         return this.rateLimiter;
     }
 
