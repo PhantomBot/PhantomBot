@@ -316,6 +316,10 @@
             currTickets += currBonus;
         }
 
+        if (cost > 0 && $.getUserPoints(user) < cost) {
+            $.say($.whisperPrefix(user) + $.lang.get('ticketrafflesystem.err.points', $.pointNameMultiple));
+            return;
+        }
 
         if (amount > maxEntries || baseAmount === 0 || baseAmount < 0) {
             if (msgToggle) {
