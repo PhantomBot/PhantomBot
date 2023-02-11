@@ -348,7 +348,27 @@
                     {'title': 'Id'},
                     {'title': 'Text'},
                     {'title': 'Actions'}
-                ]
+                ],
+                'rowReorder': {
+                    'selector': 'tr',
+                    'dataSrc': 0
+                }
+            });
+
+            table.on('row-reordered', (e, diff) => {
+                for (var i = 0, ien = diff.length; i < ien; i++) {
+                    let oldData = groupData[diff[i].oldData];
+                    groupData[diff[i].oldData] = groupData[diff[i].newData];
+                    groupData[diff[i].newData] = oldData;
+                    $(diff[i].node).children('[data-message-id]').data('messageId', diff[i].newData);
+                }
+
+                socket.updateDBValue('timer_group_reorder_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
+                    socket.wsEvent('timer_group_reorder_message_ws', './systems/noticeSystem.js', null,
+                            ['reloadGroup', String(selected)], function () {
+                        table.draw(false);
+                    });
+                });
             });
 
             // Add message button.
@@ -400,8 +420,8 @@
                             socket.updateDBValue('timer_group_remove_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
                                 socket.wsEvent('timer_group_remove_message_ws', './systems/noticeSystem.js', null,
                                         ['reloadGroup', String(selected)], function () {
-                                            showGroupMessages(selected);
-                                        });
+                                    showGroupMessages(selected);
+                                });
                             });
                         }
                 );
