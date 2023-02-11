@@ -405,6 +405,21 @@
     }
 
     /**
+     * @function getChannelCreatedZonedDateTime
+     * @export $
+     * @param event
+     */
+    function getChannelCreatedZonedDateTime(channel) {
+        var channelData = $.twitch.GetChannel($.user.sanitize(channel));
+
+        if (channelData.getInt('_http') === 404 || !channelData.getBoolean('_success')) {
+            return null;
+        }
+
+        return Packages.java.time.ZonedDateTime.parse(channelData.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
+    /**
      * @function getSubscriberCount
      * @export $
      * @return {number} count
@@ -501,6 +516,7 @@
     $.getFollowAge = getFollowAge;
     $.getFollowDate = getFollowDate;
     $.getChannelAge = getChannelAge;
+    $.getChannelCreatedZonedDateTime = getChannelCreatedZonedDateTime;
     $.getStreamDownTime = getStreamDownTime;
     $.getGamesPlayed = getGamesPlayed;
     $.getSubscriberCount = getSubscriberCount;
