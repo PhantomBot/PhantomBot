@@ -38,6 +38,7 @@ public final class JoinTMIProcessor extends AbstractTMIProcessor {
             com.gmt2001.Console.out.println("Joined #" + this.property("channel").toLowerCase());
             this.session().joinSuccess();
             EventBus.instance().postAsync(new IrcJoinCompleteEvent(this.session()));
+            this.session().setAllowSendMessages(true);
         }
 
         EventBus.instance().postAsync(new IrcChannelJoinEvent(this.session(), item.nick()));

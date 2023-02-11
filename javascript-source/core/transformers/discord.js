@@ -34,6 +34,26 @@
     }
 
     /*
+     * @transformer removerole
+     * @formula (removerole username:str, role:str) removes the specified user from the specified Discord role
+     * @labels discord noevent roles
+     * @example Caster: !addcom !removerole (removerole (sender), Cool Kids)
+     */
+    function removerole(args) {
+        var pargs = $.parseArgs(args.args, ',', 2, true);
+        if (pargs.length !== 2) {
+            return {
+                result: '(removerole an input is missing)'
+            };
+        }
+        $.discordAPI.removeRole(pargs[1], pargs[0]);
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
      * @transformer setdiscordcompeting
      * @formula (setdiscordcompeting str:str) sets the bots current activity in Discord to: Competing in (str)
      * @labels twitch discord noevent presence
@@ -167,12 +187,13 @@
 
     var transformers = [
         new $.transformers.transformer('cleardiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], cleardiscordactivity),
+        new $.transformers.transformer('removerole', ['discord', 'noevent', 'roles'], removerole),
         new $.transformers.transformer('setdiscordcompeting', ['twitch', 'discord', 'noevent', 'presence'], setdiscordcompeting),
         new $.transformers.transformer('setdiscordlistening', ['twitch', 'discord', 'noevent', 'presence'], setdiscordlistening),
         new $.transformers.transformer('setdiscordwatching', ['twitch', 'discord', 'noevent', 'presence'], setdiscordwatching),
         new $.transformers.transformer('setdiscordplaying', ['twitch', 'discord', 'noevent', 'presence'], setdiscordplaying),
         new $.transformers.transformer('setdiscordstreaming', ['twitch', 'discord', 'noevent', 'presence'], setdiscordstreaming),
-        new $.transformers.transformer('setrole', ['discord', 'noevent', 'presence'], setrole)
+        new $.transformers.transformer('setrole', ['discord', 'noevent', 'roles'], setrole)
     ];
 
     $.transformers.addTransformers(transformers);

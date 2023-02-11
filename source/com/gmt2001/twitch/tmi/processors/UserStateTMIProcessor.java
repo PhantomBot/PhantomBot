@@ -17,6 +17,8 @@
 package com.gmt2001.twitch.tmi.processors;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Map;
 import tv.phantombot.event.EventBus;
@@ -30,6 +32,8 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 public final class UserStateTMIProcessor extends AbstractTMIProcessor {
 
     private boolean isModerator = false;
+    private Instant nextWarning = Instant.MIN;
+    private static final int WARNING_INTERVAL_MINUTES = 15;
 
     public UserStateTMIProcessor() {
         super(Arrays.asList("USERSTATE", "PART"));
@@ -40,6 +44,8 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
         if (item.command().equals("PART")) {
             if (item.nick().equalsIgnoreCase(this.user())) {
                 this.isModerator = false;
+                this.session().setAllowSendMessages(false);
+                this.tmi().rateLimiter().switchLimit(this.isModerator);
             }
             return;
         }
@@ -50,21 +56,24 @@ public final class UserStateTMIProcessor extends AbstractTMIProcessor {
             if (!this.isModerator) {
                 EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), this.user(), "O", true));
                 this.isModerator = true;
-                this.session().setAllowSendMessages(true);
+                this.tmi().rateLimiter().switchLimit(this.isModerator);
             }
         } else {
             if (this.isModerator) {
                 EventBus.instance().postAsync(new IrcChannelUserModeEvent(this.session(), this.user(), "O", false));
                 this.isModerator = false;
-                this.session().setAllowSendMessages(false);
+                this.tmi().rateLimiter().switchLimit(this.isModerator);
             }
 
-            com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println(this.user() + " is not detected as a moderator!");
-            com.gmt2001.Console.warn.println("You must add " + this.user() + " as a channel moderator for it to chat.");
-            com.gmt2001.Console.warn.println("To fix this, the broadcaster must add " + this.user() + " as a moderator in Stream Manager");
-            com.gmt2001.Console.warn.println("or type the following command in Twitch Chat: /mod " + this.user());
-            com.gmt2001.Console.warn.println();
+            if (nextWarning.isBefore(Instant.now())) {
+                nextWarning = Instant.now().plus(WARNING_INTERVAL_MINUTES, ChronoUnit.MINUTES);
+                com.gmt2001.Console.warn.println();
+                com.gmt2001.Console.warn.println(this.user() + " is not detected as a moderator!");
+                com.gmt2001.Console.warn.println("A lower rate limit is being used to prevent global muting.");
+                com.gmt2001.Console.warn.println("To fix this, the broadcaster must add " + this.user() + " as a moderator in Stream Manager");
+                com.gmt2001.Console.warn.println("or type the following command in Twitch Chat: /mod " + this.user());
+                com.gmt2001.Console.warn.println();
+            }
         }
     }
 
