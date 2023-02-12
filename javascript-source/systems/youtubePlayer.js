@@ -360,9 +360,13 @@
                     for (var i = 0; i < importedList.length; i++) {
                         var item = $.jsString(importedList[i]);
                         if (item.includes('&list')) {
+                            $.log.error("importPlaylistFile::skipped [" + item + "]: playlist links not allowed");
                             playlistFailCount++;
                             continue;
                         } else if (spaceMacther.test(item) || item.trim().length === 0) { // match for spaces or an empty line.
+                            if (item.trim().length > 0) {
+                                $.log.error("importPlaylistFile::skipped [" + item + "]: can not contain spaces");
+                            }
                             failCount++;
                             continue;
                         }
