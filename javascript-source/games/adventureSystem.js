@@ -276,7 +276,9 @@
         }
 
         if (currentAdventure.gameState === 0) {
-            if (!$.checkUserPermission(username, undefined, startPermission)) return;
+            if (!$.checkUserPermission(username, undefined, startPermission)) {
+                return;
+            }
             startHeist(username);
         } else if (enterMessage) {
             $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.success', $.getPointsString(bet)));

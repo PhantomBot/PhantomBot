@@ -62,8 +62,8 @@ $(function () {
     $('#adventureSystemSettings').on('click', function () {
         socket.getDBValues('get_adventure_settings', {
             tables: ['adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings',
-                'adventureSettings', 'adventureSettings', 'adventureSettings'],
-            keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce', 'startPermission']
+                'adventureSettings', 'adventureSettings'],
+            keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce']
         }, true, function (e) {
             helpers.getModal('adventure-settings', 'Adventure Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -88,9 +88,7 @@ $(function () {
                     // Add the the box for min bet.
                     .append(helpers.getInputGroup('min-bet', 'number', 'Adventure Minimum Bet', '', e.minBet, 'The minimum amount of points a user can join an adventure with.'))
                     // Add the the box for max bet.
-                    .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.'))
-                    // Add the box for set up the permission who can start the adventure.
-                    .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ?? 7), helpers.getPermGroupNames())),
+                    .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.')),
                     function () { // Callback once the user clicks save.
                         let entryMessages = $('#entry-messages').find(':selected').text() === 'Yes',
                                 userMessages = $('#user-messages').find(':selected').text() === 'Yes',
@@ -99,8 +97,7 @@ $(function () {
                                 cooldownTime = $('#cooldown-time'),
                                 gainPercent = $('#gain'),
                                 minBet = $('#min-bet'),
-                                maxBet = $('#max-bet'),
-                                startPermission = helpers.getGroupIdByName($('#start-permission').find(':selected').text(), true);
+                                maxBet = $('#max-bet');
 
                         // Make sure everything has been filled in.
                         switch (false) {
@@ -113,9 +110,9 @@ $(function () {
                             default:
                                 socket.updateDBValues('adventure_update_settings', {
                                     tables: ['adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings',
-                                        'adventureSettings', 'adventureSettings', 'adventureSettings'],
-                                    keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce', 'startPermission'],
-                                    values: [joinTime.val(), cooldownTime.val(), gainPercent.val(), minBet.val(), maxBet.val(), entryMessages, userMessages, cooldownMessage, startPermission]
+                                        'adventureSettings', 'adventureSettings'],
+                                    keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce'],
+                                    values: [joinTime.val(), cooldownTime.val(), gainPercent.val(), minBet.val(), maxBet.val(), entryMessages, userMessages, cooldownMessage]
                                 }, function () {
                                     socket.sendCommand('adventure_update_settings_cmd', 'reloadadventure', function () {
                                         // Close the modal.
