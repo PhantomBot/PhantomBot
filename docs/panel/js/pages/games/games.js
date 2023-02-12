@@ -89,6 +89,7 @@ $(function () {
                     .append(helpers.getInputGroup('min-bet', 'number', 'Adventure Minimum Bet', '', e.minBet, 'The minimum amount of points a user can join an adventure with.'))
                     // Add the the box for max bet.
                     .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.'))
+                    // Add the box for set up the permission who can start the adventure.
                     .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ?? 7), helpers.getPermGroupNames())),
                     function () { // Callback once the user clicks save.
                         let entryMessages = $('#entry-messages').find(':selected').text() === 'Yes',
