@@ -24,6 +24,7 @@
         enterMessage = $.getSetIniDbBoolean('adventureSettings', 'enterMessage', false),
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
         coolDownAnnounce = $.getSetIniDbBoolean('adventureSettings', 'coolDownAnnounce', false),
+        startPermission = $.getSetIniDbNumber('adventureSettings', 'startPermission', $.PERMISSION.Viewer),
         currentAdventure = {},
         stories = [],
         lastStory,
@@ -39,6 +40,7 @@
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
         coolDownAnnounce = $.getIniDbBoolean('adventureSettings', 'coolDownAnnounce');
+        startPermission = $.getSetIniDbNumber('adventureSettings', 'startPermission', $.PERMISSION.Viewer);
     }
 
     /**
@@ -274,6 +276,7 @@
         }
 
         if (currentAdventure.gameState === 0) {
+            if (!$.checkUserPermission(username, undefined, startPermission)) return;
             startHeist(username);
         } else if (enterMessage) {
             $.say($.whisperPrefix(username) + $.lang.get('adventuresystem.join.success', $.getPointsString(bet)));
