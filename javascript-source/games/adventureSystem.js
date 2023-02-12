@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function() {
     var joinTime = $.getSetIniDbNumber('adventureSettings', 'joinTime', 60),
         coolDown = $.getSetIniDbNumber('adventureSettings', 'coolDown', 900),
@@ -120,7 +122,7 @@
             top5 = [],
             i;
 
-        if (payoutsKeys.length == 0) {
+        if (payoutsKeys.length === 0) {
             $.say($.lang.get('adventuresystem.top5.empty'));
         }
 
@@ -130,7 +132,7 @@
             }
             temp.push({
                 username: payoutsKeys[i],
-                amount: parseInt($.inidb.get('adventurePayouts', payoutsKeys[i])),
+                amount: parseInt($.inidb.get('adventurePayouts', payoutsKeys[i]))
             });
         }
 
@@ -157,7 +159,7 @@
         _currentAdventureLock.lock();
         try {
             for (i in currentAdventure.users) {
-                if (currentAdventure.users[i].username == username) {
+                if (currentAdventure.users[i].username === username) {
                     return true;
                 }
             }
@@ -340,7 +342,7 @@
         t = setInterval(function() {
             if (progress < story.lines.length) {
                 line = replaceTags(story.lines[progress]);
-                if (line != '') {
+                if (line !== '') {
                     $.say(line.replace(/\(game\)/g, $.twitchcache.getGameTitle() + ''));
                 }
             } else {
@@ -371,7 +373,7 @@
             temp.push($.username.resolve(username) + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
         }
 
-        if (temp.length == 0) {
+        if (temp.length === 0) {
             $.say($.lang.get('adventuresystem.completed.no.win'));
         } else if (((maxlength + 14) + $.channelName.length) > 512) {
             $.say($.lang.get('adventuresystem.completed.win.total', currentAdventure.survivors.length, currentAdventure.caught.length)); //in case too many people enter.
@@ -402,7 +404,7 @@
         $.inidb.RemoveFile('adventurePayoutsTEMP');
     }
 
-    /**
+    /*
      * @event command
      */
     $.bind('command', function(event) {
