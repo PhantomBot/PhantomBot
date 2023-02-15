@@ -121,31 +121,31 @@ public class IrcModerationEvent extends IrcMessageEvent {
         /**
          * Possible actions
          */
-        public enum Actions {
+        public static class Actions {
             /**
              * No action
              */
-            None(0),
+            public static Actions None = new Actions(0);
             /**
              * Unban
              */
-            UnBan(1),
+            public static Actions UnBan = new Actions(1);
             /**
              * Delete message
              */
-            Delete(2),
+            public static Actions Delete = new Actions(2);
             /**
              * Clear Chat
              */
-            ClearChat(3),
+            public static Actions ClearChat = new Actions(3);
             /**
              * Timeout
              */
-            Timeout(4),
+            public static Actions Timeout = new Actions(4);
             /**
              * Ban
              */
-            Ban(5);
+            public static Actions Ban = new Actions(5);
 
             private final int value;
 
