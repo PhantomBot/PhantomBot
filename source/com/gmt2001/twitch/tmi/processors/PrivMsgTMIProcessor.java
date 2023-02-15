@@ -16,10 +16,14 @@
  */
 package com.gmt2001.twitch.tmi.processors;
 
-import com.gmt2001.twitch.tmi.TMIMessage;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.gmt2001.twitch.tmi.TMIMessage;
+import com.gmt2001.twitch.tmi.TMISlashCommands;
+
+import reactor.core.publisher.SignalType;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
@@ -27,6 +31,7 @@ import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
+import tv.phantombot.event.irc.message.IrcModerationEvent.ModerationActions.Actions;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 
 /**
@@ -95,6 +100,35 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
             }
 
             EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags()));
+        }).subscribe();
+
+        modEvent.completedMono().doFinally(sig -> {
+            if (sig == SignalType.ON_COMPLETE) {
+                IrcModerationEvent.ModerationAction action = modEvent.action();
+
+                switch (action.action()) {
+                    case UnBan:
+                        TMISlashCommands.checkAndProcessCommands(this.channel(), "/unban " + item.nick());
+                        break;
+                    case Delete:
+                        TMISlashCommands.checkAndProcessCommands(this.channel(), "/delete " + item.tags().get("id"));
+                        break;
+                    case ClearChat:
+                        TMISlashCommands.checkAndProcessCommands(this.channel(), "/clear");
+                        break;
+                    case Timeout:
+                        TMISlashCommands.checkAndProcessCommands(this.channel(), "/timeout " + item.nick() + " " + action.time() + (action.reason() != null ? " " + action.reason() : null));
+                        break;
+                    case Ban:
+                        TMISlashCommands.checkAndProcessCommands(this.channel(), "/ban " + item.nick() + (action.reason() != null ? " " + action.reason() : null));
+                        break;
+                    default:
+                }
+
+                if (action.action() != Actions.None && action.warning() != null && !action.warning().isBlank()) {
+                    this.session().sayNow(action.warning());
+                }
+            }
         }).subscribe();
     }
 }

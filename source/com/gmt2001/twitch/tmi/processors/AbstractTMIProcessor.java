@@ -229,7 +229,21 @@ public abstract class AbstractTMIProcessor implements Flow.Subscriber<TMIMessage
         return PhantomBot.instance().getSession();
     }
 
+    /**
+     * Shortcut to get the bot username
+     *
+     * @return
+     */
     protected String user() {
         return PhantomBot.instance().getBotName();
+    }
+
+    /**
+     * Shortcut to get the channel name
+     *
+     * @return
+     */
+    protected String channel() {
+        return this.session().getChannelName();
     }
 }

@@ -27,12 +27,12 @@ import tv.phantombot.twitch.api.Helix;
  *
  * @author gmt2001
  */
-final class TMISlashCommands {
+public final class TMISlashCommands {
 
     private TMISlashCommands() {
     }
 
-    static boolean checkAndProcessCommands(String channel, String message) {
+    public static boolean checkAndProcessCommands(String channel, String message) {
         String cmd = message.toLowerCase().split(" ")[0];
         switch (cmd) {
             case "/mods":

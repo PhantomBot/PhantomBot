@@ -73,6 +73,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     /**
      * Initializes the Twitch Message Interface. Creates a new {@link WSClient}, then initializes all processors and starts connecting
      */
+    @SuppressWarnings({"rawtypes"})
     public TwitchMessageInterface() {
         try {
             this.client = new WSClient(new URI(TMI_URI), this, this.pinger);
