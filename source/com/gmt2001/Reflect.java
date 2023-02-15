@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -99,7 +100,7 @@ public final class Reflect {
     public <T> List<Class<? extends T>> getSubTypesOf(final Class<T> type) {
         List<Class<? extends T>> cl = new ArrayList<>();
 
-        getClasses().stream().filter((c) -> (type.isAssignableFrom(c))).forEachOrdered((c) -> {
+        getClasses().stream().filter((c) -> (type.isAssignableFrom(c) && !Modifier.isAbstract(c.getModifiers()))).forEachOrdered((c) -> {
             cl.add((Class<? extends T>) c);
         });
 

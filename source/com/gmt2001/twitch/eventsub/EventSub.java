@@ -74,20 +74,32 @@ public final class EventSub implements WsClientFrameHandler, Listener {
      * Constructor. Schedules a task to remove handled messages from the anti-duplicate map when they expire. Loads the subscription types. Starts the WebSocket connection
      */
     private EventSub() {
-        ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
-        Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
-        Reflect.instance().getSubTypesOf(EventSubSubscriptionType.class).stream().forEachOrdered((c) -> {
-            try {
-                EventBus.instance().register(c.getDeclaredConstructor().newInstance());
-            } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        });
+        debug("Starting EventSub");
+        try {
+            Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
+            Reflect.instance().getSubTypesOf(EventSubSubscriptionType.class).stream().forEachOrdered((c) -> {
+                try {
+                    EventBus.instance().register(c.getDeclaredConstructor().newInstance());
+                } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
+                    com.gmt2001.Console.debug.println(c.getName());
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            });
 
-        this.connect();
+            ExecutorService.schedule(() -> {
+                try {
+                    this.connect();
+                } catch (Exception ex) {
+                    debug("constructor connect", ex);
+                }
+            }, 1, TimeUnit.SECONDS);
+
+            ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
+        } catch (Exception ex) {
+            debug("constructor", ex);
+        }
     }
 
-    private static final EventSub INSTANCE = new EventSub();
     private static final Duration CLEANUP_INTERVAL = Duration.ofMinutes(2);
     private String session_id = null;
     private final ConcurrentMap<String, ZonedDateTime> handledMessages = new ConcurrentHashMap<>();
@@ -100,6 +112,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
     private Duration keepaliveTimeout = Duration.ZERO;
     @SuppressWarnings({"rawtypes"})
     private ScheduledFuture keepAliveFuture;
+    private static final EventSub INSTANCE = new EventSub();
 
     /**
      * Singleton instance getter.
@@ -378,13 +391,17 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                 this.subscriptions.clear();
                 this.session_id = null;
                 this.lastKeepAlive = Instant.MIN;
-                this.keepAliveFuture.cancel(true);
+                if (this.keepAliveFuture != null) {
+                    this.keepAliveFuture.cancel(true);
+                }
             } finally {
                 this.rwl.writeLock().unlock();
             }
         } else {
             this.oldClient = this.client;
         }
+
+        debug("Connecting...");
 
         try {
             this.client = new WSClient(URIUtil.create(uri), this);
@@ -419,7 +436,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                                 this.rwl.writeLock().lock();
                                                 try {
                                                     this.session_id = session.getString("id");
-                                                    this.keepaliveTimeout = Duration.ofSeconds(session.getLong("keepalive_timeout_seconds"));
+                                                    this.keepaliveTimeout = Duration.ofSeconds(session.getLong("keepalive_timeout_seconds")).plusSeconds(1);
                                                     this.lastKeepAlive = Instant.now();
                                                     this.keepAliveFuture = ExecutorService.scheduleAtFixedRate(() -> this.checkKeepAlive(), this.keepaliveTimeout.toMillis(), this.keepaliveTimeout.toMillis(), TimeUnit.MILLISECONDS);
                                                 } finally {
@@ -535,11 +552,17 @@ public final class EventSub implements WsClientFrameHandler, Listener {
             try {
                 this.session_id = null;
                 this.lastKeepAlive = Instant.MIN;
-                this.keepAliveFuture.cancel(true);
+                if (this.keepAliveFuture != null) {
+                    this.keepAliveFuture.cancel(true);
+                }
             } finally {
                 this.rwl.writeLock().unlock();
             }
             this.client = null;
         }
+    }
+
+    public void shutdown() {
+        this.client.close(WebSocketCloseStatus.NORMAL_CLOSURE);
     }
 }

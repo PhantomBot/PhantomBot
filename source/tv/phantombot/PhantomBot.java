@@ -1048,6 +1048,8 @@ public final class PhantomBot implements Listener {
             this.pubSubEdge.shutdown();
         }
 
+        EventSub.instance().shutdown();
+
         /* Shutdown all caches */
         if (this.followersCache != null) {
             this.print("Terminating the Twitch channel follower cache...");
