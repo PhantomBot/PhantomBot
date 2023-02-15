@@ -109,19 +109,11 @@ public class IrcModerationEvent extends IrcMessageEvent {
         return CommandEvent.asCommand(this.sender, this.message, this.tags);
     }
 
-    /**
-     * Determines the harshest action requested by a moderation script
-     */
-    public class ModerationAction {
-        private Actions action = Actions.None;
-        private int time = -1;
-        private String reason = null;
-        private String warning = null;
-
+    public static class ModerationActions {
         /**
          * Possible actions
          */
-        public static enum Actions {
+        public enum Actions {
             /**
              * No action
              */
@@ -160,11 +152,21 @@ public class IrcModerationEvent extends IrcMessageEvent {
                 return this.value;
             }
         }
+    }
+
+    /**
+     * Determines the harshest action requested by a moderation script
+     */
+    public class ModerationAction {
+        private ModerationActions.Actions action = ModerationActions.Actions.None;
+        private int time = -1;
+        private String reason = null;
+        private String warning = null;
 
         /**
          * @return The current harshest action
          */
-        public Actions action() {
+        public ModerationActions.Actions action() {
             return this.action;
         }
 
@@ -193,8 +195,8 @@ public class IrcModerationEvent extends IrcMessageEvent {
          * Attempts to set the current action to {@link Actions.UnBan}
          */
         public synchronized void UnBan() {
-            if (this.action.value() < Actions.UnBan.value()) {
-                this.action = Actions.UnBan;
+            if (this.action.value() < ModerationActions.Actions.UnBan.value()) {
+                this.action = ModerationActions.Actions.UnBan;
             }
         }
 
@@ -217,8 +219,8 @@ public class IrcModerationEvent extends IrcMessageEvent {
          * @param warning A warning message to send to chat; {@code null} for no message
          */
         public synchronized void Delete(String warning) {
-            if (this.action.value() < Actions.Delete.value()) {
-                this.action = Actions.Delete;
+            if (this.action.value() < ModerationActions.Actions.Delete.value()) {
+                this.action = ModerationActions.Actions.Delete;
                 this.warning = warning;
             }
         }
@@ -227,8 +229,8 @@ public class IrcModerationEvent extends IrcMessageEvent {
          * Attempts to set the current action to {@link Actions.ClearChat}
          */
         public synchronized void ClearChat() {
-            if (this.action.value() < Actions.ClearChat.value()) {
-                this.action = Actions.ClearChat;
+            if (this.action.value() < ModerationActions.Actions.ClearChat.value()) {
+                this.action = ModerationActions.Actions.ClearChat;
             }
         }
 
@@ -270,11 +272,11 @@ public class IrcModerationEvent extends IrcMessageEvent {
          * @param warning A warning message to send to chat; {@code null} for no message
          */
         public synchronized void Timeout(int seconds, String reason, String warning) {
-            if (this.action.value() < Actions.Timeout.value()) {
-                this.action = Actions.Timeout;
+            if (this.action.value() < ModerationActions.Actions.Timeout.value()) {
+                this.action = ModerationActions.Actions.Timeout;
             }
 
-            if (this.action.value() == Actions.Timeout.value() && this.time < seconds) {
+            if (this.action.value() == ModerationActions.Actions.Timeout.value() && this.time < seconds) {
                 this.time = seconds;
                 this.reason = reason;
                 this.warning = warning;
@@ -294,8 +296,8 @@ public class IrcModerationEvent extends IrcMessageEvent {
          * @param warning A warning message to send to chat; {@code null} for no message
          */
         public synchronized void Ban(String reason, String warning) {
-            if (this.action.value() < Actions.Ban.value()) {
-                this.action = Actions.Ban;
+            if (this.action.value() < ModerationActions.Actions.Ban.value()) {
+                this.action = ModerationActions.Actions.Ban;
             }
         }
     }

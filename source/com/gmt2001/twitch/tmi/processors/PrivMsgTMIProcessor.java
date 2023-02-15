@@ -30,8 +30,8 @@ import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
-import tv.phantombot.event.irc.message.IrcModerationEvent.ModerationAction.Actions;
 import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
+import tv.phantombot.event.irc.message.IrcModerationEvent.ModerationActions.Actions;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 
 /**
