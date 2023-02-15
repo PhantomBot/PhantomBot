@@ -21,6 +21,20 @@
     var count = 1;
     var gamesPlayed;
 
+    $.bind('eventSubChannelUpdate', function (event) {
+        $.twitchcache.setStreamStatus(event.event().title());
+        $.twitchcache.setGameTitle(event.event().categoryName());
+    });
+
+    $.bind('eventSubWelcome', function () {
+        let channelUpdateSubscription = new Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate($.username.getIDCaster());
+        try {
+            channelUpdateSubscription.create().block();
+        } catch (ex) {
+            $.log.error(ex);
+        }
+    });
+
     /**
      * @event twitchOnline
      */
