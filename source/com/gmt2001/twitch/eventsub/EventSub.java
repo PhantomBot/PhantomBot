@@ -71,8 +71,7 @@ import tv.phantombot.twitch.api.Helix;
 public final class EventSub implements WsClientFrameHandler, Listener {
 
     /**
-     * Constructor. Populates the existing subscription list from Twitch after 5 seconds. Schedules a task to remove handled messages from the
-     * anti-duplicate map when they expire.
+     * Constructor. Schedules a task to remove handled messages from the anti-duplicate map when they expire. Loads the subscription types. Starts the WebSocket connection
      */
     private EventSub() {
         ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
@@ -111,6 +110,28 @@ public final class EventSub implements WsClientFrameHandler, Listener {
         return EventSub.INSTANCE;
     }
 
+    public static boolean debug() {
+        /**
+         * @botproperty eventsubdebug - If `true`, prints debug messages for EventSub. Default `false`
+         * @botpropertycatsort eventsubdebug 750 900 Debug
+         */
+        return CaselessProperties.instance().getPropertyAsBoolean("eventsubdebug", false);
+    }
+
+    public static void debug(String message) {
+        debug(message, null);
+    }
+
+    public static void debug(String message, Throwable ex) {
+        if (debug()) {
+            com.gmt2001.Console.debug.println(message);
+
+            if (ex != null) {
+                com.gmt2001.Console.debug.printStackTrace(ex);
+            }
+        }
+    }
+
     /**
      * Gets all current EventSub subscriptions
      *
@@ -120,6 +141,11 @@ public final class EventSub implements WsClientFrameHandler, Listener {
         return Collections.unmodifiableMap(this.subscriptions);
     }
 
+    /**
+     * Returns the WebSocket session ID
+     *
+     * @return
+     */
     public String sessionId() {
         this.rwl.readLock().lock();
         try {
@@ -140,6 +166,9 @@ public final class EventSub implements WsClientFrameHandler, Listener {
             try {
                 Helix.instance().deleteEventSubSubscription(id).doOnSuccess(response -> {
                     if (response.has("error")) {
+                        if (debug()) {
+                            debug("deleteSubscription(" + id + ") error " + response.toString(4));
+                        }
                         emitter.error(new IOException(response.toString()));
                     } else {
                         if (this.subscriptions.containsKey(id)) {
@@ -148,10 +177,12 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                         emitter.success();
                     }
                 }).doOnError(ex -> {
+                    debug("deleteSubscription(" + id + ") doOnError", ex);
                     emitter.error(ex);
                     com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
                 }).subscribe();
             } catch (IllegalArgumentException | JSONException ex) {
+                debug("deleteSubscription(" + id + ") catch", ex);
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to delete subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
@@ -192,6 +223,9 @@ public final class EventSub implements WsClientFrameHandler, Listener {
 
                 Helix.instance().createEventSubSubscription(request.toString()).doOnSuccess(response -> {
                     if (response.has("error")) {
+                        if (debug()) {
+                            debug("createSubscription(" + proposedSubscription.type() + ") error " + response.toString(4));
+                        }
                         emitter.error(new IOException(response.toString()));
                     } else {
                         EventSubSubscription subscription = EventSubSubscription.fromJSON(response.getJSONArray("data").getJSONObject(0));
@@ -199,10 +233,12 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                         emitter.success(subscription);
                     }
                 }).doOnError(ex -> {
+                    debug("createSubscription(" + proposedSubscription.type() + ") doOnError", ex);
                     emitter.error(ex);
                     com.gmt2001.Console.debug.println("Failed to create subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
                 }).subscribe();
             } catch (IllegalArgumentException | JSONException ex) {
+                debug("createSubscription(" + proposedSubscription.type() + ") catch", ex);
                 emitter.error(ex);
                 com.gmt2001.Console.debug.println("Failed to create subscription [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
             }
@@ -297,20 +333,25 @@ public final class EventSub implements WsClientFrameHandler, Listener {
     }
 
     private void checkKeepAlive() {
+        boolean shouldReconnect = false;
         this.rwl.readLock().lock();
         try {
-            if (this.lastKeepAlive != Instant.MIN && Duration.between(this.lastKeepAlive, Instant.now()).compareTo(this.keepaliveTimeout) > 0) {
-                this.reconnecting = false;
-                this.reconnect();
-            }
+            shouldReconnect = this.lastKeepAlive != Instant.MIN && Duration.between(this.lastKeepAlive, Instant.now()).compareTo(this.keepaliveTimeout) > 0;
         } finally {
             this.rwl.readLock().unlock();
+        }
+
+        if (shouldReconnect) {
+            debug("KeepAlive Failed");
+            this.reconnecting = false;
+            this.reconnect();
         }
     }
 
     @Handler
     public void onTwitchOAuthReauthorizedEvent(TwitchOAuthReauthorizedEvent event) {
         if (event.isAPI()) {
+            debug("APIOAuth Reauthorized");
             this.reconnecting = false;
             this.connect();
         }
@@ -354,6 +395,10 @@ public final class EventSub implements WsClientFrameHandler, Listener {
     }
 
     private void handleMessage(JSONObject jso) {
+        boolean handled = false;
+        if (debug()) {
+            debug("handleMessage jso " + jso.toString(4));
+        }
         if (jso.has("metadata")) {
             JSONObject metadata = jso.getJSONObject("metadata");
             if (jso.has("payload")) {
@@ -370,6 +415,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                         if (payload.has("session")) {
                                             JSONObject session = payload.getJSONObject("session");
                                             if (session.has("id")) {
+                                                handled = true;
                                                 this.rwl.writeLock().lock();
                                                 try {
                                                     this.session_id = session.getString("id");
@@ -379,6 +425,8 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                                 } finally {
                                                     this.rwl.writeLock().unlock();
                                                 }
+
+                                                debug("handleMessage welcome " + (this.reconnecting ? " (reconnecting) " : ""));
 
                                                 EventBus.instance().postAsync(new EventSubWelcomeEvent(this.reconnecting));
 
@@ -390,17 +438,20 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                         }
                                         break;
                                     case "session_keepalive":
+                                        handled = true;
                                         this.rwl.writeLock().lock();
                                         try {
                                             this.lastKeepAlive = Instant.now();
                                         } finally {
                                             this.rwl.writeLock().unlock();
                                         }
+                                        debug("handleMessage keepalive");
                                         break;
                                     case "session_reconnect ":
                                         if (payload.has("session")) {
                                             JSONObject session = payload.getJSONObject("session");
                                             if (session.has("reconnect_url")) {
+                                                handled = true;
                                                 this.rwl.writeLock().lock();
                                                 try {
                                                     this.lastKeepAlive = Instant.now();
@@ -408,17 +459,23 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                                     this.rwl.writeLock().unlock();
                                                 }
 
+                                                debug("handleMessage reconnect");
+
                                                 this.reconnecting = true;
                                                 this.connect(session.getString("reconnect_url"));
                                             }
                                         }
                                         break;
                                     case "revocation":
+                                        handled = true;
+                                        debug("handleMessage revoked");
                                         EventSubInternalRevocationEvent event = new EventSubInternalRevocationEvent(metadata, payload);
                                         this.updateSubscription(event.subscription());
                                         EventBus.instance().postAsync(event);
                                         break;
                                     case "notification":
+                                        handled = true;
+                                        debug("handleMessage notification");
                                         this.rwl.writeLock().lock();
                                         try {
                                             this.lastKeepAlive = Instant.now();
@@ -434,19 +491,26 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                 }
             }
         }
+
+        if (!handled) {
+            debug("handleMessage !handled");
+        }
     }
 
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof PingWebSocketFrame) {
+            debug("handleFrame PING");
             PingWebSocketFrame pingFrame = (PingWebSocketFrame) frame;
             this.client.send(new PongWebSocketFrame(pingFrame.content()));
         } else if (frame instanceof CloseWebSocketFrame) {
+            debug("handleFrame CLOSE");
             CloseWebSocketFrame closeFrame = (CloseWebSocketFrame) frame;
             com.gmt2001.Console.out.println("EventSub connection closed [" + closeFrame.statusCode() +"] " + closeFrame.reasonText());
         } else if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
             try {
+                debug("handleFrame TEXT");
                 handleMessage(new JSONObject(textFrame.text()));
             } catch (JSONException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -456,14 +520,17 @@ public final class EventSub implements WsClientFrameHandler, Listener {
 
     @Override
     public void handshakeComplete(ChannelHandlerContext ctx) {
+        debug("handshakeComplete");
     }
 
     @Override
     public void onClose() {
         if (this.oldClient != null && !this.oldClient.connected()) {
+            debug("onClose oldClient");
             this.oldClient = null;
         }
         if (this.client != null && !this.client.connected()) {
+            debug("onClose client");
             this.rwl.writeLock().lock();
             try {
                 this.session_id = null;
