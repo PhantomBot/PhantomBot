@@ -138,7 +138,6 @@ public final class PhantomBot implements Listener {
     private static boolean enableDebugging = false;
     private static boolean enableDebuggingLogOnly = false;
     private static boolean enableRhinoDebugger = false;
-    private static boolean enableRhinoES6 = false;
     private static boolean isInExitState = false;
     private boolean isExiting = false;
 
@@ -305,8 +304,7 @@ public final class PhantomBot implements Listener {
 
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
-        boolean appflowrefreshed = this.appflow.checkExpirationAndGetNewToken();
-        if (authflowrefreshed || appflowrefreshed) {
+        if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
 
@@ -1304,14 +1302,6 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart rhinodebugger
          */
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
-
-        /**
-         * @botproperty rhino_es6 - If `true`, enables newer features from ECMAScript 6 in Rhino. Default `true`
-         * @botpropertytype rhino_es6 Boolean
-         * @botpropertycatsort rhino_es6 100 50 Misc
-         * @botpropertyrestart rhino_es6
-         */
-        PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", true));
     }
 
     private static void setEnableRhinoDebugger(boolean enableRhinoDebugger) {
@@ -1319,13 +1309,6 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
         }
         PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
-    }
-
-    private static void setEnableRhinoES6(boolean enableRhinoES6) {
-        if (enableRhinoES6) {
-            com.gmt2001.Console.out.println("Rhino ECMAScript6 support enabled.");
-        }
-        PhantomBot.enableRhinoES6 = enableRhinoES6;
     }
 
     private static void setReloadScripts(boolean reloadScripts) {
@@ -1582,10 +1565,6 @@ public final class PhantomBot implements Listener {
 
     public static boolean getEnableRhinoDebugger() {
         return enableRhinoDebugger;
-    }
-
-    public static boolean getEnableRhinoES6() {
-        return enableRhinoES6;
     }
 
     public static String getTimeZone() {

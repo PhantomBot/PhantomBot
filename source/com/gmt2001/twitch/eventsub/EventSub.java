@@ -102,6 +102,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
     private boolean reconnecting = false;
     private Instant lastKeepAlive = Instant.MIN;
     private Duration keepaliveTimeout = Duration.ZERO;
+    @SuppressWarnings({"rawtypes"})
     private ScheduledFuture keepAliveFuture;
 
     /**
@@ -513,13 +514,19 @@ public final class EventSub implements WsClientFrameHandler, Listener {
 
     @Override
     public void onClose() {
-        this.rwl.writeLock().lock();
-        try {
-            this.session_id = null;
-            this.lastKeepAlive = Instant.MIN;
-            this.keepAliveFuture.cancel(true);
-        } finally {
-            this.rwl.writeLock().unlock();
+        if (this.oldClient != null && !this.oldClient.connected()) {
+            this.oldClient = null;
+        }
+        if (this.client != null && !this.client.connected()) {
+            this.rwl.writeLock().lock();
+            try {
+                this.session_id = null;
+                this.lastKeepAlive = Instant.MIN;
+                this.keepAliveFuture.cancel(true);
+            } finally {
+                this.rwl.writeLock().unlock();
+            }
+            this.client = null;
         }
     }
 }
