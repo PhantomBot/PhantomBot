@@ -90,9 +90,6 @@ public final class EventSub implements WsClientFrameHandler, Listener {
 
     private static final EventSub INSTANCE = new EventSub();
     private static final Duration CLEANUP_INTERVAL = Duration.ofMinutes(2);
-    private int subscription_total = 0;
-    private int subscription_total_cost = 0;
-    private int subscription_max_cost = 0;
     private String session_id = null;
     private final ConcurrentMap<String, ZonedDateTime> handledMessages = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, EventSubSubscription> subscriptions = new ConcurrentHashMap<>();
@@ -121,48 +118,6 @@ public final class EventSub implements WsClientFrameHandler, Listener {
      */
     public Map<String, EventSubSubscription> subscriptions() {
         return Collections.unmodifiableMap(this.subscriptions);
-    }
-
-    /**
-     * Returns the total number of subscriptions. Only valid after a call to getSubscriptions
-     *
-     * @return
-     */
-    public int totalSubscriptionCount() {
-        this.rwl.readLock().lock();
-        try {
-            return this.subscription_total;
-        } finally {
-            this.rwl.readLock().unlock();
-        }
-    }
-
-    /**
-     * Returns the total cost of all subscriptions. Only valid after a call to getSubscriptions
-     *
-     * @return
-     */
-    public int totalSubscriptionCost() {
-        this.rwl.readLock().lock();
-        try {
-            return this.subscription_total_cost;
-        } finally {
-            this.rwl.readLock().unlock();
-        }
-    }
-
-    /**
-     * Returns the cost limit for subscriptions. Only valid after a call to getSubscriptions
-     *
-     * @return
-     */
-    public int subscriptionCostLimit() {
-        this.rwl.readLock().lock();
-        try {
-            return this.subscription_max_cost;
-        } finally {
-            this.rwl.readLock().unlock();
-        }
     }
 
     public String sessionId() {
@@ -326,13 +281,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
      * @param subscription The subscription to add/update
      */
     private void updateSubscription(EventSubSubscription subscription) {
-        this.rwl.writeLock().lock();
-        try {
-            this.subscriptions.put(subscription.id(), subscription);
-            this.subscription_total = this.subscriptions.size();
-        } finally {
-            this.rwl.writeLock().unlock();
-        }
+        this.subscriptions.put(subscription.id(), subscription);
     }
 
     /**
@@ -385,9 +334,6 @@ public final class EventSub implements WsClientFrameHandler, Listener {
 
             this.rwl.writeLock().lock();
             try {
-                this.subscription_max_cost = 0;
-                this.subscription_total = 0;
-                this.subscription_total_cost = 0;
                 this.subscriptions.clear();
                 this.session_id = null;
                 this.lastKeepAlive = Instant.MIN;
