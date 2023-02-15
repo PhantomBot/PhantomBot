@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub.subscriptions.channel;
+package com.gmt2001.twitch.eventsub.subscriptions.channel;
 
-import com.gmt2001.eventsub.EventSubInternalNotificationEvent;
-import com.gmt2001.eventsub.EventSubSubscription;
-import com.gmt2001.eventsub.EventSubSubscriptionType;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
+import com.gmt2001.twitch.eventsub.EventSubSubscription;
+import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
+
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.EventSubChannelUpdateEvent;
@@ -33,6 +35,7 @@ import tv.phantombot.event.eventsub.channel.EventSubChannelUpdateEvent;
 public final class ChannelUpdate extends EventSubSubscriptionType {
 
     public static final String TYPE = "channel.update";
+    public static final String VERSION = "1";
     private String broadcaster_user_id;
     private String broadcaster_user_login;
     private String broadcaster_user_name;
@@ -55,15 +58,15 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      * @param e The event
      */
     public ChannelUpdate(EventSubInternalNotificationEvent e) {
-        super(e.getSubscription(), e.getMessageId(), e.getMessageTimestamp());
-        this.broadcaster_user_id = e.getEvent().getString("broadcaster_user_id");
-        this.broadcaster_user_login = e.getEvent().getString("broadcaster_user_login");
-        this.broadcaster_user_name = e.getEvent().getString("broadcaster_user_name");
-        this.title = e.getEvent().getString("title");
-        this.language = e.getEvent().getString("language");
-        this.category_id = e.getEvent().getString("category_id");
-        this.category_name = e.getEvent().getString("category_name");
-        this.is_mature = e.getEvent().getBoolean("is_mature");
+        super(e.subscription(), e.messageId(), e.messageTimestamp());
+        this.broadcaster_user_id = e.event().getString("broadcaster_user_id");
+        this.broadcaster_user_login = e.event().getString("broadcaster_user_login");
+        this.broadcaster_user_name = e.event().getString("broadcaster_user_name");
+        this.title = e.event().getString("title");
+        this.language = e.event().getString("language");
+        this.category_id = e.event().getString("category_id");
+        this.category_name = e.event().getString("category_name");
+        this.is_mature = e.event().getBoolean("is_mature");
     }
 
     /**
@@ -77,14 +80,14 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
     }
 
     @Override
-    public EventSubSubscription proposeSubscription() {
+    protected EventSubSubscription proposeSubscription() {
         Map<String, String> condition = new HashMap<>();
         condition.put("broadcaster_user_id", this.broadcaster_user_id);
-        return this.proposeSubscriptionInternal(ChannelUpdate.TYPE, condition);
+        return this.proposeSubscriptionInternal(ChannelUpdate.TYPE, ChannelUpdate.VERSION, condition);
     }
 
     @Override
-    public void validateParameters() throws IllegalArgumentException {
+    protected void validateParameters() throws IllegalArgumentException {
         if (this.broadcaster_user_id == null || this.broadcaster_user_id.isBlank() || !this.broadcaster_user_id.matches("[0-9]+")
                 || this.broadcaster_user_id.startsWith("-") || this.broadcaster_user_id.startsWith("0")) {
             throw new IllegalArgumentException("broadcaster_user_id must be a valid id");
@@ -93,15 +96,15 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
 
     @Handler
     public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.getSubscription().getType().equals(ChannelUpdate.TYPE)) {
+        if (e.subscription().type().equals(ChannelUpdate.TYPE)) {
             EventBus.instance().postAsync(new EventSubChannelUpdateEvent(new ChannelUpdate(e)));
         }
     }
 
     @Override
     protected boolean isMatch(EventSubSubscription subscription) {
-        return subscription.getType().equals(ChannelUpdate.TYPE)
-                && subscription.getCondition().get("broadcaster_user_id").equals(this.broadcaster_user_id);
+        return subscription.type().equals(ChannelUpdate.TYPE)
+                && subscription.condition().get("broadcaster_user_id").equals(this.broadcaster_user_id);
     }
 
     /**
@@ -109,7 +112,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getBroadcasterUserId() {
+    public String broadcasterUserId() {
         return this.broadcaster_user_id;
     }
 
@@ -118,7 +121,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getBroadcasterUserLogin() {
+    public String broadcasterUserLogin() {
         return this.broadcaster_user_login;
     }
 
@@ -127,7 +130,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getBroadcasterUserName() {
+    public String broadcasterUserName() {
         return this.broadcaster_user_name;
     }
 
@@ -136,7 +139,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getTitle() {
+    public String title() {
         return this.title;
     }
 
@@ -145,7 +148,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getLanguage() {
+    public String language() {
         return this.language;
     }
 
@@ -154,7 +157,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getCategoryId() {
+    public String categoryId() {
         return this.category_id;
     }
 
@@ -163,7 +166,7 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
      *
      * @return
      */
-    public String getCategoryName() {
+    public String categoryName() {
         return this.category_name;
     }
 

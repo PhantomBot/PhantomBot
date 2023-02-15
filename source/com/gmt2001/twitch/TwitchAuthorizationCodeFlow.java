@@ -35,6 +35,8 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.twitch.TwitchOAuthReauthorizedEvent;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.httpserver.HTTPOAuthHandler;
 import tv.phantombot.twitch.api.TwitchValidate;
@@ -273,6 +275,8 @@ public class TwitchAuthorizationCodeFlow {
                     TwitchValidate.instance().updateChatToken(CaselessProperties.instance().getProperty("oauth"));
                     TwitchValidate.instance().updateAPIToken(CaselessProperties.instance().getProperty("apioauth"));
                     PhantomBot.instance().reconnect();
+
+                    EventBus.instance().postAsync(new TwitchOAuthReauthorizedEvent(!qsd.parameters().get("type").get(0).equals("bot")));
 
                     if (qsd.parameters().get("type").get(0).equals("bot")) {
                         com.gmt2001.Console.debug.println("Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));

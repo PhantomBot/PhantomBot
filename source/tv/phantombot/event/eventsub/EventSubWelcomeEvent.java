@@ -16,29 +16,25 @@
  */
 package tv.phantombot.event.eventsub;
 
-import com.gmt2001.twitch.eventsub.EventSubSubscription;
-
 /**
- * The Revocation event signals that a subscription has been revoked. Possible causes are deleted channel, authorization revoked, or callback failed
- * too many times
+ * EventSub WebSocket is connected and ready to propose subscriptions
  *
  * @author gmt2001
  */
-public class EventSubRevocationEvent extends EventSubEvent {
+public class EventSubWelcomeEvent extends EventSubEvent {
+    private final boolean isReconnect;
 
-    private final EventSubSubscription subscription;
-
-    public EventSubRevocationEvent(EventSubSubscription subscription) {
+    public EventSubWelcomeEvent(boolean isReconnect) {
         super();
-        this.subscription = subscription;
+        this.isReconnect = isReconnect;
     }
 
     /**
-     * Returns an {@link EventSubSubscription} object that indicates the subscription that was revoked and the reason code
+     * If {@code true}, this came from a {@code session_reconnect} event and old subscriptions are still active
      *
      * @return
      */
-    public EventSubSubscription subscription() {
-        return this.subscription;
+    public boolean isReconnect() {
+        return this.isReconnect;
     }
 }

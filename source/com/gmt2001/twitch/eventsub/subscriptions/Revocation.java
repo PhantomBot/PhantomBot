@@ -14,21 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub.subscriptions;
+package com.gmt2001.twitch.eventsub.subscriptions;
 
-import com.gmt2001.eventsub.EventSubInternalVerificationEvent;
-import com.gmt2001.eventsub.EventSubSubscription;
-import com.gmt2001.eventsub.EventSubSubscriptionType;
+import com.gmt2001.twitch.eventsub.EventSubInternalRevocationEvent;
+import com.gmt2001.twitch.eventsub.EventSubSubscription;
+import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
+
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.eventsub.EventSubWebhookValidatedEvent;
+import tv.phantombot.event.eventsub.EventSubRevocationEvent;
 
 /**
- * Handles notification that a webhook has been validated and is now active.
+ * Handles notification that a webhook has been revoked.
  *
  * @author gmt2001
  */
-public final class WebhookValidated extends EventSubSubscriptionType {
+public final class Revocation extends EventSubSubscriptionType {
 
     @Override
     public EventSubSubscription proposeSubscription() {
@@ -46,7 +47,7 @@ public final class WebhookValidated extends EventSubSubscriptionType {
     }
 
     @Handler
-    public void onEventSubInternalVerificationEvent(EventSubInternalVerificationEvent e) {
-        EventBus.instance().postAsync(new EventSubWebhookValidatedEvent(e.getSubscription()));
+    public void onEventSubInternalRevocationEvent(EventSubInternalRevocationEvent e) {
+        EventBus.instance().postAsync(new EventSubRevocationEvent(e.subscription()));
     }
 }

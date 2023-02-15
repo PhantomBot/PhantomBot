@@ -28,13 +28,12 @@ import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.datastore.H2Store;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
-import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
-import com.gmt2001.twitch.TwitchClientCredentialsFlow;
+import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
@@ -109,7 +108,6 @@ public final class PhantomBot implements Listener {
 
     /* Bot Information */
     private TwitchAuthorizationCodeFlow authflow;
-    private TwitchClientCredentialsFlow appflow;
 
     /* DataStore Information */
     private DataStore dataStore;
@@ -306,7 +304,6 @@ public final class PhantomBot implements Listener {
         this.print("");
 
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
-        this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
         boolean appflowrefreshed = this.appflow.checkExpirationAndGetNewToken();
         if (authflowrefreshed || appflowrefreshed) {
@@ -497,10 +494,6 @@ public final class PhantomBot implements Listener {
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
         return this.authflow;
-    }
-
-    public TwitchClientCredentialsFlow getAppFlow() {
-        return this.appflow;
     }
 
     public void reconnect() {
@@ -755,16 +748,10 @@ public final class PhantomBot implements Listener {
             this.httpSetupHandler.register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
             this.httpAuthenticatedHandler.register();
-            /**
-             * @botproperty useeventsub - If `true`, enables the EventSub module. Default `false`
-             */
             this.httpPanelHandler = new HTTPPanelAndYTHandler();
             this.httpPanelHandler.register();
             this.oauthHandler = new HTTPOAuthHandler();
             this.oauthHandler.register();
-            if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
-                EventSub.instance().register();
-            }
             this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
             new WsPanelRemoteLoginHandler().register();
             RestartRunner.instance().register();
@@ -794,10 +781,6 @@ public final class PhantomBot implements Listener {
 
         this.alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(CaselessProperties.instance().getProperty("webauthro"),
                 CaselessProperties.instance().getProperty("webauth")).register();
-
-        if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
-            TwitchValidate.instance().validateApp(CaselessProperties.instance().getProperty("apptoken"), "APP (EventSub)");
-        }
 
         /* Is the music toggled on? */
         /**
@@ -1004,6 +987,8 @@ public final class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        EventSub.instance();
     }
 
     private void init() {

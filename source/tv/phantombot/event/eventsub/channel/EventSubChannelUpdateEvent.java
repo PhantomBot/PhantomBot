@@ -16,7 +16,7 @@
  */
 package tv.phantombot.event.eventsub.channel;
 
-import com.gmt2001.eventsub.subscriptions.channel.ChannelUpdate;
+import com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate;
 
 /**
  * The channel.update subscription type sends notifications when a broadcaster updates the category, title, mature flag, or broadcast language for
@@ -38,7 +38,7 @@ public class EventSubChannelUpdateEvent extends EventSubChannelEvent {
      *
      * @return
      */
-    public ChannelUpdate getEvent() {
+    public ChannelUpdate event() {
         return this.event;
     }
 }

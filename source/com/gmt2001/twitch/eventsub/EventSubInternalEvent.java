@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
+package com.gmt2001.twitch.eventsub;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import java.nio.charset.Charset;
@@ -45,12 +45,21 @@ public abstract class EventSubInternalEvent extends Event {
         this.subscription = EventSubSubscription.fromJSON(data.getJSONObject("subscription"));
     }
 
+    EventSubInternalEvent(JSONObject metadata, JSONObject payload) {
+        super();
+        this.challenge = null;
+        this.event = payload.optJSONObject("event");
+        this.messageId = metadata.getString("message_id");
+        this.messageTimestamp = EventSub.parseDate(metadata.getString("message_timestamp"));
+        this.subscription = EventSubSubscription.fromJSON(payload.getJSONObject("subscription"));
+    }
+
     /**
      * Gets the authentication challenge
      *
      * @return
      */
-    String getChallenge() {
+    String challenge() {
         return this.challenge;
     }
 
@@ -59,7 +68,7 @@ public abstract class EventSubInternalEvent extends Event {
      *
      * @return
      */
-    public JSONObject getEvent() {
+    public JSONObject event() {
         return this.event;
     }
 
@@ -68,7 +77,7 @@ public abstract class EventSubInternalEvent extends Event {
      *
      * @return
      */
-    public String getMessageId() {
+    public String messageId() {
         return this.messageId;
     }
 
@@ -77,7 +86,7 @@ public abstract class EventSubInternalEvent extends Event {
      *
      * @return
      */
-    public ZonedDateTime getMessageTimestamp() {
+    public ZonedDateTime messageTimestamp() {
         return this.messageTimestamp;
     }
 
@@ -86,7 +95,7 @@ public abstract class EventSubInternalEvent extends Event {
      *
      * @return
      */
-    public EventSubSubscription getSubscription() {
+    public EventSubSubscription subscription() {
         return this.subscription;
     }
 }

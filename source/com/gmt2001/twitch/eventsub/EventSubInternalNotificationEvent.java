@@ -14,30 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.eventsub;
+package com.gmt2001.twitch.eventsub;
 
-import com.gmt2001.eventsub.EventSubSubscription;
+import org.json.JSONObject;
+
+import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
- * The Webhook Validated event signals that a subscription has been tested by Twitch and successfully activated
+ * Internal event subclass denoting an EventSub event notification
  *
  * @author gmt2001
  */
-public class EventSubWebhookValidatedEvent extends EventSubEvent {
-
-    private final EventSubSubscription subscription;
-
-    public EventSubWebhookValidatedEvent(EventSubSubscription subscription) {
-        super();
-        this.subscription = subscription;
+public final class EventSubInternalNotificationEvent extends EventSubInternalEvent {
+    EventSubInternalNotificationEvent(FullHttpRequest req) {
+        super(req);
     }
 
-    /**
-     * Returns an {@link EventSubSubscription} object that indicates the subscription that was validated
-     *
-     * @return
-     */
-    public EventSubSubscription getSubscription() {
-        return this.subscription;
+    EventSubInternalNotificationEvent(JSONObject metadata, JSONObject payload) {
+        super(metadata, payload);
     }
 }

@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
+package com.gmt2001.twitch.eventsub;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
- * Internal event subclass denoting an EventSub event notification
+ * Internal event subclass denoting an EventSub webhook callback verification notification
  *
  * @author gmt2001
  */
-public final class EventSubInternalNotificationEvent extends EventSubInternalEvent {
+public final class EventSubInternalVerificationEvent extends EventSubInternalEvent {
 
-    EventSubInternalNotificationEvent(FullHttpRequest req) {
+    EventSubInternalVerificationEvent(FullHttpRequest req) {
         super(req);
     }
 }
