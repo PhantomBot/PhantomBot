@@ -401,14 +401,16 @@ public final class EventSub implements WsClientFrameHandler, Listener {
             this.oldClient = this.client;
         }
 
-        debug("Connecting...");
+        ExecutorService.schedule(() -> {
+            debug("Connecting...");
 
-        try {
-            this.client = new WSClient(URIUtil.create(uri), this);
-            this.client.connect();
-        } catch (InterruptedException | SSLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+            try {
+                this.client = new WSClient(URIUtil.create(uri), this);
+                this.client.connect();
+            } catch (InterruptedException | SSLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }, 250, TimeUnit.MILLISECONDS);
     }
 
     private void handleMessage(JSONObject jso) {
