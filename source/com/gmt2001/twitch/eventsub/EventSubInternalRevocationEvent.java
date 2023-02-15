@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
+package com.gmt2001.twitch.eventsub;
+
+import org.json.JSONObject;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 
@@ -24,8 +26,11 @@ import io.netty.handler.codec.http.FullHttpRequest;
  * @author gmt2001
  */
 public final class EventSubInternalRevocationEvent extends EventSubInternalEvent {
-
     EventSubInternalRevocationEvent(FullHttpRequest req) {
         super(req);
+    }
+
+    EventSubInternalRevocationEvent(JSONObject metadata, JSONObject payload) {
+        super(metadata, payload);
     }
 }

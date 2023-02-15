@@ -14,18 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
-
-import io.netty.handler.codec.http.FullHttpRequest;
+package tv.phantombot.event.twitch;
 
 /**
- * Internal event subclass denoting an EventSub webhook callback verification notification
- *
- * @author gmt2001
+ * One of the Twitch OAuth tokens has been re-authorized from the {@code /oauth} page on the bots webserver
  */
-public final class EventSubInternalVerificationEvent extends EventSubInternalEvent {
+public class TwitchOAuthReauthorizedEvent extends TwitchEvent {
+    private final boolean isAPI;
 
-    EventSubInternalVerificationEvent(FullHttpRequest req) {
-        super(req);
+    public TwitchOAuthReauthorizedEvent(boolean isAPI) {
+        super();
+        this.isAPI = isAPI;
+    }
+
+    /**
+     * If {@code true}, the API OAuth was re-authorized; otherwise, it was the Chat OAuth
+     *
+     * @return
+     */
+    public boolean isAPI() {
+        return this.isAPI;
     }
 }

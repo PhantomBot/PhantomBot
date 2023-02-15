@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
+package com.gmt2001.twitch.eventsub;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -65,6 +65,10 @@ public final class EventSubSubscription {
          * A user in the condition of the subscription was removed.
          */
         USER_REMOVED,
+        /**
+         * The specific version of the subscription type was removed.
+         */
+        VERSION_REMOVED,
         /**
          * The subscription was removed via API request, probably by a script on the bot.
          */
@@ -155,8 +159,8 @@ public final class EventSubSubscription {
      * @return
      */
     EventSubSubscription clone(SubscriptionStatus newStatus) {
-        return new EventSubSubscription(this.getId(), newStatus, this.getType(), this.getVersion(), this.getCost(), this.getCondition(),
-                this.getCreatedAt(), this.getTransport());
+        return new EventSubSubscription(this.id(), newStatus, this.type(), this.version(), this.cost(), this.condition(),
+                this.createdAt(), this.transport());
     }
 
     /**
@@ -193,7 +197,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public String getId() {
+    public String id() {
         return this.id;
     }
 
@@ -202,7 +206,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public SubscriptionStatus getStatus() {
+    public SubscriptionStatus status() {
         return this.status;
     }
 
@@ -211,7 +215,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public String getType() {
+    public String type() {
         return this.type;
     }
 
@@ -220,7 +224,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public String getVersion() {
+    public String version() {
         return this.version;
     }
 
@@ -229,7 +233,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public int getCost() {
+    public int cost() {
         return this.cost;
     }
 
@@ -238,7 +242,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public Map<String, String> getCondition() {
+    public Map<String, String> condition() {
         return new HashMap<>(this.condition);
     }
 
@@ -247,7 +251,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public ZonedDateTime getCreatedAt() {
+    public ZonedDateTime createdAt() {
         return this.created_at;
     }
 
@@ -256,7 +260,7 @@ public final class EventSubSubscription {
      *
      * @return
      */
-    public EventSubTransport getTransport() {
+    public EventSubTransport transport() {
         return this.transport;
     }
 }

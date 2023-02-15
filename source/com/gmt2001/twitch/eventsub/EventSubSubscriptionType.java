@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.eventsub;
+package com.gmt2001.twitch.eventsub;
 
 import java.time.ZonedDateTime;
 import java.util.Map;
+
 import reactor.core.publisher.Mono;
-import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.Listener;
 
 /**
@@ -43,12 +43,28 @@ public abstract class EventSubSubscriptionType implements Listener {
     }
 
     /**
-     * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor
+     * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
+     * If a matching subscription already exists, returns that instead
      *
      * @return
      */
     public Mono<EventSubSubscription> create() {
+        return this.create(false);
+    }
+
+    /**
+     * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
+     * If a matching subscription already exists, returns that instead
+     *
+     * @param force If {@code true}, attempt to create the subscription even if one already exists
+     *
+     * @return
+     */
+    public Mono<EventSubSubscription> create(boolean force) {
         this.validateParameters();
+        if (!force && this.isAlreadySubscribed()) {
+            return Mono.just(this.getExistingSubscription());
+        }
         return EventSub.instance().createSubscription(this.proposeSubscription());
     }
 
@@ -73,11 +89,12 @@ public abstract class EventSubSubscriptionType implements Listener {
      * Actually creates the proposed {@link EventSubSubscription}
      *
      * @param type The subscription type to create
+     * @param version The subscription type version
      * @param condition The conditions which will trigger notifications for this subscription
      * @return
      */
-    protected EventSubSubscription proposeSubscriptionInternal(String type, Map<String, String> condition) {
-        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, "1", -1, condition, ZonedDateTime.now(), this.proposeTransport());
+    protected EventSubSubscription proposeSubscriptionInternal(String type, String version, Map<String, String> condition) {
+        return new EventSubSubscription("", EventSubSubscription.SubscriptionStatus.NOT_CREATED_YET, type, version, -1, condition, ZonedDateTime.now(), this.proposeTransport());
     }
 
     /**
@@ -89,7 +106,7 @@ public abstract class EventSubSubscriptionType implements Listener {
         /**
          * @botproperty eventsubcallbackurl - The URL which will receive EventSub notifications
          */
-        return new EventSubTransport("webhook", CaselessProperties.instance().getProperty("eventsubcallbackurl"), EventSub.getSecret());
+        return EventSubTransport.websocket(EventSub.instance().sessionId());
     }
 
     /**
@@ -105,11 +122,24 @@ public abstract class EventSubSubscriptionType implements Listener {
      * @return
      */
     public boolean isAlreadySubscribed() {
-        return EventSub.instance().getSubscriptions().values().stream().anyMatch(possibleSubscription -> {
+        return EventSub.instance().subscriptions().values().stream().anyMatch(possibleSubscription -> {
             return this.isMatch(possibleSubscription)
-                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
-                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+                    && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
         });
+    }
+
+    /**
+     * Returns the existing subscription, if one already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states
+     *
+     * @return
+     */
+    public EventSubSubscription getExistingSubscription() {
+        return EventSub.instance().subscriptions().values().stream().filter(possibleSubscription -> {
+            return this.isMatch(possibleSubscription)
+                    && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        }).findFirst().orElse(null);
     }
 
     /**
@@ -119,11 +149,11 @@ public abstract class EventSubSubscriptionType implements Listener {
      * @return
      */
     public String findMatchingSubscriptionId() {
-        return EventSub.instance().getSubscriptions().values().stream().filter(possibleSubscription -> {
+        return EventSub.instance().subscriptions().values().stream().filter(possibleSubscription -> {
             return this.isMatch(possibleSubscription)
-                    && (possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.ENABLED
-                    || possibleSubscription.getStatus() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
-        }).findFirst().map(EventSubSubscription::getId).orElse(null);
+                    && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
+                    || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        }).findFirst().map(EventSubSubscription::id).orElse(null);
     }
 
     /**
@@ -139,7 +169,7 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public EventSubSubscription getSubscription() {
+    public EventSubSubscription subscription() {
         return this.subscription;
     }
 
@@ -148,7 +178,7 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public String getMessageId() {
+    public String messageId() {
         return this.messageId;
     }
 
@@ -157,7 +187,7 @@ public abstract class EventSubSubscriptionType implements Listener {
      *
      * @return
      */
-    public ZonedDateTime getMessageTimestamp() {
+    public ZonedDateTime messageTimestamp() {
         return this.messageTimestamp;
     }
 }

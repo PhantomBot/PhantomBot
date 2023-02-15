@@ -28,13 +28,12 @@ import com.gmt2001.datastore.DataStoreConverter;
 import com.gmt2001.datastore.H2Store;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
-import com.gmt2001.eventsub.EventSub;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
-import com.gmt2001.twitch.TwitchClientCredentialsFlow;
+import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.TwitchAlertsAPIv1;
@@ -109,7 +108,6 @@ public final class PhantomBot implements Listener {
 
     /* Bot Information */
     private TwitchAuthorizationCodeFlow authflow;
-    private TwitchClientCredentialsFlow appflow;
 
     /* DataStore Information */
     private DataStore dataStore;
@@ -140,7 +138,6 @@ public final class PhantomBot implements Listener {
     private static boolean enableDebugging = false;
     private static boolean enableDebuggingLogOnly = false;
     private static boolean enableRhinoDebugger = false;
-    private static boolean enableRhinoES6 = false;
     private static boolean isInExitState = false;
     private boolean isExiting = false;
 
@@ -306,10 +303,8 @@ public final class PhantomBot implements Listener {
         this.print("");
 
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
-        this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
-        boolean appflowrefreshed = this.appflow.checkExpirationAndGetNewToken();
-        if (authflowrefreshed || appflowrefreshed) {
+        if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
 
@@ -497,10 +492,6 @@ public final class PhantomBot implements Listener {
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
         return this.authflow;
-    }
-
-    public TwitchClientCredentialsFlow getAppFlow() {
-        return this.appflow;
     }
 
     public void reconnect() {
@@ -755,16 +746,10 @@ public final class PhantomBot implements Listener {
             this.httpSetupHandler.register();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
             this.httpAuthenticatedHandler.register();
-            /**
-             * @botproperty useeventsub - If `true`, enables the EventSub module. Default `false`
-             */
             this.httpPanelHandler = new HTTPPanelAndYTHandler();
             this.httpPanelHandler.register();
             this.oauthHandler = new HTTPOAuthHandler();
             this.oauthHandler.register();
-            if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
-                EventSub.instance().register();
-            }
             this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
             new WsPanelRemoteLoginHandler().register();
             RestartRunner.instance().register();
@@ -794,10 +779,6 @@ public final class PhantomBot implements Listener {
 
         this.alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(CaselessProperties.instance().getProperty("webauthro"),
                 CaselessProperties.instance().getProperty("webauth")).register();
-
-        if (CaselessProperties.instance().getPropertyAsBoolean("useeventsub", false)) {
-            TwitchValidate.instance().validateApp(CaselessProperties.instance().getProperty("apptoken"), "APP (EventSub)");
-        }
 
         /* Is the music toggled on? */
         /**
@@ -1004,6 +985,8 @@ public final class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        EventSub.instance();
     }
 
     private void init() {
@@ -1064,6 +1047,8 @@ public final class PhantomBot implements Listener {
         if (this.pubSubEdge != null) {
             this.pubSubEdge.shutdown();
         }
+
+        EventSub.instance().shutdown();
 
         /* Shutdown all caches */
         if (this.followersCache != null) {
@@ -1319,14 +1304,6 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart rhinodebugger
          */
         PhantomBot.setEnableRhinoDebugger(ConfigurationManager.getBoolean(startProperties, ConfigurationManager.PROP_RHINODEBUGGER, false));
-
-        /**
-         * @botproperty rhino_es6 - If `true`, enables newer features from ECMAScript 6 in Rhino. Default `true`
-         * @botpropertytype rhino_es6 Boolean
-         * @botpropertycatsort rhino_es6 100 50 Misc
-         * @botpropertyrestart rhino_es6
-         */
-        PhantomBot.setEnableRhinoES6(startProperties.getPropertyAsBoolean("rhino_es6", true));
     }
 
     private static void setEnableRhinoDebugger(boolean enableRhinoDebugger) {
@@ -1334,13 +1311,6 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.out.println("Rhino Debugger will be launched if system supports it.");
         }
         PhantomBot.enableRhinoDebugger = enableRhinoDebugger;
-    }
-
-    private static void setEnableRhinoES6(boolean enableRhinoES6) {
-        if (enableRhinoES6) {
-            com.gmt2001.Console.out.println("Rhino ECMAScript6 support enabled.");
-        }
-        PhantomBot.enableRhinoES6 = enableRhinoES6;
     }
 
     private static void setReloadScripts(boolean reloadScripts) {
@@ -1597,10 +1567,6 @@ public final class PhantomBot implements Listener {
 
     public static boolean getEnableRhinoDebugger() {
         return enableRhinoDebugger;
-    }
-
-    public static boolean getEnableRhinoES6() {
-        return enableRhinoES6;
     }
 
     public static String getTimeZone() {

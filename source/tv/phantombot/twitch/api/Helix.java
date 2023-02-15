@@ -2462,6 +2462,32 @@ public class Helix {
         });
     }
 
+    public Mono<JSONObject> createEventSubSubscription(String jsonString)
+            throws JSONException, IllegalArgumentException {
+        if (jsonString == null || jsonString.isBlank()) {
+            throw new IllegalArgumentException("jsonString");
+        }
+
+        String endpoint = "/eventsub/subscriptions";
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, jsonString);
+        });
+    }
+
+    public Mono<JSONObject> deleteEventSubSubscription(String id)
+            throws JSONException, IllegalArgumentException {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("id");
+        }
+
+        String endpoint = "/eventsub/subscriptions?" + this.qspValid("id", id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint);
+        });
+    }
+
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`
