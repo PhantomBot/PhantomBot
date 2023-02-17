@@ -23,5 +23,8 @@ import tv.phantombot.event.eventsub.EventSubEvent;
  *
  * @author gmt2001
  */
-public abstract class EventSubChannelEvent extends EventSubEvent {
+public abstract class EventSubChannelEvent<T> extends EventSubEvent<T> {
+    public EventSubChannelEvent(T event) {
+        super(event);
+    }
 }

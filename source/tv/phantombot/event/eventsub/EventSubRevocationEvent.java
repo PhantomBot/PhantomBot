@@ -24,21 +24,8 @@ import com.gmt2001.twitch.eventsub.EventSubSubscription;
  *
  * @author gmt2001
  */
-public class EventSubRevocationEvent extends EventSubEvent {
-
-    private final EventSubSubscription subscription;
-
+public class EventSubRevocationEvent extends EventSubEvent<EventSubSubscription> {
     public EventSubRevocationEvent(EventSubSubscription subscription) {
-        super();
-        this.subscription = subscription;
-    }
-
-    /**
-     * Returns an {@link EventSubSubscription} object that indicates the subscription that was revoked and the reason code
-     *
-     * @return
-     */
-    public EventSubSubscription subscription() {
-        return this.subscription;
+        super(subscription);
     }
 }

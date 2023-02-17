@@ -21,11 +21,11 @@ package tv.phantombot.event.eventsub;
  *
  * @author gmt2001
  */
-public class EventSubWelcomeEvent extends EventSubEvent {
+public class EventSubWelcomeEvent extends EventSubEvent<Void> {
     private final boolean isReconnect;
 
     public EventSubWelcomeEvent(boolean isReconnect) {
-        super();
+        super(null);
         this.isReconnect = isReconnect;
     }
 
