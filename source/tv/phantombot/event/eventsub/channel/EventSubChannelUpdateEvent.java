@@ -24,21 +24,8 @@ import com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate;
  *
  * @author gmt2001
  */
-public class EventSubChannelUpdateEvent extends EventSubChannelEvent {
-
-    private final ChannelUpdate event;
-
+public class EventSubChannelUpdateEvent extends EventSubChannelEvent<ChannelUpdate> {
     public EventSubChannelUpdateEvent(ChannelUpdate event) {
-        super();
-        this.event = event;
-    }
-
-    /**
-     * Returns a {@link ChannelUpdate} object which indicates the latest channel parameters
-     *
-     * @return
-     */
-    public ChannelUpdate event() {
-        return this.event;
+        super(event);
     }
 }

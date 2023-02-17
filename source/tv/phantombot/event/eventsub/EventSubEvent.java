@@ -21,7 +21,23 @@ import tv.phantombot.event.Event;
 /**
  * An EventSub event
  *
+ * @param <T> The type of the event object
+ *
  * @author gmt2001
  */
-public abstract class EventSubEvent extends Event {
+public abstract class EventSubEvent<T> extends Event {
+    private final T event;
+
+    public EventSubEvent(T event) {
+        super();
+        this.event = event;
+    }
+
+    /**
+     * Returns the {@link T} that contains data about the event
+     * @return
+     */
+    public T event() {
+        return this.event;
+    }
 }
