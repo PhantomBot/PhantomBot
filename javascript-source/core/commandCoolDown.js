@@ -119,7 +119,7 @@
                command === 'adventure' ||
                command === 'vote' ||
                command === 'joinqueue' ||
-               command === $.raffleCommand.toLowerCase();
+               ($.raffleCommand !== undefined && $.raffleCommand !== null && command === $.jsString($.raffleCommand).toLowerCase());
     }
 
     /*
