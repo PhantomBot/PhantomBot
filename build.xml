@@ -37,6 +37,7 @@
     <property name="build.dir" location="${dist}/build" />
     <property name="res.dir" location="${build.dir}" />
     <property name="lib.dir" location="${build.dir}/lib" />
+    <property name="java.source.level" value="11"/>
     <!-- Apache Ivy properties -->
     <property name="ivy.install.version" value="2.5.0"/>
     <condition property="ivy.home" value="${env.IVY_HOME}">
@@ -209,7 +210,7 @@
 
     <target depends="pre.compile" name="compile.src">
         <echo>Compiling with Java Version ${ant.java.version} (${java.version})</echo>
-        <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="${java.source.level}" source="${java.source.level}" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
             <compilerarg value="-XDenableSunApiLintControl" />
@@ -225,7 +226,7 @@
     </target>
 
     <target depends="clean.build.test" name="compile.src.test">
-        <javac target="11" source="11" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="${java.source.level}" source="${java.source.level}" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
             <compilerarg value="-XDenableSunApiLintControl" />
@@ -351,6 +352,37 @@
 
     <target name="distclean" depends="clean">
         <delete dir="${dist}" />
+    </target>
+
+    <target name="javadoc">
+        <javadoc destdir="${dist}/javadoc"
+            author="true"
+            sourcepath="source"
+            useexternalfile="true"
+            source="${java.source.level}"
+            windowtitle="PhantomBot JavaDoc"
+            additionalparam="--allow-script-in-comments">
+            <classpath>
+                <fileset dir="${reference}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+            <link href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/" />
+            <link href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/" />
+            <link href="https://javadoc.io/doc/com.discord4j/discord4j-rest/latest/" />
+            <link href="https://stleary.github.io/JSON-java/" />
+            <link href="https://netty.io/4.1/api/" />
+            <link href="https://projectreactor.io/docs/core/release/api/" />
+            <link href="https://projectreactor.io/docs/netty/release/api/" />
+            <doctitle><![CDATA[<h1>PhantomBot</h1>]]></doctitle>
+            <header><![CDATA[
+                <a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a>
+                <script>
+                document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';
+                </script>
+            ]]></header>
+            <bottom><![CDATA[<i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i>]]></bottom>
+        </javadoc>
     </target>
 
 </project>
