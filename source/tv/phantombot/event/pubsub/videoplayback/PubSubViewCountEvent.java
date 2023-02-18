@@ -33,7 +33,7 @@ public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
     }
 
     /**
-     * Method that returns the number of viewers in the channel at @see getServerTime.
+     * Method that returns the number of viewers in the channel at {@link getServerTime}.
      *
      * @return viewers
      */
