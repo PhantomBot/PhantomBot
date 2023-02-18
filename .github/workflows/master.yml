@@ -109,7 +109,9 @@ jobs:
         java-version: 11
     - name: Set up Ant
       run: sudo apt-get install ant
-    - name: Build with Ant
+    - name: Retrieve Libs with Ant
+      run: ant -noinput -buildfile build.xml ivy-retrieve
+    - name: JavaDoc with Ant
       run: ant -noinput -buildfile build.xml javadoc
     - name: Copy Files
       run: |
