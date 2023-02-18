@@ -1,0 +1,23 @@
+name: Release JavaDoc
+on:
+  workflow_dispatch:
+
+jobs:
+  updateremotepanel:
+    name: Update JavaDoc (Stable)
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Copy Files
+      run: |
+        mkdir -p docs/javadoc-stable/
+        rsync -rv --delete-during --progress docs/javadoc/ docs/javadoc-stable/
+    - name: Commit Changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'Updated the JavaDoc (stable)'
