@@ -359,7 +359,9 @@
             author="true"
             sourcepath="source"
             useexternalfile="true"
-            source="${java.source.level}">
+            source="${java.source.level}"
+            windowtitle="PhantomBot JavaDoc"
+            additionalparam="--allow-script-in-comments">
             <classpath>
                 <fileset dir="${reference}">
                     <include name="**/*.jar"/>
@@ -373,6 +375,12 @@
             <link href="https://projectreactor.io/docs/core/release/api/" />
             <link href="https://projectreactor.io/docs/netty/release/api/" />
             <doctitle><![CDATA[<h1>PhantomBot</h1>]]></doctitle>
+            <header><![CDATA[
+                <a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a>
+                <script>
+                document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';
+                </script>
+            ]]></header>
             <bottom><![CDATA[<i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i>]]></bottom>
         </javadoc>
     </target>
