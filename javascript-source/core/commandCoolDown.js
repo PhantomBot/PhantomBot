@@ -132,8 +132,8 @@
      * @return {[Number, bool]}
      */
     function get(command, username, isMod) {
-        command = $.jsString(command).toLowerCase();
-        username = $.jsString(username).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
+        username = (username !== undefined && username !== null ? $.jsString(username).toLowerCase() : null);
         var isGlobal = false,
             maxCoolDown = 0;
 
@@ -223,7 +223,7 @@
     }
 
     function exists(command) {
-        command = $.jsString(command).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
         _defaultCooldownsLock.lock();
         _cooldownsLock.lock();
         try {
@@ -244,8 +244,8 @@
      * @param  {String}  username
      */
     function set(command, useDefault, duration, username) {
-        command = $.jsString(command).toLowerCase();
-        username = $.jsString(username).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
+        username = (username !== undefined && username !== null ? $.jsString(username).toLowerCase() : null);
         var finishTime = (duration > 0 ? ((parseInt(duration) * 1e3) + $.systemTime()) : 0);
 
         if (useDefault) {
@@ -284,7 +284,7 @@
      * @param {Boolean} modsSkip
      */
     function add(command, globalSec, userSec, modsSkip) {
-        command = $.jsString(command).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
         _cooldownsLock.lock();
         try {
             if (cooldowns[command] === undefined) {
@@ -317,7 +317,7 @@
      * @param {String}  command
      */
     function remove(command) {
-        command = $.jsString(command).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
         $.inidb.del('cooldown', command);
         _cooldownsLock.lock();
         try {
@@ -336,7 +336,7 @@
      * @param {String}  command
      */
     function clear(command) {
-        command = $.jsString(command).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
         _cooldownsLock.lock();
         try {
             if (cooldowns[command] !== undefined) {
@@ -358,8 +358,8 @@
      * @param {Boolean} modsSkipIn
      */
     function handleCoolCom(sender, command, first, second, modsSkipIn) {
-        command = $.jsString(command).toLowerCase();
-        sender = $.jsString(sender).toLowerCase();
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
+        sender = (sender !== undefined && sender !== null ? $.jsString(sender).toLowerCase() : null);
         var action1 = first === undefined || first === null ? null : first.split("="),
             type1   = action1 === null ? null : action1[0],
             secsG   = Operation.UnChanged,
