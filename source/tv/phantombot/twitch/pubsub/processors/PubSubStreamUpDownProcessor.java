@@ -72,17 +72,7 @@ public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
         switch (body.getString("type")) {
             case "stream-up":
                 if (this.isCaster) {
-                    Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
-                        TwitchCache.instance().syncStreamStatus(false, (hasStream) -> {
-                            if (!hasStream) {
-                                TwitchCache.instance().syncStreamInfoFromChannel(false, (hasChannel) -> {
-                                    TwitchCache.instance().goOnline(true);
-                                });
-                            } else {
-                                TwitchCache.instance().goOnline(true);
-                            }
-                        });
-                    }).subscribe();
+                    TwitchCache.instance().syncOnline();
                 }
                 EventBus.instance().postAsync(new PubSubStreamUpEvent(this.channelId, srvtime, body.getInt("play_delay")));
                 break;
