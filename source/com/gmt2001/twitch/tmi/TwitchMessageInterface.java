@@ -69,6 +69,10 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * The underlying {@link WSClient} for the connection
      */
     private WSClient client;
+    /**
+     * Max message length to avoid dropping
+     */
+    private static final int MAXLEN = 500;
 
     /**
      * Initializes the Twitch Message Interface. Creates a new {@link WSClient}, then initializes all processors and starts connecting
@@ -109,6 +113,20 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }, 100, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Calculates the maximum length for the message content of a PRIVMSG to avoid dropping
+     *
+     * @param channel The channel name
+     * @param isAction If this is for a ACTION (/me) message
+     * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to; {@code null} if not used
+     * @return
+     */
+    public int privMsgMaxLength(String channel, boolean isAction, String replyToId) {
+        return MAXLEN - 8 - (!channel.startsWith("#") ? 1 : 0) - channel.length() - 2
+            - (isAction ? 9 : 0)
+            - (replyToId != null && !replyToId.isEmpty() ? 22 + replyToId.length(): 0);
     }
 
     /**
