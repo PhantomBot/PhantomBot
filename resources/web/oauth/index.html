@@ -244,115 +244,7 @@
         <script>
                     'use strict';
                     $(function () {
-                        var scopesBot = {
-                            "chat:edit": {
-                                "desc": "Send live Stream Chat and Rooms messages.",
-                                "tooltip": "Used to send responses in chat."
-                            },
-                            "chat:read": {
-                                "desc": "View live Stream Chat and Rooms messages.",
-                                "tooltip": "Used to login to chat and read messages."
-                            },
-                            "moderator:manage:announcements": {
-                                "desc": "Send announcements in channels where you have the moderator role.",
-                                "tooltip": "Used to send announcements."
-                            },
-                            "moderator:manage:banned_users": {
-                                "desc": "Ban and unban users.",
-                                "tooltip": "Used to ban, timeout, and unban users."
-                            },
-                            "moderator:manage:chat_messages": {
-                                "desc": "Delete chat messages in channels where you have the moderator role.",
-                                "tooltip": "Used to delete individual messages or clear the entire chat."
-                            },
-                            "moderator:manage:chat_settings": {
-                                "desc": "Manage a broadcaster's chat room settings.",
-                                "tooltip": "Used to enable/disable emote-only, follower-only, slow, subscriber-only, and unique (r9k) chat modes."
-                            },
-                            "user:manage:whispers": {
-                                "desc": "Read whispers that you send and receive, and send whispers on your behalf.",
-                                "tooltip": "Used to send whispers from the bot."
-                            },
-                            "whispers:read": {
-                                "desc": "View your whisper messages.",
-                                "tooltip": "Used to receive whispers to the bot."
-                            }
-                        };
-
-                        var scopesBroadcaster = {
-                            "bits:read": {
-                                "desc": "Read access to bits cheers in your channel.",
-                                "tooltip": "Used by EventSub to subscribe to bits notifications."
-                            },
-                            "channel:manage:broadcast": {
-                                "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",
-                                "tooltip": "Used to change the title/game."
-                            },
-                            "channel:edit:commercial": {
-                                "desc": "Run commercials on a channel.",
-                                "tooltip": "Used to run commercials."
-                            },
-                            "channel:manage:raids": {
-                                "desc": "Manage a channel raiding another channel.",
-                                "tooltip": "Used to start or cancel raids."
-                            },
-                            "channel:manage:redemptions": {
-                                "desc": "Manage Channel Points custom rewards and their redemptions on a channel.",
-                                "tooltip": "Used to create and manage custom Channel Points rewards."
-                            },
-                            "channel:moderate": {
-                                "desc": "Perform moderation actions in a channel.",
-                                "tooltip": "Used to watch for moderation actions in PubSub."
-                            },
-                            "channel:read:hype_train": {
-                                "desc": "Fetch information about current/past hype trains.",
-                                "tooltip": "Used to watch for hype train notifications in EventSub."
-                            },
-                            "channel:read:polls": {
-                                "desc": "Fetch information about current/past polls.",
-                                "tooltip": "Used to watch for Twitch poll notifications in EventSub."
-                            },
-                            "channel:read:predictions": {
-                                "desc": "Fetch information about current/past predictions.",
-                                "tooltip": "Used to watch for Twitch prediction notifications in EventSub."
-                            },
-                            "channel:read:redemptions": {
-                                "desc": "View your channel points custom reward redemptions.",
-                                "tooltip": "Used to get a list of Channel Points rewards and watch for redemption of custom Channel Points rewards in PubSub."
-                            },
-                            "channel:read:subscriptions": {
-                                "desc": "View a list of all subscribers to a channel and check if a user is subscribed to a channel.",
-                                "tooltip": "Used to watch for new subscribers that haven't shared with chat."
-                            },
-                            "moderation:read": {
-                                "desc": "Read the list of channel moderators.",
-                                "tooltip": "Used to watch for moderator add/remove events in EventSub."
-                            },
-                            "moderator:manage:announcements": {
-                                "desc": "Send announcements in channels where you have the moderator role.",
-                                "tooltip": "Used to send announcements."
-                            },
-                            "moderator:manage:banned_users": {
-                                "desc": "Ban and unban users.",
-                                "tooltip": "Used to ban, timeout, and unban users."
-                            },
-                            "moderator:manage:chat_messages": {
-                                "desc": "Delete chat messages in channels where you have the moderator role.",
-                                "tooltip": "Used to delete individual messages or clear the entire chat."
-                            },
-                            "moderator:manage:chat_settings": {
-                                "desc": "Manage a broadcaster's chat room settings.",
-                                "tooltip": "Used to enable/disable emote-only, follower-only, slow, subscriber-only, and unique (r9k) chat modes."
-                            },
-                            "moderator:manage:shield_mode": {
-                                "desc": "Manage a broadcaster's Shield Mode status.",
-                                "tooltip": "Used to enable/disable shield mode."
-                            },
-                            "moderator:manage:shoutouts": {
-                                "desc": "Manage a broadcaster's shoutouts.",
-                                "tooltip": "Used to send shoutouts."
-                            }
-                        };
+                        let scopes = {"broadcaster": {}, "bot": {}};
 
                         function addScopeItem(type, scope, description) {
                             $('#scopes-' + type).append(
@@ -369,19 +261,33 @@
                                         'data-toggle': 'tooltip',
                                         'title': description.tooltip
                                     }))
-                                    );
+                                );
                         }
 
-                        var x;
-                        for (x in scopesBot) {
-                            addScopeItem('bot', x, scopesBot[x]);
-                        }
+                        $.ajax({
+                            cache: false,
+                            dataType: 'json',
+                            url: '/oauth/scopes.json',
+                            method: 'GET',
+                            success: function (data) {
+                                scopes = data;
 
-                        for (x in scopesBroadcaster) {
-                            addScopeItem('broadcaster', x, scopesBroadcaster[x]);
-                        }
+                                for (let x in scopes.bot) {
+                                    addScopeItem('bot', x, scopes.bot[x]);
+                                }
 
-                        var queryString = window.location.search, // Query string that starts with ?
+                                for (let x in scopes.broadcaster) {
+                                    addScopeItem('broadcaster', x, scopes.broadcaster[x]);
+                                }
+                            },
+                            error: function (err) {
+                                $('#error-box').removeClass('hide');
+                                $('#success-error-br').removeClass('hide');
+                                $('#error-box').html('Failed to get scopes: ' + err.statusText + ' ' + err.responseText + '!!');
+                            }
+                        });
+
+                        let queryString = window.location.search, // Query string that starts with ?
                                 queryParts = queryString.slice(1).split(/#|&/), // Split at each &, which is a new query.
                                 queryMap = new Map(), // Create a new map for save our keys and values.
                                 baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
@@ -395,8 +301,8 @@
                             broadcaster = "/broadcaster";
                         }
 
-                        for (var i = 0; i < queryParts.length; i++) {
-                            var key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
+                        for (let i = 0; i < queryParts.length; i++) {
+                            let key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
                                     value = queryParts[i].slice(queryParts[i].indexOf('=') + 1);
 
                             if (key.length > 0 && value.length > 0) {
@@ -524,10 +430,10 @@
                         }
                         // Generates the state.
                         function generateState(type) {
-                            var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+                            let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
                                     state = '';
 
-                            for (var i = 0; i < 40; i++) {
+                            for (let i = 0; i < 40; i++) {
                                 state += possible.charAt(Math.floor(Math.random() * possible.length));
                             }
 
@@ -540,8 +446,8 @@
 
                         // Connect with Twitch button bot.
                         $('#connect-bot').on('click', function () {
-                            var scopes = '';
-                            for (var x in scopesBot) {
+                            let scopes = '';
+                            for (let x in scopes.bot) {
                                 if (scopes.length > 0) {
                                     scopes = scopes + '+';
                                 }
@@ -554,8 +460,8 @@
 
                         // Connect with Twitch button caster.
                         $('#connect-caster').on('click', function () {
-                            var scopes = '';
-                            for (var x in scopesBroadcaster) {
+                            let scopes = '';
+                            for (let x in scopes.broadcaster) {
                                 if (scopes.length > 0) {
                                     scopes = scopes + '+';
                                 }
