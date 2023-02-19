@@ -14,30 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.videoplayback;
+package tv.phantombot.event.eventsub.stream;
 
-public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
+import com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOnline;
 
-    private final int viewers;
-
-    /**
-     * Constructor.
-     *
-     * @param channelId
-     * @param serverTime
-     * @param viewers
-     */
-    public PubSubViewCountEvent(int channelId, float serverTime, int viewers) {
-        super(channelId, serverTime);
-        this.viewers = viewers;
-    }
-
-    /**
-     * Method that returns the number of viewers in the channel at {@link getServerTime}.
-     *
-     * @return viewers
-     */
-    public int getViewers() {
-        return this.viewers;
+/**
+ * A broadcaster has started a stream
+ *
+ * @author gmt2001
+ */
+public class EventSubStreamOnlineEvent extends EventSubStreamEvent<StreamOnline> {
+    public EventSubStreamOnlineEvent(StreamOnline event) {
+        super(event);
     }
 }

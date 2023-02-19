@@ -26,6 +26,10 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
+
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -510,6 +514,23 @@ public final class TwitchCache {
                 EventBus.instance().postAsync(new TwitchOfflineEvent());
             }
         }
+    }
+
+    /**
+     * Syncs the stream status, then triggers TwitchOnline
+     */
+    public void syncOnline() {
+        Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
+            this.syncStreamStatus(false, (hasStream) -> {
+                if (!hasStream) {
+                    this.syncStreamInfoFromChannel(false, (hasChannel) -> {
+                        this.goOnline(true);
+                    });
+                } else {
+                    this.goOnline(true);
+                }
+            });
+        }).subscribe();
     }
 
     /**

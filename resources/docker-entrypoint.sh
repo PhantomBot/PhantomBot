@@ -13,7 +13,7 @@ fi
 healthcheck_isnew="$?"
 
 if [ "${healthcheck_isnew}" = '0' ]; then
-	wget --output-document=/opt/PhantomBot/config/healthcheck/healthcheck.py https://raw.githubusercontent.com/PhantomBot/PhantomBot/master/resources/config/healthcheck/healthcheck.py
+	wget --output-document=/opt/PhantomBot/config/healthcheck/healthcheck.py https://raw.githubusercontent.com/PhantomBot/PhantomBot/master/resources/config/healthcheck/healthcheck.py || true
 fi
 
 # allow the container to be started with `--user`

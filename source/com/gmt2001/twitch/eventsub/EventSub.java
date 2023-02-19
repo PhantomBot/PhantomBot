@@ -264,7 +264,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
      * @param date
      * @return
      */
-    static ZonedDateTime parseDate(String date) {
+    public static ZonedDateTime parseDate(String date) {
         try {
             return ZonedDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         } catch (DateTimeParseException ex) {

@@ -14,30 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.videoplayback;
+package tv.phantombot.event.eventsub.stream;
 
-public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
+import tv.phantombot.event.eventsub.EventSubEvent;
 
-    private final int viewers;
-
-    /**
-     * Constructor.
-     *
-     * @param channelId
-     * @param serverTime
-     * @param viewers
-     */
-    public PubSubViewCountEvent(int channelId, float serverTime, int viewers) {
-        super(channelId, serverTime);
-        this.viewers = viewers;
-    }
-
-    /**
-     * Method that returns the number of viewers in the channel at {@link getServerTime}.
-     *
-     * @return viewers
-     */
-    public int getViewers() {
-        return this.viewers;
+/**
+ * An event related to a stream
+ *
+ * @author gmt2001
+ */
+public abstract class EventSubStreamEvent<T> extends EventSubEvent<T> {
+    public EventSubStreamEvent(T event) {
+        super(event);
     }
 }

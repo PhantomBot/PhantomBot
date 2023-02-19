@@ -22,17 +22,39 @@
     var gamesPlayed;
 
     $.bind('eventSubChannelUpdate', function (event) {
-        $.twitchcache.setStreamStatus(event.event().title());
-        $.twitchcache.setGameTitle(event.event().categoryName());
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+            $.twitchcache.setStreamStatus(event.event().title());
+            $.twitchcache.setGameTitle(event.event().categoryName());
+        }
+    });
+
+    $.bind('eventSubStreamOnline', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+            $.twitchcache.syncOnline();
+        }
+    });
+
+    $.bind('eventSubStreamOffline', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+            $.twitchcache.goOffline();
+        }
     });
 
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            let channelUpdateSubscription = new Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate($.username.getIDCaster());
-            try {
-                channelUpdateSubscription.create().block();
-            } catch (ex) {
-                $.log.error(ex);
+            let subscriptions = [
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate,
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOnline,
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOffline
+            ];
+
+            for (let subscription of subscriptions) {
+                let newSubscription = new subscription($.username.getIDCaster());
+                try {
+                    newSubscription.create().block();
+                } catch (ex) {
+                    $.log.error(ex);
+                }
             }
         }
     });

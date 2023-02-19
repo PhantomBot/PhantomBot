@@ -37,7 +37,7 @@ import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
 
 /**
- * Stubs to @see Helix for backwards compatibility
+ * Stubs to {@link Helix} for backwards compatibility
  *
  * @author gmt2001
  * @author illusionaryone
