@@ -34,6 +34,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -2462,6 +2463,14 @@ public class Helix {
         });
     }
 
+    /**
+     * Creates an EventSub subscription.
+     *
+     * @param jsonString A JSON string describing the parameters of the new subscription
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
     public Mono<JSONObject> createEventSubSubscription(String jsonString)
             throws JSONException, IllegalArgumentException {
         if (jsonString == null || jsonString.isBlank()) {
@@ -2475,6 +2484,14 @@ public class Helix {
         });
     }
 
+    /**
+     * Deletes an EventSub subscription.
+     *
+     * @param id The ID of the subscription to delete.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
     public Mono<JSONObject> deleteEventSubSubscription(String id)
             throws JSONException, IllegalArgumentException {
         if (id == null || id.isBlank()) {
@@ -2486,6 +2503,146 @@ public class Helix {
         return this.handleMutatorAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.DELETE, endpoint);
         });
+    }
+
+    /**
+     *
+     * @param title
+     * @param seconds The length of time (in seconds) that the prediction will run for. The minimum is 30 seconds and the maximum is 1800 seconds (30 minutes).
+     * @param choices
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> createPrediction(String title, long seconds, String... choices)
+            throws JSONException, IllegalArgumentException {
+        return this.createPrediction(title, Duration.ofSeconds(seconds), choices);
+    }
+
+    /**
+     * Creates a Channel Points Prediction.
+     *
+     * @param title The question that the broadcaster is asking. The title is limited to a maximum of 45 characters.
+     * @param duration The length of time that the prediction will run for. The minimum is 30 seconds and the maximum is 30 minutes.
+     * @param choices The list of possible outcomes that the viewers may choose from. The list must contain a minimum of 2 choices and up to a maximum of 10 choices. Echo choice is limited to a maximum of 25 characters.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> createPrediction(String title, Duration duration, String... choices)
+            throws JSONException, IllegalArgumentException {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("title");
+        }
+
+        if (duration.toSeconds() < 30 || duration.toSeconds() > 1800) {
+            duration = Duration.ofSeconds(30);
+        }
+
+        if (choices == null) {
+            throw new IllegalArgumentException("choices");
+        }
+
+        List<String> validChoices = new ArrayList<>();
+
+        for (String choice: choices) {
+            if (choice != null &&  !choice.isBlank()) {
+                if (choice.length() > 25) {
+                    choice = choice.substring(0, 25);
+                }
+
+                validChoices.add(choice);
+            }
+        }
+
+        if (validChoices.size() < 2 || validChoices.size() > 10) {
+            throw new IllegalArgumentException("choices");
+        }
+
+        if (title.length() > 45) {
+            title = title.substring(0, 45);
+        }
+
+        JSONStringer js = new JSONStringer();
+        js.object();
+
+        js.key("broadcaster_id").value(TwitchValidate.instance().getAPIUserID());
+        js.key("title").value(title);
+        js.key("outcomes").array();
+        validChoices.forEach(choice -> js.object().key("title").value(choice).endObject());
+        js.endArray();
+        js.key("prediction_window").value(duration.toSeconds());
+        js.endObject();
+
+        String endpoint = "/predictions";
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * The status to set the prediction to for {@link #endPrediction(String, PredictionStatus, String)})
+     */
+    public enum PredictionStatus {
+        /**
+         * The broadcaster is locking the prediction, which means viewers may no longer make predictions.
+         */
+        LOCKED,
+        /**
+         * The broadcaster is canceling the prediction and sending refunds to the participants
+         */
+        CANCELED,
+        /**
+         * The winning outcome is determined and the Channel Points are distributed to the viewers who predicted the correct outcome.
+         */
+        RESOLVED
+    }
+
+    /**
+     * Locks, resolves, or cancels a Channel Points Prediction.
+     *
+     * The broadcaster can update an active prediction to {@link PredictionStatus.LOCKED}, {@link PredictionStatus.RESOLVED}, or {@link PredictionStatus.CANCELED};
+     * and update a locked prediction to {@link PredictionStatus.RESOLVED} or {@link PredictionStatus.CANCELED}.
+     *
+     * The broadcaster has up to 24 hours after the prediction window closes to resolve the prediction.
+     * If not, Twitch sets the status to {@link PredictionStatus.CANCELED} and returns the points.
+     *
+     * @param id The ID of the prediction to update.
+     * @param status The status to set the prediction to.
+     * @param winningOutcomeId The ID of the winning outcome. You must set this parameter if you set status to {@link PredictionStatus.RESOLVED}.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> endPrediction(String id, PredictionStatus status, String winningOutcomeId)
+            throws JSONException, IllegalArgumentException {
+                if (id == null || id.isBlank()) {
+                    throw new IllegalArgumentException("id");
+                }
+
+                if (status == PredictionStatus.RESOLVED && (winningOutcomeId == null || winningOutcomeId.isBlank())) {
+                    throw new IllegalArgumentException("winningOutcomeId");
+                }
+
+                JSONStringer js = new JSONStringer();
+                js.object();
+
+                js.key("broadcaster_id").value(TwitchValidate.instance().getAPIUserID());
+                js.key("id").value(id);
+                js.key("status").value(status.name());
+
+                if (status == PredictionStatus.RESOLVED) {
+                    js.key("winning_outcome_id").value(winningOutcomeId);
+                }
+
+                js.endObject();
+
+                String endpoint = "/predictions";
+
+                return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+                    return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
+                });
     }
 
     private String chooseModeratorId(String scope) {
