@@ -23,6 +23,10 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -35,7 +39,7 @@ import tv.phantombot.PhantomBot;
 /**
  * Handle Validate requests of the OAUTH2 token from Twitch.
  *
- * @author ScaniaTV, IllusionaryOne
+ * @author ScaniaTV, IllusionaryOne, gmt2001
  */
 public class TwitchValidate {
 
@@ -47,6 +51,7 @@ public class TwitchValidate {
     private static final long TIMEOUT_TIME = 5000L;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<String> scopesC = new CopyOnWriteArrayList<>();
+    private final List<String> scopesMC = new CopyOnWriteArrayList<>();
     private String clientidC = "";
     private String loginC = "";
     private String useridC = "";
@@ -55,20 +60,13 @@ public class TwitchValidate {
     private ValidateRunnable validaterC = null;
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final List<String> scopesA = new CopyOnWriteArrayList<>();
+    private final List<String> scopesMA = new CopyOnWriteArrayList<>();
     private String clientidA = "";
     private String loginA = "";
     private String useridA = "";
     public boolean validA = false;
     private Thread validateA = null;
     private ValidateRunnable validaterA = null;
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private final List<String> scopesT = new CopyOnWriteArrayList<>();
-    private String clientidT = "";
-    private String loginT = "";
-    private String useridT = "";
-    public boolean validT = false;
-    private Thread validateT = null;
-    private ValidateRunnable validaterT = null;
 
     /**
      * This class constructor.
@@ -101,21 +99,9 @@ public class TwitchValidate {
         }
     }
 
-    private void doValidationT() {
-        if (validaterT != null) {
-            if (validateT != null && validateT.isAlive()) {
-                validateT.interrupt();
-                validateT = null;
-            }
-
-            validaterT.run();
-        }
-    }
-
     private void doValidations() {
         this.doValidationA();
         this.doValidationC();
-        this.doValidationT();
     }
 
     /**
@@ -184,22 +170,16 @@ public class TwitchValidate {
         }
     }
 
-    public void validateApp(String oAuthToken, String type) {
-        try {
-            validaterT = new ValidateRunnable(oAuthToken, type, 2);
-            validateT = new Thread(validaterT, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
-            validateT.start();
-        } catch (Exception ex) {
-            com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
-        }
-    }
-
     public boolean hasChatScope(String scope) {
         return scopesC.contains(scope);
     }
 
     public List<String> getChatScopes() {
         return new ArrayList<>(scopesC);
+    }
+
+    public List<String> getMissingChatScopes() {
+        return new ArrayList<>(scopesMC);
     }
 
     public String getChatClientID() {
@@ -235,6 +215,10 @@ public class TwitchValidate {
         return new ArrayList<>(scopesA);
     }
 
+    public List<String> getMissingAPIScopes() {
+        return new ArrayList<>(scopesMA);
+    }
+
     public String getAPIClientID() {
         return this.clientidA;
     }
@@ -257,39 +241,6 @@ public class TwitchValidate {
         } else {
             this.validaterA.updateToken(token);
             ExecutorService.execute(() -> this.doValidationA());
-        }
-    }
-
-    public boolean hasAppScope(String scope) {
-        return scopesT.contains(scope);
-    }
-
-    public List<String> getAppScopes() {
-        return new ArrayList<>(scopesT);
-    }
-
-    public String getAppClientID() {
-        return this.clientidT;
-    }
-
-    public String getAppLogin() {
-        return this.loginT;
-    }
-
-    public String getAppUserID() {
-        return this.useridT;
-    }
-
-    public boolean isAppValid() {
-        return this.validT;
-    }
-
-    public void updateAppToken(String token) {
-        if (this.validaterT == null) {
-            this.validateApp(token, "APP (EventSub)");
-        } else {
-            this.validaterT.updateToken(token);
-            ExecutorService.execute(() -> this.doValidationT());
         }
     }
 
@@ -396,19 +347,28 @@ public class TwitchValidate {
 
                 if (requestObj.has("scopes")) {
                     JSONArray scopesa = requestObj.getJSONArray("scopes");
-                    (tokenType == 1 ? scopesC : (tokenType == 2 ? scopesT : scopesA)).clear();
+                    (tokenType == 1 ? scopesC : scopesA).clear();
                     scopesa.iterator().forEachRemaining(obj -> {
-                        (tokenType == 1 ? scopesC : (tokenType == 2 ? scopesT : scopesA)).add((String) obj);
+                        (tokenType == 1 ? scopesC : scopesA).add((String) obj);
                     });
+
+                    try {
+                        JSONObject scopes = new JSONObject(Files.readString(Paths.get("./web/oauth/scopes.json")));
+                        (tokenType == 1 ? scopesMC : scopesMA).clear();
+                        scopes.getJSONObject(tokenType == 1 ? "bot" : "broadcaster").keys().forEachRemaining(scope -> {
+                            if (!((tokenType == 1 ? scopesC : scopesA).contains(scope))) {
+                                (tokenType == 1 ? scopesMC : scopesMA).add(scope);
+                            }
+                        });
+                    } catch (JSONException | IOException e) {
+                        com.gmt2001.Console.err.logStackTrace(e);
+                    }
                 }
 
                 if (requestObj.has("client_id")) {
                     switch (tokenType) {
                         case 1:
                             clientidC = requestObj.getString("client_id");
-                            break;
-                        case 2:
-                            clientidT = requestObj.getString("client_id");
                             break;
                         default:
                             clientidA = requestObj.getString("client_id");
@@ -421,9 +381,6 @@ public class TwitchValidate {
                         case 1:
                             loginC = requestObj.getString("login");
                             break;
-                        case 2:
-                            loginT = requestObj.getString("login");
-                            break;
                         default:
                             loginA = requestObj.getString("login");
                             break;
@@ -435,9 +392,6 @@ public class TwitchValidate {
                         case 1:
                             useridC = requestObj.getString("user_id");
                             break;
-                        case 2:
-                            useridT = requestObj.getString("user_id");
-                            break;
                         default:
                             useridA = requestObj.getString("user_id");
                             break;
@@ -448,9 +402,6 @@ public class TwitchValidate {
                     switch (tokenType) {
                         case 1:
                             validC = true;
-                            break;
-                        case 2:
-                            validT = true;
                             break;
                         default:
                             validA = true;

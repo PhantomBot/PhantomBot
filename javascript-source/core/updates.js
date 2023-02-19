@@ -709,6 +709,39 @@
                 $.panelsocketserver.panelNotification('warning', 'New Bot (Chat) OAuth required by Twitch to continue using ban/timeout/purge on the bot'
                         + '<br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Bot',
                         'OAuth Scope Change', 0, 0, false);
+            } else {
+                let missingChatScopes = Packages.tv.phantombot.twitch.api.TwitchValidate.instance().getMissingChatScopes();
+                let missingAPIScopes = Packages.tv.phantombot.twitch.api.TwitchValidate.instance().getMissingAPIScopes();
+
+                if (!missingChatScopes.isEmpty()) {
+                    let scopes = '';
+
+                    for (let i = 0; i < missingChatScopes.size(); i++) {
+                        scopes += '<li>' + missingChatScopes.get(i) + '</li>';
+                    }
+
+                    $.panelsocketserver.panelNotification('info', 'The following new Bot (Chat) OAuth scopes are available:'
+                        + '<br /><ul>'
+                        + scopes
+                        + '</ul>'
+                        + '<br /><br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Bot to add them',
+                        'New Bot (Chat) OAuth Scopes', 20, 60, true);
+                }
+
+                if (!missingAPIScopes.isEmpty()) {
+                    let scopes = '';
+
+                    for (let i = 0; i < missingAPIScopes.size(); i++) {
+                        scopes += '<li>' + missingAPIScopes.get(i) + '</li>';
+                    }
+
+                    $.panelsocketserver.panelNotification('info', 'The following new Broadcaster (API) OAuth scopes are available:'
+                        + '<br /><ul>'
+                        + scopes
+                        + '</ul>'
+                        + '<br /><br />Please visit the <a href="../oauth/" target="_blank" rel="noopener noreferrer">OAuth page</a> and re-auth the Broadcaster to add them',
+                        'New Broadcaster (API) OAuth Scopes', 20, 60, true);
+                }
             }
         }, 5000);
     });
