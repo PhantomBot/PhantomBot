@@ -14,17 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.eventsub.channel;
 
-import com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate;
+/* global Packages */
 
-/**
- * A broadcaster updates their channel properties e.g., category, title, mature flag, broadcast, or language.
- *
- * @author gmt2001
- */
-public class EventSubChannelUpdateEvent extends EventSubChannelEvent<ChannelUpdate> {
-    public EventSubChannelUpdateEvent(ChannelUpdate event) {
-        super(event);
-    }
-}
+(function () {
+    let currentPrediction = null;
+
+    /*
+     * @event command
+     */
+    $.bind('command', function (event) {
+        var sender = event.getSender(),
+            command = event.getCommand(),
+            args = event.getArgs();
+    });
+
+    /*
+    * @event initReady
+    */
+    $.bind('initReady', function () {
+        $.registerChatCommand('./handlers/predictionHandler.js', 'prediction', $.PERMISSION.Admin);
+    });
+})();

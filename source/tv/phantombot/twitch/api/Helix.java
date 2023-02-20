@@ -2654,7 +2654,7 @@ public class Helix {
          */
         LOCKED,
         /**
-         * The broadcaster is canceling the prediction and sending refunds to the participants
+         * The broadcaster is canceling the prediction and sending refunds to the participants.
          */
         CANCELED,
         /**
