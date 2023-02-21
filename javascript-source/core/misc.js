@@ -822,7 +822,14 @@
                 } catch(l1) {
                     try {
                         len = list.length();
-                    } catch (l2) {}
+                    } catch (l2) {
+                        try {
+                            len = list.length;
+                            if (len === undefined || len === null) {
+                                len = 0;
+                            }
+                        } catch (l3) {}
+                    }
                 }
 
                 for (let i = 0; i < len; i++) {
