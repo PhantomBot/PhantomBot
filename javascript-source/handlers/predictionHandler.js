@@ -24,9 +24,47 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender(),
-            command = event.getCommand(),
-            args = event.getArgs();
+        let sender = event.getSender(),
+            command = $.jsString(event.getCommand(), '').toLowerCase(),
+            args = $.jsArgs(event.getArgs());
+
+            if (command === 'prediction') {
+                let handled = false;
+                if (args.length > 0) {
+                    let action = args[0].toLowerCase();
+                    let subaction = args.length > 1 ? args[1].toLowerCase() : null;
+                    if (action === 'open') {
+                        handled = true;
+                        if (subaction === 'example') {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.open.example'));
+                        } else if (args.length < 5 || args[2].trim().length === 0 || args[3].trim().length === 0 || args[4].trim().length === 0) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.open.usage'));
+                        } else {
+                            try {
+                                let choices = new Packages.java.util.ArrayList();
+
+                                for (let i = 3; i < args.length; i++) {
+                                    choices.add($.javaString(args[i]));
+                                }
+
+                                let response = $.helix.createPrediction($.javaStrimg(args[2]), $.duration(args[1]), choices);
+
+                                if (response.has("data")) {
+
+                                } else if (response.has("message")) {
+                                    $.log.error(response.getString("message"));
+                                }
+                            } catch (e) {
+                                $.log.error(e);
+                            }
+                        }
+                    }
+                }
+
+                if (!handled) {
+                    $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.usage'));
+                }
+            }
     });
 
     /*
