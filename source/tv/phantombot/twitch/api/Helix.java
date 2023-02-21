@@ -2599,8 +2599,12 @@ public class Helix {
             throw new IllegalArgumentException("title is required");
         }
 
-        if (duration.toSeconds() < 30 || duration.toSeconds() > 1800) {
+        if (duration.toSeconds() < 30) {
             duration = Duration.ofSeconds(30);
+        }
+
+        if (duration.toSeconds() > 1800) {
+            duration = Duration.ofMinutes(30);
         }
 
         if (choices == null) {
