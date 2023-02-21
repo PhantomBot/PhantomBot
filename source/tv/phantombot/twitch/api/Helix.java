@@ -2588,7 +2588,7 @@ public class Helix {
      *
      * @param title The question that the broadcaster is asking. The title is limited to a maximum of 45 characters.
      * @param duration The length of time that the prediction will run for. The minimum is 30 seconds and the maximum is 30 minutes.
-     * @param choices The list of possible outcomes that the viewers may choose from. The list must contain a minimum of 2 choices and up to a maximum of 10 choices. Echo choice is limited to a maximum of 25 characters.
+     * @param choices The list of possible outcomes that the viewers may choose from. The list must contain a minimum of 2 choices and up to a maximum of 10 choices. Each choice is limited to a maximum of 25 characters.
      * @return
      * @throws JSONException
      * @throws IllegalArgumentException
@@ -2620,7 +2620,7 @@ public class Helix {
         }
 
         if (validChoices.size() < 2 || validChoices.size() > 10) {
-            throw new IllegalArgumentException("choices.size() msut be >= 2 && <= 10");
+            throw new IllegalArgumentException("choices.size() must be >= 2 && <= 10");
         }
 
         if (title.length() > 45) {
