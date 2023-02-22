@@ -19,11 +19,11 @@ package com.gmt2001.twitch.eventsub.subscriptions.stream;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.stream.EventSubStreamOfflineEvent;
 
@@ -41,10 +41,11 @@ public final class StreamOffline extends EventSubSubscriptionType {
     private String broadcaster_user_name;
 
     /**
-     * Only used by EventBus for handler registration
+     * Only used by EventSub for handler registration
      */
     public StreamOffline() {
         super();
+        this.subscribe();
     }
 
     /**
@@ -84,10 +85,15 @@ public final class StreamOffline extends EventSubSubscriptionType {
         }
     }
 
-    @Handler
-    public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.subscription().type().equals(StreamOffline.TYPE)) {
-            EventBus.instance().postAsync(new EventSubStreamOfflineEvent(new StreamOffline(e)));
+    @Override
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+        try {
+            if (e.subscription().type().equals(StreamOffline.TYPE)) {
+                EventSub.debug(StreamOffline.TYPE);
+                EventBus.instance().postAsync(new EventSubStreamOfflineEvent(new StreamOffline(e)));
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

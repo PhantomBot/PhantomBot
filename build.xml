@@ -361,7 +361,9 @@
             useexternalfile="true"
             source="${java.source.level}"
             windowtitle="PhantomBot JavaDoc"
-            additionalparam="--allow-script-in-comments">
+            additionalparam="--allow-script-in-comments"
+            docencoding="utf8"
+            charset="utf8">
             <classpath>
                 <fileset dir="${reference}">
                     <include name="**/*.jar"/>

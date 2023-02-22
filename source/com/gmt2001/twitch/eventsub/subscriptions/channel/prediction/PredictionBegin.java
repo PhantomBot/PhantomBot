@@ -30,7 +30,6 @@ import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.prediction.EventSubPredictionBeginEvent;
 
@@ -53,10 +52,11 @@ public final class PredictionBegin extends EventSubSubscriptionType {
     private List<PredictionOutcome> outcomes = new ArrayList<>();
 
     /**
-     * Only used by EventBus for handler registration
+     * Only used by EventSub for handler registration
      */
     public PredictionBegin() {
         super();
+        this.subscribe();
     }
 
     /**
@@ -94,7 +94,7 @@ public final class PredictionBegin extends EventSubSubscriptionType {
     protected EventSubSubscription proposeSubscription() {
         Map<String, String> condition = new HashMap<>();
         condition.put("broadcaster_user_id", this.broadcaster_user_id);
-        return this.proposeSubscriptionInternal(PredictionProgress.TYPE, PredictionProgress.VERSION, condition);
+        return this.proposeSubscriptionInternal(PredictionBegin.TYPE, PredictionBegin.VERSION, condition);
     }
 
     @Override
@@ -105,16 +105,21 @@ public final class PredictionBegin extends EventSubSubscriptionType {
         }
     }
 
-    @Handler
-    public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.subscription().type().equals(PredictionProgress.TYPE)) {
-            EventBus.instance().postAsync(new EventSubPredictionBeginEvent(new PredictionBegin(e)));
+    @Override
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+        try {
+            if (e.subscription().type().equals(PredictionBegin.TYPE)) {
+                EventSub.debug(PredictionBegin.TYPE);
+                EventBus.instance().postAsync(new EventSubPredictionBeginEvent(new PredictionBegin(e)));
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
     @Override
     protected boolean isMatch(EventSubSubscription subscription) {
-        return subscription.type().equals(PredictionProgress.TYPE)
+        return subscription.type().equals(PredictionBegin.TYPE)
                 && subscription.condition().get("broadcaster_user_id").equals(this.broadcaster_user_id);
     }
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$.lang.register('predictionhandler.usage', 'Usage: !prediction [open / options / lock / resolve / cancel] [usage / example]');
+$.lang.register('predictionhandler.usage', 'Usage: !prediction [open / options / lock / resolve / cancel / sync] [usage / example]');
 $.lang.register('predictionhandler.404', 'There currently isn\'t an open prediction');
 $.lang.register('predictionhandler.open.usage', 'Usage: !prediction open [Time until Auto-Lock (30s to 30m)] "Question (45 char)" "Option 1 (25 char)" "Option 2 (25 char)" (Max 10 Options) - Opens a new prediction');
 $.lang.register('predictionhandler.open.example', 'Example: !prediction open 5m10s "What will the match outcome be?" "Win" "Loss" "Draw"');
@@ -35,3 +35,6 @@ $.lang.register('predictionhandler.resolve.404', 'Option $1 does not exist');
 $.lang.register('predictionhandler.cancel.usage', 'Usage: !prediction cancel - Cancels the prediction, refunding all bet channel points');
 $.lang.register('predictionhandler.cancel.example', 'Example: !prediction cancel - === Prediction Canceled === Points have been refunded');
 $.lang.register('predictionhandler.cancel', '=== Prediction Canceled === Points have been refunded');
+$.lang.register('predictionhandler.sync.usage', 'Usage: !prediction sync - Re-syncs the current prediction status');
+$.lang.register('predictionhandler.sync.example', 'Example: !prediction sync - Prediction state has been synced');
+$.lang.register('predictionhandler.sync', 'Prediction state has been synced');
