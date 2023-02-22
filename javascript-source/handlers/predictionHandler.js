@@ -221,9 +221,10 @@
                         } else {
                             try {
                                 let winningOutcome = null;
+                                let winningOption = parseInt(args[1]);
 
                                 for (let i in currentPrediction.outcomes) {
-                                    if (currentPrediction.outcomes[i].index === args[1]) {
+                                    if (currentPrediction.outcomes[i].index === winningOption) {
                                         winningOutcome = currentPrediction.outcomes[i];
                                     }
                                 }
@@ -321,5 +322,34 @@
         $.registerChatSubcommand('prediction', 'lock', $.PERMISSION.Admin);
         $.registerChatSubcommand('prediction', 'resolve', $.PERMISSION.Admin);
         $.registerChatSubcommand('prediction', 'cancel', $.PERMISSION.Admin);
+
+        try {
+            let response = $.helix.getPredictions(null, 1, null);
+
+            if (response.has('data') && response.getJSONArray('data').length() > 0) {
+                let activeprediction = response.getJSONArray('data').getJSONObject(0);
+                if (!activeprediction.isNull('ended_at')) {
+                    currentPrediction = null;
+                } else {
+                    let prediction = {
+                        id: $.jsString(activeprediction.getString('id')),
+                        title: $.jsString(activeprediction.getString('title')),
+                        outcomes: [],
+                        locked: !activeprediction.isNull('locked_at')
+                    };
+
+                    let outcomes = activeprediction.getJSONArray('outcomes');
+                    for (let i = 0; i < outcomes.length(); i++) {
+                        prediction.outcomes.push({
+                            index: i + 1,
+                            id: $.jsString(outcomes.getJSONObject(i).getString('id')),
+                            title: $.jsString(outcomes.getJSONObject(i).getString('title'))
+                        });
+                    }
+
+                    currentPrediction = prediction;
+                }
+            }
+        } catch (e) {}
     });
 })();
