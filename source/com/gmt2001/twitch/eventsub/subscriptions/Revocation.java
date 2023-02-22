@@ -16,11 +16,11 @@
  */
 package com.gmt2001.twitch.eventsub.subscriptions;
 
+import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalRevocationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.EventSubRevocationEvent;
 
@@ -30,6 +30,14 @@ import tv.phantombot.event.eventsub.EventSubRevocationEvent;
  * @author gmt2001
  */
 public final class Revocation extends EventSubSubscriptionType {
+
+    /**
+     * Only used by EventSub for handler registration
+     */
+    public Revocation() {
+        super();
+        this.subscribe();
+    }
 
     @Override
     public EventSubSubscription proposeSubscription() {
@@ -46,8 +54,9 @@ public final class Revocation extends EventSubSubscriptionType {
         throw new UnsupportedOperationException("Not a valid subscription type.");
     }
 
-    @Handler
-    public void onEventSubInternalRevocationEvent(EventSubInternalRevocationEvent e) {
+    @Override
+    protected void onEventSubInternalRevocationEvent(EventSubInternalRevocationEvent e) {
+        EventSub.debug("revocation");
         EventBus.instance().postAsync(new EventSubRevocationEvent(e.subscription()));
     }
 }

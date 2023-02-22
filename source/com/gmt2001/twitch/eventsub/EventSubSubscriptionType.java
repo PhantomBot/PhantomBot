@@ -18,20 +18,21 @@ package com.gmt2001.twitch.eventsub;
 
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.concurrent.Flow;
 
 import reactor.core.publisher.Mono;
-import tv.phantombot.event.Listener;
 
 /**
  * Abstract base class for EventSub Subscription Types
  *
  * @author gmt2001
  */
-public abstract class EventSubSubscriptionType implements Listener {
+public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventSubInternalEvent>  {
 
     protected EventSubSubscription subscription;
     protected String messageId;
     protected ZonedDateTime messageTimestamp;
+    protected Flow.Subscription flowsubscription = null;
 
     protected EventSubSubscriptionType() {
     }
@@ -40,6 +41,57 @@ public abstract class EventSubSubscriptionType implements Listener {
         this.subscription = subscription;
         this.messageId = messageId;
         this.messageTimestamp = messageTimestamp;
+    }
+
+    protected final void subscribe() {
+        EventSub.instance().subscribe(this);
+    }
+
+    @Override
+    public final void onSubscribe(Flow.Subscription subscription) {
+        this.flowsubscription = subscription;
+        this.flowsubscription.request(1);
+    }
+
+    @Override
+    public final void onNext(EventSubInternalEvent item) {
+        this.onEventSubInternalEvent(item);
+
+        if (item instanceof EventSubInternalNotificationEvent) {
+            this.onEventSubInternalNotificationEvent((EventSubInternalNotificationEvent)item);
+        }
+
+        if (item instanceof EventSubInternalRevocationEvent) {
+            this.onEventSubInternalRevocationEvent((EventSubInternalRevocationEvent)item);
+        }
+
+        if (item instanceof EventSubInternalVerificationEvent) {
+            this.onEventSubInternalVerificationEvent((EventSubInternalVerificationEvent)item);
+        }
+
+        this.flowsubscription.request(1);
+    }
+
+    @Override
+    public final void onError(Throwable throwable) {
+        com.gmt2001.Console.err.printStackTrace(throwable);
+    }
+
+    @Override
+    public final void onComplete() {
+        this.flowsubscription = null;
+    }
+
+    protected void onEventSubInternalEvent(EventSubInternalEvent e) {
+    }
+
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+    }
+
+    protected void onEventSubInternalRevocationEvent(EventSubInternalRevocationEvent e) {
+    }
+
+    protected void onEventSubInternalVerificationEvent(EventSubInternalVerificationEvent e) {
     }
 
     /**

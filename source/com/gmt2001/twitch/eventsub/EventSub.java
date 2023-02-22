@@ -17,6 +17,7 @@
 package com.gmt2001.twitch.eventsub;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -30,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.SubmissionPublisher;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -68,36 +70,42 @@ import tv.phantombot.twitch.api.Helix;
  *
  * @author gmt2001
  */
-public final class EventSub implements WsClientFrameHandler, Listener {
+public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> implements WsClientFrameHandler, Listener {
 
     /**
      * Constructor. Schedules a task to remove handled messages from the anti-duplicate map when they expire. Loads the subscription types. Starts the WebSocket connection
      */
+    @SuppressWarnings({"rawtypes"})
     private EventSub() {
         debug("Starting EventSub");
-        try {
-            Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
-            Reflect.instance().getSubTypesOf(EventSubSubscriptionType.class).stream().forEachOrdered((c) -> {
-                try {
-                    EventBus.instance().register(c.getDeclaredConstructor().newInstance());
-                } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
-                    com.gmt2001.Console.debug.println(c.getName());
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-            });
+        ExecutorService.schedule(() -> {
+            try {
+                Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
+                Reflect.instance().getSubTypesOf(EventSubSubscriptionType.class).stream().forEachOrdered((c) -> {
+                    for (Constructor constructor : c.getConstructors()) {
+                        if (constructor.getParameterCount() == 0) {
+                            try {
+                                constructor.newInstance();
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                                com.gmt2001.Console.err.printStackTrace(ex);
+                            }
+                        }
+                    }
+                });
 
-            ExecutorService.schedule(() -> {
-                try {
-                    this.connect();
-                } catch (Exception ex) {
-                    debug("constructor connect", ex);
-                }
-            }, 1, TimeUnit.SECONDS);
+                ExecutorService.schedule(() -> {
+                    try {
+                        this.connect();
+                    } catch (Exception ex) {
+                        debug("constructor connect", ex);
+                    }
+                }, 1, TimeUnit.SECONDS);
 
-            ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
-        } catch (Exception ex) {
-            debug("constructor", ex);
-        }
+                ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
+            } catch (Exception ex) {
+                debug("constructor", ex);
+            }
+        }, 100, TimeUnit.MILLISECONDS);
     }
 
     private static final Duration CLEANUP_INTERVAL = Duration.ofMinutes(2);
@@ -496,7 +504,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                         debug("handleMessage revoked");
                                         EventSubInternalRevocationEvent event = new EventSubInternalRevocationEvent(metadata, payload);
                                         this.updateSubscription(event.subscription());
-                                        EventBus.instance().postAsync(event);
+                                        this.submit(event);
                                         break;
                                     case "notification":
                                         handled = true;
@@ -507,7 +515,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                                         } finally {
                                             this.rwl.writeLock().unlock();
                                         }
-                                        EventBus.instance().postAsync(new EventSubInternalNotificationEvent(metadata, payload));
+                                        this.submit(new EventSubInternalNotificationEvent(metadata, payload));
                                         break;
                                 }
                             }

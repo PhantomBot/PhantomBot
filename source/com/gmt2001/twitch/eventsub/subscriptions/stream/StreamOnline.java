@@ -26,7 +26,6 @@ import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.stream.EventSubStreamOnlineEvent;
 
@@ -73,10 +72,11 @@ public final class StreamOnline extends EventSubSubscriptionType {
     }
 
     /**
-     * Only used by EventBus for handler registration
+     * Only used by EventSub for handler registration
      */
     public StreamOnline() {
         super();
+        this.subscribe();
     }
 
     /**
@@ -119,10 +119,16 @@ public final class StreamOnline extends EventSubSubscriptionType {
         }
     }
 
-    @Handler
-    public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.subscription().type().equals(StreamOnline.TYPE)) {
-            EventBus.instance().postAsync(new EventSubStreamOnlineEvent(new StreamOnline(e)));
+    @Override
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+        try {
+            if (e.subscription().type().equals(StreamOnline.TYPE)) {
+                EventSub.debug(StreamOnline.TYPE);
+                EventBus.instance().postAsync(new EventSubStreamOnlineEvent(new StreamOnline(e)));
+            }
+
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

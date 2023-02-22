@@ -31,7 +31,6 @@ import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.prediction.EventSubPredictionEndEvent;
 
@@ -70,10 +69,11 @@ public final class PredictionEnd extends EventSubSubscriptionType {
     }
 
     /**
-     * Only used by EventBus for handler registration
+     * Only used by EventSub for handler registration
      */
     public PredictionEnd() {
         super();
+        this.subscribe();
     }
 
     /**
@@ -124,10 +124,15 @@ public final class PredictionEnd extends EventSubSubscriptionType {
         }
     }
 
-    @Handler
-    public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.subscription().type().equals(PredictionEnd.TYPE)) {
-            EventBus.instance().postAsync(new EventSubPredictionEndEvent(new PredictionEnd(e)));
+    @Override
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+        try {
+            if (e.subscription().type().equals(PredictionEnd.TYPE)) {
+                EventSub.debug(PredictionEnd.TYPE);
+                EventBus.instance().postAsync(new EventSubPredictionEndEvent(new PredictionEnd(e)));
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

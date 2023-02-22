@@ -19,11 +19,11 @@ package com.gmt2001.twitch.eventsub.subscriptions.channel;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.EventSubChannelUpdateEvent;
 
@@ -46,10 +46,11 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
     private boolean is_mature;
 
     /**
-     * Only used by EventBus for handler registration
+     * Only used by EventSub for handler registration
      */
     public ChannelUpdate() {
         super();
+        this.subscribe();
     }
 
     /**
@@ -94,10 +95,15 @@ public final class ChannelUpdate extends EventSubSubscriptionType {
         }
     }
 
-    @Handler
-    public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.subscription().type().equals(ChannelUpdate.TYPE)) {
-            EventBus.instance().postAsync(new EventSubChannelUpdateEvent(new ChannelUpdate(e)));
+    @Override
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+        try {
+            if (e.subscription().type().equals(ChannelUpdate.TYPE)) {
+                EventSub.debug(ChannelUpdate.TYPE);
+                EventBus.instance().postAsync(new EventSubChannelUpdateEvent(new ChannelUpdate(e)));
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 

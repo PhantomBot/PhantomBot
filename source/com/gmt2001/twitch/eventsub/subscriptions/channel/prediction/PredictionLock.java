@@ -30,7 +30,6 @@ import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
-import net.engio.mbassy.listener.Handler;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.prediction.EventSubPredictionLockEvent;
 
@@ -53,10 +52,11 @@ public final class PredictionLock extends EventSubSubscriptionType {
     private List<PredictionOutcome> outcomes = new ArrayList<>();
 
     /**
-     * Only used by EventBus for handler registration
+     * Only used by EventSub for handler registration
      */
     public PredictionLock() {
         super();
+        this.subscribe();
     }
 
     /**
@@ -105,10 +105,15 @@ public final class PredictionLock extends EventSubSubscriptionType {
         }
     }
 
-    @Handler
-    public void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
-        if (e.subscription().type().equals(PredictionLock.TYPE)) {
-            EventBus.instance().postAsync(new EventSubPredictionLockEvent(new PredictionLock(e)));
+    @Override
+    protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
+        try {
+            if (e.subscription().type().equals(PredictionLock.TYPE)) {
+                EventSub.debug(PredictionLock.TYPE);
+                EventBus.instance().postAsync(new EventSubPredictionLockEvent(new PredictionLock(e)));
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
