@@ -525,7 +525,11 @@ public class DiscordAPI extends DiscordUtil {
 
                 boolean isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser).or(Mono.delay(Duration.ofSeconds(DiscordAPI.ISADMINTIMEOUT)).thenReturn(false)).onErrorReturn(false).block();
 
-                if (message.charAt(0) == '!') {
+                /*
+                 * @botproperty discordcommandprefix - A single character, used as the command prefix for Discord. Default `'!'`
+                 * @botpropertycatsort discordcommandprefix 50 150 Discord
+                 */
+                if (message.charAt(0) == CaselessProperties.instance().getPropertyAsChar("discordcommandprefix", '!')) {
                     DiscordAPI.instance().parseCommand(iUser, iChannel, iMessage, isAdmin);
                 }
 
