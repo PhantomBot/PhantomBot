@@ -93,11 +93,12 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
         try {
             String path = qsd.path();
 
-            if (path.startsWith("/oauth")) {
-                path = "/oauth";
-            }
-
             Path p = Paths.get("./web/", path);
+
+            if (path.startsWith("/oauth") && Files.notExists(p)) {
+                path = "/oauth";
+                p = Paths.get("./web/", path);
+            }
 
             if (path.endsWith("/") || Files.isDirectory(p)) {
                 path = path + "/index.html";
