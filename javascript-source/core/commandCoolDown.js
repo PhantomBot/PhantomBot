@@ -264,7 +264,7 @@
 
         _cooldownsLock.lock();
         try {
-            if (username === undefined) {
+            if (username === null) {
                 cooldowns[command].globalTime = finishTime;
             } else {
                 cooldowns[command].userTimes[username] = finishTime;
