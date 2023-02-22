@@ -2479,7 +2479,7 @@ public class Helix {
 
         String endpoint = "/eventsub/subscriptions";
 
-        return this.handleMutatorAsync(endpoint, () -> {
+        return this.handleMutatorAsync(endpoint + jsonString, () -> {
             return this.handleRequest(HttpMethod.POST, endpoint, jsonString);
         });
     }
