@@ -26,7 +26,14 @@ def parse_file(lines):
 for subdir, dirs, files in os.walk("./dist/javadoc"):
     for fname in files:
         fpath = subdir + os.sep + fname
-        with open(fpath, encoding="utf8") as jd_file:
-            lines = parse_file([line.rstrip('\n') for line in jd_file])
+        try:
+            with open(fpath, encoding="utf8") as jd_file:
+                lines = parse_file([line.rstrip('\n') for line in jd_file])
+        except:
+            try:
+                with open(fpath, encoding="latin-1") as jd_file:
+                    lines = parse_file([line.rstrip('\n') for line in jd_file])
+            except:
+                print("Skipping " + fpath)
         with open(fpath, "w", encoding="utf8") as jd_file:
             jd_file.writelines(lines)
