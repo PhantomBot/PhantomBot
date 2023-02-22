@@ -180,7 +180,7 @@ public final class EventSubSubscription {
     public boolean isRevoked() {
         return this.status == SubscriptionStatus.API_REMOVED || this.status == SubscriptionStatus.AUTHORIZATION_REVOKED
                 || this.status == SubscriptionStatus.NOTIFICATION_FAILURES_EXCEEDED || this.status == SubscriptionStatus.USER_REMOVED
-                || this.status == SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_FAILED;
+                || this.status == SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_FAILED || this.status == SubscriptionStatus.VERSION_REMOVED;
     }
 
     /**

@@ -42,14 +42,14 @@
 
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            let subscriptions = [
+            const subscriptions = [
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOnline,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOffline
             ];
 
-            for (let subscription of subscriptions) {
-                let newSubscription = new subscription($.username.getIDCaster());
+            for (const subscription of subscriptions) {
+                const newSubscription = new subscription($.username.getIDCaster());
                 try {
                     newSubscription.create().block();
                 } catch (ex) {

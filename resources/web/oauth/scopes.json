@@ -46,6 +46,10 @@
             "desc": "Run commercials on a channel.",
             "tooltip": "Used to run commercials."
         },
+        "channel:manage:predictions" : {
+            "desc": "Manage of channel's Channel Points Predictions.",
+            "tooltip": "Used to start or end predictions."
+        },
         "channel:manage:raids": {
             "desc": "Manage a channel raiding another channel.",
             "tooltip": "Used to start or cancel raids."

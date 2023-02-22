@@ -177,7 +177,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
     public Mono<Void> deleteSubscription(String id) {
         return Mono.<Void>create(emitter -> {
             try {
-                Helix.instance().deleteEventSubSubscription(id).doOnSuccess(response -> {
+                Helix.instance().deleteEventSubSubscriptionAsync(id).doOnSuccess(response -> {
                     if (response.has("error")) {
                         if (debug()) {
                             debug("deleteSubscription(" + id + ") error " + response.toString(4));
@@ -234,7 +234,7 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                 request.endObject();
                 request.endObject();
 
-                Helix.instance().createEventSubSubscription(request.toString()).doOnSuccess(response -> {
+                Helix.instance().createEventSubSubscriptionAsync(request.toString()).doOnSuccess(response -> {
                     if (response.has("error")) {
                         if (debug()) {
                             debug("createSubscription(" + proposedSubscription.type() + ") error " + response.toString(4));

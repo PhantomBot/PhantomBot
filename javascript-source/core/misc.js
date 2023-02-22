@@ -774,27 +774,102 @@
         return '@' + $.username.resolve(username) + ', ';
     }
 
-    function javaString(str) {
+    function javaString(str, def) {
+        if (def === undefined) {
+            def = null;
+        }
+
         if (str === null || str === undefined) {
-            return null;
+            return def;
         }
         try {
             return new Packages.java.lang.String(str);
         } catch (e) {
-            return null;
+            return def;
         }
     }
 
-    function jsString(str) {
+    function jsString(str, def) {
+        if (def === undefined) {
+            def = null;
+        }
+
         if (str === null || str === undefined) {
-            return null;
+            return def;
         }
 
         try {
             return String(str + '');
         } catch (e) {
-            return null;
+            return def;
         }
+    }
+
+    function jsArgs(list) {
+        if (list === null || list === undefined) {
+            return [];
+        }
+
+        let args = [];
+
+        try {
+            if (isJSArray(list)) {
+                args = list;
+            } else {
+                let len = 0;
+                try {
+                    len = list.size();
+                } catch(l1) {
+                    try {
+                        len = list.length();
+                    } catch (l2) {
+                        try {
+                            len = list.length;
+                            if (len === undefined || len === null) {
+                                len = 0;
+                            }
+                        } catch (l3) {}
+                    }
+                }
+
+                for (let i = 0; i < len; i++) {
+                    let val = undefined;
+                    try {
+                        val = list[i];
+                    } catch(l1) {
+                        try {
+                            val = list.get(i);
+                        } catch (l2) {}
+                    }
+
+                    args.push($.jsString(val));
+                }
+            }
+        } catch (e) {
+            return [];
+        }
+
+        return args;
+    }
+
+    const arrMatchStr = String(Array);
+    function isJSArray(obj) {
+        return obj !== undefined && obj !== null && typeof obj === 'object' && 'constructor' in obj && String(obj.constructor) === arrMatchStr;
+    }
+
+    function duration(str) {
+        try {
+            let duration = Packages.com.gmt2001.DurationString.from(str);
+            if (duration !== Packages.java.time.Duration.ZERO) {
+                return duration.toSeconds();
+            }
+        } catch (e) {}
+
+        try {
+            return parseInt(str);
+        } catch (e) {}
+
+        return 0;
     }
 
     /**
@@ -896,6 +971,9 @@
     $.equalsIgnoreCase = equalsIgnoreCase;
     $.javaString = javaString;
     $.jsString = jsString;
+    $.jsArgs = jsArgs;
+    $.isJSArray = isJSArray;
+    $.duration = duration;
     /**
      * Parses an argument string into an array
      * @param {string} str input string

@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.eventsub.channel;
+package tv.phantombot.event.eventsub.channel.prediction;
 
-import com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate;
+import com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionBegin;
 
 /**
- * A broadcaster updates their channel properties e.g., category, title, mature flag, broadcast, or language.
+ * A Prediction started on a specified channel.
  *
  * @author gmt2001
  */
-public class EventSubChannelUpdateEvent extends EventSubChannelEvent<ChannelUpdate> {
-    public EventSubChannelUpdateEvent(ChannelUpdate event) {
+public class EventSubPredictionBeginEvent extends EventSubPredictionEvent<PredictionBegin> {
+    public EventSubPredictionBeginEvent(PredictionBegin event) {
         super(event);
     }
 }
