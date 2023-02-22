@@ -814,7 +814,9 @@
 
         try {
             if (isJSArray(list)) {
-                args = list;
+                for (let i in list) {
+                    args.push($.jsString(list[i]));
+                }
             } else {
                 let len = 0;
                 try {

@@ -107,12 +107,19 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: 11
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
     - name: Set up Ant
       run: sudo apt-get install ant
     - name: Retrieve Libs with Ant
       run: ant -noinput -buildfile build.xml ivy-retrieve
     - name: JavaDoc with Ant
       run: ant -noinput -buildfile build.xml javadoc
+    - name: Execute Script
+      run: python3 development-resources/clean_javadoc.py
     - name: Copy Files
       run: |
         rsync -rv --delete-during --progress dist/javadoc docs
