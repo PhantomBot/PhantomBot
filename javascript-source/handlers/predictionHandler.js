@@ -72,7 +72,7 @@
             try {
                 if (currentPrediction !== null && isCommandPrediction) {
                     if (event.event().status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionEnd.Status.RESOLVED) {
-                        const winningOutcomeId = $.jsString(event.event().winningOutcomeId());
+                        let winningOutcomeId = $.jsString(event.event().winningOutcomeId());
                         let winningOutcome = null;
 
                         for (let i in currentPrediction.outcomes) {
@@ -117,14 +117,14 @@
      */
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            const subscriptions = [
+            let subscriptions = [
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionBegin,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionEnd,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionLock
             ];
 
             for (let i in subscriptions) {
-                const newSubscription = new subscriptions[i]($.username.getIDCaster());
+                let newSubscription = new subscriptions[i]($.username.getIDCaster());
                 try {
                     newSubscription.create().block();
                 } catch (ex) {
@@ -138,15 +138,15 @@
      * @event command
      */
     $.bind('command', function (event) {
-        const sender = event.getSender(),
+        let sender = event.getSender(),
             command = $.jsString(event.getCommand(), '').toLowerCase(),
             args = $.jsArgs(event.getArgs());
 
             if (command === 'prediction') {
                 let handled = false;
                 if (args.length > 0) {
-                    const action = args[0].toLowerCase();
-                    const subaction = args.length > 1 ? args[1].toLowerCase() : null;
+                    let action = args[0].toLowerCase();
+                    let subaction = args.length > 1 ? args[1].toLowerCase() : null;
                     if (subaction === 'example' && $.lang.exists('predictionhandler.' + action + '.example')) {
                         handled = true;
                         $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.' + action + '.example'));
@@ -161,13 +161,13 @@
                             $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.open.toomanyoptions'));
                         } else {
                             try {
-                                const choices = new Packages.java.util.ArrayList();
+                                let choices = new Packages.java.util.ArrayList();
 
                                 for (let i = 3; i < args.length; i++) {
                                     choices.add($.javaString(args[i]));
                                 }
 
-                                const response = $.helix.createPrediction($.javaString(args[2]), $.duration(args[1]), choices);
+                                let response = $.helix.createPrediction($.javaString(args[2]), $.duration(args[1]), choices);
 
                                 if (response.has('data') && response.getJSONArray('data').length() > 0) {
                                     isCommandPrediction = true;
@@ -199,7 +199,7 @@
                             $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.404'));
                         } else {
                             try {
-                                const response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.LOCKED, null);
+                                let response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.LOCKED, null);
 
                                 if (response.has('data') && response.getJSONArray('data').length() > 0) {
                                     isCommandPrediction = true;
@@ -231,7 +231,7 @@
                                 if (winningOutcome === null) {
                                     $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.resolve.404', args[1]));
                                 } else {
-                                    const response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.RESOLVED, $.javaString(winningOutcome.id));
+                                    let response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.RESOLVED, $.javaString(winningOutcome.id));
 
                                     if (response.has('data') && response.getJSONArray('data').length() > 0) {
                                         isCommandPrediction = true;
@@ -251,7 +251,7 @@
                             $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.404'));
                         } else {
                             try {
-                                const response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.CANCELED, null);
+                                let response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.CANCELED, null);
 
                                 if (response.has('data') && response.getJSONArray('data').length() > 0) {
                                     isCommandPrediction = true;
