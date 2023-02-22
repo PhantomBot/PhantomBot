@@ -12,6 +12,7 @@ com.gmt2001.twitch
 com.gmt2001.twitch.eventsub
 com.gmt2001.twitch.eventsub.subscriptions
 com.gmt2001.twitch.eventsub.subscriptions.channel
+com.gmt2001.twitch.eventsub.subscriptions.channel.prediction
 com.gmt2001.twitch.eventsub.subscriptions.stream
 com.gmt2001.twitch.tmi
 com.gmt2001.twitch.tmi.processors
@@ -36,6 +37,7 @@ tv.phantombot.event.discord.uservoicechannel
 tv.phantombot.event.emotes
 tv.phantombot.event.eventsub
 tv.phantombot.event.eventsub.channel
+tv.phantombot.event.eventsub.channel.prediction
 tv.phantombot.event.eventsub.stream
 tv.phantombot.event.irc
 tv.phantombot.event.irc.channel
