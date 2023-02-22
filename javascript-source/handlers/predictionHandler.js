@@ -147,11 +147,15 @@
                 if (args.length > 0) {
                     const action = args[0].toLowerCase();
                     const subaction = args.length > 1 ? args[1].toLowerCase() : null;
-                    if (action === 'open') {
+                    if (subaction === 'example' && $.lang.exists('predictionhandler.' + action + '.example')) {
                         handled = true;
-                        if (subaction === 'example') {
-                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.open.example'));
-                        } else if (args.length < 5 || args[2].trim().length === 0 || args[3].trim().length === 0 || args[4].trim().length === 0) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.' + action + '.example'));
+                    } else if (subaction === 'usage' && $.lang.exists('predictionhandler.' + action + '.usage')) {
+                        handled = true;
+                        $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.' + action + '.usage'));
+                    } else if (action === 'open') {
+                        handled = true;
+                        if (args.length < 5 || args[2].trim().length === 0 || args[3].trim().length === 0 || args[4].trim().length === 0) {
                             $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.open.usage'));
                         } else if (args.length > 13) {
                             $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.open.toomanyoptions'));
@@ -163,7 +167,7 @@
                                     choices.add($.javaString(args[i]));
                                 }
 
-                                const response = $.helix.createPrediction($.javaStrimg(args[2]), $.duration(args[1]), choices);
+                                const response = $.helix.createPrediction($.javaString(args[2]), $.duration(args[1]), choices);
 
                                 if (response.has('data') && response.getJSONArray('data').length() > 0) {
                                     isCommandPrediction = true;
@@ -171,6 +175,90 @@
                                     $.log.error(response.getString('message'));
                                 } else {
                                     $.log.error('!prediction open - unknown failure ## ' + response.toString());
+                                }
+                            } catch (e) {
+                                $.log.error(e);
+                            }
+                        }
+                    } else if (action === 'options') {
+                        handled = true;
+                        if (currentPrediction === null) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.404'));
+                        } else {
+                            let msg = $.lang.get('predictionhandler.options.header');
+
+                            for (const outcome of currentPrediction.outcomes) {
+                                msg += $.lang.get('predictionhandler.option', outcome.index, outcome.title);
+                            }
+
+                            $.say(msg);
+                        }
+                    } else if (action === 'lock') {
+                        handled = true;
+                        if (currentPrediction === null) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.404'));
+                        } else {
+                            try {
+                                const response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.LOCKED, null);
+
+                                if (response.has('data') && response.getJSONArray('data').length() > 0) {
+                                    isCommandPrediction = true;
+                                } else if (response.has('message')) {
+                                    $.log.error(response.getString('message'));
+                                } else {
+                                    $.log.error('!prediction lock - unknown failure ## ' + response.toString());
+                                }
+                            } catch (e) {
+                                $.log.error(e);
+                            }
+                        }
+                    } else if (action === 'resolve') {
+                        handled = true;
+                        if (args.length < 2) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.resolve.usage'));
+                        } else if (currentPrediction === null) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.404'));
+                        } else {
+                            try {
+                                let winningOutcome = null;
+
+                                for (const outcome of currentPrediction.outcomes) {
+                                    if (outcome.index === args[1]) {
+                                        winningOutcome = outcome;
+                                    }
+                                }
+
+                                if (winningOutcome === null) {
+                                    $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.resolve.404', args[1]));
+                                } else {
+                                    const response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.RESOLVED, $.javaString(winningOutcome.id));
+
+                                    if (response.has('data') && response.getJSONArray('data').length() > 0) {
+                                        isCommandPrediction = true;
+                                    } else if (response.has('message')) {
+                                        $.log.error(response.getString('message'));
+                                    } else {
+                                        $.log.error('!prediction resolve - unknown failure ## ' + response.toString());
+                                    }
+                                }
+                            } catch (e) {
+                                $.log.error(e);
+                            }
+                        }
+                    } else if (action === 'cancel') {
+                        handled = true;
+                        if (currentPrediction === null) {
+                            $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.404'));
+                        } else {
+                            try {
+                                const response = $.helix.endPrediction($.javaString(currentPrediction.id), Packages.tv.phantombot.twitch.api.Helix.PredictionStatus.CANCELED, null);
+
+                                if (response.has('data') && response.getJSONArray('data').length() > 0) {
+                                    isCommandPrediction = true;
+                                } else if (response.has('message')) {
+                                    $.log.error(response.getString('message'));
+                                } else {
+                                    $.log.error('!prediction cancel - unknown failure ## ' + response.toString());
                                 }
                             } catch (e) {
                                 $.log.error(e);
@@ -186,10 +274,14 @@
     });
 
     /*
-    * @event initReady
-    */
+     * @event initReady
+     */
     $.bind('initReady', function () {
         $.registerChatCommand('./handlers/predictionHandler.js', 'prediction', $.PERMISSION.Admin);
         $.registerChatSubcommand('prediction', 'open', $.PERMISSION.Admin);
+        $.registerChatSubcommand('prediction', 'options', $.PERMISSION.Admin);
+        $.registerChatSubcommand('prediction', 'lock', $.PERMISSION.Admin);
+        $.registerChatSubcommand('prediction', 'resolve', $.PERMISSION.Admin);
+        $.registerChatSubcommand('prediction', 'cancel', $.PERMISSION.Admin);
     });
 })();
