@@ -184,6 +184,9 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                         }
                         emitter.error(new IOException(response.toString()));
                     } else {
+                        if (debug()) {
+                            debug("deleteSubscription(" + id + ") success " + response.toString(4));
+                        }
                         if (this.subscriptions.containsKey(id)) {
                             this.updateSubscription(this.subscriptions.get(id), EventSubSubscription.SubscriptionStatus.API_REMOVED);
                         }
@@ -241,6 +244,9 @@ public final class EventSub implements WsClientFrameHandler, Listener {
                         }
                         emitter.error(new IOException(response.toString()));
                     } else {
+                        if (debug()) {
+                            debug("createSubscription(" + proposedSubscription.type() + ") success " + response.toString(4));
+                        }
                         EventSubSubscription subscription = EventSubSubscription.fromJSON(response.getJSONArray("data").getJSONObject(0));
                         this.updateSubscription(subscription);
                         emitter.success(subscription);
