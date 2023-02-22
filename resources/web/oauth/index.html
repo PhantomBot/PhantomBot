@@ -446,30 +446,30 @@
 
                         // Connect with Twitch button bot.
                         $('#connect-bot').on('click', function () {
-                            let scopes = '';
+                            let scope = '';
                             for (let x in scopes.bot) {
-                                if (scopes.length > 0) {
-                                    scopes = scopes + '+';
+                                if (scope.length > 0) {
+                                    scope = scope + '+';
                                 }
 
-                                scopes = scopes + x;
+                                scope = scope + x;
                             }
 
-                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('bot');
+                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scope + '&state=' + generateState('bot');
                         });
 
                         // Connect with Twitch button caster.
                         $('#connect-caster').on('click', function () {
-                            let scopes = '';
+                            let scope = '';
                             for (let x in scopes.broadcaster) {
-                                if (scopes.length > 0) {
-                                    scopes = scopes + '+';
+                                if (scope.length > 0) {
+                                    scope = scope + '+';
                                 }
 
-                                scopes = scopes + x;
+                                scope = scope + x;
                             }
 
-                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scopes + '&state=' + generateState('broadcaster');
+                            window.location = baseAPIUri + '?response_type=code&client_id=' + clientID + '&redirect_uri=' + redirectURI + '&force_verify=true&scope=' + scope + '&state=' + generateState('broadcaster');
                         });
 
                         $('input[type=radio][name=authmode]').change(function () {
