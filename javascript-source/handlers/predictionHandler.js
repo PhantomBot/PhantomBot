@@ -54,8 +54,8 @@
                 if (isCommandPrediction) {
                     let msg = $.lang.get('predictionhandler.open.header', currentPrediction.title);
 
-                    for (const outcome of currentPrediction.outcomes) {
-                        msg += $.lang.get('predictionhandler.option', outcome.index, outcome.title);
+                    for (let i in currentPrediction.outcomes) {
+                        msg += $.lang.get('predictionhandler.option', currentPrediction.outcomes[i].index, currentPrediction.outcomes[i].title);
                     }
 
                     $.say(msg);
@@ -75,9 +75,9 @@
                         const winningOutcomeId = $.jsString(event.event().winningOutcomeId());
                         let winningOutcome = null;
 
-                        for (const outcome of currentPrediction.outcomes) {
-                            if (outcome.id === winningOutcomeId) {
-                                winningOutcome = outcome;
+                        for (let i in currentPrediction.outcomes) {
+                            if (currentPrediction.outcomes[i].id === winningOutcomeId) {
+                                winningOutcome = currentPrediction.outcomes[i];
                             }
                         }
 
@@ -123,8 +123,8 @@
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionLock
             ];
 
-            for (const subscription of subscriptions) {
-                const newSubscription = new subscription($.username.getIDCaster());
+            for (let i in subscriptions) {
+                const newSubscription = new subscriptions[i]($.username.getIDCaster());
                 try {
                     newSubscription.create().block();
                 } catch (ex) {
@@ -187,8 +187,8 @@
                         } else {
                             let msg = $.lang.get('predictionhandler.options.header');
 
-                            for (const outcome of currentPrediction.outcomes) {
-                                msg += $.lang.get('predictionhandler.option', outcome.index, outcome.title);
+                            for (let i in currentPrediction.outcomes) {
+                                msg += $.lang.get('predictionhandler.option', currentPrediction.outcomes[i].index, currentPrediction.outcomes[i].title);
                             }
 
                             $.say(msg);
@@ -222,9 +222,9 @@
                             try {
                                 let winningOutcome = null;
 
-                                for (const outcome of currentPrediction.outcomes) {
-                                    if (outcome.index === args[1]) {
-                                        winningOutcome = outcome;
+                                for (let i in currentPrediction.outcomes) {
+                                    if (currentPrediction.outcomes[i].index === args[1]) {
+                                        winningOutcome = currentPrediction.outcomes[i];
                                     }
                                 }
 

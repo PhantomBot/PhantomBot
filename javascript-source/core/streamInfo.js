@@ -48,8 +48,8 @@
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOffline
             ];
 
-            for (const subscription of subscriptions) {
-                const newSubscription = new subscription($.username.getIDCaster());
+            for (let i in subscriptions) {
+                const newSubscription = new subscriptions[i]($.username.getIDCaster());
                 try {
                     newSubscription.create().block();
                 } catch (ex) {
