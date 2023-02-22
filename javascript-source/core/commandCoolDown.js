@@ -264,7 +264,7 @@
 
         _cooldownsLock.lock();
         try {
-            if (username === undefined) {
+            if (username === null) {
                 cooldowns[command].globalTime = finishTime;
             } else {
                 cooldowns[command].userTimes[username] = finishTime;
@@ -369,7 +369,7 @@
             if (cooldowns[command] === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', command));
             } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo' + cooldowns[command].modsSkip, command, cooldowns[command].globalSec, cooldowns[command].userSec));
+                $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo' + (cooldowns[command].modsSkip ? 'ModsSkip' : ''), command, cooldowns[command].globalSec, cooldowns[command].userSec));
             }
             return;
         }
