@@ -264,6 +264,44 @@
                                 $.log.error(e);
                             }
                         }
+                    } else if (action === 'sync') {
+                        handled = true;
+                        try {
+                            let response = $.helix.getPredictions(null, 1, null);
+
+                            if (response.has('data') && response.getJSONArray('data').length() > 0) {
+                                let activeprediction = response.getJSONArray('data').getJSONObject(0);
+                                if (!activeprediction.isNull('ended_at')) {
+                                    currentPrediction = null;
+                                } else {
+                                    let prediction = {
+                                        id: $.jsString(activeprediction.getString('id')),
+                                        title: $.jsString(activeprediction.getString('title')),
+                                        outcomes: [],
+                                        locked: !activeprediction.isNull('locked_at')
+                                    };
+
+                                    let outcomes = activeprediction.getJSONArray('outcomes');
+                                    for (let i = 0; i < outcomes.length(); i++) {
+                                        prediction.outcomes.push({
+                                            index: i + 1,
+                                            id: $.jsString(outcomes.getJSONObject(i).getString('id')),
+                                            title: $.jsString(outcomes.getJSONObject(i).getString('title'))
+                                        });
+                                    }
+
+                                    currentPrediction = prediction;
+                                }
+
+                                $.say($.whisperPrefix(sender) + $.lang.get('predictionhandler.sync'));
+                            } else if (response.has('message')) {
+                                $.log.error(response.getString('message'));
+                            } else {
+                                $.log.error('!prediction sync - unknown failure ## ' + response.toString());
+                            }
+                        } catch (e) {
+                            $.log.error(e);
+                        }
                     }
                 }
 
