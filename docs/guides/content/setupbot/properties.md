@@ -571,6 +571,22 @@ _NOTE: A restart is required for this property to take effect_
 &nbsp;
 
 ### Uncategorized
+#### commandprefix
+
+Data Type: _Char_
+
+No definition
+
+&nbsp;
+
+#### discordcommandprefix
+
+Data Type: _Char_
+
+No definition
+
+&nbsp;
+
 #### eventsubcallbackurl
 
 Data Type: _String_
