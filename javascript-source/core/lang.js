@@ -121,7 +121,7 @@
      * @returns {boolean}
      */
     function exists(key) {
-        return (data[key.toLowerCase()]);
+        return key !== undefined && key !== null && data[key.toLowerCase()] !== undefined && data[key.toLowerCase()] !== null;
     }
 
     /**
