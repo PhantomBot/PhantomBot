@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.Event;
 
 public class CommandEvent extends Event {
@@ -117,11 +119,15 @@ public class CommandEvent extends Event {
     /**
      * Indicates if the given message appears to be a command, defined as exclamation point {@code !} followed by any character except for a space
      *
-     * @param message The emssage to check
+     * @param message The message to check
      * @return {@code true} if the message appears to be a command
      */
     public static boolean isCommand(String message) {
-        return message.startsWith("!") && message.indexOf(' ') != 1;
+        /*
+         * @botproperty commandprefix - A single character, used as the command prefix for Twitch. Default `'!'`
+         * @botpropertycatsort commandprefix 100 20 Twitch
+         */
+        return message.charAt(0) == CaselessProperties.instance().getPropertyAsChar("commandprefix", '!') && message.indexOf(' ') != 1;
     }
 
     /**

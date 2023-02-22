@@ -84,6 +84,38 @@ public class CaselessProperties extends Properties {
         return retval;
     }
 
+    public char getPropertyAsChar(String key) {
+        return this.getProperty(key).charAt(0);
+    }
+
+    public char getPropertyAsChar(String key, Supplier<Character> defaultValueSupplier) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValueSupplier.get();
+        }
+
+        try {
+            return retval.charAt(0);
+        } catch (IndexOutOfBoundsException ex) {
+            return defaultValueSupplier.get();
+        }
+    }
+
+    public char getPropertyAsChar(String key, char defaultValue) {
+        String retval = this.getProperty(key, (String) null);
+
+        if (retval == null) {
+            return defaultValue;
+        }
+
+        try {
+            return retval.charAt(0);
+        } catch (IndexOutOfBoundsException ex) {
+            return defaultValue;
+        }
+    }
+
     public int getPropertyAsInt(String key) {
         return Integer.parseInt(this.getProperty(key));
     }
