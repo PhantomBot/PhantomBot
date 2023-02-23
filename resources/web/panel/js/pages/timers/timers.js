@@ -291,6 +291,10 @@
 
             function messageRowData(i) {
                 return [
+                    $('<i/>', {
+                        'class': 'fa fa-bars',
+                        'style': 'cursor: grab'
+                    }).prop('outerHTML'),
                     i,
                     groupData.messages[i],
                     $('<div/>', {
@@ -340,28 +344,32 @@
                 'autoWidth': false,
                 'lengthChange': false,
                 'data': tableData,
+                'order': [[1, 'asc']],
                 'columnDefs': [
-                    {'className': 'default-table', 'width': '70px', 'orderable': false, 'targets': 2},
-                    {'width': '3%', 'targets': 0}
+                    {'width': '1%', 'orderable': false, 'targets': 0},
+                    {'className': 'default-table', 'width': '70px', 'orderable': false, 'targets': 3},
+                    {'width': '3%', 'targets': 1}
                 ],
                 'columns': [
+                    {'title': ' '},
                     {'title': 'Id'},
                     {'title': 'Text'},
                     {'title': 'Actions'}
                 ],
                 'rowReorder': {
                     'selector': 'td:not(:last-child)',
-                    'dataSrc': 0
+                    'dataSrc': 1
                 }
             });
 
             table.on('row-reordered', (e, diff) => {
+                let newData = JSON.parse(JSON.stringify(groupData));
                 for (var i = 0, ien = diff.length; i < ien; i++) {
-                    let oldData = groupData[diff[i].oldData];
-                    groupData[diff[i].oldData] = groupData[diff[i].newData];
-                    groupData[diff[i].newData] = oldData;
+                    newData.disabled[diff[i].newData] = groupData.disabled[diff[i].oldData];
+                    newData.messages[diff[i].newData] = groupData.messages[diff[i].oldData];
                     $(diff[i].node).children('[data-message-id]').data('messageId', diff[i].newData);
                 }
+                groupData = newData;
 
                 socket.updateDBValue('timer_group_reorder_message_update', 'notices', String(selected), JSON.stringify(groupData), function () {
                     socket.wsEvent('timer_group_reorder_message_ws', './systems/noticeSystem.js', null,
