@@ -114,7 +114,7 @@
 
         versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0', 'installedv3.6.0', 'installedv3.6.2.5',
             'installedv3.6.3', 'installedv3.6.4', 'installedv3.6.4-1', 'installedv3.6.4.2', 'installedv3.6.4.5', 'installedv3.6.5.0',
-            'installedv3.7.0.0'
+            'installedv3.7.0.0', 'installedv3.7.3.2'
         ];
         for (i in versions) {
             $.inidb.set('updates', versions[i], 'true');
@@ -692,6 +692,45 @@
 
         $.consoleLn('PhantomBot update 3.7.0.0 completed!');
         $.inidb.SetBoolean('updates', '', 'installedv3.7.0.0', true);
+    }
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.3.2')) {
+        $.consoleLn('Starting PhantomBot update 3.7.3.2 updates...');
+
+        let keys = $.inidb.GetKeyList('command', '');
+
+        for (let i in keys) {
+            try {
+                let command = $.jsString($.inidb.get('command', keys[i]));
+
+                if (command.includes('(customapi ')) {
+                    command = command.replace(command, '(customapi ', '(customapi (encodeurl ');
+                    let start = command.indexOf('(customapi (encodeurl ');
+                    let tkn = command.indexOf('(token)', start);
+                    let idx = command.indexOf(')',  tkn > 0 ? tkn + 1 : start);
+
+                    if (idx > 0) {
+                        let newcommand = command.substring(0, idx) + ')' + command.substring(idx);
+                        $.inidb.set('command', keys[i], newcommand);
+                    }
+                }
+
+                if (command.includes('(customapijson ')) {
+                    command = command.replace(command, '(customapijson ', '(customapijson (encodeurl ');
+                    let start = command.indexOf('(customapijson (encodeurl ');
+                    let tkn = command.indexOf('(token)', start);
+                    let idx = command.indexOf(' ',  tkn > 0 ? tkn + 1 : start);
+
+                    if (idx > 0) {
+                        let newcommand = command.substring(0, idx) + ')' + command.substring(idx);
+                        $.inidb.set('command', keys[i], newcommand);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        $.consoleLn('PhantomBot update 3.7.3.2 completed!');
+        $.inidb.SetBoolean('updates', '', 'installedv3.7.3.2', true);
     }
 
     if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
