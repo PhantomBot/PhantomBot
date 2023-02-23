@@ -1,1 +1,376 @@
-<!DOCTYPE HTML><!-- NewPage --><html lang="en"><head><title>HttpOptionalSslHandler (PhantomBot JavaDoc)</title><meta http-equiv="Content-Type" content="text/html; charset=utf8"><meta name="dc.created" content="2023-02-22"><link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style"><script type="text/javascript" src="../../../script.js"></script><script type="text/javascript" src="../../../jquery/jszip/dist/jszip.min.js"></script><script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script><!--[if IE]><script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script><![endif]--><script type="text/javascript" src="../../../jquery/jquery-3.6.0.min.js"></script><script type="text/javascript" src="../../../jquery/jquery-ui.min.js"></script></head><body><script type="text/javascript"><!--    try {        if (location.href.indexOf('is-external=true') == -1) {            parent.document.title="HttpOptionalSslHandler (PhantomBot JavaDoc)";        }    }    catch(err) {    }//-->var data = {"i0":10};var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};var altColor = "altColor";var rowColor = "rowColor";var tableTab = "tableTab";var activeTableTab = "activeTableTab";var pathtoroot = "../../../";var useModuleDirectories = true;loadScripts(document, 'script');</script><noscript><div>JavaScript is disabled on your browser.</div></noscript><header role="banner"><nav role="navigation"><div class="fixedNav"><!-- ========= START OF TOP NAVBAR ======= --><div class="topNav"><a id="navbar.top"><!--   --></a><div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.top.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../index-all.html">Index</a></li><li><a href="../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_top"><li><a href="../../../allclasses.html">All&nbsp;Classes</a></li></ul><ul class="navListSearch"><li><label for="search">SEARCH:</label><input type="text" id="search" value="search" disabled="disabled"><input type="reset" id="reset" value="reset" disabled="disabled"></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_top");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li><li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li><li>Constr&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li>Constr&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.top"><!--   --></a></div><!-- ========= END OF TOP NAVBAR ========= --></div><div class="navPadding">&nbsp;</div><script type="text/javascript"><!--$('.navPadding').css('padding-top', $('.fixedNav').css("height"));//--></script></nav></header><!-- ======== START OF CLASS DATA ======== --><main role="main"><div class="header"><div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.httpwsserver</a></div><h2 title="Class HttpOptionalSslHandler" class="title">Class HttpOptionalSslHandler</h2></div><div class="contentContainer"><ul class="inheritance"><li>java.lang.Object</li><li><ul class="inheritance"><li><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">io.netty.channel.ChannelHandlerAdapter</a></li><li><ul class="inheritance"><li><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">io.netty.channel.ChannelInboundHandlerAdapter</a></li><li><ul class="inheritance"><li><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">io.netty.handler.codec.ByteToMessageDecoder</a></li><li><ul class="inheritance"><li><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">io.netty.handler.ssl.OptionalSslHandler</a></li><li><ul class="inheritance"><li>com.gmt2001.httpwsserver.HttpOptionalSslHandler</li></ul></li></ul></li></ul></li></ul></li></ul></li></ul><div class="description"><ul class="blockList"><li class="blockList"><dl><dt>All Implemented Interfaces:</dt><dd><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></code>, <code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelInboundHandler</a></code></dd></dl><hr><pre>public class <span class="typeNameLabel">HttpOptionalSslHandler</span>extends <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">OptionalSslHandler</a></pre><div class="block">Detects Non-SSL HTTP connections and activates the SSL Redirect handler, when SSL is enabled</div><dl><dt><span class="simpleTagLabel">Author:</span></dt><dd>gmt2001</dd></dl></li></ul></div><div class="summary"><ul class="blockList"><li class="blockList"><!-- ======== NESTED CLASS SUMMARY ======== --><section><ul class="blockList"><li class="blockList"><a id="nested.class.summary"><!--   --></a><h3>Nested Class Summary</h3><ul class="blockList"><li class="blockList"><a id="nested.classes.inherited.from.class.io.netty.handler.codec.ByteToMessageDecoder"><!--   --></a><h3>Nested classes/interfaces inherited from class&nbsp;io.netty.handler.codec.<a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder</a></h3><code><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.Cumulator.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder.Cumulator</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="nested.classes.inherited.from.class.io.netty.channel.ChannelHandler"><!--   --></a><h3>Nested classes/interfaces inherited from interface&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></h3><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.Sharable.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler.Sharable</a></code></li></ul></li></ul></section><!-- =========== FIELD SUMMARY =========== --><section><ul class="blockList"><li class="blockList"><a id="field.summary"><!--   --></a><h3>Field Summary</h3><ul class="blockList"><li class="blockList"><a id="fields.inherited.from.class.io.netty.handler.codec.ByteToMessageDecoder"><!--   --></a><h3>Fields inherited from class&nbsp;io.netty.handler.codec.<a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder</a></h3><code><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#COMPOSITE_CUMULATOR" title="class or interface in io.netty.handler.codec" class="externalLink">COMPOSITE_CUMULATOR</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#MERGE_CUMULATOR" title="class or interface in io.netty.handler.codec" class="externalLink">MERGE_CUMULATOR</a></code></li></ul></li></ul></section><!-- ========== METHOD SUMMARY =========== --><section><ul class="blockList"><li class="blockList"><a id="method.summary"><!--   --></a><h3>Method Summary</h3><table class="memberSummary"><caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption><tr><th class="colFirst" scope="col">Modifier and Type</th><th class="colSecond" scope="col">Method</th><th class="colLast" scope="col">Description</th></tr><tr id="i0" class="altColor"><td class="colFirst"><code>protected <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newNonSslHandler(io.netty.channel.ChannelHandlerContext)">newNonSslHandler</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;context)</code></th><td class="colLast">&nbsp;</td></tr></table><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.handler.ssl.OptionalSslHandler"><!--   --></a><h3>Methods inherited from class&nbsp;io.netty.handler.ssl.<a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">OptionalSslHandler</a></h3><code><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#decode(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf,java.util.List)" title="class or interface in io.netty.handler.ssl" class="externalLink">decode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newNonSslHandlerName()" title="class or interface in io.netty.handler.ssl" class="externalLink">newNonSslHandlerName</a>, <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newSslHandler(io.netty.channel.ChannelHandlerContext,io.netty.handler.ssl.SslContext)" title="class or interface in io.netty.handler.ssl" class="externalLink">newSslHandler</a>, <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newSslHandlerName()" title="class or interface in io.netty.handler.ssl" class="externalLink">newSslHandlerName</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.handler.codec.ByteToMessageDecoder"><!--   --></a><h3>Methods inherited from class&nbsp;io.netty.handler.codec.<a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder</a></h3><code><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#actualReadableBytes()" title="class or interface in io.netty.handler.codec" class="externalLink">actualReadableBytes</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#callDecode(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf,java.util.List)" title="class or interface in io.netty.handler.codec" class="externalLink">callDecode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#channelInactive(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">channelInactive</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#channelRead(io.netty.channel.ChannelHandlerContext,java.lang.Object)" title="class or interface in io.netty.handler.codec" class="externalLink">channelRead</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#channelReadComplete(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">channelReadComplete</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#decodeLast(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf,java.util.List)" title="class or interface in io.netty.handler.codec" class="externalLink">decodeLast</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#discardSomeReadBytes()" title="class or interface in io.netty.handler.codec" class="externalLink">discardSomeReadBytes</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#handlerRemoved(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">handlerRemoved</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#handlerRemoved0(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">handlerRemoved0</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#internalBuffer()" title="class or interface in io.netty.handler.codec" class="externalLink">internalBuffer</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#isSingleDecode()" title="class or interface in io.netty.handler.codec" class="externalLink">isSingleDecode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#setCumulator(io.netty.handler.codec.ByteToMessageDecoder.Cumulator)" title="class or interface in io.netty.handler.codec" class="externalLink">setCumulator</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#setDiscardAfterReads(int)" title="class or interface in io.netty.handler.codec" class="externalLink">setDiscardAfterReads</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#setSingleDecode(boolean)" title="class or interface in io.netty.handler.codec" class="externalLink">setSingleDecode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#userEventTriggered(io.netty.channel.ChannelHandlerContext,java.lang.Object)" title="class or interface in io.netty.handler.codec" class="externalLink">userEventTriggered</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.channel.ChannelInboundHandlerAdapter"><!--   --></a><h3>Methods inherited from class&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelInboundHandlerAdapter</a></h3><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelActive(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelActive</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelRegistered(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelRegistered</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelUnregistered(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelUnregistered</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelWritabilityChanged(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelWritabilityChanged</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#exceptionCaught(io.netty.channel.ChannelHandlerContext,java.lang.Throwable)" title="class or interface in io.netty.channel" class="externalLink">exceptionCaught</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.channel.ChannelHandlerAdapter"><!--   --></a><h3>Methods inherited from class&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerAdapter</a></h3><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true#ensureNotSharable()" title="class or interface in io.netty.channel" class="externalLink">ensureNotSharable</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true#handlerAdded(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">handlerAdded</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true#isSharable()" title="class or interface in io.netty.channel" class="externalLink">isSharable</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.java.lang.Object"><!--   --></a><h3>Methods inherited from class&nbsp;java.lang.Object</h3><code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.channel.ChannelHandler"><!--   --></a><h3>Methods inherited from interface&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></h3><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true#handlerAdded(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">handlerAdded</a></code></li></ul></li></ul></section></li></ul></div><div class="details"><ul class="blockList"><li class="blockList"><!-- ============ METHOD DETAIL ========== --><section><ul class="blockList"><li class="blockList"><a id="method.detail"><!--   --></a><h3>Method Detail</h3><a id="newNonSslHandler(io.netty.channel.ChannelHandlerContext)"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>newNonSslHandler</h4><pre class="methodSignature">protected&nbsp;<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a>&nbsp;newNonSslHandler&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;context)</pre><dl><dt><span class="overrideSpecifyLabel">Overrides:</span></dt><dd><code><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newNonSslHandler(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.ssl" class="externalLink">newNonSslHandler</a></code>&nbsp;in class&nbsp;<code><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">OptionalSslHandler</a></code></dd></dl></li></ul></li></ul></section></li></ul></div></div></main><!-- ========= END OF CLASS DATA ========= --><footer role="contentinfo"><nav role="navigation"><!-- ======= START OF BOTTOM NAVBAR ====== --><div class="bottomNav"><a id="navbar.bottom"><!--   --></a><div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.bottom.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../index-all.html">Index</a></li><li><a href="../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_bottom"><li><a href="../../../allclasses.html">All&nbsp;Classes</a></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_bottom");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li><li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li><li>Constr&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li>Constr&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.bottom"><!--   --></a></div><!-- ======== END OF BOTTOM NAVBAR ======= --></nav><p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p></footer></body></html>
+<!DOCTYPE HTML>
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>HttpOptionalSslHandler (PhantomBot JavaDoc)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="dc.created" content="2023-02-23">
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../../script.js"></script>
+<script type="text/javascript" src="../../../jquery/jszip/dist/jszip.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jquery-ui.min.js"></script>
+</head>
+<body>
+<script type="text/javascript"><!--
+    try {
+        if (location.href.indexOf('is-external=true') == -1) {
+            parent.document.title="HttpOptionalSslHandler (PhantomBot JavaDoc)";
+        }
+    }
+    catch(err) {
+    }
+//-->
+var data = {"i0":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
+var pathtoroot = "../../../";
+var useModuleDirectories = true;
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<header role="banner">
+<nav role="navigation">
+<div class="fixedNav">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a id="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<ul class="navListSearch">
+<li><label for="search">SEARCH:</label>
+<input type="text" id="search" value="search" disabled="disabled">
+<input type="reset" id="reset" value="reset" disabled="disabled">
+</li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+</div>
+<div class="navPadding">&nbsp;</div>
+<script type="text/javascript"><!--
+$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
+//-->
+</script>
+</nav>
+</header>
+<!-- ======== START OF CLASS DATA ======== -->
+<main role="main">
+<div class="header">
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.httpwsserver</a></div>
+<h2 title="Class HttpOptionalSslHandler" class="title">Class HttpOptionalSslHandler</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">io.netty.channel.ChannelHandlerAdapter</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">io.netty.channel.ChannelInboundHandlerAdapter</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">io.netty.handler.codec.ByteToMessageDecoder</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">io.netty.handler.ssl.OptionalSslHandler</a></li>
+<li>
+<ul class="inheritance">
+<li>com.gmt2001.httpwsserver.HttpOptionalSslHandler</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></code>, <code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelInboundHandler</a></code></dd>
+</dl>
+<hr>
+<pre>public class <span class="typeNameLabel">HttpOptionalSslHandler</span>
+extends <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">OptionalSslHandler</a></pre>
+<div class="block">Detects Non-SSL HTTP connections and activates the SSL Redirect handler, when SSL is enabled</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>gmt2001</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a id="nested.classes.inherited.from.class.io.netty.handler.codec.ByteToMessageDecoder">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;io.netty.handler.codec.<a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.Cumulator.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder.Cumulator</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="nested.classes.inherited.from.class.io.netty.channel.ChannelHandler">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from interface&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.Sharable.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler.Sharable</a></code></li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- =========== FIELD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a id="fields.inherited.from.class.io.netty.handler.codec.ByteToMessageDecoder">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;io.netty.handler.codec.<a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#COMPOSITE_CUMULATOR" title="class or interface in io.netty.handler.codec" class="externalLink">COMPOSITE_CUMULATOR</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#MERGE_CUMULATOR" title="class or interface in io.netty.handler.codec" class="externalLink">MERGE_CUMULATOR</a></code></li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>protected <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#newNonSslHandler(io.netty.channel.ChannelHandlerContext)">newNonSslHandler</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;context)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.handler.ssl.OptionalSslHandler">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.netty.handler.ssl.<a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">OptionalSslHandler</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#decode(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf,java.util.List)" title="class or interface in io.netty.handler.ssl" class="externalLink">decode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newNonSslHandlerName()" title="class or interface in io.netty.handler.ssl" class="externalLink">newNonSslHandlerName</a>, <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newSslHandler(io.netty.channel.ChannelHandlerContext,io.netty.handler.ssl.SslContext)" title="class or interface in io.netty.handler.ssl" class="externalLink">newSslHandler</a>, <a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newSslHandlerName()" title="class or interface in io.netty.handler.ssl" class="externalLink">newSslHandlerName</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.handler.codec.ByteToMessageDecoder">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.netty.handler.codec.<a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true" title="class or interface in io.netty.handler.codec" class="externalLink">ByteToMessageDecoder</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#actualReadableBytes()" title="class or interface in io.netty.handler.codec" class="externalLink">actualReadableBytes</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#callDecode(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf,java.util.List)" title="class or interface in io.netty.handler.codec" class="externalLink">callDecode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#channelInactive(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">channelInactive</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#channelRead(io.netty.channel.ChannelHandlerContext,java.lang.Object)" title="class or interface in io.netty.handler.codec" class="externalLink">channelRead</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#channelReadComplete(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">channelReadComplete</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#decodeLast(io.netty.channel.ChannelHandlerContext,io.netty.buffer.ByteBuf,java.util.List)" title="class or interface in io.netty.handler.codec" class="externalLink">decodeLast</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#discardSomeReadBytes()" title="class or interface in io.netty.handler.codec" class="externalLink">discardSomeReadBytes</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#handlerRemoved(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">handlerRemoved</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#handlerRemoved0(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.codec" class="externalLink">handlerRemoved0</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#internalBuffer()" title="class or interface in io.netty.handler.codec" class="externalLink">internalBuffer</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#isSingleDecode()" title="class or interface in io.netty.handler.codec" class="externalLink">isSingleDecode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#setCumulator(io.netty.handler.codec.ByteToMessageDecoder.Cumulator)" title="class or interface in io.netty.handler.codec" class="externalLink">setCumulator</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#setDiscardAfterReads(int)" title="class or interface in io.netty.handler.codec" class="externalLink">setDiscardAfterReads</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#setSingleDecode(boolean)" title="class or interface in io.netty.handler.codec" class="externalLink">setSingleDecode</a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/ByteToMessageDecoder.html?is-external=true#userEventTriggered(io.netty.channel.ChannelHandlerContext,java.lang.Object)" title="class or interface in io.netty.handler.codec" class="externalLink">userEventTriggered</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.channel.ChannelInboundHandlerAdapter">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelInboundHandlerAdapter</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelActive(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelActive</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelRegistered(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelRegistered</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelUnregistered(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelUnregistered</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#channelWritabilityChanged(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">channelWritabilityChanged</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandlerAdapter.html?is-external=true#exceptionCaught(io.netty.channel.ChannelHandlerContext,java.lang.Throwable)" title="class or interface in io.netty.channel" class="externalLink">exceptionCaught</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.channel.ChannelHandlerAdapter">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerAdapter</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true#ensureNotSharable()" title="class or interface in io.netty.channel" class="externalLink">ensureNotSharable</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true#handlerAdded(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">handlerAdded</a>, <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerAdapter.html?is-external=true#isSharable()" title="class or interface in io.netty.channel" class="externalLink">isSharable</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.channel.ChannelHandler">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;io.netty.channel.<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true#handlerAdded(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.channel" class="externalLink">handlerAdded</a></code></li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="newNonSslHandler(io.netty.channel.ChannelHandlerContext)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>newNonSslHandler</h4>
+<pre class="methodSignature">protected&nbsp;<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandler</a>&nbsp;newNonSslHandler&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;context)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true#newNonSslHandler(io.netty.channel.ChannelHandlerContext)" title="class or interface in io.netty.handler.ssl" class="externalLink">newNonSslHandler</a></code>&nbsp;in class&nbsp;<code><a href="https://netty.io/4.1/api/io/netty/handler/ssl/OptionalSslHandler.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink">OptionalSslHandler</a></code></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- ========= END OF CLASS DATA ========= -->
+<footer role="contentinfo">
+<nav role="navigation">
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a id="navbar.bottom">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.bottom.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</nav>
+<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</body>
+</html>

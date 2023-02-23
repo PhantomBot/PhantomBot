@@ -1,1 +1,384 @@
-<!DOCTYPE HTML><!-- NewPage --><html lang="en"><head><title>CompositeInetNameResolver (PhantomBot JavaDoc)</title><meta http-equiv="Content-Type" content="text/html; charset=utf8"><meta name="dc.created" content="2023-02-22"><link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style"><script type="text/javascript" src="../../../script.js"></script><script type="text/javascript" src="../../../jquery/jszip/dist/jszip.min.js"></script><script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script><!--[if IE]><script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script><![endif]--><script type="text/javascript" src="../../../jquery/jquery-3.6.0.min.js"></script><script type="text/javascript" src="../../../jquery/jquery-ui.min.js"></script></head><body><script type="text/javascript"><!--    try {        if (location.href.indexOf('is-external=true') == -1) {            parent.document.title="CompositeInetNameResolver (PhantomBot JavaDoc)";        }    }    catch(err) {    }//-->var data = {"i0":10,"i1":10};var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};var altColor = "altColor";var rowColor = "rowColor";var tableTab = "tableTab";var activeTableTab = "activeTableTab";var pathtoroot = "../../../";var useModuleDirectories = true;loadScripts(document, 'script');</script><noscript><div>JavaScript is disabled on your browser.</div></noscript><header role="banner"><nav role="navigation"><div class="fixedNav"><!-- ========= START OF TOP NAVBAR ======= --><div class="topNav"><a id="navbar.top"><!--   --></a><div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.top.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../index-all.html">Index</a></li><li><a href="../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_top"><li><a href="../../../allclasses.html">All&nbsp;Classes</a></li></ul><ul class="navListSearch"><li><label for="search">SEARCH:</label><input type="text" id="search" value="search" disabled="disabled"><input type="reset" id="reset" value="reset" disabled="disabled"></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_top");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li>Nested&nbsp;|&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.top"><!--   --></a></div><!-- ========= END OF TOP NAVBAR ========= --></div><div class="navPadding">&nbsp;</div><script type="text/javascript"><!--$('.navPadding').css('padding-top', $('.fixedNav').css("height"));//--></script></nav></header><!-- ======== START OF CLASS DATA ======== --><main role="main"><div class="header"><div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.dns</a></div><h2 title="Class CompositeInetNameResolver" class="title">Class CompositeInetNameResolver</h2></div><div class="contentContainer"><ul class="inheritance"><li>java.lang.Object</li><li><ul class="inheritance"><li><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">io.netty.resolver.SimpleNameResolver</a>&lt;java.net.InetAddress&gt;</li><li><ul class="inheritance"><li><a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">io.netty.resolver.InetNameResolver</a></li><li><ul class="inheritance"><li>com.gmt2001.dns.CompositeInetNameResolver</li></ul></li></ul></li></ul></li></ul><div class="description"><ul class="blockList"><li class="blockList"><dl><dt>All Implemented Interfaces:</dt><dd><code><a href="https://netty.io/4.1/api/io/netty/resolver/NameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">NameResolver</a>&lt;java.net.InetAddress&gt;</code>, <code>java.io.Closeable</code>, <code>java.lang.AutoCloseable</code></dd></dl><hr><pre>public final class <span class="typeNameLabel">CompositeInetNameResolver</span>extends <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a></pre><div class="block">A composite <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink"><code>AddressResolver</code></a> that resolves a host name against a sequence of <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink"><code>AddressResolver</code></a>s. In case of a failure, only the last one will be reported. Has a 2 second timeout before greedily starting the next available resolver. Starts at the first resolver to return success from the last query within 120 minutes.</div><dl><dt><span class="simpleTagLabel">Author:</span></dt><dd>The Netty Team, gmt2001</dd></dl></li></ul></div><div class="summary"><ul class="blockList"><li class="blockList"><!-- ======== CONSTRUCTOR SUMMARY ======== --><section><ul class="blockList"><li class="blockList"><a id="constructor.summary"><!--   --></a><h3>Constructor Summary</h3><table class="memberSummary"><caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption><tr><th class="colFirst" scope="col">Constructor</th><th class="colLast" scope="col">Description</th></tr><tr class="altColor"><th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.netty.util.concurrent.EventExecutor,io.netty.resolver.InetNameResolver...)">CompositeInetNameResolver</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">EventExecutor</a>&nbsp;executor,                         <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a>...&nbsp;resolvers)</code></th><td class="colLast">&nbsp;</td></tr></table></li></ul></section><!-- ========== METHOD SUMMARY =========== --><section><ul class="blockList"><li class="blockList"><a id="method.summary"><!--   --></a><h3>Method Summary</h3><table class="memberSummary"><caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption><tr><th class="colFirst" scope="col">Modifier and Type</th><th class="colSecond" scope="col">Method</th><th class="colLast" scope="col">Description</th></tr><tr id="i0" class="altColor"><td class="colFirst"><code>protected void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#doResolve(java.lang.String,io.netty.util.concurrent.Promise)">doResolve</a></span>&#8203;(java.lang.String&nbsp;inetHost,         <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.net.InetAddress&gt;&nbsp;promise)</code></th><td class="colLast">&nbsp;</td></tr><tr id="i1" class="rowColor"><td class="colFirst"><code>protected void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#doResolveAll(java.lang.String,io.netty.util.concurrent.Promise)">doResolveAll</a></span>&#8203;(java.lang.String&nbsp;inetHost,            <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.util.List&lt;java.net.InetAddress&gt;&gt;&nbsp;promise)</code></th><td class="colLast">&nbsp;</td></tr></table><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.resolver.InetNameResolver"><!--   --></a><h3>Methods inherited from class&nbsp;io.netty.resolver.<a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a></h3><code><a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true#asAddressResolver()" title="class or interface in io.netty.resolver" class="externalLink">asAddressResolver</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.io.netty.resolver.SimpleNameResolver"><!--   --></a><h3>Methods inherited from class&nbsp;io.netty.resolver.<a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">SimpleNameResolver</a></h3><code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#close()" title="class or interface in io.netty.resolver" class="externalLink">close</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#executor()" title="class or interface in io.netty.resolver" class="externalLink">executor</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolve(java.lang.String)" title="class or interface in io.netty.resolver" class="externalLink">resolve</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolve(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">resolve</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolveAll(java.lang.String)" title="class or interface in io.netty.resolver" class="externalLink">resolveAll</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolveAll(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">resolveAll</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.java.lang.Object"><!--   --></a><h3>Methods inherited from class&nbsp;java.lang.Object</h3><code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li></ul></li></ul></section></li></ul></div><div class="details"><ul class="blockList"><li class="blockList"><!-- ========= CONSTRUCTOR DETAIL ======== --><section><ul class="blockList"><li class="blockList"><a id="constructor.detail"><!--   --></a><h3>Constructor Detail</h3><a id="&lt;init&gt;(io.netty.util.concurrent.EventExecutor,io.netty.resolver.InetNameResolver...)"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>CompositeInetNameResolver</h4><pre>public&nbsp;CompositeInetNameResolver&#8203;(<a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">EventExecutor</a>&nbsp;executor,                                 <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a>...&nbsp;resolvers)</pre><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>executor</code> - the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink"><code>EventExecutor</code></a> which is used to notify the listeners of the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Future.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink"><code>Future</code></a> returned by <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolve(java.lang.String)" title="class or interface in io.netty.resolver" class="externalLink"><code>SimpleNameResolver.resolve(String)</code></a></dd><dd><code>resolvers</code> - the <a href="https://netty.io/4.1/api/io/netty/resolver/NameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink"><code>NameResolver</code></a>s to be tried sequentially</dd></dl></li></ul></li></ul></section><!-- ============ METHOD DETAIL ========== --><section><ul class="blockList"><li class="blockList"><a id="method.detail"><!--   --></a><h3>Method Detail</h3><a id="doResolve(java.lang.String,io.netty.util.concurrent.Promise)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>doResolve</h4><pre class="methodSignature">protected&nbsp;void&nbsp;doResolve&#8203;(java.lang.String&nbsp;inetHost,                         <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.net.InetAddress&gt;&nbsp;promise)                  throws java.lang.Exception</pre><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#doResolve(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">doResolve</a></code>&nbsp;in class&nbsp;<code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">SimpleNameResolver</a>&lt;java.net.InetAddress&gt;</code></dd><dt><span class="throwsLabel">Throws:</span></dt><dd><code>java.lang.Exception</code></dd></dl></li></ul><a id="doResolveAll(java.lang.String,io.netty.util.concurrent.Promise)"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>doResolveAll</h4><pre class="methodSignature">protected&nbsp;void&nbsp;doResolveAll&#8203;(java.lang.String&nbsp;inetHost,                            <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.util.List&lt;java.net.InetAddress&gt;&gt;&nbsp;promise)                     throws java.lang.Exception</pre><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#doResolveAll(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">doResolveAll</a></code>&nbsp;in class&nbsp;<code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">SimpleNameResolver</a>&lt;java.net.InetAddress&gt;</code></dd><dt><span class="throwsLabel">Throws:</span></dt><dd><code>java.lang.Exception</code></dd></dl></li></ul></li></ul></section></li></ul></div></div></main><!-- ========= END OF CLASS DATA ========= --><footer role="contentinfo"><nav role="navigation"><!-- ======= START OF BOTTOM NAVBAR ====== --><div class="bottomNav"><a id="navbar.bottom"><!--   --></a><div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.bottom.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../index-all.html">Index</a></li><li><a href="../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_bottom"><li><a href="../../../allclasses.html">All&nbsp;Classes</a></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_bottom");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li>Nested&nbsp;|&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.bottom"><!--   --></a></div><!-- ======== END OF BOTTOM NAVBAR ======= --></nav><p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p></footer></body></html>
+<!DOCTYPE HTML>
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>CompositeInetNameResolver (PhantomBot JavaDoc)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="dc.created" content="2023-02-23">
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../../script.js"></script>
+<script type="text/javascript" src="../../../jquery/jszip/dist/jszip.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jquery-ui.min.js"></script>
+</head>
+<body>
+<script type="text/javascript"><!--
+    try {
+        if (location.href.indexOf('is-external=true') == -1) {
+            parent.document.title="CompositeInetNameResolver (PhantomBot JavaDoc)";
+        }
+    }
+    catch(err) {
+    }
+//-->
+var data = {"i0":10,"i1":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
+var pathtoroot = "../../../";
+var useModuleDirectories = true;
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<header role="banner">
+<nav role="navigation">
+<div class="fixedNav">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a id="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<ul class="navListSearch">
+<li><label for="search">SEARCH:</label>
+<input type="text" id="search" value="search" disabled="disabled">
+<input type="reset" id="reset" value="reset" disabled="disabled">
+</li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+</div>
+<div class="navPadding">&nbsp;</div>
+<script type="text/javascript"><!--
+$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
+//-->
+</script>
+</nav>
+</header>
+<!-- ======== START OF CLASS DATA ======== -->
+<main role="main">
+<div class="header">
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.dns</a></div>
+<h2 title="Class CompositeInetNameResolver" class="title">Class CompositeInetNameResolver</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">io.netty.resolver.SimpleNameResolver</a>&lt;java.net.InetAddress&gt;</li>
+<li>
+<ul class="inheritance">
+<li><a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">io.netty.resolver.InetNameResolver</a></li>
+<li>
+<ul class="inheritance">
+<li>com.gmt2001.dns.CompositeInetNameResolver</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="https://netty.io/4.1/api/io/netty/resolver/NameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">NameResolver</a>&lt;java.net.InetAddress&gt;</code>, <code>java.io.Closeable</code>, <code>java.lang.AutoCloseable</code></dd>
+</dl>
+<hr>
+<pre>public final class <span class="typeNameLabel">CompositeInetNameResolver</span>
+extends <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a></pre>
+<div class="block">A composite <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink"><code>AddressResolver</code></a> that resolves a host name against a sequence of <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink"><code>AddressResolver</code></a>s.
+
+ In case of a failure, only the last one will be reported.
+
+ Has a 2 second timeout before greedily starting the next available resolver. Starts at the first resolver to return success from the last query
+ within 120 minutes.</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>The Netty Team, gmt2001</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.netty.util.concurrent.EventExecutor,io.netty.resolver.InetNameResolver...)">CompositeInetNameResolver</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">EventExecutor</a>&nbsp;executor,
+                         <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a>...&nbsp;resolvers)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#doResolve(java.lang.String,io.netty.util.concurrent.Promise)">doResolve</a></span>&#8203;(java.lang.String&nbsp;inetHost,
+         <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.net.InetAddress&gt;&nbsp;promise)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#doResolveAll(java.lang.String,io.netty.util.concurrent.Promise)">doResolveAll</a></span>&#8203;(java.lang.String&nbsp;inetHost,
+            <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.util.List&lt;java.net.InetAddress&gt;&gt;&nbsp;promise)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.resolver.InetNameResolver">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.netty.resolver.<a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true#asAddressResolver()" title="class or interface in io.netty.resolver" class="externalLink">asAddressResolver</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.netty.resolver.SimpleNameResolver">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;io.netty.resolver.<a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">SimpleNameResolver</a></h3>
+<code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#close()" title="class or interface in io.netty.resolver" class="externalLink">close</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#executor()" title="class or interface in io.netty.resolver" class="externalLink">executor</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolve(java.lang.String)" title="class or interface in io.netty.resolver" class="externalLink">resolve</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolve(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">resolve</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolveAll(java.lang.String)" title="class or interface in io.netty.resolver" class="externalLink">resolveAll</a>, <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolveAll(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">resolveAll</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(io.netty.util.concurrent.EventExecutor,io.netty.resolver.InetNameResolver...)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>CompositeInetNameResolver</h4>
+<pre>public&nbsp;CompositeInetNameResolver&#8203;(<a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">EventExecutor</a>&nbsp;executor,
+                                 <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">InetNameResolver</a>...&nbsp;resolvers)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>executor</code> - the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink"><code>EventExecutor</code></a> which is used to notify the listeners of the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Future.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink"><code>Future</code></a> returned by <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#resolve(java.lang.String)" title="class or interface in io.netty.resolver" class="externalLink"><code>SimpleNameResolver.resolve(String)</code></a></dd>
+<dd><code>resolvers</code> - the <a href="https://netty.io/4.1/api/io/netty/resolver/NameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink"><code>NameResolver</code></a>s to be tried sequentially</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="doResolve(java.lang.String,io.netty.util.concurrent.Promise)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>doResolve</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;doResolve&#8203;(java.lang.String&nbsp;inetHost,
+                         <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.net.InetAddress&gt;&nbsp;promise)
+                  throws java.lang.Exception</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#doResolve(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">doResolve</a></code>&nbsp;in class&nbsp;<code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">SimpleNameResolver</a>&lt;java.net.InetAddress&gt;</code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd>
+</dl>
+</li>
+</ul>
+<a id="doResolveAll(java.lang.String,io.netty.util.concurrent.Promise)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>doResolveAll</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;doResolveAll&#8203;(java.lang.String&nbsp;inetHost,
+                            <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Promise.html?is-external=true" title="class or interface in io.netty.util.concurrent" class="externalLink">Promise</a>&lt;java.util.List&lt;java.net.InetAddress&gt;&gt;&nbsp;promise)
+                     throws java.lang.Exception</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true#doResolveAll(java.lang.String,io.netty.util.concurrent.Promise)" title="class or interface in io.netty.resolver" class="externalLink">doResolveAll</a></code>&nbsp;in class&nbsp;<code><a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html?is-external=true" title="class or interface in io.netty.resolver" class="externalLink">SimpleNameResolver</a>&lt;java.net.InetAddress&gt;</code></dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.lang.Exception</code></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- ========= END OF CLASS DATA ========= -->
+<footer role="contentinfo">
+<nav role="navigation">
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a id="navbar.bottom">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.bottom.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</nav>
+<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</body>
+</html>

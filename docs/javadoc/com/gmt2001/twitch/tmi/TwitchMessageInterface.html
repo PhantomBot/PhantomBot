@@ -1,1 +1,820 @@
-<!DOCTYPE HTML><!-- NewPage --><html lang="en"><head><title>TwitchMessageInterface (PhantomBot JavaDoc)</title><meta http-equiv="Content-Type" content="text/html; charset=utf8"><meta name="dc.created" content="2023-02-22"><link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../../jquery/jquery-ui.min.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style"><script type="text/javascript" src="../../../../script.js"></script><script type="text/javascript" src="../../../../jquery/jszip/dist/jszip.min.js"></script><script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script><!--[if IE]><script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script><![endif]--><script type="text/javascript" src="../../../../jquery/jquery-3.6.0.min.js"></script><script type="text/javascript" src="../../../../jquery/jquery-ui.min.js"></script></head><body><script type="text/javascript"><!--    try {        if (location.href.indexOf('is-external=true') == -1) {            parent.document.title="TwitchMessageInterface (PhantomBot JavaDoc)";        }    }    catch(err) {    }//-->var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};var altColor = "altColor";var rowColor = "rowColor";var tableTab = "tableTab";var activeTableTab = "activeTableTab";var pathtoroot = "../../../../";var useModuleDirectories = true;loadScripts(document, 'script');</script><noscript><div>JavaScript is disabled on your browser.</div></noscript><header role="banner"><nav role="navigation"><div class="fixedNav"><!-- ========= START OF TOP NAVBAR ======= --><div class="topNav"><a id="navbar.top"><!--   --></a><div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.top.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../../index-all.html">Index</a></li><li><a href="../../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_top"><li><a href="../../../../allclasses.html">All&nbsp;Classes</a></li></ul><ul class="navListSearch"><li><label for="search">SEARCH:</label><input type="text" id="search" value="search" disabled="disabled"><input type="reset" id="reset" value="reset" disabled="disabled"></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_top");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li>Nested&nbsp;|&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.top"><!--   --></a></div><!-- ========= END OF TOP NAVBAR ========= --></div><div class="navPadding">&nbsp;</div><script type="text/javascript"><!--$('.navPadding').css('padding-top', $('.fixedNav').css("height"));//--></script></nav></header><!-- ======== START OF CLASS DATA ======== --><main role="main"><div class="header"><div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.twitch.tmi</a></div><h2 title="Class TwitchMessageInterface" class="title">Class TwitchMessageInterface</h2></div><div class="contentContainer"><ul class="inheritance"><li>java.lang.Object</li><li><ul class="inheritance"><li>java.util.concurrent.SubmissionPublisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</li><li><ul class="inheritance"><li>com.gmt2001.twitch.tmi.TwitchMessageInterface</li></ul></li></ul></li></ul><div class="description"><ul class="blockList"><li class="blockList"><dl><dt>All Implemented Interfaces:</dt><dd><code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code>, <code>java.lang.AutoCloseable</code>, <code>java.util.concurrent.Flow.Publisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</code></dd></dl><hr><pre>public final class <span class="typeNameLabel">TwitchMessageInterface</span>extends java.util.concurrent.SubmissionPublisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></pre><div class="block">A client for the Twitch Message Interface</div><dl><dt><span class="simpleTagLabel">Author:</span></dt><dd>gmt2001</dd></dl></li></ul></div><div class="summary"><ul class="blockList"><li class="blockList"><!-- ======== CONSTRUCTOR SUMMARY ======== --><section><ul class="blockList"><li class="blockList"><a id="constructor.summary"><!--   --></a><h3>Constructor Summary</h3><table class="memberSummary"><caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption><tr><th class="colFirst" scope="col">Constructor</th><th class="colLast" scope="col">Description</th></tr><tr class="altColor"><th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">TwitchMessageInterface</a></span>()</code></th><td class="colLast"><div class="block">Initializes the Twitch Message Interface.</div></td></tr></table></li></ul></section><!-- ========== METHOD SUMMARY =========== --><section><ul class="blockList"><li class="blockList"><a id="method.summary"><!--   --></a><h3>Method Summary</h3><table class="memberSummary"><caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption><tr><th class="colFirst" scope="col">Modifier and Type</th><th class="colSecond" scope="col">Method</th><th class="colLast" scope="col">Description</th></tr><tr id="i0" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close(int,java.lang.String)">close</a></span>&#8203;(int&nbsp;code,     java.lang.String&nbsp;reason)</code></th><td class="colLast"><div class="block">Closes the socket</div></td></tr><tr id="i1" class="rowColor"><td class="colFirst"><code>boolean</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connected()">connected</a></span>()</code></th><td class="colLast">&nbsp;</td></tr><tr id="i2" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,           <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketFrame</a>&nbsp;frame)</code></th><td class="colLast"><div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div></td></tr><tr id="i3" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx)</code></th><td class="colLast"><div class="block">Handles the handshake complete event</div></td></tr><tr id="i4" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose()">onClose</a></span>()</code></th><td class="colLast"><div class="block">Handles the channel closing for any reason.</div></td></tr><tr id="i5" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose(int,java.lang.String)">onClose</a></span>&#8203;(int&nbsp;code,       java.lang.String&nbsp;reason)</code></th><td class="colLast"><div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div></td></tr><tr id="i6" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onMessages(java.lang.String)">onMessages</a></span>&#8203;(java.lang.String&nbsp;messages)</code></th><td class="colLast"><div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div></td></tr><tr id="i7" class="rowColor"><td class="colFirst"><code>int</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#privMsgMaxLength(java.lang.String,boolean,java.lang.String)">privMsgMaxLength</a></span>&#8203;(java.lang.String&nbsp;channel,                boolean&nbsp;isAction,                java.lang.String&nbsp;replyToId)</code></th><td class="colLast"><div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div></td></tr><tr id="i8" class="altColor"><td class="colFirst"><code><a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rateLimiter()">rateLimiter</a></span>()</code></th><td class="colLast"><div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div></td></tr><tr id="i9" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reconnect()">reconnect</a></span>()</code></th><td class="colLast"><div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div></td></tr><tr id="i10" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,                     java.lang.String&nbsp;message)</code></th><td class="colLast"><div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div></td></tr><tr id="i11" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,                     java.lang.String&nbsp;message,                     java.lang.String&nbsp;replyToId)</code></th><td class="colLast"><div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div></td></tr><tr id="i12" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">sendChannelCommand</a></span>&#8203;(java.lang.String&nbsp;command,                  java.lang.String&nbsp;channel,                  java.lang.String&nbsp;parameter)</code></th><td class="colLast"><div class="block">Sends an IRC command with channel and parameter components</div></td></tr><tr id="i13" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(java.lang.String&nbsp;command,           java.lang.String&nbsp;parameter)</code></th><td class="colLast"><div class="block">Sends an IRC command with parameter component</div></td></tr><tr id="i14" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.util.Map,java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,           java.lang.String&nbsp;command,           java.lang.String&nbsp;parameter)</code></th><td class="colLast"><div class="block">Sends an IRC command with tags and parameter component</div></td></tr><tr id="i15" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">sendFullCommand</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,               java.lang.String&nbsp;command,               java.lang.String&nbsp;channel,               java.lang.String&nbsp;parameter)</code></th><td class="colLast"><div class="block">Sends an IRC command with tags, channel, and parameter components</div></td></tr><tr id="i16" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPing()">sendPing</a></span>()</code></th><td class="colLast"><div class="block">Forces a PING to be sent</div></td></tr><tr id="i17" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,               java.lang.String&nbsp;message)</code></th><td class="colLast"><div class="block">Sends an IRC PRIVMSG command.</div></td></tr><tr id="i18" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,               java.lang.String&nbsp;message,               java.lang.String&nbsp;replyToId)</code></th><td class="colLast"><div class="block">Sends an IRC PRIVMSG command as a reply to another message.</div></td></tr><tr id="i19" class="rowColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendRaw(java.lang.String)">sendRaw</a></span>&#8203;(java.lang.String&nbsp;message)</code></th><td class="colLast"><div class="block">Sends a raw IRC message</div></td></tr><tr id="i20" class="altColor"><td class="colFirst"><code>void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shutdown()">shutdown</a></span>()</code></th><td class="colLast"><div class="block">Closes the connection normally.</div></td></tr></table><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.java.util.concurrent.SubmissionPublisher"><!--   --></a><h3>Methods inherited from class&nbsp;java.util.concurrent.SubmissionPublisher</h3><code>close, closeExceptionally, consume, estimateMaximumLag, estimateMinimumDemand, getClosedException, getExecutor, getMaxBufferCapacity, getNumberOfSubscribers, getSubscribers, hasSubscribers, isClosed, isSubscribed, offer, offer, submit, subscribe</code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.java.lang.Object"><!--   --></a><h3>Methods inherited from class&nbsp;java.lang.Object</h3><code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li></ul></li></ul></section></li></ul></div><div class="details"><ul class="blockList"><li class="blockList"><!-- ========= CONSTRUCTOR DETAIL ======== --><section><ul class="blockList"><li class="blockList"><a id="constructor.detail"><!--   --></a><h3>Constructor Detail</h3><a id="&lt;init&gt;()"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>TwitchMessageInterface</h4><pre>public&nbsp;TwitchMessageInterface()</pre><div class="block">Initializes the Twitch Message Interface. Creates a new <a href="../../wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a>, then initializes all processors and starts connecting</div></li></ul></li></ul></section><!-- ============ METHOD DETAIL ========== --><section><ul class="blockList"><li class="blockList"><a id="method.detail"><!--   --></a><h3>Method Detail</h3><a id="privMsgMaxLength(java.lang.String,boolean,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>privMsgMaxLength</h4><pre class="methodSignature">public&nbsp;int&nbsp;privMsgMaxLength&#8203;(java.lang.String&nbsp;channel,                            boolean&nbsp;isAction,                            java.lang.String&nbsp;replyToId)</pre><div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>channel</code> - The channel name</dd><dd><code>isAction</code> - If this is for a ACTION (/me) message</dd><dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to; <code>null</code> if not used</dd><dt><span class="returnLabel">Returns:</span></dt></dl></li></ul><a id="rateLimiter()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>rateLimiter</h4><pre class="methodSignature">public&nbsp;<a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a>&nbsp;rateLimiter()</pre><div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div><dl><dt><span class="returnLabel">Returns:</span></dt><dd>The rate limiter</dd></dl></li></ul><a id="sendPing()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendPing</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendPing()</pre><div class="block">Forces a PING to be sent</div></li></ul><a id="sendActionPrivMessage(java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendActionPrivMessage</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(java.lang.String&nbsp;channel,                                  java.lang.String&nbsp;message)</pre><div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier. If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>channel</code> - The channel to send to</dd><dd><code>message</code> - The chat message</dd></dl></li></ul><a id="sendPrivMessage(java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendPrivMessage</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(java.lang.String&nbsp;channel,                            java.lang.String&nbsp;message)</pre><div class="block">Sends an IRC PRIVMSG command. If the message starts with <code>/me</code>, then it is passed to <a href="#sendActionPrivMessage(java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String)</code></a> instead. If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>channel</code> - The channel to send to</dd><dd><code>message</code> - The chat message</dd></dl></li></ul><a id="sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendActionPrivMessage</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(java.lang.String&nbsp;channel,                                  java.lang.String&nbsp;message,                                  java.lang.String&nbsp;replyToId)</pre><div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier. If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>channel</code> - The channel to send to</dd><dd><code>message</code> - The chat message</dd><dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to</dd></dl></li></ul><a id="sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendPrivMessage</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(java.lang.String&nbsp;channel,                            java.lang.String&nbsp;message,                            java.lang.String&nbsp;replyToId)</pre><div class="block">Sends an IRC PRIVMSG command as a reply to another message. If the message starts with <code>/me</code>, then it is passed to <a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String, java.lang.String)</code></a> instead. If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>channel</code> - The channel to send to</dd><dd><code>message</code> - The chat message</dd><dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to</dd></dl></li></ul><a id="sendCommand(java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendCommand</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(java.lang.String&nbsp;command,                        java.lang.String&nbsp;parameter)</pre><div class="block">Sends an IRC command with parameter component</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>command</code> - The IRC command</dd><dd><code>parameter</code> - The IRC parameter</dd></dl></li></ul><a id="sendCommand(java.util.Map,java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendCommand</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,                        java.lang.String&nbsp;command,                        java.lang.String&nbsp;parameter)</pre><div class="block">Sends an IRC command with tags and parameter component</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>tags</code> - The IRCv3 tags</dd><dd><code>command</code> - The IRC command</dd><dd><code>parameter</code> - The IRC parameter</dd></dl></li></ul><a id="sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendChannelCommand</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendChannelCommand&#8203;(java.lang.String&nbsp;command,                               java.lang.String&nbsp;channel,                               java.lang.String&nbsp;parameter)</pre><div class="block">Sends an IRC command with channel and parameter components</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>command</code> - The IRC command</dd><dd><code>channel</code> - The channel to send to</dd><dd><code>parameter</code> - The IRC parameter</dd></dl></li></ul><a id="sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendFullCommand</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendFullCommand&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,                            java.lang.String&nbsp;command,                            java.lang.String&nbsp;channel,                            java.lang.String&nbsp;parameter)</pre><div class="block">Sends an IRC command with tags, channel, and parameter components</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>tags</code> - The IRCv3 tags. If <code>null</code> or empty, the tags component is not included</dd><dd><code>command</code> - The IRC command</dd><dd><code>channel</code> - The channel to send to. If <code>null</code>, empty, or blank, the channel component of the command is not included</dd><dd><code>parameter</code> - The IRC parameters. If <code>null</code>, the parameter component is not included</dd></dl></li></ul><a id="sendRaw(java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>sendRaw</h4><pre class="methodSignature">public&nbsp;void&nbsp;sendRaw&#8203;(java.lang.String&nbsp;message)</pre><div class="block">Sends a raw IRC message</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>message</code> - The message to send</dd></dl></li></ul><a id="reconnect()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>reconnect</h4><pre class="methodSignature">public&nbsp;void&nbsp;reconnect()</pre><div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div></li></ul><a id="connected()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>connected</h4><pre class="methodSignature">public&nbsp;boolean&nbsp;connected()</pre><dl><dt><span class="returnLabel">Returns:</span></dt><dd><code>true</code> if the underlying socket is connected. Does not indicate anything about the state other than that the raw socket is connected</dd></dl></li></ul><a id="onMessages(java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>onMessages</h4><pre class="methodSignature">public&nbsp;void&nbsp;onMessages&#8203;(java.lang.String&nbsp;messages)</pre><div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>messages</code> - A string containing one or more RFC1459-formatted IRC messages</dd></dl></li></ul><a id="onClose(int,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>onClose</h4><pre class="methodSignature">public&nbsp;void&nbsp;onClose&#8203;(int&nbsp;code,                    java.lang.String&nbsp;reason)</pre><div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>code</code> - The close code</dd><dd><code>reason</code> - The textual close reason</dd></dl></li></ul><a id="handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>handleFrame</h4><pre class="methodSignature">public&nbsp;void&nbsp;handleFrame&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,                        <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketFrame</a>&nbsp;frame)</pre><div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">WsClientFrameHandler</a></code></span></div><div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd><dt><span class="paramLabel">Parameters:</span></dt><dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd><dd><code>frame</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink"><code>WebSocketFrame</code></a> to process</dd></dl></li></ul><a id="handshakeComplete(io.netty.channel.ChannelHandlerContext)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>handshakeComplete</h4><pre class="methodSignature">public&nbsp;void&nbsp;handshakeComplete&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx)</pre><div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">WsClientFrameHandler</a></code></span></div><div class="block">Handles the handshake complete event</div><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd><dt><span class="paramLabel">Parameters:</span></dt><dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd></dl></li></ul><a id="onClose()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>onClose</h4><pre class="methodSignature">public&nbsp;void&nbsp;onClose()</pre><div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">WsClientFrameHandler</a></code></span></div><div class="block">Handles the channel closing for any reason.</div><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">onClose</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd></dl></li></ul><a id="close(int,java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>close</h4><pre class="methodSignature">public&nbsp;void&nbsp;close&#8203;(int&nbsp;code,                  java.lang.String&nbsp;reason)</pre><div class="block">Closes the socket</div><dl><dt><span class="paramLabel">Parameters:</span></dt><dd><code>code</code> - The close code</dd><dd><code>reason</code> - The textual close reason</dd></dl></li></ul><a id="shutdown()"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>shutdown</h4><pre class="methodSignature">public&nbsp;void&nbsp;shutdown()</pre><div class="block">Closes the connection normally. Exceptions are discarded</div></li></ul></li></ul></section></li></ul></div></div></main><!-- ========= END OF CLASS DATA ========= --><footer role="contentinfo"><nav role="navigation"><!-- ======= START OF BOTTOM NAVBAR ====== --><div class="bottomNav"><a id="navbar.bottom"><!--   --></a><div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.bottom.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../../index-all.html">Index</a></li><li><a href="../../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_bottom"><li><a href="../../../../allclasses.html">All&nbsp;Classes</a></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_bottom");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li>Nested&nbsp;|&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.bottom"><!--   --></a></div><!-- ======== END OF BOTTOM NAVBAR ======= --></nav><p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p></footer></body></html>
+<!DOCTYPE HTML>
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>TwitchMessageInterface (PhantomBot JavaDoc)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="dc.created" content="2023-02-23">
+<link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../../../script.js"></script>
+<script type="text/javascript" src="../../../../jquery/jszip/dist/jszip.min.js"></script>
+<script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-ui.min.js"></script>
+</head>
+<body>
+<script type="text/javascript"><!--
+    try {
+        if (location.href.indexOf('is-external=true') == -1) {
+            parent.document.title="TwitchMessageInterface (PhantomBot JavaDoc)";
+        }
+    }
+    catch(err) {
+    }
+//-->
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
+var pathtoroot = "../../../../";
+var useModuleDirectories = true;
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<header role="banner">
+<nav role="navigation">
+<div class="fixedNav">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a id="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<ul class="navListSearch">
+<li><label for="search">SEARCH:</label>
+<input type="text" id="search" value="search" disabled="disabled">
+<input type="reset" id="reset" value="reset" disabled="disabled">
+</li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+</div>
+<div class="navPadding">&nbsp;</div>
+<script type="text/javascript"><!--
+$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
+//-->
+</script>
+</nav>
+</header>
+<!-- ======== START OF CLASS DATA ======== -->
+<main role="main">
+<div class="header">
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.twitch.tmi</a></div>
+<h2 title="Class TwitchMessageInterface" class="title">Class TwitchMessageInterface</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li>java.util.concurrent.SubmissionPublisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</li>
+<li>
+<ul class="inheritance">
+<li>com.gmt2001.twitch.tmi.TwitchMessageInterface</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code>, <code>java.lang.AutoCloseable</code>, <code>java.util.concurrent.Flow.Publisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</code></dd>
+</dl>
+<hr>
+<pre>public final class <span class="typeNameLabel">TwitchMessageInterface</span>
+extends java.util.concurrent.SubmissionPublisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;
+implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></pre>
+<div class="block">A client for the Twitch Message Interface</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>gmt2001</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">TwitchMessageInterface</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Initializes the Twitch Message Interface.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close(int,java.lang.String)">close</a></span>&#8203;(int&nbsp;code,
+     java.lang.String&nbsp;reason)</code></th>
+<td class="colLast">
+<div class="block">Closes the socket</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connected()">connected</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
+           <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketFrame</a>&nbsp;frame)</code></th>
+<td class="colLast">
+<div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx)</code></th>
+<td class="colLast">
+<div class="block">Handles the handshake complete event</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose()">onClose</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Handles the channel closing for any reason.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose(int,java.lang.String)">onClose</a></span>&#8203;(int&nbsp;code,
+       java.lang.String&nbsp;reason)</code></th>
+<td class="colLast">
+<div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onMessages(java.lang.String)">onMessages</a></span>&#8203;(java.lang.String&nbsp;messages)</code></th>
+<td class="colLast">
+<div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#privMsgMaxLength(java.lang.String,boolean,java.lang.String)">privMsgMaxLength</a></span>&#8203;(java.lang.String&nbsp;channel,
+                boolean&nbsp;isAction,
+                java.lang.String&nbsp;replyToId)</code></th>
+<td class="colLast">
+<div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rateLimiter()">rateLimiter</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reconnect()">reconnect</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
+                     java.lang.String&nbsp;message)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
+                     java.lang.String&nbsp;message,
+                     java.lang.String&nbsp;replyToId)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">sendChannelCommand</a></span>&#8203;(java.lang.String&nbsp;command,
+                  java.lang.String&nbsp;channel,
+                  java.lang.String&nbsp;parameter)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC command with channel and parameter components</div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(java.lang.String&nbsp;command,
+           java.lang.String&nbsp;parameter)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC command with parameter component</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.util.Map,java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
+           java.lang.String&nbsp;command,
+           java.lang.String&nbsp;parameter)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC command with tags and parameter component</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">sendFullCommand</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
+               java.lang.String&nbsp;command,
+               java.lang.String&nbsp;channel,
+               java.lang.String&nbsp;parameter)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC command with tags, channel, and parameter components</div>
+</td>
+</tr>
+<tr id="i16" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPing()">sendPing</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Forces a PING to be sent</div>
+</td>
+</tr>
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
+               java.lang.String&nbsp;message)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC PRIVMSG command.</div>
+</td>
+</tr>
+<tr id="i18" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
+               java.lang.String&nbsp;message,
+               java.lang.String&nbsp;replyToId)</code></th>
+<td class="colLast">
+<div class="block">Sends an IRC PRIVMSG command as a reply to another message.</div>
+</td>
+</tr>
+<tr id="i19" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendRaw(java.lang.String)">sendRaw</a></span>&#8203;(java.lang.String&nbsp;message)</code></th>
+<td class="colLast">
+<div class="block">Sends a raw IRC message</div>
+</td>
+</tr>
+<tr id="i20" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shutdown()">shutdown</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Closes the connection normally.</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.java.util.concurrent.SubmissionPublisher">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.util.concurrent.SubmissionPublisher</h3>
+<code>close, closeExceptionally, consume, estimateMaximumLag, estimateMinimumDemand, getClosedException, getExecutor, getMaxBufferCapacity, getNumberOfSubscribers, getSubscribers, hasSubscribers, isClosed, isSubscribed, offer, offer, submit, subscribe</code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a id="&lt;init&gt;()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>TwitchMessageInterface</h4>
+<pre>public&nbsp;TwitchMessageInterface()</pre>
+<div class="block">Initializes the Twitch Message Interface. Creates a new <a href="../../wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a>, then initializes all processors and starts connecting</div>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="privMsgMaxLength(java.lang.String,boolean,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>privMsgMaxLength</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;privMsgMaxLength&#8203;(java.lang.String&nbsp;channel,
+                            boolean&nbsp;isAction,
+                            java.lang.String&nbsp;replyToId)</pre>
+<div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channel</code> - The channel name</dd>
+<dd><code>isAction</code> - If this is for a ACTION (/me) message</dd>
+<dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to; <code>null</code> if not used</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="rateLimiter()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>rateLimiter</h4>
+<pre class="methodSignature">public&nbsp;<a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a>&nbsp;rateLimiter()</pre>
+<div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The rate limiter</dd>
+</dl>
+</li>
+</ul>
+<a id="sendPing()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendPing</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendPing()</pre>
+<div class="block">Forces a PING to be sent</div>
+</li>
+</ul>
+<a id="sendActionPrivMessage(java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendActionPrivMessage</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(java.lang.String&nbsp;channel,
+                                  java.lang.String&nbsp;message)</pre>
+<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.
+
+ If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channel</code> - The channel to send to</dd>
+<dd><code>message</code> - The chat message</dd>
+</dl>
+</li>
+</ul>
+<a id="sendPrivMessage(java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendPrivMessage</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(java.lang.String&nbsp;channel,
+                            java.lang.String&nbsp;message)</pre>
+<div class="block">Sends an IRC PRIVMSG command. If the message starts with <code>/me</code>, then it is passed to
+ <a href="#sendActionPrivMessage(java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String)</code></a> instead.
+
+ If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channel</code> - The channel to send to</dd>
+<dd><code>message</code> - The chat message</dd>
+</dl>
+</li>
+</ul>
+<a id="sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendActionPrivMessage</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(java.lang.String&nbsp;channel,
+                                  java.lang.String&nbsp;message,
+                                  java.lang.String&nbsp;replyToId)</pre>
+<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.
+
+ If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channel</code> - The channel to send to</dd>
+<dd><code>message</code> - The chat message</dd>
+<dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to</dd>
+</dl>
+</li>
+</ul>
+<a id="sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendPrivMessage</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(java.lang.String&nbsp;channel,
+                            java.lang.String&nbsp;message,
+                            java.lang.String&nbsp;replyToId)</pre>
+<div class="block">Sends an IRC PRIVMSG command as a reply to another message. If the message starts with <code>/me</code>, then it is passed to
+ <a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String, java.lang.String)</code></a> instead.
+
+ If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>channel</code> - The channel to send to</dd>
+<dd><code>message</code> - The chat message</dd>
+<dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to</dd>
+</dl>
+</li>
+</ul>
+<a id="sendCommand(java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendCommand</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(java.lang.String&nbsp;command,
+                        java.lang.String&nbsp;parameter)</pre>
+<div class="block">Sends an IRC command with parameter component</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>command</code> - The IRC command</dd>
+<dd><code>parameter</code> - The IRC parameter</dd>
+</dl>
+</li>
+</ul>
+<a id="sendCommand(java.util.Map,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendCommand</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
+                        java.lang.String&nbsp;command,
+                        java.lang.String&nbsp;parameter)</pre>
+<div class="block">Sends an IRC command with tags and parameter component</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>tags</code> - The IRCv3 tags</dd>
+<dd><code>command</code> - The IRC command</dd>
+<dd><code>parameter</code> - The IRC parameter</dd>
+</dl>
+</li>
+</ul>
+<a id="sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendChannelCommand</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendChannelCommand&#8203;(java.lang.String&nbsp;command,
+                               java.lang.String&nbsp;channel,
+                               java.lang.String&nbsp;parameter)</pre>
+<div class="block">Sends an IRC command with channel and parameter components</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>command</code> - The IRC command</dd>
+<dd><code>channel</code> - The channel to send to</dd>
+<dd><code>parameter</code> - The IRC parameter</dd>
+</dl>
+</li>
+</ul>
+<a id="sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendFullCommand</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendFullCommand&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
+                            java.lang.String&nbsp;command,
+                            java.lang.String&nbsp;channel,
+                            java.lang.String&nbsp;parameter)</pre>
+<div class="block">Sends an IRC command with tags, channel, and parameter components</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>tags</code> - The IRCv3 tags. If <code>null</code> or empty, the tags component is not included</dd>
+<dd><code>command</code> - The IRC command</dd>
+<dd><code>channel</code> - The channel to send to. If <code>null</code>, empty, or blank, the channel component of the command is not included</dd>
+<dd><code>parameter</code> - The IRC parameters. If <code>null</code>, the parameter component is not included</dd>
+</dl>
+</li>
+</ul>
+<a id="sendRaw(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>sendRaw</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendRaw&#8203;(java.lang.String&nbsp;message)</pre>
+<div class="block">Sends a raw IRC message</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>message</code> - The message to send</dd>
+</dl>
+</li>
+</ul>
+<a id="reconnect()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>reconnect</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;reconnect()</pre>
+<div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div>
+</li>
+</ul>
+<a id="connected()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>connected</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;connected()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the underlying socket is connected. Does not indicate anything about the state other than that the raw socket is
+ connected</dd>
+</dl>
+</li>
+</ul>
+<a id="onMessages(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onMessages</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onMessages&#8203;(java.lang.String&nbsp;messages)</pre>
+<div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>messages</code> - A string containing one or more RFC1459-formatted IRC messages</dd>
+</dl>
+</li>
+</ul>
+<a id="onClose(int,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onClose</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onClose&#8203;(int&nbsp;code,
+                    java.lang.String&nbsp;reason)</pre>
+<div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>code</code> - The close code</dd>
+<dd><code>reason</code> - The textual close reason</dd>
+</dl>
+</li>
+</ul>
+<a id="handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>handleFrame</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;handleFrame&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
+                        <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketFrame</a>&nbsp;frame)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">WsClientFrameHandler</a></code></span></div>
+<div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
+<dd><code>frame</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink"><code>WebSocketFrame</code></a> to process</dd>
+</dl>
+</li>
+</ul>
+<a id="handshakeComplete(io.netty.channel.ChannelHandlerContext)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>handshakeComplete</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;handshakeComplete&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">WsClientFrameHandler</a></code></span></div>
+<div class="block">Handles the handshake complete event</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
+</dl>
+</li>
+</ul>
+<a id="onClose()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onClose</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onClose()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">WsClientFrameHandler</a></code></span></div>
+<div class="block">Handles the channel closing for any reason.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">onClose</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="close(int,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>close</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;close&#8203;(int&nbsp;code,
+                  java.lang.String&nbsp;reason)</pre>
+<div class="block">Closes the socket</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>code</code> - The close code</dd>
+<dd><code>reason</code> - The textual close reason</dd>
+</dl>
+</li>
+</ul>
+<a id="shutdown()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>shutdown</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;shutdown()</pre>
+<div class="block">Closes the connection normally. Exceptions are discarded</div>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- ========= END OF CLASS DATA ========= -->
+<footer role="contentinfo">
+<nav role="navigation">
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a id="navbar.bottom">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.bottom.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../index-all.html">Index</a></li>
+<li><a href="../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</nav>
+<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</body>
+</html>

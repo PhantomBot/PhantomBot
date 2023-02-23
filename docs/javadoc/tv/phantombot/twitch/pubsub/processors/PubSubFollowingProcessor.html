@@ -1,1 +1,436 @@
-<!DOCTYPE HTML><!-- NewPage --><html lang="en"><head><title>PubSubFollowingProcessor (PhantomBot JavaDoc)</title><meta http-equiv="Content-Type" content="text/html; charset=utf8"><meta name="dc.created" content="2023-02-22"><link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../../../jquery/jquery-ui.min.css" title="Style"><link rel="stylesheet" type="text/css" href="../../../../../jquery-ui.overrides.css" title="Style"><script type="text/javascript" src="../../../../../script.js"></script><script type="text/javascript" src="../../../../../jquery/jszip/dist/jszip.min.js"></script><script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script><!--[if IE]><script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script><![endif]--><script type="text/javascript" src="../../../../../jquery/jquery-3.6.0.min.js"></script><script type="text/javascript" src="../../../../../jquery/jquery-ui.min.js"></script></head><body><script type="text/javascript"><!--    try {        if (location.href.indexOf('is-external=true') == -1) {            parent.document.title="PubSubFollowingProcessor (PhantomBot JavaDoc)";        }    }    catch(err) {    }//-->var data = {"i0":10,"i1":10,"i2":10,"i3":10};var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};var altColor = "altColor";var rowColor = "rowColor";var tableTab = "tableTab";var activeTableTab = "activeTableTab";var pathtoroot = "../../../../../";var useModuleDirectories = true;loadScripts(document, 'script');</script><noscript><div>JavaScript is disabled on your browser.</div></noscript><header role="banner"><nav role="navigation"><div class="fixedNav"><!-- ========= START OF TOP NAVBAR ======= --><div class="topNav"><a id="navbar.top"><!--   --></a><div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.top.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../../../index-all.html">Index</a></li><li><a href="../../../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_top"><li><a href="../../../../../allclasses.html">All&nbsp;Classes</a></li></ul><ul class="navListSearch"><li><label for="search">SEARCH:</label><input type="text" id="search" value="search" disabled="disabled"><input type="reset" id="reset" value="reset" disabled="disabled"></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_top");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li>Nested&nbsp;|&nbsp;</li><li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li><li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.top"><!--   --></a></div><!-- ========= END OF TOP NAVBAR ========= --></div><div class="navPadding">&nbsp;</div><script type="text/javascript"><!--$('.navPadding').css('padding-top', $('.fixedNav').css("height"));//--></script></nav></header><!-- ======== START OF CLASS DATA ======== --><main role="main"><div class="header"><div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.twitch.pubsub.processors</a></div><h2 title="Class PubSubFollowingProcessor" class="title">Class PubSubFollowingProcessor</h2></div><div class="contentContainer"><ul class="inheritance"><li>java.lang.Object</li><li><ul class="inheritance"><li><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.AbstractPubSubProcessor</a></li><li><ul class="inheritance"><li>tv.phantombot.twitch.pubsub.processors.PubSubFollowingProcessor</li></ul></li></ul></li></ul><div class="description"><ul class="blockList"><li class="blockList"><dl><dt>All Implemented Interfaces:</dt><dd><code>java.util.concurrent.Flow.Subscriber&lt;<a href="../PubSubMessage.html" title="class in tv.phantombot.twitch.pubsub">PubSubMessage</a>&gt;</code></dd></dl><hr><pre>public class <span class="typeNameLabel">PubSubFollowingProcessor</span>extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></pre><div class="block">A processor for follow events from PubSub</div><dl><dt><span class="simpleTagLabel">Author:</span></dt><dd>gmt2001</dd></dl></li></ul></div><div class="summary"><ul class="blockList"><li class="blockList"><!-- =========== FIELD SUMMARY =========== --><section><ul class="blockList"><li class="blockList"><a id="field.summary"><!--   --></a><h3>Field Summary</h3><ul class="blockList"><li class="blockList"><a id="fields.inherited.from.class.tv.phantombot.twitch.pubsub.processors.AbstractPubSubProcessor"><!--   --></a><h3>Fields inherited from class&nbsp;tv.phantombot.twitch.pubsub.processors.<a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></h3><code><a href="AbstractPubSubProcessor.html#nonce">nonce</a>, <a href="AbstractPubSubProcessor.html#subscription">subscription</a>, <a href="AbstractPubSubProcessor.html#topics">topics</a></code></li></ul></li></ul></section><!-- ======== CONSTRUCTOR SUMMARY ======== --><section><ul class="blockList"><li class="blockList"><a id="constructor.summary"><!--   --></a><h3>Constructor Summary</h3><table class="memberSummary"><caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption><tr><th class="colFirst" scope="col">Constructor</th><th class="colLast" scope="col">Description</th></tr><tr class="altColor"><th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">PubSubFollowingProcessor</a></span>()</code></th><td class="colLast">&nbsp;</td></tr><tr class="rowColor"><th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(int)">PubSubFollowingProcessor</a></span>&#8203;(int&nbsp;channelId)</code></th><td class="colLast">&nbsp;</td></tr></table></li></ul></section><!-- ========== METHOD SUMMARY =========== --><section><ul class="blockList"><li class="blockList"><a id="method.summary"><!--   --></a><h3>Method Summary</h3><table class="memberSummary"><caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption><tr><th class="colFirst" scope="col">Modifier and Type</th><th class="colSecond" scope="col">Method</th><th class="colLast" scope="col">Description</th></tr><tr id="i0" class="altColor"><td class="colFirst"><code>protected void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onEvent(org.json.JSONObject)">onEvent</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;body)</code></th><td class="colLast"><div class="block">Called when a new event for this subscription has been received</div></td></tr><tr id="i1" class="rowColor"><td class="colFirst"><code>protected void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onOpen()">onOpen</a></span>()</code></th><td class="colLast"><div class="block">Default handler for PubSubMessageType.OPEN, calls subscribeToTopics</div></td></tr><tr id="i2" class="altColor"><td class="colFirst"><code>protected void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSubscribeFailure(java.lang.String)">onSubscribeFailure</a></span>&#8203;(java.lang.String&nbsp;error)</code></th><td class="colLast"><div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics failed</div></td></tr><tr id="i3" class="rowColor"><td class="colFirst"><code>protected void</code></td><th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSubscribeSuccess()">onSubscribeSuccess</a></span>()</code></th><td class="colLast"><div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics was successful</div></td></tr></table><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.tv.phantombot.twitch.pubsub.processors.AbstractPubSubProcessor"><!--   --></a><h3>Methods inherited from class&nbsp;tv.phantombot.twitch.pubsub.processors.<a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></h3><code><a href="AbstractPubSubProcessor.html#onClose()">onClose</a>, <a href="AbstractPubSubProcessor.html#onComplete()">onComplete</a>, <a href="AbstractPubSubProcessor.html#onError(java.lang.Throwable)">onError</a>, <a href="AbstractPubSubProcessor.html#onFlowComplete()">onFlowComplete</a>, <a href="AbstractPubSubProcessor.html#onFlowError(java.lang.Throwable)">onFlowError</a>, <a href="AbstractPubSubProcessor.html#onFlowNext(tv.phantombot.twitch.pubsub.PubSubMessage)">onFlowNext</a>, <a href="AbstractPubSubProcessor.html#onFlowSubscribe()">onFlowSubscribe</a>, <a href="AbstractPubSubProcessor.html#onMessage(org.json.JSONObject)">onMessage</a>, <a href="AbstractPubSubProcessor.html#onNext(tv.phantombot.twitch.pubsub.PubSubMessage)">onNext</a>, <a href="AbstractPubSubProcessor.html#onSubscribe(java.util.concurrent.Flow.Subscription)">onSubscribe</a>, <a href="AbstractPubSubProcessor.html#onSubscribeResult(org.json.JSONObject)">onSubscribeResult</a>, <a href="AbstractPubSubProcessor.html#subscribe()">subscribe</a>, <a href="AbstractPubSubProcessor.html#subscribeToTopics()">subscribeToTopics</a>, <a href="AbstractPubSubProcessor.html#unsubscribeFromTopics()">unsubscribeFromTopics</a></code></li></ul><ul class="blockList"><li class="blockList"><a id="methods.inherited.from.class.java.lang.Object"><!--   --></a><h3>Methods inherited from class&nbsp;java.lang.Object</h3><code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li></ul></li></ul></section></li></ul></div><div class="details"><ul class="blockList"><li class="blockList"><!-- ========= CONSTRUCTOR DETAIL ======== --><section><ul class="blockList"><li class="blockList"><a id="constructor.detail"><!--   --></a><h3>Constructor Detail</h3><a id="&lt;init&gt;()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>PubSubFollowingProcessor</h4><pre>public&nbsp;PubSubFollowingProcessor()</pre></li></ul><a id="&lt;init&gt;(int)"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>PubSubFollowingProcessor</h4><pre>public&nbsp;PubSubFollowingProcessor&#8203;(int&nbsp;channelId)</pre></li></ul></li></ul></section><!-- ============ METHOD DETAIL ========== --><section><ul class="blockList"><li class="blockList"><a id="method.detail"><!--   --></a><h3>Method Detail</h3><a id="onOpen()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>onOpen</h4><pre class="methodSignature">protected&nbsp;void&nbsp;onOpen()</pre><div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onOpen()">AbstractPubSubProcessor</a></code></span></div><div class="block">Default handler for PubSubMessageType.OPEN, calls subscribeToTopics</div><dl><dt><span class="overrideSpecifyLabel">Overrides:</span></dt><dd><code><a href="AbstractPubSubProcessor.html#onOpen()">onOpen</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd></dl></li></ul><a id="onSubscribeSuccess()"><!--   --></a><ul class="blockList"><li class="blockList"><h4>onSubscribeSuccess</h4><pre class="methodSignature">protected&nbsp;void&nbsp;onSubscribeSuccess()</pre><div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onSubscribeSuccess()">AbstractPubSubProcessor</a></code></span></div><div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics was successful</div><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="AbstractPubSubProcessor.html#onSubscribeSuccess()">onSubscribeSuccess</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd></dl></li></ul><a id="onSubscribeFailure(java.lang.String)"><!--   --></a><ul class="blockList"><li class="blockList"><h4>onSubscribeFailure</h4><pre class="methodSignature">protected&nbsp;void&nbsp;onSubscribeFailure&#8203;(java.lang.String&nbsp;error)</pre><div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onSubscribeFailure(java.lang.String)">AbstractPubSubProcessor</a></code></span></div><div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics failed</div><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="AbstractPubSubProcessor.html#onSubscribeFailure(java.lang.String)">onSubscribeFailure</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd><dt><span class="paramLabel">Parameters:</span></dt><dd><code>error</code> - The error message from Twitch describing why the subscription failed</dd></dl></li></ul><a id="onEvent(org.json.JSONObject)"><!--   --></a><ul class="blockListLast"><li class="blockList"><h4>onEvent</h4><pre class="methodSignature">protected&nbsp;void&nbsp;onEvent&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;body)</pre><div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onEvent(org.json.JSONObject)">AbstractPubSubProcessor</a></code></span></div><div class="block">Called when a new event for this subscription has been received</div><dl><dt><span class="overrideSpecifyLabel">Specified by:</span></dt><dd><code><a href="AbstractPubSubProcessor.html#onEvent(org.json.JSONObject)">onEvent</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd><dt><span class="paramLabel">Parameters:</span></dt><dd><code>body</code> - The body of the event</dd></dl></li></ul></li></ul></section></li></ul></div></div></main><!-- ========= END OF CLASS DATA ========= --><footer role="contentinfo"><nav role="navigation"><!-- ======= START OF BOTTOM NAVBAR ====== --><div class="bottomNav"><a id="navbar.bottom"><!--   --></a><div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div><a id="navbar.bottom.firstrow"><!--   --></a><ul class="navList" title="Navigation"><li><a href="../../../../../index.html">Overview</a></li><li><a href="package-summary.html">Package</a></li><li class="navBarCell1Rev">Class</li><li><a href="package-tree.html">Tree</a></li><li><a href="../../../../../deprecated-list.html">Deprecated</a></li><li><a href="../../../../../index-all.html">Index</a></li><li><a href="../../../../../help-doc.html">Help</a></li></ul><div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div></div><div class="subNav"><ul class="navList" id="allclasses_navbar_bottom"><li><a href="../../../../../allclasses.html">All&nbsp;Classes</a></li></ul><div><script type="text/javascript"><!--  allClassesLink = document.getElementById("allclasses_navbar_bottom");  if(window==top) {    allClassesLink.style.display = "block";  }  else {    allClassesLink.style.display = "none";  }  //--></script><noscript><div>JavaScript is disabled on your browser.</div></noscript></div><div><ul class="subNavList"><li>Summary:&nbsp;</li><li>Nested&nbsp;|&nbsp;</li><li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li><li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.summary">Method</a></li></ul><ul class="subNavList"><li>Detail:&nbsp;</li><li>Field&nbsp;|&nbsp;</li><li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li><li><a href="#method.detail">Method</a></li></ul></div><a id="skip.navbar.bottom"><!--   --></a></div><!-- ======== END OF BOTTOM NAVBAR ======= --></nav><p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p></footer></body></html>
+<!DOCTYPE HTML>
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>PubSubFollowingProcessor (PhantomBot JavaDoc)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="dc.created" content="2023-02-23">
+<link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../../../../script.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jszip/dist/jszip.min.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="../../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../../jquery/jquery-ui.min.js"></script>
+</head>
+<body>
+<script type="text/javascript"><!--
+    try {
+        if (location.href.indexOf('is-external=true') == -1) {
+            parent.document.title="PubSubFollowingProcessor (PhantomBot JavaDoc)";
+        }
+    }
+    catch(err) {
+    }
+//-->
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
+var pathtoroot = "../../../../../";
+var useModuleDirectories = true;
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<header role="banner">
+<nav role="navigation">
+<div class="fixedNav">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a id="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<ul class="navListSearch">
+<li><label for="search">SEARCH:</label>
+<input type="text" id="search" value="search" disabled="disabled">
+<input type="reset" id="reset" value="reset" disabled="disabled">
+</li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+</div>
+<div class="navPadding">&nbsp;</div>
+<script type="text/javascript"><!--
+$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
+//-->
+</script>
+</nav>
+</header>
+<!-- ======== START OF CLASS DATA ======== -->
+<main role="main">
+<div class="header">
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.twitch.pubsub.processors</a></div>
+<h2 title="Class PubSubFollowingProcessor" class="title">Class PubSubFollowingProcessor</h2>
+</div>
+<div class="contentContainer">
+<ul class="inheritance">
+<li>java.lang.Object</li>
+<li>
+<ul class="inheritance">
+<li><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.AbstractPubSubProcessor</a></li>
+<li>
+<ul class="inheritance">
+<li>tv.phantombot.twitch.pubsub.processors.PubSubFollowingProcessor</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code>java.util.concurrent.Flow.Subscriber&lt;<a href="../PubSubMessage.html" title="class in tv.phantombot.twitch.pubsub">PubSubMessage</a>&gt;</code></dd>
+</dl>
+<hr>
+<pre>public class <span class="typeNameLabel">PubSubFollowingProcessor</span>
+extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></pre>
+<div class="block">A processor for follow events from PubSub</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>gmt2001</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="field.summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<ul class="blockList">
+<li class="blockList"><a id="fields.inherited.from.class.tv.phantombot.twitch.pubsub.processors.AbstractPubSubProcessor">
+<!--   -->
+</a>
+<h3>Fields inherited from class&nbsp;tv.phantombot.twitch.pubsub.processors.<a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></h3>
+<code><a href="AbstractPubSubProcessor.html#nonce">nonce</a>, <a href="AbstractPubSubProcessor.html#subscription">subscription</a>, <a href="AbstractPubSubProcessor.html#topics">topics</a></code></li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">PubSubFollowingProcessor</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(int)">PubSubFollowingProcessor</a></span>&#8203;(int&nbsp;channelId)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onEvent(org.json.JSONObject)">onEvent</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;body)</code></th>
+<td class="colLast">
+<div class="block">Called when a new event for this subscription has been received</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onOpen()">onOpen</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Default handler for PubSubMessageType.OPEN, calls subscribeToTopics</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSubscribeFailure(java.lang.String)">onSubscribeFailure</a></span>&#8203;(java.lang.String&nbsp;error)</code></th>
+<td class="colLast">
+<div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics failed</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSubscribeSuccess()">onSubscribeSuccess</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics was successful</div>
+</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.tv.phantombot.twitch.pubsub.processors.AbstractPubSubProcessor">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;tv.phantombot.twitch.pubsub.processors.<a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></h3>
+<code><a href="AbstractPubSubProcessor.html#onClose()">onClose</a>, <a href="AbstractPubSubProcessor.html#onComplete()">onComplete</a>, <a href="AbstractPubSubProcessor.html#onError(java.lang.Throwable)">onError</a>, <a href="AbstractPubSubProcessor.html#onFlowComplete()">onFlowComplete</a>, <a href="AbstractPubSubProcessor.html#onFlowError(java.lang.Throwable)">onFlowError</a>, <a href="AbstractPubSubProcessor.html#onFlowNext(tv.phantombot.twitch.pubsub.PubSubMessage)">onFlowNext</a>, <a href="AbstractPubSubProcessor.html#onFlowSubscribe()">onFlowSubscribe</a>, <a href="AbstractPubSubProcessor.html#onMessage(org.json.JSONObject)">onMessage</a>, <a href="AbstractPubSubProcessor.html#onNext(tv.phantombot.twitch.pubsub.PubSubMessage)">onNext</a>, <a href="AbstractPubSubProcessor.html#onSubscribe(java.util.concurrent.Flow.Subscription)">onSubscribe</a>, <a href="AbstractPubSubProcessor.html#onSubscribeResult(org.json.JSONObject)">onSubscribeResult</a>, <a href="AbstractPubSubProcessor.html#subscribe()">subscribe</a>, <a href="AbstractPubSubProcessor.html#subscribeToTopics()">subscribeToTopics</a>, <a href="AbstractPubSubProcessor.html#unsubscribeFromTopics()">unsubscribeFromTopics</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
+<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a id="&lt;init&gt;()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>PubSubFollowingProcessor</h4>
+<pre>public&nbsp;PubSubFollowingProcessor()</pre>
+</li>
+</ul>
+<a id="&lt;init&gt;(int)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>PubSubFollowingProcessor</h4>
+<pre>public&nbsp;PubSubFollowingProcessor&#8203;(int&nbsp;channelId)</pre>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="onOpen()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onOpen</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;onOpen()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onOpen()">AbstractPubSubProcessor</a></code></span></div>
+<div class="block">Default handler for PubSubMessageType.OPEN, calls subscribeToTopics</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="AbstractPubSubProcessor.html#onOpen()">onOpen</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="onSubscribeSuccess()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onSubscribeSuccess</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;onSubscribeSuccess()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onSubscribeSuccess()">AbstractPubSubProcessor</a></code></span></div>
+<div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics was successful</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="AbstractPubSubProcessor.html#onSubscribeSuccess()">onSubscribeSuccess</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="onSubscribeFailure(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onSubscribeFailure</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;onSubscribeFailure&#8203;(java.lang.String&nbsp;error)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onSubscribeFailure(java.lang.String)">AbstractPubSubProcessor</a></code></span></div>
+<div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics failed</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="AbstractPubSubProcessor.html#onSubscribeFailure(java.lang.String)">onSubscribeFailure</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>error</code> - The error message from Twitch describing why the subscription failed</dd>
+</dl>
+</li>
+</ul>
+<a id="onEvent(org.json.JSONObject)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>onEvent</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;onEvent&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;body)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onEvent(org.json.JSONObject)">AbstractPubSubProcessor</a></code></span></div>
+<div class="block">Called when a new event for this subscription has been received</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="AbstractPubSubProcessor.html#onEvent(org.json.JSONObject)">onEvent</a></code>&nbsp;in class&nbsp;<code><a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>body</code> - The body of the event</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</div>
+</div>
+</main>
+<!-- ========= END OF CLASS DATA ========= -->
+<footer role="contentinfo">
+<nav role="navigation">
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a id="navbar.bottom">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.bottom.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../../../index-all.html">Index</a></li>
+<li><a href="../../../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</nav>
+<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</body>
+</html>
