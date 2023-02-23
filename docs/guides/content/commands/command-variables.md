@@ -961,7 +961,7 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 **Formulas:**
 
-- `(customapi url:str)` - http GET url and output returned text (escaped by default)
+- `(customapi url:str)` - http GET url and output returned text
 
 **Labels:** twitch discord commandevent customapi
 
@@ -992,7 +992,7 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 **Formulas:**
 
-- `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs (escaped by default)
+- `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs
 
 **Labels:** twitch discord commandevent customapi
 
