@@ -38,7 +38,7 @@
 
     /*
      * @transformer customapi
-     * @formula (customapi url:str) http GET url and output returned text (escaped by default)
+     * @formula (customapi url:str) http GET url and output returned text
      * @labels twitch discord commandevent customapi
      * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
      * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
@@ -65,7 +65,7 @@
             }
             var response;
             try {
-                response = getCustomAPIValue(encodeURI(match[1]));
+                response = getCustomAPIValue(match[1]);
             } catch (ex) {
                 $.log.error('Failed to get data from API: ' + ex.message);
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
@@ -79,7 +79,7 @@
 
     /*
      * @transformer customapijson
-     * @formula (customapijson url:str specs:str) httpGet url and extract json info according to specs (escaped by default)
+     * @formula (customapijson url:str specs:str) httpGet url and extract json info according to specs
      * @labels twitch discord commandevent customapi
      * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
      * @notes if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead
@@ -116,7 +116,7 @@
 
             var result = '';
             try {
-                response = getCustomAPIValue(encodeURI(match[1]));
+                response = getCustomAPIValue(match[1]);
             } catch (ex) {
                 $.log.error('Failed to get data from API: ' + ex.message);
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
