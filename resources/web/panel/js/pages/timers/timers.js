@@ -350,7 +350,7 @@
                     {'title': 'Actions'}
                 ],
                 'rowReorder': {
-                    'selector': 'tr',
+                    'selector': 'td:first-child',
                     'dataSrc': 0
                 }
             });
