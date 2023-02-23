@@ -350,7 +350,7 @@
                     {'title': 'Actions'}
                 ],
                 'rowReorder': {
-                    'selector': 'td:first-child',
+                    'selector': 'td:not(:last-child)',
                     'dataSrc': 0
                 }
             });
