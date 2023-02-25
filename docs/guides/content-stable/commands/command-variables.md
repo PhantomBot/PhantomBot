@@ -961,7 +961,7 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 **Formulas:**
 
-- `(customapi url:str)` - http GET url and output returned text (escaped by default)
+- `(customapi url:str)` - http GET url and output returned text
 
 **Labels:** twitch discord commandevent customapi
 
@@ -992,7 +992,7 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 **Formulas:**
 
-- `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs (escaped by default)
+- `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs
 
 **Labels:** twitch discord commandevent customapi
 
@@ -1034,6 +1034,28 @@ Defined in script: _./javascript-source/core/transformers/discord.js_
 **Example:**
 ```text
 Caster: !addcom !cleardiscord (cleardiscordactivity)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### removerole
+
+Defined in script: _./javascript-source/core/transformers/discord.js_
+
+**Formulas:**
+
+- `(removerole username:str, role:str)` - removes the specified user from the specified Discord role
+
+**Labels:** discord noevent roles
+
+
+**Example:**
+```text
+Caster: !addcom !removerole (removerole (sender), Cool Kids)
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
@@ -2002,8 +2024,30 @@ Defined in script: _./javascript-source/core/transformers/user.js_
 **Formulas:**
 
 - `(age)` - outputs the age of the sender's Twitch account; If the sender provides an argument, checks that Twitch account instead
+- `(age pattern:str)` - outputs the age of the sender's Twitch account using the specified pattern; If the sender provides an argument, checks that Twitch account instead
 
 **Labels:** twitch commandevent user
+
+
+_NOTE: _
+
+_Patterns (Example of 1 year, 2 months, 3 days, 12 hours):_
+
+_- `#H` - Number of Hours (Total, ie. 10308)_
+
+_- `#h` - Number of Hours (In day, ie. 12)_
+
+_- `#D` - Number of Days (Total, ie. 429)_
+
+_- `#d` - Number of Days (In month, ie. 3)_
+
+_- `#M` - Number of Months (Total, ie. 14)_
+
+_- `#m` - Number of Months (In year, ie. 2)_
+
+_- `#y` - Number of Years (ie. 1)_
+
+_- Any valid pattern for [DateTimeFormatter](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/format/DateTimeFormatter.html#patterns)_
 
 
 **Example:**
@@ -2015,9 +2059,18 @@ User: !age User2
 Bot: @User, user2 has been on Twitch since December 25, 2010.
 ```
 
+**Example:**
+```text
+Caster: !addcom !age2 (touser) has been on Twitch for (age #y 'year(s), since ' MMMM dd', 'yyyy)!
+User: !age2
+Bot: User has been on Twitch for 1 year(s), since April 19, 2009!
+User: !age2 User2
+Bot: User2 has been on Twitch for 2 year(s), since June 5, 2008!
+```
+
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 

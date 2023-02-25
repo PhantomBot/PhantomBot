@@ -231,16 +231,6 @@ the timezone for timestamps in the log. must be a valid iana time zone database 
 
 &nbsp;
 
-#### rhino_es6
-
-Data Type: _Boolean_
-
-if `true`, enables newer features from ecmascript 6 in rhino. default `true`
-
-_NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
 #### reloadscripts
 
 Data Type: _Boolean_
@@ -538,6 +528,14 @@ if `true`, prints debug messages for active wspinger instances. default `false`
 
 &nbsp;
 
+#### eventsubdebug
+
+Data Type: _Boolean_
+
+if `true`, prints debug messages for eventsub. default `false`
+
+&nbsp;
+
 #### dnsdebug
 
 Data Type: _Boolean_
@@ -573,16 +571,24 @@ _NOTE: A restart is required for this property to take effect_
 &nbsp;
 
 ### Uncategorized
+#### commandprefix
+
+Data Type: _Char_
+
+No definition
+
+&nbsp;
+
+#### discordcommandprefix
+
+Data Type: _Char_
+
+No definition
+
+&nbsp;
+
 #### eventsubcallbackurl
 
 Data Type: _String_
 
 the url which will receive eventsub notifications
-
-&nbsp;
-
-#### useeventsub
-
-Data Type: _Boolean_
-
-if `true`, enables the eventsub module. default `false`
