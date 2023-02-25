@@ -369,6 +369,7 @@
                     <include name="**/*.jar"/>
                 </fileset>
             </classpath>
+            <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
             <link href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/" />
             <link href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/" />
             <link href="https://javadoc.io/doc/com.discord4j/discord4j-rest/latest/" />
