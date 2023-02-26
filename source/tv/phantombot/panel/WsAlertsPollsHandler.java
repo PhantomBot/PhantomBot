@@ -79,41 +79,14 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
                 com.gmt2001.Console.debug.println(jso.toString());
             }
 
-            if (jso.has("socket_event")) {
-                handleSocketEvent(ctx, frame, jso);
+            if (jso.has("pollState")) {
+                handlePollState(ctx, frame, jso);
             }
         }
     }
 
-    private void handleSocketEvent(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        String script = jso.getString("script");
-        String arguments = jso.getJSONObject("args").optString("arguments");
-        JSONArray jsonArray = jso.getJSONObject("args").optJSONArray("args");
-        String uniqueID = jso.has("socket_event") ? jso.getString("socket_event") : "";
-
-        JSONStringer jsonObject = new JSONStringer();
-        List<String> tempArgs = new LinkedList<>();
-        String[] args = null;
-
-        if (jsonArray != null) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                tempArgs.add(jsonArray.getString(i));
-            }
-        }
-
-        if (!tempArgs.isEmpty()) {
-            int i = 0;
-            args = new String[tempArgs.size()];
-
-            for (String str : tempArgs) {
-                args[i] = str;
-                ++i;
-            }
-        }
-
-        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent(uniqueID, script, arguments, args));
-        jsonObject.object().key("query_id").value(uniqueID).endObject();
-        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    private void handlePollState(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent("pollState", "./systems/pollSystem.js", null, null));
     }
 
     public void sendJSONToAll(String jsonString) {
