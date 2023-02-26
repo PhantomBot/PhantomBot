@@ -264,10 +264,24 @@
                                 );
                         }
 
+                        let queryString = window.location.search, // Query string that starts with ?
+                                queryParts = queryString.slice(1).split(/#|&/), // Split at each &, which is a new query.
+                                queryMap = new Map(), // Create a new map for save our keys and values.
+                                baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
+                                redirectURI = (window.location.origin + window.location.pathname),
+                                redirectURIBroadcaster = redirectURI + "broadcaster",
+                                broadcaster = "",
+                                clientID,
+                                state;
+
+                        if (redirectURI.includes("/broadcaster")) {
+                            broadcaster = "/broadcaster";
+                        }
+
                         $.ajax({
                             cache: false,
                             dataType: 'json',
-                            url: '/oauth/scopes.json',
+                            url: '/oauth' + broadcaster + '/scopes.json',
                             method: 'GET',
                             success: function (data) {
                                 scopes = data;
@@ -286,20 +300,6 @@
                                 $('#error-box').html('Failed to get scopes: ' + err.statusText + ' ' + err.responseText + '!!');
                             }
                         });
-
-                        let queryString = window.location.search, // Query string that starts with ?
-                                queryParts = queryString.slice(1).split(/#|&/), // Split at each &, which is a new query.
-                                queryMap = new Map(), // Create a new map for save our keys and values.
-                                baseAPIUri = 'https://id.twitch.tv/oauth2/authorize',
-                                redirectURI = (window.location.origin + window.location.pathname),
-                                redirectURIBroadcaster = redirectURI + "broadcaster",
-                                broadcaster = "",
-                                clientID,
-                                state;
-
-                        if (redirectURI.includes("/broadcaster")) {
-                            broadcaster = "/broadcaster";
-                        }
 
                         for (let i = 0; i < queryParts.length; i++) {
                             let key = queryParts[i].substring(0, queryParts[i].indexOf('=')),
@@ -525,7 +525,7 @@
                     });
         </script>
         <script>
-            if (!window.location.pathname.endsWith("/")) {
+            if (!window.location.pathname.endsWith("/") && !window.location.pathname.endsWith("/broadcaster")) {
                 let newURL = window.location.toString();
                 newURL = newURL.substring(0, newURL.indexOf(window.location.pathname)) + window.location.pathname + '/' + newURL.substring(newURL.indexOf(window.location.pathname) + window.location.pathname.length);
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
