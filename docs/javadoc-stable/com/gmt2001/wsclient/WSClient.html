@@ -4,7 +4,7 @@
 <head>
 <title>WSClient (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-23">
+<meta name="dc.created" content="2023-02-26">
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
@@ -59,7 +59,7 @@ loadScripts(document, 'script');</script>
 <li><a href="../../../index-all.html">Index</a></li>
 <li><a href="../../../help-doc.html">Help</a></li>
 </ul>
-<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
 </div>
 <div class="subNav">
 <ul class="navList" id="allclasses_navbar_top">
@@ -121,7 +121,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
-<li>java.lang.Object</li>
+<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">java.lang.Object</a></li>
 <li>
 <ul class="inheritance">
 <li>com.gmt2001.wsclient.WSClient</li>
@@ -133,7 +133,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <hr>
 <pre>public class <span class="typeNameLabel">WSClient</span>
-extends java.lang.Object</pre>
+extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
 <div class="block">Provides a WebSocket client</div>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
@@ -159,14 +159,14 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler)">WSClient</a></span>&#8203;(java.net.URI&nbsp;uri,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler)">WSClient</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a>&nbsp;uri,
         <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a>&nbsp;handler)</code></th>
 <td class="colLast">
 <div class="block">Constructor that does not initialize a <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger"><code>WSPinger</code></a></div>
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSPinger)">WSClient</a></span>&#8203;(java.net.URI&nbsp;uri,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSPinger)">WSClient</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a>&nbsp;uri,
         <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a>&nbsp;handler,
         <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a>&nbsp;pinger)</code></th>
 <td class="colLast">
@@ -209,7 +209,7 @@ extends java.lang.Object</pre>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close(int,java.lang.String)">close</a></span>&#8203;(int&nbsp;status,
-     java.lang.String&nbsp;reason)</code></th>
+     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</code></th>
 <td class="colLast">
 <div class="block">Sends a WebSocket frame of type Close, then closes the socket, with a grace period for ongoing requests to finish</div>
 </td>
@@ -224,7 +224,7 @@ extends java.lang.Object</pre>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close(io.netty.handler.codec.http.websocketx.WebSocketCloseStatus,java.lang.String)">close</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketCloseStatus.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketCloseStatus</a>&nbsp;status,
-     java.lang.String&nbsp;reason)</code></th>
+     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</code></th>
 <td class="colLast">
 <div class="block">Sends a WebSocket frame of type Close, then closes the socket, with a grace period for ongoing requests to finish</div>
 </td>
@@ -266,7 +266,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#send(java.lang.String)">send</a></span>&#8203;(java.lang.String&nbsp;text)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#send(java.lang.String)">send</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;text)</code></th>
 <td class="colLast">
 <div class="block">Sends a WebSocket frame of type Text</div>
 </td>
@@ -283,8 +283,8 @@ extends java.lang.Object</pre>
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang" class="externalLink">clone</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang" class="externalLink">equals</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang" class="externalLink">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang" class="externalLink">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang" class="externalLink">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang" class="externalLink">notify</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang" class="externalLink">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang" class="externalLink">toString</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long,int)" title="class or interface in java.lang" class="externalLink">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -308,18 +308,18 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>WSClient</h4>
-<pre>public&nbsp;WSClient&#8203;(java.net.URI&nbsp;uri,
+<pre>public&nbsp;WSClient&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a>&nbsp;uri,
                 <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a>&nbsp;handler)
-         throws javax.net.ssl.SSLException,
-                java.lang.IllegalArgumentException</pre>
+         throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/javax/net/ssl/SSLException.html?is-external=true" title="class or interface in javax.net.ssl" class="externalLink">SSLException</a>,
+                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
 <div class="block">Constructor that does not initialize a <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger"><code>WSPinger</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>uri</code> - The URI to connect to</dd>
 <dd><code>handler</code> - An object implementing <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient"><code>WsClientFrameHandler</code></a> which will receive frames</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>javax.net.ssl.SSLException</code> - Failed to create the <a href="https://netty.io/4.1/api/io/netty/handler/ssl/SslContext.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink"><code>SslContext</code></a></dd>
-<dd><code>java.lang.IllegalArgumentException</code> - URI scheme is not ws or wss</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/javax/net/ssl/SSLException.html?is-external=true" title="class or interface in javax.net.ssl" class="externalLink">SSLException</a></code> - Failed to create the <a href="https://netty.io/4.1/api/io/netty/handler/ssl/SslContext.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink"><code>SslContext</code></a></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - URI scheme is not ws or wss</dd>
 </dl>
 </li>
 </ul>
@@ -329,11 +329,11 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>WSClient</h4>
-<pre>public&nbsp;WSClient&#8203;(java.net.URI&nbsp;uri,
+<pre>public&nbsp;WSClient&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a>&nbsp;uri,
                 <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a>&nbsp;handler,
                 <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a>&nbsp;pinger)
-         throws javax.net.ssl.SSLException,
-                java.lang.IllegalArgumentException</pre>
+         throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/javax/net/ssl/SSLException.html?is-external=true" title="class or interface in javax.net.ssl" class="externalLink">SSLException</a>,
+                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
 <div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -341,8 +341,8 @@ extends java.lang.Object</pre>
 <dd><code>handler</code> - An object implementing <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient"><code>WsClientFrameHandler</code></a> which will receive frames</dd>
 <dd><code>pinger</code> - The <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger"><code>WSPinger</code></a> that will send PING on an interval, or <code>null</code> if this is not desired</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>javax.net.ssl.SSLException</code> - Failed to create the <a href="https://netty.io/4.1/api/io/netty/handler/ssl/SslContext.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink"><code>SslContext</code></a></dd>
-<dd><code>java.lang.IllegalArgumentException</code> - URI scheme is not ws or wss</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/javax/net/ssl/SSLException.html?is-external=true" title="class or interface in javax.net.ssl" class="externalLink">SSLException</a></code> - Failed to create the <a href="https://netty.io/4.1/api/io/netty/handler/ssl/SslContext.html?is-external=true" title="class or interface in io.netty.handler.ssl" class="externalLink"><code>SslContext</code></a></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - URI scheme is not ws or wss</dd>
 </dl>
 </li>
 </ul>
@@ -363,15 +363,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>connect</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;connect()
-                throws java.lang.InterruptedException,
-                       java.lang.IllegalStateException</pre>
+                throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang" class="externalLink">InterruptedException</a>,
+                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalStateException</a></pre>
 <div class="block">Connects to the server</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if the socket has connected and is starting the handshake; false otherwise</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.lang.InterruptedException</code> - The connection process was interrupted</dd>
-<dd><code>java.lang.IllegalStateException</code> - Attempting to use a closed client</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/InterruptedException.html?is-external=true" title="class or interface in java.lang" class="externalLink">InterruptedException</a></code> - The connection process was interrupted</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalStateException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalStateException</a></code> - Attempting to use a closed client</dd>
 </dl>
 </li>
 </ul>
@@ -425,7 +425,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>send</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;send&#8203;(java.lang.String&nbsp;text)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;send&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;text)</pre>
 <div class="block">Sends a WebSocket frame of type Text</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -493,7 +493,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>close</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;close&#8203;(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketCloseStatus.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketCloseStatus</a>&nbsp;status,
-                  java.lang.String&nbsp;reason)</pre>
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</pre>
 <div class="block">Sends a WebSocket frame of type Close, then closes the socket, with a grace period for ongoing requests to finish</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -509,7 +509,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>close</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;close&#8203;(int&nbsp;status,
-                  java.lang.String&nbsp;reason)</pre>
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</pre>
 <div class="block">Sends a WebSocket frame of type Close, then closes the socket, with a grace period for ongoing requests to finish</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -560,7 +560,7 @@ extends java.lang.Object</pre>
 <li><a href="../../../index-all.html">Index</a></li>
 <li><a href="../../../help-doc.html">Help</a></li>
 </ul>
-<div class="aboutLanguage"><a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
 </div>
 <div class="subNav">
 <ul class="navList" id="allclasses_navbar_bottom">
