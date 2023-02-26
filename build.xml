@@ -379,7 +379,7 @@
             <link href="https://projectreactor.io/docs/netty/release/api/" />
             <doctitle><![CDATA[<h1>PhantomBot</h1>]]></doctitle>
             <header><![CDATA[
-                <a id="javadoc-stable" href="../javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="../javadoc/index.html">Nightly</a>
+                <a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a>
                 <script>
                 document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';
                 </script>
