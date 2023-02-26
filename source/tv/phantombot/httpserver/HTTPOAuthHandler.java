@@ -91,7 +91,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
-            String path = qsd.path();
+            String path = qsd.path().replace("/broadcaster", "");
 
             Path p = Paths.get("./web/", path);
 
