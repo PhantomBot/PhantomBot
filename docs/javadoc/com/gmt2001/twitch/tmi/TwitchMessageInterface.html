@@ -4,7 +4,7 @@
 <head>
 <title>TwitchMessageInterface (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-23">
+<meta name="dc.created" content="2023-02-26">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style">
@@ -121,10 +121,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
-<li>java.lang.Object</li>
+<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">java.lang.Object</a></li>
 <li>
 <ul class="inheritance">
-<li>java.util.concurrent.SubmissionPublisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</li>
+<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">java.util.concurrent.SubmissionPublisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</li>
 <li>
 <ul class="inheritance">
 <li>com.gmt2001.twitch.tmi.TwitchMessageInterface</li>
@@ -138,11 +138,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code>, <code>java.lang.AutoCloseable</code>, <code>java.util.concurrent.Flow.Publisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</code></dd>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/Flow.Publisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">Flow.Publisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</code></dd>
 </dl>
 <hr>
 <pre>public final class <span class="typeNameLabel">TwitchMessageInterface</span>
-extends java.util.concurrent.SubmissionPublisher&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;
+extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">SubmissionPublisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;
 implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></pre>
 <div class="block">A client for the Twitch Message Interface</div>
 <dl>
@@ -195,7 +195,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close(int,java.lang.String)">close</a></span>&#8203;(int&nbsp;code,
-     java.lang.String&nbsp;reason)</code></th>
+     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</code></th>
 <td class="colLast">
 <div class="block">Closes the socket</div>
 </td>
@@ -230,23 +230,23 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose(int,java.lang.String)">onClose</a></span>&#8203;(int&nbsp;code,
-       java.lang.String&nbsp;reason)</code></th>
+       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</code></th>
 <td class="colLast">
 <div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onMessages(java.lang.String)">onMessages</a></span>&#8203;(java.lang.String&nbsp;messages)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onMessages(java.lang.String)">onMessages</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;messages)</code></th>
 <td class="colLast">
 <div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#privMsgMaxLength(java.lang.String,boolean,java.lang.String)">privMsgMaxLength</a></span>&#8203;(java.lang.String&nbsp;channel,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#privMsgMaxLength(java.lang.String,boolean,java.lang.String)">privMsgMaxLength</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
                 boolean&nbsp;isAction,
-                java.lang.String&nbsp;replyToId)</code></th>
+                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</code></th>
 <td class="colLast">
 <div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
 </td>
@@ -267,53 +267,53 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
-                     java.lang.String&nbsp;message)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
 </td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
-                     java.lang.String&nbsp;message,
-                     java.lang.String&nbsp;replyToId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
+                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
 </td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">sendChannelCommand</a></span>&#8203;(java.lang.String&nbsp;command,
-                  java.lang.String&nbsp;channel,
-                  java.lang.String&nbsp;parameter)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">sendChannelCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC command with channel and parameter components</div>
 </td>
 </tr>
 <tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(java.lang.String&nbsp;command,
-           java.lang.String&nbsp;parameter)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC command with parameter component</div>
 </td>
 </tr>
 <tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.util.Map,java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
-           java.lang.String&nbsp;command,
-           java.lang.String&nbsp;parameter)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.util.Map,java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
+           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC command with tags and parameter component</div>
 </td>
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">sendFullCommand</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
-               java.lang.String&nbsp;command,
-               java.lang.String&nbsp;channel,
-               java.lang.String&nbsp;parameter)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">sendFullCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC command with tags, channel, and parameter components</div>
 </td>
@@ -327,24 +327,24 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
-               java.lang.String&nbsp;message)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC PRIVMSG command.</div>
 </td>
 </tr>
 <tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(java.lang.String&nbsp;channel,
-               java.lang.String&nbsp;message,
-               java.lang.String&nbsp;replyToId)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
+               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</code></th>
 <td class="colLast">
 <div class="block">Sends an IRC PRIVMSG command as a reply to another message.</div>
 </td>
 </tr>
 <tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendRaw(java.lang.String)">sendRaw</a></span>&#8203;(java.lang.String&nbsp;message)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendRaw(java.lang.String)">sendRaw</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
 <td class="colLast">
 <div class="block">Sends a raw IRC message</div>
 </td>
@@ -361,15 +361,15 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList"><a id="methods.inherited.from.class.java.util.concurrent.SubmissionPublisher">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;java.util.concurrent.SubmissionPublisher</h3>
-<code>close, closeExceptionally, consume, estimateMaximumLag, estimateMinimumDemand, getClosedException, getExecutor, getMaxBufferCapacity, getNumberOfSubscribers, getSubscribers, hasSubscribers, isClosed, isSubscribed, offer, offer, submit, subscribe</code></li>
+<h3>Methods inherited from class&nbsp;java.util.concurrent.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">SubmissionPublisher</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#close()" title="class or interface in java.util.concurrent" class="externalLink">close</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#closeExceptionally(java.lang.Throwable)" title="class or interface in java.util.concurrent" class="externalLink">closeExceptionally</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#consume(java.util.function.Consumer)" title="class or interface in java.util.concurrent" class="externalLink">consume</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#estimateMaximumLag()" title="class or interface in java.util.concurrent" class="externalLink">estimateMaximumLag</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#estimateMinimumDemand()" title="class or interface in java.util.concurrent" class="externalLink">estimateMinimumDemand</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getClosedException()" title="class or interface in java.util.concurrent" class="externalLink">getClosedException</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getExecutor()" title="class or interface in java.util.concurrent" class="externalLink">getExecutor</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getMaxBufferCapacity()" title="class or interface in java.util.concurrent" class="externalLink">getMaxBufferCapacity</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getNumberOfSubscribers()" title="class or interface in java.util.concurrent" class="externalLink">getNumberOfSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getSubscribers()" title="class or interface in java.util.concurrent" class="externalLink">getSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#hasSubscribers()" title="class or interface in java.util.concurrent" class="externalLink">hasSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#isClosed()" title="class or interface in java.util.concurrent" class="externalLink">isClosed</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#isSubscribed(java.util.concurrent.Flow.Subscriber)" title="class or interface in java.util.concurrent" class="externalLink">isSubscribed</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#offer(T,long,java.util.concurrent.TimeUnit,java.util.function.BiPredicate)" title="class or interface in java.util.concurrent" class="externalLink">offer</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#offer(T,java.util.function.BiPredicate)" title="class or interface in java.util.concurrent" class="externalLink">offer</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#submit(T)" title="class or interface in java.util.concurrent" class="externalLink">submit</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#subscribe(java.util.concurrent.Flow.Subscriber)" title="class or interface in java.util.concurrent" class="externalLink">subscribe</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang" class="externalLink">clone</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang" class="externalLink">equals</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang" class="externalLink">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang" class="externalLink">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang" class="externalLink">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang" class="externalLink">notify</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang" class="externalLink">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang" class="externalLink">toString</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long,int)" title="class or interface in java.lang" class="externalLink">wait</a></code></li>
 </ul>
 </li>
 </ul>
@@ -413,9 +413,9 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>privMsgMaxLength</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;privMsgMaxLength&#8203;(java.lang.String&nbsp;channel,
+<pre class="methodSignature">public&nbsp;int&nbsp;privMsgMaxLength&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
                             boolean&nbsp;isAction,
-                            java.lang.String&nbsp;replyToId)</pre>
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</pre>
 <div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -456,8 +456,8 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendActionPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(java.lang.String&nbsp;channel,
-                                  java.lang.String&nbsp;message)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
 <div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.
 
  If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
@@ -474,8 +474,8 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(java.lang.String&nbsp;channel,
-                            java.lang.String&nbsp;message)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
 <div class="block">Sends an IRC PRIVMSG command. If the message starts with <code>/me</code>, then it is passed to
  <a href="#sendActionPrivMessage(java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String)</code></a> instead.
 
@@ -493,9 +493,9 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendActionPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(java.lang.String&nbsp;channel,
-                                  java.lang.String&nbsp;message,
-                                  java.lang.String&nbsp;replyToId)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
+                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</pre>
 <div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.
 
  If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
@@ -513,9 +513,9 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(java.lang.String&nbsp;channel,
-                            java.lang.String&nbsp;message,
-                            java.lang.String&nbsp;replyToId)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</pre>
 <div class="block">Sends an IRC PRIVMSG command as a reply to another message. If the message starts with <code>/me</code>, then it is passed to
  <a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String, java.lang.String)</code></a> instead.
 
@@ -534,8 +534,8 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(java.lang.String&nbsp;command,
-                        java.lang.String&nbsp;parameter)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
 <div class="block">Sends an IRC command with parameter component</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -550,9 +550,9 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
-                        java.lang.String&nbsp;command,
-                        java.lang.String&nbsp;parameter)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
+                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
 <div class="block">Sends an IRC command with tags and parameter component</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -568,9 +568,9 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendChannelCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendChannelCommand&#8203;(java.lang.String&nbsp;command,
-                               java.lang.String&nbsp;channel,
-                               java.lang.String&nbsp;parameter)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendChannelCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
 <div class="block">Sends an IRC command with channel and parameter components</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -586,10 +586,10 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendFullCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendFullCommand&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;tags,
-                            java.lang.String&nbsp;command,
-                            java.lang.String&nbsp;channel,
-                            java.lang.String&nbsp;parameter)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendFullCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
 <div class="block">Sends an IRC command with tags, channel, and parameter components</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -606,7 +606,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>sendRaw</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendRaw&#8203;(java.lang.String&nbsp;message)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;sendRaw&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
 <div class="block">Sends a raw IRC message</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -644,7 +644,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <ul class="blockList">
 <li class="blockList">
 <h4>onMessages</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;onMessages&#8203;(java.lang.String&nbsp;messages)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;onMessages&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;messages)</pre>
 <div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -659,7 +659,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>onClose</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onClose&#8203;(int&nbsp;code,
-                    java.lang.String&nbsp;reason)</pre>
+                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</pre>
 <div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -726,7 +726,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>close</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;close&#8203;(int&nbsp;code,
-                  java.lang.String&nbsp;reason)</pre>
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</pre>
 <div class="block">Closes the socket</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
