@@ -208,7 +208,7 @@
                     },
                     thisTagFound = false;
             if (transformCache.hasOwnProperty(wholeMatch)) {
-                $.replace(message, wholeMatch, transformCache[wholeMatch]);
+                message = $.replace(message, wholeMatch, transformCache[wholeMatch]);
                 thisTagFound = true;
             } else {
                 _lock.lock();
