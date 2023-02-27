@@ -63,17 +63,6 @@ $(function() {
         }
     };
 
-    const wsEvent = function(callback_id, script, argsString, args) {
-        sendToSocket({
-            socket_event: callback_id,
-            script: script,
-            args: {
-                arguments: String(argsString),
-                args: args
-            }
-        });
-    };
-
     /*
      * @function Checks if the query map has the option, if not, returns default.
      *
@@ -293,7 +282,7 @@ $(function() {
                 if (message.hasOwnProperty('authresult')) {
                     if (message.authresult === 'true') {
                         logSuccess('Successfully authenticated with the socket.');
-                        wsEvent('pollState', './systems/pollSystem.js', null, null);
+                        sendToSocket({pollState: true});
                     } else {
                         logError('Failed to authenticate with the socket.');
                     }
