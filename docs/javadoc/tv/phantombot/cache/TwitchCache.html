@@ -4,7 +4,7 @@
 <head>
 <title>TwitchCache (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-27">
+<meta name="dc.created" content="2023-02-28">
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":9,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":9,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -242,26 +242,53 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAffiliate()">isAffiliate</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel is an affiliate</div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAffiliateOrPartner()">isAffiliateOrPartner</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel is either an affiliate or a partner</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isPartner()">isPartner</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel is a partner</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isStreamOnline()">isStreamOnline</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns if the channel is online or not.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isStreamOnlineString()">isStreamOnlineString</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns a String representation of true/false to indicate if the stream is online or not.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAffiliatePartner(boolean,boolean)">setAffiliatePartner</a></span>&#8203;(boolean&nbsp;isAffiliate,
+                   boolean&nbsp;isPartner)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGameTitle(java.lang.String)">setGameTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;gameTitle)</code></th>
 <td class="colLast">
 <div class="block">Sets the game title.Useful for when !game is used.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGameTitle(java.lang.String,boolean)">setGameTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;gameTitle,
             boolean&nbsp;sendEvent)</code></th>
@@ -269,14 +296,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sets the game title.Useful for when !game is used.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStreamStatus(java.lang.String)">setStreamStatus</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamTitle)</code></th>
 <td class="colLast">
 <div class="block">Sets the title (status) of the stream.Useful for when !title is used.</div>
 </td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStreamStatus(java.lang.String,boolean)">setStreamStatus</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamTitle,
                boolean&nbsp;sendEvent)</code></th>
@@ -284,54 +311,54 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sets the title (status) of the stream.Useful for when !title is used.</div>
 </td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncOnline()">syncOnline</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Syncs the stream status, then triggers TwitchOnline</div>
 </td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamInfoFromChannel(boolean,java.util.function.Consumer)">syncStreamInfoFromChannel</a></span>&#8203;(boolean&nbsp;shouldSendEvent,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Consumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&gt;&nbsp;callback)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamStatus()">syncStreamStatus</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Updates the stream status</div>
 </td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamStatus(boolean)">syncStreamStatus</a></span>&#8203;(boolean&nbsp;shouldSendEvent)</code></th>
 <td class="colLast">
 <div class="block">Updates the stream status</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamStatus(boolean,java.util.function.Consumer)">syncStreamStatus</a></span>&#8203;(boolean&nbsp;shouldSendEvent,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Consumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&gt;&nbsp;callback)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateGame()">updateGame</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Updates the current game</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateGame(boolean)">updateGame</a></span>&#8203;(boolean&nbsp;sendEvent)</code></th>
 <td class="colLast">
 <div class="block">Updates the current game</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateViewerCount(int)">updateViewerCount</a></span>&#8203;(int&nbsp;viewers)</code></th>
 <td class="colLast">
@@ -369,6 +396,55 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>instance</h4>
 <pre class="methodSignature">public static&nbsp;<a href="TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a>&nbsp;instance()</pre>
+</li>
+</ul>
+<a id="setAffiliatePartner(boolean,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>setAffiliatePartner</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setAffiliatePartner&#8203;(boolean&nbsp;isAffiliate,
+                                boolean&nbsp;isPartner)</pre>
+</li>
+</ul>
+<a id="isAffiliate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isAffiliate</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isAffiliate()</pre>
+<div class="block">Indicates if this channel is an affiliate</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="isPartner()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isPartner</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isPartner()</pre>
+<div class="block">Indicates if this channel is a partner</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="isAffiliateOrPartner()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isAffiliateOrPartner</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isAffiliateOrPartner()</pre>
+<div class="block">Indicates if this channel is either an affiliate or a partner</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="isStreamOnline()">

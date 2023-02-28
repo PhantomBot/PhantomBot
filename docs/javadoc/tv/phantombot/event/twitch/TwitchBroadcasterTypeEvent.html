@@ -2,7 +2,7 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>YTPlayerRequestCurrentSongEvent (PhantomBot JavaDoc)</title>
+<title>TwitchBroadcasterTypeEvent (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 <meta name="dc.created" content="2023-02-28">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
@@ -21,12 +21,18 @@
 <script type="text/javascript"><!--
     try {
         if (location.href.indexOf('is-external=true') == -1) {
-            parent.document.title="YTPlayerRequestCurrentSongEvent (PhantomBot JavaDoc)";
+            parent.document.title="TwitchBroadcasterTypeEvent (PhantomBot JavaDoc)";
         }
     }
     catch(err) {
     }
 //-->
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../";
 var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
@@ -92,7 +98,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a id="skip.navbar.top">
@@ -110,8 +116,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!-- ======== START OF CLASS DATA ======== -->
 <main role="main">
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.event.ytplayer</a></div>
-<h2 title="Class YTPlayerRequestCurrentSongEvent" class="title">Class YTPlayerRequestCurrentSongEvent</h2>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.event.twitch</a></div>
+<h2 title="Class TwitchBroadcasterTypeEvent" class="title">Class TwitchBroadcasterTypeEvent</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -121,10 +127,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="../Event.html" title="class in tv.phantombot.event">tv.phantombot.event.Event</a></li>
 <li>
 <ul class="inheritance">
-<li><a href="YTPlayerEvent.html" title="class in tv.phantombot.event.ytplayer">tv.phantombot.event.ytplayer.YTPlayerEvent</a></li>
+<li><a href="TwitchEvent.html" title="class in tv.phantombot.event.twitch">tv.phantombot.event.twitch.TwitchEvent</a></li>
 <li>
 <ul class="inheritance">
-<li>tv.phantombot.event.ytplayer.YTPlayerRequestCurrentSongEvent</li>
+<li>tv.phantombot.event.twitch.TwitchBroadcasterTypeEvent</li>
 </ul>
 </li>
 </ul>
@@ -136,8 +142,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockList">
 <li class="blockList">
 <hr>
-<pre>public class <span class="typeNameLabel">YTPlayerRequestCurrentSongEvent</span>
-extends <a href="YTPlayerEvent.html" title="class in tv.phantombot.event.ytplayer">YTPlayerEvent</a></pre>
+<pre>public class <span class="typeNameLabel">TwitchBroadcasterTypeEvent</span>
+extends <a href="TwitchEvent.html" title="class in tv.phantombot.event.twitch">TwitchEvent</a></pre>
+<div class="block">An update to the Twitch broadcaster type of the caster</div>
 </li>
 </ul>
 </div>
@@ -158,10 +165,11 @@ extends <a href="YTPlayerEvent.html" title="class in tv.phantombot.event.ytplaye
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">YTPlayerRequestCurrentSongEvent</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Class constructor.</div>
-</td>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(boolean,boolean,boolean,boolean)">TwitchBroadcasterTypeEvent</a></span>&#8203;(boolean&nbsp;wasAffiliate,
+                          boolean&nbsp;wasPartner,
+                          boolean&nbsp;isAffiliate,
+                          boolean&nbsp;isPartner)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -174,6 +182,56 @@ extends <a href="YTPlayerEvent.html" title="class in tv.phantombot.event.ytplaye
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAffiliate()">isAffiliate</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel is an affiliate</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAffiliateOrPartner()">isAffiliateOrPartner</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel is either an affiliate or a partner</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isPartner()">isPartner</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel is a partner</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wasAffiliate()">wasAffiliate</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel was an affiliate before this update</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wasAffiliateOrPartner()">wasAffiliateOrPartner</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel was either an affiliate or a partner before this update</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#wasPartner()">wasPartner</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this channel was a partner before this update</div>
+</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -197,14 +255,104 @@ extends <a href="YTPlayerEvent.html" title="class in tv.phantombot.event.ytplaye
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;()">
+<a id="&lt;init&gt;(boolean,boolean,boolean,boolean)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>YTPlayerRequestCurrentSongEvent</h4>
-<pre>public&nbsp;YTPlayerRequestCurrentSongEvent()</pre>
-<div class="block">Class constructor.</div>
+<h4>TwitchBroadcasterTypeEvent</h4>
+<pre>public&nbsp;TwitchBroadcasterTypeEvent&#8203;(boolean&nbsp;wasAffiliate,
+                                  boolean&nbsp;wasPartner,
+                                  boolean&nbsp;isAffiliate,
+                                  boolean&nbsp;isPartner)</pre>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="wasAffiliate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>wasAffiliate</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;wasAffiliate()</pre>
+<div class="block">Indicates if this channel was an affiliate before this update</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="wasPartner()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>wasPartner</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;wasPartner()</pre>
+<div class="block">Indicates if this channel was a partner before this update</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="wasAffiliateOrPartner()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>wasAffiliateOrPartner</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;wasAffiliateOrPartner()</pre>
+<div class="block">Indicates if this channel was either an affiliate or a partner before this update</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="isAffiliate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isAffiliate</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isAffiliate()</pre>
+<div class="block">Indicates if this channel is an affiliate</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="isPartner()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isPartner</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isPartner()</pre>
+<div class="block">Indicates if this channel is a partner</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="isAffiliateOrPartner()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>isAffiliateOrPartner</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isAffiliateOrPartner()</pre>
+<div class="block">Indicates if this channel is either an affiliate or a partner</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 </li>
@@ -268,7 +416,7 @@ extends <a href="YTPlayerEvent.html" title="class in tv.phantombot.event.ytplaye
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a id="skip.navbar.bottom">
