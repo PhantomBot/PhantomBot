@@ -316,12 +316,13 @@ public final class TwitchCache {
 
     public void setAffiliatePartner(boolean isAffiliate, boolean isPartner) {
         boolean changed = this.isAffiliate != isAffiliate || this.isPartner != isPartner;
-        this.isAffiliate = isAffiliate;
-        this.isPartner = isPartner;
 
         if (changed) {
-            EventBus.instance().postAsync(new TwitchBroadcasterTypeEvent(isAffiliate, isPartner));
+            EventBus.instance().postAsync(new TwitchBroadcasterTypeEvent(this.isAffiliate, this.isPartner, isAffiliate, isPartner));
         }
+
+        this.isAffiliate = isAffiliate;
+        this.isPartner = isPartner;
     }
 
     /**

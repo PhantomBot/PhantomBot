@@ -20,13 +20,44 @@ package tv.phantombot.event.twitch;
  * An update to the Twitch broadcaster type of the caster
  */
 public class TwitchBroadcasterTypeEvent extends TwitchEvent {
+    private final boolean wasAffiliate;
+    private final boolean wasPartner;
     private final boolean isAffiliate;
     private final boolean isPartner;
 
-    public TwitchBroadcasterTypeEvent(boolean isAffiliate, boolean isPartner) {
+    public TwitchBroadcasterTypeEvent(boolean wasAffiliate, boolean wasPartner, boolean isAffiliate, boolean isPartner) {
         super();
+        this.wasAffiliate = wasAffiliate;
+        this.wasPartner = wasPartner;
         this.isAffiliate = isAffiliate;
         this.isPartner = isPartner;
+    }
+
+    /**
+     * Indicates if this channel was an affiliate before this update
+     *
+     * @return
+     */
+    public boolean wasAffiliate() {
+        return this.wasAffiliate;
+    }
+
+    /**
+     * Indicates if this channel was a partner before this update
+     *
+     * @return
+     */
+    public boolean wasPartner() {
+        return this.wasPartner;
+    }
+
+    /**
+     * Indicates if this channel was either an affiliate or a partner before this update
+     *
+     * @return
+     */
+    public boolean wasAffiliateOrPartner() {
+        return this.wasAffiliate() || this.wasPartner();
     }
 
     /**
