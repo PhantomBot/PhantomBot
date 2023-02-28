@@ -112,25 +112,71 @@
         }
     });
 
+    function subscribeEventSub() {
+        let subscriptions = [
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionBegin,
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionEnd,
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionLock
+        ];
+
+        for (let i in subscriptions) {
+            let newSubscription = new subscriptions[i]($.username.getIDCaster());
+            try {
+                newSubscription.create().block();
+            } catch (ex) {
+                $.log.error(ex);
+            }
+        }
+    }
+
+    function sync() {
+        try {
+            let response = $.helix.getPredictions(null, 1, null);
+
+            if (response.has('data') && response.getJSONArray('data').length() > 0) {
+                let activeprediction = response.getJSONArray('data').getJSONObject(0);
+                if (!activeprediction.isNull('ended_at')) {
+                    currentPrediction = null;
+                } else {
+                    let prediction = {
+                        id: $.jsString(activeprediction.getString('id')),
+                        title: $.jsString(activeprediction.getString('title')),
+                        outcomes: [],
+                        locked: !activeprediction.isNull('locked_at')
+                    };
+
+                    let outcomes = activeprediction.getJSONArray('outcomes');
+                    for (let i = 0; i < outcomes.length(); i++) {
+                        prediction.outcomes.push({
+                            index: i + 1,
+                            id: $.jsString(outcomes.getJSONObject(i).getString('id')),
+                            title: $.jsString(outcomes.getJSONObject(i).getString('title'))
+                        });
+                    }
+
+                    currentPrediction = prediction;
+                }
+            }
+        } catch (e) {}
+    }
+
+    $.bind('twitchBroadcasterType', function(event) {
+        if (!event.wasAffiliateOrPartner() && event.isAffiliateOrPartner()) {
+            subscribeEventSub();
+            sync();
+        }
+    });
+
     /*
      * @event eventSubWelcome
      */
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            let subscriptions = [
-                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionBegin,
-                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionEnd,
-                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionLock
-            ];
-
-            for (let i in subscriptions) {
-                let newSubscription = new subscriptions[i]($.username.getIDCaster());
-                try {
-                    newSubscription.create().block();
-                } catch (ex) {
-                    $.log.error(ex);
-                }
+            if (!$.twitchcache.isAffiliateOrPartner()) {
+                return;
             }
+
+            subscribeEventSub();
         }
     });
 
@@ -143,6 +189,10 @@
             args = $.jsArgs(event.getArgs());
 
             if (command === 'prediction') {
+                if (!$.twitchcache.isAffiliateOrPartner()) {
+                    return;
+                }
+
                 let handled = false;
                 if (args.length > 0) {
                     let action = args[0].toLowerCase();
@@ -323,33 +373,10 @@
         $.registerChatSubcommand('prediction', 'resolve', $.PERMISSION.Admin);
         $.registerChatSubcommand('prediction', 'cancel', $.PERMISSION.Admin);
 
-        try {
-            let response = $.helix.getPredictions(null, 1, null);
+        if (!$.twitchcache.isAffiliateOrPartner()) {
+            return;
+        }
 
-            if (response.has('data') && response.getJSONArray('data').length() > 0) {
-                let activeprediction = response.getJSONArray('data').getJSONObject(0);
-                if (!activeprediction.isNull('ended_at')) {
-                    currentPrediction = null;
-                } else {
-                    let prediction = {
-                        id: $.jsString(activeprediction.getString('id')),
-                        title: $.jsString(activeprediction.getString('title')),
-                        outcomes: [],
-                        locked: !activeprediction.isNull('locked_at')
-                    };
-
-                    let outcomes = activeprediction.getJSONArray('outcomes');
-                    for (let i = 0; i < outcomes.length(); i++) {
-                        prediction.outcomes.push({
-                            index: i + 1,
-                            id: $.jsString(outcomes.getJSONObject(i).getString('id')),
-                            title: $.jsString(outcomes.getJSONObject(i).getString('title'))
-                        });
-                    }
-
-                    currentPrediction = prediction;
-                }
-            }
-        } catch (e) {}
+        sync();
     });
 })();

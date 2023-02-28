@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.twitch.TwitchBroadcasterTypeEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
 import tv.phantombot.event.twitch.offline.TwitchOfflineEvent;
@@ -82,6 +83,8 @@ public final class TwitchCache {
     private ZonedDateTime latestClip = null;
     private ZonedDateTime latestLogo = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneId.systemDefault());
     private Instant nextLogoCheck = Instant.EPOCH;
+    private boolean isAffiliate = false;
+    private boolean isPartner = false;
 
     public static TwitchCache instance() {
         return INSTANCE;
@@ -278,6 +281,7 @@ public final class TwitchCache {
 
                             String oldLogoLink = this.logoLink;
                             this.logoLink = data.getString("profile_image_url");
+                            this.setAffiliatePartner(data.getString("broadcaster_type").equals("affiliate"), data.getString("broadcaster_type").equals("partner"));
 
                             if (Instant.now().isAfter(this.nextLogoCheck)) {
                                 this.nextLogoCheck = Instant.now().plus(1, ChronoUnit.HOURS);
@@ -308,6 +312,44 @@ public final class TwitchCache {
                         }
                     }
                 }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
+    }
+
+    public void setAffiliatePartner(boolean isAffiliate, boolean isPartner) {
+        boolean changed = this.isAffiliate != isAffiliate || this.isPartner != isPartner;
+
+        if (changed) {
+            EventBus.instance().postAsync(new TwitchBroadcasterTypeEvent(this.isAffiliate, this.isPartner, isAffiliate, isPartner));
+        }
+
+        this.isAffiliate = isAffiliate;
+        this.isPartner = isPartner;
+    }
+
+    /**
+     * Indicates if this channel is an affiliate
+     *
+     * @return
+     */
+    public boolean isAffiliate() {
+        return this.isAffiliate;
+    }
+
+    /**
+     * Indicates if this channel is a partner
+     *
+     * @return
+     */
+    public boolean isPartner() {
+        return this.isPartner;
+    }
+
+    /**
+     * Indicates if this channel is either an affiliate or a partner
+     *
+     * @return
+     */
+    public boolean isAffiliateOrPartner() {
+        return this.isAffiliate() || this.isPartner();
     }
 
     /**

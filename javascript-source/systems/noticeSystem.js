@@ -38,13 +38,8 @@
     function loadNotices() {
         try {
             noticeLock.lock();
-            var keys = $.inidb.GetKeyList('notices', '').sort(),
-                    inconsistent = false,
-                    i,
-                    messages,
-                    disabled,
-                    intervalMin,
-                    intervalMax;
+            let keys = $.inidb.GetKeyList('notices', '').sort(),
+                    inconsistent = false;
 
             noticeGroups = [];
             noticeTimeoutIds = [];
@@ -52,50 +47,91 @@
             lastNoticesSent = [];
             lastTimeNoticesSent = [];
 
-            for (i = 0; i < keys.length; i++) {
+            for (let i = 0; i < keys.length; i++) {
                 inconsistent |= String(i) !== keys[i];
-                if (selectedGroup === null) {
-                    selectedGroup = i;
-                }
 
-                noticeGroups.push(JSON.parse($.inidb.get('notices', keys[i])));
-                messages = noticeGroups[noticeGroups.length - 1].messages;
-                disabled = noticeGroups[noticeGroups.length - 1].disabled;
-                intervalMin = noticeGroups[noticeGroups.length - 1].intervalMin;
-                intervalMax = noticeGroups[noticeGroups.length - 1].intervalMax;
+                let noticeGroup = null;
+                try {
+                    noticeGroup = JSON.parse($.inidb.get('notices', keys[i]));
+                } catch (e){}
 
-                if (intervalMin === null || intervalMin === undefined) {
-                    intervalMin = intervalMax || 10;
+                if (noticeGroup === undefined || noticeGroup === null) {
                     inconsistent = true;
-                }
-                if (intervalMax === null || intervalMax === undefined) {
-                    intervalMax = intervalMin;
-                    inconsistent = true;
-                }
-                if (messages.length > disabled.length) {
-                    while (messages.length > disabled.length) {
-                        disabled.push(false);
+                } else {
+                    if (noticeGroup.name === undefined || noticeGroup.name === null) {
+                        noticeGroup.name = '';
+                        inconsistent = true;
                     }
 
-                    noticeGroups[noticeGroups.length - 1].disabled = disabled;
-                    inconsistent = true;
-                } else if (messages.length < disabled.length) {
-                    disabled = disabled.slice(0, messages.length);
-                    noticeGroups[noticeGroups.length - 1].disabled = disabled;
-                    inconsistent = true;
-                }
+                    if (noticeGroup.reqMessages === undefined || noticeGroup.reqMessages === null) {
+                        noticeGroup.reqMessages = 25;
+                        inconsistent = true;
+                    }
 
-                noticeTimeoutIds.push(null);
-                messageCounts.push(0);
-                lastNoticesSent.push(-1);
-                lastTimeNoticesSent.push(0);
+                    if (noticeGroup.shuffle === undefined || noticeGroup.shuffle === null) {
+                        noticeGroup.shuffle = false;
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.noticeToggle === undefined || noticeGroup.noticeToggle === null) {
+                        noticeGroup.noticeToggle = false;
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.noticeOfflineToggle === undefined || noticeGroup.noticeOfflineToggle === null) {
+                        noticeGroup.noticeOfflineToggle = false;;
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.intervalMin === undefined || noticeGroup.intervalMin === null) {
+                        if (noticeGroup.intervalMax === undefined || noticeGroup.intervalMax === null) {
+                            noticeGroup.intervalMin = 10;
+                        } else {
+                            noticeGroup.intervalMin = noticeGroup.intervalMax;
+                        }
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.intervalMax === undefined || noticeGroup.intervalMax === null) {
+                        noticeGroup.intervalMax = noticeGroup.intervalMin;
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.messages === undefined || noticeGroup.messages === null) {
+                        noticeGroup.messages = [];
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.disabled === undefined || noticeGroup.disabled === null) {
+                        noticeGroup.disabled = [];
+                        inconsistent = true;
+                    }
+
+                    if (noticeGroup.messages.length !== noticeGroup.disabled.length) {
+                        while (noticeGroup.messages.length > noticeGroup.disabled.length) {
+                            noticeGroup.disabled.push(false);
+                        }
+                        noticeGroup.disabled = noticeGroup.disabled.slice(0, messages.length);
+                        inconsistent = true;
+                    }
+
+                    noticeGroups.push(noticeGroup);
+                    noticeTimeoutIds.push(null);
+                    messageCounts.push(0);
+                    lastNoticesSent.push(-1);
+                    lastTimeNoticesSent.push(0);
+                }
             }
 
             if (inconsistent) {
                 $.inidb.RemoveFile('notices');
-                for (i = 0; i < noticeGroups.length; i++) {
+                for (let i = 0; i < noticeGroups.length; i++) {
                     $.inidb.set('notices', i, JSON.stringify(noticeGroups[i]));
                 }
+            }
+
+            if (selectedGroup === null) {
+                selectedGroup = 0;
             }
         } finally {
             noticeLock.unlock();
@@ -108,7 +144,7 @@
     function startNoticeTimers() {
         try {
             noticeLock.lock();
-            for (var i = 0; i < noticeGroups.length; i++) {
+            for (let i = 0; i < noticeGroups.length; i++) {
                 startNoticeTimer(i);
             }
         } finally {
