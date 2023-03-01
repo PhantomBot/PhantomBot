@@ -71,7 +71,7 @@ public final class SqliteStore extends DataStore {
         return instance;
     }
 
-    public static boolean isAvailable() {
+    public static boolean isAvailable(String configStr) {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException ex) {
@@ -89,6 +89,11 @@ public final class SqliteStore extends DataStore {
             com.gmt2001.Console.debug.printStackTrace(ex);
             if (ex.getClass() == UnsatisfiedLinkError.class
                 || (ex.getCause() != null && ex.getCause().getMessage() != null && ex.getCause().getMessage().contains("No native library found"))) {
+                if (hasDatabase(configStr)) {
+                    com.gmt2001.Console.warn.println();
+                    com.gmt2001.Console.warn.println("SQLite database exists but unable to load SQLite library");
+                    com.gmt2001.Console.warn.println();
+                }
                 return false;
             }
         }
