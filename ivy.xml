@@ -51,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="org.json" name="json" rev="20200518"/>
         <dependency org="org.mozilla" name="rhino" rev="1.7.14"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="1.7.25"/>
-        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.39.4.1"/>
+        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.41.0.0"/>
         <dependency org="com.vdurmont" name="emoji-java" rev="5.1.1" />
     </dependencies>
 </ivy-module>
