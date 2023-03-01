@@ -85,9 +85,10 @@ public final class SqliteStore extends DataStore {
             try ( Statement statement = connection.createStatement()) {
                 statement.execute("SELECT 1;");
             }
-        } catch (SQLException ex) {
+        } catch (UnsatisfiedLinkError | SQLException ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
-            if (ex.getCause() != null && ex.getCause().getMessage() != null && ex.getCause().getMessage().contains("No native library found")) {
+            if (ex.getClass() == UnsatisfiedLinkError.class
+                || (ex.getCause() != null && ex.getCause().getMessage() != null && ex.getCause().getMessage().contains("No native library found"))) {
                 return false;
             }
         }
