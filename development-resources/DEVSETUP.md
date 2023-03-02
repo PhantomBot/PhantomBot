@@ -70,12 +70,12 @@ Using Dev Containers also requires that you have Docker installed, full guide to
 
 1. Fork the [PhantomBot repository](https://github.com/PhantomBot/PhantomBot).
 2. Check out your fork and open it in Visual Studio Code.
-2. Run the `Dev Containers: Open Folder in Container...` command from the Command Palette (F1) or quick actions Status bar item.
-3. Wait for the container to download and configure.
-4. Once the container is running, open up a terminal.
-5. Use the command `make build` to build PhantomBot (builds into the folder 'dist/PhantomBot-custom').
-6. Use the command `make run` to start your newly built PhantomBot instance. You should be prompted to open up PhantomBot in a browser. If not, open a browser and enter the URL `https://localhost:25000/`.
-7. To stop PhantomBot, kill the process in the terminal with the keyboard command 'Ctrl+C'. If your instance of PhantomBot has crashed and is running as a zombie process, open a new terminal in the devcontainer and run the command `make kill`.
-8. If you need to quickly rebuild PhantomBot and start the process, the command `make rebuild` will build and run PhantomBot.
+3. Run the `Dev Containers: Open Folder in Container...` command from the Command Palette (F1) or quick actions Status bar item.
+4. Wait for the container to download and configure.
+5. Once the container is running, open up a terminal.
+6. Use the command `make build` to build PhantomBot (builds into the folder 'dist/PhantomBot-custom').
+7. Use the command `make run` to start your newly built PhantomBot instance. You should be prompted to open up PhantomBot in a browser. If not, open a browser and enter the URL `https://localhost:25000/`.
+8. To stop PhantomBot, kill the process in the terminal with the keyboard command 'Ctrl+C'. If your instance of PhantomBot has crashed and is running as a zombie process, open a new terminal in the devcontainer and run the command `make kill`.
+9. If you need to quickly rebuild PhantomBot and start the process, the command `make rebuild` will build and run PhantomBot.
 
 DONE! Happy coding <3
