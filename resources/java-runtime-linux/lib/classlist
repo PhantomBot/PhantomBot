@@ -830,11 +830,10 @@ java/util/concurrent/atomic/LongAdder
 java/util/concurrent/atomic/Striped64
 java/util/concurrent/ConcurrentSkipListMap$Node
 java/net/InetAddressImplFactory
-java/net/Inet6AddressImpl
+java/net/Inet4AddressImpl
 java/net/InetAddressImpl
 java/net/InetAddress$PlatformNameService
 java/net/InetAddress$NameService
-java/net/Inet4AddressImpl
 java/net/Inet4Address
 java/util/Spliterators$ArraySpliterator
 java/util/stream/Collectors

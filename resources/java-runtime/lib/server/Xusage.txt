@@ -1,10 +1,10 @@
     -Xmixed           mixed mode execution (default)
     -Xint             interpreted mode execution only
-    -Xbootclasspath:<directories and zip/jar files separated by ;>
+    -Xbootclasspath:<directories and zip/jar files separated by >
                       set search path for bootstrap classes and resources
-    -Xbootclasspath/a:<directories and zip/jar files separated by ;>
+    -Xbootclasspath/a:<directories and zip/jar files separated by >
                       append to end of bootstrap class path
-    -Xbootclasspath/p:<directories and zip/jar files separated by ;>
+    -Xbootclasspath/p:<directories and zip/jar files separated by >
                       prepend in front of bootstrap class path
     -Xnoclassgc       disable class garbage collection
     -Xlog:<opts>      control JVM logging, use -Xlog:help for details

@@ -789,7 +789,6 @@ java/nio/DirectIntBufferRU
 jdk/internal/jimage/ImageStringsReader
 jdk/internal/jimage/ImageStrings
 jdk/internal/jimage/decompressor/Decompressor
-jdk/internal/jimage/ImageLocation
 java/util/Collections$EmptyIterator
 java/util/Collections$EmptyEnumeration
 jdk/internal/loader/BuiltinClassLoader$1
@@ -1116,6 +1115,7 @@ java/util/logging/LogManager$CloseOnReset
 java/time/zone/ZoneRulesProvider
 java/time/zone/ZoneRulesProvider$1
 java/time/zone/TzdbZoneRulesProvider
+jdk/internal/jimage/ImageLocation
 java/time/zone/Ser
 java/io/Externalizable
 java/time/Month
