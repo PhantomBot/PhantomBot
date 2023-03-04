@@ -23,8 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <url name="github" m2compatible="true">
             <artifact pattern="https://maven.pkg.github.com/[organisation]/[module]/[artifact]-[revision].[ext]" />
         </url>
+        <filesystem name="localfs" m2compatible="true">
+            <artifact pattern="${ivy.localfs.dir}/[organisation]/[module]/[artifact]-[revision].[ext]" />
+        </filesystem>
     </resolvers>
     <modules>
         <module repo="github" resolver="github" />
+        <module repo="localfs" resolver="localfs" />
     </modules>
 </ivysettings>

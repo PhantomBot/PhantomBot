@@ -46,6 +46,7 @@
     <property name="ivy.home" value="${user.home}/.ant"/>
     <property name="ivy.jar.dir" value="${ivy.home}/lib"/>
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+    <property name="ivy.localfs.dir" location="localfs" />
 
     <tstamp>
         <format property="NOW" pattern="MMM dd yyyy HH:mm:ss zzz" timezone="GMT" />
@@ -96,7 +97,6 @@
         Ivy is in at least one of Ant's lib dir or the local lib dir. -->
         <path id="ivy.lib.path">
             <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
-
         </path>
         <taskdef resource="org/apache/ivy/ant/antlib.xml"
                  uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
