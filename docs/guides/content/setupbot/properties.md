@@ -105,7 +105,7 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 Data Type: _String_
 
-the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. default `sqlite3store`
+the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. default `h2store`
 
 _NOTE: A restart is required for this property to take effect_
 
