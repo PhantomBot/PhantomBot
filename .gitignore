@@ -67,6 +67,7 @@ nbproject/
 
 # Libs downloaded from Maven
 lib/
+lib.extra/
 
 # Allow java-runtime files
 !resources/java-runtime*/*
