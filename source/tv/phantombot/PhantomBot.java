@@ -314,9 +314,18 @@ public final class PhantomBot implements Listener {
         /* Load up a new SecureRandom for the scripts to use */
         this.random = new SecureRandom();
 
+        if (CaselessProperties.instance().getProperty("datastore", "NONESTORE").equals("NONESTORE")
+            && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
+            && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
+            && SqliteStore.instance().GetFileList().length > 0) {
+            Transaction t = CaselessProperties.instance().startTransaction(CaselessProperties.Transaction.PRIORITY_MAX);
+            t.setProperty("datastore", "sqlite3store");
+            t.commit();
+        }
+
         /* Load the datastore */
         /**
-         * @botproperty datastore - The type of DB to use. Valid values: `sqlite3store`, `mysqlstore`, `h2store`. Default `sqlite3store`
+         * @botproperty datastore - The type of DB to use. Valid values: `sqlite3store`, `mysqlstore`, `h2store`. Default `h2store`
          * @botpropertycatsort datastore 10 30 Datastore
          * @botpropertyrestart datastore
          */
@@ -325,7 +334,7 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort datastoreconfig 900 30 Datastore
          * @botpropertyrestart datastoreconfig
          */
-        if (CaselessProperties.instance().getProperty("datastore", "sqlite3store").equalsIgnoreCase("mysqlstore")) {
+        if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("mysqlstore")) {
             /**
              * @botproperty mysqlport - The port to use for MySQL connections. Default `3306`
              * @botpropertycatsort mysqlport 210 30 Datastore
@@ -371,7 +380,7 @@ public final class PhantomBot implements Listener {
                 && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
-        } else if (CaselessProperties.instance().getProperty("datastore", "sqlite3store").equalsIgnoreCase("h2store")
+        } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("h2store")
             || !SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))) {
             this.dataStore = H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
@@ -385,12 +394,16 @@ public final class PhantomBot implements Listener {
                 && SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
                 DataStoreConverter.convertDataStore(H2Store.instance(), SqliteStore.instance());
             }
-        } else {
+        } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("sqlite3store")
+            || CaselessProperties.instance().getProperty("datastore", "h2store").isBlank()) {
             this.dataStore = SqliteStore.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
             /* Handle index operations. */
             com.gmt2001.Console.debug.println("Checking database indexes, please wait...");
             this.dataStore.CreateIndexes();
+        } else {
+            com.gmt2001.Console.err.println("Invalid datastore selected. PhantomBot now shutting down...");
+            PhantomBot.exitError();
         }
 
         /* Set the oauth key in the Twitch api and perform a validation. */
