@@ -29,6 +29,7 @@
     <property name="fallback.revision" value="unknown" />
     <property name="src" location="source" />
     <property name="reference" location="lib" />
+    <property name="reference.extra" location="lib.extra" />
     <property name="build" location="build" />
     <property name="classes" location="${build}/classes" />
     <property name="dist" location="dist" />
@@ -37,6 +38,7 @@
     <property name="build.dir" location="${dist}/build" />
     <property name="res.dir" location="${build.dir}" />
     <property name="lib.dir" location="${build.dir}/lib" />
+    <property name="lib.extra.dir" location="${build.dir}/lib.extra" />
     <property name="java.source.level" value="11"/>
     <!-- Apache Ivy properties -->
     <property name="ivy.install.version" value="2.5.0"/>
@@ -111,7 +113,8 @@
 
     <target depends="init-ivy" name="ivy-retrieve">
         <ivy:settings file="ivysettings.xml"/>
-        <ivy:retrieve sync="true"/>
+        <ivy:retrieve sync="true" conf="default"/>
+        <ivy:retrieve sync="true" conf="lib.extra" pattern="${reference.extra}/[artifact]-[revision].[ext]"/>
         <ivy:report graph="false" todir="resources/licenses/"/>
         <exec executable="git" outputproperty="git.ivychange" failifexecutionfails="false" errorproperty="">
             <arg value="diff"/>
@@ -141,6 +144,7 @@
     <target name="clearlib">
         <delete>
             <fileset dir="${reference}" includes="**/*.jar" />
+            <fileset dir="${reference.extra}" includes="**/*.jar" />
         </delete>
     </target>
 
@@ -303,6 +307,14 @@
         <echo level="info" message="staging lib folder into build dir." />
         <copy todir="${lib.dir}">
             <fileset dir="${reference}">
+                <include name="*.jar" />
+                <exclude name="*sources.jar"/>
+                <exclude name="*javadoc.jar"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${lib.extra.dir}" />
+        <copy todir="${lib.extra.dir}">
+            <fileset dir="${reference.extra}">
                 <include name="*.jar" />
                 <exclude name="*sources.jar"/>
                 <exclude name="*javadoc.jar"/>

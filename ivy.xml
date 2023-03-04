@@ -34,8 +34,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             Additional functionality is enabled through the use of third-party modules.
         </description>
     </info>
-    <configurations defaultconf="default"/>
-    <dependencies>
+    <configurations defaultconf="default">
+        <conf name="default"/>
+        <conf name="lib.extra"/>
+    </configurations>
+    <dependencies defaultconf="default">
         <dependency org="com.discord4j" name="discord4j-core" rev="3.2.3"/>
         <dependency org="com.h2database" name="h2" rev="1.4.200"/>
         <dependency org="com.rollbar" name="rollbar-java" rev="1.8.1"/>
