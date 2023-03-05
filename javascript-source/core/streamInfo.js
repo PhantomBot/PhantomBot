@@ -36,7 +36,7 @@
 
     $.bind('eventSubStreamOffline', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
-            $.twitchcache.goOffline();
+            $.twitchcache.goOffline(true);
         }
     });
 
