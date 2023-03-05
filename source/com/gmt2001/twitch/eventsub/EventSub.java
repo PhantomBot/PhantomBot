@@ -61,6 +61,7 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
+import tv.phantombot.event.eventsub.EventSubDisconnectedEvent;
 import tv.phantombot.event.eventsub.EventSubWelcomeEvent;
 import tv.phantombot.event.twitch.TwitchOAuthReauthorizedEvent;
 import tv.phantombot.twitch.api.Helix;
@@ -571,6 +572,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                 if (this.keepAliveFuture != null) {
                     this.keepAliveFuture.cancel(true);
                 }
+                EventBus.instance().postAsync(new EventSubDisconnectedEvent());
             } finally {
                 this.rwl.writeLock().unlock();
             }
