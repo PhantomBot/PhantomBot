@@ -50,20 +50,17 @@ public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
     @Override
     protected void onOpen() {
         super.onOpen();
-        com.gmt2001.Console.out.println("Requesting Twitch Stream Up/Down Data Feed for " + this.channelId);
+        com.gmt2001.Console.out.println("Requesting Twitch Stream " + (this.isCaster ? "View Count" : "Up/Down") + " Data Feed for " + this.channelId);
     }
 
     @Override
     protected void onSubscribeSuccess() {
-        com.gmt2001.Console.out.println("Connected to Twitch Stream Up/Down Data Feed for " + this.channelId);
-        Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
-            TwitchCache.instance().syncStreamStatus(true);
-        }).subscribe();
+        com.gmt2001.Console.out.println("Connected to Twitch Stream " + (this.isCaster ? "View Count" : "Up/Down") + " Data Feed for " + this.channelId);
     }
 
     @Override
     protected void onSubscribeFailure(String error) {
-        com.gmt2001.Console.out.println("PubSub Rejected Twitch Stream Up/Down Data Feed for " + this.channelId + " with Error: " + error);
+        com.gmt2001.Console.out.println("PubSub Rejected Twitch Stream " + (this.isCaster ? "View Count" : "Up/Down") + " Data Feed for " + this.channelId + " with Error: " + error);
     }
 
     @Override
@@ -71,15 +68,9 @@ public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
         float srvtime = body.optFloat("server_time");
         switch (body.getString("type")) {
             case "stream-up":
-                if (this.isCaster) {
-                    TwitchCache.instance().syncOnline();
-                }
                 EventBus.instance().postAsync(new PubSubStreamUpEvent(this.channelId, srvtime, body.getInt("play_delay")));
                 break;
             case "stream-down":
-                if (this.isCaster) {
-                    TwitchCache.instance().goOffline(true);
-                }
                 EventBus.instance().postAsync(new PubSubStreamDownEvent(this.channelId, srvtime));
                 break;
             case "viewcount":

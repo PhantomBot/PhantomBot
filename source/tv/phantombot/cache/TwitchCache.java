@@ -112,6 +112,7 @@ public final class TwitchCache {
             if (streamTitlen != null) {
                 this.streamTitle = streamTitlen;
             }
+            this.syncStreamStatus(true);
             ExecutorService.scheduleAtFixedRate(() -> {
                 Thread.currentThread().setName("TwitchCache::updateCache");
                 com.gmt2001.Console.debug.println("TwitchCache::updateCache");
