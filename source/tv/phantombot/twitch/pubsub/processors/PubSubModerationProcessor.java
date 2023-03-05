@@ -43,7 +43,7 @@ public class PubSubModerationProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;
     private final Map<String, Instant> timeoutCache = new ConcurrentHashMap<>();
-    private Future future;
+    private Future<?> future;
 
     public PubSubModerationProcessor() {
         this(TwitchValidate.instance().getAPIUserID().equalsIgnoreCase(""

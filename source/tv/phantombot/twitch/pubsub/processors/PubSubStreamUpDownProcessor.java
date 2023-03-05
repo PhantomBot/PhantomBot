@@ -30,6 +30,7 @@ import tv.phantombot.event.pubsub.videoplayback.PubSubViewCountEvent;
  *
  * @author gmt2001
  */
+@Deprecated
 public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;

@@ -27,6 +27,7 @@ import tv.phantombot.twitch.api.TwitchValidate;
  *
  * @author gmt2001
  */
+@Deprecated
 public class PubSubChannelPointsProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;

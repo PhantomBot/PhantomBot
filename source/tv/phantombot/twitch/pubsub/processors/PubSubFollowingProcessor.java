@@ -30,6 +30,7 @@ import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
  *
  * @author gmt2001
  */
+@Deprecated
 public class PubSubFollowingProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;
