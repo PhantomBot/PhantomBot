@@ -82,7 +82,12 @@ public final class HttpRequest {
 
             HttpClientResponse hcr = HttpClient.request(HttpMethod.valueOf(type.name()), uri, h, post);
 
-            if (hcr.responseCode().code() < 400) {
+            if (!hcr.isSuccess() && hcr.hasException()) {
+                r.success = false;
+                r.exception = hcr.exception().getClass().getSimpleName() + ": " + hcr.exception().getMessage();
+                r.rawException = hcr.exception();
+                r.httpCode = 0;
+            } else if (hcr.responseCode().code() < 400) {
                 r.content = hcr.responseBody();
                 r.httpCode = hcr.responseCode().code();
                 r.success = true;
