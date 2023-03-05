@@ -29,6 +29,13 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
@@ -213,6 +220,127 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * @return A {@link ChannelFuture} that can be awaited
      */
     static ChannelFuture close(Channel ch, WebSocketFrame closeFrame) {
+        if (ch == null) {
+            return new ChannelFuture() {
+                @Override
+                public boolean await(long arg0) throws InterruptedException {
+                    return true;
+                }
+
+                @Override
+                public boolean await(long arg0, TimeUnit arg1) throws InterruptedException {
+                    return true;
+                }
+
+                @Override
+                public boolean awaitUninterruptibly(long arg0) {
+                    return true;
+                }
+
+                @Override
+                public boolean awaitUninterruptibly(long arg0, TimeUnit arg1) {
+                    return true;
+                }
+
+                @Override
+                public boolean cancel(boolean arg0) {
+                    return true;
+                }
+
+                @Override
+                public Throwable cause() {
+                    return null;
+                }
+
+                @Override
+                public Void getNow() {
+                    return null;
+                }
+
+                @Override
+                public boolean isCancellable() {
+                    return false;
+                }
+
+                @Override
+                public boolean isSuccess() {
+                    return true;
+                }
+
+                @Override
+                public boolean isCancelled() {
+                    return false;
+                }
+
+                @Override
+                public boolean isDone() {
+                    return true;
+                }
+
+                @Override
+                public Void get() throws InterruptedException, ExecutionException {
+                    return null;
+                }
+
+                @Override
+                public Void get(long timeout, TimeUnit unit)
+                        throws InterruptedException, ExecutionException, TimeoutException {
+                            return null;
+                }
+
+                @Override
+                public Channel channel() {
+                    return null;
+                }
+
+                @Override
+                public ChannelFuture addListener(GenericFutureListener<? extends Future<? super Void>> listener) {
+                    return this;
+                }
+
+                @Override
+                public ChannelFuture addListeners(GenericFutureListener<? extends Future<? super Void>>... listeners) {
+                    return this;
+                }
+
+                @Override
+                public ChannelFuture removeListener(GenericFutureListener<? extends Future<? super Void>> listener) {
+                    return this;
+                }
+
+                @Override
+                public ChannelFuture removeListeners(
+                        GenericFutureListener<? extends Future<? super Void>>... listeners) {
+                            return this;
+                }
+
+                @Override
+                public ChannelFuture sync() throws InterruptedException {
+                    return this;
+                }
+
+                @Override
+                public ChannelFuture syncUninterruptibly() {
+                    return this;
+                }
+
+                @Override
+                public ChannelFuture await() throws InterruptedException {
+                    return this;
+                }
+
+                @Override
+                public ChannelFuture awaitUninterruptibly() {
+                    return this;
+                }
+
+                @Override
+                public boolean isVoid() {
+                    return true;
+                }
+
+            };
+        }
         if (closeFrame == null) {
             closeFrame = WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.NORMAL_CLOSURE);
         }
