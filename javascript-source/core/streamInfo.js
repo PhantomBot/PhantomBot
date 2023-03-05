@@ -18,11 +18,12 @@
 /* global Packages */
 
 (function () {
-    var count = 1;
-    var gamesPlayed;
+    let count = 1;
+    let gamesPlayed;
 
     $.bind('eventSubChannelUpdate', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+            $.twitchcache.eventSubMode(true);
             $.twitchcache.setStreamStatus(event.event().title());
             $.twitchcache.setGameTitle(event.event().categoryName());
         }
@@ -30,7 +31,11 @@
 
     $.bind('eventSubStreamOnline', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
-            $.twitchcache.syncOnline();
+            if ($.twitchcache.eventSubMode()) {
+                $.twitchcache.goOnline(true);
+            } else {
+                $.twitchcache.syncOnline();
+            }
         }
     });
 
@@ -59,12 +64,16 @@
         }
     });
 
+    $.bind('eventSubDisconnected', function() {
+        $.twitchcache.eventSubMode(false);
+    });
+
     /**
      * @event twitchOnline
      */
     $.bind('twitchOnline', function (event) {
         if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
-            var uptime = getStreamUptimeSeconds($.channelName);
+            let uptime = getStreamUptimeSeconds($.channelName);
             $.inidb.set('panelstats', 'gameCount', 1);
             count = $.inidb.get('panelstats', 'gameCount');
             $.inidb.del('streamInfo', 'gamesPlayed');
@@ -91,7 +100,7 @@
      * @event twitchGameChange
      */
     $.bind('twitchGameChange', function (event) {
-        var uptime = getStreamUptimeSeconds($.channelName);
+        let uptime = getStreamUptimeSeconds($.channelName);
 
         if ($.isOnline($.channelName)) {
             $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
@@ -115,7 +124,7 @@
      */
     function getGamesPlayed() {
         if ($.inidb.exists('streamInfo', 'gamesPlayed')) {
-            var games = $.inidb.get('streamInfo', 'gamesPlayed'),
+            let games = $.inidb.get('streamInfo', 'gamesPlayed'),
                     string = games.split('=').join(', ');
 
             return string;
@@ -128,7 +137,7 @@
      * @export $
      */
     function getPlayTime() {
-        var playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
+        let playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
                 time;
 
         if (playTime) {
@@ -163,7 +172,7 @@
         if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
             return ($.twitchcache.getStreamStatus() + '');
         } else {
-            var channelData = $.twitch.GetChannel(channelName);
+            let channelData = $.twitch.GetChannel(channelName);
 
             if (!channelData.isNull('status') && channelData.getInt('_http') === 200) {
                 return channelData.getString('status');
@@ -185,7 +194,7 @@
         if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
             return ($.twitchcache.getGameTitle() + '');
         } else {
-            var channelData = $.twitch.GetChannel(channelName);
+            let channelData = $.twitch.GetChannel(channelName);
 
             if (!channelData.isNull('game') && channelData.getInt('_http') === 200) {
                 return channelData.getString("game");
@@ -207,7 +216,7 @@
      * @returns {Url}
      */
     function getLogo(channelName) {
-        var channel = $.twitch.GetChannel(channelName);
+        let channel = $.twitch.GetChannel(channelName);
 
         if (!channel.isNull('logo') && channel.getInt('_http') === 200) {
             return channel.getString('logo');
@@ -226,7 +235,7 @@
         if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
             return $.twitchcache.getStreamUptimeSeconds();
         } else {
-            var stream = $.twitch.GetStream(channelName),
+            let stream = $.twitch.GetStream(channelName),
                     now = new Date(),
                     createdAtDate,
                     time;
@@ -253,11 +262,11 @@
      */
     function getStreamUptime(channelName) {
         if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
-            var uptime = $.twitchcache.getStreamUptimeSeconds();
+            let uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
                 $.consoleLn("Fallback uptime");
-                var stream = $.twitch.GetStream(channelName),
+                let stream = $.twitch.GetStream(channelName),
                         now = new Date(),
                         createdAtDate,
                         time;
@@ -272,7 +281,7 @@
             }
             return $.getTimeString(uptime);
         } else {
-            var stream = $.twitch.GetStream(channelName),
+            let stream = $.twitch.GetStream(channelName),
                     now = new Date(),
                     createdAtDate,
                     time;
@@ -297,7 +306,7 @@
      * @returns {string}
      */
     function getStreamDownTime() {
-        var now = $.systemTime(),
+        let now = $.systemTime(),
                 down = $.inidb.get('streamInfo', 'downtime'),
                 time;
 
@@ -322,7 +331,7 @@
             createdAtDate = new Date($.twitchcache.getStreamCreatedAt() + '');
             return $.dateToString(createdAtDate);
         } else {
-            var stream = $.twitch.GetStream(channelName),
+            let stream = $.twitch.GetStream(channelName),
                     createdAtDate;
 
             if (stream.isNull('stream')) {
@@ -344,7 +353,7 @@
         if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
             return $.twitchcache.getViewerCount();
         } else {
-            var stream = $.twitch.GetStream(channelName);
+            let stream = $.twitch.GetStream(channelName);
 
             if (!stream.isNull('stream') && stream.getInt('_http') === 200) {
                 return stream.getJSONObject('stream').getInt('viewers');
@@ -361,7 +370,7 @@
      * @returns {Number}
      */
     function getFollows(channelName) {
-        var channel = $.twitch.GetChannel(channelName);
+        let channel = $.twitch.GetChannel(channelName);
 
         if (!channel.isNull('followers') && channel.getInt('_http') === 200) {
             return channel.getInt('followers');
@@ -380,13 +389,13 @@
         username = $.user.sanitize(username);
         channelName = $.user.sanitize(channelName);
 
-        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+        let user = $.twitch.GetUserFollowsChannel(username, channelName);
 
         if (user.getInt('_http') === 404) {
             return $.lang.get('followhandler.follow.age.datefmt.404');
         }
 
-        var date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        let date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         return date.format(Packages.java.time.format.DateTimeFormatter.ofPattern($.lang.get('followhandler.follow.age.datefmt')));
     }
 
@@ -400,16 +409,16 @@
         username = $.user.sanitize(username);
         channelName = $.user.sanitize(channelName);
 
-        var user = $.twitch.GetUserFollowsChannel(username, channelName);
+        let user = $.twitch.GetUserFollowsChannel(username, channelName);
 
         if (user.getInt('_http') === 404) {
             $.say($.lang.get('followhandler.follow.age.err.404', $.userPrefix(sender, true), username, channelName));
             return;
         }
 
-        var date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        var dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
-        var days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
+        let date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        let dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
+        let days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
 
         if (days > 0) {
             $.say($.lang.get('followhandler.follow.age.time.days', $.userPrefix(sender, true), username, channelName, dateFinal, days));
@@ -424,16 +433,16 @@
      * @param event
      */
     function getChannelAge(event) {
-        var channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])));
+        let channelData = $.twitch.GetChannel((!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])));
 
         if (channelData.getInt('_http') === 404 || !channelData.getBoolean('_success')) {
             $.say($.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404'));
             return;
         }
 
-        var date = Packages.java.time.ZonedDateTime.parse(channelData.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        var dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
-        var days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
+        let date = Packages.java.time.ZonedDateTime.parse(channelData.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        let dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
+        let days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
 
         if (days > 0) {
             $.say($.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), (!event.getArgs()[0] ? event.getSender() : $.user.sanitize(event.getArgs()[0])), dateFinal, days));
@@ -448,7 +457,7 @@
      * @param event
      */
     function getChannelCreatedZonedDateTime(channel) {
-        var channelData = $.twitch.GetChannel($.user.sanitize(channel));
+        let channelData = $.twitch.GetChannel($.user.sanitize(channel));
 
         if (channelData.getInt('_http') === 404 || !channelData.getBoolean('_success')) {
             return null;
@@ -463,7 +472,7 @@
      * @return {number} count
      */
     function getSubscriberCount() {
-        var jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, null);
+        let jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, null);
 
         if (jsonObject.getInt('_http') !== 200) {
             return 0;
@@ -482,7 +491,7 @@
      */
     function updateGame(channelName, game, sender, silent) {
         try {
-            var http = $.twitch.UpdateChannel(channelName, '', game);
+            let http = $.twitch.UpdateChannel(channelName, '', game);
         } catch (e) {
             $.log.error('Failed to change the game. Twitch does not recognize it.');
         }
@@ -518,7 +527,7 @@
      * @param {boolean} silent
      */
     function updateStatus(channelName, status, sender, silent) {
-        var http = $.twitch.UpdateChannel(channelName, status, '');
+        let http = $.twitch.UpdateChannel(channelName, status, '');
 
         if (http.getBoolean('_success')) {
             if (http.getInt('_http') === 200) {

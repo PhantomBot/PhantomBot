@@ -71,6 +71,7 @@ public final class TwitchCache {
 
     /* Cached data */
     private boolean isOnline = false;
+    private boolean eventSubMode = false;
     private String streamCreatedAt = "";
     private String gameTitle = "Some Game";
     private String streamTitle = "Some Title";
@@ -222,12 +223,12 @@ public final class TwitchCache {
                         boolean isOnlinen = jso.getJSONArray("data").length() > 0;
                         boolean sentTwitchOnlineEvent = false;
 
-                        if (!this.isOnline && isOnlinen) {
+                        if (!eventSubMode && !this.isOnline && isOnlinen) {
                             if (Instant.now().isAfter(this.offlineTimeout)) {
                                 this.offlineDelay = null;
                                 sentTwitchOnlineEvent = true;
                             }
-                        } else if (this.isOnline && !isOnlinen) {
+                        } else if (!eventSubMode && this.isOnline && !isOnlinen) {
                             if (this.offlineDelay == null) {
                                 this.offlineDelay = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinedelay", 30));
                             } else if (Instant.now().isAfter(this.offlineDelay)) {
@@ -250,16 +251,20 @@ public final class TwitchCache {
 
                             String gameTitlen = data.getString("game_name");
 
-                            this.setGameTitle(gameTitlen, !sentTwitchOnlineEvent);
+                            if (!eventSubMode) {
+                                this.setGameTitle(gameTitlen, !sentTwitchOnlineEvent);
+                            }
 
                             String streamTitlen = data.getString("title");
 
-                            this.setStreamStatus(streamTitlen, !sentTwitchOnlineEvent);
+                            if (!eventSubMode) {
+                                this.setStreamStatus(streamTitlen, !sentTwitchOnlineEvent);
+                            }
 
-                            if (sentTwitchOnlineEvent) {
+                            if (!eventSubMode && sentTwitchOnlineEvent) {
                                 this.goOnline(true);
                             }
-                        } else if (!this.isOnline && !isOnlinen) {
+                        } else if (!eventSubMode && !this.isOnline && !isOnlinen) {
                             this.streamUptime = null;
                             this.previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
                             this.streamCreatedAt = "";
@@ -314,6 +319,12 @@ public final class TwitchCache {
                 }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
     }
 
+    /**
+     * Sets the current Affiliate and Partner states, and sends ane vent if they changed
+     *
+     * @param isAffiliate {@code true} If the broadcaster is an Affiliate (not partner)
+     * @param isPartner {@code true} If the broadcaster is a Partner (not affiliate)
+     */
     public void setAffiliatePartner(boolean isAffiliate, boolean isPartner) {
         boolean changed = this.isAffiliate != isAffiliate || this.isPartner != isPartner;
 
@@ -402,19 +413,19 @@ public final class TwitchCache {
     }
 
     /**
-     * Sets the game title.Useful for when !game is used.
+     * Sets the game title
      *
-     * @param gameTitle
+     * @param gameTitle The new game name
      */
     public void setGameTitle(String gameTitle) {
         this.setGameTitle(gameTitle, true);
     }
 
     /**
-     * Sets the game title.Useful for when !game is used.
+     * Sets the game title
      *
-     * @param gameTitle
-     * @param sendEvent
+     * @param gameTitle The new game name
+     * @param sendEvent {@code true} to send a {@link TwitchGameChangeEvent}
      */
     public void setGameTitle(String gameTitle, boolean sendEvent) {
         boolean changed = !this.gameTitle.equals(gameTitle);
@@ -426,7 +437,7 @@ public final class TwitchCache {
     }
 
     /**
-     * Returns the title (status) of the stream.
+     * Returns the title (status) of the stream
      *
      * @return
      */
@@ -435,19 +446,19 @@ public final class TwitchCache {
     }
 
     /**
-     * Sets the title (status) of the stream.Useful for when !title is used.
+     * Sets the title (status) of the stream
      *
-     * @param streamTitle
+     * @param streamTitle The new title
      */
     public void setStreamStatus(String streamTitle) {
         this.setStreamStatus(streamTitle, true);
     }
 
     /**
-     * Sets the title (status) of the stream.Useful for when !title is used.
+     * Sets the title (status) of the stream
      *
-     * @param streamTitle
-     * @param sendEvent
+     * @param streamTitle The new title
+     * @param sendEvent {@code true} to send a {@link TwitchTitleChangeEvent}
      */
     public void setStreamStatus(String streamTitle, boolean sendEvent) {
         boolean changed = !this.streamTitle.equals(streamTitle);
@@ -495,12 +506,31 @@ public final class TwitchCache {
     }
 
     /**
-     * Returns the views count.
+     * Returns the views count. Twitch does not report this anymore
      *
-     * @return
+     * @return {@code -1} as Twitch does not report this anymore
      */
+    @Deprecated
     public int getViews() {
         return -1;
+    }
+
+    /**
+     * Sets the current state of EventSub mode. When EventSub mode is enabled, stream title, game, and online state are not synced by TwitchAPI
+     *
+     * @param enabled {@code true} to enable EventSub mode
+     */
+    public synchronized void eventSubMode(boolean enabled) {
+        this.eventSubMode = enabled;
+    }
+
+    /**
+     * Returns the current state of EventSub mode. When EventSub mode is enabled, stream title, game, and online state are not synced by TwitchAPI
+     *
+     * @return {@code true} if EventSub mode is enabled
+     */
+    public boolean eventSubMode() {
+        return this.eventSubMode;
     }
 
     /**
@@ -527,7 +557,7 @@ public final class TwitchCache {
     /**
      * Sets online state
      *
-     * @param shouldSendEvent
+     * @param shouldSendEvent {@code true} to send a {@link TwitchOnlineEvent}
      */
     public void goOnline(boolean shouldSendEvent) {
         if (!this.isOnline && Instant.now().isAfter(this.offlineTimeout)) {
@@ -543,7 +573,7 @@ public final class TwitchCache {
     /**
      * Sets offline state
      *
-     * @param shouldSendEvent
+     * @param shouldSendEvent {@code true} to send a {@link TwitchOfflineEvent}
      */
     public void goOffline(boolean shouldSendEvent) {
         if (this.isOnline) {
@@ -559,7 +589,7 @@ public final class TwitchCache {
     }
 
     /**
-     * Syncs the stream status, then triggers TwitchOnline
+     * Syncs the stream status using both Get Streams and Get Channel Information, then calls {@link #goOnline(boolean)} with the parameter set to {@code true}
      */
     public void syncOnline() {
         Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
@@ -576,21 +606,27 @@ public final class TwitchCache {
     }
 
     /**
-     * Updates the stream status
+     * Updates the stream status from the API
      */
     public void syncStreamStatus() {
         this.syncStreamStatus(false);
     }
 
     /**
-     * Updates the stream status
+     * Updates the stream status from the Get Streams endpoint
      *
-     * @param shouldSendEvent
+     * @param shouldSendEvent {@code true} to send {@link TwitchOnlineEvent} or {@link TwitchOfflineEvent}, if appropriate
      */
     public void syncStreamStatus(boolean shouldSendEvent) {
         this.syncStreamStatus(shouldSendEvent, null);
     }
 
+    /**
+     * Updates the stream title/game/online status from the Get Streams endpoint
+     *
+     * @param shouldSendEvent {@code true} to send events, if appropriate
+     * @param callback A callback to execute on success. The parameter is {@code true} if the stream information was successfully retrieved
+     */
     public void syncStreamStatus(boolean shouldSendEvent, Consumer<Boolean> callback) {
         Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null).doOnSuccess(streams -> {
             boolean hasData = false;
@@ -632,6 +668,12 @@ public final class TwitchCache {
         }).subscribe();
     }
 
+    /**
+     * Syncs teh current stream title/game via the Get Channel Information endpoint
+     *
+     * @param shouldSendEvent {@code true} to send {@link TwitchTitleChangeEvent} and/or {@link TwitchGameChangeEvent}, if appropriate
+     * @param callback A callback to execute on success. The parameter is {@code true} if the channel information was successfully retrieved
+     */
     public void syncStreamInfoFromChannel(boolean shouldSendEvent, Consumer<Boolean> callback) {
         Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).doOnSuccess(channels -> {
             boolean hasData = false;
@@ -654,14 +696,14 @@ public final class TwitchCache {
     /**
      * Updates the viewer count
      *
-     * @param viewers
+     * @param viewers The new viewer count
      */
     public void updateViewerCount(int viewers) {
         this.viewerCount = viewers;
     }
 
     /**
-     * Updates the current game
+     * Updates the current game from the API
      */
     public void updateGame() {
         this.updateGame(false);
@@ -670,7 +712,7 @@ public final class TwitchCache {
     /**
      * Updates the current game
      *
-     * @param sendEvent
+     * @param sendEvent {@code true} to send {@link TwitchGameChangeEvent}, if appropriate
      */
     public void updateGame(boolean sendEvent) {
         Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).doOnSuccess(jso -> {
