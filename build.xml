@@ -124,6 +124,7 @@
         <exec executable="git" failifexecutionfails="false" errorproperty="" if:blank="${git.ivychange}">
             <arg value="checkout"/>
             <arg value="resources/licenses/tv.phantombot-phantombot-default.html"/>
+            <arg value="resources/licenses/tv.phantombot-phantombot-lib.extra.html"/>
         </exec>
     </target>
 

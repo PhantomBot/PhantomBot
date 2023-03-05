@@ -101,7 +101,7 @@ public final class HttpClient {
             _requestBody = "";
         }
 
-        RequestSender sender = client.request(method).uri(url);
+        RequestSender sender = client.followRedirect(true).request(method).uri(url);
 
         try {
             /**

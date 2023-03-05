@@ -123,7 +123,15 @@ jobs:
     - name: Copy Files
       run: |
         rsync -rv --delete-during --progress dist/javadoc docs
+    - name: Verify Changed files
+      uses: tj-actions/verify-changed-files@v13
+      id: verify-changed-files
+      with:
+        files: |
+          docs/javadoc/**
+          !docs/javadoc/*.zip
     - name: Commit Changes
+      if: steps.verify-changed-files.outputs.files_changed == 'true'
       uses: EndBug/add-and-commit@v9
       with:
         message: 'Updated the JavaDoc'
