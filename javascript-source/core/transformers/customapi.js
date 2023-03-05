@@ -27,11 +27,11 @@
     function getCustomAPIValue(url) {
         var res = $.customAPI.get(url);
 
-        $.consoleDebug(res.toString());
-
         if (res.content !== null) {
+            $.consoleDebug(res.toString());
             return res.content;
         } else {
+            $.log.error(res.toString());
             throw res.toString();
         }
     }
@@ -67,7 +67,6 @@
             try {
                 response = getCustomAPIValue(match[1]);
             } catch (ex) {
-                $.log.error('Failed to get data from API: ' + ex.message);
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
             }
             return {
@@ -118,7 +117,6 @@
             try {
                 response = getCustomAPIValue(match[1]);
             } catch (ex) {
-                $.log.error('Failed to get data from API: ' + ex.message);
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
             }
             jsonItems = match[2].split(' ');
@@ -138,7 +136,7 @@
                         try {
                             responsePart = new JSONObject(response).get(jsonCheckList[0]);
                         } catch (ex) {
-                            $.log.error('Failed to get data from API: ' + ex.message);
+                            $.log.error('Failed to get data from API: ' + ex);
                             $.log.error(response.toString());
                             return {result: $.lang.get('customcommands.customapijson.err', cmd)};
                         }
@@ -149,7 +147,7 @@
                                 try {
                                     jsonObject = new JSONObject(response).get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    $.log.error('Failed to get data from API: ' + ex);
                                     $.log.error('response:' + response.toString());
                                     return {result: $.lang.get('customcommands.customapijson.err', cmd)};
                                 }
@@ -157,7 +155,7 @@
                                 try {
                                     jsonObject = jsonObject.get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    $.log.error('Failed to get data from API: ' + ex);
                                     $.log.error('jsonCheckList[' + i + ']: ' + response.toString());
                                     return {result: $.lang.get('customcommands.customapijson.err', cmd)};
                                 }
@@ -165,7 +163,7 @@
                                 try {
                                     jsonObject = jsonObject.get(jsonCheckList[i]);
                                 } catch (ex) {
-                                    $.log.error('Failed to get data from API: ' + ex.message);
+                                    $.log.error('Failed to get data from API: ' + ex);
                                     $.log.error('jsonCheckList[' + i + ']: ' + jsonCheckList[i]);
                                     return {result: $.lang.get('customcommands.customapijson.err', cmd)};
                                 }
@@ -174,7 +172,7 @@
                         try {
                             responsePart = jsonObject.get(jsonCheckList[i]);
                         } catch (ex) {
-                            $.log.error('Failed to get data from API: ' + ex.message);
+                            $.log.error('Failed to get data from API: ' + ex);
                             $.log.error('jsonCheckList[' + i + ']: ' + jsonCheckList[i]);
                             return {result: $.lang.get('customcommands.customapijson.err', cmd)};
                         }

@@ -373,10 +373,12 @@
         $.registerChatSubcommand('prediction', 'resolve', $.PERMISSION.Admin);
         $.registerChatSubcommand('prediction', 'cancel', $.PERMISSION.Admin);
 
-        if (!$.twitchcache.isAffiliateOrPartner()) {
-            return;
-        }
+        setTimeout(function() {
+            if (!$.twitchcache.isAffiliateOrPartner()) {
+                return;
+            }
 
-        sync();
+            sync();
+        }, 2000);
     });
 })();
