@@ -77,7 +77,6 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     /**
      * Initializes the Twitch Message Interface. Creates a new {@link WSClient}, then initializes all processors and starts connecting
      */
-    @SuppressWarnings({"rawtypes"})
     public TwitchMessageInterface() {
         try {
             this.client = new WSClient(new URI(TMI_URI), this, this.pinger);
@@ -92,7 +91,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             com.gmt2001.Console.debug.println("Loading processors via reflection");
             Reflect.instance().loadPackageRecursive(AbstractTMIProcessor.class.getName().substring(0, AbstractTMIProcessor.class.getName().lastIndexOf('.')));
             Reflect.instance().getSubTypesOf(AbstractTMIProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractTMIProcessor.class.getName()))).forEachOrdered((c) -> {
-                for (Constructor constructor : c.getConstructors()) {
+                for (Constructor<?> constructor : c.getConstructors()) {
                     if (constructor.getParameterCount() == 0) {
                         try {
                             constructor.newInstance();

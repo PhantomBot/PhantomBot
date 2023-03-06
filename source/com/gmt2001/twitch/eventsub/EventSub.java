@@ -76,14 +76,13 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     /**
      * Constructor. Schedules a task to remove handled messages from the anti-duplicate map when they expire. Loads the subscription types. Starts the WebSocket connection
      */
-    @SuppressWarnings({"rawtypes"})
     private EventSub() {
         debug("Starting EventSub");
         ExecutorService.schedule(() -> {
             try {
                 Reflect.instance().loadPackageRecursive(EventSubSubscriptionType.class.getName().substring(0, EventSubSubscriptionType.class.getName().lastIndexOf('.')));
                 Reflect.instance().getSubTypesOf(EventSubSubscriptionType.class).stream().forEachOrdered((c) -> {
-                    for (Constructor constructor : c.getConstructors()) {
+                    for (Constructor<?> constructor : c.getConstructors()) {
                         if (constructor.getParameterCount() == 0) {
                             try {
                                 constructor.newInstance();
@@ -119,8 +118,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     private boolean reconnecting = false;
     private Instant lastKeepAlive = Instant.MIN;
     private Duration keepaliveTimeout = Duration.ZERO;
-    @SuppressWarnings({"rawtypes"})
-    private ScheduledFuture keepAliveFuture;
+    private ScheduledFuture<?> keepAliveFuture;
     private static final EventSub INSTANCE = new EventSub();
 
     /**

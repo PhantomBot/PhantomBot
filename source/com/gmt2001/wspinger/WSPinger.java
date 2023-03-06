@@ -49,11 +49,11 @@ public class WSPinger implements WsClientFrameHandler {
     /**
      * The {@link Future} for the timer
      */
-    private Future timerFuture = null;
+    private Future<?> timerFuture = null;
     /**
      * The {@link Future} representing the failure timer
      */
-    private Future failureFuture = null;
+    private Future<?> failureFuture = null;
     /**
      * The interval for the ping timer
      */

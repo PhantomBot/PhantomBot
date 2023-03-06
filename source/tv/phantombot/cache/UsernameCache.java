@@ -66,11 +66,11 @@ public class UsernameCache {
         }
     }
 
-    private Mono lookupUserDataAsync(String username) {
+    private Mono<?> lookupUserDataAsync(String username) {
         return this.lookupUserDataAsync(List.of(username));
     }
 
-    private Mono lookupUserDataAsync(List<String> usernames) {
+    private Mono<?> lookupUserDataAsync(List<String> usernames) {
         return Mono.create(emitter -> {
             Helix.instance().getUsersAsync(null, usernames).doOnSuccess(jso -> {
                 if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
@@ -205,10 +205,12 @@ public class UsernameCache {
             this.userID = userID;
         }
 
+        @SuppressWarnings({"unused"})
         public void putUserName(String userName) {
             this.userName = userName;
         }
 
+        @SuppressWarnings({"unused"})
         public void putUserID(String userID) {
             this.userID = userID;
         }

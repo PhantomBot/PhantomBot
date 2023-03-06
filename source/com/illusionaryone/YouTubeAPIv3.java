@@ -42,11 +42,6 @@ public class YouTubeAPIv3 {
     private static YouTubeAPIv3 instance;
     private String apikey = "";
 
-    private enum request_type {
-
-        GET, POST, PUT, DELETE
-    };
-
     public static synchronized YouTubeAPIv3 instance() {
         if (instance == null) {
             instance = new YouTubeAPIv3();
@@ -59,9 +54,7 @@ public class YouTubeAPIv3 {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
-    @SuppressWarnings({
-        "null", "SleepWhileInLoop", "UseSpecificCatch"
-    })
+    @SuppressWarnings({"SleepWhileInLoop", "UseSpecificCatch"})
     private JSONObject GetData(String urlAddress) throws JSONException {
         JSONObject jsonResult = new JSONObject("{}");
 

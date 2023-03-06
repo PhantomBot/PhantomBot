@@ -50,6 +50,7 @@ public final class CompositeAddressResolverGroup extends AddressResolverGroup<In
     }
 
     @Override
+    @SuppressWarnings({"resource"})
     protected AddressResolver<InetSocketAddress> newResolver(EventExecutor executor) throws Exception {
         if (!(executor instanceof EventLoop)) {
             throw new IllegalStateException(
