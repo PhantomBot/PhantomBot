@@ -531,6 +531,7 @@ public class Helix {
      * @throws JSONException
      * @throws IllegalArgumentException
      */
+    @Deprecated
     public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         return this.getUsersFollowsAsync(from_id, to_id, first, after).block();
