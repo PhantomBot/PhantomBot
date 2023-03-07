@@ -109,6 +109,10 @@
         "moderator:manage:shoutouts": {
             "desc": "Manage a broadcaster's shoutouts.",
             "tooltip": "Used to send shoutouts."
+        },
+        "moderator:read:followers": {
+            "desc": "Read the followers of a broadcaster.",
+            "tooltip": "Used to get the followers of the channel."
         }
     }
 }
