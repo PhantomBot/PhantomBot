@@ -19,9 +19,7 @@ package com.gmt2001.twitch.eventsub.subscriptions.channel.prediction;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 
@@ -92,9 +90,8 @@ public final class PredictionLock extends EventSubSubscriptionType {
 
     @Override
     protected EventSubSubscription proposeSubscription() {
-        Map<String, String> condition = new HashMap<>();
-        condition.put("broadcaster_user_id", this.broadcaster_user_id);
-        return this.proposeSubscriptionInternal(PredictionLock.TYPE, PredictionLock.VERSION, condition);
+        return this.proposeSubscriptionInternal(PredictionLock.TYPE, PredictionLock.VERSION,
+            Collections.singletonMap("broadcaster_user_id", this.broadcaster_user_id));
     }
 
     @Override
