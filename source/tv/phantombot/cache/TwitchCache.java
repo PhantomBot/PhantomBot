@@ -43,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import org.json.JSONArray;
@@ -86,6 +87,8 @@ public final class TwitchCache {
     private Instant nextLogoCheck = Instant.EPOCH;
     private boolean isAffiliate = false;
     private boolean isPartner = false;
+    private ScheduledFuture<?> streamUpdate;
+    private ScheduledFuture<?> clipUpdate;
 
     public static TwitchCache instance() {
         return INSTANCE;
@@ -113,7 +116,7 @@ public final class TwitchCache {
                 this.streamTitle = streamTitlen;
             }
             this.syncStreamStatus(true);
-            ExecutorService.scheduleAtFixedRate(() -> {
+            this.streamUpdate = ExecutorService.scheduleAtFixedRate(() -> {
                 Thread.currentThread().setName("TwitchCache::updateCache");
                 com.gmt2001.Console.debug.println("TwitchCache::updateCache");
                 try {
@@ -122,7 +125,7 @@ public final class TwitchCache {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }, 0, 30, TimeUnit.SECONDS);
-            ExecutorService.scheduleAtFixedRate(() -> {
+            this.clipUpdate = ExecutorService.scheduleAtFixedRate(() -> {
                 Thread.currentThread().setName("TwitchCache::updateClips");
                 com.gmt2001.Console.debug.println("TwitchCache::updateClips");
                 try {
@@ -725,5 +728,10 @@ public final class TwitchCache {
                 }
             }
         }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
+    }
+
+    public void kill() {
+        this.streamUpdate.cancel(true);
+        this.clipUpdate.cancel(true);
     }
 }

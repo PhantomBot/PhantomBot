@@ -1069,6 +1069,11 @@ public final class PhantomBot implements Listener {
         EventSub.instance().shutdown();
 
         /* Shutdown all caches */
+        if (this.twitchCache != null) {
+            this.print("Terminating the Twitch status cache...");
+            TwitchCache.instance().kill();
+        }
+
         if (this.followersCache != null) {
             this.print("Terminating the Twitch channel follower cache...");
             FollowersCache.killall();
