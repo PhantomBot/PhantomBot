@@ -16,20 +16,16 @@
  */
 package tv.phantombot.cache;
 
-import com.gmt2001.ExecutorService;
-import com.gmt2001.TwitchAPIv5;
-import com.gmt2001.datastore.DataStore;
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+
+import com.gmt2001.ExecutorService;
+import com.gmt2001.datastore.DataStore;
+
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -46,7 +42,6 @@ public final class FollowersCache {
         return INSTANCE;
     }
 
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private FollowersCache() {
         this.update = ExecutorService.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("FollowersCache::updateCache");
@@ -81,7 +76,7 @@ public final class FollowersCache {
      * @param followedAt The ISO8601 timestamp when the follow ocurred
      */
     public void addFollow(String loginName, ZonedDateTime followedAt) {
-        this.addFollow(loginName, followedAt.format(DateTimeFormatter.ISO_INSTANT);
+        this.addFollow(loginName, followedAt.format(DateTimeFormatter.ISO_INSTANT));
     }
 
     /**
