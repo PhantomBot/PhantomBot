@@ -238,24 +238,6 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand fixfollowedtable - Grabs the last 10,000 followers from the Twitch API.
-         */
-        if (message.equalsIgnoreCase("fixfollowedtable")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing fixfollowedtable");
-            TwitchAPIv5.instance().FixFollowedTable(PhantomBot.instance().getChannelName(), PhantomBot.instance().getDataStore(), false);
-            return;
-        }
-
-        /**
-         * @consolecommand fixfollowedtable-force - Grabs all followers from the Twitch API.
-         */
-        if (message.equalsIgnoreCase("fixfollowedtable-force")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing fixfollowedtable-force");
-            TwitchAPIv5.instance().FixFollowedTable(PhantomBot.instance().getChannelName(), PhantomBot.instance().getDataStore(), true);
-            return;
-        }
-
-        /**
          * @consolecommand jointest (userName) - Sends 30 fake join events or one specific user for testing.
          */
         if (message.equalsIgnoreCase("jointest")) {
