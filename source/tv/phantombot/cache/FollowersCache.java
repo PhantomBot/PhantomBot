@@ -32,11 +32,19 @@ import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowsInitializedEvent;
 import tv.phantombot.twitch.api.Helix;
 
+/**
+ * Periodically checks the API for new followers
+ *
+ * @author gmt2001
+ */
 public final class FollowersCache {
 
     private static final FollowersCache INSTANCE = new FollowersCache();
     private boolean firstUpdate = true;
     private ScheduledFuture<?> update;
+    private ScheduledFuture<?> fullUpdate;
+    private ScheduledFuture<?> fullUpdateTimeout = null;
+    private int total = 0;
 
     public static FollowersCache instance() {
         return INSTANCE;
@@ -47,22 +55,46 @@ public final class FollowersCache {
             Thread.currentThread().setName("FollowersCache::updateCache");
             com.gmt2001.Console.debug.println("FollowersCache::updateCache");
             try {
-                this.updateCache();
+                this.updateCache(false, null, 0);
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-        }, 0, 30, TimeUnit.SECONDS);
+        }, 30, 30, TimeUnit.SECONDS);
+        this.fullUpdate = ExecutorService.scheduleAtFixedRate(() -> {
+            Thread.currentThread().setName("FollowersCache::fullUpdateCache");
+            com.gmt2001.Console.debug.println("FollowersCache::fullUpdateCache");
+            try {
+                this.updateCache(true, null, 0);
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }, 0, 1, TimeUnit.DAYS);
     }
 
-    private void updateCache() {
-        Helix.instance().getChannelFollowersAsync(null, 100, null).doOnSuccess(jso -> {
+    private void updateCache(boolean full, String after, int iteration) {
+        Helix.instance().getChannelFollowersAsync(null, 100, after).doOnSuccess(jso -> {
             if (!jso.has("status")) {
+                this.total = jso.optInt("total");
                 JSONArray jsa = jso.getJSONArray("data");
                 for (int i = 0; i < jsa.length(); i++) {
                     this.addFollow(jsa.getJSONObject(i).optString("user_login"), jsa.getJSONObject(i).optString("followed_at"));
                 }
 
-                if (firstUpdate) {
+                if (full && jso.has("pagination") && !jso.isNull("pagination")) {
+                    String cursor = jso.getJSONObject("pagination").optString("cursor");
+
+                    if (cursor != null && !cursor.isBlank()) {
+                        if (iteration > 0 && iteration % 100 == 0) {
+                            this.fullUpdateTimeout = ExecutorService.schedule(() -> {
+                                this.updateCache(full, cursor, iteration + 1);
+                            }, 5, TimeUnit.SECONDS);
+                        } else {
+                            this.updateCache(full, cursor, iteration + 1);
+                        }
+                    }
+                }
+
+                if (!full && firstUpdate) {
                     firstUpdate = false;
                     EventBus.instance().postAsync(new TwitchFollowsInitializedEvent());
                 }
@@ -96,7 +128,20 @@ public final class FollowersCache {
         }
     }
 
+    /**
+     * Returns the total number of followers, according to Twitch API
+     *
+     * @return
+     */
+    public int total() {
+        return this.total;
+    }
+
     public void kill() {
-        this.update.cancel(true);
+        this.update.cancel(false);
+        this.fullUpdate.cancel(false);
+        if (this.fullUpdateTimeout != null) {
+            this.fullUpdateTimeout.cancel(false);
+        }
     }
 }
