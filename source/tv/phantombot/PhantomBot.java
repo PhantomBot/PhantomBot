@@ -1197,6 +1197,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
+        Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
     }
 

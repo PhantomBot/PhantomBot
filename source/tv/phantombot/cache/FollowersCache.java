@@ -22,9 +22,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.gmt2001.ExecutorService;
 import com.gmt2001.datastore.DataStore;
+import com.gmt2001.twitch.eventsub.EventSub;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -136,6 +138,45 @@ public final class FollowersCache {
      */
     public int total() {
         return this.total;
+    }
+
+    /**
+     * Indicates if the specified user currently follows the channel
+     *
+     * @param loginName The login name of the user
+     * @return
+     */
+    public boolean follows(String loginName) {
+        JSONObject jso = Helix.instance().getChannelFollowers(UsernameCache.instance().getID(loginName), 1, null);
+        if (!jso.has("status")) {
+            JSONArray jsa = jso.getJSONArray("data");
+            if (jsa.length() > 0) {
+                this.addFollow(jsa.getJSONObject(0).optString("user_login"), jsa.getJSONObject(0).optString("followed_at"));
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Indicates if the specified user has followed at some point in the past, within the limits of the bots records
+     *
+     * @param loginName The login name of the user
+     * @return
+     */
+    public boolean followed(String loginName) {
+        return PhantomBot.instance().getDataStore().exists("followed", loginName);
+    }
+
+    /**
+     * Indicates the earliest timestamp when the bot is aware of the specified user following
+     *
+     * @param loginName The login name of the user
+     * @return
+     */
+    public ZonedDateTime followedDate(String loginName) {
+        return EventSub.parseDate(PhantomBot.instance().getDataStore().get("followedDate", loginName));
     }
 
     public void kill() {
