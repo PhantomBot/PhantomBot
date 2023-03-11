@@ -45,6 +45,7 @@ public final class FollowersCache {
     private ScheduledFuture<?> fullUpdate;
     private ScheduledFuture<?> fullUpdateTimeout = null;
     private int total = 0;
+    private boolean killed = false;
 
     public static FollowersCache instance() {
         return INSTANCE;
@@ -83,7 +84,7 @@ public final class FollowersCache {
                 if (full && jso.has("pagination") && !jso.isNull("pagination")) {
                     String cursor = jso.getJSONObject("pagination").optString("cursor");
 
-                    if (cursor != null && !cursor.isBlank()) {
+                    if (!killed && cursor != null && !cursor.isBlank()) {
                         if (iteration > 0 && iteration % 100 == 0) {
                             this.fullUpdateTimeout = ExecutorService.schedule(() -> {
                                 this.updateCache(full, cursor, iteration + 1);
@@ -138,6 +139,7 @@ public final class FollowersCache {
     }
 
     public void kill() {
+        this.killed = true;
         this.update.cancel(false);
         this.fullUpdate.cancel(false);
         if (this.fullUpdateTimeout != null) {
