@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":42,"i1":42,"i2":42,"i3":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -140,8 +140,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/Flow.Subscriber.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">Flow.Subscriber</a>&lt;<a href="../PubSubMessage.html" title="class in tv.phantombot.twitch.pubsub">PubSubMessage</a>&gt;</code></dd>
 </dl>
 <hr>
-<pre>public class <span class="typeNameLabel">PubSubFollowingProcessor</span>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>
+public class <span class="typeNameLabel">PubSubFollowingProcessor</span>
 extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">A processor for follow events from PubSub</div>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
@@ -185,11 +187,15 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 </tr>
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">PubSubFollowingProcessor</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(int)">PubSubFollowingProcessor</a></span>&#8203;(int&nbsp;channelId)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</td>
 </tr>
 </table>
 </li>
@@ -203,7 +209,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -213,6 +219,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onEvent(org.json.JSONObject)">onEvent</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;body)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Called when a new event for this subscription has been received</div>
 </td>
 </tr>
@@ -220,6 +227,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onOpen()">onOpen</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Default handler for PubSubMessageType.OPEN, calls subscribeToTopics</div>
 </td>
 </tr>
@@ -227,6 +235,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSubscribeFailure(java.lang.String)">onSubscribeFailure</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;error)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics failed</div>
 </td>
 </tr>
@@ -234,6 +243,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <td class="colFirst"><code>protected void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onSubscribeSuccess()">onSubscribeSuccess</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics was successful</div>
 </td>
 </tr>
@@ -275,6 +285,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <li class="blockList">
 <h4>PubSubFollowingProcessor</h4>
 <pre>public&nbsp;PubSubFollowingProcessor()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 <a id="&lt;init&gt;(int)">
@@ -284,6 +295,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <li class="blockList">
 <h4>PubSubFollowingProcessor</h4>
 <pre>public&nbsp;PubSubFollowingProcessor&#8203;(int&nbsp;channelId)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 </li>
 </ul>
 </li>
@@ -303,6 +315,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <li class="blockList">
 <h4>onOpen</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;onOpen()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onOpen()">AbstractPubSubProcessor</a></code></span></div>
 <div class="block">Default handler for PubSubMessageType.OPEN, calls subscribeToTopics</div>
 <dl>
@@ -318,6 +331,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <li class="blockList">
 <h4>onSubscribeSuccess</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;onSubscribeSuccess()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onSubscribeSuccess()">AbstractPubSubProcessor</a></code></span></div>
 <div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics was successful</div>
 <dl>
@@ -333,6 +347,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <li class="blockList">
 <h4>onSubscribeFailure</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;onSubscribeFailure&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;error)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onSubscribeFailure(java.lang.String)">AbstractPubSubProcessor</a></code></span></div>
 <div class="block">Called if the subscription request sent by this.subscribeToTopics or this.unsubscribeFromTopics failed</div>
 <dl>
@@ -350,6 +365,7 @@ extends <a href="AbstractPubSubProcessor.html" title="class in tv.phantombot.twi
 <li class="blockList">
 <h4>onEvent</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;onEvent&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;body)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="AbstractPubSubProcessor.html#onEvent(org.json.JSONObject)">AbstractPubSubProcessor</a></code></span></div>
 <div class="block">Called when a new event for this subscription has been received</div>
 <dl>

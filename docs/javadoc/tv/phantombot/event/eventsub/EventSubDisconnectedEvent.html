@@ -2,7 +2,7 @@
 <!-- NewPage -->
 <html lang="en">
 <head>
-<title>EventSubEvent (PhantomBot JavaDoc)</title>
+<title>EventSubDisconnectedEvent (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery/jquery-ui.min.css" title="Style">
@@ -20,18 +20,12 @@
 <script type="text/javascript"><!--
     try {
         if (location.href.indexOf('is-external=true') == -1) {
-            parent.document.title="EventSubEvent (PhantomBot JavaDoc)";
+            parent.document.title="EventSubDisconnectedEvent (PhantomBot JavaDoc)";
         }
     }
     catch(err) {
     }
 //-->
-var data = {"i0":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../";
 var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
@@ -97,7 +91,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a id="skip.navbar.top">
@@ -116,7 +110,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.event.eventsub</a></div>
-<h2 title="Class EventSubEvent" class="title">Class EventSubEvent&lt;T&gt;</h2>
+<h2 title="Class EventSubDisconnectedEvent" class="title">Class EventSubDisconnectedEvent</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -126,7 +120,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="../Event.html" title="class in tv.phantombot.event">tv.phantombot.event.Event</a></li>
 <li>
 <ul class="inheritance">
-<li>tv.phantombot.event.eventsub.EventSubEvent&lt;T&gt;</li>
+<li><a href="EventSubEvent.html" title="class in tv.phantombot.event.eventsub">tv.phantombot.event.eventsub.EventSubEvent</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Void.html?is-external=true" title="class or interface in java.lang" class="externalLink">Void</a>&gt;</li>
+<li>
+<ul class="inheritance">
+<li>tv.phantombot.event.eventsub.EventSubDisconnectedEvent</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -135,18 +134,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>T</code> - The type of the event object</dd>
-</dl>
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><code><a href="channel/EventSubChannelEvent.html" title="class in tv.phantombot.event.eventsub.channel">EventSubChannelEvent</a></code>, <code><a href="EventSubDisconnectedEvent.html" title="class in tv.phantombot.event.eventsub">EventSubDisconnectedEvent</a></code>, <code><a href="EventSubRevocationEvent.html" title="class in tv.phantombot.event.eventsub">EventSubRevocationEvent</a></code>, <code><a href="stream/EventSubStreamEvent.html" title="class in tv.phantombot.event.eventsub.stream">EventSubStreamEvent</a></code>, <code><a href="EventSubWelcomeEvent.html" title="class in tv.phantombot.event.eventsub">EventSubWelcomeEvent</a></code></dd>
-</dl>
 <hr>
-<pre>public abstract class <span class="typeNameLabel">EventSubEvent&lt;T&gt;</span>
-extends <a href="../Event.html" title="class in tv.phantombot.event">Event</a></pre>
-<div class="block">An EventSub event</div>
+<pre>public class <span class="typeNameLabel">EventSubDisconnectedEvent</span>
+extends <a href="EventSubEvent.html" title="class in tv.phantombot.event.eventsub">EventSubEvent</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Void.html?is-external=true" title="class or interface in java.lang" class="externalLink">Void</a>&gt;</pre>
+<div class="block">EventSub WebSocket is disconnected</div>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
 <dd>gmt2001</dd>
@@ -171,7 +162,7 @@ extends <a href="../Event.html" title="class in tv.phantombot.event">Event</a></
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(T)">EventSubEvent</a></span>&#8203;(<a href="EventSubEvent.html" title="type parameter in EventSubEvent">T</a>&nbsp;event)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">EventSubDisconnectedEvent</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -185,21 +176,13 @@ extends <a href="../Event.html" title="class in tv.phantombot.event">Event</a></
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="EventSubEvent.html" title="type parameter in EventSubEvent">T</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#event()">event</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Returns the <a href="EventSubEvent.html" title="class in tv.phantombot.event.eventsub"><code>EventSubEvent</code></a> that contains data about the event</div>
-</td>
-</tr>
-</table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.tv.phantombot.event.eventsub.EventSubEvent">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;tv.phantombot.event.eventsub.<a href="EventSubEvent.html" title="class in tv.phantombot.event.eventsub">EventSubEvent</a></h3>
+<code><a href="EventSubEvent.html#event()">event</a></code></li>
+</ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -223,38 +206,13 @@ extends <a href="../Event.html" title="class in tv.phantombot.event">Event</a></
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(java.lang.Object)">
-<!--   -->
-</a><a id="&lt;init&gt;(T)">
+<a id="&lt;init&gt;()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>EventSubEvent</h4>
-<pre>public&nbsp;EventSubEvent&#8203;(<a href="EventSubEvent.html" title="type parameter in EventSubEvent">T</a>&nbsp;event)</pre>
-</li>
-</ul>
-</li>
-</ul>
-</section>
-<!-- ============ METHOD DETAIL ========== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a id="event()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>event</h4>
-<pre class="methodSignature">public&nbsp;<a href="EventSubEvent.html" title="type parameter in EventSubEvent">T</a>&nbsp;event()</pre>
-<div class="block">Returns the <a href="EventSubEvent.html" title="class in tv.phantombot.event.eventsub"><code>EventSubEvent</code></a> that contains data about the event</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-</dl>
+<h4>EventSubDisconnectedEvent</h4>
+<pre>public&nbsp;EventSubDisconnectedEvent()</pre>
 </li>
 </ul>
 </li>
@@ -318,7 +276,7 @@ extends <a href="../Event.html" title="class in tv.phantombot.event">Event</a></
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a id="skip.navbar.bottom">
