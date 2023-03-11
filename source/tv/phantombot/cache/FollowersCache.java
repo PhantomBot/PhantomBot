@@ -18,6 +18,7 @@ package tv.phantombot.cache;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +45,7 @@ public final class FollowersCache {
     private static final FollowersCache INSTANCE = new FollowersCache();
     private boolean firstUpdate = true;
     private ScheduledFuture<?> update;
-    private ScheduledFuture<?> fullUpdate;
+    private Future<?> fullUpdate;
     private ScheduledFuture<?> fullUpdateTimeout = null;
     private int total = 0;
     private boolean killed = false;
@@ -63,7 +64,7 @@ public final class FollowersCache {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }, 30, 30, TimeUnit.SECONDS);
-        this.fullUpdate = ExecutorService.scheduleAtFixedRate(() -> {
+        this.fullUpdate = ExecutorService.submit(() -> {
             Thread.currentThread().setName("FollowersCache::fullUpdateCache");
             com.gmt2001.Console.debug.println("FollowersCache::fullUpdateCache");
             try {
@@ -71,7 +72,7 @@ public final class FollowersCache {
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-        }, 0, 1, TimeUnit.DAYS);
+        });
     }
 
     private void updateCache(boolean full, String after, int iteration) {
@@ -170,13 +171,23 @@ public final class FollowersCache {
     }
 
     /**
+     * Indicates the earliest timestamp when the bot is aware of the specified user following as a string
+     *
+     * @param loginName The login name of the user
+     * @return
+     */
+    public String followedDateString(String loginName) {
+        return PhantomBot.instance().getDataStore().get("followedDate", loginName);
+    }
+
+    /**
      * Indicates the earliest timestamp when the bot is aware of the specified user following
      *
      * @param loginName The login name of the user
      * @return
      */
     public ZonedDateTime followedDate(String loginName) {
-        return EventSub.parseDate(PhantomBot.instance().getDataStore().get("followedDate", loginName));
+        return EventSub.parseDate(this.followedDateString(loginName));
     }
 
     public void kill() {
