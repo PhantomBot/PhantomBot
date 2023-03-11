@@ -45,6 +45,8 @@ public final class PredictionProgress extends EventSubSubscriptionType {
     private String broadcaster_user_name;
     private String id;
     private String title;
+    private String sStarted_at;
+    private String sLocks_at;
     private ZonedDateTime started_at;
     private ZonedDateTime locks_at;
     private List<PredictionOutcome> outcomes = new ArrayList<>();
@@ -69,8 +71,10 @@ public final class PredictionProgress extends EventSubSubscriptionType {
         this.broadcaster_user_name = e.event().getString("broadcaster_user_name");
         this.id = e.event().getString("id");
         this.title = e.event().getString("title");
-        this.started_at = EventSub.parseDate(e.event().getString("started_at"));
-        this.locks_at = EventSub.parseDate(e.event().getString("locks_at"));
+        this.sStarted_at = e.event().getString("started_at");
+        this.sLocks_at = e.event().getString("locks_at");
+        this.started_at = EventSub.parseDate(this.sStarted_at);
+        this.locks_at = EventSub.parseDate(this.sLocks_at);
 
         JSONArray outcomes = e.event().getJSONArray("outcomes");
         for (int i = 0; i < outcomes.length(); i++) {
@@ -163,6 +167,24 @@ public final class PredictionProgress extends EventSubSubscriptionType {
      */
     public String title() {
         return this.title;
+    }
+
+    /**
+     * The time the Channel Points Prediction started as a string.
+     *
+     * @return
+     */
+    public String startedAtString() {
+        return this.sStarted_at;
+    }
+
+    /**
+     * The time the Channel Points Prediction will automatically lock as a string.
+     *
+     * @return
+     */
+    public String locksAtString() {
+        return this.sLocks_at;
     }
 
     /**

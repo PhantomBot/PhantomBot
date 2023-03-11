@@ -42,6 +42,7 @@ public final class ChannelFollow extends EventSubSubscriptionType {
     private String user_id;
     private String user_login;
     private String user_name;
+    private String sFollowed_at;
     private ZonedDateTime followed_at;
 
     /**
@@ -65,7 +66,8 @@ public final class ChannelFollow extends EventSubSubscriptionType {
         this.user_id = e.event().getString("user_id");
         this.user_login = e.event().getString("user_login");
         this.user_name = e.event().getString("user_name");
-        this.followed_at = EventSub.parseDate(e.event().getString("followed_at"));
+        this.sFollowed_at = e.event().getString("followed_at");
+        this.followed_at = EventSub.parseDate(this.sFollowed_at);
     }
 
     /**
@@ -162,6 +164,15 @@ public final class ChannelFollow extends EventSubSubscriptionType {
      */
     public String userName() {
         return this.user_name;
+    }
+
+    /**
+     * The timestamp of when the follow occurred as a string.
+     *
+     * @return
+     */
+    public String followedAtString() {
+        return this.sFollowed_at;
     }
 
     /**

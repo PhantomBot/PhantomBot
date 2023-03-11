@@ -42,6 +42,7 @@ public final class StreamOnline extends EventSubSubscriptionType {
     private String broadcaster_user_name;
     private String id;
     private Type type;
+    private String sStarted_at;
     private ZonedDateTime started_at;
 
     /**
@@ -90,7 +91,8 @@ public final class StreamOnline extends EventSubSubscriptionType {
         this.broadcaster_user_name = e.event().getString("broadcaster_user_name");
         this.id = e.event().getString("id");
         this.type = Type.valueOf(e.event().getString("type").toUpperCase(Locale.ROOT));
-        this.started_at = EventSub.parseDate(e.event().getString("started_at"));
+        this.sStarted_at = e.event().getString("started_at");
+        this.started_at = EventSub.parseDate(this.sStarted_at);
     }
 
     /**
@@ -179,6 +181,15 @@ public final class StreamOnline extends EventSubSubscriptionType {
      */
     public Type type() {
         return this.type;
+    }
+
+    /**
+     * The timestamp at which the stream went online at as a string.
+     *
+     * @return
+     */
+    public String startedAtString() {
+        return this.sStarted_at;
     }
 
     /**
