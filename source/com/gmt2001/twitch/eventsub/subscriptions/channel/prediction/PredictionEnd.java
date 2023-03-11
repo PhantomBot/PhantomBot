@@ -19,10 +19,8 @@ package com.gmt2001.twitch.eventsub.subscriptions.channel.prediction;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.json.JSONArray;
 
@@ -48,6 +46,8 @@ public final class PredictionEnd extends EventSubSubscriptionType {
     private String broadcaster_user_name;
     private String id;
     private String title;
+    private String sStarted_at;
+    private String sEnded_at;
     private ZonedDateTime started_at;
     private ZonedDateTime ended_at;
     private String winning_outcome_id;
@@ -88,8 +88,10 @@ public final class PredictionEnd extends EventSubSubscriptionType {
         this.broadcaster_user_name = e.event().getString("broadcaster_user_name");
         this.id = e.event().getString("id");
         this.title = e.event().getString("title");
-        this.started_at = EventSub.parseDate(e.event().getString("started_at"));
-        this.ended_at = EventSub.parseDate(e.event().getString("ended_at"));
+        this.sStarted_at = e.event().getString("started_at");
+        this.sEnded_at = e.event().getString("ended_at");
+        this.started_at = EventSub.parseDate(this.sStarted_at);
+        this.ended_at = EventSub.parseDate(this.sEnded_at);
         this.winning_outcome_id = e.event().optString("winning_outcome_id");
         this.status = Status.valueOf(e.event().getString("status").toUpperCase(Locale.ROOT));
 
@@ -111,9 +113,8 @@ public final class PredictionEnd extends EventSubSubscriptionType {
 
     @Override
     protected EventSubSubscription proposeSubscription() {
-        Map<String, String> condition = new HashMap<>();
-        condition.put("broadcaster_user_id", this.broadcaster_user_id);
-        return this.proposeSubscriptionInternal(PredictionEnd.TYPE, PredictionEnd.VERSION, condition);
+        return this.proposeSubscriptionInternal(PredictionEnd.TYPE, PredictionEnd.VERSION,
+            Collections.singletonMap("broadcaster_user_id", this.broadcaster_user_id));
     }
 
     @Override
@@ -185,6 +186,24 @@ public final class PredictionEnd extends EventSubSubscriptionType {
      */
     public String title() {
         return this.title;
+    }
+
+    /**
+     * The time the Channel Points Prediction started as a string.
+     *
+     * @return
+     */
+    public String startedAtString() {
+        return this.sStarted_at;
+    }
+
+    /**
+     * The time the Channel Points Prediction ended as a string.
+     *
+     * @return
+     */
+    public String endedAtString() {
+        return this.sEnded_at;
     }
 
     /**

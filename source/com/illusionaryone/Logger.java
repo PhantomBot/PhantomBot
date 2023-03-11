@@ -16,8 +16,6 @@
  */
 package com.illusionaryone;
 
-import com.gmt2001.PathValidator;
-import com.gmt2001.RollbarProvider;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,6 +33,10 @@ import java.util.Map;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.stream.Collectors;
+
+import com.gmt2001.PathValidator;
+import com.gmt2001.RollbarProvider;
+
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
@@ -156,6 +158,11 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
 
     @Handler
     public void onPropertiesLoadedEvent(PropertiesLoadedEvent event) {
+        this.zoneId = PhantomBot.getTimeZoneId();
+    }
+
+    @Handler
+    public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
         this.zoneId = PhantomBot.getTimeZoneId();
     }
 

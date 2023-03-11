@@ -75,7 +75,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
         ExecutorService.schedule(() -> {
             Reflect.instance().loadPackageRecursive(AbstractPubSubProcessor.class.getName().substring(0, AbstractPubSubProcessor.class.getName().lastIndexOf('.')));
             Reflect.instance().getSubTypesOf(AbstractPubSubProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractPubSubProcessor.class.getName()))).forEachOrdered((c) -> {
-                for (Constructor constructor : c.getConstructors()) {
+                for (Constructor<?> constructor : c.getConstructors()) {
                     if (constructor.getParameterCount() == 0) {
                         try {
                             constructor.newInstance();
@@ -288,6 +288,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
          *
          * @param message The message to send
          */
+        @SuppressWarnings({"unused"})
         public void send(String message) {
             this.client.send(message);
         }

@@ -283,7 +283,6 @@ public class DiscordAPI extends DiscordUtil {
         return this.connectionState;
     }
 
-    @SuppressWarnings("null")
     public void testJoin() {
         try {
             DiscordEventListener.onDiscordUserJoinEvent(new MemberJoinEvent(DiscordAPI.gateway, null, DiscordAPI.gateway.getSelf().block(Duration.ofSeconds(5)).asMember(DiscordAPI.getGuildId()).block(Duration.ofSeconds(5)), 0));

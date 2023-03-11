@@ -71,15 +71,15 @@
 
         if (args.args.trim().length === 0) {
             if (zdt === null) {
-                str = $.userPrefix(event.getSender(), true) + $.lang.get('channel.age.user.404');
+                str = $.userPrefix(args.event.getSender(), true) + $.lang.get('channel.age.user.404');
             } else {
                 let dateFinal = zdt.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
                 let days = Packages.java.time.Duration.between(zdt, Packages.java.time.ZonedDateTime.now()).toDays();
 
                 if (days > 0) {
-                    str = $.lang.get('common.get.age.days', $.userPrefix(event.getSender(), true), channel, dateFinal, days);
+                    str = $.lang.get('common.get.age.days', $.userPrefix(args.event.getSender(), true), channel, dateFinal, days);
                 } else {
-                    str = $.lang.get('common.get.age', $.userPrefix(event.getSender(), true), channel, dateFinal);
+                    str = $.lang.get('common.get.age', $.userPrefix(args.event.getSender(), true), channel, dateFinal);
                 }
             }
         } else if (zdt !== null) {

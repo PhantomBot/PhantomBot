@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.twitch.eventsub.subscriptions.stream;
+package com.gmt2001.twitch.eventsub.subscriptions.channel;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.Locale;
 
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
@@ -26,55 +25,30 @@ import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
 import tv.phantombot.event.EventBus;
-import tv.phantombot.event.eventsub.stream.EventSubStreamOnlineEvent;
+import tv.phantombot.event.eventsub.channel.EventSubChannelFollowEvent;
 
 /**
- * The specified broadcaster starts a stream.
+ * A specified channel receives a follow.
  *
  * @author gmt2001
  */
-public final class StreamOnline extends EventSubSubscriptionType {
+public final class ChannelFollow extends EventSubSubscriptionType {
 
-    public static final String TYPE = "stream.online";
-    public static final String VERSION = "1";
+    public static final String TYPE = "channel.follow";
+    public static final String VERSION = "2";
     private String broadcaster_user_id;
     private String broadcaster_user_login;
     private String broadcaster_user_name;
-    private String id;
-    private Type type;
-    private String sStarted_at;
-    private ZonedDateTime started_at;
-
-    /**
-     * Stream types
-     */
-    public enum Type {
-        /**
-         * A live stream
-         */
-        LIVE,
-        /**
-         * Playlist
-         */
-        PLAYLIST,
-        /**
-         * Watching a movie or TV show together on Prime Video
-         */
-        WATCH_PARTY,
-        /**
-         * A premiere of a new video
-         */
-        PREMIERE,
-        /**
-         * Rerun of a vod of a previous live stream
-         */
-        RERUN
-    }
+    private String user_id;
+    private String user_login;
+    private String user_name;
+    private String sFollowed_at;
+    private ZonedDateTime followed_at;
 
     /**
      * Only used by EventSub for handler registration
      */
-    public StreamOnline() {
+    public ChannelFollow() {
         super();
         this.subscribe();
     }
@@ -84,15 +58,16 @@ public final class StreamOnline extends EventSubSubscriptionType {
      *
      * @param e The event
      */
-    public StreamOnline(EventSubInternalNotificationEvent e) {
+    public ChannelFollow(EventSubInternalNotificationEvent e) {
         super(e.subscription(), e.messageId(), e.messageTimestamp());
         this.broadcaster_user_id = e.event().getString("broadcaster_user_id");
         this.broadcaster_user_login = e.event().getString("broadcaster_user_login");
         this.broadcaster_user_name = e.event().getString("broadcaster_user_name");
-        this.id = e.event().getString("id");
-        this.type = Type.valueOf(e.event().getString("type").toUpperCase(Locale.ROOT));
-        this.sStarted_at = e.event().getString("started_at");
-        this.started_at = EventSub.parseDate(this.sStarted_at);
+        this.user_id = e.event().getString("user_id");
+        this.user_login = e.event().getString("user_login");
+        this.user_name = e.event().getString("user_name");
+        this.sFollowed_at = e.event().getString("followed_at");
+        this.followed_at = EventSub.parseDate(this.sFollowed_at);
     }
 
     /**
@@ -100,14 +75,14 @@ public final class StreamOnline extends EventSubSubscriptionType {
      *
      * @param broadcaster_user_id The user id of the broadcaster
      */
-    public StreamOnline(String broadcaster_user_id) {
+    public ChannelFollow(String broadcaster_user_id) {
         super();
         this.broadcaster_user_id = broadcaster_user_id;
     }
 
     @Override
     protected EventSubSubscription proposeSubscription() {
-        return this.proposeSubscriptionInternal(StreamOnline.TYPE, StreamOnline.VERSION,
+        return this.proposeSubscriptionInternal(ChannelFollow.TYPE, ChannelFollow.VERSION,
             Collections.singletonMap("broadcaster_user_id", this.broadcaster_user_id));
     }
 
@@ -122,11 +97,10 @@ public final class StreamOnline extends EventSubSubscriptionType {
     @Override
     protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
         try {
-            if (e.subscription().type().equals(StreamOnline.TYPE)) {
-                EventSub.debug(StreamOnline.TYPE);
-                EventBus.instance().postAsync(new EventSubStreamOnlineEvent(new StreamOnline(e)));
+            if (e.subscription().type().equals(ChannelFollow.TYPE)) {
+                EventSub.debug(ChannelFollow.TYPE);
+                EventBus.instance().postAsync(new EventSubChannelFollowEvent(new ChannelFollow(e)));
             }
-
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -134,7 +108,7 @@ public final class StreamOnline extends EventSubSubscriptionType {
 
     @Override
     protected boolean isMatch(EventSubSubscription subscription) {
-        return subscription.type().equals(StreamOnline.TYPE)
+        return subscription.type().equals(ChannelFollow.TYPE)
                 && subscription.condition().get("broadcaster_user_id").equals(this.broadcaster_user_id);
     }
 
@@ -166,38 +140,47 @@ public final class StreamOnline extends EventSubSubscriptionType {
     }
 
     /**
-     * The id of the stream.
+     * The new follower's user ID.
      *
      * @return
      */
-    public String id() {
-        return this.id;
+    public String userId() {
+        return this.user_id;
     }
 
     /**
-     * The stream type.
+     * The new follower's user login.
      *
      * @return
      */
-    public Type type() {
-        return this.type;
+    public String userLogin() {
+        return this.user_login;
     }
 
     /**
-     * The timestamp at which the stream went online at as a string.
+     * The new follower's user display name.
      *
      * @return
      */
-    public String startedAtString() {
-        return this.sStarted_at;
+    public String userName() {
+        return this.user_name;
     }
 
     /**
-     * The timestamp at which the stream went online at.
+     * The timestamp of when the follow occurred as a string.
      *
      * @return
      */
-    public ZonedDateTime startedAt() {
-        return this.started_at;
+    public String followedAtString() {
+        return this.sFollowed_at;
+    }
+
+    /**
+     * The timestamp of when the follow occurred.
+     *
+     * @return
+     */
+    public ZonedDateTime followedAt() {
+        return this.followed_at;
     }
 }

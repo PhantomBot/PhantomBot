@@ -299,7 +299,8 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
                 }
 
                 @Override
-                public ChannelFuture addListeners(GenericFutureListener<? extends Future<? super Void>>... listeners) {
+                @SafeVarargs
+                public final ChannelFuture addListeners(GenericFutureListener<? extends Future<? super Void>>... listeners) {
                     return this;
                 }
 
@@ -309,8 +310,8 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
                 }
 
                 @Override
-                public ChannelFuture removeListeners(
-                        GenericFutureListener<? extends Future<? super Void>>... listeners) {
+                @SafeVarargs
+                public final ChannelFuture removeListeners(GenericFutureListener<? extends Future<? super Void>>... listeners) {
                             return this;
                 }
 

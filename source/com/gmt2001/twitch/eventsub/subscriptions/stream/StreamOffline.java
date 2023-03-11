@@ -16,8 +16,7 @@
  */
 package com.gmt2001.twitch.eventsub.subscriptions.stream;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
@@ -72,9 +71,8 @@ public final class StreamOffline extends EventSubSubscriptionType {
 
     @Override
     protected EventSubSubscription proposeSubscription() {
-        Map<String, String> condition = new HashMap<>();
-        condition.put("broadcaster_user_id", this.broadcaster_user_id);
-        return this.proposeSubscriptionInternal(StreamOffline.TYPE, StreamOffline.VERSION, condition);
+        return this.proposeSubscriptionInternal(StreamOffline.TYPE, StreamOffline.VERSION,
+            Collections.singletonMap("broadcaster_user_id", this.broadcaster_user_id));
     }
 
     @Override

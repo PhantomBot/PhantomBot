@@ -1069,9 +1069,14 @@ public final class PhantomBot implements Listener {
         EventSub.instance().shutdown();
 
         /* Shutdown all caches */
+        if (this.twitchCache != null) {
+            this.print("Terminating the Twitch status cache...");
+            TwitchCache.instance().kill();
+        }
+
         if (this.followersCache != null) {
             this.print("Terminating the Twitch channel follower cache...");
-            FollowersCache.killall();
+            FollowersCache.instance().kill();
         }
 
         this.print("Terminating the Streamlabs cache...");
@@ -1170,7 +1175,7 @@ public final class PhantomBot implements Listener {
         this.twitchCache = TwitchCache.instance();
         this.twitchTeamCache = TwitchTeamsCache.instance(this.getChannelName());
         this.emotesCache = EmotesCache.instance(this.getChannelName());
-        this.followersCache = FollowersCache.instance(this.getChannelName());
+        this.followersCache = FollowersCache.instance();
         this.viewerListCache = ViewerListCache.instance(this.getChannelName());
 
         /* Start the donations cache if the keys are not null and the module is enabled */
@@ -1192,6 +1197,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
+        Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
     }
 

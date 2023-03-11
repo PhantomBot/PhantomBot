@@ -52,6 +52,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.UsernameCache;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
@@ -183,6 +184,10 @@ public class Helix {
 
     private String qspValid(String key, String value) {
         return value != null && !value.isBlank() ? key + "=" + value : "";
+    }
+
+    private String qspValid(String key, int value) {
+        return this.qspValid(key, Integer.toString(value));
     }
 
     /**
@@ -531,6 +536,7 @@ public class Helix {
      * @throws JSONException
      * @throws IllegalArgumentException
      */
+    @Deprecated
     public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         return this.getUsersFollowsAsync(from_id, to_id, first, after).block();
@@ -2706,32 +2712,73 @@ public class Helix {
      */
     public Mono<JSONObject> endPredictionAsync(String id, PredictionStatus status, String winningOutcomeId)
             throws JSONException, IllegalArgumentException {
-                if (id == null || id.isBlank()) {
-                    throw new IllegalArgumentException("id is required");
-                }
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("id is required");
+        }
 
-                if (status == PredictionStatus.RESOLVED && (winningOutcomeId == null || winningOutcomeId.isBlank())) {
-                    throw new IllegalArgumentException("winningOutcomeId is required");
-                }
+        if (status == PredictionStatus.RESOLVED && (winningOutcomeId == null || winningOutcomeId.isBlank())) {
+            throw new IllegalArgumentException("winningOutcomeId is required");
+        }
 
-                JSONStringer js = new JSONStringer();
-                js.object();
+        JSONStringer js = new JSONStringer();
+        js.object();
 
-                js.key("broadcaster_id").value(TwitchValidate.instance().getAPIUserID());
-                js.key("id").value(id);
-                js.key("status").value(status.name());
+        js.key("broadcaster_id").value(TwitchValidate.instance().getAPIUserID());
+        js.key("id").value(id);
+        js.key("status").value(status.name());
 
-                if (status == PredictionStatus.RESOLVED) {
-                    js.key("winning_outcome_id").value(winningOutcomeId);
-                }
+        if (status == PredictionStatus.RESOLVED) {
+            js.key("winning_outcome_id").value(winningOutcomeId);
+        }
 
-                js.endObject();
+        js.endObject();
 
-                String endpoint = "/predictions";
+        String endpoint = "/predictions";
 
-                return this.handleMutatorAsync(endpoint + js.toString(), () -> {
-                    return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
-                });
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.PATCH, endpoint, js.toString());
+        });
+    }
+
+    /**
+     * Gets a list of users that follow the specified broadcaster.
+     *
+     * You can also use this endpoint to see whether a specific user follows the broadcaster.
+     *
+     * @param user_id A user's ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this user if they follow the broadcaster. If not specified, the response contains all users that follow the broadcaster.
+     * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.
+     * @param after The cursor used to get the next page of results.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getChannelFollowers(@Nullable String user_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+            return this.getChannelFollowersAsync(user_id, first, after).block();
+        }
+
+    /**
+     * Gets a list of users that follow the specified broadcaster.
+     *
+     * You can also use this endpoint to see whether a specific user follows the broadcaster.
+     *
+     * @param user_id A user's ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this user if they follow the broadcaster. If not specified, the response contains all users that follow the broadcaster.
+     * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.
+     * @param after The cursor used to get the next page of results.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getChannelFollowersAsync(@Nullable String user_id, int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        first = Math.max(1, Math.min(100, first));
+
+        String endpoint = "/channels/followers?" + this.qspValid("broadcaster_id", UsernameCache.instance().getIDCaster())
+        + this.qspValid("&user_id", user_id) + this.qspValid("&first", first) + this.qspValid("&after", after);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
     }
 
     private String chooseModeratorId(String scope) {

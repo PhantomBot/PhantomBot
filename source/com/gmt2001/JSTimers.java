@@ -53,7 +53,7 @@ public class JSTimers {
         }
 
         JSTimer timer = new JSTimer(name, false, callback);
-        ScheduledFuture future = ExecutorService.schedule(timer::run, delayMS, TimeUnit.MILLISECONDS);
+        ScheduledFuture<?> future = ExecutorService.schedule(timer::run, delayMS, TimeUnit.MILLISECONDS);
         timer.setFuture(future);
 
         this.timers.put(id, timer);
@@ -74,7 +74,7 @@ public class JSTimers {
         }
 
         JSTimer timer = new JSTimer(name, true, callback);
-        ScheduledFuture future = ExecutorService.scheduleAtFixedRate(timer::run, delayMS, delayMS, TimeUnit.MILLISECONDS);
+        ScheduledFuture<?> future = ExecutorService.scheduleAtFixedRate(timer::run, delayMS, delayMS, TimeUnit.MILLISECONDS);
         timer.setFuture(future);
 
         this.timers.put(id, timer);
@@ -131,7 +131,7 @@ public class JSTimers {
         private final Runnable callback;
         private final boolean isInterval;
         private boolean isCancelled = false;
-        private ScheduledFuture future = null;
+        private ScheduledFuture<?> future = null;
 
         public JSTimer(String name, boolean isInterval, Runnable callback) {
             this.name = name + (isInterval ? " [interval]" : "");
@@ -139,7 +139,7 @@ public class JSTimers {
             this.callback = callback;
         }
 
-        public void setFuture(ScheduledFuture future) {
+        public void setFuture(ScheduledFuture<?> future) {
             this.future = future;
         }
 
