@@ -17,6 +17,7 @@
 package com.gmt2001.datastore;
 
 /**
+ * Database Access Base Class
  *
  * @author gmt2001
  */
@@ -27,9 +28,6 @@ public abstract class DataStore {
     }
 
     protected DataStore(String unused) {
-    }
-
-    public void SaveAll(boolean force) {
     }
 
     public abstract String[] GetFileList();

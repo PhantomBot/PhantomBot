@@ -1098,9 +1098,6 @@ public final class PhantomBot implements Listener {
             script.getValue().kill();
         });
 
-        this.print("Saving all data...");
-        this.dataStore.SaveAll(true);
-
         /* Check to see if web is enabled */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             this.print("Shutting down all web socket/http servers...");
