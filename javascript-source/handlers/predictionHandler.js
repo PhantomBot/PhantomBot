@@ -62,7 +62,7 @@
                 }
             }
         }
-    });
+    }, true);
 
     /*
      * @event eventSubPredictionEnd
@@ -95,7 +95,7 @@
             currentPrediction = null;
             isCommandPrediction = false;
         }
-    });
+    }, true);
 
     /*
      * @event eventSubPredictionLock
@@ -110,7 +110,7 @@
                 }
             }
         }
-    });
+    }, true);
 
     function subscribeEventSub() {
         let subscriptions = [
@@ -165,7 +165,7 @@
             subscribeEventSub();
             sync();
         }
-    });
+    }, true);
 
     /*
      * @event eventSubWelcome
@@ -178,7 +178,7 @@
 
             subscribeEventSub();
         }
-    });
+    }, true);
 
     /*
      * @event command
