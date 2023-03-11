@@ -31,13 +31,36 @@
  */
 
 (function () {
-    var followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
+    let followToggle = $.getSetIniDbBoolean('settings', 'followToggle', false),
             followReward = $.getSetIniDbNumber('settings', 'followReward', 0),
             followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
             followDelay = $.getSetIniDbNumber('settings', 'followDelay', 5),
             followQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
             lastFollow = $.systemTime(),
             announceFollows = false;
+
+    $.bind('eventSubChannelFollow', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+            $.followers.addFollow(event.event().userLogin(), event.event().followedAtString());
+        }
+    }, true);
+
+    $.bind('eventSubWelcome', function (event) {
+        if (!event.isReconnect()) {
+            let subscriptions = [
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelFollow
+            ];
+
+            for (let i in subscriptions) {
+                let newSubscription = new subscriptions[i]($.username.getIDCaster());
+                try {
+                    newSubscription.create().block();
+                } catch (ex) {
+                    $.log.error(ex);
+                }
+            }
+        }
+    }, true);
 
     /*
      * @function updateFollowConfig
@@ -51,7 +74,7 @@
 
     function alertFollow(follower, replay) {
         if (announceFollows && followToggle) {
-            var s = followMessage;
+            let s = followMessage;
             if (s.match(/\(name\)/)) {
                 s = $.replace(s, '(name)', $.username.resolve(follower));
             }
@@ -80,13 +103,13 @@
      */
     function runFollows() {
         if (!followQueue.isEmpty() && (lastFollow + (followDelay * 1e3)) < $.systemTime()) {
-            var s = followQueue.poll();
+            let s = followQueue.poll();
             if (s === null) {
                 return;
             }
 
             if (s.match(/\(alert [,.\w\W]+\)/g)) {
-                var filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
+                let filename = s.match(/\(alert ([,.\w\W]+)\)/)[1];
                 $.alertspollssocket.alertImage(filename);
                 s = (s + '').replace(/\(alert [,.\w\W]+\)/, '');
             }
@@ -120,7 +143,7 @@
      * @event twitchFollow
      */
     $.bind('twitchFollow', function (event) {
-        var follower = event.getFollower();
+        let follower = event.getFollower();
         alertFollow(follower, false);
     });
 
@@ -128,7 +151,7 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
                 command = event.getCommand(),
                 args = event.getArgs(),
                 action = args[0];
