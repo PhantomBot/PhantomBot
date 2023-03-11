@@ -22,9 +22,10 @@
 /* global $api, Packages, java, $script */
 
 (function () {
-    var isReady = false,
+    let isReady = false,
             modules = [],
-            hooks = [];
+            hooks = [],
+            jsOnlyHooks = ['initReady'];
 
     /*
      * @class Module
@@ -44,8 +45,8 @@
     }
 
     function handleException(where, ex) {
-        var loc = 0;
-        var errmsg = null;
+        let loc = 0;
+        let errmsg = null;
         try {
             if (where === undefined || where === null || (typeof where) !== 'string') {
                 try {
@@ -98,8 +99,8 @@
                 }
             }
         } catch (oops) {
-            var oopsmsg = "Location[handleException] Encountered an unrecoverable exception while trying to handle another exception";
-            var data = new Packages.java.util.HashMap();
+            let oopsmsg = "Location[handleException] Encountered an unrecoverable exception while trying to handle another exception";
+            let data = new Packages.java.util.HashMap();
             try {
                 data.put("loc", loc);
             } catch (e) {
@@ -137,12 +138,13 @@
      * @param {String}   hookName
      * @param {Function} handler
      */
-    function Hook(scriptName, hookName, handler, scriptPath) {
+    function Hook(scriptName, hookName, handler, scriptPath, always) {
         hookName = $api.formatEventName(hookName) + '';
         this.scriptName = scriptName;
         this.hookName = hookName;
         this.handler = handler;
         this.scriptPath = scriptPath;
+        this.always = always;
     }
 
     /*
@@ -194,17 +196,17 @@
      * @function generateJavaTrampolines
      */
     function generateJavaTrampolines() {
-        var name,
+        let name,
                 isJavaProperty = function (name) {
-                    var blacklist = ['getClass', 'equals', 'notify', 'class', 'hashCode', 'toString', 'wait', 'notifyAll'];
+                    let blacklist = ['getClass', 'equals', 'notify', 'class', 'hashCode', 'toString', 'wait', 'notifyAll'];
 
                     return (blacklist[name] !== undefined);
                 },
                 generateTrampoline = function (obj, name) {
                     return function () {
-                        var args = [$script];
+                        let args = [$script];
 
-                        for (var i = 0; i < arguments.length; i++) {
+                        for (let i = 0; i < arguments.length; i++) {
                             args.push(arguments[i]);
                         }
 
@@ -234,7 +236,7 @@
         if (!isModuleLoaded(scriptName) || force) {
             if (scriptName.endsWith('.js')) {
                 try {
-                    var enabled,
+                    let enabled,
                             script;
 
                     if ($api.getScript($script, scriptName) !== null) {
@@ -268,10 +270,10 @@
         if (path === undefined || path === null) {
             return;
         }
-        var files = $api.findFiles($.javaString('./scripts/' + path), $.javaString(''));
+        let files = $api.findFiles($.javaString('./scripts/' + path), $.javaString(''));
 
-        for (var i = 0; i < files.size(); i++) {
-            var file = $.jsString(files.get(i));
+        for (let i = 0; i < files.size(); i++) {
+            let file = $.jsString(files.get(i));
             if (path === '.') {
                 if (file === 'lang' || file === 'discord' || file === 'init.js') {
                     continue;
@@ -338,7 +340,7 @@
      */
     function getHookIndex(scriptName, hookName) {
         hookName = $api.formatEventName(hookName) + '';
-        var hook = hooks[hookName],
+        let hook = hooks[hookName],
                 i;
 
         if (hook !== undefined) {
@@ -357,12 +359,16 @@
      * @param {String}   hookName
      * @param {Function} handler
      */
-    function addHook(hookName, handler) {
+    function addHook(hookName, handler, always) {
         hookName = $api.formatEventName(hookName) + '';
-        var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
+        let scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
-        if (hookName !== 'initReady' && $api.exists(hookName) === false) {
+        if (always === undefined || always === null) {
+            always = false;
+        }
+
+        if (!jsOnlyHooks.includes(hookName) && $api.exists(hookName) === false) {
             Packages.com.gmt2001.Console.err.printlnRhino('[addHook()@init.js:254] Failed to register hook "' + hookName + '" since there is no such event.');
         } else if (i !== -1) {
             hooks[hookName].handlers[i].handler = handler;
@@ -370,7 +376,7 @@
             if (hooks[hookName] === undefined) {
                 hooks[hookName] = new HookHandler(hookName);
             }
-            hooks[hookName].handlers.push(new Hook(scriptName, hookName, handler, $script.getRealFileName()));
+            hooks[hookName].handlers.push(new Hook(scriptName, hookName, handler, $script.getRealFileName(), always));
         }
     }
 
@@ -381,7 +387,7 @@
      */
     function removeHook(hookName) {
         hookName = $api.formatEventName(hookName) + '';
-        var scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
+        let scriptName = $.replace($.replace($script.getPath(), '\\', '/'), './scripts/', ''),
                 i = getHookIndex(scriptName, hookName);
 
         if (hooks[hookName] !== undefined) {
@@ -398,7 +404,7 @@
      */
     function callHook(hookName, event, force) {
         hookName = $api.formatEventName(hookName) + '';
-        var hook = hooks[hookName],
+        let hook = hooks[hookName],
                 i;
 
         if (hook === undefined) {
@@ -411,7 +417,7 @@
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {
-                var errmsg;
+                let errmsg;
                 try {
                     errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptPath + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']';
                 } catch (ex2) {
@@ -430,11 +436,11 @@
             }
         } else {
             for (i in hook.handlers) {
-                if (isModuleEnabled(hook.handlers[i].scriptName) || force) {
+                if (isModuleEnabled(hook.handlers[i].scriptName) || hook.handlers[i].always || force) {
                     try {
                         hook.handlers[i].handler(event);
                     } catch (ex) {
-                        var errmsg;
+                        let errmsg;
                         try {
                             errmsg = 'Error with Event Handler [' + hookName + '] Script [' + hook.handlers[i].scriptPath + '] Stacktrace [' + ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, '') + '] Exception [' + ex + ']';
                         } catch (ex2) {
@@ -461,7 +467,7 @@
      */
     function init() {
         // Do not print a line to the console for each module (script) that is loaded.
-        var silentScriptsLoad = Packages.tv.phantombot.PhantomBot.getSilentScriptsLoad().toString().equals('true');
+        let silentScriptsLoad = Packages.tv.phantombot.PhantomBot.getSilentScriptsLoad().toString().equals('true');
 
         // Generate JavaScript trampolines for Java functions.
         generateJavaTrampolines();
@@ -554,7 +560,7 @@
         try {
             // Load all API events.
 
-            var loadedHooks = [];
+            let loadedHooks = [];
             /*
              * @event ircModeration
              */
@@ -591,7 +597,7 @@
              */
             $api.on($script, 'command', function (event) {
                 try {
-                    var sender = event.getSender(),
+                    let sender = event.getSender(),
                             command = event.getCommand(),
                             args = event.getArgs(),
                             subCommand = $.getSubCommandFromArguments(command, args),
@@ -613,7 +619,7 @@
 
                     // Check if the command has an alias.
                     if ($.aliasExists(command)) {
-                        var alias = $.getIniDbString('aliases', command),
+                        let alias = $.getIniDbString('aliases', command),
                                 aliasCommand,
                                 aliasArguments,
                                 subcmd,
@@ -628,7 +634,7 @@
                         } else {
                             parts = alias.split(';');
 
-                            for (var i = 0; i < parts.length; i++) {
+                            for (let i = 0; i < parts.length; i++) {
                                 subcmd = parts[i].split(' ');
                                 aliasCommand = subcmd.shift();
                                 aliasArguments = subcmd.join(' ');
@@ -655,7 +661,7 @@
                     }
 
                     // Check the command cooldown.
-                    var cooldownDuration,
+                    let cooldownDuration,
                             isGlobalCooldown,
                             cooldownCommand = command;
 
@@ -702,7 +708,7 @@
              */
             $api.on($script, 'discordChannelCommand', function (event) {
                 try {
-                    var username = event.getUsername(),
+                    let username = event.getUsername(),
                             command = event.getCommand(),
                             user = event.getDiscordUser(),
                             channelName = event.getChannel(),
@@ -724,9 +730,9 @@
                     }
 
                     // Check permissions.
-                    var perm = $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''));
-                    var hasPerms = false;
-                    var twitchName = $.discord.resolveTwitchName(senderId);
+                    let perm = $.discord.permCom(command, (args[0] !== undefined && $.discord.subCommandExists(command, args[0].toLowerCase()) ? args[0].toLowerCase() : ''));
+                    let hasPerms = false;
+                    let twitchName = $.discord.resolveTwitchName(senderId);
 
                     if (!isAdmin && twitchName !== null) {
                         isAdmin = $.isAdmin(twitchName);
@@ -741,7 +747,7 @@
                     } else if (perm.roles.length > 0 && (perm.roles[0].indexOf('0') !== -1 || perm.roles[0].indexOf($.discordAPI.getGuild().getId().asString()) !== -1)) {
                         hasPerms = true;
                     } else {
-                        for (var i = 0; i < perm.roles.length; i++) {
+                        for (let i = 0; i < perm.roles.length; i++) {
                             if (user.getRoleIds().contains($.discordAPI.getRoleByID(perm.roles[i]).getId()) === true) {
                                 hasPerms = true;
                                 break;
@@ -755,7 +761,7 @@
                     }
 
                     // Check the command cooldown.
-                    var cooldownDuration,
+                    let cooldownDuration,
                             isGlobalCooldown,
                             cooldownCommand = command;
 
@@ -806,12 +812,12 @@
              */
             $api.on($script, 'discordGuildCreate', function (event) {
                 try {
-                    var roles = $.discordAPI.getGuildRoles();
-                    var perms = {
+                    let roles = $.discordAPI.getGuildRoles();
+                    let perms = {
                         roles: []
                     };
 
-                    for (var i = 0; i < roles.size(); i++) {
+                    for (let i = 0; i < roles.size(); i++) {
                         perms.roles.push({
                             'name': roles.get(i).getName() + '',
                             '_id': roles.get(i).getId().asString() + '',
@@ -828,12 +834,12 @@
             });
             loadedHooks.push('discordGuildCreate');
 
-            var hookNames = $api.getEventNames();
-            for (var i = 0; i < hookNames.size(); i++) {
-                var hookName = String(hookNames.get(i) + '');
+            let hookNames = $api.getEventNames();
+            for (let i = 0; i < hookNames.size(); i++) {
+                let hookName = String(hookNames.get(i) + '');
                 if (!loadedHooks.includes(hookName)) {
                     $api.on($script, hookName, function (event) {
-                        var hookname = String($api.formatEventName(event.getClass().getSimpleName()) + '');
+                        let hookname = String($api.formatEventName(event.getClass().getSimpleName()) + '');
                         try {
                             callHook(hookname, event, false);
                         } catch (ex) {
