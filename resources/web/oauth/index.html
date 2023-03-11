@@ -103,7 +103,7 @@
                                 This page will setup the bot to automatically refresh the Bot's OAuth tokens. Please follow all instructions below to set this up properly.
                             </div>
                             <br />
-                            <div>
+                            <div id="authmodediv">
                                 How will you be performing the OAuths?<br />
                                 <input id="authmodeboth" type="radio" checked="checked" name="authmode" value="both"> <label for="authmodeboth">I will authorize both the Bot and the Broadcaster</label>
                                 <br /><br />
@@ -513,6 +513,7 @@
                         });
 
                         if (redirectURI.includes("/broadcaster")) {
+                            $('#authmodediv').addClass('hide');
                             $('#instructions').addClass('hide');
                             $('#connectone').addClass('hide');
                             $('#connectplural').addClass('hide');
