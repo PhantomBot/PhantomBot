@@ -1005,18 +1005,20 @@ public final class H2Store extends DataStore {
                     statement.setString(i++, k);
                 }
 
-                try ( ResultSet rs = statement.executeQuery()) {
-                    int numcol = rs.getMetaData().getColumnCount();
-                    i = 0;
+                if (statement.execute()) {
+                    try ( ResultSet rs = statement.getResultSet()) {
+                        int numcol = rs.getMetaData().getColumnCount();
+                        i = 0;
 
-                    while (rs.next()) {
-                        results.add(new ArrayList<>());
+                        while (rs.next()) {
+                            results.add(new ArrayList<>());
 
-                        for (int b = 1; b <= numcol; b++) {
-                            results.get(i).add(rs.getString(b));
+                            for (int b = 1; b <= numcol; b++) {
+                                results.get(i).add(rs.getString(b));
+                            }
+
+                            i++;
                         }
-
-                        i++;
                     }
                 }
             }
@@ -1053,6 +1055,25 @@ public final class H2Store extends DataStore {
                 }
             }
         } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    public boolean canBackup() {
+        return true;
+    }
+
+    @Override
+    public void backupDB(String filename) {
+        try ( Connection connection = GetConnection()) {
+            Files.createDirectories(Paths.get("./dbbackup/"));
+
+            try ( Statement statement = connection.createStatement()) {
+                statement.execute("SCRIPT TO './dbbackup/" + filename + "' COMPRESSION GZIP");
+                com.gmt2001.Console.debug.println("Backed up H2 DB to ./dbbackup/" + filename);
+            }
+        } catch (SQLException | IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }

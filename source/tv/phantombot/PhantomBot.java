@@ -384,11 +384,6 @@ public final class PhantomBot implements Listener {
             || !SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))) {
             this.dataStore = H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
-            if (!this.dataStore.CanConnect()) {
-                this.print("Could not create a connection with H2 Database. PhantomBot now shutting down...");
-                PhantomBot.exitError();
-            }
-
             if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
@@ -1097,9 +1092,6 @@ public final class PhantomBot implements Listener {
         scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
         });
-
-        this.print("Saving all data...");
-        this.dataStore.SaveAll(true);
 
         /* Check to see if web is enabled */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {

@@ -569,16 +569,6 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand save - Forces the database to save.
-         */
-        if (message.equalsIgnoreCase("save")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing save");
-
-            PhantomBot.instance().getDataStore().SaveAll(true);
-            return;
-        }
-
-        /**
          * @consolecommand exit - Shuts down the bot.
          */
         if (message.equalsIgnoreCase("exit")) {
@@ -753,8 +743,6 @@ public final class ConsoleEventHandler implements Listener {
         // Check to see if any settings have been changed.
         if (changed) {
             transaction.commit();
-
-            PhantomBot.instance().getDataStore().SaveAll(true);
 
             com.gmt2001.Console.out.println("");
             com.gmt2001.Console.out.println("Changes have been saved, now exiting PhantomBot.");
