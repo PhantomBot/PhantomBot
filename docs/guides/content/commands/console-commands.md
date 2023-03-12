@@ -230,14 +230,6 @@ debuglog - Prints all debug lines to a file.
 
 &nbsp;
 
-### save
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-save - Forces the database to save.
-
-&nbsp;
-
 ### exit
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
