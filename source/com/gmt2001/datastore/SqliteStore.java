@@ -1244,15 +1244,13 @@ public final class SqliteStore extends DataStore {
         try {
             this.rwl.writeLock().lock();
             try ( Connection connection = GetConnection()) {
-                if (!new File("./dbbackup").exists()) {
-                    new File("./dbbackup").mkdirs();
-                }
+                Files.createDirectories(Paths.get("./dbbackup/"));
 
                 try ( Statement statement = connection.createStatement()) {
                     statement.execute("backup to ./dbbackup/" + filename);
                     com.gmt2001.Console.debug.println("Backed up SQLite3 DB to ./dbbackup/" + filename);
                 }
-            } catch (SQLException ex) {
+            } catch (SQLException | IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         } finally {
