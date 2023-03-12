@@ -654,7 +654,7 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetFileList()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetFileList()">DataStore</a></code></span></div>
 <div class="block">Returns a list of tables in the database.
-
+ <br/><br/>
  Only tables with the <code>phantombot_</code> prefix are returned. The prefix is removed</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
@@ -1041,21 +1041,21 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#executeSql(java.lang.String,java.lang.String%5B%5D)">DataStore</a></code></span></div>
 <div class="block">Executes an SQL query.
-
+ <br/><br/>
  The query is executed using a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement</code></a> with calls to <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a>
-
- For example:
+ <br/><br/>
+ For example:<br/>
  <code>executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])</code>
-
+ <br/><br/>
  The value <code>"baz"</code> is escaped to prevent SQL injection, then inserted in place of the <code>?</code>
-
- This yields the final query of
+ <br/><br/>
+ This yields the final query of<br/>
  <code>SELECT * FROM foo WHERE bar = "baz"</code>
-
+ <br/><br/>
  You can use <code>?</code> as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
-
+ <br/><br/>
  Replacements are performed in order from left to right
-
+ <br/><br/>
  Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
@@ -1128,6 +1128,8 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#backupDB(java.lang.String)">backupDB</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>filename</code> - The filename for the backup, without extension</dd>
 </dl>
 </li>
 </ul>

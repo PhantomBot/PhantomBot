@@ -869,7 +869,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetFileList</h4>
 <pre class="methodSignature">public abstract&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetFileList()</pre>
 <div class="block">Returns a list of tables in the database.
-
+ <br/><br/>
  Only tables with the <code>phantombot_</code> prefix are returned. The prefix is removed</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -2057,21 +2057,21 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[][]&nbsp;executeSql&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</pre>
 <div class="block">Executes an SQL query.
-
+ <br/><br/>
  The query is executed using a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement</code></a> with calls to <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a>
-
- For example:
+ <br/><br/>
+ For example:<br/>
  <code>executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])</code>
-
+ <br/><br/>
  The value <code>"baz"</code> is escaped to prevent SQL injection, then inserted in place of the <code>?</code>
-
- This yields the final query of
+ <br/><br/>
+ This yields the final query of<br/>
  <code>SELECT * FROM foo WHERE bar = "baz"</code>
-
+ <br/><br/>
  You can use <code>?</code> as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
-
+ <br/><br/>
  Replacements are performed in order from left to right
-
+ <br/><br/>
  Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -2149,7 +2149,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Backs up the database to the specified filename in the <code>dbbackup</code> folder</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filename</code> - </dd>
+<dd><code>filename</code> - The filename for the backup, without extension</dd>
 </dl>
 </li>
 </ul>
