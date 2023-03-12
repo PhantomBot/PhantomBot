@@ -1066,6 +1066,7 @@ public final class H2Store extends DataStore {
 
     @Override
     public void backupDB(String filename) {
+        filename = filename + ".h2.mv.db";
         try ( Connection connection = GetConnection()) {
             Files.createDirectories(Paths.get("./dbbackup/"));
 

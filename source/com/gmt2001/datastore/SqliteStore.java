@@ -1243,6 +1243,8 @@ public final class SqliteStore extends DataStore {
 
     @Override
     public void backupDB(String filename) {
+        filename = filename + ".sqlite3.db";
+
         try {
             this.rwl.writeLock().lock();
             try ( Connection connection = GetConnection()) {

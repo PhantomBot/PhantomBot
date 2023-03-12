@@ -464,7 +464,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
         Stream.of(req.content().toString(Charset.defaultCharset()).split("&")).forEach(ppost -> {
             String[] spost = ppost.split("=", 2);
-            post.put(spost[0], URLDecoder.decode(spost[1], Charset.defaultCharset()));
+            post.put(spost[0], spost.length == 2 ? URLDecoder.decode(spost[1], Charset.defaultCharset()) : null);
         });
 
         return post;
