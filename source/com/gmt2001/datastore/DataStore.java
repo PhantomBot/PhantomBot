@@ -884,7 +884,8 @@ public abstract class DataStore {
 
     /**
      * Backs up the database to the specified filename in the {@code dbbackup} folder
-     * @param filename
+     *
+     * @param filename The filename for the backup, without extension
      */
     public void backupDB(String filename) {
     }

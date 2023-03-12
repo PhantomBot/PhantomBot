@@ -1484,7 +1484,7 @@ public final class PhantomBot implements Listener {
 
             String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
-            this.dataStore.backupDB("phantombot.auto.backup." + timestamp + ".db");
+            this.dataStore.backupDB("phantombot.auto.backup." + timestamp);
 
             try {
                 Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
