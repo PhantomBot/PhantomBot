@@ -831,9 +831,11 @@ public abstract class DataStore {
      * This yields the final query of
      * {@code SELECT * FROM foo WHERE bar = "baz"}
      *
-     * You can use {@code ?} as many times as neccessary, but must provide the same number of elements in the replacements array for the replacement to work
+     * You can use {@code ?} as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
      *
      * Replacements are performed in order from left to right
+     *
+     * Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log
      *
      * @param sql The query to execute
      * @param replacements Replacements for {@link PreparedStatement#setString(int, String)}
