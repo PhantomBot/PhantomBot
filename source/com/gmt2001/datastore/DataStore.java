@@ -34,7 +34,7 @@ public abstract class DataStore {
 
     /**
      * Returns a list of tables in the database.
-     *
+     * <br /><br />
      * Only tables with the {@code phantombot_} prefix are returned. The prefix is removed
      *
      * @return
@@ -820,21 +820,21 @@ public abstract class DataStore {
 
     /**
      * Executes an SQL query.
-     *
+     * <br /><br />
      * The query is executed using a {@link PreparedStatement} with calls to {@link PreparedStatement#setString(int, String)}
-     *
-     * For example:
+     * <br /><br />
+     * For example:<br />
      * {@code executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])}
-     *
+     * <br /><br />
      * The value {@code "baz"} is escaped to prevent SQL injection, then inserted in place of the {@code ?}
-     *
-     * This yields the final query of
+     * <br /><br />
+     * This yields the final query of<br />
      * {@code SELECT * FROM foo WHERE bar = "baz"}
-     *
+     * <br /><br />
      * You can use {@code ?} as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
-     *
+     * <br /><br />
      * Replacements are performed in order from left to right
-     *
+     * <br /><br />
      * Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log
      *
      * @param sql The query to execute
