@@ -1058,6 +1058,25 @@ public final class H2Store extends DataStore {
     }
 
     @Override
+    public boolean canBackup() {
+        return true;
+    }
+
+    @Override
+    public void backupDB(String filename) {
+        try ( Connection connection = GetConnection()) {
+            Files.createDirectories(Paths.get("./dbbackup/"));
+
+            try ( Statement statement = connection.createStatement()) {
+                statement.execute("SCRIPT TO './dbbackup/" + filename + "' COMPRESSION GZIP");
+                com.gmt2001.Console.debug.println("Backed up H2 DB to ./dbbackup/" + filename);
+            }
+        } catch (SQLException | IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
 
