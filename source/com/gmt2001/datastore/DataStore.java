@@ -823,6 +823,16 @@ public abstract class DataStore {
      *
      * The query is executed using a {@link PreparedStatement} with calls to {@link PreparedStatement#setString(int, String)}
      *
+     * For example:
+     * {@code executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])}
+     *
+     * The value {@code "baz"} is escaped to prevent SQL injection, then inserted in place of the {@code ?}
+     *
+     * This yeilds the final query of
+     * {@code SELECT * FROM foo WHERE bar = "baz"}
+     *
+     * You can use {@code ?} as many times as neccessary, but must provide the same number of elements in the replacements array for the replacement to work
+     *
      * @param sql The query to execute
      * @param replacements Replacements for {@link PreparedStatement#setString(int, String)}
      * @return An array of data as strings representing the result set, if the query was a DQL statement; empty arrays otherwise. The outer array represents rows; the inner array represents columns; the values of the inner array represent the value of the row-column pair at that index as a string
