@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":6,"i16":10,"i17":10,"i18":6,"i19":10,"i20":6,"i21":10,"i22":10,"i23":10,"i24":6,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":10,"i47":6,"i48":10,"i49":10,"i50":6,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":9,"i59":6,"i60":6,"i61":6,"i62":6,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":10,"i71":10,"i72":10,"i73":10,"i74":10,"i75":6};
+var data = {"i0":6,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":6,"i15":10,"i16":10,"i17":6,"i18":10,"i19":6,"i20":10,"i21":10,"i22":10,"i23":6,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":6,"i47":10,"i48":6,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":9,"i57":6,"i58":6,"i59":6,"i60":6,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":10,"i71":6};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -137,6 +137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public abstract class <span class="typeNameLabel">DataStore</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+<div class="block">Database Access Base Class</div>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
 <dd>gmt2001</dd>
@@ -187,184 +188,233 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AddFile(java.lang.String)">AddFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a new table</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#backupDB(java.lang.String)">backupDB</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;filename)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Backs up the database to the specified filename in the <code>dbbackup</code> folder</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canBackup()">canBackup</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if this database type supports generating backup files</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect()">CanConnect</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect(java.lang.String,java.lang.String,java.lang.String)">CanConnect</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Tests if the connection to the database succeeds.</div>
+</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CreateIndexes()">CreateIndexes</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Ensures that all tables created with <a href="#AddFile(java.lang.String)"><code>AddFile(String)</code></a> have a <code>UNIQUE</code> index across the <code>section</code> and <code>variable</code> columns.</div>
+</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decr(java.lang.String,java.lang.String,int)">decr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     int&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Decreases the value of the <code>value</code> column as an integer in the default section of the given table and key</div>
+</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decr(java.lang.String,java.lang.String,long)">decr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     long&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Decreases the value of the <code>value</code> column as a long in the default section of the given table and key</div>
+</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decr(java.lang.String,java.lang.String,java.lang.String,int)">decr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     int&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Decreases the value of the <code>value</code> column as an integer in the given table, section, and key</div>
+</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decr(java.lang.String,java.lang.String,java.lang.String,long)">decr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     long&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Decreases the value of the <code>value</code> column as a long in the given table, section, and key</div>
+</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#del(java.lang.String,java.lang.String)">del</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the row from the default section that matches the given tableand key</div>
+</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#dispose()">dispose</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DropIndexes()">DropIndexes</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Drops all <code>UNIQUE</code> indexes from tables created with <a href="#AddFile(java.lang.String)"><code>AddFile(String)</code></a></div>
+</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[][]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeSql(java.lang.String,java.lang.String%5B%5D)">executeSql</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Executes an SQL query.</div>
+</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#exists(java.lang.String,java.lang.String)">exists</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if the given table contains a row matching the given key</div>
+</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>abstract boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FileExists(java.lang.String)">FileExists</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if the given table already exists</div>
+</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.String,java.lang.String)">get</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column from the default section of the given table and key as a string</div>
+</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetBoolean(java.lang.String,java.lang.String,java.lang.String)">GetBoolean</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a boolean</div>
+</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>abstract <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetCategoryList(java.lang.String)">GetCategoryList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>section</code> column within the table</div>
+</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>double</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetDouble(java.lang.String,java.lang.String,java.lang.String)">GetDouble</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a double</div>
+</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>abstract <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetFileList()">GetFileList</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of tables in the database.</div>
+</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetFloat(java.lang.String,java.lang.String,java.lang.String)">GetFloat</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a float</div>
+</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetInteger(java.lang.String,java.lang.String,java.lang.String)">GetInteger</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as an integer</div>
+</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">GetKeyByValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>variable</code> column for the given table, section, and value</div>
+</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>abstract <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyList(java.lang.String,java.lang.String)">GetKeyList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section</div>
+</td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeys</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase</div>
+</td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, where the value of the <code>variable</code> column contains the search phrase, sorted naturally Descending</div>
+</td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally Descending</div>
+</td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
+</td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
@@ -372,326 +422,392 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
+</td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeValues</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>value</code> column contains the search phrase</div>
+</td>
+</tr>
+<tr id="i30" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally Descending as integers</div>
+</td>
 </tr>
 <tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i32" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally Descending as integers</div>
+</td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
+</td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
+</td>
+</tr>
+<tr id="i34" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally Descending by the <code>value</code> column as integers</div>
+</td>
 </tr>
 <tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i36" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally Descending by the <code>value</code> column as integers</div>
+</td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
+</td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
+</td>
+</tr>
+<tr id="i38" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally in Descending order</div>
+</td>
 </tr>
 <tr id="i39" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i40" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String,java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally in Descending order</div>
+</td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally</div>
+</td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally</div>
+</td>
+</tr>
+<tr id="i42" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally Descending by the <code>value</code> column</div>
+</td>
 </tr>
 <tr id="i43" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i44" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String,java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally Descending by the <code>value</code> column</div>
+</td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
+</td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
+</td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code>abstract <a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyValueList(java.lang.String,java.lang.String)">GetKeyValueList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all <code>variable/value</code> pairs within the table and section</div>
+</td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetLong(java.lang.String,java.lang.String,java.lang.String)">GetLong</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a long</div>
+</td>
 </tr>
-<tr id="i49" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetObject(java.lang.String,java.lang.String,java.lang.String)">GetObject</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i50" class="altColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code>abstract <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetString(java.lang.String,java.lang.String,java.lang.String)">GetString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a string</div>
+</td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if the given table contains a row matching the given section and key</div>
+</td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i50" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incr(java.lang.String,java.lang.String,int)">incr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     int&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Increases the value of the <code>value</code> column as an integer in the default section of the given table and key</div>
+</td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i51" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incr(java.lang.String,java.lang.String,long)">incr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     long&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Increases the value of the <code>value</code> column as a long in the default section of the given table and key</div>
+</td>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i52" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incr(java.lang.String,java.lang.String,java.lang.String,int)">incr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     int&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Increases the value of the <code>value</code> column as an integer in the given table, section, and key</div>
+</td>
 </tr>
-<tr id="i55" class="rowColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#incr(java.lang.String,java.lang.String,java.lang.String,long)">incr</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
     long&nbsp;amount)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Increases the value of the <code>value</code> column as a long in the given table, section, and key</div>
+</td>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">IncreaseBatchString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Increases the value of the <code>value</code> column as an integer for all keys of the given table and section</div>
+</td>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#InsertString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">InsertString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
+</td>
 </tr>
-<tr id="i58" class="altColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><code>static <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i59" class="rowColor">
+<tr id="i57" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveFile(java.lang.String)">RemoveFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the table</div>
+</td>
 </tr>
-<tr id="i60" class="altColor">
+<tr id="i58" class="altColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">RemoveKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the row that matches the given table, section, and key</div>
+</td>
 </tr>
-<tr id="i61" class="rowColor">
+<tr id="i59" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveSection(java.lang.String,java.lang.String)">RemoveSection</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes all rows that matches the given table and section</div>
+</td>
 </tr>
-<tr id="i62" class="altColor">
+<tr id="i60" class="altColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RenameFile(java.lang.String,java.lang.String)">RenameFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameSource,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameDest)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Renames the table</div>
+</td>
 </tr>
-<tr id="i63" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SaveAll(boolean)">SaveAll</a></span>&#8203;(boolean&nbsp;force)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i64" class="altColor">
+<tr id="i61" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchByKey(java.lang.String,java.lang.String)">searchByKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the default section of the table, where the value of the <code>variable</code> column contains the search phrase</div>
+</td>
 </tr>
-<tr id="i65" class="rowColor">
+<tr id="i62" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchByValue(java.lang.String,java.lang.String)">searchByValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the default section of the table, where the value of the <code>value</code> column contains the search phrase</div>
+</td>
 </tr>
-<tr id="i66" class="altColor">
+<tr id="i63" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#set(java.lang.String,java.lang.String,java.lang.String)">set</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the default section of the given table and key as a string</div>
+</td>
 </tr>
-<tr id="i67" class="rowColor">
+<tr id="i64" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setbatch(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">setbatch</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;values)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Performs a bulk <a href="#set(java.lang.String,java.lang.String,java.lang.String)"><code>set(String, String, String)</code></a> operation, using available database features to do so more efficiently.</div>
+</td>
 </tr>
-<tr id="i68" class="altColor">
+<tr id="i65" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">SetBatchString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;key,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Performs a bulk <a href="#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>SetString(String, String, String, String)</code></a> operation, using available database features to do so more efficiently.</div>
+</td>
 </tr>
-<tr id="i69" class="rowColor">
+<tr id="i66" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetBoolean(java.lang.String,java.lang.String,java.lang.String,boolean)">SetBoolean</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
           boolean&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a boolean</div>
+</td>
 </tr>
-<tr id="i70" class="altColor">
+<tr id="i67" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">SetDouble</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
          double&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a double</div>
+</td>
 </tr>
-<tr id="i71" class="rowColor">
+<tr id="i68" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetFloat(java.lang.String,java.lang.String,java.lang.String,float)">SetFloat</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
         float&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a float</div>
+</td>
 </tr>
-<tr id="i72" class="altColor">
+<tr id="i69" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">SetInteger</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
           int&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as an integer</div>
+</td>
 </tr>
-<tr id="i73" class="rowColor">
+<tr id="i70" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetLong(java.lang.String,java.lang.String,java.lang.String,long)">SetLong</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
        long&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a long</div>
+</td>
 </tr>
-<tr id="i74" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetObject(java.lang.String,java.lang.String,java.lang.String,java.lang.Object)">SetObject</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i75" class="rowColor">
+<tr id="i71" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">SetString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -745,15 +861,6 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public static&nbsp;<a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a>&nbsp;instance()</pre>
 </li>
 </ul>
-<a id="SaveAll(boolean)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SaveAll</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;SaveAll&#8203;(boolean&nbsp;force)</pre>
-</li>
-</ul>
 <a id="GetFileList()">
 <!--   -->
 </a>
@@ -761,6 +868,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetFileList</h4>
 <pre class="methodSignature">public abstract&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetFileList()</pre>
+<div class="block">Returns a list of tables in the database.
+
+ Only tables with the <code>phantombot_</code> prefix are returned. The prefix is removed</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetCategoryList(java.lang.String)">
@@ -770,6 +883,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetCategoryList</h4>
 <pre class="methodSignature">public abstract&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetCategoryList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Returns a list of all values in the <code>section</code> column within the table</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeyList(java.lang.String,java.lang.String)">
@@ -780,6 +899,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeyList</h4>
 <pre class="methodSignature">public abstract&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeyList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeyValueList(java.lang.String,java.lang.String)">
@@ -790,6 +916,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeyValueList</h4>
 <pre class="methodSignature">public abstract&nbsp;<a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]&nbsp;GetKeyValueList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Returns a list of all <code>variable/value</code> pairs within the table and section</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrder(java.lang.String)">
@@ -799,6 +932,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetKeysByOrder</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally in Descending order</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrder(java.lang.String,java.lang.String)">
@@ -809,6 +948,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeysByOrder</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally in Descending order</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String)">
@@ -820,6 +966,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -833,6 +987,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrder(java.lang.String)">
@@ -842,6 +1006,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetKeysByNumberOrder</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally Descending as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrder(java.lang.String,java.lang.String)">
@@ -852,6 +1022,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeysByNumberOrder</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally Descending as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String)">
@@ -863,6 +1040,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -876,6 +1061,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrderValue(java.lang.String)">
@@ -885,6 +1080,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetKeysByOrderValue</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally Descending by the <code>value</code> column</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrderValue(java.lang.String,java.lang.String)">
@@ -895,6 +1096,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeysByOrderValue</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally Descending by the <code>value</code> column</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String)">
@@ -906,6 +1114,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -919,6 +1135,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrderValue(java.lang.String)">
@@ -928,6 +1154,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetKeysByNumberOrderValue</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, sorted naturally Descending by the <code>value</code> column as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrderValue(java.lang.String,java.lang.String)">
@@ -938,6 +1171,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeysByNumberOrderValue</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally Descending by the <code>value</code> column as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String)">
@@ -949,6 +1189,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -962,6 +1210,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">
@@ -973,6 +1231,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetKeyByValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block">Returns the value of the <code>variable</code> column for the given table, section, and value</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>value</code> - The value of the <code>value</code> column</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">
@@ -984,6 +1250,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeValues&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>value</code> column contains the search phrase</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>value</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">
@@ -995,6 +1269,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeKeys&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByLikeKeysOrder(java.lang.String,java.lang.String)">
@@ -1005,6 +1287,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>GetKeysByLikeKeysOrder</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeKeysOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the default section of the table, where the value of the <code>variable</code> column contains the search phrase, sorted naturally Descending</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String)">
@@ -1016,6 +1305,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeKeysOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally Descending</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -1028,6 +1325,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order)</pre>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -1042,6 +1348,17 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="GetString(java.lang.String,java.lang.String,java.lang.String)">
@@ -1053,6 +1370,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public abstract&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetString&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a string</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -1065,6 +1390,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="InsertString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
@@ -1077,6 +1410,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String[],java.lang.String)">
@@ -1089,6 +1430,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block">Increases the value of the <code>value</code> column as an integer for all keys of the given table and section</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>keys</code> - The values of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new value to increase the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="SetBatchString(java.lang.String,java.lang.String,java.lang.String[],java.lang.String[])">
@@ -1101,29 +1450,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;key,
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;value)</pre>
-</li>
-</ul>
-<a id="GetObject(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetObject</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;GetObject&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
-</li>
-</ul>
-<a id="SetObject(java.lang.String,java.lang.String,java.lang.String,java.lang.Object)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SetObject</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;SetObject&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>&nbsp;value)</pre>
+<div class="block">Performs a bulk <a href="#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>SetString(String, String, String, String)</code></a> operation, using available database features to do so more efficiently.
+
+ The array index of the keys and value params are linked</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>keys</code> - The values of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new values to set the <code>value</code> column to</dd>
+</dl>
 </li>
 </ul>
 <a id="GetLong(java.lang.String,java.lang.String,java.lang.String)">
@@ -1135,6 +1471,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;long&nbsp;GetLong&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a long</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value as a long; <code>0L</code> if the conversion fails</dd>
+</dl>
 </li>
 </ul>
 <a id="SetLong(java.lang.String,java.lang.String,java.lang.String,long)">
@@ -1147,6 +1492,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                     long&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a long</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="GetInteger(java.lang.String,java.lang.String,java.lang.String)">
@@ -1158,6 +1511,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;int&nbsp;GetInteger&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as an integer</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value as an integer; <code>0</code> if the conversion fails</dd>
+</dl>
 </li>
 </ul>
 <a id="SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">
@@ -1170,6 +1532,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                        int&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as an integer</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="GetFloat(java.lang.String,java.lang.String,java.lang.String)">
@@ -1181,6 +1551,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;float&nbsp;GetFloat&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a float</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value as a float; <code>0.0f</code> if the conversion fails</dd>
+</dl>
 </li>
 </ul>
 <a id="SetFloat(java.lang.String,java.lang.String,java.lang.String,float)">
@@ -1193,6 +1572,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                      float&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a float</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="GetDouble(java.lang.String,java.lang.String,java.lang.String)">
@@ -1204,6 +1591,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;double&nbsp;GetDouble&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a double</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The value as a double; <code>0.0</code> if the conversion fails</dd>
+</dl>
 </li>
 </ul>
 <a id="SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">
@@ -1216,6 +1612,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                       double&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a double</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="GetBoolean(java.lang.String,java.lang.String,java.lang.String)">
@@ -1227,6 +1631,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;boolean&nbsp;GetBoolean&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a boolean</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the value as a string is <code>"1"</code>, <code>"true"</code>, or <code>"yes"</code>; <code>false</code> otherwise</dd>
+</dl>
 </li>
 </ul>
 <a id="SetBoolean(java.lang.String,java.lang.String,java.lang.String,boolean)">
@@ -1239,6 +1652,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                        boolean&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a boolean</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="RemoveKey(java.lang.String,java.lang.String,java.lang.String)">
@@ -1250,6 +1671,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public abstract&nbsp;void&nbsp;RemoveKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Deletes the row that matches the given table, section, and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="RemoveSection(java.lang.String,java.lang.String)">
@@ -1260,6 +1688,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>RemoveSection</h4>
 <pre class="methodSignature">public abstract&nbsp;void&nbsp;RemoveSection&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Deletes all rows that matches the given table and section</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section</dd>
+</dl>
 </li>
 </ul>
 <a id="AddFile(java.lang.String)">
@@ -1269,6 +1703,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>AddFile</h4>
 <pre class="methodSignature">public abstract&nbsp;void&nbsp;AddFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Creates a new table</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+</dl>
 </li>
 </ul>
 <a id="RemoveFile(java.lang.String)">
@@ -1278,6 +1717,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>RemoveFile</h4>
 <pre class="methodSignature">public abstract&nbsp;void&nbsp;RemoveFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Deletes the table</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+</dl>
 </li>
 </ul>
 <a id="RenameFile(java.lang.String,java.lang.String)">
@@ -1288,6 +1732,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>RenameFile</h4>
 <pre class="methodSignature">public abstract&nbsp;void&nbsp;RenameFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameSource,
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameDest)</pre>
+<div class="block">Renames the table</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fNameSource</code> - A table name for an existing table, without the <code>phantombot_</code> prefix</dd>
+<dd><code>fNameDest</code> - A new table name that does not yet exist, without the <code>phantombot_</code> prefix</dd>
+</dl>
 </li>
 </ul>
 <a id="FileExists(java.lang.String)">
@@ -1297,6 +1747,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>FileExists</h4>
 <pre class="methodSignature">public abstract&nbsp;boolean&nbsp;FileExists&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block">Indicates if the given table already exists</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="HasKey(java.lang.String,java.lang.String,java.lang.String)">
@@ -1308,6 +1764,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;boolean&nbsp;HasKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Indicates if the given table contains a row matching the given section and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>A</code> - table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) or <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="exists(java.lang.String,java.lang.String)">
@@ -1318,6 +1782,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>exists</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;exists&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Indicates if the given table contains a row matching the given key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>A</code> - table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="get(java.lang.String,java.lang.String)">
@@ -1328,6 +1799,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>get</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;get&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Returns the value of the <code>value</code> column from the default section of the given table and key as a string</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="set(java.lang.String,java.lang.String,java.lang.String)">
@@ -1339,6 +1817,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;set&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block">Sets the value of the <code>value</code> column for the default section of the given table and key as a string</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="setbatch(java.lang.String,java.lang.String[],java.lang.String[])">
@@ -1350,6 +1835,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;setbatch&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;values)</pre>
+<div class="block">Performs a bulk <a href="#set(java.lang.String,java.lang.String,java.lang.String)"><code>set(String, String, String)</code></a> operation, using available database features to do so more efficiently.
+
+ The array index of the keys and value params are linked</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>keys</code> - The values of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new values to set the <code>value</code> column to</dd>
+</dl>
 </li>
 </ul>
 <a id="del(java.lang.String,java.lang.String)">
@@ -1360,6 +1854,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>del</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;del&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block">Deletes the row from the default section that matches the given tableand key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+</dl>
 </li>
 </ul>
 <a id="incr(java.lang.String,java.lang.String,java.lang.String,int)">
@@ -1372,6 +1872,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  int&nbsp;amount)</pre>
+<div class="block">Increases the value of the <code>value</code> column as an integer in the given table, section, and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to increase the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="incr(java.lang.String,java.lang.String,int)">
@@ -1383,6 +1891,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;incr&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  int&nbsp;amount)</pre>
+<div class="block">Increases the value of the <code>value</code> column as an integer in the default section of the given table and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to increase the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="decr(java.lang.String,java.lang.String,java.lang.String,int)">
@@ -1395,6 +1910,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  int&nbsp;amount)</pre>
+<div class="block">Decreases the value of the <code>value</code> column as an integer in the given table, section, and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to decrease the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="decr(java.lang.String,java.lang.String,int)">
@@ -1406,6 +1929,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;decr&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  int&nbsp;amount)</pre>
+<div class="block">Decreases the value of the <code>value</code> column as an integer in the default section of the given table and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to decrease the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="decr(java.lang.String,java.lang.String,long)">
@@ -1417,6 +1947,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;decr&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  long&nbsp;amount)</pre>
+<div class="block">Decreases the value of the <code>value</code> column as a long in the default section of the given table and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to decrease the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="incr(java.lang.String,java.lang.String,java.lang.String,long)">
@@ -1429,6 +1966,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  long&nbsp;amount)</pre>
+<div class="block">Increases the value of the <code>value</code> column as a long in the given table, section, and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to increase the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="incr(java.lang.String,java.lang.String,long)">
@@ -1440,6 +1985,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;incr&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  long&nbsp;amount)</pre>
+<div class="block">Increases the value of the <code>value</code> column as a long in the default section of the given table and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to increase the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="decr(java.lang.String,java.lang.String,java.lang.String,long)">
@@ -1452,6 +2004,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                  long&nbsp;amount)</pre>
+<div class="block">Decreases the value of the <code>value</code> column as a long in the given table, section, and key</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dd><code>amount</code> - The amount to decrease the value of the <code>value</code> column by</dd>
+</dl>
 </li>
 </ul>
 <a id="searchByValue(java.lang.String,java.lang.String)">
@@ -1462,6 +2022,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>searchByValue</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;searchByValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the default section of the table, where the value of the <code>value</code> column contains the search phrase</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>search</code> - The partial value of the <code>value</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="searchByKey(java.lang.String,java.lang.String)">
@@ -1472,6 +2039,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>searchByKey</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;searchByKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block">Returns a list of values in the <code>variable</code> column within the default section of the table, where the value of the <code>variable</code> column contains the search phrase</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="executeSql(java.lang.String,java.lang.String[])">
@@ -1482,6 +2056,30 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>executeSql</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[][]&nbsp;executeSql&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</pre>
+<div class="block">Executes an SQL query.
+
+ The query is executed using a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement</code></a> with calls to <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a>
+
+ For example:
+ <code>executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])</code>
+
+ The value <code>"baz"</code> is escaped to prevent SQL injection, then inserted in place of the <code>?</code>
+
+ This yields the final query of
+ <code>SELECT * FROM foo WHERE bar = "baz"</code>
+
+ You can use <code>?</code> as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
+
+ Replacements are performed in order from left to right
+
+ Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>sql</code> - The query to execute</dd>
+<dd><code>replacements</code> - Replacements for <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>An array of data as strings representing the result set, if the query was a DQL statement; empty arrays otherwise. The outer array represents rows; the inner array represents columns; the values of the inner array represent the value of the row-column pair at that index as a string</dd>
+</dl>
 </li>
 </ul>
 <a id="CreateIndexes()">
@@ -1491,6 +2089,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>CreateIndexes</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;CreateIndexes()</pre>
+<div class="block">Ensures that all tables created with <a href="#AddFile(java.lang.String)"><code>AddFile(String)</code></a> have a <code>UNIQUE</code> index across the <code>section</code> and <code>variable</code> columns.
+
+ If a constraint violation occurs while attempting to create the index, all rows violating the constraint except the first for each pair are deleted</div>
 </li>
 </ul>
 <a id="DropIndexes()">
@@ -1500,15 +2101,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>DropIndexes</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;DropIndexes()</pre>
-</li>
-</ul>
-<a id="CanConnect()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CanConnect</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect()</pre>
+<div class="block">Drops all <code>UNIQUE</code> indexes from tables created with <a href="#AddFile(java.lang.String)"><code>AddFile(String)</code></a></div>
 </li>
 </ul>
 <a id="CanConnect(java.lang.String,java.lang.String,java.lang.String)">
@@ -1520,6 +2113,17 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</pre>
+<div class="block">Tests if the connection to the database succeeds.
+
+ This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>db</code> - The JDBC connection string</dd>
+<dd><code>user</code> - The username</dd>
+<dd><code>pass</code> - The password</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> on success or on embedded databases</dd>
+</dl>
 </li>
 </ul>
 <a id="canBackup()">
@@ -1529,6 +2133,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>canBackup</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;canBackup()</pre>
+<div class="block">Indicates if this database type supports generating backup files</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="backupDB(java.lang.String)">
@@ -1538,6 +2146,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>backupDB</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;backupDB&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;filename)</pre>
+<div class="block">Backs up the database to the specified filename in the <code>dbbackup</code> folder</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>filename</code> - </dd>
+</dl>
 </li>
 </ul>
 <a id="dispose()">
