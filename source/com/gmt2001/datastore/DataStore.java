@@ -828,7 +828,7 @@ public abstract class DataStore {
      *
      * The value {@code "baz"} is escaped to prevent SQL injection, then inserted in place of the {@code ?}
      *
-     * This yeilds the final query of
+     * This yields the final query of
      * {@code SELECT * FROM foo WHERE bar = "baz"}
      *
      * You can use {@code ?} as many times as neccessary, but must provide the same number of elements in the replacements array for the replacement to work
