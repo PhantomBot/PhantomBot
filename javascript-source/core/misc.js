@@ -415,55 +415,6 @@
     }
 
     /**
-     * @function paginateArrayDiscord
-     * @export $
-     * @param {Array}   Input array of data to paginate
-     * @param {String}  Key in the $.lang system
-     * @param {String}  Seperator to use between items
-     * @param {String}  Value of sender for $.whisperPrefix
-     * @param {Number}  Page to display, 0 for ALL
-     * @return {Number} Total number of pages.
-     *
-     */
-    function paginateArrayDiscord(array, langKey, sep, channel, sender, display_page) {
-        var idx,
-                output = '',
-                maxlen,
-                hasNoLang = langKey.startsWith('NULL'),
-                pageCount = 0;
-
-        if (display_page === undefined) {
-            display_page = 0;
-        }
-
-        maxlen = 1400 - (hasNoLang ? langKey.length : $.lang.get(langKey).length);
-        langKey = langKey.replace('NULL', '');
-        for (idx in array) {
-            output += array[idx];
-            if (output.length >= maxlen) {
-                pageCount++;
-                if (output.length > 0) {
-                    if (display_page === 0 || display_page === pageCount) {
-                        $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
-                    }
-                }
-                output = '';
-            } else {
-                if (idx < array.length - 1) {
-                    output += sep;
-                }
-            }
-        }
-        pageCount++;
-        if (output.length > 0) {
-            if (display_page === 0 || display_page === pageCount) {
-                $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
-            }
-        }
-        return pageCount;
-    }
-
-    /**
      * @function userPrefix
      * @export $
      * @param {username}
@@ -508,6 +459,5 @@
     $.hasKey = hasKey;
     $.getMessageWrites = getMessageWrites;
     $.sayWithTimeout = sayWithTimeout;
-    $.paginateArrayDiscord = paginateArrayDiscord;
     $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
 })();
