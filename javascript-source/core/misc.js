@@ -799,7 +799,7 @@
         }
 
         try {
-            return String(str + '');
+            return String('' + str);
         } catch (e) {
             return def;
         }
