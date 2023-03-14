@@ -163,7 +163,7 @@
      * @param {String} message
      */
     function consoleLn(message) {
-        Packages.com.gmt2001.Console.out.println(java.util.Objects.toString(message));
+        Packages.com.gmt2001.Console.out.println(Packages.java.util.Objects.toString(message));
     }
 
     function findCaller(force) {
@@ -184,11 +184,7 @@
      */
     function consoleDebug(message) {
         if (Packages.tv.phantombot.PhantomBot.getEnableDebugging()) {
-            try {
-                throw new Error();
-            } catch (ex) {
-                Packages.com.gmt2001.Console.debug.printlnRhino(java.util.Objects.toString('[' + findCaller() + '] ' + message));
-            }
+            Packages.com.gmt2001.Console.debug.printlnRhino(Packages.java.util.Objects.toString('[' + findCaller() + '] ' + message));
         }
     }
 
