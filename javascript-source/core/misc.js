@@ -18,8 +18,8 @@
 /* global Packages */
 
 (function () {
-    var respond = getSetIniDbBoolean('settings', 'response_@chat', true),
-            action = getSetIniDbBoolean('settings', 'response_action', false),
+    var respond = $.getSetIniDbBoolean('settings', 'response_@chat', true),
+            action = $.getSetIniDbBoolean('settings', 'response_action', false),
             secureRandom = new Packages.java.security.SecureRandom(),
             reg = new RegExp(/^@\w+,\s?$/),
             timeout = 0,
@@ -29,8 +29,8 @@
      * @function reloadMisc
      */
     function reloadMisc() {
-        respond = getIniDbBoolean('settings', 'response_@chat');
-        action = getIniDbBoolean('settings', 'response_action');
+        respond = $.getIniDbBoolean('settings', 'response_@chat');
+        action = $.getIniDbBoolean('settings', 'response_action');
     }
 
     /**
@@ -110,46 +110,6 @@
     }
 
     /**
-     * @function strlen
-     * @export $
-     * @param {string} str
-     * @returns {Number}
-     */
-    function strlen(str) {
-        if (str === null) {
-            return 0;
-        }
-
-        if ((typeof str.length) instanceof Packages.java.lang.String) {
-            if ((typeof str.length).equalsIgnoreCase('number')) {
-                return str.length;
-            } else {
-                return str.length;
-            }
-        } else {
-            if ((typeof str.length) === 'number') {
-                return str.length;
-            } else {
-                return str.length;
-            }
-        }
-    }
-
-    function equalsIgnoreCase(str1, str2) {
-        try {
-            return str1.equalsIgnoreCase(str2);
-        } catch (e) {
-            try {
-                return str1.toLowerCase() === str2.toLowerCase();
-            } catch (e) {
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @function say
      * @export $
      * @param {string} message
@@ -192,34 +152,16 @@
     function sayWithTimeout(message, run) {
         _lock.lock();
         try {
-            if (((timeout + 10000) > systemTime()) || !run) {
+            if (((timeout + 10000) > $.systemTime()) || !run) {
                 return;
             }
 
-            timeout = systemTime();
+            timeout = $.systemTime();
         } finally {
             _lock.unlock();
         }
 
         say(message);
-    }
-
-    /**
-     * @function systemTime
-     * @export $
-     * @returns {Number}
-     */
-    function systemTime() {
-        return parseInt(java.lang.System.currentTimeMillis());
-    }
-
-    /**
-     * @function systemTimeNano
-     * @export $
-     * @returns {Number}
-     */
-    function systemTimeNano() {
-        return parseInt(java.lang.System.nanoTime());
     }
 
     /**
@@ -522,76 +464,6 @@
     }
 
     /**
-     * Taken from: https://jsperf.com/replace-vs-split-join-vs-replaceall/95s
-     *
-     * Implementation of string.replaceAll
-     *
-     * @function replace
-     * @export $
-     * @param {string}
-     */
-    function replace(str, from, to) {
-        var idx, parts = [], l = from.length, prev = 0;
-        for (; ~(idx = str.indexOf(from, prev)); ) {
-            parts.push(str.slice(prev, idx), to);
-            prev = idx + l;
-        }
-        parts.push(str.slice(prev));
-        return parts.join('');
-    }
-
-    /**
-     * Taken from: https://github.com/tc39/proposal-string-matchall
-     *
-     * Implementation of string.matchAll
-     *
-     * @function matchAll
-     * @export $
-     * @param {type} str
-     * @param {type} regex
-     * @returns {Array}
-     */
-    function matchAll(str, regex) {
-        regex.lastIndex = 0;
-        var matches = [];
-        str.replace(regex, function () {
-            var match = Array.prototype.slice.call(arguments, 0, -2);
-            match.input = arguments[arguments.length - 1];
-            match.index = arguments[arguments.length - 2];
-            matches.push(match);
-        });
-
-        return matches;
-    }
-
-    function match(str, regex) {
-        if (str === undefined || str === null) {
-            return ''.match(regex);
-        }
-
-        regex.lastIndex = 0;
-        return str.match(regex);
-    }
-
-    function test(str, regex) {
-        regex.lastIndex = 0;
-        try {
-            return regex.test(str);
-        } catch (e) {
-            if (e.message.indexOf('Cannot find function test') >= 0) {
-                return $.javaString(str).contains(regex);
-            } else {
-                throw e;
-            }
-        }
-    }
-
-    function regexExec(str, regex) {
-        regex.lastIndex = 0;
-        return regex.exec(str);
-    }
-
-    /**
      * @function userPrefix
      * @export $
      * @param {username}
@@ -601,148 +473,6 @@
             return '@' + $.username.resolve(username) + ' ';
         }
         return '@' + $.username.resolve(username) + ', ';
-    }
-
-    function javaString(str, def) {
-        if (def === undefined) {
-            def = null;
-        }
-
-        if (str === null || str === undefined) {
-            return def;
-        }
-        try {
-            return new Packages.java.lang.String(str);
-        } catch (e) {
-            return def;
-        }
-    }
-
-    function jsString(str, def) {
-        if (def === undefined) {
-            def = null;
-        }
-
-        if (str === null || str === undefined) {
-            return def;
-        }
-
-        try {
-            return String('' + str);
-        } catch (e) {
-            return def;
-        }
-    }
-
-    function jsArgs(list) {
-        if (list === null || list === undefined) {
-            return [];
-        }
-
-        let args = [];
-
-        try {
-            if (isJSArray(list)) {
-                for (let i in list) {
-                    args.push($.jsString(list[i]));
-                }
-            } else {
-                let len = 0;
-                try {
-                    len = list.size();
-                } catch(l1) {
-                    try {
-                        len = list.length();
-                    } catch (l2) {
-                        try {
-                            len = list.length;
-                            if (len === undefined || len === null) {
-                                len = 0;
-                            }
-                        } catch (l3) {}
-                    }
-                }
-
-                for (let i = 0; i < len; i++) {
-                    let val = undefined;
-                    try {
-                        val = list[i];
-                    } catch(l1) {
-                        try {
-                            val = list.get(i);
-                        } catch (l2) {}
-                    }
-
-                    args.push($.jsString(val));
-                }
-            }
-        } catch (e) {
-            return [];
-        }
-
-        return args;
-    }
-
-    const arrMatchStr = String(Array);
-    function isJSArray(obj) {
-        return obj !== undefined && obj !== null && typeof obj === 'object' && 'constructor' in obj && String(obj.constructor) === arrMatchStr;
-    }
-
-    function duration(str) {
-        try {
-            let duration = Packages.com.gmt2001.DurationString.from(str);
-            if (duration !== Packages.java.time.Duration.ZERO) {
-                return duration.toSeconds();
-            }
-        } catch (e) {}
-
-        try {
-            return parseInt(str);
-        } catch (e) {}
-
-        return 0;
-    }
-
-    /**
-     * Parses an argument string into an array
-     * @param {string} str input string
-     * @param {char} sep separator character. Can be escaped in the input string using backslash (\). Default comma (,)
-     * @param {int} limit maximum amount of arguments to produce. -1 for unlimited. After the limit is reached, the remainder of the string is returned as the last argument. Default -1
-     * @param {boolean} limitNoEscape If true and limit is > 0, the last argument is treated as a string literal, not parsing the escape characters. Default false
-     * @returns {Array} if no arguments were found in str, returns null; else the array of arguments, each converted to a jsString and trimmed
-     */
-    function parseArgs(str, sep, limit, limitNoEscape) {
-        if (str === undefined || str === null) {
-            throw 'Invalid str (undefined, null)';
-        }
-
-        if (sep === undefined || sep === null || $.jsString(sep).length !== 1) {
-            sep = ',';
-        }
-
-        if (limit !== undefined && limit !== null && (isNaN(limit) || (limit <= 0 && limit !== -1))) {
-            throw 'Invalid limit (NaN or <= 0)';
-        } else if (limit === undefined || limit === null) {
-            limit = -1;
-        }
-
-        if (limitNoEscape === undefined || limitNoEscape === null) {
-            limitNoEscape = false;
-        }
-
-        var retl = Packages.tv.phantombot.event.command.CommandEvent.parseArgs(str, sep, limit, limitNoEscape);
-
-        var ret = [];
-
-        for (var i = 0; i < retl.size(); i++) {
-            ret.push($.jsString(retl.get(i)).trim());
-        }
-
-        if (ret.length === 0) {
-            return null;
-        }
-
-        return ret;
     }
 
     function usernameResolveIgnoreEx(user) {
@@ -769,38 +499,15 @@
     $.randInterval = randInterval;
     $.randRange = randRange;
     $.say = say;
-    $.strlen = strlen;
-    $.systemTime = systemTime;
     $.trueRand = trueRand;
     $.trueRandElement = trueRandElement;
     $.trueRandRange = trueRandRange;
     $.paginateArray = paginateArray;
-    $.replace = replace;
-    $.matchAll = matchAll;
-    $.match = match;
-    $.test = test;
-    $.regexExec = regexExec;
     $.userPrefix = userPrefix;
     $.reloadMisc = reloadMisc;
     $.hasKey = hasKey;
-    $.systemTimeNano = systemTimeNano;
     $.getMessageWrites = getMessageWrites;
     $.sayWithTimeout = sayWithTimeout;
     $.paginateArrayDiscord = paginateArrayDiscord;
-    $.equalsIgnoreCase = equalsIgnoreCase;
-    $.javaString = javaString;
-    $.jsString = jsString;
-    $.jsArgs = jsArgs;
-    $.isJSArray = isJSArray;
-    $.duration = duration;
-    /**
-     * Parses an argument string into an array
-     * @param {string} str input string
-     * @param {char} sep separator character. Can be escaped in the input string using backslash (\). Default comma (,)
-     * @param {int} limit maximum amount of arguments to produce. -1 for unlimited. After the limit is reached, the remainder of the string is returned as the last argument. Default -1
-     * @param {boolean} limitNoEscape If true and limit is > 0, the last argument is treated as a string literal, not parsing the escape characters. Default false
-     * @returns {Array} if no arguments were found in str, returns null; else the array of arguments, each converted to a jsString and trimmed
-     */
-    $.parseArgs = parseArgs;
     $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
 })();

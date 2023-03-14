@@ -241,7 +241,12 @@
                         script = $api.loadScriptR($script, scriptName);
                     }
 
-                    enabled = $.getSetIniDbBoolean('modules', scriptName, true);
+                    if ($.inidb.exists('modules', scriptName) === true) {
+                        enabled = $.inidb.GetBoolean('modules', '', scriptName);
+                    } else {
+                        $.inidb.set('modules', scriptName, true.toString());
+                        enabled = true;
+                    }
 
                     modules[scriptName] = new Module(scriptName, script, enabled);
 
@@ -295,7 +300,7 @@
             });
         }
 
-        for (let i = 0; i < files.size(); i++) {
+        for (let i = 0; i < files.length; i++) {
             let file = files[i];
             if (path === '.') {
                 if (file === 'lang' || file === 'discord' || file === 'init.js') {
@@ -304,9 +309,9 @@
             }
 
             if ($api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + file))) {
-                loadScriptRecursive(path + '/' + file, silent, force, sorted);
+                loadScriptRecursive(path + '/' + file, silent, (force && path !== './core' && path !== './discord/core' ? force : false), sorted);
             } else {
-                loadScript(path + '/' + file, force, silent);
+                loadScript(path + '/' + file, (force && path !== './core' && path !== './discord/core' ? force : false), silent);
             }
         }
     }
@@ -502,27 +507,13 @@
         }
 
         try {
-            // Load all core modules.
-            loadScript('./core/misc.js', false, silentScriptsLoad);
-            loadScript('./core/fileSystem.js', false, silentScriptsLoad);
-            loadScript('./core/lang.js', false, silentScriptsLoad);
-            loadScript('./core/jsTimers.js', false, silentScriptsLoad);
-            loadScript('./core/updates.js', false, silentScriptsLoad);
-            loadScript('./core/permissions.js', false, silentScriptsLoad);
-            loadScript('./core/commandRegister.js', false, silentScriptsLoad);
-            loadScript('./core/commandTags.js', false, silentScriptsLoad);
-            loadScript('./core/chatModerator.js', false, silentScriptsLoad);
-            loadScript('./core/commandPause.js', false, silentScriptsLoad);
-            loadScript('./core/logging.js', false, silentScriptsLoad);
-            loadScript('./core/whisper.js', false, silentScriptsLoad);
-            loadScript('./core/commandCoolDown.js', false, silentScriptsLoad);
-            loadScript('./core/keywordCoolDown.js', false, silentScriptsLoad);
-            loadScript('./core/patternDetector.js', false, silentScriptsLoad);
+            // Load Twitch core
+            loadScriptRecursive('./core/bootstrap', silentScriptsLoad, false, true);
+            loadScriptRecursive('./core', silentScriptsLoad, false, false);
 
-            // Load all the other modules.
-            loadScriptRecursive('.', silentScriptsLoad);
+            // Load other Twitch modules
+            loadScriptRecursive('.', silentScriptsLoad, false, false);
 
-            // Load Discord modules if need be.
             if (!$.hasDiscordToken) {
                 loadScript('./discord/core/misc.js', false, silentScriptsLoad);
                 loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
@@ -532,10 +523,14 @@
                 loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
                 loadScript('./discord/core/commandCooldown.js', false, silentScriptsLoad);
 
-                // Load the other discord modules
-                loadScriptRecursive('./discord', silentScriptsLoad);
-                // Mark that we are using Discord.
-                // This is used by the new panel.
+                // Load Discord core
+                //loadScriptRecursive('./discord/core/bootstrap', silentScriptsLoad, false, true);
+                //loadScriptRecursive('./discord/core', silentScriptsLoad, false, false);
+
+                // Load other Discord modules
+                loadScriptRecursive('./discord', silentScriptsLoad, false, false);
+
+                // Mark that we are using Discord for the panel
                 $.inidb.set('panelData', 'hasDiscord', 'true');
             } else {
                 $.inidb.set('panelData', 'hasDiscord', 'false');
