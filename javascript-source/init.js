@@ -262,14 +262,41 @@
      * @param {Boolean} silent
      * @param {Boolean} force
      */
-    function loadScriptRecursive(path, silent, force) {
+    function loadScriptRecursive(path, silent, force, sorted) {
         if (path === undefined || path === null) {
             return;
         }
-        let files = $api.findFiles(new Packages.java.lang.String('./scripts/' + path), new Packages.java.lang.String(''));
+
+        let jfiles = $api.findFiles(new Packages.java.lang.String('./scripts/' + path), new Packages.java.lang.String(''));
+        let files = [];
+
+        for (let i = 0; i < jfiles.size(); i++) {
+            files.push(String('' + jfiles.get(i)));
+        }
+
+        if (sorted) {
+            files.sort((a, b) => {
+                let intvala = parseInt(a);
+                let intvalb = parseInt(b);
+
+                if (!isNaN(intvala) && isNaN(intvalb)) {
+                    return -1;
+                } else if (isNaN(intvala) && !isNaN(intvalb)) {
+                    return 1;
+                } else if (!isNaN(intvala) && !isNaN(intvalb) && intvala !== intvalb) {
+                    return intvala - intvalb;
+                } else if (a < b) {
+                    return -1;
+                } else if (a > b) {
+                    return 1;
+                }
+
+                return 0;
+            });
+        }
 
         for (let i = 0; i < files.size(); i++) {
-            let file = String('' + files.get(i));
+            let file = files[i];
             if (path === '.') {
                 if (file === 'lang' || file === 'discord' || file === 'init.js') {
                     continue;
@@ -277,9 +304,9 @@
             }
 
             if ($api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + file))) {
-                loadScriptRecursive(path + '/' + file, silent, (force && path !== './core' && path !== './discord/core' ? force : false));
+                loadScriptRecursive(path + '/' + file, silent, force, sorted);
             } else {
-                loadScript(path + '/' + file, (force && path !== './core' && path !== './discord/core' ? force : false), silent);
+                loadScript(path + '/' + file, force, silent);
             }
         }
     }
