@@ -17,6 +17,8 @@
 package com.gmt2001.datastore;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Database Access Base Class
@@ -839,10 +841,37 @@ public abstract class DataStore {
      *
      * @param sql The query to execute
      * @param replacements Replacements for {@link PreparedStatement#setString(int, String)}
+     * @return An List of data as strings representing the result set, if the query was a DQL statement; an empty list otherwise. The outer list represents rows; the inner array represents columns; the values of the inner list represent the value of the row-column pair at that index as a string
+     */
+    public List<List<String>> query(String sql, String[] replacements) {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Executes an SQL query.
+     * <br /><br />
+     * The query is executed using a {@link PreparedStatement} with calls to {@link PreparedStatement#setString(int, String)}
+     * <br /><br />
+     * For example:<br />
+     * {@code executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])}
+     * <br /><br />
+     * The value {@code "baz"} is escaped to prevent SQL injection, then inserted in place of the {@code ?}
+     * <br /><br />
+     * This yields the final query of<br />
+     * {@code SELECT * FROM foo WHERE bar = "baz"}
+     * <br /><br />
+     * You can use {@code ?} as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
+     * <br /><br />
+     * Replacements are performed in order from left to right
+     * <br /><br />
+     * Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log
+     *
+     * @param sql The query to execute
+     * @param replacements Replacements for {@link PreparedStatement#setString(int, String)}
      * @return An array of data as strings representing the result set, if the query was a DQL statement; empty arrays otherwise. The outer array represents rows; the inner array represents columns; the values of the inner array represent the value of the row-column pair at that index as a string
      */
     public String[][] executeSql(String sql, String[] replacements) {
-        return new String[][]{};
+        return this.query(sql, replacements).stream().map(al -> al.stream().toArray(String[]::new)).toArray(String[][]::new);
     }
 
     /**

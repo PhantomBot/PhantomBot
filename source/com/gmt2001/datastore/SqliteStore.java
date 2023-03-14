@@ -35,6 +35,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -1148,10 +1149,10 @@ public final class SqliteStore extends DataStore {
     }
 
     @Override
-    public String[][] executeSql(String sql, String[] replacements) {
+    public List<List<String>> query(String sql, String[] replacements) {
         try {
             this.rwl.readLock().lock();
-            ArrayList<ArrayList<String>> results = new ArrayList<>();
+            List<List<String>> results = new ArrayList<>();
 
             try ( Connection connection = GetConnection()) {
                 try ( PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -1163,16 +1164,15 @@ public final class SqliteStore extends DataStore {
                     if (statement.execute()) {
                         try ( ResultSet rs = statement.getResultSet()) {
                             int numcol = rs.getMetaData().getColumnCount();
-                            i = 0;
 
                             while (rs.next()) {
-                                results.add(new ArrayList<>());
+                                List<String> row = new ArrayList<>();
 
                                 for (int b = 1; b <= numcol; b++) {
-                                    results.get(i).add(rs.getString(b));
+                                    row.add(rs.getString(b));
                                 }
 
-                                i++;
+                                results.add(row);
                             }
                         }
                     }
@@ -1181,7 +1181,7 @@ public final class SqliteStore extends DataStore {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
 
-            return results.stream().map(al -> al.stream().toArray(String[]::new)).toArray(String[][]::new);
+            return results;
         } finally {
             this.rwl.readLock().unlock();
         }

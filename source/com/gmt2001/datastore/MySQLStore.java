@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -871,8 +872,8 @@ public final class MySQLStore extends DataStore {
     }
 
     @Override
-    public String[][] executeSql(String sql, String[] replacements) {
-        ArrayList<ArrayList<String>> results = new ArrayList<>();
+    public List<List<String>> query(String sql, String[] replacements) {
+        List<List<String>> results = new ArrayList<>();
 
         try ( Connection connection = GetConnection()) {
             try ( PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -884,16 +885,15 @@ public final class MySQLStore extends DataStore {
                 if (statement.execute()) {
                     try ( ResultSet rs = statement.getResultSet()) {
                         int numcol = rs.getMetaData().getColumnCount();
-                        i = 0;
 
                         while (rs.next()) {
-                            results.add(new ArrayList<>());
+                            List<String> row = new ArrayList<>();
 
                             for (int b = 1; b <= numcol; b++) {
-                                results.get(i).add(rs.getString(b));
+                                row.add(rs.getString(b));
                             }
 
-                            i++;
+                            results.add(row);
                         }
                     }
                 }
@@ -902,6 +902,6 @@ public final class MySQLStore extends DataStore {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        return results.stream().map(al -> al.stream().toArray(String[]::new)).toArray(String[][]::new);
+        return results;
     }
 }
