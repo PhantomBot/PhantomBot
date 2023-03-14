@@ -249,7 +249,7 @@
                         consoleLn('Loaded module: ' + scriptName.replace(/\.\//g, '') + ' (' + (enabled ? 'Enabled' : 'Disabled') + ')');
                     }
                 } catch (ex) {
-                    consoleLn('Failed loading "' + scriptName + '": ' + ex);
+                    handleException('loadScript(' + scriptName + ')', ex);
                 }
             }
         }
@@ -266,17 +266,17 @@
         if (path === undefined || path === null) {
             return;
         }
-        let files = $api.findFiles($.javaString('./scripts/' + path), $.javaString(''));
+        let files = $api.findFiles(new Packages.java.lang.String('./scripts/' + path), new Packages.java.lang.String(''));
 
         for (let i = 0; i < files.size(); i++) {
-            let file = $.jsString(files.get(i));
+            let file = String('' + files.get(i));
             if (path === '.') {
                 if (file === 'lang' || file === 'discord' || file === 'init.js') {
                     continue;
                 }
             }
 
-            if ($api.isDirectory($.javaString('./scripts/' + path + '/' + file))) {
+            if ($api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + file))) {
                 loadScriptRecursive(path + '/' + file, silent, (force && path !== './core' && path !== './discord/core' ? force : false));
             } else {
                 loadScript(path + '/' + file, (force && path !== './core' && path !== './discord/core' ? force : false), silent);
