@@ -45,16 +45,6 @@
     }
 
     /**
-     * @function isConnected
-     *
-     * @return {boolean}
-     */
-    function isConnected() {
-        return $.discordAPI.isLoggedIn() &&
-        $.discordAPI.checkConnectionStatus() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED
-    }
-
-    /**
      * @function getUserMention
      *
      * @export $.discord.username
@@ -462,28 +452,25 @@
 
     /* Export the function to the $.discord api. */
     /* There are the same functions twice in here - that's normal and wanted. */
-    $.discord = {
-        isConnected: isConnected,
+    $.discord.getUserMention = getUserMention;
+    $.discord.userMention = getUserMention;
+    $.discord.removeGame = removeGame;
+    $.discord.userPrefix = userPrefix;
+    $.discord.setStream = setStream;
+    $.discord.setGame = setGame;
+    $.discord.setRole = setRole;
+    $.discord.say = say;
+    $.discord.handleDeleteReaction = handleDeleteReaction;
+    $.discord.sanitizeChannelName = sanitizeChannelName;
+    $.discord.resolve = {
+        global: getUserMentionOrChannel,
+        getUserMentionOrChannel: getUserMentionOrChannel
+    };
+    $.discord.username = {
+        resolve: getUserMention,
+        random: getRandomUser,
         getUserMention: getUserMention,
-        userMention: getUserMention,
-        removeGame: removeGame,
-        userPrefix: userPrefix,
-        setStream: setStream,
-        setGame: setGame,
-        setRole: setRole,
-        say: say,
-        handleDeleteReaction: handleDeleteReaction,
-        sanitizeChannelName: sanitizeChannelName,
-        resolve: {
-            global: getUserMentionOrChannel,
-            getUserMentionOrChannel: getUserMentionOrChannel
-        },
-        username: {
-            resolve: getUserMention,
-            random: getRandomUser,
-            getUserMention: getUserMention,
-            getRandomUser: getRandomUser
-        }
+        getRandomUser: getRandomUser
     };
     $.paginateArrayDiscord = paginateArrayDiscord;
 })();

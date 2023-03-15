@@ -515,17 +515,9 @@
             loadScriptRecursive('.', silentScriptsLoad, false, false);
 
             if (!$.hasDiscordToken) {
-                loadScript('./discord/core/misc.js', false, silentScriptsLoad);
-                loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
-                loadScript('./discord/core/patternDetector.js', false, silentScriptsLoad);
-                loadScript('./discord/core/moderation.js', false, silentScriptsLoad);
-                loadScript('./discord/core/registerCommand.js', false, silentScriptsLoad);
-                loadScript('./discord/core/accountLink.js', false, silentScriptsLoad);
-                loadScript('./discord/core/commandCooldown.js', false, silentScriptsLoad);
-
                 // Load Discord core
-                //loadScriptRecursive('./discord/core/bootstrap', silentScriptsLoad, false, true);
-                //loadScriptRecursive('./discord/core', silentScriptsLoad, false, false);
+                loadScriptRecursive('./discord/core/bootstrap', silentScriptsLoad, false, true);
+                loadScriptRecursive('./discord/core', silentScriptsLoad, false, false);
 
                 // Load other Discord modules
                 loadScriptRecursive('./discord', silentScriptsLoad, false, false);
