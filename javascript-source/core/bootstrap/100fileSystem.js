@@ -20,7 +20,7 @@
 /**
  * fileSystem.js
  *
- * Export general file management to th $ API
+ * File management
  */
 (function () {
     /**
@@ -30,7 +30,7 @@
      * @returns {Array}
      */
     function readFile(path) {
-        var lines = [];
+        let lines = [];
 
         if (!fileExists(path)) {
             return lines;
@@ -42,8 +42,8 @@
         }
 
         try {
-            var jlines = Packages.com.gmt2001.JSFileSystem.ReadFileAsLines($.javaString(path));
-            for (var i = 0; i < jlines.size(); ++i) {
+            let jlines = Packages.com.gmt2001.JSFileSystem.ReadFileAsLines($.javaString(path));
+            for (let i = 0; i < jlines.size(); ++i) {
                 lines.push($.jsString(jlines.get(i)));
             }
         } catch (e) {
@@ -119,8 +119,8 @@
         }
 
         try {
-            var lines = new Packages.com.gmt2001.JSFileSystem.CreateStringList();
-            for (var i = 0; i < array.length; ++i) {
+            let lines = new Packages.com.gmt2001.JSFileSystem.CreateStringList();
+            for (let i = 0; i < array.length; ++i) {
                 lines.add($.javaString(array[i]));
             }
             Packages.com.gmt2001.JSFileSystem.WriteLinesToFile($.javaString(path), lines, append);
@@ -215,9 +215,9 @@
         }
 
         try {
-            var ret = [];
-            var files = Packages.com.gmt2001.JSFileSystem.FindFilesInDirectory($.javaString(directory), $.javaString(pattern));
-            for (var i = 0; i < files.size(); i++) {
+            let ret = [];
+            let files = Packages.com.gmt2001.JSFileSystem.FindFilesInDirectory($.javaString(directory), $.javaString(pattern));
+            for (let i = 0; i < files.size(); i++) {
                 ret.push($.jsString(files.get(i)));
             }
             return ret;
