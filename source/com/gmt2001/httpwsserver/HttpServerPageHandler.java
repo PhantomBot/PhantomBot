@@ -447,7 +447,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
         headers.getAll("Cookie").stream().forEach(hcookie -> Arrays.asList(hcookie.split("; ")).stream().forEach(scookie -> {
             String[] cookie = scookie.split("=", 2);
-            cookies.put(cookie[0], cookie[1]);
+            cookies.put(cookie[0], cookie.length == 2 ? cookie[1] : null);
         }));
 
         return cookies;
