@@ -584,11 +584,3 @@ No definition
 Data Type: _Char_
 
 No definition
-
-&nbsp;
-
-#### eventsubcallbackurl
-
-Data Type: _String_
-
-the url which will receive eventsub notifications
