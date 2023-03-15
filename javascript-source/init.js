@@ -206,7 +206,7 @@
                             args.push(arguments[i]);
                         }
 
-                        obj[name].save(obj, args);
+                        obj[name].apply(obj, args);
                     };
                 };
 
