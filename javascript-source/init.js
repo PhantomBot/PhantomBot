@@ -206,7 +206,7 @@
                             args.push(arguments[i]);
                         }
 
-                        obj[name].save(obj, args);
+                        obj[name].apply(obj, args);
                     };
                 };
 
@@ -283,6 +283,8 @@
             files.sort((a, b) => {
                 let intvala = parseInt(a);
                 let intvalb = parseInt(b);
+                let dira = $api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + a));
+                let dirb = $api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + b));
 
                 if (!isNaN(intvala) && isNaN(intvalb)) {
                     return -1;
@@ -290,6 +292,10 @@
                     return 1;
                 } else if (!isNaN(intvala) && !isNaN(intvalb) && intvala !== intvalb) {
                     return intvala - intvalb;
+                } else if (!dira && dirb) {
+                    return -1;
+                } else if (dira && !dirb) {
+                    return 1;
                 } else if (a < b) {
                     return -1;
                 } else if (a > b) {
@@ -423,6 +429,18 @@
         }
     }
 
+    let pendingCallHook = [];
+    function releaseHooks() {
+        setTimeout(function() {
+            for (let x in pendingCallHook) {
+                Packages.com.gmt2001.Console.debug.println('Executing delayed callHook for ' + pendingCallHook[x][0]);
+                callHook(pendingCallHook[x][0], pendingCallHook[x][1], pendingCallHook[x][2]);
+            }
+            pendingCallHook = [];
+        }, 100);
+    }
+
+
     /*
      * @function callHook
      *
@@ -431,6 +449,12 @@
      * @param {Boolean} force
      */
     function callHook(hookName, event, force) {
+        if (!isReady) {
+            Packages.com.gmt2001.Console.debug.println('Delaying callHook for ' + hookName);
+            pendingCallHook.push([hookName, event, force]);
+            return;
+        }
+
         hookName = $api.formatEventName(hookName) + '';
         let hook = hooks[hookName],
                 i;
@@ -509,7 +533,7 @@
         try {
             // Load Twitch core
             loadScriptRecursive('./core/bootstrap', silentScriptsLoad, false, true);
-            loadScriptRecursive('./core', silentScriptsLoad, false, false);
+            loadScriptRecursive('./core', silentScriptsLoad, false, true);
 
             // Load other Twitch modules
             loadScriptRecursive('.', silentScriptsLoad, false, false);
@@ -517,7 +541,7 @@
             if (!$.hasDiscordToken) {
                 // Load Discord core
                 loadScriptRecursive('./discord/core/bootstrap', silentScriptsLoad, false, true);
-                loadScriptRecursive('./discord/core', silentScriptsLoad, false, false);
+                loadScriptRecursive('./discord/core', silentScriptsLoad, false, true);
 
                 // Load other Discord modules
                 loadScriptRecursive('./discord', silentScriptsLoad, false, false);
@@ -594,6 +618,7 @@
                         isReady = true;
                         consoleLn($.botName + ' ready!');
                         callHook('initReady', null, false);
+                        releaseHooks();
                     }
                     callHook('ircChannelJoin', event, false);
                 } catch (ex) {

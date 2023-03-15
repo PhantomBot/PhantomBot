@@ -112,11 +112,11 @@
             limitNoEscape = false;
         }
 
-        var retl = Packages.tv.phantombot.event.command.CommandEvent.parseArgs(str, sep, limit, limitNoEscape);
+        let retl = Packages.tv.phantombot.event.command.CommandEvent.parseArgs(str, sep, limit, limitNoEscape);
 
-        var ret = [];
+        let ret = [];
 
-        for (var i = 0; i < retl.size(); i++) {
+        for (let i = 0; i < retl.size(); i++) {
             ret.push($.jsString(retl.get(i)).trim());
         }
 

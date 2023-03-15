@@ -155,10 +155,13 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
      * @return
      */
     protected EventSubTransport proposeTransport() {
-        /**
-         * @botproperty eventsubcallbackurl - The URL which will receive EventSub notifications
-         */
-        return EventSubTransport.websocket(EventSub.instance().sessionId());
+        String session_id = EventSub.instance().sessionId();
+
+        if (session_id == null || session_id.isBlank()) {
+            throw new IllegalStateException("session_id");
+        }
+
+        return EventSubTransport.websocket(session_id);
     }
 
     /**

@@ -20,18 +20,11 @@
 /**
  * logging.js
  *
- * Provide and API for logging events and errors
- * Use the $ API for log functions
- * Use the $.logging API for getting log-like date and time strings
+ * Binds for logging triggers and settings commands
  */
 (function () {
-    var logs = {
-        file: $.getSetIniDbBoolean('settings', 'log.file', true),
-        event: $.getSetIniDbBoolean('settings', 'log.event', true),
-        error: $.getSetIniDbBoolean('settings', 'log.error', true)
-    },
-            cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false),
-            cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+    let cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false),
+        cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
 
     /*
      * @event webPanelSocketUpdate
@@ -44,57 +37,12 @@
     });
 
     /*
-     * function reloadLogs()
-     */
-    function reloadLogs() {
-        logs.file = $.getIniDbBoolean('settings', 'log.file');
-        logs.event = $.getIniDbBoolean('settings', 'log.event');
-        logs.error = $.getIniDbBoolean('settings', 'log.error');
-    }
-
-    /*
-     * @function getLogDateString
-     *
-     * @export $.logging
-     * @param  {Number} timeStamp
-     * @return {String}
-     */
-    function getLogDateString(timeStamp) {
-        return Packages.com.illusionaryone.Logger.instance().logFileTimestamp();
-    }
-
-    /*
-     * @function getLogTimeString
-     *
-     * @export $.logging
-     * @param  {Number} timeStamp
-     * @return {String}
-     */
-    function getLogTimeString(timeStamp) {
-        if (timeStamp) {
-            return (new Date(timeStamp)).toLocaleTimeString('en-GB').replace(' ', '_');
-        } else {
-            return (new Date()).toTimeString();
-        }
-    }
-
-    /*
-     * @function getLogEntryTimeDateString
-     *
-     * @export $.logging
-     * @return {String}
-     */
-    function getLogEntryTimeDateString() {
-        return Packages.com.illusionaryone.Logger.instance().logTimestamp();
-    }
-
-    /*
      * @function logCustomCommand
      *
      * @param {object} info
      */
     function logCustomCommand(info) {
-        var lines = Object.keys(info).map(function (key) {
+        let lines = Object.keys(info).map(function (key) {
             return '**' + $.lang.get('discord.customcommandlogs.' + key) + '**: ' + info[key];
         });
         $.log.file('customCommands', lines.join('\r\n'));
@@ -103,114 +51,11 @@
         }
     }
 
-    function invalidLocation(path) {
-        return !Packages.com.gmt2001.PathValidator.isValidPathScript($.javaString(path));
-    }
-
-    function writeToFile(line, path, append) {
-        if (invalidLocation(path)) {
-            Packages.com.gmt2001.Console.err.printlnRhino('Failed to write to \'' + path + '\': Outside of valid paths');
-            return;
-        }
-
-        try {
-            Packages.com.gmt2001.JSFileSystem.WriteLineToFile($.javaString(path), $.javaString(line), append);
-        } catch (e) {
-            Packages.com.gmt2001.Console.err.printlnRhino('Failed to write to \'' + path + '\': ' + e);
-        }
-    }
-
-    /*
-     * @function logfile
-     *
-     * @export $
-     * @param {String} filePrefix
-     * @param {String} message
-     * @param {String} sender
-     */
-    function logfile(filePrefix, message, sender) {
-        if (logs.file === false) {
-            return;
-        }
-
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/' + filePrefix));
-
-        writeToFile('[' + getLogEntryTimeDateString() + '] ' + message, './logs/' + filePrefix + '/' + getLogDateString() + '.txt', true);
-    }
-
-    /*
-     * @function logEvent
-     *
-     * @export $
-     * @param {string} message
-     */
-    function logEvent(message) {
-        if (logs.event === false || message.indexOf('specialuser') !== -1) {
-            return;
-        }
-
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/event'));
-
-        try {
-            throw new Error('eventlog');
-        } catch (e) {
-            sourceFile = e.stack.split('\n')[1].split('@')[1];
-        }
-
-        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/event/' + getLogDateString() + '.txt', true);
-    }
-
-    /*
-     * @function logError
-     *
-     * @export $
-     * @param {String} message
-     */
-    function logError(message) {
-        if (logs.error === false) {
-            return;
-        }
-
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/error'));
-
-        try {
-            throw new Error('errorlog');
-        } catch (e) {
-            sourceFile = e.stack.split('\n')[1].split('@')[1];
-        }
-
-        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/error/' + getLogDateString() + '.txt', true);
-        Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
-    }
-
-    /*
-     * @function logWarning
-     *
-     * @export $
-     * @param {String} message
-     */
-    function logWarning(message) {
-        if (logs.error === false) {
-            return;
-        }
-
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/warning'));
-
-        try {
-            throw new Error('warninglog');
-        } catch (e) {
-            sourceFile = e.stack.split('\n')[1].split('@')[1];
-        }
-
-        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/warning/' + getLogDateString() + '.txt', true);
-        Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
-    }
-
     /*
      * @function logRotate
      */
     function logRotate() {
-        var logFiles,
+        let logFiles,
                 idx,
                 logFileDate,
                 logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
@@ -223,7 +68,7 @@
             return;
         }
 
-        var checkDate = Packages.java.time.LocalDate.now().minusDays(rotateDays);
+        let checkDate = Packages.java.time.LocalDate.now().minusDays(rotateDays);
 
         $.log.event('Starting Log Rotation');
         for (logDirIdx = 0; logDirIdx < logDirs.length; logDirIdx++) {
@@ -247,14 +92,14 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        logfile('chat', '' + event.getSender() + ': ' + event.getMessage());
+        $.log.file('chat', '' + event.getSender() + ': ' + event.getMessage());
     });
 
     /*
      * @event ircPrivateMessage
      */
     $.bind('ircPrivateMessage', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 message = event.getMessage().toLowerCase();
 
         if (message.startsWith('specialuser')) {
@@ -263,23 +108,23 @@
 
         if (sender.equalsIgnoreCase('jtv')) {
             if (message.equalsIgnoreCase('clearchat')) {
-                logfile('private-messages', '' + $.lang.get('console.received.clearchat'));
+                $.log.file('private-messages', '' + $.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') !== -1) {
                 logEvent($.lang.get('console.received.purgetimeoutban', message.substring(10)));
             } else if (message.indexOf('now in slow mode') !== -1) {
-                logfile('private-messages', '' + $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
+                $.log.file('private-messages', '' + $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
             } else if (message.indexOf('no longer in slow mode') !== -1) {
-                logfile('private-messages', '' + $.lang.get('console.received.slowmode.end'));
+                $.log.file('private-messages', '' + $.lang.get('console.received.slowmode.end'));
             } else if (message.indexOf('now in subscribers-only') !== -1) {
-                logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.start'));
+                $.log.file('private-messages', '' + $.lang.get('console.received.subscriberonly.start'));
             } else if (message.indexOf('no longer in subscribers-only') !== -1) {
-                logfile('private-messages', '' + $.lang.get('console.received.subscriberonly.end'));
+                $.log.file('private-messages', '' + $.lang.get('console.received.subscriberonly.end'));
             } else if (message.indexOf('now in r9k') !== -1) {
-                logfile('private-messages', '' + $.lang.get('console.received.r9k.start'));
+                $.log.file('private-messages', '' + $.lang.get('console.received.r9k.start'));
             } else if (message.indexOf('no longer in r9k') !== -1) {
-                logfile('private-messages', '' + $.lang.get('console.received.r9k.end'));
+                $.log.file('private-messages', '' + $.lang.get('console.received.r9k.end'));
             } else {
-                logfile('private-messages', '' + sender + ': ' + message);
+                $.log.file('private-messages', '' + sender + ': ' + message);
             }
         }
     });
@@ -288,7 +133,7 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var command = event.getCommand(),
+        let command = event.getCommand(),
                 sender = event.getSender(),
                 args = event.getArgs(),
                 action = args[0];
@@ -324,9 +169,10 @@
              * @commandpath log files - Toggle the logging of files
              */
             if (action.equalsIgnoreCase('files')) {
-                logs.file = !logs.file;
-                $.setIniDbBoolean('settings', 'log.file', logs.file);
-                $.say($.whisperPrefix(sender) + (logs.file ? $.lang.get('logging.enabled.files') : $.lang.get('logging.disabled.files')));
+                let enabled = !$.getIniDbBoolean('settings', 'log.file');
+                $.setIniDbBoolean('settings', 'log.file', enabled);
+                $.reloadLogs();
+                $.say($.whisperPrefix(sender) + (enabled ? $.lang.get('logging.enabled.files') : $.lang.get('logging.disabled.files')));
                 return;
             }
 
@@ -334,9 +180,10 @@
              * @commandpath log events - Toggle the logging of events
              */
             if (action.equalsIgnoreCase('events')) {
-                logs.event = !logs.event;
-                $.setIniDbBoolean('settings', 'log.event', logs.event);
-                $.say($.whisperPrefix(sender) + (logs.event ? $.lang.get('logging.enabled.event') : $.lang.get('logging.disabled.event')));
+                let enabled = !$.getIniDbBoolean('settings', 'log.event');
+                $.setIniDbBoolean('settings', 'log.event', enabled);
+                $.reloadLogs();
+                $.say($.whisperPrefix(sender) + (enabled ? $.lang.get('logging.enabled.event') : $.lang.get('logging.disabled.event')));
                 return;
             }
 
@@ -344,9 +191,10 @@
              * @commandpath log errors - Toggle the logging of errors
              */
             if (action.equalsIgnoreCase('errors')) {
-                logs.error = !logs.error;
-                $.setIniDbBoolean('settings', 'log.error', logs.error);
-                $.say($.whisperPrefix(sender) + (logs.error ? $.lang.get('logging.enabled.error') : $.lang.get('logging.disabled.error')));
+                let enabled = !$.getIniDbBoolean('settings', 'log.error');
+                $.setIniDbBoolean('settings', 'log.error', enabled);
+                $.reloadLogs();
+                $.say($.whisperPrefix(sender) + (enabled  ? $.lang.get('logging.enabled.error') : $.lang.get('logging.disabled.error')));
             }
         }
     });
@@ -364,20 +212,5 @@
         logRotate();
     });
 
-    /* Export functions to API */
-    $.logging = {
-        getLogEntryTimeDateString: getLogEntryTimeDateString,
-        getLogDateString: getLogDateString,
-        getLogTimeString: getLogTimeString
-    };
-
-    $.log = {
-        file: logfile,
-        event: logEvent,
-        error: logError,
-        warn: logWarning
-    };
-
-    $.reloadLogs = reloadLogs;
     $.logCustomCommand = logCustomCommand;
 })();

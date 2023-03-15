@@ -61,7 +61,7 @@
      * @param {string}
      */
     function replace(str, from, to) {
-        var idx, parts = [], l = from.length, prev = 0;
+        let idx, parts = [], l = from.length, prev = 0;
         for (; ~(idx = str.indexOf(from, prev)); ) {
             parts.push(str.slice(prev, idx), to);
             prev = idx + l;
@@ -83,9 +83,9 @@
      */
     function matchAll(str, regex) {
         regex.lastIndex = 0;
-        var matches = [];
+        let matches = [];
         str.replace(regex, function () {
-            var match = Array.prototype.slice.call(arguments, 0, -2);
+            let match = Array.prototype.slice.call(arguments, 0, -2);
             match.input = arguments[arguments.length - 1];
             match.index = arguments[arguments.length - 2];
             matches.push(match);
