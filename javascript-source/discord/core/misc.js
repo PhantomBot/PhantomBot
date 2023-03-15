@@ -45,16 +45,6 @@
     }
 
     /**
-     * @function isConnected
-     *
-     * @return {boolean}
-     */
-    function isConnected() {
-        return $.discordAPI.isLoggedIn() &&
-        $.discordAPI.checkConnectionStatus() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED
-    }
-
-    /**
      * @function getUserMention
      *
      * @export $.discord.username
@@ -140,6 +130,55 @@
     }
 
     /**
+     * @function paginateArrayDiscord
+     * @export $
+     * @param {Array}   Input array of data to paginate
+     * @param {String}  Key in the $.lang system
+     * @param {String}  Seperator to use between items
+     * @param {String}  Value of sender for $.whisperPrefix
+     * @param {Number}  Page to display, 0 for ALL
+     * @return {Number} Total number of pages.
+     *
+     */
+    function paginateArrayDiscord(array, langKey, sep, channel, sender, display_page) {
+        var idx,
+                output = '',
+                maxlen,
+                hasNoLang = langKey.startsWith('NULL'),
+                pageCount = 0;
+
+        if (display_page === undefined) {
+            display_page = 0;
+        }
+
+        maxlen = 1400 - (hasNoLang ? langKey.length : $.lang.get(langKey).length);
+        langKey = langKey.replace('NULL', '');
+        for (idx in array) {
+            output += array[idx];
+            if (output.length >= maxlen) {
+                pageCount++;
+                if (output.length > 0) {
+                    if (display_page === 0 || display_page === pageCount) {
+                        $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+                    }
+                }
+                output = '';
+            } else {
+                if (idx < array.length - 1) {
+                    output += sep;
+                }
+            }
+        }
+        pageCount++;
+        if (output.length > 0) {
+            if (display_page === 0 || display_page === pageCount) {
+                $.discord.say(channel, $.discord.userPrefix(sender) + ' ' + (hasNoLang ? (langKey + output) : $.lang.get(langKey, output)));
+            }
+        }
+        return pageCount;
+    }
+
+    /**
      * @function removeGame
      *
      * @export $.discord
@@ -179,7 +218,7 @@
 
     /**
      * @function handleDeleteReaction
-     * 
+     *
      * @param {object} user
      * @param {object} message
      * @param {object} commandMessage
@@ -413,27 +452,25 @@
 
     /* Export the function to the $.discord api. */
     /* There are the same functions twice in here - that's normal and wanted. */
-    $.discord = {
-        isConnected: isConnected,
-        getUserMention: getUserMention,
-        userMention: getUserMention,
-        removeGame: removeGame,
-        userPrefix: userPrefix,
-        setStream: setStream,
-        setGame: setGame,
-        setRole: setRole,
-        say: say,
-        handleDeleteReaction: handleDeleteReaction,
-        sanitizeChannelName: sanitizeChannelName,
-        resolve: {
-            global: getUserMentionOrChannel,
-            getUserMentionOrChannel: getUserMentionOrChannel
-        },
-        username: {
-            resolve: getUserMention,
-            random: getRandomUser,
-            getUserMention: getUserMention,
-            getRandomUser: getRandomUser
-        }
+    $.discord.getUserMention = getUserMention;
+    $.discord.userMention = getUserMention;
+    $.discord.removeGame = removeGame;
+    $.discord.userPrefix = userPrefix;
+    $.discord.setStream = setStream;
+    $.discord.setGame = setGame;
+    $.discord.setRole = setRole;
+    $.discord.say = say;
+    $.discord.handleDeleteReaction = handleDeleteReaction;
+    $.discord.sanitizeChannelName = sanitizeChannelName;
+    $.discord.resolve = {
+        global: getUserMentionOrChannel,
+        getUserMentionOrChannel: getUserMentionOrChannel
     };
+    $.discord.username = {
+        resolve: getUserMention,
+        random: getRandomUser,
+        getUserMention: getUserMention,
+        getRandomUser: getRandomUser
+    };
+    $.paginateArrayDiscord = paginateArrayDiscord;
 })();

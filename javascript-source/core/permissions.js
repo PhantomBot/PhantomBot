@@ -35,7 +35,7 @@
             botList = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             lastJoinPart = $.systemTime(),
             isUpdatingUsers = false,
-            _isSwappedSubscriberVIP = $.inidb.GetBoolean('settings', '', 'isSwappedSubscriberVIP'),
+            _isSwappedSubscriberVIP = $.getSetIniDbBoolean('settings', 'isSwappedSubscriberVIP', true),
             _usersLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             _usersGroupsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 

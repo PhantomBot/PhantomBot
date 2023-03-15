@@ -17,7 +17,7 @@
 package com.gmt2001.twitch.eventsub.subscriptions.channel;
 
 import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.Map;
 
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
@@ -26,6 +26,7 @@ import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.EventSubChannelFollowEvent;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  * A specified channel receives a follow.
@@ -39,6 +40,7 @@ public final class ChannelFollow extends EventSubSubscriptionType {
     private String broadcaster_user_id;
     private String broadcaster_user_login;
     private String broadcaster_user_name;
+    private String moderator_user_id;
     private String user_id;
     private String user_login;
     private String user_name;
@@ -76,14 +78,25 @@ public final class ChannelFollow extends EventSubSubscriptionType {
      * @param broadcaster_user_id The user id of the broadcaster
      */
     public ChannelFollow(String broadcaster_user_id) {
+        this(broadcaster_user_id, TwitchValidate.instance().getAPIUserID());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param broadcaster_user_id The user id of the broadcaster
+     * @param moderator_user_id The ID of the moderator of the channel you want to get follow notifications for. If you have authorization from the broadcaster rather than a moderator, specify the broadcaster's user ID here
+     */
+    public ChannelFollow(String broadcaster_user_id, String moderator_user_id) {
         super();
         this.broadcaster_user_id = broadcaster_user_id;
+        this.moderator_user_id = moderator_user_id;
     }
 
     @Override
     protected EventSubSubscription proposeSubscription() {
         return this.proposeSubscriptionInternal(ChannelFollow.TYPE, ChannelFollow.VERSION,
-            Collections.singletonMap("broadcaster_user_id", this.broadcaster_user_id));
+            Map.of("broadcaster_user_id", this.broadcaster_user_id, "moderator_user_id", this.moderator_user_id));
     }
 
     @Override
@@ -91,6 +104,10 @@ public final class ChannelFollow extends EventSubSubscriptionType {
         if (this.broadcaster_user_id == null || this.broadcaster_user_id.isBlank() || !this.broadcaster_user_id.matches("[0-9]+")
                 || this.broadcaster_user_id.startsWith("-") || this.broadcaster_user_id.startsWith("0")) {
             throw new IllegalArgumentException("broadcaster_user_id must be a valid id");
+        }
+        if (this.moderator_user_id == null || this.moderator_user_id.isBlank() || !this.moderator_user_id.matches("[0-9]+")
+                || this.moderator_user_id.startsWith("-") || this.moderator_user_id.startsWith("0")) {
+            throw new IllegalArgumentException("moderator_user_id must be a valid id");
         }
     }
 
@@ -109,7 +126,8 @@ public final class ChannelFollow extends EventSubSubscriptionType {
     @Override
     protected boolean isMatch(EventSubSubscription subscription) {
         return subscription.type().equals(ChannelFollow.TYPE)
-                && subscription.condition().get("broadcaster_user_id").equals(this.broadcaster_user_id);
+            && subscription.condition().get("broadcaster_user_id").equals(this.broadcaster_user_id)
+            && subscription.condition().get("moderator_user_id").equals(this.moderator_user_id);
     }
 
     /**
