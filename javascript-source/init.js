@@ -429,6 +429,18 @@
         }
     }
 
+    let pendingCallHook = [];
+    function releaseHooks() {
+        setTimeout(function() {
+            for (let x in pendingCallHook) {
+                Packages.com.gmt2001.Console.debug.println('Executing delayed callHook for ' + pendingCallHook[x][0]);
+                callHook(pendingCallHook[x][0], pendingCallHook[x][1], pendingCallHook[x][2]);
+            }
+            pendingCallHook = [];
+        }, 100);
+    }
+
+
     /*
      * @function callHook
      *
@@ -437,6 +449,12 @@
      * @param {Boolean} force
      */
     function callHook(hookName, event, force) {
+        if (!isReady) {
+            Packages.com.gmt2001.Console.debug.println('Delaying callHook for ' + hookName);
+            pendingCallHook.push([hookName, event, force]);
+            return;
+        }
+
         hookName = $api.formatEventName(hookName) + '';
         let hook = hooks[hookName],
                 i;
@@ -600,6 +618,7 @@
                         isReady = true;
                         consoleLn($.botName + ' ready!');
                         callHook('initReady', null, false);
+                        releaseHooks();
                     }
                     callHook('ircChannelJoin', event, false);
                 } catch (ex) {
