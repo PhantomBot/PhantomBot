@@ -72,7 +72,7 @@
                 donationCurrency = donationJson.getString("currency"),
                 donationAmount = parseFloat(donationJson.getString("amount")),
                 donationUsername = donationJson.getString("name"),
-                donationMsg = donationJson.getString("message");
+                donationMsg = donationJson.isNull("message") ? "" : donationJson.optString("message");
 
         if ($.inidb.exists('donations', donationID)) {
             return;
