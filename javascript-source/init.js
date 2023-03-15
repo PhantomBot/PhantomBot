@@ -283,6 +283,8 @@
             files.sort((a, b) => {
                 let intvala = parseInt(a);
                 let intvalb = parseInt(b);
+                let dira = $api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + a));
+                let dirb = $api.isDirectory(new Packages.java.lang.String('./scripts/' + path + '/' + b));
 
                 if (!isNaN(intvala) && isNaN(intvalb)) {
                     return -1;
@@ -290,6 +292,10 @@
                     return 1;
                 } else if (!isNaN(intvala) && !isNaN(intvalb) && intvala !== intvalb) {
                     return intvala - intvalb;
+                } else if (!dira && dirb) {
+                    return -1;
+                } else if (dira && !dirb) {
+                    return 1;
                 } else if (a < b) {
                     return -1;
                 } else if (a > b) {
@@ -509,7 +515,7 @@
         try {
             // Load Twitch core
             loadScriptRecursive('./core/bootstrap', silentScriptsLoad, false, true);
-            loadScriptRecursive('./core', silentScriptsLoad, false, false);
+            loadScriptRecursive('./core', silentScriptsLoad, false, true);
 
             // Load other Twitch modules
             loadScriptRecursive('.', silentScriptsLoad, false, false);
@@ -517,7 +523,7 @@
             if (!$.hasDiscordToken) {
                 // Load Discord core
                 loadScriptRecursive('./discord/core/bootstrap', silentScriptsLoad, false, true);
-                loadScriptRecursive('./discord/core', silentScriptsLoad, false, false);
+                loadScriptRecursive('./discord/core', silentScriptsLoad, false, true);
 
                 // Load other Discord modules
                 loadScriptRecursive('./discord', silentScriptsLoad, false, false);
