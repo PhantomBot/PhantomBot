@@ -379,7 +379,7 @@ $(function () {
             }
             // Add an event handler.
             $(audio).on('ended', function () {
-                printDebug('Audio finished');
+                printDebug('Audio finished, duration: ' + audio.duration);
                 audio.currentTime = 0;
                 isPlaying = false;
             });
@@ -577,7 +577,7 @@ $(function () {
         let frame = document.getElementById('main-video-clips');
         frame.append(video);
 
-        printDebug('Playing video');
+        printDebug('Playing video, duration: ' + video.duration);
 
         video.play().catch(() => {
             console.error('Failed to play ' + video.src);
@@ -788,12 +788,14 @@ $(function () {
                         }
 
                         if (hasAudio) {
+                            printDebug('Audio duration: ' + audio.duration);
                             // Stop the audio.
                             audio.pause();
                             // Reset the duration.
                             audio.currentTime = 0;
                         }
                         if (isVideo) {
+                            printDebug('Video duration: ' + htmlObj[0].duration);
                             htmlObj[0].pause();
                             htmlObj[0].currentTime = 0;
                         }
