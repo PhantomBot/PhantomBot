@@ -209,6 +209,7 @@ $(function () {
      */
     function sendToSocket(message) {
         try {
+            printDebug('sendToDocket: ' + JSON.stringify(message));
             webSocket.send(JSON.stringify(message));
         } catch (ex) {
             printDebug('Failed to send a message to the socket: ' + ex.stack);
@@ -255,10 +256,13 @@ $(function () {
                     console.error('Received event of type undefined. Ignoring.');
                 } else if (event.emoteId !== undefined) {
                     // do not respect isPlaying for emotes
+                    printDebug('Processing event: ' + JSON.stringify(event));
                     handleEmote(event);
                 } else if (event.script !== undefined) {
+                    printDebug('Processing event: ' + JSON.stringify(event));
                     handleMacro(event);
                 } else if (event.stopMedia !== undefined) {
+                    printDebug('Processing event: ' + JSON.stringify(event));
                     handleStopMedia(event);
                 } else if (ignoreIsPlaying || isPlaying === false) {
                     // sleep a bit to reduce the overlap
@@ -337,6 +341,8 @@ $(function () {
 
         if (fileName.length === 0) {
             printDebug(`Could not find a supported audio file for ${name}.`, true);
+        } else {
+            printDebug('Audio file selected: ' + fileName);
         }
 
         if (getOptionSetting('enableDebug', getOptionSetting('show-debug', 'false')) === 'true' && fileName.length === 0) {
@@ -373,11 +379,13 @@ $(function () {
             }
             // Add an event handler.
             $(audio).on('ended', function () {
+                printDebug('Audio finished');
                 audio.currentTime = 0;
                 isPlaying = false;
             });
             playingAudioFiles.push(audio);
             // Play the audio.
+            printDebug('Playing audio');
             audio.play().catch(function (err) {
                 console.log(err);
             });
@@ -448,7 +456,9 @@ $(function () {
         emote.id = `emote-${browserSafeId}-${uniqueId}`;
         emote.dataset['browserSafeId'] = browserSafeId;
         emote.dataset['uniqueId'] = uniqueId;
+        printDebug('Loading emote: ' + emote.src);
         await emote.decode();
+        printDebug('Animating emote');
 
         emote = document.getElementById('main-emotes').appendChild(emote);
         if (animationName === 'flyUp') {
@@ -527,6 +537,7 @@ $(function () {
                 timingFunction: 'ease-in'
             }], {
             onEnd: (event) => {
+                printDebug('Animation complete');
                 event.target.remove();
             }
         });
@@ -560,22 +571,27 @@ $(function () {
         const videoIsReady = () => {
             return isReady;
         };
+        printDebug('Loading video: ' + `${defaultPath}/${filename}`);
         video.load();
         await promisePoll(() => videoIsReady(), {pollIntervalMs: 250});
         let frame = document.getElementById('main-video-clips');
         frame.append(video);
+
+        printDebug('Playing video');
 
         video.play().catch(() => {
             console.error('Failed to play ' + video.src);
             isPlaying = false;
         });
         video.addEventListener('ended', (event) => {
+            printDebug('Video complete (ended)');
             isPlaying = false;
             video.pause();
             video.remove();
         });
         if (duration > 0) {
             setTimeout(() => {
+                printDebug('Video complete (duration)');
                 video.pause();
                 video.remove();
                 isPlaying = false;
@@ -670,18 +686,22 @@ $(function () {
                 if (!videoFormats.probably.includes(ext) && !videoFormats.maybe.includes(ext)) {
                     printDebug('Video format ' + ext + ' was not supported by the browser!', true);
                 }
+                printDebug('Gif is video: ' + defaultPath + gifFile);
             } else {
                 htmlObj = $('<img/>', {
                     'src': defaultPath + gifFile,
                     'style': gifCss,
                     'alt': "Video"
                 });
+                printDebug('Loading gif: ' + defaultPath + gifFile);
                 await htmlObj[0].decode();
+                printDebug('Loading complete');
             }
 
             let audioPath = getAudioFile(gifFile.slice(0, gifFile.indexOf('.')), defaultPath);
 
             if (audioPath.length > 0 && gifFile.substring(gifFile.lastIndexOf('.') + 1) !== audioPath.substring(audioPath.lastIndexOf('.') + 1)) {
+                printDebug('Gif has audio: ' + audioPath);
                 hasAudio = true;
                 audio = new Audio(audioPath);
             }
@@ -704,8 +724,10 @@ $(function () {
                 const videoIsReady = () => {
                     return isReady;
                 };
+                printDebug('Loading gif video');
                 htmlObj[0].load();
                 await promisePoll(() => videoIsReady(), {pollIntervalMs: 250});
+                printDebug('Loading complete');
             }
             if (hasAudio) {
                 let isReady = false;
@@ -719,12 +741,16 @@ $(function () {
                     return isReady;
                 };
 
+                printDebug('Loading gif audio');
                 audio.load();
                 await promisePoll(() => audioIsReady(), {pollIntervalMs: 250});
                 audio.volume = gifVolume;
+                printDebug('Loading complete');
             }
 
             await sleep(500);
+
+            printDebug('Animating the gif');
 
             // Append the custom text object to the page
             $('#alert-text').append(textObj).fadeIn(1e2).delay(gifDuration)
@@ -771,6 +797,7 @@ $(function () {
                             htmlObj[0].pause();
                             htmlObj[0].currentTime = 0;
                         }
+                        printDebug('Gif complete');
                         // Mark as done playing.
                         isPlaying = false;
                     });
