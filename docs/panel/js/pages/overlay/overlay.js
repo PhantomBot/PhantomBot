@@ -139,5 +139,11 @@ $(function () {
         });
     }
 
+    $('#overlayCopyButton').click(() => {
+        outputElement.select();
+        outputElement.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(outputElement.value);
+    });
+
     init();
 });
