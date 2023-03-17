@@ -108,19 +108,23 @@ public final class H2Store extends DataStore {
     }
 
     private void restoreBackup(String fileName) throws IOException {
-        Optional<Path> backup = Files.find(Paths.get("./config/"), 1, (path, attr) -> attr.isRegularFile() && path.toString().endsWith(BACKUP_SUFFIX)).findFirst();
-
-        if (backup.isPresent()) {
-            com.gmt2001.Console.out.print("Restoring H2 database from backup at " + backup.get().toString() + "...");
-            Files.delete(Paths.get("./config/", fileName + ".mv.db"));
-            try (Connection con = this.GetConnection();
-                    Statement st = con.createStatement()) {
-                st.execute("RUNSCRIPT FROM '" + backup.get().toString() + "' COMPRESSION GZIP");
-            } catch (SQLException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
+        try (Stream<Path> backupStream = Files.find(Paths.get("./config/"), 1, (path, attr) -> attr.isRegularFile() && path.toString().endsWith(BACKUP_SUFFIX))) {
+            Optional<Path> backup = backupStream.findFirst();
+            if (backup.isPresent()) {
+                com.gmt2001.Console.out.print("Restoring H2 database from backup at " + backup.get().toString() + "...");
+                Path dbfile = Paths.get("./config/", fileName + ".mv.db");
+                if (Files.exists(Paths.get("./config/", fileName + ".mv.db"))) {
+                    Files.delete(dbfile);
+                }
+                try (Connection con = this.GetConnection();
+                        Statement st = con.createStatement()) {
+                    st.execute("RUNSCRIPT FROM '" + backup.get().toString() + "' COMPRESSION GZIP");
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+                Files.delete(backup.get());
+                com.gmt2001.Console.out.println("done");
             }
-            Files.delete(backup.get());
-            com.gmt2001.Console.out.println("done");
         }
     }
 
