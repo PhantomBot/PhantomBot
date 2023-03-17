@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -168,51 +168,69 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addFollow(java.lang.String,java.lang.String,boolean)">addFollow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName,
+         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;followedAt,
+         boolean&nbsp;silent)</code></th>
+<td class="colLast">
+<div class="block">Adds a follow to the cache, and sends notifications if necessary</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addFollow(java.lang.String,java.time.ZonedDateTime)">addFollow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZonedDateTime.html?is-external=true" title="class or interface in java.time" class="externalLink">ZonedDateTime</a>&nbsp;followedAt)</code></th>
 <td class="colLast">
 <div class="block">Adds a follow to the cache, and sends notifications if necessary</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addFollow(java.lang.String,java.time.ZonedDateTime,boolean)">addFollow</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName,
+         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZonedDateTime.html?is-external=true" title="class or interface in java.time" class="externalLink">ZonedDateTime</a>&nbsp;followedAt,
+         boolean&nbsp;silent)</code></th>
+<td class="colLast">
+<div class="block">Adds a follow to the cache, and sends notifications if necessary</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#followed(java.lang.String)">followed</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName)</code></th>
 <td class="colLast">
 <div class="block">Indicates if the specified user has followed at some point in the past, within the limits of the bots records</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZonedDateTime.html?is-external=true" title="class or interface in java.time" class="externalLink">ZonedDateTime</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#followedDate(java.lang.String)">followedDate</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName)</code></th>
 <td class="colLast">
 <div class="block">Indicates the earliest timestamp when the bot is aware of the specified user following</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#followedDateString(java.lang.String)">followedDateString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName)</code></th>
 <td class="colLast">
 <div class="block">Indicates the earliest timestamp when the bot is aware of the specified user following as a string</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#follows(java.lang.String)">follows</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName)</code></th>
 <td class="colLast">
 <div class="block">Indicates if the specified user currently follows the channel</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>static <a href="FollowersCache.html" title="class in tv.phantombot.cache">FollowersCache</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kill()">kill</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#total()">total</a></span>()</code></th>
 <td class="colLast">
@@ -268,6 +286,24 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </dl>
 </li>
 </ul>
+<a id="addFollow(java.lang.String,java.time.ZonedDateTime,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addFollow</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;addFollow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName,
+                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZonedDateTime.html?is-external=true" title="class or interface in java.time" class="externalLink">ZonedDateTime</a>&nbsp;followedAt,
+                      boolean&nbsp;silent)</pre>
+<div class="block">Adds a follow to the cache, and sends notifications if necessary</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>loginName</code> - The login name of the follower</dd>
+<dd><code>followedAt</code> - The ISO8601 timestamp when the follow ocurred</dd>
+<dd><code>silent</code> - If <code>true</code>, don't announce the follow</dd>
+</dl>
+</li>
+</ul>
 <a id="addFollow(java.lang.String,java.lang.String)">
 <!--   -->
 </a>
@@ -281,6 +317,24 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>loginName</code> - The login name of the follower</dd>
 <dd><code>followedAt</code> - The ISO8601 timestamp when the follow ocurred</dd>
+</dl>
+</li>
+</ul>
+<a id="addFollow(java.lang.String,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addFollow</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;addFollow&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginName,
+                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;followedAt,
+                      boolean&nbsp;silent)</pre>
+<div class="block">Adds a follow to the cache, and sends notifications if necessary</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>loginName</code> - The login name of the follower</dd>
+<dd><code>followedAt</code> - The ISO8601 timestamp when the follow ocurred</dd>
+<dd><code>silent</code> - If <code>true</code>, don't announce the follow</dd>
 </dl>
 </li>
 </ul>

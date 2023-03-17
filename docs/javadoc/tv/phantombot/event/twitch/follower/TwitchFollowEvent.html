@@ -26,6 +26,12 @@
     catch(err) {
     }
 //-->
+var data = {"i0":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../../../";
 var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
@@ -91,7 +97,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a id="skip.navbar.top">
@@ -168,6 +174,14 @@ extends <a href="TwitchFollowerEvent.html" title="class in tv.phantombot.event.t
 <div class="block">Class constructor.</div>
 </td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,boolean)">TwitchFollowEvent</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;follower,
+                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;date,
+                 boolean&nbsp;silent)</code></th>
+<td class="colLast">
+<div class="block">Class constructor.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -179,6 +193,19 @@ extends <a href="TwitchFollowerEvent.html" title="class in tv.phantombot.event.t
 <!--   -->
 </a>
 <h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#silent()">silent</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.tv.phantombot.event.twitch.follower.TwitchFollowerEvent">
 <!--   -->
@@ -212,7 +239,7 @@ extends <a href="TwitchFollowerEvent.html" title="class in tv.phantombot.event.t
 <a id="&lt;init&gt;(java.lang.String,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>TwitchFollowEvent</h4>
 <pre>public&nbsp;TwitchFollowEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;follower,
@@ -223,6 +250,43 @@ extends <a href="TwitchFollowerEvent.html" title="class in tv.phantombot.event.t
 <dd><code>follower</code> - </dd>
 <dd><code>date</code> - </dd>
 </dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>TwitchFollowEvent</h4>
+<pre>public&nbsp;TwitchFollowEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;follower,
+                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;date,
+                         boolean&nbsp;silent)</pre>
+<div class="block">Class constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>follower</code> - </dd>
+<dd><code>date</code> - </dd>
+<dd><code>silent</code> - </dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="silent()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>silent</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;silent()</pre>
 </li>
 </ul>
 </li>
@@ -286,7 +350,7 @@ extends <a href="TwitchFollowerEvent.html" title="class in tv.phantombot.event.t
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li>Method</li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
 <a id="skip.navbar.bottom">
