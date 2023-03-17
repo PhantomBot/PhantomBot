@@ -118,6 +118,22 @@ public class Helix {
     }
 
     /**
+     * The maximum value of {@link #remainingRateLimit()}
+     * @return
+     */
+    public int maxRateLimit() {
+        return this.maxRateLimit;
+    }
+
+    /**
+     * The remaining rate limit for Helix
+     * @return
+     */
+    public int remainingRateLimit() {
+        return this.remainingRateLimit;
+    }
+
+    /**
      * Method that gets the reset time for the rate limit.
      *
      * @return
