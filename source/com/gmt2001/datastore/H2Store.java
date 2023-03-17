@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Stream;
 
@@ -50,6 +51,7 @@ import tv.phantombot.PhantomBot;
  */
 public final class H2Store extends DataStore {
 
+    private static final String BACKUP_SUFFIX = ".h2.sql.gz";
     private static final int MAX_CONNECTIONS = 30;
     private static JdbcConnectionPool poolMgr;
     private static H2Store instance;
@@ -91,11 +93,38 @@ public final class H2Store extends DataStore {
         poolMgr.setMaxConnections(MAX_CONNECTIONS);
 
         try {
+            this.restoreBackup(configStr);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        try {
             if (this.needsUpgrade(configStr)) {
                 this.finishUpgrade(configStr);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    private void restoreBackup(String fileName) throws IOException {
+        try (Stream<Path> backupStream = Files.find(Paths.get("./config/"), 1, (path, attr) -> attr.isRegularFile() && path.toString().endsWith(BACKUP_SUFFIX))) {
+            Optional<Path> backup = backupStream.findFirst();
+            if (backup.isPresent()) {
+                com.gmt2001.Console.out.print("Restoring H2 database from backup at " + backup.get().toString() + "...");
+                Path dbfile = Paths.get("./config/", fileName + ".mv.db");
+                if (Files.exists(Paths.get("./config/", fileName + ".mv.db"))) {
+                    Files.delete(dbfile);
+                }
+                try (Connection con = this.GetConnection();
+                        Statement st = con.createStatement()) {
+                    st.execute("RUNSCRIPT FROM '" + backup.get().toString() + "' COMPRESSION GZIP");
+                } catch (SQLException ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+                Files.delete(backup.get());
+                com.gmt2001.Console.out.println("done");
+            }
         }
     }
 
@@ -1066,12 +1095,12 @@ public final class H2Store extends DataStore {
 
     @Override
     public void backupDB(String filename) {
-        filename = filename + ".h2.mv.db";
+        filename = filename + BACKUP_SUFFIX;
         try ( Connection connection = GetConnection()) {
             Files.createDirectories(Paths.get("./dbbackup/"));
 
             try ( Statement statement = connection.createStatement()) {
-                statement.execute("SCRIPT TO './dbbackup/" + filename + "' COMPRESSION GZIP");
+                statement.execute("SCRIPT DROP TO './dbbackup/" + filename + "' COMPRESSION GZIP");
                 com.gmt2001.Console.debug.println("Backed up H2 DB to ./dbbackup/" + filename);
             }
         } catch (SQLException | IOException ex) {

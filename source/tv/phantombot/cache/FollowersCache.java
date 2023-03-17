@@ -92,7 +92,9 @@ public final class FollowersCache {
                 for (int i = 0; i < jsa.length(); i++) {
                     String loginName = jsa.getJSONObject(i).optString("user_login");
                     String followedAt = jsa.getJSONObject(i).optString("followed_at");
-                    if (full && datastore.exists("followed", loginName) && datastore.exists("followedDate", loginName)) {
+                    if (full && datastore.exists("followed", loginName)
+                        && datastore.exists("followedDate", loginName)
+                        && datastore.get("followedDate", loginName).equals(followedAt)) {
                         foundFollow = true;
                     }
                     this.addFollow(loginName, followedAt, full);
@@ -102,7 +104,7 @@ public final class FollowersCache {
                     String cursor = jso.getJSONObject("pagination").optString("cursor");
 
                     if (!killed){
-                        if (cursor != null && !cursor.isBlank() &&
+                        if (cursor != null && !cursor.isBlank() && iteration < 500 &&
                             (!foundFollow || !datastore.GetBoolean("settings", "", "FollowersCache.fullUpdateCache"))) {
                             if (iteration > 0 && iteration % 100 == 0) {
                                 this.fullUpdateTimeout = ExecutorService.schedule(() -> {
