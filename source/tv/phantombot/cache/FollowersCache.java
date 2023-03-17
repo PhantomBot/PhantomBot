@@ -16,6 +16,7 @@
  */
 package tv.phantombot.cache;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Future;
@@ -29,6 +30,7 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.twitch.eventsub.EventSub;
 
+import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -76,24 +78,41 @@ public final class FollowersCache {
     }
 
     private void updateCache(boolean full, String after, int iteration) {
+        if (after != null && Helix.instance().remainingRateLimit() < (Helix.instance().maxRateLimit() / 2)) {
+            Mono.delay(Duration.ofSeconds(5)).doFinally((sig) -> this.updateCache(full, after, iteration)).subscribe();
+            return;
+        }
+
         Helix.instance().getChannelFollowersAsync(null, 100, after).doOnSuccess(jso -> {
             if (!jso.has("status")) {
                 this.total = jso.optInt("total");
                 JSONArray jsa = jso.getJSONArray("data");
+                boolean foundFollow = false;
+                DataStore datastore = PhantomBot.instance().getDataStore();
                 for (int i = 0; i < jsa.length(); i++) {
-                    this.addFollow(jsa.getJSONObject(i).optString("user_login"), jsa.getJSONObject(i).optString("followed_at"));
+                    String loginName = jsa.getJSONObject(i).optString("user_login");
+                    String followedAt = jsa.getJSONObject(i).optString("followed_at");
+                    if (full && datastore.exists("followed", loginName) && datastore.exists("followedDate", loginName)) {
+                        foundFollow = true;
+                    }
+                    this.addFollow(loginName, followedAt);
                 }
 
                 if (full && jso.has("pagination") && !jso.isNull("pagination")) {
                     String cursor = jso.getJSONObject("pagination").optString("cursor");
 
-                    if (!killed && cursor != null && !cursor.isBlank()) {
-                        if (iteration > 0 && iteration % 100 == 0) {
-                            this.fullUpdateTimeout = ExecutorService.schedule(() -> {
+                    if (!killed){
+                        if (cursor != null && !cursor.isBlank() &&
+                            (!foundFollow || !datastore.GetBoolean("settings", "", "FollowersCache.fullUpdateCache"))) {
+                            if (iteration > 0 && iteration % 100 == 0) {
+                                this.fullUpdateTimeout = ExecutorService.schedule(() -> {
+                                    this.updateCache(full, cursor, iteration + 1);
+                                }, 5, TimeUnit.SECONDS);
+                            } else {
                                 this.updateCache(full, cursor, iteration + 1);
-                            }, 5, TimeUnit.SECONDS);
+                            }
                         } else {
-                            this.updateCache(full, cursor, iteration + 1);
+                            datastore.SetBoolean("settings", "", "FollowersCache.fullUpdateCache", true);
                         }
                     }
                 }
