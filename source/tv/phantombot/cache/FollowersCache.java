@@ -92,7 +92,9 @@ public final class FollowersCache {
                 for (int i = 0; i < jsa.length(); i++) {
                     String loginName = jsa.getJSONObject(i).optString("user_login");
                     String followedAt = jsa.getJSONObject(i).optString("followed_at");
-                    if (full && datastore.exists("followed", loginName) && datastore.exists("followedDate", loginName)) {
+                    if (full && datastore.exists("followed", loginName)
+                        && datastore.exists("followedDate", loginName)
+                        && datastore.get("followedDate", loginName).equals(followedAt)) {
                         foundFollow = true;
                     }
                     this.addFollow(loginName, followedAt, full);
