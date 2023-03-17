@@ -104,7 +104,7 @@ public final class FollowersCache {
                     String cursor = jso.getJSONObject("pagination").optString("cursor");
 
                     if (!killed){
-                        if (cursor != null && !cursor.isBlank() &&
+                        if (cursor != null && !cursor.isBlank() && iteration < 500 &&
                             (!foundFollow || !datastore.GetBoolean("settings", "", "FollowersCache.fullUpdateCache"))) {
                             if (iteration > 0 && iteration % 100 == 0) {
                                 this.fullUpdateTimeout = ExecutorService.schedule(() -> {
