@@ -95,7 +95,7 @@ public final class FollowersCache {
                     if (full && datastore.exists("followed", loginName) && datastore.exists("followedDate", loginName)) {
                         foundFollow = true;
                     }
-                    this.addFollow(loginName, followedAt);
+                    this.addFollow(loginName, followedAt, full);
                 }
 
                 if (full && jso.has("pagination") && !jso.isNull("pagination")) {
@@ -131,7 +131,17 @@ public final class FollowersCache {
      * @param followedAt The ISO8601 timestamp when the follow ocurred
      */
     public void addFollow(String loginName, ZonedDateTime followedAt) {
-        this.addFollow(loginName, followedAt.format(DateTimeFormatter.ISO_INSTANT));
+        this.addFollow(loginName, followedAt, false);
+    }
+
+    /**
+     * Adds a follow to the cache, and sends notifications if necessary
+     * @param loginName The login name of the follower
+     * @param followedAt The ISO8601 timestamp when the follow ocurred
+     * @param silent If {@code true}, don't announce the follow
+     */
+    public void addFollow(String loginName, ZonedDateTime followedAt, boolean silent) {
+        this.addFollow(loginName, followedAt.format(DateTimeFormatter.ISO_INSTANT), silent);
     }
 
     /**
@@ -140,10 +150,20 @@ public final class FollowersCache {
      * @param followedAt The ISO8601 timestamp when the follow ocurred
      */
     public void addFollow(String loginName, String followedAt) {
+        this.addFollow(loginName, followedAt, false);
+    }
+
+    /**
+     * Adds a follow to the cache, and sends notifications if necessary
+     * @param loginName The login name of the follower
+     * @param followedAt The ISO8601 timestamp when the follow ocurred
+     * @param silent If {@code true}, don't announce the follow
+     */
+    public void addFollow(String loginName, String followedAt, boolean silent) {
         DataStore datastore = PhantomBot.instance().getDataStore();
         loginName = loginName.toLowerCase();
         if (!datastore.exists("followed", loginName)) {
-            EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt));
+            EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt, silent));
             datastore.set("followed", loginName, "true");
         }
         if (!datastore.exists("followedDate", loginName)) {
