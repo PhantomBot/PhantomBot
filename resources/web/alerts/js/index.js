@@ -249,7 +249,7 @@ $(function () {
         try {
             // Process the whole queue at once
             while (queue.length > 0) {
-                let event = queue[0];
+                let event = queue.shift();
                 let ignoreIsPlaying = (event.ignoreIsPlaying !== undefined ? event.ignoreIsPlaying : false);
 
                 if (event === undefined) {
@@ -283,8 +283,6 @@ $(function () {
                 } else {
                     return;
                 }
-                // Remove the event
-                queue.splice(0, 1);
             }
         } finally {
             queueProcessing = false;
@@ -309,9 +307,9 @@ $(function () {
             }
             if (stopAudio) {
                 while (playingAudioFiles.length > 0) {
-                    playingAudioFiles[0].pause();
-                    playingAudioFiles[0].remove();
-                    playingAudioFiles.splice(0, 1);
+                    let audio = playingAudioFiles.shift();
+                    audio.pause();
+                    audio.remove();
                 }
             }
         } finally {
@@ -380,6 +378,7 @@ $(function () {
             // Add an event handler.
             $(audio).on('ended', function () {
                 printDebug('Audio finished, duration: ' + audio.duration);
+                playingAudioFiles = playingAudioFiles.filter((elm) => elm !== audio);
                 audio.currentTime = 0;
                 isPlaying = false;
             });
@@ -387,6 +386,7 @@ $(function () {
             // Play the audio.
             printDebug('Playing audio');
             audio.play().catch(function (err) {
+                playingAudioFiles = playingAudioFiles.filter((elm) => elm !== audio);
                 console.log(err);
             });
         } else {
