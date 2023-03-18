@@ -29,8 +29,9 @@ import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
  * A processor for follow events from PubSub
  *
  * @author gmt2001
+ * @deprecated This is now handeled by EventSub
  */
-@Deprecated
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubFollowingProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;

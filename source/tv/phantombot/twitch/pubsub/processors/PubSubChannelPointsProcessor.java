@@ -26,8 +26,9 @@ import tv.phantombot.twitch.api.TwitchValidate;
  * A processor for channel points events from PubSub
  *
  * @author gmt2001
+ * @deprecated This is now handeled by EventSub
  */
-@Deprecated
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubChannelPointsProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;

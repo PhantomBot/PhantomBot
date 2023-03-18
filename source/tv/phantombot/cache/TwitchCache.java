@@ -516,8 +516,9 @@ public final class TwitchCache {
      * Returns the viewer count.
      *
      * @return
+     * @deprecated Please use {@link #followers()} instead
      */
-    @Deprecated
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public int getViewerCount() {
         return this.viewerCount;
     }
@@ -570,8 +571,9 @@ public final class TwitchCache {
      * Returns the views count. Twitch does not report this anymore
      *
      * @return {@code -1} as Twitch does not report this anymore
+     * @deprecated Twitch does not report this anymore, this method is temporarily available to prevent script errors and will be removed soon
      */
-    @Deprecated
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public int getViews() {
         return -1;
     }

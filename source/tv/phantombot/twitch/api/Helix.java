@@ -551,8 +551,9 @@ public class Helix {
      * @return
      * @throws JSONException
      * @throws IllegalArgumentException
+     * @deprecated This endpoint is deprecated by Twitch in favor of {@link #getChannelFollowers(String, int, String)}, which requires an OAuth scope
      */
-    @Deprecated
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public JSONObject getUsersFollows(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         return this.getUsersFollowsAsync(from_id, to_id, first, after).block();
@@ -571,7 +572,9 @@ public class Helix {
      * @return
      * @throws JSONException
      * @throws IllegalArgumentException
+     * @deprecated This endpoint is deprecated by Twitch in favor of {@link #getChannelFollowersAsync(String, int, String)}, which requires an OAuth scope
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public Mono<JSONObject> getUsersFollowsAsync(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
         if ((from_id == null || from_id.isBlank()) && (to_id == null || to_id.isBlank())) {

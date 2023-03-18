@@ -41,8 +41,9 @@ import tv.phantombot.twitch.api.Helix;
  *
  * @author gmt2001
  * @author illusionaryone
+ * @deprecated Please use {@link Helix} instead
  */
-@Deprecated
+@Deprecated(since = "3.6.4.1", forRemoval = true)
 public class TwitchAPIv5 {
 
     private static final TwitchAPIv5 instance = new TwitchAPIv5();

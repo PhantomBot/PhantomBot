@@ -695,9 +695,9 @@ public final class PhantomBot implements Listener {
      * Method that gets the PhantomBot properties.
      *
      * @return
-     * @deprecated
+     * @deprecated Please use {@link CaselessProperties#instance()} instead
      */
-    @Deprecated
+    @Deprecated(since = "3.6.4.0", forRemoval = true)
     public CaselessProperties getProperties() {
         return CaselessProperties.instance();
     }
