@@ -17,8 +17,6 @@
 package tv.phantombot.event.twitch.follower;
 
 public class TwitchFollowEvent extends TwitchFollowerEvent {
-    private final boolean silent;
-
     /**
      * Class constructor.
      *
@@ -26,22 +24,6 @@ public class TwitchFollowEvent extends TwitchFollowerEvent {
      * @param date
      */
     public TwitchFollowEvent(String follower, String date) {
-        this(follower, date, false);
-    }
-
-    /**
-     * Class constructor.
-     *
-     * @param follower
-     * @param date
-     * @param silent
-     */
-    public TwitchFollowEvent(String follower, String date, boolean silent) {
         super(follower, date);
-        this.silent = silent;
-    }
-
-    public boolean silent() {
-        return this.silent;
     }
 }

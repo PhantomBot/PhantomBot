@@ -16,14 +16,16 @@
  */
 package com.gmt2001;
 
-import com.gmt2001.HttpRequest.RequestType;
 import java.util.Map;
 
+import com.gmt2001.HttpRequest.RequestType;
+import com.gmt2001.httpclient.HttpClient;
+
 /**
- *
  * @author gmt2001
+ * @deprecated Please use {@link HttpClient} instead
  */
-@Deprecated
+@Deprecated(since = "3.6.0.0", forRemoval = true)
 public class HttpResponse {
 
     public RequestType type;

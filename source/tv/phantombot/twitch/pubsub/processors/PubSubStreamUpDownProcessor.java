@@ -29,8 +29,9 @@ import tv.phantombot.event.pubsub.videoplayback.PubSubViewCountEvent;
  * A processor for stream up/down/viewer events from PubSub
  *
  * @author gmt2001
+ * @deprecated Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix
  */
-@Deprecated
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubStreamUpDownProcessor extends AbstractPubSubProcessor {
 
     private final int channelId;

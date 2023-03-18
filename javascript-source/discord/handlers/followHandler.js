@@ -49,7 +49,7 @@
         var follower = event.getFollower(),
             s = message;
 
-        if (announce === false || event.silent() || toggle === false  || channelName == '') {
+        if (announce === false || toggle === false  || channelName == '') {
             return;
         }
 

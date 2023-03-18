@@ -145,9 +145,7 @@
     $.bind('twitchFollow', function (event) {
         let follower = event.getFollower();
 
-        if (!event.silent()) {
-            alertFollow(follower, false);
-        }
+        alertFollow(follower, false);
     });
 
     /*

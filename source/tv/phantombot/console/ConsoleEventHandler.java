@@ -16,24 +16,25 @@
  */
 package tv.phantombot.console;
 
-import com.gmt2001.GamesListUpdater;
-import com.gmt2001.HttpRequest;
-import com.gmt2001.HttpResponse;
-import com.gmt2001.Reflect;
-import com.gmt2001.TwitchAPIv5;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import net.engio.mbassy.listener.Handler;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.gmt2001.GamesListUpdater;
+import com.gmt2001.HttpRequest;
+import com.gmt2001.HttpResponse;
+import com.gmt2001.Reflect;
+
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
-import static tv.phantombot.PhantomBot.getTimeZoneId;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
@@ -231,7 +232,7 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("backupdb")) {
             com.gmt2001.Console.out.println("[CONSOLE] Executing backupdb");
-            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
+            String timestamp = LocalDateTime.now(PhantomBot.getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
             PhantomBot.instance().getDataStore().backupDB("phantombot.manual.backup." + timestamp + ".db");
             return;

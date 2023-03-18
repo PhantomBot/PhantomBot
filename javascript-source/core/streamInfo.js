@@ -351,7 +351,7 @@
      */
     function getViewers(channelName) {
         if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
-            return $.twitchcache.getViewerCount();
+            return $.twitchcache.viewers();
         } else {
             let stream = $.twitch.GetStream(channelName);
 
@@ -370,12 +370,16 @@
      * @returns {Number}
      */
     function getFollows(channelName) {
-        let channel = $.twitch.GetChannel(channelName);
-
-        if (!channel.isNull('followers') && channel.getInt('_http') === 200) {
-            return channel.getInt('followers');
+        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+            return $.twitchcache.followers();
         } else {
-            return 0;
+            let channel = $.twitch.GetChannel(channelName);
+
+            if (!channel.isNull('followers') && channel.getInt('_http') === 200) {
+                return channel.getInt('followers');
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -472,13 +476,22 @@
      * @return {number} count
      */
     function getSubscriberCount() {
-        let jsonObject = $.twitch.GetChannelSubscriptions($.channelName.toLowerCase(), 100, null);
-
-        if (jsonObject.getInt('_http') !== 200) {
-            return 0;
+        if ($.twitchCacheReady) {
+            return $.twitchcache.subscribers();
         }
+        return 0;
+    }
 
-        return jsonObject.getInt('_total');
+    /**
+     * @function getSubscriberPoints
+     * @export $
+     * @return {number} points
+     */
+    function getSubscriberPoints() {
+        if ($.twitchCacheReady) {
+            return $.twitchcache.subscriberPoints();
+        }
+        return 0;
     }
 
     /**
@@ -547,6 +560,13 @@
         }
     }
 
+    setInterval(function() {
+        $.writeToFile(getFollows(), './addons/followHandler/followcount.txt', false);
+        $.writeToFile(getSubscriberCount(), './addons/subscribeHandler/subscribercount.txt', false);
+        $.writeToFile(getSubscriberPoints(), './addons/subscribeHandler/subscriberpoints.txt', false);
+        $.writeToFile(getViewers(), './addons/viewers.txt', false);
+    }, 30e3);
+
     /** Export functions to API */
     $.getPlayTime = getPlayTime;
     $.getFollows = getFollows;
@@ -567,4 +587,5 @@
     $.getStreamDownTime = getStreamDownTime;
     $.getGamesPlayed = getGamesPlayed;
     $.getSubscriberCount = getSubscriberCount;
+    $.getSubscriberPoints = getSubscriberPoints;
 })();

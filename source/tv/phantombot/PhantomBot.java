@@ -375,18 +375,18 @@ public final class PhantomBot implements Listener {
                 PhantomBot.exitError();
             }
             /* Convert to MySql */
-            if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
+            if (MySQLStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.instance().GetFileList().length > 0 && MySQLStore.instance().GetFileList().length == 0) {
+                && SqliteStore.instance().GetFileList().length > 0) {
                 DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
             }
         } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("h2store")
             || !SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))) {
             this.dataStore = H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
-            if (SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
+            if (H2Store.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.instance().GetFileList().length > 0 && H2Store.instance().GetFileList().length == 0) {
+                && SqliteStore.instance().GetFileList().length > 0) {
                 DataStoreConverter.convertDataStore(H2Store.instance(), SqliteStore.instance());
             }
         } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("sqlite3store")
@@ -695,9 +695,9 @@ public final class PhantomBot implements Listener {
      * Method that gets the PhantomBot properties.
      *
      * @return
-     * @deprecated
+     * @deprecated Please use {@link CaselessProperties#instance()} instead
      */
-    @Deprecated
+    @Deprecated(since = "3.6.4.0", forRemoval = true)
     public CaselessProperties getProperties() {
         return CaselessProperties.instance();
     }

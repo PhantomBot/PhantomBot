@@ -31,6 +31,7 @@ import com.gmt2001.datastore.DataStore;
 import com.gmt2001.twitch.eventsub.EventSub;
 
 import reactor.core.publisher.Mono;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -77,6 +78,10 @@ public final class FollowersCache {
         });
     }
 
+    /**
+     * @botproperty pullallfollowers - If `true`, pull all followers into the cache on startup; otherwise, only the first 50k. Default `false`
+     * @botpropertycatsort pullallfollowers 300 20 Twitch
+     */
     private void updateCache(boolean full, String after, int iteration) {
         if (after != null && Helix.instance().remainingRateLimit() < (Helix.instance().maxRateLimit() / 2)) {
             Mono.delay(Duration.ofSeconds(5)).doFinally((sig) -> this.updateCache(full, after, iteration)).subscribe();
@@ -103,9 +108,14 @@ public final class FollowersCache {
                 if (full && jso.has("pagination") && !jso.isNull("pagination")) {
                     String cursor = jso.getJSONObject("pagination").optString("cursor");
 
+                    int target = CaselessProperties.instance().getPropertyAsBoolean("pullallfollowers", false) ? 2 : 1;
+
                     if (!killed){
-                        if (cursor != null && !cursor.isBlank() && iteration < 500 &&
-                            (!foundFollow || !datastore.GetBoolean("settings", "", "FollowersCache.fullUpdateCache"))) {
+                        if (cursor != null && !cursor.isBlank() && (target > 1 || iteration < 500) &&
+                            (!foundFollow || datastore.GetInteger("settings", "", "FollowersCache.fullUpdateCache") < target)) {
+                            if (iteration == 500) {
+                                datastore.SetInteger("settings", "", "FollowersCache.fullUpdateCache", 1);
+                            }
                             if (iteration > 0 && iteration % 100 == 0) {
                                 this.fullUpdateTimeout = ExecutorService.schedule(() -> {
                                     this.updateCache(full, cursor, iteration + 1);
@@ -114,7 +124,7 @@ public final class FollowersCache {
                                 this.updateCache(full, cursor, iteration + 1);
                             }
                         } else {
-                            datastore.SetBoolean("settings", "", "FollowersCache.fullUpdateCache", true);
+                            datastore.SetInteger("settings", "", "FollowersCache.fullUpdateCache", target);
                         }
                     }
                 }
@@ -165,7 +175,9 @@ public final class FollowersCache {
         DataStore datastore = PhantomBot.instance().getDataStore();
         loginName = loginName.toLowerCase();
         if (!datastore.exists("followed", loginName)) {
-            EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt, silent));
+            if (!silent) {
+                EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt));
+            }
             datastore.set("followed", loginName, "true");
         }
         if (!datastore.exists("followedDate", loginName)) {

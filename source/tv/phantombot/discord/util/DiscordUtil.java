@@ -148,7 +148,6 @@ public class DiscordUtil {
         this.validateParams(roles);
     }
 
-    @Deprecated
     public Message sendMessage(MessageChannel channel, String message) {
         try {
             return this.sendMessageAsync(channel, message).onErrorReturn(null).block();
@@ -211,7 +210,6 @@ public class DiscordUtil {
      * @param message
      * @return
      */
-    @Deprecated
     public Message sendMessage(String channelName, String message) {
         try {
             return this.sendMessageAsync(channelName, message).onErrorReturn(null).block();
@@ -299,7 +297,6 @@ public class DiscordUtil {
         }).doOnError(e -> this.sendPrivateMessage(channel, message, true, e)).subscribe();
     }
 
-    @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, EmbedCreateSpec embed) {
         try {
             return this.sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
@@ -357,7 +354,6 @@ public class DiscordUtil {
      * @param embed
      * @return
      */
-    @Deprecated
     public Message sendMessageEmbed(String channelName, EmbedCreateSpec embed) {
         try {
             return this.sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
@@ -378,7 +374,6 @@ public class DiscordUtil {
      * @param color
      * @return
      */
-    @Deprecated
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
         try {
             return this.sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
@@ -401,7 +396,6 @@ public class DiscordUtil {
      * @param color
      * @return
      */
-    @Deprecated
     public Message sendMessageEmbed(String channelName, String color, String message) {
         this.validateParams(message);
         try {
@@ -412,7 +406,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
         try {
             return this.sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
@@ -493,7 +486,6 @@ public class DiscordUtil {
      * @param fileLocation
      * @return
      */
-    @Deprecated
     public Message sendFile(String channelName, String message, String fileLocation) {
         try {
             return this.sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
@@ -524,7 +516,6 @@ public class DiscordUtil {
      * @param fileLocation
      * @return
      */
-    @Deprecated
     public Message sendFile(String channelName, String fileLocation) {
         try {
             return this.sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
@@ -644,7 +635,6 @@ public class DiscordUtil {
      * @param channelName - The name of the channel.
      * @return
      */
-    @Deprecated
     public GuildMessageChannel getChannel(String channelName) {
         try {
             return this.getChannelAsync(channelName).onErrorReturn(null).block();
@@ -664,7 +654,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public Map<String, Map<String, String>> getAllChannelInfo() {
         HashMap<String, Map<String, String>> data = new HashMap<>();
         try {
@@ -746,7 +735,6 @@ public class DiscordUtil {
      * @param channelId - The string ID of the channel
      * @return
      */
-    @Deprecated
     public GuildMessageChannel getChannelByID(String channelId) {
         try {
             return this.getChannelByIDAsync(channelId).onErrorReturn(null).block();
@@ -764,7 +752,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public User getUser(String userName) {
         try {
             return this.getUserAsync(userName).onErrorReturn(null).block();
@@ -800,7 +787,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public User getUserById(long userId) {
         try {
             return this.getUserByIdAsync(userId).onErrorReturn(null).block();
@@ -824,7 +810,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public User getUserWithDiscriminator(String userName, String discriminator) {
         try {
             return this.getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
@@ -850,7 +835,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public Role getRole(String roleName) {
         try {
             return this.getRoleAsync(roleName).onErrorReturn(null).block();
@@ -887,7 +871,6 @@ public class DiscordUtil {
         }
     }
 
-    @Deprecated
     public Role getRoleByID(String id) {
         try {
             return this.getRoleByIDAsync(id).onErrorReturn(null).block();
@@ -917,7 +900,6 @@ public class DiscordUtil {
      * @param roles
      * @return
      */
-    @Deprecated
     public Role[] getRoleObjects(String... roles) {
         try {
             return this.getRoleObjectsAsync(roles).onErrorReturn(null).block();
@@ -938,7 +920,6 @@ public class DiscordUtil {
      * @param user
      * @return
      */
-    @Deprecated
     public Role[] getUserRoles(User user) {
         this.validateParams(user);
         try {
@@ -959,7 +940,6 @@ public class DiscordUtil {
      * @param userId
      * @return
      */
-    @Deprecated
     public Role[] getUserRoles(String userId) {
         try {
             return this.getUserRolesAsync(userId).onErrorReturn(null).block();
@@ -1138,7 +1118,6 @@ public class DiscordUtil {
      *
      * @return
      */
-    @Deprecated
     public List<Role> getGuildRoles() {
         try {
             return this.getGuildRolesAsync().onErrorReturn(null).block();
@@ -1159,7 +1138,6 @@ public class DiscordUtil {
      * @param user
      * @return
      */
-    @Deprecated
     public boolean isAdministrator(User user) {
         this.validateParams(user);
         try {
@@ -1181,7 +1159,6 @@ public class DiscordUtil {
      * @param userName
      * @return
      */
-    @Deprecated
     public boolean isAdministrator(String userName) {
         try {
             return this.isAdministratorAsync(userName).block();
@@ -1359,7 +1336,6 @@ public class DiscordUtil {
      *
      * @return
      */
-    @Deprecated
     public List<User> getUsers() {
         try {
             return this.getUsersAsync().onErrorReturn(null).block();
