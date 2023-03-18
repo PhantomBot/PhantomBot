@@ -16,7 +16,7 @@
  */
 package com.gmt2001.datastore;
 
-/*
+/**
  * Final class that is used to convert datastores.
  *
  * @author ScaniaTV
@@ -30,20 +30,24 @@ public final class DataStoreConverter {
 
     }
 
-    /*
+    /**
 	 * Method that converts a datastore to another one.
 	 *
-	 * @param  {DataStore} primaryDbInstance - The destination datastore
-	 * @param  {DataStore} secondaryDbInstance - The source datastore
+	 * @param primaryDbInstance - The destination datastore
+	 * @param secondaryDbInstance - The source datastore
      */
     public static void convertDataStore(DataStore primaryDbInstance, DataStore secondaryDbInstance) {
-        com.gmt2001.Console.out.println("Starting datatore convertion. This could take time...");
+        com.gmt2001.Console.out.println("Starting datatore conversion. This could take time...");
+        com.gmt2001.Console.warn.println();
+        com.gmt2001.Console.warn.println("DO NOT SHUTDOWN THE BOT UNTIL THIS IS COMPLETE");
+        com.gmt2001.Console.warn.println("DATA LOSS COULD OCCUR");
+        com.gmt2001.Console.warn.println();
 
         // Convert our old database to our new one.
         com.gmt2001.Console.out.println("Converting old datastore to the new one...");
         String[] tables = secondaryDbInstance.GetFileList();
         for (String table : tables) {
-            com.gmt2001.Console.out.println("Converting table: " + table);
+            com.gmt2001.Console.out.println("Converting table " + table + "...");
             // Get the list of sections for this table.
             String[] sections = secondaryDbInstance.GetCategoryList(table);
             for (String section : sections) {
@@ -58,6 +62,8 @@ public final class DataStoreConverter {
 
         // Close the old database.
         secondaryDbInstance.dispose();
+        com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("Finished converting datastore.");
+        com.gmt2001.Console.out.println();
     }
 }
