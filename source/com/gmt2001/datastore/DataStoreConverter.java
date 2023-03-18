@@ -47,7 +47,8 @@ public final class DataStoreConverter {
         com.gmt2001.Console.out.println("Converting old datastore to the new one...");
         String[] tables = secondaryDbInstance.GetFileList();
         for (String table : tables) {
-            com.gmt2001.Console.out.println("Converting table " + table + "...");
+            com.gmt2001.Console.out.print("Converting table " + table + "... 0");
+            int i = 0;
             // Get the list of sections for this table.
             String[] sections = secondaryDbInstance.GetCategoryList(table);
             for (String section : sections) {
@@ -56,8 +57,14 @@ public final class DataStoreConverter {
                 for (String key : keys) {
                     // Get the value from the old database and set it in the new one.
                     primaryDbInstance.SetString(table, section, key, secondaryDbInstance.GetString(table, section, key));
+                    i++;
+                    if (i % 100 == 0) {
+                        com.gmt2001.Console.out.print("\rConverting table " + table + "... " + i);
+                    }
                 }
+                com.gmt2001.Console.out.print("\rConverting table " + table + "... " + i);
             }
+            com.gmt2001.Console.out.print("\n");
         }
 
         // Close the old database.
