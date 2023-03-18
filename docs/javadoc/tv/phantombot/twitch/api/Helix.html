@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":42,"i45":10,"i46":10,"i47":10,"i48":9,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":10,"i71":10,"i72":10,"i73":10,"i74":10,"i75":10,"i76":10,"i77":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":42,"i45":42,"i46":10,"i47":10,"i48":9,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":10,"i71":10,"i72":10,"i73":10,"i74":10,"i75":10,"i76":10,"i77":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -607,7 +607,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                int&nbsp;first,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
 <td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 </td>
 </tr>
 <tr id="i45" class="rowColor">
@@ -617,7 +619,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                     int&nbsp;first,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
 <td class="colLast">
-<div class="block">Gets information on follow relationships between two Twitch users.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 </td>
 </tr>
 <tr id="i46" class="altColor">
@@ -1178,7 +1182,8 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>getUsersFollows</h4>
-<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
 public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;getUsersFollows&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_id,
                                   <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
@@ -1188,7 +1193,9 @@ public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.htm
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
                            throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 <div class="block">Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
  following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
  to_id must be provided for a query to be valid.</div>
@@ -1212,7 +1219,9 @@ public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.htm
 <ul class="blockList">
 <li class="blockList">
 <h4>getUsersFollowsAsync</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;getUsersFollowsAsync&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;getUsersFollowsAsync&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_id,
                                              <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_id,
@@ -1221,6 +1230,9 @@ public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.htm
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
                                       throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 <div class="block">Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
  following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
  to_id must be provided for a query to be valid.</div>
