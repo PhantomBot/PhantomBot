@@ -92,6 +92,14 @@ the timeout, in seconds, after `channel` goes offline before it can be online. d
 
 &nbsp;
 
+#### pullallfollowers
+
+Data Type: _Boolean_
+
+if `true`, pull all followers into the cache on startup; otherwise, only the first 50k. default `false`
+
+&nbsp;
+
 #### usebroadcasterforchatcommands
 
 Data Type: _Boolean_
