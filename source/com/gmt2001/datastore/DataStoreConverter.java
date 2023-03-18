@@ -62,9 +62,8 @@ public final class DataStoreConverter {
                         com.gmt2001.Console.out.print("\rConverting table " + table + "... " + i);
                     }
                 }
-                com.gmt2001.Console.out.print("\rConverting table " + table + "... " + i);
             }
-            com.gmt2001.Console.out.print("\n");
+            com.gmt2001.Console.out.print("\rConverting table " + table + "... " + i + System.lineSeparator());
         }
 
         // Close the old database.
