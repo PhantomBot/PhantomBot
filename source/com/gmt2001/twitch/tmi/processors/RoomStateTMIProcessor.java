@@ -25,7 +25,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
  *
  * @author gmt2001
  */
-public class RoomStateTMIProcessor extends AbstractTMIProcessor {
+public final class RoomStateTMIProcessor extends AbstractTMIProcessor {
 
     public RoomStateTMIProcessor() {
         super("ROOMSTATE");

@@ -23,7 +23,7 @@ import com.gmt2001.twitch.tmi.TMIMessage;
  *
  * @author gmt2001
  */
-public class PingTMIProcessor extends AbstractTMIProcessor {
+public final class PingTMIProcessor extends AbstractTMIProcessor {
 
     public PingTMIProcessor() {
         super("PING");

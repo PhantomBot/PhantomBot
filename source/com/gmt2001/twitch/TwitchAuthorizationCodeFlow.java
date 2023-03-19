@@ -45,7 +45,7 @@ import tv.phantombot.twitch.api.TwitchValidate;
  *
  * @author gmt2001
  */
-public class TwitchAuthorizationCodeFlow {
+public final class TwitchAuthorizationCodeFlow {
 
     private static final String BASE_URL = "https://id.twitch.tv/oauth2";
     private static final long REFRESH_INTERVAL = 900000L;

@@ -25,7 +25,7 @@ import tv.phantombot.event.irc.clearchat.IrcClearchatEvent;
  *
  * @author gmt2001
  */
-public class ClearChatTMIProcessor extends AbstractTMIProcessor {
+public final class ClearChatTMIProcessor extends AbstractTMIProcessor {
 
     public ClearChatTMIProcessor() {
         super("CLEARCHAT");

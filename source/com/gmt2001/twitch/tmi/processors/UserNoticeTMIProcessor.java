@@ -37,7 +37,7 @@ import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
  *
  * @author gmt2001
  */
-public class UserNoticeTMIProcessor extends AbstractTMIProcessor {
+public final class UserNoticeTMIProcessor extends AbstractTMIProcessor {
 
     private static final String ANONYMOUS_GIFTER_TWITCH_USER = "ananonymousgifter";
     private final ConcurrentMap<String, Integer> bulkSubscriberGifters = new ConcurrentHashMap<>();

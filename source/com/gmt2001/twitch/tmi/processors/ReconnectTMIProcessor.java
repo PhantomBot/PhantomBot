@@ -23,7 +23,7 @@ import com.gmt2001.twitch.tmi.TMIMessage;
  *
  * @author gmt2001
  */
-public class ReconnectTMIProcessor extends AbstractTMIProcessor {
+public final class ReconnectTMIProcessor extends AbstractTMIProcessor {
 
     public ReconnectTMIProcessor() {
         super("RECONNECT");
