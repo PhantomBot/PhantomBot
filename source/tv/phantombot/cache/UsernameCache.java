@@ -17,6 +17,7 @@
 package tv.phantombot.cache;
 
 import com.gmt2001.ExecutorService;
+import com.gmt2001.twitch.cache.ViewerCache;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -31,6 +32,10 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 
+/**
+ * @deprecated Please use {@link ViewerCache} instead
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class UsernameCache {
 
     private static final UsernameCache INSTANCE = new UsernameCache();

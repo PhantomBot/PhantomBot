@@ -16,14 +16,6 @@
  */
 package tv.phantombot.twitch.api;
 
-import com.gmt2001.ExecutorService;
-import com.gmt2001.HttpRequest;
-import com.gmt2001.httpclient.HttpClient;
-import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.NotJSONException;
-import com.gmt2001.httpclient.URIUtil;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMethod;
 import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -45,14 +37,25 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
+import com.gmt2001.ExecutorService;
+import com.gmt2001.HttpRequest;
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.NotJSONException;
+import com.gmt2001.httpclient.URIUtil;
+import com.gmt2001.twitch.cache.ViewerCache;
+
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.cache.UsernameCache;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
@@ -2792,8 +2795,32 @@ public class Helix {
             throws JSONException, IllegalArgumentException {
         first = Math.max(1, Math.min(100, first));
 
-        String endpoint = "/channels/followers?" + this.qspValid("broadcaster_id", UsernameCache.instance().getIDCaster())
+        String endpoint = "/channels/followers?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
         + this.qspValid("&user_id", user_id) + this.qspValid("&first", first) + this.qspValid("&after", after);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Gets the list of users that are connected to the broadcaster’s chat session.
+     * <br /><br />
+     * NOTE: There is a delay between when users join and leave a chat and when the list is updated accordingly.
+     *
+     * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000
+     * @param after The cursor used to get the next page of results.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getChattersAsync(int first, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        first = Math.max(1, Math.min(1000, first));
+
+        String endpoint = "/chat/chatters?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
+        + this.qspValid("moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&first", first)
+        + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.GET, endpoint);

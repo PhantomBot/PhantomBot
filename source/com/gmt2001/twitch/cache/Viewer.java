@@ -30,113 +30,15 @@ public final class Viewer {
     private String name = "";
     private Instant lastSeen = Instant.now();
     private Instant lastActive = Instant.MIN;
-    private SubscriptionTier subscriptionTier = SubscriptionTier.NotSubscribed;
     private boolean admin = false;
     private boolean bot = false;
     private boolean broadcaster = false;
     private boolean inChat = false;
     private boolean moderator = false;
     private boolean staff = false;
+    private boolean subscriber = false;
     private boolean turbo = false;
     private boolean vip = false;
-
-    /**
-     * A subscription tier
-     *
-     * @author gmt2001
-     */
-    public enum SubscriptionTier {
-        /**
-         * Not Subscribed
-         */
-        NotSubscribed(0, "", "Not Subscribed"),
-        /**
-         * Tier 1
-         */
-        Tier1(1000, "1000", "Tier 1"),
-        /**
-         * Tier 2
-         */
-        Tier2(2000, "2000", "Tier 2"),
-        /**
-         * Tier 3
-         */
-        Tier3(3000, "3000", "Tier 3"),
-        /**
-         * Prime
-         */
-        Prime(1001, "prime", "Prime");
-
-        private final int level;
-        private final String tierId;
-        private final String tier;
-
-        /**
-         * Constructor
-         *
-         * @param level The numeric subscription tier level
-         * @param tierId The Twitch id for this tier
-         * @param tier The user-friendly name of the subscription tier
-         */
-        SubscriptionTier(int level, String tierId, String tier) {
-            this.level = level;
-            this.tierId = tierId;
-            this.tier = tier;
-        }
-
-        /**
-         * The numeric subscription tier level
-         *
-         * @return The tier level
-         */
-        public int level() {
-            return this.level;
-        }
-
-        /**
-         * The Twitch id of the subscription tier
-         *
-         * @return The Twitch id of the subscription tier
-         */
-        public String tierId() {
-            return this.tierId;
-        }
-
-        /**
-         * The user-friendly name of the subscription tier
-         *
-         * @return The tier name
-         */
-        public String tier() {
-            return this.tier;
-        }
-
-        /**
-         * Determines if two instances of SubscriptionTier are equivilent
-         *
-         * @param other The other instance to test against
-         * @return {@code true} if both instances have the same value for {@link #level()}
-         */
-        public boolean equals(SubscriptionTier other) {
-            return this.level() == other.level();
-        }
-
-        /**
-         * Returns a SubscriptionTier, given a tier id
-         *
-         * @param tierId The tier id
-         * @return The matching subscription tier, if found; {@link #NotSubscribed} otherwise
-         */
-        public static SubscriptionTier of(String tierId) {
-            for (SubscriptionTier tier : SubscriptionTier.values()) {
-                if (tier.tierId.equalsIgnoreCase(tierId)) {
-                    return tier;
-                }
-            }
-
-            return SubscriptionTier.NotSubscribed;
-        }
-    }
 
     /**
      * Constructor
@@ -373,43 +275,24 @@ public final class Viewer {
     }
 
     /**
-     * Updates the subscription tier of the viewer
+     * Updates the Twitch subscriber status of the viewer
      *
-     * @param subscriptionTier The subscription tier of the viewer
+     * @param subscriber {@code true} if the user is a subscriber of the channel
      * @return {@code this}
      */
-    public Viewer subscriber(String subscriptionTier) {
-        return this.subscriber(SubscriptionTier.of(subscriptionTier));
-    }
-
-    /**
-     * Updates the subscription tier of the viewer
-     *
-     * @param subscriptionTier The subscription tier of the viewer
-     * @return {@code this}
-     */
-    public synchronized Viewer subscriber(SubscriptionTier subscriptionTier) {
-        this.subscriptionTier = subscriptionTier;
+    public synchronized Viewer subscriber(boolean subscriber) {
+        this.subscriber = subscriber;
 
         return this;
     }
 
     /**
-     * The subscription tier of the viewer
+     * Indicates if this user is a subscriber of the channel
      *
-     * @return The subscription tier of the viewer
-     */
-    public SubscriptionTier subscriptionTier() {
-        return this.subscriptionTier;
-    }
-
-    /**
-     * Indicates if this user is a subscriber
-     *
-     * @return {@code true} if the user is a subscriber
+     * @return {@code true} if the user is a subscriber of the channel
      */
     public boolean subscriber() {
-        return this.subscriptionTier != SubscriptionTier.NotSubscribed;
+        return this.subscriber;
     }
 
     /**

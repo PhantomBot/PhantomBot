@@ -77,7 +77,7 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
             }
         }
 
-        IrcModerationEvent modEvent = new IrcModerationEvent(this.session(), item.nick(), message, item.tags());
+        IrcModerationEvent modEvent = new IrcModerationEvent(this.session(), item.nick(), message, item.tags(), item);
 
         EventBus.instance().postAsync(modEvent);
 
@@ -99,7 +99,7 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
                 EventBus.instance().postAsync(CommandEvent.asCommand(item.nick(), fmessage, item.tags()));
             }
 
-            EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags()));
+            EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags(), item));
         }).subscribe();
 
         modEvent.completedMono().doFinally(sig -> {
