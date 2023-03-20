@@ -234,16 +234,6 @@ public final class ViewerCache implements Listener {
     }
 
     /**
-     * Returns the {@link Viewer} object for the specified user display name
-     *
-     * @param name The user display name to lookup
-     * @return An {@link Optional} containing the {@link Viewer} object for the user; an empty Optional if not in the cache
-     */
-    private Optional<Viewer> getByNameInternal(String name) {
-        return this.viewers.entrySet().stream().filter(kv -> kv.getValue().name().equalsIgnoreCase(name)).map(kv -> kv.getValue()).findFirst();
-    }
-
-    /**
      * Returns the {@link Viewer} object for the specified user login
      *
      * @param login The user login to lookup
@@ -251,20 +241,6 @@ public final class ViewerCache implements Listener {
      */
     private Optional<Viewer> getByLoginInternal(String login) {
         return this.viewers.entrySet().stream().filter(kv -> kv.getValue().login().equals(login)).map(kv -> kv.getValue()).findFirst();
-    }
-
-    /**
-     * Returns the {@link Viewer} object for the specified user display name
-     * <br /><br />
-     * If the object does not yet exist, a lookup is NOT performed
-     *
-     * @param name The user display name to lookup
-     * @return The {@link Viewer} object for the user; {@code null} if not found in the cache
-     */
-    public Viewer getByName(String name) {
-        Optional<Viewer> viewer = this.getByNameInternal(name);
-
-        return viewer.isPresent() ? viewer.get() : null;
     }
 
     /**
@@ -297,16 +273,6 @@ public final class ViewerCache implements Listener {
      */
     public boolean exists(String id) {
         return this.viewers.containsKey(id);
-    }
-
-    /**
-     * Indicates if the specified user display name is already in the cache
-     *
-     * @param name The user display name to lookup
-     * @return {@code true} if this user display name is already in the cache
-     */
-    public boolean nameExists(String name) {
-        return this.getByNameInternal(name).isPresent();
     }
 
     /**
