@@ -79,7 +79,7 @@ public final class ViewerCache implements Listener {
         this.lookupAsync(null, List.of(TwitchValidate.instance().getChatLogin().toLowerCase(),
             CaselessProperties.instance().getProperty("channel").toLowerCase())).doOnSuccess(viewers -> {
             for (Viewer viewer: viewers) {
-                this.add(viewer);
+                this.add(viewer.attributes());
 
                 if (viewer.bot()) {
                     this.bot = viewer;
@@ -210,12 +210,13 @@ public final class ViewerCache implements Listener {
                 this.add(viewer);
             }
 
-            viewer.admin(event.getTags().getOrDefault("user-type", "").equals("admin"));
-            viewer.staff(event.getTags().getOrDefault("user-type", "").equals("staff"));
-            viewer.vip(!event.getTags().getOrDefault("vip", "0").equals("0"));
-            viewer.turbo(!event.getTags().getOrDefault("turbo", "0").equals("0"));
-            viewer.moderator(!event.getTags().getOrDefault("mod", "0").equals("0"));
-            viewer.subscriber(!event.getTags().getOrDefault("subscriber", "0").equals("0"));
+            viewer.admin(event.getTags().getOrDefault("user-type", "").equals("admin"))
+                .staff(event.getTags().getOrDefault("user-type", "").equals("staff"))
+                .vip(!event.getTags().getOrDefault("vip", "0").equals("0"))
+                .turbo(!event.getTags().getOrDefault("turbo", "0").equals("0"))
+                .moderator(!event.getTags().getOrDefault("mod", "0").equals("0"))
+                .subscriber(!event.getTags().getOrDefault("subscriber", "0").equals("0"))
+                .attributes();
         }
     }
 

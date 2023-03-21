@@ -39,6 +39,7 @@ public final class Viewer {
     private boolean subscriber = false;
     private boolean turbo = false;
     private boolean vip = false;
+    private boolean hasAttributes = false;
 
     /**
      * Constructor
@@ -146,6 +147,26 @@ public final class Viewer {
      */
     public Instant lastSeen() {
         return this.lastSeen;
+    }
+
+    /**
+     * Marks that the attributes have been set on this viewer
+     */
+    public Viewer attributes() {
+        this.hasAttributes = true;
+
+        return this;
+    }
+
+    /**
+     * Indicates if this user has had their attributes set from an IRC event, such as moderator status
+     * <br /><br />
+     * It is possible for this to return {@code false} but for some attributes to be set if an API lookup was performed
+     *
+     * @return {@code true} if the user has had their attributes set
+     */
+    public boolean hasAttributes() {
+        return this.hasAttributes;
     }
 
     /**
