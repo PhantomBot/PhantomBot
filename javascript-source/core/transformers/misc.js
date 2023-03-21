@@ -50,12 +50,10 @@
      * @cached
      */
     function encodeurl(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: encodeURI(match[1]),
-                cache: true
-            };
-        }
+        return {
+            result: encodeURI(args.args.trim()),
+            cache: true
+        };
     }
 
     /*
@@ -65,12 +63,10 @@
      * @cached
      */
     function encodeurlparam(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: encodeURIComponent(match[1]),
-                cache: true
-            };
-        }
+        return {
+            result: encodeURIComponent(args.args.trim()),
+            cache: true
+        };
     }
 
     /*
@@ -81,12 +77,10 @@
      * @cached
      */
     function escape(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: match[1],
-                cache: true
-            };
-        }
+        return {
+            result: args.args.trim(),
+            cache: true
+        };
     }
 
     /*
@@ -179,13 +173,11 @@
      * @cached
      */
     function unescape(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: match[1],
-                raw: true,
-                cache: true
-            };
-        }
+        return {
+            result: args.args.trim(),
+            raw: true,
+            cache: true
+        };
     }
 
     /*
