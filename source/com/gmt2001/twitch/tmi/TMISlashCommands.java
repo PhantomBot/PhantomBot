@@ -16,10 +16,12 @@
  */
 package com.gmt2001.twitch.tmi;
 
-import com.gmt2001.DurationString;
 import java.time.Duration;
+
+import com.gmt2001.DurationString;
+import com.gmt2001.twitch.cache.ViewerCache;
+
 import tv.phantombot.PhantomBot;
-import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
 
 /**
@@ -167,7 +169,7 @@ public final class TMISlashCommands {
             color = params[0].substring(9);
         }
 
-        Helix.instance().sendChatAnnouncementAsync(UsernameCache.instance().getID(channel), params[1], color)
+        Helix.instance().sendChatAnnouncementAsync(ViewerCache.instance().getByLogin(channel).id(), params[1], color)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to send an /announce: " + jso.toString());
@@ -184,14 +186,14 @@ public final class TMISlashCommands {
             return;
         }
 
-        String from_user_id = UsernameCache.instance().getID(channel);
+        String from_user_id = ViewerCache.instance().getByLogin(channel).id();
 
         if (from_user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + channel + ", can not /shoutout");
             return;
         }
 
-        String to_user_id = UsernameCache.instance().getID(params[1]);
+        String to_user_id = ViewerCache.instance().getByLogin(params[1]).id();
 
         if (to_user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /shoutout");
@@ -217,7 +219,7 @@ public final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1]);
+        String user_id = ViewerCache.instance().getByLogin(params[1]).id();
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /timeout");
@@ -242,7 +244,7 @@ public final class TMISlashCommands {
             }
         }
 
-        Helix.instance().banUserAsync(UsernameCache.instance().getID(channel), user_id, params.length > 3 ? params[3] : null, duration)
+        Helix.instance().banUserAsync(ViewerCache.instance().getByLogin(channel).id(), user_id, params.length > 3 ? params[3] : null, duration)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /timeout " + params[1] + ": " + jso.toString());
@@ -259,14 +261,14 @@ public final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1]);
+        String user_id = ViewerCache.instance().getByLogin(params[1]).id();
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /ban");
             return;
         }
 
-        Helix.instance().banUserAsync(UsernameCache.instance().getID(channel), user_id, params.length > 2 ? params[2] : null, 0)
+        Helix.instance().banUserAsync(ViewerCache.instance().getByLogin(channel).id(), user_id, params.length > 2 ? params[2] : null, 0)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /ban " + params[1] + ": " + jso.toString());
@@ -283,14 +285,14 @@ public final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1]);
+        String user_id = ViewerCache.instance().getByLogin(params[1]).id();
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /unban");
             return;
         }
 
-        Helix.instance().unbanUserAsync(UsernameCache.instance().getID(channel), user_id)
+        Helix.instance().unbanUserAsync(ViewerCache.instance().getByLogin(channel).id(), user_id)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to /unban " + params[1] + ": " + jso.toString());
@@ -307,7 +309,7 @@ public final class TMISlashCommands {
             return;
         }
 
-        Helix.instance().deleteChatMessagesAsync(UsernameCache.instance().getID(channel), params[1])
+        Helix.instance().deleteChatMessagesAsync(ViewerCache.instance().getByLogin(channel).id(), params[1])
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to /delete " + params[1] + ": " + jso.toString());
@@ -317,7 +319,7 @@ public final class TMISlashCommands {
     }
 
     private static void clear(String channel) {
-        Helix.instance().deleteChatMessagesAsync(UsernameCache.instance().getID(channel), null)
+        Helix.instance().deleteChatMessagesAsync(ViewerCache.instance().getByLogin(channel).id(), null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to /clear: " + jso.toString());
@@ -334,14 +336,14 @@ public final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1]);
+        String user_id = ViewerCache.instance().getByLogin(params[1]).id();
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /raid");
             return;
         }
 
-        Helix.instance().startRaidAsync(UsernameCache.instance().getID(channel), user_id)
+        Helix.instance().startRaidAsync(ViewerCache.instance().getByLogin(channel).id(), user_id)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /raid " + params[1] + ": " + jso.toString());
@@ -351,7 +353,7 @@ public final class TMISlashCommands {
     }
 
     private static void unraid(String channel) {
-        Helix.instance().cancelRaidAsync(UsernameCache.instance().getID(channel))
+        Helix.instance().cancelRaidAsync(ViewerCache.instance().getByLogin(channel).id())
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to /unraid: " + jso.toString());
@@ -376,7 +378,7 @@ public final class TMISlashCommands {
             }
         }
 
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, true, duration, null, null, null, null, null, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, true, duration, null, null, null, null, null, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /followers: " + jso.toString());
@@ -386,7 +388,7 @@ public final class TMISlashCommands {
     }
 
     private static void followersoff(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, false, null, null, null, null, null, null, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, false, null, null, null, null, null, null, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /followersoff: " + jso.toString());
@@ -396,7 +398,7 @@ public final class TMISlashCommands {
     }
 
     private static void emoteonly(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), true, null, null, null, null, null, null, null, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), true, null, null, null, null, null, null, null, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /emoteonly: " + jso.toString());
@@ -406,7 +408,7 @@ public final class TMISlashCommands {
     }
 
     private static void emoteonlyoff(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), false, null, null, null, null, null, null, null, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), false, null, null, null, null, null, null, null, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /emoteonlyoff: " + jso.toString());
@@ -416,7 +418,7 @@ public final class TMISlashCommands {
     }
 
     private static void shield(String channel) {
-        Helix.instance().updateShieldModeStatusAsync(UsernameCache.instance().getID(channel), true)
+        Helix.instance().updateShieldModeStatusAsync(ViewerCache.instance().getByLogin(channel).id(), true)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /shield: " + jso.toString());
@@ -426,7 +428,7 @@ public final class TMISlashCommands {
     }
 
     private static void shieldoff(String channel) {
-        Helix.instance().updateShieldModeStatusAsync(UsernameCache.instance().getID(channel), false)
+        Helix.instance().updateShieldModeStatusAsync(ViewerCache.instance().getByLogin(channel).id(), false)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /shieldoff: " + jso.toString());
@@ -451,7 +453,7 @@ public final class TMISlashCommands {
             }
         }
 
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, true, duration, null, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, null, null, null, null, true, duration, null, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /slow: " + jso.toString());
@@ -461,7 +463,7 @@ public final class TMISlashCommands {
     }
 
     private static void slowoff(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, false, null, null, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, null, null, null, null, false, null, null, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /slowoff: " + jso.toString());
@@ -471,7 +473,7 @@ public final class TMISlashCommands {
     }
 
     private static void subscribers(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, true, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, null, null, null, null, null, null, true, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /subscribers: " + jso.toString());
@@ -481,7 +483,7 @@ public final class TMISlashCommands {
     }
 
     private static void subscribersoff(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, false, null)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, null, null, null, null, null, null, false, null)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /subscribersoff: " + jso.toString());
@@ -491,7 +493,7 @@ public final class TMISlashCommands {
     }
 
     private static void uniquechat(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, null, true)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, null, null, null, null, null, null, null, true)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /uniquechat: " + jso.toString());
@@ -501,7 +503,7 @@ public final class TMISlashCommands {
     }
 
     private static void uniquechatoff(String channel) {
-        Helix.instance().updateChatSettingsAsync(UsernameCache.instance().getID(channel), null, null, null, null, null, null, null, null, false)
+        Helix.instance().updateChatSettingsAsync(ViewerCache.instance().getByLogin(channel).id(), null, null, null, null, null, null, null, null, false)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /uniquechatoff: " + jso.toString());
@@ -526,7 +528,7 @@ public final class TMISlashCommands {
             }
         }
 
-        Helix.instance().startCommercialAsync(UsernameCache.instance().getID(channel), duration)
+        Helix.instance().startCommercialAsync(ViewerCache.instance().getByLogin(channel).id(), duration)
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 200) {
                         com.gmt2001.Console.err.println("Failed to /commercial: " + jso.toString());
@@ -543,7 +545,7 @@ public final class TMISlashCommands {
             return;
         }
 
-        String user_id = UsernameCache.instance().getID(params[1]);
+        String user_id = ViewerCache.instance().getByLogin(params[1]).id();
 
         if (user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /w");

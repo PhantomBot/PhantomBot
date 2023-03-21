@@ -18,6 +18,7 @@
  */
 package tv.phantombot.cache;
 
+import com.gmt2001.twitch.cache.ViewerCache;
 import com.illusionaryone.BTTVAPIv3;
 import com.illusionaryone.FrankerZAPIv1;
 import java.time.Instant;
@@ -123,7 +124,7 @@ public class EmotesCache implements Runnable {
             return;
         }
 
-        bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(UsernameCache.instance().getID(this.channel));
+        bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(ViewerCache.instance().getByLogin(this.channel).id());
         if (!checkJSONExceptions(bttvLocalJsonResult, true, "Local BTTV")) {
             com.gmt2001.Console.err.println("Failed to get BTTV Local Emotes");
             return;
