@@ -26,6 +26,7 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
+import com.gmt2001.twitch.cache.ViewerCache;
 
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
@@ -165,7 +166,7 @@ public final class TwitchCache {
 
         start = start.withSecond(0);
 
-        Helix.instance().getClipsAsync(null, UsernameCache.instance().getIDCaster(), null, 100, null, null, start, start.plusDays(1))
+        Helix.instance().getClipsAsync(null, ViewerCache.instance().broadcaster().id(), null, 100, null, null, start, start.plusDays(1))
                 .doOnSuccess(jso -> {
                     if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                         ZonedDateTime newLatestClip = this.latestClip;
@@ -223,7 +224,7 @@ public final class TwitchCache {
      * @botpropertycatsort offlinetimeout 210 20 Twitch
      */
     private void updateCache() {
-        Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null)
+        Helix.instance().getStreamsAsync(1, null, null, List.of(ViewerCache.instance().broadcaster().id()), null, null, null)
             .doOnSuccess(jso -> {
                 if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                     boolean isOnlinen = jso.getJSONArray("data").length() > 0;
@@ -284,7 +285,7 @@ public final class TwitchCache {
                 }
             }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
 
-        Helix.instance().getUsersAsync(List.of(UsernameCache.instance().getIDCaster()), null)
+        Helix.instance().getUsersAsync(List.of(ViewerCache.instance().broadcaster().id()), null)
             .doOnSuccess(jso -> {
                 if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                     if (jso.getJSONArray("data").length() > 0) {
@@ -325,7 +326,7 @@ public final class TwitchCache {
             }).doOnError(ex -> com.gmt2001.Console.err.printStackTrace(ex)).subscribe();
 
         if (this.isAffiliateOrPartner()) {
-            Helix.instance().getBroadcasterSubscriptionsAsync(UsernameCache.instance().getIDCaster(), null, 1, null)
+            Helix.instance().getBroadcasterSubscriptionsAsync(ViewerCache.instance().broadcaster().id(), null, 1, null)
                 .doOnSuccess(jso -> {
                     if (jso != null && !jso.has("error")) {
                         this.subscriberCount = jso.optInt("total");
@@ -491,7 +492,7 @@ public final class TwitchCache {
      * @return
      */
     public String getDisplayName() {
-        return UsernameCache.instance().resolveCaster();
+        return ViewerCache.instance().broadcaster().name();
     }
 
     /**
@@ -691,7 +692,7 @@ public final class TwitchCache {
      * @param callback A callback to execute on success. The parameter is {@code true} if the stream information was successfully retrieved
      */
     public void syncStreamStatus(boolean shouldSendEvent, Consumer<Boolean> callback) {
-        Helix.instance().getStreamsAsync(1, null, null, List.of(UsernameCache.instance().getIDCaster()), null, null, null).doOnSuccess(streams -> {
+        Helix.instance().getStreamsAsync(1, null, null, List.of(ViewerCache.instance().broadcaster().id()), null, null, null).doOnSuccess(streams -> {
             boolean hasData = false;
             if (streams != null && streams.has("data")) {
                 if (streams.getJSONArray("data").length() > 0) {
@@ -738,7 +739,7 @@ public final class TwitchCache {
      * @param callback A callback to execute on success. The parameter is {@code true} if the channel information was successfully retrieved
      */
     public void syncStreamInfoFromChannel(boolean shouldSendEvent, Consumer<Boolean> callback) {
-        Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).doOnSuccess(channels -> {
+        Helix.instance().getChannelInformationAsync(ViewerCache.instance().broadcaster().id()).doOnSuccess(channels -> {
             boolean hasData = false;
             if (channels != null && channels.has("data")) {
                 if (channels.getJSONArray("data").length() > 0) {
@@ -778,7 +779,7 @@ public final class TwitchCache {
      * @param sendEvent {@code true} to send {@link TwitchGameChangeEvent}, if appropriate
      */
     public void updateGame(boolean sendEvent) {
-        Helix.instance().getChannelInformationAsync(UsernameCache.instance().getIDCaster()).doOnSuccess(jso -> {
+        Helix.instance().getChannelInformationAsync(ViewerCache.instance().broadcaster().id()).doOnSuccess(jso -> {
             if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
                 JSONArray data = jso.getJSONArray("data");
 

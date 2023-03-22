@@ -127,7 +127,7 @@
 
         // Replace tags.
         if (message.match(/\(username\)/)) {
-            message = $.replace(message, '(username)', $.username.resolve(username));
+            message = $.replace(message, '(username)', $.viewer.getByLogin(username).name());
         }
 
         if (message.match(/\(url\)/)) {
@@ -347,7 +347,7 @@
 
                 if ($.inidb.exists('incoming_raids', subAction.toLowerCase())) {
                     var raidObj = JSON.parse($.inidb.get('incoming_raids', subAction.toLowerCase())),
-                            displayName = $.username.resolve(subAction);
+                            displayName = $.viewer.getByLogin(subAction).name();
 
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.lookup.user', displayName, raidObj.totalRaids, new Date(raidObj.lastRaidTime).toLocaleString(), raidObj.lastRaidViewers));
                 } else {

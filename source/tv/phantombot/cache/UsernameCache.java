@@ -16,21 +16,16 @@
  */
 package tv.phantombot.cache;
 
-import com.gmt2001.ExecutorService;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import reactor.core.publisher.Mono;
-import tv.phantombot.CaselessProperties;
-import tv.phantombot.twitch.api.Helix;
-import tv.phantombot.twitch.api.TwitchValidate;
 
+import com.gmt2001.twitch.cache.Viewer;
+import com.gmt2001.twitch.cache.ViewerCache;
+
+/**
+ * @deprecated Please use {@link ViewerCache} instead
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class UsernameCache {
 
     private static final UsernameCache INSTANCE = new UsernameCache();
@@ -39,64 +34,14 @@ public class UsernameCache {
         return INSTANCE;
     }
 
-    private final Map<String, UserData> cache = new ConcurrentHashMap<>();
-
-    private UsernameCache() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.lookupUserDataAsync(List.of(TwitchValidate.instance().getChatLogin(),
-                CaselessProperties.instance().getProperty("channel").toLowerCase())).subscribe();
-        ExecutorService.scheduleAtFixedRate(() -> {
-            Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-            Thread.currentThread().setName("UsernameCache::GC");
-            final Instant expiresBefore = Instant.now().minus(1, ChronoUnit.HOURS);
-            final String bot = TwitchValidate.instance().getChatLogin();
-            final String broadcaster = CaselessProperties.instance().getProperty("channel").toLowerCase();
-            this.cache.forEach((k, v) -> {
-                if (v.lastSeen().isBefore(expiresBefore) && !k.equals(bot) && !k.equals(broadcaster)) {
-                    this.cache.remove(k);
-                }
-            });
-        }, 0, 1, TimeUnit.HOURS);
-    }
-
-    private void lookupUserData(String username) {
-        try {
-            this.lookupUserDataAsync(username).block();
-        } catch (Exception e) {
-        }
-    }
-
-    private Mono<?> lookupUserDataAsync(String username) {
-        return this.lookupUserDataAsync(List.of(username));
-    }
-
-    private Mono<?> lookupUserDataAsync(List<String> usernames) {
-        return Mono.create(emitter -> {
-            Helix.instance().getUsersAsync(null, usernames).doOnSuccess(jso -> {
-                if (jso != null && !jso.has("error") && jso.has("data") && !jso.isNull("data")) {
-                    final JSONArray data = jso.getJSONArray("data");
-
-                    if (data.length() > 0) {
-                        for (int i = 0; i < data.length(); i++) {
-                            JSONObject user = data.getJSONObject(i);
-                            this.cache.put(user.getString("login"), new UserData(user.getString("display_name").replaceAll("\\\\s", " "), user.getString("id")));
-                        }
-                    }
-                }
-                emitter.success();
-            }).doOnError(ex -> {
-                com.gmt2001.Console.err.printStackTrace(ex, "[lookupUserDataAsync] Exception parsing getUsersAsync");
-                emitter.error(ex);
-            }).subscribe();
-        });
-    }
+    private UsernameCache() {}
 
     public String resolveBot() {
-        return resolve(TwitchValidate.instance().getChatLogin());
+        return ViewerCache.instance().bot().name();
     }
 
     public String resolveCaster() {
-        return resolve(CaselessProperties.instance().getProperty("channel").toLowerCase());
+        return ViewerCache.instance().broadcaster().name();
     }
 
     public String resolve(String username) {
@@ -107,15 +52,13 @@ public class UsernameCache {
         String lusername = username.toLowerCase();
 
         if (this.hasUser(lusername)) {
-            this.cache.get(lusername).seen();
-            return this.cache.get(lusername).getUserName();
+            return ViewerCache.instance().getByLogin(lusername).name();
         } else {
             if (username.equalsIgnoreCase("jtv") || username.equalsIgnoreCase("twitchnotify")) {
                 return username;
             }
 
             if (tags.containsKey("display-name") && tags.get("display-name").equalsIgnoreCase(lusername) && tags.containsKey("user-id")) {
-                this.cache.put(lusername, new UserData(tags.get("display-name"), tags.get("user-id")));
                 return tags.get("display-name");
             }
 
@@ -124,9 +67,9 @@ public class UsernameCache {
                 return tags.get("display-name");
             }
 
-            this.lookupUserData(lusername);
+            ViewerCache.instance().getByLogin(lusername);
             if (this.hasUser(lusername)) {
-                return this.cache.get(lusername).getUserName();
+                return ViewerCache.instance().getByLogin(lusername).name();
             } else {
                 return lusername;
             }
@@ -138,97 +81,34 @@ public class UsernameCache {
         if (this.hasUser(userName)) {
             return true;
         } else {
-            this.lookupUserData(userName);
+            ViewerCache.instance().getByLogin(userName);
 
             return this.hasUser(userName);
         }
     }
 
-    public void addUser(String userName, String displayName, String userID) {
-        if (!this.hasUser(userName) && displayName.length() > 0 && userID.length() > 0) {
-            this.cache.put(userName, new UserData(displayName.replaceAll("\\\\s", " "), userID));
-        }
-    }
+    public void addUser(String userName, String displayName, String userID) {}
 
     public boolean hasUser(String userName) {
-        return this.cache.containsKey(userName);
+        return ViewerCache.instance().loginExists(userName);
     }
 
     public String get(String userName) {
-        return (this.hasUser(userName) ? this.cache.get(userName).getUserName() : userName);
+        return (this.hasUser(userName) ? this.resolve(userName) : userName);
     }
 
     public String getIDBot() {
-        return this.getID(TwitchValidate.instance().getChatLogin());
+        return ViewerCache.instance().bot().id();
     }
 
     public String getIDCaster() {
-        return this.getID(CaselessProperties.instance().getProperty("channel").toLowerCase());
+        return ViewerCache.instance().broadcaster().id();
     }
 
     public String getID(String userName) {
-        String lusername = userName.toLowerCase();
-        if (this.hasUser(lusername)) {
-            this.cache.get(lusername).seen();
-            return this.cache.get(lusername).getUserID();
-        } else {
-            this.lookupUserData(lusername);
-            if (this.hasUser(lusername)) {
-                return this.cache.get(lusername).getUserID();
-            }
-        }
-        return "0";
+        Viewer viewer = ViewerCache.instance().getByLogin(userName);
+        return viewer != null ? viewer.id() : "0";
     }
 
-    public void removeUser(String userName) {
-        userName = userName.toLowerCase();
-
-        if (this.hasUser(userName)) {
-            this.cache.remove(userName);
-        }
-    }
-
-    /*
-     * Internal object for tracking user data.
-     * Note that while Twitch represents the userID as a String, it is an integer value.  We
-     * define this as an int here to conserve memory usage.  The maximum value of an unsigned
-     * int within Java is 4,294,967,295 which should serve as a large enough data type.
-     */
-    private class UserData {
-
-        private String userName;
-        private String userID;
-        private Instant lastSeen = Instant.now();
-
-        public UserData(String userName, String userID) {
-            this.userName = userName;
-            this.userID = userID;
-        }
-
-        @SuppressWarnings({"unused"})
-        public void putUserName(String userName) {
-            this.userName = userName;
-        }
-
-        @SuppressWarnings({"unused"})
-        public void putUserID(String userID) {
-            this.userID = userID;
-        }
-
-        public String getUserName() {
-            return this.userName;
-        }
-
-        public String getUserID() {
-            return this.userID;
-        }
-
-        public void seen() {
-            this.lastSeen = Instant.now();
-        }
-
-        public Instant lastSeen() {
-            return this.lastSeen;
-        }
-    }
+    public void removeUser(String userName) {}
 }

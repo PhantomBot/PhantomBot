@@ -1193,7 +1193,7 @@
                         refund = parseInt(refund / 2);
                         if (refund > 0) {
                             $.inidb.incr('points', refundUser, parseInt(refund));
-                            $.say($.lang.get('ytplayer.command.stealsong.refund', $.username.resolve(refundUser), refund, (refund == 1 ? $.pointNameSingle : $.pointNameMultiple)));
+                            $.say($.lang.get('ytplayer.command.stealsong.refund', $.viewer.getByLogin(refundUser).name(), refund, (refund == 1 ? $.pointNameSingle : $.pointNameMultiple)));
                         }
                     }
                 }
@@ -1843,14 +1843,14 @@
                     return;
                 }
                 refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
-                responseString = $.lang.get('ytplayer.command.stealsong.this.success', $.username.resolve(sender));
+                responseString = $.lang.get('ytplayer.command.stealsong.this.success', $.viewer.getByLogin(sender).name());
             } else if ($.inidb.FileExists(playlistDbPrefix + args[0].toLowerCase())) {
                 if (currentPlaylist.addToPlaylist(currentPlaylist.getCurrentVideo(), args[0].toLowerCase()) == -2) {
                     $.say($.lang.get('ytplayer.command.stealsong.duplicate'));
                     return;
                 }
                 refundUser = currentPlaylist.getCurrentVideo().getOwner().toLowerCase();
-                responseString = $.lang.get('ytplayer.command.stealsong.other.success', $.username.resolve(sender), args[0]);
+                responseString = $.lang.get('ytplayer.command.stealsong.other.success', $.viewer.getByLogin(sender).name(), args[0]);
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.playlist.404', args[0]));
                 return;
@@ -1868,7 +1868,7 @@
                             refund = parseInt(refund / 2);
                             if (refund > 0) {
                                 $.inidb.incr('points', refundUser, parseInt(refund))
-                                responseString = responseString + ' ' + $.lang.get('ytplayer.command.stealsong.refund', $.username.resolve(refundUser), refund, (refund == 1 ? $.pointNameSingle : $.pointNameMultiple));
+                                responseString = responseString + ' ' + $.lang.get('ytplayer.command.stealsong.refund', $.viewer.getByLogin(refundUser).name(), refund, (refund == 1 ? $.pointNameSingle : $.pointNameMultiple));
                             }
                         }
                     }

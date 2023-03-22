@@ -35,16 +35,16 @@
      * @cancels sometimes
      */
     function gameonly(args) {
-        if (args.args.match(/^(?:=|\s)(.*)$/) !== null) {
-            var targs = args.args.substring(1);
-            var negate = false;
+        if (args.args) {
+            let targs = args.args;
+            let negate = false;
             if (targs.match(/^(!!\s)/) !== null) {
                 targs = targs.substring(3);
                 negate = true;
             }
-            var game = $.getGame($.channelName);
-            var match = targs.match(/([^|]+)/g);
-            for (var x in match) {
+            let game = $.getGame($.channelName);
+            let match = targs.match(/([^|]+)/g);
+            for (let x in match) {
                 if (game.equalsIgnoreCase(match[x])) {
                     if (negate) {
                         return {cancel: true};
@@ -100,9 +100,9 @@
      * @cancels sometimes
      */
     function useronly(args) {
-        if (args.args.match(/^(?:=|\s)(.*)$/) !== null) {
-            var match = args.args.match(/(@?\w+)/g);
-            for (var x in match) {
+        if (args.args) {
+            let match = args.args.match(/(@?\w+)/g);
+            for (let x in match) {
                 if (match[x].match(/^@moderators$/) !== null) {
                     if ($.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Mod)) {
                         return {result: ''};
@@ -122,7 +122,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('adminonlyedit', ['twitch', 'commandevent', 'meta'], adminonlyedit),
         new $.transformers.transformer('gameonly', ['twitch', 'noevent', 'meta'], gameonly),
         new $.transformers.transformer('offlineonly', ['twitch', 'commandevent', 'meta'], offlineonly),

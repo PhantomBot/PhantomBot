@@ -936,49 +936,33 @@
             // Don't allow other events to add or remove users.
             isUpdatingUsers = true;
 
-            var joins = event.getJoins(),
-                    parts = event.getParts(),
-                    values = [],
-                    i;
-
-            // Handle parts
-            for (i = 0; i < parts.length; i++) {
-                // Cast the user as a string, because Rhino.
-                parts[i] = parts[i].toString();
-                // Remove the user from the users array.
-                _usersLock.lock();
-                try {
-                    var t = getKeyIndex(users, parts[i]);
-                    if (t >= 0) {
-                        users.splice(t, 1);
-                    }
-                } finally {
-                    _usersLock.unlock();
-                }
-
-                $.restoreSubscriberStatus(parts[i]);
-                $.username.removeUser(parts[i]);
-            }
+            let chatters = event.chatters(),
+                    newUsers = [],
+                    keys = [],
+                    values = [];
 
             // Handle joins.
-            for (i = 0; i < joins.length; i++) {
-                // Cast the user as a string, because Rhino.
-                joins[i] = joins[i].toString();
-                values[i] = 'true';
+            for (let i = 0; i < chatters.size(); i++) {
+                let username = $.jsString(chatters.get(i));
+                $.restoreSubscriberStatus(username);
+                keys.push(username);
+                values.push('true');
 
-                if (isTwitchBot(joins[i])) {
+                if (isTwitchBot(username)) {
                     continue;
                 }
 
-                _usersLock.lock();
-                try {
-                    users.push(joins[i]);
-                } finally {
-                    _usersLock.unlock();
-                }
+                newUsers.push(username);
             }
 
-            $.inidb.SetBatchString('visited', '', joins, values);
+            _usersLock.lock();
+            try {
+                users = newUsers;
+            } finally {
+                _usersLock.unlock();
+            }
+
+            $.inidb.SetBatchString('visited', '', keys, values);
 
             isUpdatingUsers = false;
         }, 0, 'core::permissions.js::ircChannelUsersUpdate');
@@ -1003,7 +987,7 @@
 
             _usersLock.lock();
             try {
-                users.push(username);
+                users.push($.jsString(username));
             } finally {
                 _usersLock.unlock();
             }
@@ -1028,7 +1012,7 @@
 
             _usersLock.lock();
             try {
-                users.push(username);
+                users.push($.jsString(username));
             } finally {
                 _usersLock.unlock();
             }
@@ -1047,13 +1031,12 @@
      * @event ircChannelLeave
      */
     $.bind('ircChannelLeave', function (event) {
-        var username = event.getUser().toLowerCase(),
-                i;
+        var username = event.getUser().toLowerCase();
 
         if (!isUpdatingUsers) {
             _usersLock.lock();
             try {
-                i = getKeyIndex(users, username);
+                let i = getKeyIndex(users, username);
 
                 if (i >= 0) {
                     users.splice(i, 1);
@@ -1260,7 +1243,7 @@
             }
 
             if (args[1] === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.viewer.getByLogin(args[0]).name(), $.getUserGroupName(args[0])));
                 return;
             }
 
@@ -1283,7 +1266,7 @@
                 return;
             }
 
-            $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + ' (' + groupId + ')'));
+            $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.viewer.getByLogin(username).name(), getGroupNameById(groupId) + ' (' + groupId + ')'));
             setUserGroupById(username, groupId);
             if (groupId <= PERMISSION.Mod) {
                 addModeratorToCache(username);
@@ -1418,6 +1401,9 @@
     $.modeOUsers = modeOUsers;
     $.subUsers = subUsers;
     $.users = users;
+    /**
+     * @deprecated
+     */
     $.lastJoinPart = lastJoinPart;
 
     $.userExists = userExists;

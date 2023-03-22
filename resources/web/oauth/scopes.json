@@ -110,6 +110,10 @@
             "desc": "Manage a broadcaster's shoutouts.",
             "tooltip": "Used to send shoutouts."
         },
+        "moderator:read:chatters": {
+            "desc": "View the chatters in a broadcaster's chat room.",
+            "tooltip": "Used to get the chatters of the channel."
+        },
         "moderator:read:followers": {
             "desc": "Read the followers of a broadcaster.",
             "tooltip": "Used to get the followers of the channel."

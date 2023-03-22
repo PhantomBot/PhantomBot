@@ -17,6 +17,9 @@
 package tv.phantombot.event.irc.message;
 
 import java.util.Map;
+
+import com.gmt2001.twitch.tmi.TMIMessage;
+
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import tv.phantombot.event.command.CommandEvent;
@@ -27,6 +30,7 @@ public class IrcModerationEvent extends IrcMessageEvent {
     private final Sinks.One<Boolean> moderated = Sinks.one();
     private final Sinks.One<Void> completed = Sinks.one();
     private final ModerationAction action = new ModerationAction();
+    private final TMIMessage tmimsg;
 
     /**
      * Class constructor.
@@ -36,7 +40,7 @@ public class IrcModerationEvent extends IrcMessageEvent {
      * @param message
      */
     public IrcModerationEvent(TwitchSession session, String sender, String message) {
-        super(session, sender, message);
+        this(session, sender, message, null);
     }
 
     /**
@@ -48,7 +52,20 @@ public class IrcModerationEvent extends IrcMessageEvent {
      * @param tags
      */
     public IrcModerationEvent(TwitchSession session, String sender, String message, Map<String, String> tags) {
+        this(session, sender, message, tags, null);
+    }
+
+    /**
+     * Class constructor.
+     *
+     * @param session
+     * @param sender
+     * @param message
+     * @param tags
+     */
+    public IrcModerationEvent(TwitchSession session, String sender, String message, Map<String, String> tags, TMIMessage tmimsg) {
         super(session, sender, message, tags);
+        this.tmimsg = tmimsg;
     }
 
     /**
@@ -98,6 +115,15 @@ public class IrcModerationEvent extends IrcMessageEvent {
      */
     public boolean isCommand() {
         return CommandEvent.isCommand(this.message);
+    }
+
+    /**
+     * Returns the raw {@link TMIMessage}
+     *
+     * @return The {@link TMIMessage}
+     */
+    public TMIMessage tmimsg() {
+        return this.tmimsg;
     }
 
     /**

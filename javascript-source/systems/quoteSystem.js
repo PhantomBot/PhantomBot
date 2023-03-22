@@ -201,7 +201,7 @@
                 }
 
                 quote = args.splice(0).join(' ');
-                $.say($.lang.get('quotesystem.add.success', $.username.resolve(sender), saveQuote(String($.username.resolve(sender)), quote)));
+                $.say($.lang.get('quotesystem.add.success', $.viewer.getByLogin(sender).name(), saveQuote(String($.viewer.getByLogin(sender).name()), quote)));
                 $.log.event(sender + ' added a quote "' + quote + '".');
                 return;
             }
@@ -218,7 +218,7 @@
             }
 
             quote = args.splice(1).join(' ');
-            var username = useTwitchNames ? $.username.resolve(target) : target;
+            var username = useTwitchNames ? $.viewer.getByLogin(target).name() : target;
             $.say($.lang.get('quotesystem.add.success', username, saveQuote(String(username), quote)));
             $.log.event(sender + ' added a quote "' + quote + '".');
             return;
@@ -236,7 +236,7 @@
             }
 
             quote = args.splice(0).join(' ');
-            saveQuote(String($.username.resolve(sender)), quote);
+            saveQuote(String($.viewer.getByLogin(sender).name()), quote);
             return;
         }
 
@@ -285,7 +285,7 @@
                 quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString()))
                                     .replace('(quote)', quote[1])
                                     .replace('(userrank)', $.resolveRank(quote[0]))
-                                    .replace('(user)', $.username.resolve(quote[0]))
+                                    .replace('(user)', $.viewer.getByLogin(quote[0]).name())
                                     .replace('(game)', (quote.length === 5 ? quote[3] : "Some Game"))
                                     .replace('(date)', $.getLocalTimeString($.getSetIniDbString('settings', 'quoteDateFormat', 'dd-MM-yyyy'), parseInt(quote[2])));
                 $.say(quoteStr);

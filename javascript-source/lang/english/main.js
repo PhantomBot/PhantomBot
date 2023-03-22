@@ -88,6 +88,8 @@ $.lang.register('init.mod.toggle.price.msg.off', 'The price message has been dis
 $.lang.register('init.mod.toggle.price.msg.on', 'The price message has been enabled.');
 $.lang.register('init.toggle.cooldown.msg.on', 'The cooldown message has been enabled.');
 $.lang.register('init.toggle.cooldown.msg.off', 'The cooldown message has been disabled.');
+$.lang.register('init.toggle.customCommandAt.on', 'Enabled targeting no-tag custom commands using !mycommand @user');
+$.lang.register('init.toggle.customCommandAt.off', 'Disabled targeting no-tag custom commands using !mycommand @user');
 $.lang.register('init.cooldown.msg.global', 'command !$1 is still on a global cooldown. ($2 seconds left)');
 $.lang.register('init.cooldown.msg.user', 'command !$1 is still on cooldown for you. ($2 seconds left)');
 $.lang.register('whisper.whispers.disabled', '[Whisper Mode] has been disabled.');

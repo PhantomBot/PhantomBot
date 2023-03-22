@@ -64,7 +64,7 @@
                 if (lastUserMessage + welcomeCooldown < now) {
                     welcomeLock.lock();
                     try {
-                        queue.add($.username.resolve(sender));
+                        queue.add($.viewer.getByLogin(sender).name());
                     } finally {
                         welcomeLock.unlock();
                     }
@@ -269,9 +269,9 @@
                 welcomeEnabled = !welcomeEnabled;
                 $.setIniDbBoolean('welcome', 'welcomeEnabled', welcomeEnabled);
                 if (welcomeEnabled) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.autowelcome.enabled', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.autowelcome.enabled', $.viewer.getByLogin($.botName).name()));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.autowelcome.disabled', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.autowelcome.disabled', $.viewer.getByLogin($.botName).name()));
                 }
             }
 
@@ -284,10 +284,10 @@
                 $.inidb.set('welcome', 'welcomeMessage', message);
                 welcomeMessageFirst = message;
                 if (!message) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.empty', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.empty', $.viewer.getByLogin($.botName).name()));
 
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.success', $.username.resolve($.botName), message));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.message.success', $.viewer.getByLogin($.botName).name(), message));
                 }
                 return;
             }
@@ -301,9 +301,9 @@
                 $.inidb.set('welcome', 'welcomeMessageFirst', message);
                 welcomeMessage = message;
                 if (!message) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.firstmessage.empty', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.firstmessage.empty', $.viewer.getByLogin($.botName).name()));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.firstmessage.success', $.username.resolve($.botName), message));
+                    $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.firstmessage.success', $.viewer.getByLogin($.botName).name(), message));
                 }
                 return;
             }

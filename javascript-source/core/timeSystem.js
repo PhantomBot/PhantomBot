@@ -338,7 +338,7 @@
      */
     $.bind('command', function (event) {
         var sender = event.getSender().toLowerCase(),
-                username = $.username.resolve(sender),
+                username = $.viewer.getByLogin(sender).name(),
                 command = event.getCommand(),
                 args = event.getArgs(),
                 action = args[0],
@@ -352,7 +352,7 @@
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
-                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.username.resolve(action), getUserTimeString(action)));
+                $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.viewer.getByLogin(action).name(), getUserTimeString(action)));
             } else {
                 subject = args[1];
                 timeArg = parseInt(args[2]);
@@ -376,9 +376,9 @@
 
                     if ($.user.isKnown(subject)) {
                         $.inidb.incr('time', subject, timeArg);
-                        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.add.success', getTimeString(timeArg), $.username.resolve(subject), getUserTimeString(subject)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.add.success', getTimeString(timeArg), $.viewer.getByLogin(subject).name(), getUserTimeString(subject)));
                     } else {
-                        $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', $.username.resolve(subject)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', $.viewer.getByLogin(subject).name()));
                     }
                 }
 
@@ -402,7 +402,7 @@
                     }
 
                     $.inidb.decr('time', subject, timeArg);
-                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success', $.getTimeString(timeArg), $.username.resolve(subject), getUserTimeString(subject)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success', $.getTimeString(timeArg), $.viewer.getByLogin(subject).name(), getUserTimeString(subject)));
                 }
 
                 if (action.equalsIgnoreCase('set')) {
@@ -420,7 +420,7 @@
                     subject = $.user.sanitize(subject);
                     if ($.user.isKnown(subject)) {
                         $.inidb.set('time', subject, timeArg);
-                        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.settime.success', $.username.resolve(subject), $.getUserTimeString(subject)));
+                        $.say($.whisperPrefix(sender) + $.lang.get('timesystem.settime.success', $.viewer.getByLogin(subject).name(), $.getUserTimeString(subject)));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', subject));
                     }
@@ -478,7 +478,7 @@
          * @commandpath streamertime - Announce the caster's local time
          */
         if (command.equalsIgnoreCase('streamertime')) {
-            $.say($.whisperPrefix(sender) + $.lang.get('timesystem.streamertime', getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss a zzz '('Z')'"), $.username.resolve($.ownerName)));
+            $.say($.whisperPrefix(sender) + $.lang.get('timesystem.streamertime', getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss a zzz '('Z')'"), $.viewer.getByLogin($.ownerName).name()));
         }
 
         /**
@@ -532,7 +532,7 @@
                             if (timeLevelWarning) {
                                 $.say($.lang.get(
                                     'timesystem.autolevel.promoted',
-                                    $.username.resolve(username),
+                                    $.viewer.getByLogin(username).name(),
                                     $.getGroupNameById($.PERMISSION.Regular).toLowerCase(),
                                     hoursForLevelUp
                                 )); //No whisper mode needed here.

@@ -76,7 +76,7 @@
         if (announceFollows && followToggle) {
             let s = followMessage;
             if (s.match(/\(name\)/)) {
-                s = $.replace(s, '(name)', $.username.resolve(follower));
+                s = $.replace(s, '(name)', $.viewer.getByLogin(follower).name());
             }
 
             if (s.match(/\(reward\)/)) {
@@ -220,9 +220,9 @@
             action = $.user.sanitize(action);
 
             if ($.user.isFollower(action)) {
-                $.say($.lang.get('followhandler.check.follows', $.username.resolve(action)));
+                $.say($.lang.get('followhandler.check.follows', $.viewer.getByLogin(action).name()));
             } else {
-                $.say($.lang.get('followhandler.check.notfollows', $.username.resolve(action)));
+                $.say($.lang.get('followhandler.check.notfollows', $.viewer.getByLogin(action).name()));
             }
         }
 

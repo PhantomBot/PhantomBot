@@ -179,7 +179,7 @@
         var temp = [],
             i;
         for (i in list) {
-            temp.push($.username.resolve(list[i].username));
+            temp.push($.viewer.getByLogin(list[i].username).name());
         }
         return temp.join(', ');
     }
@@ -370,7 +370,7 @@
         for (i in currentAdventure.survivors) {
             username = currentAdventure.survivors[i].username;
             maxlength += username.length();
-            temp.push($.username.resolve(username) + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
+            temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
         }
 
         if (temp.length === 0) {

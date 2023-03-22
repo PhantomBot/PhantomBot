@@ -517,7 +517,7 @@
 
                 $.twitchcache.setGameTitle(http.getString('game'));
                 $.inidb.set('streamInfo', 'game', http.getString('game'));
-                $.log.event($.username.resolve(sender) + ' changed the current game to ' + http.getString('game'));
+                $.log.event($.viewer.getByLogin(sender).name() + ' changed the current game to ' + http.getString('game'));
                 if ($.bot.isModuleEnabled('./commands/deathctrCommand.js')) {
                     $.deathUpdateFile(game);
                 }

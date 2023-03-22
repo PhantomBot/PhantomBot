@@ -70,7 +70,7 @@ services:
     hostname: ouroboros
     # Image to pull, automatically selects the latest version when creating the container
     image: ghcr.io/gmt2001/ouroboros
-    # Assigns this container to a profile, requireing the "--profile ouroboros" addition to the "docker compose up" command to activate
+    # Assigns this container to a profile, requiring the "--profile ouroboros" addition to the "docker compose up" command to activate
     profiles: ["ouroboros"]
     # Defines the configuration for ouroboros, see https://github.com/gmt2001/ouroboros/wiki/Usage
     environment:

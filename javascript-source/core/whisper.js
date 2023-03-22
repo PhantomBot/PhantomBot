@@ -58,12 +58,12 @@
      */
     function whisperPrefix(username, force) {
         if (username.toLowerCase() === $.botName.toLowerCase()) {
-            return ''; 
-        }        
+            return '';
+        }
         if (whisperMode || force) {
             return '/w ' + username + ' ';
         }
-        return '@' + $.username.resolve(username) + ', ';
+        return '@' + $.viewer.getByLogin(username).name() + ', ';
     }
 
     /**

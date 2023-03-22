@@ -19,7 +19,7 @@
 
 (function () {
     let transformers = {},
-            tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|=()]*)([\\s=\\|](?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
+            tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|=()]*)([\\s=\\|])((?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
             _lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             debugon = true;
 
@@ -37,24 +37,27 @@
      * param {object} args - a js object that may contain any of the following params
      *
      *
-     * param {jsString} tagArgs - any arguments provided in the tag itself
-     * * Example: (mytag arg1 arg2 arg3) - tagArgs = 'arg1 arg2 arg3'
+     * param {jsString} args.argsep - any seperator between the tag name and the tag args. Valid values (RegEx): /[\s=\|]/
+     * * Example: (mytag|arg1 arg2 arg3) - argsep = '|'
      *
-     * param {jsString} tag - the name of the tag
+     * param {jsString} args.args - any arguments provided in the tag itself
+     * * Example: (mytag arg1 arg2 arg3) - args = 'arg1 arg2 arg3'
      *
-     * param {javaObject[T extends tv.phantombot.event.Event]} event - the event object which triggered the caller of the tag processor,
+     * param {jsString} args.tag - the name of the tag
+     *
+     * param {javaObject[T extends tv.phantombot.event.Event]} args.event - the event object which triggered the caller of the tag processor,
      *              such as a CommandEvent
      *
-     * param {jsObject} customArgs - a js object which can contain arbitrary arguments defined by the caller
+     * param {jsObject} args.customArgs - a js object which can contain arbitrary arguments defined by the caller
      *
-     * param {jsArray[jsString]} globalTransformerRequiredLabels - the input to the globalTransformerRequiredLabels argument from $.transformers.tags
+     * param {jsArray[jsString]} args.globalTransformerRequiredLabels - the input to the globalTransformerRequiredLabels argument from $.transformers.tags
      *
-     * param {jsArray[jsString]} globalTransformerAnyLabels - the input to the globalTransformerAnyLabels argument from $.transformers.tags
+     * param {jsArray[jsString]} args.globalTransformerAnyLabels - the input to the globalTransformerAnyLabels argument from $.transformers.tags
      *
-     * param {jsString} platform - identifies the platform that triggered the command. Valid values: 'twitch', 'discord'
+     * param {jsString} args.platform - identifies the platform that triggered the command. Valid values: 'twitch', 'discord'
      *
      * return {jsObject}     {
-     *                         result: {jsString or null}, // default: ''. the returned value. The tag being processed will be replaced with this
+     *                         result: {jsString or null}, // default: ''. The returned value. The tag being processed will be replaced with this
      *                                                     //     value, if a valid string is returned (including empty string)
      *                         cancel: {boolean},          // default: false. Set `true` to cancel further tag processing and return null to the caller
      *                         raw: {boolean},             // default: false. If set to `false`, the value of `result` will be escaped, preventing
@@ -213,7 +216,8 @@
                     tagArgs = {
                         event: event,
                         tag: tagName,
-                        args: matcher.group(3) !== null ? unescapeTags($.jsString(matcher.group(3))) : '',
+                        argsep: matcher.group(3) !== null ? $.jsString(matcher.group(3)) : '',
+                        args: matcher.group(4) !== null ? unescapeTags($.jsString(matcher.group(4))) : '',
                         customArgs: args.customArgs,
                         globalTransformerRequiredLabels: globalTransformerRequiredLabels,
                         globalTransformerAnyLabels: args.globalTransformerAnyLabels,

@@ -25,7 +25,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
  *
  * @author gmt2001
  */
-public class NoticeTMIProcessor extends AbstractTMIProcessor {
+public final class NoticeTMIProcessor extends AbstractTMIProcessor {
 
     public NoticeTMIProcessor() {
         super("NOTICE");

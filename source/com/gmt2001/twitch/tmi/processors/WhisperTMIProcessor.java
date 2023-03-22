@@ -25,7 +25,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
  *
  * @author gmt2001
  */
-public class WhisperTMIProcessor extends AbstractTMIProcessor {
+public final class WhisperTMIProcessor extends AbstractTMIProcessor {
 
     public WhisperTMIProcessor() {
         super("WHISPER");

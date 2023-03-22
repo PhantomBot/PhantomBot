@@ -148,9 +148,9 @@
                 autoGreetEnabled = !autoGreetEnabled;
                 $.setIniDbBoolean('greetingSettings', 'autoGreetEnabled', autoGreetEnabled);
                 if (autoGreetEnabled) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.enabled', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.enabled', $.viewer.getByLogin($.botName).name()));
                 } else {
-                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.disabled', $.username.resolve($.botName)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.autogreet.disabled', $.viewer.getByLogin($.botName).name()));
                 }
                 return;
             }

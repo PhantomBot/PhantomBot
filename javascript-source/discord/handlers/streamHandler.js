@@ -143,7 +143,7 @@
                 var s = offlineMessage;
 
                 if (s.match(/\(name\)/)) {
-                    s = $.replace(s, '(name)', $.username.resolve($.channelName));
+                    s = $.replace(s, '(name)', $.viewer.getByLogin($.channelName).name());
                 }
 
                 // Only say this when there is a mention.
@@ -207,7 +207,7 @@
                     var s = onlineMessage;
 
                     if (s.match(/\(name\)/)) {
-                        s = $.replace(s, '(name)', $.username.resolve($.channelName));
+                        s = $.replace(s, '(name)', $.viewer.getByLogin($.channelName).name());
                     }
 
                     // Only say this when there is a mention.
@@ -279,7 +279,7 @@
         var s = gameMessage;
 
         if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', $.username.resolve($.channelName));
+            s = $.replace(s, '(name)', $.viewer.getByLogin($.channelName).name());
         }
 
         // Only say this when there is a mention.

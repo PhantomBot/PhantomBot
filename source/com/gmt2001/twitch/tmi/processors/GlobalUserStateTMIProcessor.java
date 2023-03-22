@@ -25,7 +25,7 @@ import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
  *
  * @author gmt2001
  */
-public class GlobalUserStateTMIProcessor extends AbstractTMIProcessor {
+public final class GlobalUserStateTMIProcessor extends AbstractTMIProcessor {
 
     public GlobalUserStateTMIProcessor() {
         super("GLOBALUSERSTATE");

@@ -24,14 +24,13 @@ import com.gmt2001.twitch.tmi.TMIMessage;
 import com.gmt2001.twitch.tmi.TMISlashCommands;
 
 import reactor.core.publisher.SignalType;
-import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
 import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
-import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent.ModerationActions.Actions;
+import tv.phantombot.event.irc.message.IrcPrivateMessageEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 
 /**
@@ -59,10 +58,6 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
 
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + item.tags());
 
-        if (item.tags().containsKey("display-name") && item.tags().containsKey("user-id")) {
-            UsernameCache.instance().addUser(item.nick(), item.tags().get("display-name"), item.tags().get("user-id"));
-        }
-
         if (!item.nick().equalsIgnoreCase(this.user())) {
             if (item.tags().get("mod").equals("1") || !item.tags().get("user-type").isEmpty()) {
                 if (!this.moderators.contains(item.nick())) {
@@ -77,7 +72,7 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
             }
         }
 
-        IrcModerationEvent modEvent = new IrcModerationEvent(this.session(), item.nick(), message, item.tags());
+        IrcModerationEvent modEvent = new IrcModerationEvent(this.session(), item.nick(), message, item.tags(), item);
 
         EventBus.instance().postAsync(modEvent);
 
@@ -99,7 +94,7 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
                 EventBus.instance().postAsync(CommandEvent.asCommand(item.nick(), fmessage, item.tags()));
             }
 
-            EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags()));
+            EventBus.instance().postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags(), item));
         }).subscribe();
 
         modEvent.completedMono().doFinally(sig -> {

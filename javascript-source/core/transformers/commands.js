@@ -18,8 +18,6 @@
 /* global Packages */
 
 (function () {
-    var cmd, i, keys, match, temp;
-
     /*
      * @transformer command
      * @formula (command name:str) execute command with given name and pass no args
@@ -27,22 +25,23 @@
      * @labels twitch discord commandevent commands
      */
     function command(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        let cmd;
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
         if (pargs !== null) {
             cmd = pargs[0];
-            var argStr = '';
+            let argStr = '';
 
             if (pargs.length > 1) {
                 argStr = pargs[1];
             }
 
-            var EventBus = Packages.tv.phantombot.event.EventBus;
+            let EventBus = Packages.tv.phantombot.event.EventBus;
             if (args.platform === 'discord') {
-                var DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
+                let DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
                 EventBus.instance().postAsync(new DiscordCommandEvent(args.event.getDiscordUser(), args.event.getDiscordChannel(),
                         args.event.getDiscordMessage(), cmd, argStr, args.event.isAdmin()));
             } else {
-                var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                let CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                 EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr, args.event.getTags()));
             }
         }
@@ -60,19 +59,17 @@
      * @cancels
      */
     function commandslist(args) {
-        var prefix;
-        if ((match = args.args.match(/^(?:\s(.*))?$/))) {
-            prefix = match[1] || '';
-            keys = $.inidb.GetKeyList('pricecom', '');
-            temp = [];
-            for (i in keys) {
-                if (!keys[i].includes(' ')) {
-                    temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
-                }
+        let i, keys, temp;
+        let prefix = args.args || '';
+        keys = $.inidb.GetKeyList('pricecom', '');
+        temp = [];
+        for (i in keys) {
+            if (!keys[i].includes(' ')) {
+                temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
             }
-            $.paginateArray(temp, 'NULL' + prefix, ', ', true, args.event.getSender());
-            return {cancel: true};
         }
+        $.paginateArray(temp, 'NULL' + prefix, ', ', true, args.event.getSender());
+        return {cancel: true};
     }
 
     /*
@@ -90,10 +87,11 @@
      * The default counter name is the command name, without the `!`
      */
     function count(args) {
+        let match;
         match = $.parseArgs(args.args, ' ', 2, true);
-        var incr = 1;
-        var counter = args.event.getCommand();
-        var table = 'commandCount';
+        let incr = 1;
+        let counter = args.event.getCommand();
+        let table = 'commandCount';
 
         if (args.platform === 'discord') {
             table = 'discordCommandCount';
@@ -122,25 +120,26 @@
      * @labels twitch discord commandevent commands
      */
     function delaycommand(args) {
-        var pargs = $.parseArgs(args.args, ' ', 3, true);
+        let cmd;
+        let pargs = $.parseArgs(args.args, ' ', 3, true);
         try {
             if (pargs !== null) {
-                var delay = parseInt(pargs[0]);
+                let delay = parseInt(pargs[0]);
                 cmd = pargs[1];
-                var argStr = '';
+                let argStr = '';
 
                 if (pargs.length > 2) {
                     argStr = pargs[2];
                 }
 
                 setTimeout(function () {
-                    var EventBus = Packages.tv.phantombot.event.EventBus;
+                    let EventBus = Packages.tv.phantombot.event.EventBus;
                     if (args.platform === 'discord') {
-                        var DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
+                        let DiscordCommandEvent = Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent;
                         EventBus.instance().postAsync(new DiscordCommandEvent(args.event.getDiscordUser(), args.event.getDiscordChannel(),
                                 args.event.getDiscordMessage(), cmd, argStr, args.event.isAdmin()));
                     } else {
-                        var CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
+                        let CommandEvent = Packages.tv.phantombot.event.command.CommandEvent;
                         EventBus.instance().postAsync(new CommandEvent(args.event.getSender(), cmd, argStr, args.event.getTags()));
                     }
                 }, delay * 1000, 'delaycommand ' + cmd + ' ' + delay);
@@ -160,9 +159,9 @@
      * @cancels sometimes
      */
     function help(args) {
-        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
+        if (args.args) {
             if (args.event.getArgs()[0] === undefined) {
-                $.say(match[1]);
+                $.say(args.args);
                 return {cancel: true};
             } else {
                 return {result: ''};
@@ -170,7 +169,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('command', ['twitch', 'discord', 'commandevent', 'commands'], command),
         new $.transformers.transformer('commandslist', ['twitch', 'commandevent', 'commands'], commandslist),
         new $.transformers.transformer('count', ['twitch', 'discord', 'commandevent', 'commands'], count),

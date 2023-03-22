@@ -58,9 +58,9 @@
 
             if ($.inidb.exists('lastseen', target)) {
                 date = new Date(parseInt($.inidb.get('lastseen', target.toLowerCase())));
-                $.say($.whisperPrefix(sender) + $.lang.get('lastseen.response', $.username.resolve(target), date.toLocaleDateString(), date.toLocaleTimeString()));
+                $.say($.whisperPrefix(sender) + $.lang.get('lastseen.response', $.viewer.getByLogin(target).name(), date.toLocaleDateString(), date.toLocaleTimeString()));
             } else {
-                $.say($.whisperPrefix(sender) + $.lang.get('lastseen.404', $.username.resolve(target)));
+                $.say($.whisperPrefix(sender) + $.lang.get('lastseen.404', $.viewer.getByLogin(target).name()));
             }
         }
     });

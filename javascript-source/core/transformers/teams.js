@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var match;
-
     /*
      * @transformer team_member_followers
      * @formula (team_member_followers team:str, membername:str) number of followers of user membername in the provided team
@@ -26,9 +24,9 @@
      * @cached
      */
     function team_member_followers(args) {
-        var teamObj,
+        let teamObj, match,
                 teamMember;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 teamMember = teamObj.getTeamMember(match[2]);
@@ -60,9 +58,9 @@
      * @cached
      */
     function team_member_game(args) {
-        var teamObj,
+        let teamObj, match,
                 teamMember;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 teamMember = teamObj.getTeamMember(match[2]);
@@ -94,9 +92,9 @@
      * @cached
      */
     function team_member_url(args) {
-        var teamObj,
+        let teamObj, match,
                 teamMember;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+),\s([a-zA-Z0-9_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 teamMember = teamObj.getTeamMember(match[2]);
@@ -128,8 +126,8 @@
      * @cached
      */
     function team_members(args) {
-        var teamObj;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+        let teamObj, match;
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
@@ -153,8 +151,8 @@
      * @cached
      */
     function team_name(args) {
-        var teamObj;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+        let teamObj, match;
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
@@ -177,8 +175,8 @@
      * @notes the team parameter should be the url slug for the team
      */
     function team_random_member(args) {
-        var teamObj;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+        let teamObj, match;
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
@@ -202,8 +200,8 @@
      * @cached
      */
     function team_url(args) {
-        var teamObj;
-        if ((match = args.args.match(/^ ([a-zA-Z0-9-_]+)$/))) {
+        let teamObj, match;
+        if ((match = args.args.match(/^([a-zA-Z0-9-_]+)$/))) {
             teamObj = $.twitchteamscache.getTeam(match[1]);
             if (teamObj !== null) {
                 return {
@@ -219,7 +217,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('team_member_followers', ['twitch', 'noevent', 'teams'], team_member_followers),
         new $.transformers.transformer('team_member_game', ['twitch', 'noevent', 'teams'], team_member_game),
         new $.transformers.transformer('team_member_url', ['twitch', 'noevent', 'teams'], team_member_url),

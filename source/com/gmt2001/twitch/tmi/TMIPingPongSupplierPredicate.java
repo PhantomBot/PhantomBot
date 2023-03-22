@@ -28,7 +28,7 @@ import tv.phantombot.event.irc.IrcPongEvent;
  *
  * @author gmt2001
  */
-public class TMIPingPongSupplierPredicate implements PingPongSupplierPredicate {
+public final class TMIPingPongSupplierPredicate implements PingPongSupplierPredicate {
 
     @Override
     public WebSocketFrame get() {

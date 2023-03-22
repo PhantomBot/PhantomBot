@@ -40,7 +40,7 @@
      * @example Caster: !addcom !removerole (removerole (sender), Cool Kids)
      */
     function removerole(args) {
-        var pargs = $.parseArgs(args.args, ',', 2, true);
+        let pargs = $.parseArgs(args.args, ',', 2, true);
         if (pargs.length !== 2) {
             return {
                 result: '(removerole an input is missing)'
@@ -149,7 +149,7 @@
      * @notes Only urls starting with `https://twitch.tv/` and `https://youtube.com/` will work
      */
     function setdiscordstreaming(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
         if (pargs.length !== 2) {
             return {
                 result: '(setdiscordstreaming an input is missing)'
@@ -172,7 +172,7 @@
      * @example Caster: !addcom !coolrole (setrole (sender), Cool Kids)
      */
     function setrole(args) {
-        var pargs = $.parseArgs(args.args, ',', 2, true);
+        let pargs = $.parseArgs(args.args, ',', 2, true);
         if (pargs.length !== 2) {
             return {
                 result: '(setrole an input is missing)'
@@ -185,7 +185,7 @@
         };
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('cleardiscordactivity', ['twitch', 'discord', 'noevent', 'presence'], cleardiscordactivity),
         new $.transformers.transformer('removerole', ['discord', 'noevent', 'roles'], removerole),
         new $.transformers.transformer('setdiscordcompeting', ['twitch', 'discord', 'noevent', 'presence'], setdiscordcompeting),

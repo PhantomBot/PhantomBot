@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var cmd, i, match;
-
     /*
      * @transformer code
      * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
@@ -27,10 +25,11 @@
      * Bot: A1D4f
      */
     function code(args) {
-        var code,
+        let i, match;
+        let code,
                 length,
                 temp = '';
-        if ((match = args.args.match(/^(?:=|\s)([1-9]\d*)$/))) {
+        if ((match = args.args.match(/^([1-9]\d*)$/))) {
             code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             length = parseInt(match[1]);
             for (i = 0; i < length; i++) {
@@ -50,12 +49,10 @@
      * @cached
      */
     function encodeurl(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: encodeURI(match[1]),
-                cache: true
-            };
-        }
+        return {
+            result: encodeURI(args.args),
+            cache: true
+        };
     }
 
     /*
@@ -65,12 +62,10 @@
      * @cached
      */
     function encodeurlparam(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: encodeURIComponent(match[1]),
-                cache: true
-            };
-        }
+        return {
+            result: encodeURIComponent(args.args),
+            cache: true
+        };
     }
 
     /*
@@ -81,12 +76,10 @@
      * @cached
      */
     function escape(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: match[1],
-                cache: true
-            };
-        }
+        return {
+            result: args.args,
+            cache: true
+        };
     }
 
     /*
@@ -95,10 +88,10 @@
      * @labels twitch keywordevent misc
      */
     function keywordcount(args) {
-        var keyword,
+        let keyword,
                 keywordInfo;
-        if ((match = args.args.match(/^\s(.+)$/))) {
-            keyword = match[1];
+        if (args.args) {
+            keyword = args.args;
             if ($.inidb.exists('keywords', keyword)) {
                 keywordInfo = JSON.parse($.inidb.get('keywords', keyword));
                 if ('count' in keywordInfo) {
@@ -115,6 +108,17 @@
     }
 
     /*
+     * @transformer nl
+     * @formula (nl) inserts a LF (`\n`)
+     * @labels twitch discord noevent misc
+     */
+    function nl() {
+        return {
+            result: '\n'
+        };
+    }
+
+    /*
      * @transformer nl2br
      * @formula (nl2br str:str) replaces all LF (`\n`) with `<br>` and removes all CR (`\r`)
      * @labels twitch discord noevent misc
@@ -122,7 +126,7 @@
      */
     function nl2br(args) {
         return {
-            result: args.args.replaceAll('\n', '<br>').replaceAll('\r', ''),
+            result: $.replace($.replace(args.args, '\r', ''), '\n', '<br>'),
             cache: true
         };
     }
@@ -134,9 +138,9 @@
      * @cached
      */
     function nl2x(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
         return {
-            result: pargs[1].replaceAll('\n', pargs[0]).replaceAll('\r', ''),
+            result: $.replace($.replace(pargs[1], '\r', ''), '\n', pargs[0]),
             cache: true
         };
     }
@@ -153,7 +157,7 @@
      * @cached
      */
     function token(args) {
-        cmd = args.event.getCommand();
+        let cmd = args.event.getCommand();
         if ($.inidb.HasKey('commandtoken', '', cmd)) {
             return {
                 result: $.inidb.GetString('commandtoken', '', cmd),
@@ -179,13 +183,11 @@
      * @cached
      */
     function unescape(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
-            return {
-                result: match[1],
-                raw: true,
-                cache: true
-            };
-        }
+        return {
+            result: args.args,
+            raw: true,
+            cache: true
+        };
     }
 
     /*
@@ -196,17 +198,18 @@
      */
     function url0a2nl(args) {
         return {
-            result: args.args.replaceAll('%0A', '\n').replaceAll('%0a', '\n'),
+            result: $.replace($.replace(args.args, '%0A', '\n'), '%0a', '\n'),
             cache: true
         };
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('code', ['twitch', 'discord', 'noevent', 'misc'], code),
         new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'noevent', 'misc'], encodeurl),
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
         new $.transformers.transformer('escape', ['twitch', 'discord', 'noevent', 'misc'], escape),
         new $.transformers.transformer('keywordcount', ['twitch', 'keywordevent', 'misc'], keywordcount),
+        new $.transformers.transformer('nl', ['twitch', 'discord', 'noevent', 'misc'], nl),
         new $.transformers.transformer('nl2br', ['twitch', 'discord', 'noevent', 'misc'], nl2br),
         new $.transformers.transformer('nl2x', ['twitch', 'discord', 'noevent', 'misc'], nl2x),
         new $.transformers.transformer('token', ['twitch', 'commandevent', 'misc'], token),

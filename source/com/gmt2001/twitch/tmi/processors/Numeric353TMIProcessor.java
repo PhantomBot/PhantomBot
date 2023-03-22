@@ -25,7 +25,7 @@ import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
  *
  * @author gmt2001
  */
-public class Numeric353TMIProcessor extends AbstractTMIProcessor {
+public final class Numeric353TMIProcessor extends AbstractTMIProcessor {
 
     public Numeric353TMIProcessor() {
         super("353");
