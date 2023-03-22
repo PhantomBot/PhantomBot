@@ -169,6 +169,16 @@ _NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
+#### mysqlssl
+
+Data Type: _String_
+
+indicates if ssl should be used for the mysql connection
+
+_NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
 #### backupdbauto
 
 Data Type: _Boolean_
