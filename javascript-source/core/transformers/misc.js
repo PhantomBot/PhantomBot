@@ -50,7 +50,7 @@
      * @cached
      */
     function encodeurl(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
+        if ((match = args.args.match(/^ (.*)$/m))) {
             return {
                 result: encodeURI(match[1]),
                 cache: true
@@ -65,7 +65,7 @@
      * @cached
      */
     function encodeurlparam(args) {
-        if ((match = args.args.match(/^ (.*)$/))) {
+        if ((match = args.args.match(/^ (.*)$/m))) {
             return {
                 result: encodeURIComponent(match[1]),
                 cache: true
