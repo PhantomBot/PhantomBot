@@ -258,7 +258,7 @@
     function winningMsg(winners) {
         if (winners.length === 1) {
             var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-            $.say($.lang.get('ticketrafflesystem.winner.single', $.username.resolve(winners[0]), followMsg));
+            $.say($.lang.get('ticketrafflesystem.winner.single', $.viewer.getByLogin(winners[0]).name(), followMsg));
             return;
         }
 

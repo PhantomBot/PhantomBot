@@ -421,14 +421,14 @@
      */
     function userPrefix(username, comma) {
         if (!comma) {
-            return '@' + $.username.resolve(username) + ' ';
+            return '@' + $.viewer.getByLogin(username).name() + ' ';
         }
-        return '@' + $.username.resolve(username) + ', ';
+        return '@' + $.viewer.getByLogin(username).name() + ', ';
     }
 
     function usernameResolveIgnoreEx(user) {
         try {
-            return $.username.resolve(user);
+            return $.viewer.getByLogin(user).name();
         } catch (ex) {
             return user;
         }

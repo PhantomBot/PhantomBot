@@ -36,7 +36,7 @@
             }
 
             var streamer = $.user.sanitize(args[0]),
-                    streamerDisplay = $.username.resolve(streamer),
+                    streamerDisplay = $.viewer.getByLogin(streamer).name(),
                     streamerGame = $.javaString($.getGame(streamer)),
                     streamerURL = 'https://twitch.tv/' + streamer;
 

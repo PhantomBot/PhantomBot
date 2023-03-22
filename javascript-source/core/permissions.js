@@ -1243,7 +1243,7 @@
             }
 
             if (args[1] === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.username.resolve(args[0]), $.getUserGroupName(args[0])));
+                $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.other.current', $.viewer.getByLogin(args[0]).name(), $.getUserGroupName(args[0])));
                 return;
             }
 
@@ -1266,7 +1266,7 @@
                 return;
             }
 
-            $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.username.resolve(username), getGroupNameById(groupId) + ' (' + groupId + ')'));
+            $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.set.success', $.viewer.getByLogin(username).name(), getGroupNameById(groupId) + ' (' + groupId + ')'));
             setUserGroupById(username, groupId);
             if (groupId <= PERMISSION.Mod) {
                 addModeratorToCache(username);

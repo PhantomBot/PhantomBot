@@ -392,7 +392,7 @@
 
         if (winners.length === 1) {
             var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
-            $.say($.lang.get('rafflesystem.winner.single', $.username.resolve(winners[0]), followMsg));
+            $.say($.lang.get('rafflesystem.winner.single', $.viewer.getByLogin(winners[0]).name(), followMsg));
             return;
         }
 

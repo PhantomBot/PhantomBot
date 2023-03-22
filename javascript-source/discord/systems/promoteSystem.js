@@ -319,7 +319,7 @@
                 $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                         .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                         .withTitle('https://twitch.tv/' + twitchName)
-                        .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))
+                        .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.viewer.getByLogin(twitchName).name()))
                         .withColor(31, 158, 242)
                         .appendField($.lang.get('discord.promotesystem.promotemsg.biography'), biography, true)
                         .withUrl('https://twitch.tv/' + twitchName).build());
@@ -397,7 +397,7 @@
                         $.inidb.set('promoteonlinetime', twitchID, now);
                         var embedBuilder = new Packages.tv.phantombot.discord.util.EmbedBuilder();
                         embedBuilder.withThumbnail(logoUrl)
-                                .withTitle($.lang.get('discord.promotesystem.livemsg.title', $.username.resolve(twitchName), twitchName))
+                                .withTitle($.lang.get('discord.promotesystem.livemsg.title', $.viewer.getByLogin(twitchName).name(), twitchName))
                                 .withColor(100, 65, 164)
                                 .withTimestamp(Date.now())
                                 .appendField($.lang.get('discord.promotesystem.livemsg.nowplaying'), game, true)
@@ -465,7 +465,7 @@
             $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/followontwitch.jpg')
                     .withTitle('https://twitch.tv/' + twitchName)
-                    .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.username.resolve(twitchName)))
+                    .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.viewer.getByLogin(twitchName).name()))
                     .withColor(31, 158, 242)
                     .appendField($.lang.get('discord.promotesystem.promotemsg.biography'), biography, true)
                     .withUrl('https://twitch.tv/' + twitchName).build());

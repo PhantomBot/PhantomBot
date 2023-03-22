@@ -150,7 +150,7 @@
         var command = event.getCommand(),
             args = event.getArgs(),
             sender = event.getSender().toLowerCase(),
-            username = $.username.resolve(sender),
+            username = $.viewer.getByLogin(sender).name(),
             levelTime,
             levelName,
             userTime = parseInt($.inidb.get('time', sender)) / 3600,
@@ -229,7 +229,7 @@
                 }
 
                 $.inidb.set('viewerRanks', customUser.toLowerCase(), customRank);
-                $.say($.whisperPrefix(sender) + $.lang.get('ranks.custom.success', $.username.resolve(customUser), customRank));
+                $.say($.whisperPrefix(sender) + $.lang.get('ranks.custom.success', $.viewer.getByLogin(customUser).name(), customRank));
                 return;
             }
 
@@ -247,7 +247,7 @@
                 }
 
                 $.inidb.del('viewerRanks', customUser.toLowerCase());
-                $.say($.whisperPrefix(sender) + $.lang.get('ranks.customdel.success', $.username.resolve(customUser)));
+                $.say($.whisperPrefix(sender) + $.lang.get('ranks.customdel.success', $.viewer.getByLogin(customUser).name()));
                 return;
             }
 

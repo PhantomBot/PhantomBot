@@ -80,7 +80,7 @@
 
         $.inidb.set('donations', donationID, event.getJsonString());
 
-        $.inidb.set('streamInfo', 'lastDonator', $.username.resolve(donationUsername));
+        $.inidb.set('streamInfo', 'lastDonator', $.viewer.getByLogin(donationUsername).name());
 
         $.inidb.set('donations', 'last_donation', donationID);
 

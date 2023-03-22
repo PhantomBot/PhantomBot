@@ -30,7 +30,7 @@
             temp = args.args.trim();
         }
         return {
-            result: $.username.resolve(temp),
+            result: $.viewer.getByLogin(temp).name(),
             cache: true
         };
     }

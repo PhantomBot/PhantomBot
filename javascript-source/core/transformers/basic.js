@@ -133,12 +133,12 @@
                 let name = $.username.resolve($.randElement($.users));
 
                 if ($.users.length === 0 || name === null || name === undefined) {
-                    name = $.username.resolve($.botName);
+                    name = $.viewer.getByLogin($.botName).name();
                 }
 
                 return {result: name};
             } catch (ex) {
-                return {result: $.username.resolve($.botName)};
+                return {result: $.viewer.getByLogin($.botName).name()};
             }
         }
     }
