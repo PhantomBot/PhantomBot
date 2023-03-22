@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var match;
-
     /*
      * @transformer alert
      * @formula (alert fileName:str) sends a GIF/video alert to the alerts overlay, fading out after 3 seconds
@@ -30,7 +28,8 @@
      * @example Caster: !addcom !banana (alert banana.gif)
      */
     function alert(args) {
-        if ((match = args.args.match(/^ ([,.\w\W]+)$/))) {
+        let match;
+        if ((match = args.args.match(/^([,.\w\W]+)$/))) {
             $.alertspollssocket.alertImage(match[1]);
             return {result: '', cache: false};
         }
@@ -45,7 +44,8 @@
      * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
      */
     function playsound(args) {
-        if ((match = args.args.match(/^\s([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
+        let match;
+        if ((match = args.args.match(/^([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
             if (!$.audioHookExists(match[1])) {
                 $.log.error('Could not play audio hook: Audio hook does not exist.');
                 return {result: $.lang.get('customcommands.playsound.404', match[1])};
@@ -55,7 +55,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('alert', ['twitch', 'discord', 'noevent', 'alerts'], alert),
         new $.transformers.transformer('playsound', ['twitch', 'discord', 'noevent', 'alerts'], playsound)
     ];

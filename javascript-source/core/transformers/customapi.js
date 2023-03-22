@@ -25,7 +25,7 @@
      * @returns {string}
      */
     function getCustomAPIValue(url) {
-        var res = $.customAPI.get(url);
+        let res = $.customAPI.get(url);
 
         if (res.content !== null) {
             $.consoleDebug(res.toString());
@@ -48,12 +48,11 @@
      * Bot: These jokes are un-bear-able
      */
     function customapi(args) {
-        var match;
-        if ((match = args.args.match(/^\s(.+)$/))) {
-            var cmd = args.event.getCommand();
-            var flag = false;
-            match[1] = match[1].replace(/\$([1-9])/g, function (m) {
-                var i = parseInt(m[1]);
+        if (args.args) {
+            let cmd = args.event.getCommand();
+            let flag = false;
+            args.args = args.args.replace(/\$([1-9])/g, function (m) {
+                let i = parseInt(m[1]);
                 if (!args.event.getArgs()[i - 1]) {
                     flag = true;
                     return m[0];
@@ -63,9 +62,9 @@
             if (flag) {
                 return {result: $.lang.get('customcommands.customapi.404', cmd)};
             }
-            var response;
+            let response;
             try {
-                response = getCustomAPIValue(match[1]);
+                response = getCustomAPIValue(args.args);
             } catch (ex) {
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
             }
@@ -88,21 +87,21 @@
      * User: !weather 80314
      * Bot: Weather for Boulder, CO : Sunny Temps: 75 F 24 C
      */
-    var reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
-    var JSONObject = Packages.org.json.JSONObject;
+    let reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
+    let JSONObject = Packages.org.json.JSONObject;
     function customapijson(args, event) {
-        var match,
+        let match,
                 customJSONStringTag,
                 jsonCheckList,
                 jsonItems,
                 jsonObject,
                 response,
                 responsePart;
-        if ((match = args.args.match(/^ (\S+) (.+)$/))) {
-            var cmd = args.event.getCommand();
-            var flag = false;
+        if ((match = args.args.match(/^(\S+) (.+)$/))) {
+            let cmd = args.event.getCommand();
+            let flag = false;
             match[1] = match[1].replace(/\$([1-9])/g, function (m) {
-                var i = parseInt(m[1]);
+                let i = parseInt(m[1]);
                 if (!args.event.getArgs()[i - 1]) {
                     flag = true;
                     return m[0];
@@ -113,14 +112,14 @@
                 return {result: $.lang.get('customcommands.customapi.404', cmd)};
             }
 
-            var result = '';
+            let result = '';
             try {
                 response = getCustomAPIValue(match[1]);
             } catch (ex) {
                 return {result: $.lang.get('customcommands.customapijson.err', cmd)};
             }
             jsonItems = match[2].split(' ');
-            for (var j = 0; j < jsonItems.length; j++) {
+            for (let j = 0; j < jsonItems.length; j++) {
                 if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
                     result += " " + jsonItems[j].match(reCustomAPITextTag)[1];
                 } else if (jsonItems[j].startsWith('{') && !jsonItems[j].endsWith('}')) {
@@ -188,7 +187,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('customapi', ['twitch', 'discord', 'commandevent', 'customapi'], customapi),
         new $.transformers.transformer('customapijson', ['twitch', 'discord', 'commandevent', 'customapi'], customapijson)
     ];

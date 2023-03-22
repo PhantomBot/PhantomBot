@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var match, temp;
-
     /*
      * @transformer countdown
      * @formula (countdown datetime:str) shows the time remaining until the given datetime
@@ -29,10 +27,10 @@
      * @cached
      */
     function countdown(args) {
-        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
-            temp = Date.parse(match[1]);
+        if (args.args) {
+            let temp = Date.parse(args.args);
             if (isNaN(temp)) {
-                return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
+                return {result: $.lang.get('customcommands.datetime.format.invalid', args.args)};
             }
             temp -= Date.parse($.getLocalTime());
             return {
@@ -53,10 +51,10 @@
      * @cached
      */
     function countup(args) {
-        if ((match = args.args.match(/^(?:=|\s)(.*)$/))) {
-            temp = Date.parse(match[1]);
+        if (args.args) {
+            let temp = Date.parse(args.args);
             if (isNaN(temp)) {
-                return {result: $.lang.get('customcommands.datetime.format.invalid', match[1])};
+                return {result: $.lang.get('customcommands.datetime.format.invalid', args.args)};
             }
             temp = Date.parse($.getLocalTime()) - temp;
             return {
@@ -75,7 +73,8 @@
      * @cached
      */
     function currenttime(args) {
-        if ((match = args.args.match(/^ (.+), (.*)$/))) {
+        let match;
+        if ((match = args.args.match(/^(.+), (.*)$/))) {
             return {
                 result: $.getCurrentLocalTimeString(match[2], match[1]),
                 cache: true
@@ -85,10 +84,10 @@
 
     /*
      * @transformer gettimevar
-     * @formula (gettimevar name:str) retrieves the specified timevar, set using !settimevar on Twitch, for use in a (countdown) or (countup) transformer
+     * @formula (gettimelet name:str) retrieves the specified timevar, set using !settimelet on Twitch, for use in a (countdown) or (countup) transformer
      * @labels twitch discord noevent time
-     * @example Caster: !settimevar christmas December 25 2017 00:00:00 GMT-0500
-     * Caster: !addcom !count Time Left until Christmas: (countdown (gettimevar christmas))
+     * @example Caster: !settimelet christmas December 25 2017 00:00:00 GMT-0500
+     * Caster: !addcom !count Time Left until Christmas: (countdown (gettimelet christmas))
      * User: !count
      * Bot: Time Left until Christmas: 20 hours, 30 minutes and 55 seconds.
      * @cached
@@ -107,7 +106,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('countdown', ['twitch', 'discord', 'noevent', 'time'], countdown),
         new $.transformers.transformer('countup', ['twitch', 'discord', 'noevent', 'time'], countup),
         new $.transformers.transformer('currenttime', ['twitch', 'discord', 'noevent', 'time'], currenttime),

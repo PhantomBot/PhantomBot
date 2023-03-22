@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var match, temp;
-
     /*
      * @transformer readfile
      * @formula (readfile filename:str) first line of the specified file
@@ -31,9 +29,9 @@
      * @cached
      */
     function readfile(args) {
-        var fileName;
-        if ((match = args.args.match(/^ (.+)$/))) {
-            fileName = './addons/' + $.replace(match[1], '..', '');
+        let fileName;
+        if (args.args) {
+            fileName = './addons/' + $.replace(args.args, '..', '');
             if (!$.fileExists(fileName)) {
                 return {
                     result: $.lang.get('customcommands.file.404', fileName),
@@ -65,9 +63,9 @@
      * @cached
      */
     function readfileall(args) {
-        var fileName;
-        if ((match = args.args.match(/^ (.+)$/))) {
-            fileName = './addons/' + $.replace(match[1], '..', '');
+        let fileName;
+        if (args.args) {
+            fileName = './addons/' + $.replace(args.args, '..', '');
             if (!$.fileExists(fileName)) {
                 return {
                     result: $.lang.get('customcommands.file.404', fileName),
@@ -90,13 +88,13 @@
      * Use `(unescape (readfilerand filename))` to enable processing the returned tags
      */
     function readfilerand(args) {
-        var fileName;
-        if ((match = args.args.match(/^ (.+)$/))) {
-            fileName = './addons/' + $.replace(match[1], '..', '');
+        let fileName;
+        if (args.args) {
+            fileName = './addons/' + $.replace(args.args, '..', '');
             if (!$.fileExists(fileName)) {
                 return {result: $.lang.get('customcommands.file.404', fileName)};
             }
-            temp = $.readFile(fileName);
+            let temp = $.readFile(fileName);
             return {
                 result: $.randElement(temp) || '',
                 cache: false
@@ -112,7 +110,7 @@
      * @example Caster: !addcom !settxt (writefile test.txt, true, (echo))
      */
     function writefile(args) {
-        var fileName;
+        let fileName, match;
         if ((match = $.parseArgs(args.args, ',', 3, true))) {
             fileName = './addons/' + $.replace(match[0], '..', '');
             $.writeToFile(match[2], fileName, match[1] === 'true');
@@ -123,7 +121,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('readfile', ['twitch', 'discord', 'noevent', 'file'], readfile),
         new $.transformers.transformer('readfileall', ['twitch', 'discord', 'noevent', 'file'], readfileall),
         new $.transformers.transformer('readfilerand', ['twitch', 'discord', 'noevent', 'file'], readfilerand),

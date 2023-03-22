@@ -164,7 +164,7 @@
      * @notes disabled redeemables are not visible to viewers
      */
     function cpsetenabled(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, false);
+        let pargs = $.parseArgs(args.args, ' ', 2, false);
         if (pargs !== null && pargs.length === 2) {
             let isEnabled = pargs[1].toLowerCase();
             $.channelpoints.setRedeemableEnabled(pargs[0], isEnabled === 'true' || isEnabled === 'yes' || isEnabled === '1');
@@ -181,7 +181,7 @@
      * @notes paused redeemables are visible to viewers, but can not be redeemed
      */
     function cpsetpaused(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, false);
+        let pargs = $.parseArgs(args.args, ' ', 2, false);
         if (pargs !== null && pargs.length === 2) {
             let isPaused = pargs[1].toLowerCase();
             $.channelpoints.setRedeemablePaused(pargs[0], isPaused === 'true' || isPaused === 'yes' || isPaused === '1');
@@ -230,7 +230,7 @@
         };
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('cpcancel', ['twitch', 'channelpointsevent', 'channelpoints'], cpcancel),
         new $.transformers.transformer('cpcost', ['twitch', 'channelpointsevent', 'channelpoints'], cpcost),
         new $.transformers.transformer('cpdisplayname', ['twitch', 'channelpointsevent', 'channelpoints'], cpdisplayname),

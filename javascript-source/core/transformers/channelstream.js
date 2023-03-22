@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var match, temp;
-
     /*
      * @transformer channelname
      * @formula (channelname) the display name of the Twitch channel
@@ -25,6 +23,7 @@
      * @labels twitch discord noevent channel stream
      */
     function channelname(args) {
+        let temp;
         if (!args.args) {
             temp = $.channelName;
         } else {
@@ -61,9 +60,9 @@
      * @cancels
      */
     function followage(args) {
-        var channel,
+        let channel, match,
                 user;
-        if ((match = args.args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
+        if ((match = args.args.match(/^(?:(\S*)(?: (.*))?)?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             channel = (match[2] || '').replace(/^@/, '');
             if (user.length === 0) {
@@ -88,9 +87,9 @@
      * @cached
      */
     function followdate(args) {
-        var channel,
+        let channel, match,
                 user;
-        if ((match = args.args.match(/^(?: (\S*)(?: (.*))?)?$/))) {
+        if ((match = args.args.match(/^(?:(\S*)(?: (.*))?)?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             channel = (match[2] || '').replace(/^@/, '');
             if (user.length === 0) {
@@ -117,6 +116,7 @@
      * @cached
      */
     function follows(args) {
+        let temp;
         if (!args.args) {
             temp = $.channelName;
         } else {
@@ -139,6 +139,7 @@
      * @cached
      */
     function game(args) {
+        let temp;
         if (!args.args) {
             temp = $.channelName;
         } else {
@@ -160,7 +161,7 @@
      * @cached
      */
     function gameinfo() {
-        var game,
+        let game,
                 playtime;
         game = $.getGame($.channelName);
         if (!game.trim()) {
@@ -212,8 +213,8 @@
      * @cached
      */
     function hours(args) {
-        var user;
-        if ((match = args.args.match(/^(?: (.*))?$/))) {
+        let user, match;
+        if ((match = args.args.match(/^(?:(.*))?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             if (user.length === 0) {
                 user = $.jsString(args.event.getSender());
@@ -233,8 +234,8 @@
      * @cached
      */
     function hoursround(args) {
-        var user;
-        if ((match = args.args.match(/^(?: (.*))?$/))) {
+        let user, match;
+        if ((match = args.args.match(/^(?:(.*))?$/))) {
             user = (match[1] || '').replace(/^@/, '');
             if (user.length === 0) {
                 user = $.jsString(args.event.getSender());
@@ -300,6 +301,7 @@
      * @cached
      */
     function status(args) {
+        let temp;
         if (!args.args) {
             temp = $.channelName;
         } else {
@@ -338,7 +340,7 @@
      * @cached
      */
     function titleinfo() {
-        var status = $.getStatus($.channelName);
+        let status = $.getStatus($.channelName);
         if (!status.trim()) {
             return {
                 result: $.lang.get('streamcommand.title.no.title'),
@@ -369,6 +371,7 @@
      * @cached
      */
     function uptime(args) {
+        let temp;
         if (!args.args) {
             temp = $.channelName;
         } else {
@@ -397,6 +400,7 @@
      * @cached
      */
     function viewers(args) {
+        let temp;
         if (!args.args) {
             temp = $.channelName;
         } else {
@@ -418,7 +422,7 @@
         };
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('channelname', ['twitch', 'discord', 'noevent', 'channel', 'stream'], channelname),
         new $.transformers.transformer('downtime', ['twitch', 'discord', 'noevent', 'channel', 'stream'], downtime),
         new $.transformers.transformer('followage', ['twitch', 'commandevent', 'channel', 'stream'], followage),

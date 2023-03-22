@@ -18,8 +18,6 @@
 /* global Packages */
 
 (function () {
-    var temp;
-
     /*
      * @transformer atSender
      * @formula (@sender) '@<Sender's Name>, '
@@ -135,7 +133,7 @@
      * @cached
      */
     function pointtouser(args) {
-        temp = '';
+        let temp = '';
         let res = '';
         if (args.event.getArgs().length > 0) {
             temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
@@ -232,14 +230,14 @@
      * @cached
      */
     function touser(args) {
-        temp = '';
+        let temp = '';
         let res = '';
         if (args.event.getArgs().length > 0) {
             temp = $.jsString(args.event.getArgs()[0]).replace(/[^a-zA-Z0-9_]/g, '');
         }
         if (temp.length === 0) {
             if (args.platform === 'discord') {
-                temp = event.getMention();
+                temp = args.event.getMention();
             } else {
                 temp = $.usernameResolveIgnoreEx(args.event.getSender());
             }
@@ -262,7 +260,7 @@
         };
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('@sender', ['twitch', 'discord', 'commandevent', 'user'], atSender),
         new $.transformers.transformer('age', ['twitch', 'commandevent', 'user'], age),
         new $.transformers.transformer('baresender', ['twitch', 'commandevent', 'user'], baresender),

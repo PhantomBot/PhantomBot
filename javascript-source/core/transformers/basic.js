@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var i, match, temp;
-
     /*
      * @transformer randomInt
      * @formula (#) a random integer from 1 to 100, inclusive
@@ -28,12 +26,13 @@
      * Bot: Your lucky number is 7
      */
     function randomInt(args) {
+        let match;
         if (!args.args) {
             return {
                 result: $.randRange(1, 100),
                 cache: false
             };
-        } else if ((match = args.args.match(/^\s(-?\d+),\s?(-?\d+)$/))) {
+        } else if ((match = args.args.match(/^(-?\d+),\s?(-?\d+)$/))) {
             return {
                 result: $.randRange(parseInt(match[1]), parseInt(match[2])),
                 cache: false
@@ -55,10 +54,10 @@
      */
     function buildArgs(n) {
         return function (args) {
-            var arg = args.event.getArgs()[n - 1];
+            let arg = args.event.getArgs()[n - 1];
             if (!args.args) {
                 return {result: arg !== undefined ? arg : ''};
-            } else if ((match = args.args.match(/^([=\|])(.*)$/))) {
+            } else {
                 if (arg !== undefined) {
                     return {
                         result: arg,
@@ -66,8 +65,8 @@
                     };
                 }
                 return {
-                    result: ($.equalsIgnoreCase(match[1], '=') ? '(' : '') + $.transformers.escapeTags(match[2]) + ($.equalsIgnoreCase(match[1], '=') ? ')' : ''),
-                    raw: $.equalsIgnoreCase(match[1], '='),
+                    result: (args.argsep === '=' ? '(' : '') + $.transformers.escapeTags(args.args) + (args.argsep === '=' ? ')' : ''),
+                    raw: args.argsep === '=',
                     cache: true
                 };
             }
@@ -80,11 +79,11 @@
      * @labels twitch discord commandevent commands
      */
     function delaysay(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
         try {
             if (pargs !== null) {
-                var delay = parseInt(pargs[0]);
-                var argStr = '';
+                let delay = parseInt(pargs[0]);
+                let argStr = '';
 
                 if (pargs.length > 1) {
                     argStr = pargs[1];
@@ -131,7 +130,7 @@
             return {result: $.discord.username.random()};
         } else {
             try {
-                var name = $.username.resolve($.randElement($.users));
+                let name = $.username.resolve($.randElement($.users));
 
                 if ($.users.length === 0 || name === null || name === undefined) {
                     name = $.username.resolve($.botName);
@@ -171,9 +170,9 @@
      * @cached
      */
     function repeat(args) {
-        var MAX_COUNTER_VALUE = 30,
-                n;
-        if ((match = args.args.match(/^\s([1-9]\d*),\s?(.*)$/))) {
+        let MAX_COUNTER_VALUE = 30,
+                n, match, i, temp;
+        if ((match = args.args.match(/^([1-9]\d*),\s?(.*)$/))) {
             if (!match[2]) {
                 return {result: ''};
             }
@@ -195,7 +194,7 @@
         }
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('#', ['twitch', 'discord', 'noevent', 'basic'], randomInt),
         new $.transformers.transformer('delaysay', ['twitch', 'discord', 'commandevent', 'basic'], delaysay),
         new $.transformers.transformer('echo', ['twitch', 'discord', 'commandevent', 'basic'], echo),
@@ -204,7 +203,7 @@
         new $.transformers.transformer('repeat', ['twitch', 'discord', 'noevent', 'basic'], repeat)
     ];
 
-    for (i = 1; i <= 9; i++) {
+    for (let i = 1; i <= 9; i++) {
         transformers.push(new $.transformers.transformer($.jsString(i), ['twitch', 'discord', 'commandevent', 'basic'], buildArgs(i)));
     }
 

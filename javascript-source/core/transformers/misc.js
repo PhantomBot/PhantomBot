@@ -16,8 +16,6 @@
  */
 
 (function () {
-    var cmd, i, match;
-
     /*
      * @transformer code
      * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
@@ -27,10 +25,11 @@
      * Bot: A1D4f
      */
     function code(args) {
-        var code,
+        let i, match;
+        let code,
                 length,
                 temp = '';
-        if ((match = args.args.match(/^(?:=|\s)([1-9]\d*)$/))) {
+        if ((match = args.args.match(/^([1-9]\d*)$/))) {
             code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             length = parseInt(match[1]);
             for (i = 0; i < length; i++) {
@@ -51,7 +50,7 @@
      */
     function encodeurl(args) {
         return {
-            result: encodeURI(args.args.trim()),
+            result: encodeURI(args.args),
             cache: true
         };
     }
@@ -64,7 +63,7 @@
      */
     function encodeurlparam(args) {
         return {
-            result: encodeURIComponent(args.args.trim()),
+            result: encodeURIComponent(args.args),
             cache: true
         };
     }
@@ -78,7 +77,7 @@
      */
     function escape(args) {
         return {
-            result: args.args.trim(),
+            result: args.args,
             cache: true
         };
     }
@@ -89,10 +88,10 @@
      * @labels twitch keywordevent misc
      */
     function keywordcount(args) {
-        var keyword,
+        let keyword,
                 keywordInfo;
-        if ((match = args.args.match(/^\s(.+)$/))) {
-            keyword = match[1];
+        if (args.args) {
+            keyword = args.args;
             if ($.inidb.exists('keywords', keyword)) {
                 keywordInfo = JSON.parse($.inidb.get('keywords', keyword));
                 if ('count' in keywordInfo) {
@@ -128,7 +127,7 @@
      * @cached
      */
     function nl2x(args) {
-        var pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ', 2, true);
         return {
             result: pargs[1].replaceAll('\n', pargs[0]).replaceAll('\r', ''),
             cache: true
@@ -147,7 +146,7 @@
      * @cached
      */
     function token(args) {
-        cmd = args.event.getCommand();
+        let cmd = args.event.getCommand();
         if ($.inidb.HasKey('commandtoken', '', cmd)) {
             return {
                 result: $.inidb.GetString('commandtoken', '', cmd),
@@ -174,7 +173,7 @@
      */
     function unescape(args) {
         return {
-            result: args.args.trim(),
+            result: args.args,
             raw: true,
             cache: true
         };
@@ -193,7 +192,7 @@
         };
     }
 
-    var transformers = [
+    let transformers = [
         new $.transformers.transformer('code', ['twitch', 'discord', 'noevent', 'misc'], code),
         new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'noevent', 'misc'], encodeurl),
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
