@@ -397,6 +397,28 @@ public final class ViewerCache implements Listener {
     }
 
     /**
+     * Removes the specified user from the cache
+     *
+     * @param id The user id to remove
+     */
+    public void remove(String id) {
+        this.viewers.remove(id);
+    }
+
+    /**
+     * Removes the specified user from the cache by login name
+     *
+     * @param login The user login to remove
+     */
+    public void removeByLogin(String login) {
+        Optional<Viewer> viewer = this.getByLoginInternal(login);
+
+        if (viewer.isPresent()) {
+            this.remove(viewer.get().id());
+        }
+    }
+
+    /**
      * Returns the {@link Viewer} object representing the bot account
      *
      * @return The {@link Viewer} object representing the bot account
