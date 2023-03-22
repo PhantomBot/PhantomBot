@@ -18,14 +18,14 @@
 /* global Packages */
 
 (function() {
-    var bot = $.botName.toLowerCase();
-    var sentReady = false;
+    let bot = $.botName.toLowerCase();
+    let sentReady = false;
 
     /*
      * @event command
      */
     $.bind('command', function(event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
             command = event.getCommand(),
             argsString = event.getArguments(),
             args = event.getArgs(),
@@ -94,7 +94,7 @@
                     return;
                 }
 
-                var message = args.slice(1).join(' ');
+                let message = args.slice(1).join(' ');
 
                 $.setIniDbString('settings', 'connectedMsg', message);
                 $.say($.whisperPrefix(sender) + $.lang.get('init.connected.msg', message));
@@ -112,7 +112,7 @@
              * @commandpath botName togglepricecommods - Toggles if moderators and higher pay for commands.
              */
             if (action.equalsIgnoreCase('togglepricecommods')) {
-                var toggle = !$.getIniDbBoolean('settings', 'pricecomMods', false);
+                let toggle = !$.getIniDbBoolean('settings', 'pricecomMods', false);
 
                 $.setIniDbBoolean('settings', 'pricecomMods', toggle);
                 $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('init.mod.toggle.on.pay') : $.lang.get('init.mod.toggle.off.pay')));
@@ -122,7 +122,7 @@
              * @commandpath botName togglepermcommessage - Toggles if the no permission message is said in the chat.
              */
             if (action.equalsIgnoreCase('togglepermcommessage')) {
-                var toggle = !$.getIniDbBoolean('settings', 'permComMsgEnabled', false);
+                let toggle = !$.getIniDbBoolean('settings', 'permComMsgEnabled', false);
 
                 $.setIniDbBoolean('settings', 'permComMsgEnabled', toggle);
                 $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('init.mod.toggle.perm.msg.on') : $.lang.get('init.mod.toggle.perm.msg.off')));
@@ -132,7 +132,7 @@
              * @commandpath botName togglepricecommessage - Toggles if the cost message is said in the chat.
              */
             if (action.equalsIgnoreCase('togglepricecommessage')) {
-                var toggle = !$.getIniDbBoolean('settings', 'priceComMsgEnabled', false);
+                let toggle = !$.getIniDbBoolean('settings', 'priceComMsgEnabled', false);
 
                 $.setIniDbBoolean('settings', 'priceComMsgEnabled', toggle);
                 $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('init.mod.toggle.price.msg.on') : $.lang.get('init.mod.toggle.price.msg.off')));
@@ -142,10 +142,20 @@
              * @commandpath botName togglecooldownmessage - Toggles if the cooldown message is said in the chat.
              */
             if (action.equalsIgnoreCase('togglecooldownmessage')) {
-                var toggle = !$.getIniDbBoolean('settings', 'coolDownMsgEnabled', false);
+                let toggle = !$.getIniDbBoolean('settings', 'coolDownMsgEnabled', false);
 
                 $.setIniDbBoolean('settings', 'coolDownMsgEnabled', toggle);
                 $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('init.toggle.cooldown.msg.on') : $.lang.get('init.toggle.cooldown.msg.off')));
+            }
+
+            /*
+             * @commandpath botName togglecustomcommandat - Toggles if custom commands without command tags can be targeted by mods using !mycommand @user
+             */
+            if (action.equalsIgnoreCase('togglecustomcommandat')) {
+                let toggle = !$.getIniDbBoolean('settings', 'customCommandAtEnabled', true);
+
+                $.setIniDbBoolean('settings', 'customCommandAtEnabled', toggle);
+                $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('init.toggle.customCommandAt.on') : $.lang.get('init.toggle.customCommandAt.off')));
             }
         }
 
@@ -165,7 +175,7 @@
                     return;
                 }
                 if ($.getIniDbString('modules', subAction, undefined) !== undefined){
-                    var module = $.bot.getModule(subAction);
+                    let module = $.bot.getModule(subAction);
                     if (module !== undefined) {
                         $.bot.loadScript(module.scriptName, true, false);
                         $.say($.whisperPrefix(sender) + $.lang.get('init.module.reload', subAction));
@@ -199,7 +209,7 @@
              * @commandpath module list - Gives a list of all the modules with their current status.
              */
             if (action.equalsIgnoreCase('list')) {
-                var keys = Object.keys($.bot.modules),
+                let keys = Object.keys($.bot.modules),
                     modules = $.bot.modules,
                     temp = [],
                     i;
@@ -212,7 +222,7 @@
                     temp.push(modules[keys[i]].scriptName + (modules[keys[i]].isEnabled ? ' (' + $.lang.get('common.enabled') + ')' : ' (' + $.lang.get('common.disabled') + ')'));
                 }
 
-                var totalPages = $.paginateArray(temp, 'init.module.list', ', ', true, sender, (isNaN(parseInt(subAction)) ? 1 : parseInt(subAction)));
+                let totalPages = $.paginateArray(temp, 'init.module.list', ', ', true, sender, (isNaN(parseInt(subAction)) ? 1 : parseInt(subAction)));
 
                 if (totalPages > 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.list.total', totalPages));
@@ -228,7 +238,7 @@
                     return;
                 }
 
-                var module = $.bot.getModule(subAction);
+                let module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
                     if (module.isEnabled) {
@@ -254,14 +264,14 @@
                     return;
                 }
 
-                var module = $.bot.getModule(subAction);
+                let module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
                     $.setIniDbBoolean('modules', module.scriptName, true);
                     $.bot.loadScript(module.scriptName);
                     $.bot.modules[module.scriptName].isEnabled = true;
 
-                    var hookIndex = $.bot.getHookIndex($.bot.modules[module.scriptName].scriptName, 'initReady');
+                    let hookIndex = $.bot.getHookIndex($.bot.modules[module.scriptName].scriptName, 'initReady');
 
                     try {
                         if (hookIndex !== -1) {
@@ -292,7 +302,7 @@
                     return;
                 }
 
-                var module = $.bot.getModule(subAction);
+                let module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
                     $.setIniDbBoolean('modules', module.scriptName, false);
@@ -301,7 +311,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('init.module.disabled', module.getModuleName()));
 
                     if (module.scriptName.equalsIgnoreCase('./systems/pointSystem.js')) {
-                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
+                        let modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
                             i;
 
                         for (i in modules) {
@@ -329,14 +339,14 @@
                     return;
                 }
 
-                var module = $.bot.getModule(subAction);
+                let module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
                     $.setIniDbBoolean('modules', module.scriptName, true);
                     $.bot.loadScript(module.scriptName);
                     $.bot.modules[module.scriptName].isEnabled = true;
 
-                    var hookIndex = $.bot.getHookIndex(module.scriptName, 'initReady');
+                    let hookIndex = $.bot.getHookIndex(module.scriptName, 'initReady');
 
                     try {
                         if (hookIndex !== -1) {
@@ -362,14 +372,14 @@
                     return;
                 }
 
-                var module = $.bot.getModule(subAction);
+                let module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
                     $.setIniDbBoolean('modules', module.scriptName, false);
                     $.bot.modules[module.scriptName].isEnabled = false;
 
                     if (module.scriptName.equalsIgnoreCase('./systems/pointSystem.js')) {
-                        var modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
+                        let modules = ['./games/adventureSystem.js', './games/roll.js', './games/slotMachine.js', './systems/ticketraffleSystem.js', './systems/raffleSystem.js', './games/gambling.js'],
                             i;
 
                         for (i in modules) {
@@ -432,6 +442,7 @@
         $.registerChatSubcommand(bot, 'togglepermcommessage', $.PERMISSION.Admin);
         $.registerChatSubcommand(bot, 'togglepricecommessage', $.PERMISSION.Admin);
         $.registerChatSubcommand(bot, 'togglecooldownmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand(bot, 'togglecustomcommandat', $.PERMISSION.Admin);
 
         // Say the connected message.
         if (!sentReady && $.inidb.exists('settings', 'connectedMsg')) {

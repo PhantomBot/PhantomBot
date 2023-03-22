@@ -179,7 +179,7 @@
         try {
             if (customCommands[command] !== undefined
                     && !$.inidb.exists('disabledCommands', command)) {
-                var tag = $.transformers.tags(event, customCommands[command], ['twitch', ['commandevent', 'noevent']], {atEnabled: true});
+                var tag = $.transformers.tags(event, customCommands[command], ['twitch', ['commandevent', 'noevent']], {atEnabled: $.getIniDbBoolean('settings', 'customCommandAtEnabled', true)});
                 if (tag !== null) {
                     $.say(tag);
                 }
