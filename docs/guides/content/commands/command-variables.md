@@ -1514,6 +1514,22 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### nl
+
+Defined in script: _./javascript-source/core/transformers/misc.js_
+
+**Formulas:**
+
+- `(nl)` - inserts a LF (`\n`)
+
+**Labels:** twitch discord noevent misc
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 #### nl2br
 
 Defined in script: _./javascript-source/core/transformers/misc.js_
@@ -1997,15 +2013,15 @@ Defined in script: _./javascript-source/core/transformers/time.js_
 
 **Formulas:**
 
-- `(gettimevar name:str)` - retrieves the specified timevar, set using !settimevar on Twitch, for use in a (countdown) or (countup) transformer
+- `(gettimelet name:str)` - retrieves the specified timevar, set using !settimelet on Twitch, for use in a (countdown) or (countup) transformer
 
 **Labels:** twitch discord noevent time
 
 
 **Example:**
 ```text
-Caster: !settimevar christmas December 25 2017 00:00:00 GMT-0500
-Caster: !addcom !count Time Left until Christmas: (countdown (gettimevar christmas))
+Caster: !settimelet christmas December 25 2017 00:00:00 GMT-0500
+Caster: !addcom !count Time Left until Christmas: (countdown (gettimelet christmas))
 User: !count
 Bot: Time Left until Christmas: 20 hours, 30 minutes and 55 seconds.
 ```
