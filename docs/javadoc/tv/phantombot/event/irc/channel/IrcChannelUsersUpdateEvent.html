@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":42,"i2":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -148,6 +148,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">IrcChannelUsersUpdateEvent</span>
 extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelEvent</a></pre>
+<div class="block">The list of users present in TMI is updated</div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>gmt2001</dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -171,15 +176,21 @@ extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.c
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String%5B%5D,java.lang.String%5B%5D)">IrcChannelUsersUpdateEvent</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;joins,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;parts)</code></th>
 <td class="colLast">
-<div class="block">Class constructor.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
 </td>
 </tr>
 <tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.util.List)">IrcChannelUsersUpdateEvent</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;chatters)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String%5B%5D,java.lang.String%5B%5D)">IrcChannelUsersUpdateEvent</a></span>&#8203;(<a href="../../../twitch/irc/TwitchSession.html" title="class in tv.phantombot.twitch.irc">TwitchSession</a>&nbsp;session,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;joins,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;parts)</code></th>
 <td class="colLast">
-<div class="block">Class constructor.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
 </td>
 </tr>
 </table>
@@ -194,24 +205,31 @@ extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.c
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getJoins()">getJoins</a></span>()</code></th>
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#chatters()">chatters</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Method that returns the current array of users who joined the channel in the last 10 minutes.</div>
+<div class="block">A list of login names for users who are currently in chat</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getJoins()">getJoins</a></span>()</code></th>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParts()">getParts</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Method that returns the current array of users who left the channel in the last 10 minutes.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
 </td>
 </tr>
 </table>
@@ -245,15 +263,32 @@ extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.c
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IrcChannelUsersUpdateEvent</h4>
+<pre>public&nbsp;IrcChannelUsersUpdateEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;chatters)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>chatters</code> - A list of login names for users who are currently in chat</dd>
+</dl>
+</li>
+</ul>
 <a id="&lt;init&gt;(tv.phantombot.twitch.irc.TwitchSession,java.lang.String[],java.lang.String[])">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>IrcChannelUsersUpdateEvent</h4>
-<pre>public&nbsp;IrcChannelUsersUpdateEvent&#8203;(<a href="../../../twitch/irc/TwitchSession.html" title="class in tv.phantombot.twitch.irc">TwitchSession</a>&nbsp;session,
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;IrcChannelUsersUpdateEvent&#8203;(<a href="../../../twitch/irc/TwitchSession.html" title="class in tv.phantombot.twitch.irc">TwitchSession</a>&nbsp;session,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;joins,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;parts)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Class constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -269,8 +304,11 @@ extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.c
 <ul class="blockListLast">
 <li class="blockList">
 <h4>IrcChannelUsersUpdateEvent</h4>
-<pre>public&nbsp;IrcChannelUsersUpdateEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;joins,
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;IrcChannelUsersUpdateEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;joins,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;parts)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Class constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -295,7 +333,10 @@ extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.c
 <ul class="blockList">
 <li class="blockList">
 <h4>getJoins</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;getJoins()</pre>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;getJoins()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Method that returns the current array of users who joined the channel in the last 10 minutes.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -306,14 +347,31 @@ extends <a href="IrcChannelEvent.html" title="class in tv.phantombot.event.irc.c
 <a id="getParts()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getParts</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;getParts()</pre>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;getParts()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Method that returns the current array of users who left the channel in the last 10 minutes.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>parts</dd>
+</dl>
+</li>
+</ul>
+<a id="chatters()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>chatters</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;chatters()</pre>
+<div class="block">A list of login names for users who are currently in chat</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A list of login names for users who are currently in chat</dd>
 </dl>
 </li>
 </ul>

@@ -139,6 +139,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationAction.html#action()">action()</a></span> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationAction.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent.ModerationAction</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#active()">active()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the last time this user was active in chat</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#activeChatters()">activeChatters()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Returns a list of <a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> objects representing users recently seen in chat, who have sent a message in the past 5 minutes</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#add(com.gmt2001.twitch.cache.Viewer)">add(Viewer)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Adds a viewer to the cache
+ <br/><br/>
+ If a viewer with the same user id exists, then the new object is discarded and the <a href="com/gmt2001/twitch/cache/Viewer.html#seen()"><code>Viewer.seen()</code></a> method is called instead</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/discord/reaction/DiscordMessageReactionEvent.ReactionType.html#ADD">ADD</a></span> - tv.phantombot.event.discord.reaction.<a href="tv/phantombot/event/discord/reaction/DiscordMessageReactionEvent.ReactionType.html" title="enum in tv.phantombot.event.discord.reaction">DiscordMessageReactionEvent.ReactionType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#AddFile(java.lang.String)">AddFile(String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
@@ -211,10 +225,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/ViewerListCache.html#addUser(java.lang.String)">addUser(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">ViewerListCache</a></dt>
 <dd>
-<div class="block">Method to add users to the cache.</div>
-</dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#addUser(java.lang.String,java.lang.String,java.lang.String)">addUser(String, String, String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#admin()">admin()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is a Twitch admin</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#admin(boolean)">admin(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch admin status of the viewer</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#alertImage(java.lang.String)">alertImage(String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#alertImage(java.lang.String,boolean)">alertImage(String, boolean)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
@@ -250,6 +274,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#ATTR_URI">ATTR_URI</a></span> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
 <div class="block">Represents the <code>ATTR_URI</code> attribute</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#attributes()">attributes()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Marks that the attributes have been set on this viewer</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/EventSubSubscription.SubscriptionStatus.html#AUTHORIZATION_REVOKED">AUTHORIZATION_REVOKED</a></span> - com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a></dt>
 <dd>
@@ -311,6 +339,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/pubsub/PubSubMessage.html#body()">body()</a></span> - Method in class tv.phantombot.twitch.pubsub.<a href="tv/phantombot/twitch/pubsub/PubSubMessage.html" title="class in tv.phantombot.twitch.pubsub">PubSubMessage</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#bot()">bot()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is the bot</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#bot()">bot()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Returns the <a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> object representing the bot account</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#bot(boolean)">bot(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates if this viewer is the bot</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#botDevelopers()">botDevelopers()</a></span> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">Only used on bot boot up for now.</div>
@@ -324,6 +364,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#botVersion()">botVersion()</a></span> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">Current Version Of PhantomBot.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#broadcaster()">broadcaster()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is the broadcaster</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#broadcaster()">broadcaster()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Returns the <a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> object representing the broadcaster account</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#broadcaster(boolean)">broadcaster(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the broadcaster status of the viewer</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelFollow.html#broadcasterUserId()">broadcasterUserId()</a></span> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelFollow.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelFollow</a></dt>
 <dd>
@@ -641,6 +693,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Constructor</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#chatters()">chatters()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Returns a list of <a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> objects representing users recently seen in chat</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#chatters()">chatters()</a></span> - Method in class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUsersUpdateEvent</a></dt>
+<dd>
+<div class="block">A list of login names for users who are currently in chat</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/TMISlashCommands.html#checkAndProcessCommands(java.lang.String,java.lang.String)">checkAndProcessCommands(String, String)</a></span> - Static method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMISlashCommands.html" title="class in com.gmt2001.twitch.tmi">TMISlashCommands</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/TwitchAuthorizationCodeFlow.html#checkAndRefreshTokens()">checkAndRefreshTokens()</a></span> - Method in class com.gmt2001.twitch.<a href="com/gmt2001/twitch/TwitchAuthorizationCodeFlow.html" title="class in com.gmt2001.twitch">TwitchAuthorizationCodeFlow</a></dt>
@@ -803,6 +863,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="com/gmt2001/ratelimiters/package-summary.html">com.gmt2001.ratelimiters</a> - package com.gmt2001.ratelimiters</dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/package-summary.html">com.gmt2001.twitch</a> - package com.gmt2001.twitch</dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/twitch/cache/package-summary.html">com.gmt2001.twitch.cache</a> - package com.gmt2001.twitch.cache</dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/package-summary.html">com.gmt2001.twitch.eventsub</a> - package com.gmt2001.twitch.eventsub</dt>
 <dd>&nbsp;</dd>
@@ -1699,6 +1761,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Provides an interface to a shared <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink"><code>ScheduledExecutorService</code></a>.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#exists(java.lang.String)">exists(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Indicates if the specified user id is already in the cache</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/StreamElementsCache.html#exists(java.lang.String)">exists(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/StreamElementsCache.html" title="class in tv.phantombot.cache">StreamElementsCache</a></dt>
 <dd>
 <div class="block">Checks if the donation has been cached.</div>
@@ -1708,7 +1774,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Checks if the donation has been cached.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#exists(java.lang.String)">exists(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/ScriptApi.html#exists(java.lang.String)">exists(String)</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptApi.html" title="class in tv.phantombot.script">ScriptApi</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#exists(java.lang.String,java.lang.String)">exists(String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
@@ -1864,10 +1932,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/wspinger/RFC6455PingPong.html#get()">get()</a></span> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/RFC6455PingPong.html" title="class in com.gmt2001.wspinger">RFC6455PingPong</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#get(java.lang.String)">get(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Returns the <a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> object for the specified user id
+ <br/><br/>
+ If the object does not yet exist, a lookup is performed on Twitch API</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/scaniatv/CustomAPI.html#get(java.lang.String)">get(String)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/CustomAPI.html" title="class in com.scaniatv">CustomAPI</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#get(java.lang.String)">get(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#get(java.lang.String,java.lang.String)">get(String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Returns the value of the <code>value</code> column from the default section of the given table and key as a string</div>
@@ -2019,6 +2095,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/RepoVersion.html#getBuildTypeWithDocker()">getBuildTypeWithDocker()</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/RepoVersion.html" title="class in tv.phantombot">RepoVersion</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#getByLogin(java.lang.String)">getByLogin(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Returns the <a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> object for the specified user login
+ <br/><br/>
+ If the object does not yet exist, a lookup is performed on Twitch API</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/StreamElementsCache.html#getCache()">getCache()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/StreamElementsCache.html" title="class in tv.phantombot.cache">StreamElementsCache</a></dt>
 <dd>
 <div class="block">Returns the current cache.</div>
@@ -2162,6 +2244,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#getChatScopes()">getChatScopes()</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/Helix.html#getChattersAsync(int,java.lang.String)">getChattersAsync(int, String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
+<dd>
+<div class="block">Gets the list of users that are connected to the broadcaster’s chat session.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#getChatUserID()">getChatUserID()</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/TwitchAPIv5.html#GetChatUsers(java.lang.String)">GetChatUsers(String)</a></span> - Method in class com.gmt2001.<a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></dt>
@@ -2483,11 +2569,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Method that returns the event ID.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#getID(java.lang.String)">getID(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#getIDBot()">getIDBot()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#getIDCaster()">getIDCaster()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html#getInactiveConnections()">getInactiveConnections()</a></span> - Method in class biz.source_code.miniConnectionPoolManager.<a href="biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html" title="class in biz.source_code.miniConnectionPoolManager">MiniConnectionPoolManager</a></dt>
 <dd>
 <div class="block">Returns the number of inactive (unused) connections in this pool.</div>
@@ -2508,7 +2600,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getJoins()">getJoins()</a></span> - Method in class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUsersUpdateEvent</a></dt>
 <dd>
-<div class="block">Method that returns the current array of users who joined the channel in the last 10 minutes.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/scaniatv/CustomAPI.html#getJSON(java.lang.String)">getJSON(String)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/CustomAPI.html" title="class in com.scaniatv">CustomAPI</a></dt>
 <dd>&nbsp;</dd>
@@ -2799,7 +2891,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getParts()">getParts()</a></span> - Method in class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUsersUpdateEvent</a></dt>
 <dd>
-<div class="block">Method that returns the current array of users who left the channel in the last 10 minutes.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/Script.html#getPath()">getPath()</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/Script.html" title="class in tv.phantombot.script">Script</a></dt>
 <dd>&nbsp;</dd>
@@ -3454,6 +3546,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#hasAPIScope(java.lang.String)">hasAPIScope(String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#hasAttributes()">hasAttributes()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user has had their attributes set from an IRC event, such as moderator status
+ <br/><br/>
+ It is possible for this to return <code>false</code> but for some attributes to be set if an API lookup was performed</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/EventSubTransport.html#hasCallback()">hasCallback()</a></span> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubTransport.html" title="class in com.gmt2001.twitch.eventsub">EventSubTransport</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#hasChatScope(java.lang.String)">hasChatScope(String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
@@ -3505,9 +3603,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Method that checks if a user is apart of a team.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#hasUser(java.lang.String)">hasUser(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/ViewerListCache.html#hasUser(java.lang.String)">hasUser(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">ViewerListCache</a></dt>
 <dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Method to check if a user is in the cache.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#head(java.net.URI)">head(URI)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
@@ -3665,6 +3766,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="tv/phantombot/ytplayer/YTPlayerState.html#i">i</a></span> - Variable in enum tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/YTPlayerState.html" title="enum in tv.phantombot.ytplayer">YTPlayerState</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#id()">id()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">The Twitch user id</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html#id()">id()</a></span> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscription</a></dt>
 <dd>
 <div class="block">The subscription's unique id.</div>
@@ -3695,6 +3800,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><a href="com/gmt2001/Console/in.html" title="class in com.gmt2001.Console"><span class="typeNameLink">in</span></a> - Class in <a href="com/gmt2001/Console/package-summary.html">com.gmt2001.Console</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#inChat()">inChat()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is in chat</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#inChat(boolean)">inChat(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates if this viewer is in chat</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#incr(java.lang.String,java.lang.String,int)">incr(String, String, int)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Increases the value of the <code>value</code> column as an integer in the default section of the given table and key</div>
@@ -3771,6 +3884,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/RollbarProvider.html#instance()">instance()</a></span> - Static method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#instance()">instance()</a></span> - Static method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Singleton method</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/EventSub.html#instance()">instance()</a></span> - Static method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub">EventSub</a></dt>
 <dd>
 <div class="block">Singleton instance getter.</div>
@@ -3804,7 +3921,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/CaselessCommandLineArguments.html#instance()">instance()</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/CaselessCommandLineArguments.html" title="class in tv.phantombot">CaselessCommandLineArguments</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/CaselessProperties.html#instance()">instance()</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/CaselessProperties.html" title="class in tv.phantombot">CaselessProperties</a></dt>
@@ -3869,6 +3988,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/ViewerListCache.html#instance(java.lang.String)">instance(String)</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">ViewerListCache</a></dt>
 <dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 <div class="block">Method to get this instance.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/dns/CompositeAddressResolverGroup.html#INSTANCE">INSTANCE</a></span> - Static variable in class com.gmt2001.dns.<a href="com/gmt2001/dns/CompositeAddressResolverGroup.html" title="class in com.gmt2001.dns">CompositeAddressResolverGroup</a></dt>
@@ -3933,6 +4053,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Class constructor.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcChannelMessageEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String,java.lang.String,java.util.Map,com.gmt2001.twitch.tmi.TMIMessage)">IrcChannelMessageEvent(TwitchSession, String, String, Map&lt;String, String&gt;, TMIMessage)</a></span> - Constructor for class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcChannelMessageEvent.html" title="class in tv.phantombot.event.irc.message">IrcChannelMessageEvent</a></dt>
+<dd>
+<div class="block">Class constructor.</div>
+</dd>
 <dt><a href="tv/phantombot/event/irc/channel/IrcChannelUserModeEvent.html" title="class in tv.phantombot.event.irc.channel"><span class="typeNameLink">IrcChannelUserModeEvent</span></a> - Class in <a href="tv/phantombot/event/irc/channel/package-summary.html">tv.phantombot.event.irc.channel</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUserModeEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String,java.lang.String,boolean)">IrcChannelUserModeEvent(TwitchSession, String, String, boolean)</a></span> - Constructor for class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUserModeEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUserModeEvent</a></dt>
@@ -3940,14 +4064,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Class constructor</div>
 </dd>
 <dt><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel"><span class="typeNameLink">IrcChannelUsersUpdateEvent</span></a> - Class in <a href="tv/phantombot/event/irc/channel/package-summary.html">tv.phantombot.event.irc.channel</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The list of users present in TMI is updated</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(java.lang.String%5B%5D,java.lang.String%5B%5D)">IrcChannelUsersUpdateEvent(String[], String[])</a></span> - Constructor for class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUsersUpdateEvent</a></dt>
 <dd>
-<div class="block">Class constructor.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(java.util.List)">IrcChannelUsersUpdateEvent(List&lt;String&gt;)</a></span> - Constructor for class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUsersUpdateEvent</a></dt>
+<dd>
+<div class="block">Constructor</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String%5B%5D,java.lang.String%5B%5D)">IrcChannelUsersUpdateEvent(TwitchSession, String[], String[])</a></span> - Constructor for class tv.phantombot.event.irc.channel.<a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html" title="class in tv.phantombot.event.irc.channel">IrcChannelUsersUpdateEvent</a></dt>
 <dd>
-<div class="block">Class constructor.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>&nbsp;</div>
 </dd>
 <dt><a href="tv/phantombot/event/irc/clearchat/IrcClearchatEvent.html" title="class in tv.phantombot.event.irc.clearchat"><span class="typeNameLink">IrcClearchatEvent</span></a> - Class in <a href="tv/phantombot/event/irc/clearchat/package-summary.html">tv.phantombot.event.irc.clearchat</a></dt>
 <dd>&nbsp;</dd>
@@ -4006,6 +4136,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Class constructor.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcModerationEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String,java.lang.String,java.util.Map)">IrcModerationEvent(TwitchSession, String, String, Map&lt;String, String&gt;)</a></span> - Constructor for class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a></dt>
+<dd>
+<div class="block">Class constructor.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcModerationEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String,java.lang.String,java.util.Map,com.gmt2001.twitch.tmi.TMIMessage)">IrcModerationEvent(TwitchSession, String, String, Map&lt;String, String&gt;, TMIMessage)</a></span> - Constructor for class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a></dt>
 <dd>
 <div class="block">Class constructor.</div>
 </dd>
@@ -4350,10 +4484,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#kill()">kill()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/ViewerListCache.html#kill()">kill()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">ViewerListCache</a></dt>
-<dd>
-<div class="block">Method to kill this cache.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/Script.html#kill()">kill()</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/Script.html" title="class in tv.phantombot.script">Script</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/ScriptEventManager.html#kill()">kill()</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptEventManager.html" title="class in tv.phantombot.script">ScriptEventManager</a></dt>
@@ -4389,6 +4519,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelUpdate.html#language()">language()</a></span> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelUpdate.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelUpdate</a></dt>
 <dd>
 <div class="block">The channel's broadcast language.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#lastActive()">lastActive()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">The last time this user was active in chat</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#lastSeen()">lastSeen()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">The last time this user was seen
+ <br/><br/>
+ This is used for garbage collection</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html#length()">length()</a></span> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html" title="class in com.gmt2001.twitch.tmi">TMIMessage.EmoteLocation</a></dt>
 <dd>&nbsp;</dd>
@@ -4474,6 +4614,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/Logger.LogType.html" title="enum in com.illusionaryone"><span class="typeNameLink">Logger.LogType</span></a> - Enum in <a href="com/illusionaryone/package-summary.html">com.illusionaryone</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#login()">login()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">The Twitch user login name</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#login(java.lang.String)">login(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch user login name</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#loginExists(java.lang.String)">loginExists(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Indicates if the specified user login is already in the cache</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/Console/debug.html#logln(java.lang.Object)">logln(Object)</a></span> - Static method in class com.gmt2001.Console.<a href="com/gmt2001/Console/debug.html" title="class in com.gmt2001.Console">debug</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/Console/debug.html#logln(java.lang.Object,boolean)">logln(Object, boolean)</a></span> - Static method in class com.gmt2001.Console.<a href="com/gmt2001/Console/debug.html" title="class in com.gmt2001.Console">debug</a></dt>
@@ -4512,6 +4664,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/illusionaryone/Logger.html#logTimestamp(java.time.ZoneId)">logTimestamp(ZoneId)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#lookupAsync(java.util.List)">lookupAsync(List&lt;String&gt;)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Performs an asynchronous operation to lookup the users on Twitch API and add them to the cache</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#lookupLoginAsync(java.util.List)">lookupLoginAsync(List&lt;String&gt;)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Performs an asynchronous operation to lookup the users on Twitch API and add them to the cache</div>
+</dd>
 </dl>
 <a id="I:M">
 <!--   -->
@@ -4615,6 +4775,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationActions.html#%3Cinit%3E()">ModerationActions()</a></span> - Constructor for class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationActions.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent.ModerationActions</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#moderator()">moderator()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is a moderator</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#moderator(boolean)">moderator(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the moderator status of the viewer</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcModerationEvent.html#mono()">mono()</a></span> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a></dt>
 <dd>
 <div class="block">Returns a <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink"><code>Mono</code></a> which emits <code>true</code> if a moderation was performed and further processing of this message should be stopped</div>
@@ -4633,8 +4801,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">N</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#name()">name()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">The Twitch user display name</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/util/DiscordUtil.MessageCreateFile.html#name()">name()</a></span> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.MessageCreateFile.html" title="class in tv.phantombot.discord.util">DiscordUtil.MessageCreateFile</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#name(java.lang.String)">name(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch user display name</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/ytplayer/YTPlayerState.html#NEW">NEW</a></span> - tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/YTPlayerState.html" title="enum in tv.phantombot.ytplayer">YTPlayerState</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpwsserver/HttpOptionalSslHandler.html#newNonSslHandler(io.netty.channel.ChannelHandlerContext)">newNonSslHandler(ChannelHandlerContext)</a></span> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpOptionalSslHandler.html" title="class in com.gmt2001.httpwsserver">HttpOptionalSslHandler</a></dt>
@@ -4855,6 +5031,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/pubsub/processors/AbstractPubSubProcessor.html#onFlowSubscribe()">onFlowSubscribe()</a></span> - Method in class tv.phantombot.twitch.pubsub.processors.<a href="tv/phantombot/twitch/pubsub/processors/AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></dt>
 <dd>
 <div class="block">Override this method to handle Flow.Subscriber.OnSubscribe, called after this.subscription is set</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#onIrcModerationEvent(tv.phantombot.event.irc.message.IrcModerationEvent)">onIrcModerationEvent(IrcModerationEvent)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Updates the cache when a TMI message is recieved</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#onMessage(com.gmt2001.twitch.tmi.TMIMessage)">onMessage(TMIMessage)</a></span> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
 <dd>
@@ -5863,8 +6043,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/irc/chat/utils/MessageQueue.html#REMINDER_INTERVAL">REMINDER_INTERVAL</a></span> - Static variable in class tv.phantombot.twitch.irc.chat.utils.<a href="tv/phantombot/twitch/irc/chat/utils/MessageQueue.html" title="class in tv.phantombot.twitch.irc.chat.utils">MessageQueue</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#remove(java.lang.String)">remove(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Removes the specified user from the cache</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/discord/reaction/DiscordMessageReactionEvent.ReactionType.html#REMOVE">REMOVE</a></span> - tv.phantombot.event.discord.reaction.<a href="tv/phantombot/event/discord/reaction/DiscordMessageReactionEvent.ReactionType.html" title="enum in tv.phantombot.event.discord.reaction">DiscordMessageReactionEvent.ReactionType</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#removeByLogin(java.lang.String)">removeByLogin(String)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Removes the specified user from the cache by login name</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#RemoveFile(java.lang.String)">RemoveFile(String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Deletes the table</div>
@@ -5908,7 +6096,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/SqliteStore.html#RemoveSection(java.lang.String,java.lang.String)">RemoveSection(String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SqliteStore.html" title="class in com.gmt2001.datastore">SqliteStore</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#removeUser(java.lang.String)">removeUser(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#RenameFile(java.lang.String,java.lang.String)">RenameFile(String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Renames the table</div>
@@ -5958,13 +6148,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/util/DiscordUtil.html#resetPresence()">resetPresence()</a></span> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#resolve(java.lang.String)">resolve(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#resolve(java.lang.String,java.util.Map)">resolve(String, Map&lt;String, String&gt;)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#resolveBot()">resolveBot()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/UsernameCache.html#resolveCaster()">resolveCaster()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">UsernameCache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/PredictionEnd.Status.html#RESOLVED">RESOLVED</a></span> - com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/PredictionEnd.Status.html" title="enum in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionEnd.Status</a></dt>
 <dd>
 <div class="block">The winning outcome is determined and the Channel Points are distributed to the viewers who predicted the correct outcome.</div>
@@ -6034,10 +6232,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchTeamsCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchTeamsCache.html" title="class in tv.phantombot.cache">TwitchTeamsCache</a></dt>
 <dd>
 <div class="block">Method that updates the Twitch teams.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/ViewerListCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">ViewerListCache</a></dt>
-<dd>
-<div class="block">Method that updates the cache every 10 minutes.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/console/ConsoleInputListener.html#run()">run()</a></span> - Method in class tv.phantombot.console.<a href="tv/phantombot/console/ConsoleInputListener.html" title="class in tv.phantombot.console">ConsoleInputListener</a></dt>
 <dd>&nbsp;</dd>
@@ -6128,6 +6322,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#seen()">seen()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the last time this user was seen
+ <br/><br/>
+ This is used for garbage collection</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/x509/SelfSignedX509CertificateGenerator.html" title="class in com.gmt2001.httpwsserver.x509"><span class="typeNameLink">SelfSignedX509CertificateGenerator</span></a> - Class in <a href="com/gmt2001/httpwsserver/x509/package-summary.html">com.gmt2001.httpwsserver.x509</a></dt>
 <dd>
 <div class="block">Generates a SelfSigned X.509 Certificate
@@ -6544,6 +6744,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SqliteStore.html" title="class in com.gmt2001.datastore"><span class="typeNameLink">SqliteStore</span></a> - Class in <a href="com/gmt2001/datastore/package-summary.html">com.gmt2001.datastore</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#staff()">staff()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is a Twitch staff member</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#staff(boolean)">staff(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch staff status of the viewer</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html#start()">start()</a></span> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html" title="class in com.gmt2001.twitch.tmi">TMIMessage.EmoteLocation</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/DonationsCache.html#start()">start()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/DonationsCache.html" title="class in tv.phantombot.cache">DonationsCache</a></dt>
@@ -6734,6 +6942,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Subscribes to the Flow.Publisher of TwitchPubSub</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#subscriber()">subscriber()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is a subscriber of the channel</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#subscriber(boolean)">subscriber(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch subscriber status of the viewer</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/pubsub/PubSubMessage.PubSubMessageType.html#SUBSCRIBERESULT">SUBSCRIBERESULT</a></span> - tv.phantombot.twitch.pubsub.<a href="tv/phantombot/twitch/pubsub/PubSubMessage.PubSubMessageType.html" title="enum in tv.phantombot.twitch.pubsub">PubSubMessage.PubSubMessageType</a></dt>
 <dd>
 <div class="block">The result of an attempt to subscribe to a topic</div>
@@ -6919,6 +7135,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The type of message</div>
 </dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcChannelMessageEvent.html#tmimsg()">tmimsg()</a></span> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcChannelMessageEvent.html" title="class in tv.phantombot.event.irc.message">IrcChannelMessageEvent</a></dt>
+<dd>
+<div class="block">The raw <a href="com/gmt2001/twitch/tmi/TMIMessage.html" title="class in com.gmt2001.twitch.tmi"><code>TMIMessage</code></a> object</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/event/irc/message/IrcModerationEvent.html#tmimsg()">tmimsg()</a></span> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a></dt>
+<dd>
+<div class="block">Returns the raw <a href="com/gmt2001/twitch/tmi/TMIMessage.html" title="class in com.gmt2001.twitch.tmi"><code>TMIMessage</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/twitch/tmi/TMIPingPongSupplierPredicate.html" title="class in com.gmt2001.twitch.tmi"><span class="typeNameLink">TMIPingPongSupplierPredicate</span></a> - Class in <a href="com/gmt2001/twitch/tmi/package-summary.html">com.gmt2001.twitch.tmi</a></dt>
 <dd>
 <div class="block">Supplier and Predicate for TMI PING/PONG commands</div>
@@ -7021,6 +7245,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#triggerEmotes(java.lang.String%5B%5D,java.lang.String)">triggerEmotes(String[], String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#turbo()">turbo()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is a Twitch turbo member</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#turbo(boolean)">turbo(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch turbo status of the viewer</div>
+</dd>
 <dt><a href="tv/phantombot/package-summary.html">tv.phantombot</a> - package tv.phantombot</dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/cache/package-summary.html">tv.phantombot.cache</a> - package tv.phantombot.cache</dt>
@@ -7571,7 +7803,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">The display name of the user.</div>
 </dd>
 <dt><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache"><span class="typeNameLink">UsernameCache</span></a> - Class in <a href="tv/phantombot/cache/package-summary.html">tv.phantombot.cache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead</div>
+</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/UserNoticeTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors"><span class="typeNameLink">UserNoticeTMIProcessor</span></a> - Class in <a href="com/gmt2001/twitch/tmi/processors/package-summary.html">com.gmt2001.twitch.tmi.processors</a></dt>
 <dd>
 <div class="block">Handles the USERNOTICE TMI Command</div>
@@ -7793,11 +8029,31 @@ the order they are declared.</div>
 <dd>
 <div class="block">The specific version of the subscription type was removed.</div>
 </dd>
+<dt><a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache"><span class="typeNameLink">Viewer</span></a> - Class in <a href="com/gmt2001/twitch/cache/package-summary.html">com.gmt2001.twitch.cache</a></dt>
+<dd>
+<div class="block">Contains information about a specific viewer in a <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><span class="typeNameLink">ViewerCache</span></a> - Class in <a href="com/gmt2001/twitch/cache/package-summary.html">com.gmt2001.twitch.cache</a></dt>
+<dd>
+<div class="block">Maintains a list of viewers, Twitch viewer permissions, and username lookups</div>
+</dd>
 <dt><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache"><span class="typeNameLink">ViewerListCache</span></a> - Class in <a href="tv/phantombot/cache/package-summary.html">tv.phantombot.cache</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead</div>
+</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#viewers()">viewers()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>
 <div class="block">The current number of viewers of the live stream.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#vip()">vip()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Indicates if this user is a VIP</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#vip(boolean)">vip(boolean)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
+<dd>
+<div class="block">Updates the Twitch VIP status of the viewer</div>
 </dd>
 </dl>
 <a id="I:W">
