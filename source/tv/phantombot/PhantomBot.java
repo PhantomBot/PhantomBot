@@ -33,6 +33,7 @@ import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
@@ -1196,6 +1197,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
+        Script.global.defineProperty("viewer", ViewerCache.instance(), 0);
     }
 
     /**
