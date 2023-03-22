@@ -108,6 +108,17 @@
     }
 
     /*
+     * @transformer nl
+     * @formula (nl) inserts a LF (`\n`)
+     * @labels twitch discord noevent misc
+     */
+    function nl() {
+        return {
+            result: '\n'
+        };
+    }
+
+    /*
      * @transformer nl2br
      * @formula (nl2br str:str) replaces all LF (`\n`) with `<br>` and removes all CR (`\r`)
      * @labels twitch discord noevent misc
@@ -115,7 +126,7 @@
      */
     function nl2br(args) {
         return {
-            result: args.args.replaceAll('\n', '<br>').replaceAll('\r', ''),
+            result: $.replace($.replace(args.args, '\r', ''), '\n', '<br>'),
             cache: true
         };
     }
@@ -129,7 +140,7 @@
     function nl2x(args) {
         let pargs = $.parseArgs(args.args, ' ', 2, true);
         return {
-            result: pargs[1].replaceAll('\n', pargs[0]).replaceAll('\r', ''),
+            result: $.replace($.replace(pargs[1], '\r', ''), '\n', pargs[0]),
             cache: true
         };
     }
@@ -187,7 +198,7 @@
      */
     function url0a2nl(args) {
         return {
-            result: args.args.replaceAll('%0A', '\n').replaceAll('%0a', '\n'),
+            result: $.replace($.replace(args.args, '%0A', '\n'), '%0a', '\n'),
             cache: true
         };
     }
@@ -198,6 +209,7 @@
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
         new $.transformers.transformer('escape', ['twitch', 'discord', 'noevent', 'misc'], escape),
         new $.transformers.transformer('keywordcount', ['twitch', 'keywordevent', 'misc'], keywordcount),
+        new $.transformers.transformer('nl', ['twitch', 'discord', 'noevent', 'misc'], nl),
         new $.transformers.transformer('nl2br', ['twitch', 'discord', 'noevent', 'misc'], nl2br),
         new $.transformers.transformer('nl2x', ['twitch', 'discord', 'noevent', 'misc'], nl2x),
         new $.transformers.transformer('token', ['twitch', 'commandevent', 'misc'], token),
