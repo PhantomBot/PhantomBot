@@ -89,7 +89,7 @@ In ./development-resources there's a template (module-template.js) which you can
 ## Code specific rules
 - 4 space indents. Make sure your code lines up with the current code or it will be rejected. Do not use tabs.
 - Encapsulate all code in `(function(){ /* Your code */ })();` and export globally needed code to $ by function assignment.
-- Do not assign variables and functions to the `$` global. Do not use the $ api if you variable is local.
+- Do not assign variables and functions to the `$` global. Do not use the $ api if your variable is local.
 - If a function or variable needs to be global, assign it at the end of your module like `$.functionName = functionName;`.
 - Camel case for variable, function, and method names. (thisIsCamelCase)
 - Word capitalization on class names. (ThisIsWordCapitalization)
