@@ -16,12 +16,27 @@
  */
 package tv.phantombot.event.irc.channel;
 
+import java.util.Collections;
+import java.util.List;
+
 import tv.phantombot.twitch.irc.TwitchSession;
 
+/**
+ * The list of users present in TMI is updated
+ * @author gmt2001
+ */
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
+    private final List<String> chatters;
 
-    private final String[] joins;
-    private final String[] parts;
+    /**
+     * Constructor
+     *
+     * @param chatters A list of login names for users who are currently in chat
+     */
+    public IrcChannelUsersUpdateEvent(List<String> chatters) {
+        super(null);
+        this.chatters = Collections.unmodifiableList(chatters);
+    }
 
     /**
      * Class constructor.
@@ -29,12 +44,12 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * @param session
      * @param joins
      * @param parts
+     * @deprecated
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public IrcChannelUsersUpdateEvent(TwitchSession session, String[] joins, String[] parts) {
         super(session);
-
-        this.joins = joins.clone();
-        this.parts = parts.clone();
+        this.chatters = null;
     }
 
     /**
@@ -42,29 +57,42 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      *
      * @param joins
      * @param parts
+     * @deprecated
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public IrcChannelUsersUpdateEvent(String[] joins, String[] parts) {
         super(null);
-
-        this.joins = joins.clone();
-        this.parts = parts.clone();
+        this.chatters = null;
     }
 
     /**
      * Method that returns the current array of users who joined the channel in the last 10 minutes.
      *
      * @return joins
+     * @deprecated
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public String[] getJoins() {
-        return this.joins.clone();
+        return new String[0];
     }
 
     /**
      * Method that returns the current array of users who left the channel in the last 10 minutes.
      *
      * @return parts
+     * @deprecated
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public String[] getParts() {
-        return this.parts.clone();
+        return new String[0];
+    }
+
+    /**
+     * A list of login names for users who are currently in chat
+     *
+     * @return A list of login names for users who are currently in chat
+     */
+    public List<String> chatters() {
+        return this.chatters;
     }
 }

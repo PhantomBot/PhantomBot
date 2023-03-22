@@ -40,6 +40,7 @@ import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
+import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
@@ -185,6 +186,8 @@ public final class ViewerCache implements Listener {
                     }
                 }
             });
+
+            EventBus.instance().postAsync(new IrcChannelUsersUpdateEvent(this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).map(kv -> kv.getValue().login()).collect(Collectors.toList())));
         }).doOnError(ex -> {
             com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getChattersAsync");
         }).subscribe();
