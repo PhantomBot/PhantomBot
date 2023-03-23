@@ -250,11 +250,9 @@ public final class ViewerCache implements Listener {
                         viewers.add(viewer);
                     }
                 }
-
-                return viewers;
             }
 
-            return null;
+            return viewers;
         }).doOnError(ex -> {
             com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getUsersAsync");
         });

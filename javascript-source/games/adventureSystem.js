@@ -155,6 +155,7 @@
      * @returns {boolean}
      */
     function checkUserAlreadyJoined(username) {
+        username = $.jsString(username);
         var i;
         _currentAdventureLock.lock();
         try {
@@ -242,6 +243,7 @@
      * @returns {boolean}
      */
     function joinHeist(username, bet) {
+        username = $.jsString(username);
         if (stories.length < 1) {
             $.log.error('No adventures found; cannot start an adventure.');
             return;

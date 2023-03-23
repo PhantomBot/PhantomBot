@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
@@ -105,6 +106,7 @@ public final class HTTPWSServer {
     private static final String AUTOSSLFILE = "./config/selfkey.jks";
     private static final String AUTOSSLPASSWORD = "pbselfsign";
     private static final int FINDPORTLIMIT = 20;
+    private boolean regeneratingFailedAutoSsl = false;
 
     /**
      * Gets the server instance
@@ -329,6 +331,7 @@ public final class HTTPWSServer {
         }
 
         String sslFile = AUTOSSLFILE;
+        String sslNewFile = AUTOSSLFILE + ".new";
         String sslPass = AUTOSSLPASSWORD;
 
         try {
@@ -371,9 +374,13 @@ public final class HTTPWSServer {
 
                 ks.setKeyEntry(AUTOSSLKEYALIAS, kp.getPrivate(), sslPass.toCharArray(), new Certificate[]{cert});
 
-                try ( OutputStream outputStream = Files.newOutputStream(PathValidator.getRealPath(sslFile))) {
+                Files.deleteIfExists(PathValidator.getRealPath(sslNewFile));
+
+                try ( OutputStream outputStream = Files.newOutputStream(PathValidator.getRealPath(sslNewFile))) {
                     ks.store(outputStream, sslPass.toCharArray());
                 }
+
+                Files.move(PathValidator.getRealPath(sslNewFile), PathValidator.getRealPath(sslFile), StandardCopyOption.REPLACE_EXISTING);
 
                 this.reloadSslContext();
 
@@ -394,7 +401,18 @@ public final class HTTPWSServer {
         if (sslFile.isBlank()) {
             if (Files.exists(PathValidator.getRealPath(AUTOSSLFILE))) {
                 com.gmt2001.Console.debug.println("Using Auto-SSL");
-                this.reloadSslContextJKS();
+                try {
+                    this.reloadSslContextJKS();
+                    this.regeneratingFailedAutoSsl = false;
+                } catch (IOException | NoSuchAlgorithmException | CertificateException | KeyStoreException | UnrecoverableKeyException ex) {
+                    if (!this.regeneratingFailedAutoSsl) {
+                        com.gmt2001.Console.debug.println("Replacing corrupt Auto-SSL");
+                        this.regeneratingFailedAutoSsl = true;
+                        this.generateAutoSsl(true);
+                    } else {
+                        throw ex;
+                    }
+                }
             }
         } else if (sslFile.toLowerCase().endsWith(".jks") || sslKeyFile.isBlank()) {
             com.gmt2001.Console.debug.println("Using JKS");
