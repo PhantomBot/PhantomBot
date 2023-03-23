@@ -477,6 +477,39 @@
         }
     }
 
+    /**
+     * Lists all registered commands
+     *
+     * @returns {Array} A list of command names
+     */
+    function listCommands() {
+        let commandlist = [];
+
+        for (let x in commands) {
+            commandlist.push(x);
+        }
+
+        return commandlist;
+    }
+
+    /**
+     * Lists all registered sub-commands of the command
+     *
+     * @param {String} command The command to check
+     * @returns {Array} A list of sub-command names
+     */
+    function listSubCommands(command) {
+        let commandlist = [];
+
+        if (commandExists(command)) {
+            for (let x in commands[command].subcommands) {
+                commandlist.push(x);
+            }
+        }
+
+        return commandlist;
+    }
+
     /** Export functions to API */
     $.registerChatCommand = registerChatCommand;
     $.registerChatSubcommand = registerChatSubcommand;
@@ -495,6 +528,8 @@
     $.registerChatAlias = registerChatAlias;
     $.tempUnRegisterChatCommand = tempUnRegisterChatCommand;
     $.getSubCommandFromArguments = getSubCommandFromArguments;
+    $.listCommands = listCommands;
+    $.listSubCommands = listSubCommands;
 
     $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./core/commandRegister.js')) {
