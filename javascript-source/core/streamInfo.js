@@ -155,7 +155,8 @@
      * @returns {boolean}
      */
     function isOnline(channelName) {
-        if ($.twitchcache !== undefined && $.twitchcache !== null && $.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchcache !== undefined && $.twitchcache !== null && $.twitchCacheReady
+            && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             return $.twitchcache.isStreamOnline();
         } else {
             return !$.twitch.GetStream(channelName).isNull('stream');
@@ -169,7 +170,7 @@
      * @returns {string}
      */
     function getStatus(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             return ($.twitchcache.getStreamStatus() + '');
         } else {
             let channelData = $.twitch.GetChannel(channelName);
@@ -191,7 +192,7 @@
      * @returns {string}
      */
     function getGame(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             return ($.twitchcache.getGameTitle() + '');
         } else {
             let channelData = $.twitch.GetChannel(channelName);
@@ -232,7 +233,7 @@
      * @returns {number}
      */
     function getStreamUptimeSeconds(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             return $.twitchcache.getStreamUptimeSeconds();
         } else {
             let stream = $.twitch.GetStream(channelName),
@@ -261,7 +262,7 @@
      * @returns {string}
      */
     function getStreamUptime(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             let uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
@@ -324,7 +325,7 @@
      * @returns {string}
      */
     function getStreamStartedAt(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             if ($.jsString($.twitchcache.isStreamOnlineString()) === 'false') {
                 return 'Stream is offline';
             }
@@ -350,17 +351,17 @@
      * @returns {Number}
      */
     function getViewers(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             return $.twitchcache.viewers();
         } else {
             let stream = $.twitch.GetStream(channelName);
 
             if (!stream.isNull('stream') && stream.getInt('_http') === 200) {
                 return stream.getJSONObject('stream').getInt('viewers');
-            } else {
-                return 0;
             }
         }
+
+        return 0;
     }
 
     /**
@@ -370,17 +371,17 @@
      * @returns {Number}
      */
     function getFollows(channelName) {
-        if ($.twitchCacheReady && channelName.equalsIgnoreCase($.channelName)) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
             return $.twitchcache.followers();
         } else {
             let channel = $.twitch.GetChannel(channelName);
 
             if (!channel.isNull('followers') && channel.getInt('_http') === 200) {
                 return channel.getInt('followers');
-            } else {
-                return 0;
             }
         }
+
+        return 0;
     }
 
     /**
