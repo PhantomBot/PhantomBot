@@ -44,6 +44,12 @@
         };
     }
 
+    /**
+     * Handles any type of exception and reports it to the console, the logs, and Rollbar
+     *
+     * @param {string} where The location of the error
+     * @param {java.lang.Exception_or_Error} ex The exception or error object to log
+     */
     function handleException(where, ex) {
         let loc = 0;
         let errmsg = null;
@@ -893,6 +899,7 @@
     $.consoleLn = consoleLn;
     $.consoleDebug = consoleDebug;
     $.findCaller = findCaller;
+    $.handleException = handleException;
     $.bind = addHook;
     $.unbind = removeHook;
     $.bot = {
