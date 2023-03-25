@@ -2819,7 +2819,7 @@ public class Helix {
         first = Math.max(1, Math.min(1000, first));
 
         String endpoint = "/chat/chatters?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
-        + this.qspValid("moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&first", first)
+        + this.qspValid("&moderator_id", TwitchValidate.instance().getAPIUserID()) + this.qspValid("&first", first)
         + this.qspValid("&after", after);
 
         return this.handleQueryAsync(endpoint, () -> {
