@@ -427,6 +427,14 @@
                                     window.sessionStorage.removeItem('state');
                                 }
                             }
+
+                            if (queryMap.has('error') || queryMap.has('error_description')) {
+                                $('#info-box').addClass('hide');
+                                $('#error-box').removeClass('hide');
+                                $('#success-error-br').removeClass('hide');
+                                $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + queryMap.get('error') + ' ' + decodeURIComponent(queryMap.get('error_description')) + '!!');
+                                window.sessionStorage.removeItem('statetype');
+                            }
                         }
                         // Generates the state.
                         function generateState(type) {
