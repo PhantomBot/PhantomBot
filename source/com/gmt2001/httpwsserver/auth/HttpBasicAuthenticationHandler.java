@@ -24,6 +24,9 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 
@@ -117,7 +120,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
                 host = "http://" + host;
             }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + req.uri());
+            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + URLEncoder.encode(req.uri(), StandardCharsets.UTF_8));
 
             com.gmt2001.Console.debug.println("303");
             com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
