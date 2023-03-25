@@ -16,22 +16,10 @@
  */
 package tv.phantombot.httpserver;
 
-import com.gmt2001.PathValidator;
-import com.gmt2001.Reflect;
-import com.gmt2001.httpwsserver.HTTPWSServer;
-import com.gmt2001.httpwsserver.HttpRequestHandler;
-import com.gmt2001.httpwsserver.HttpServerPageHandler;
-import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
-import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,6 +27,22 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+
+import com.gmt2001.PathValidator;
+import com.gmt2001.Reflect;
+import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.httpwsserver.HttpRequestHandler;
+import com.gmt2001.httpwsserver.HttpServerPageHandler;
+import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
+import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.QueryStringDecoder;
 
 /**
  *
@@ -115,7 +119,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
                 user = post.getOrDefault("user", "");
                 pass = post.getOrDefault("pass", "");
-                kickback = post.getOrDefault("kickback", "");
+                kickback = URLDecoder.decode(post.getOrDefault("kickback", ""), StandardCharsets.UTF_8);
             }
 
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
