@@ -69,7 +69,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ format('jre-{0}', matrix.osname) }}
-        path: ${{ matrix.folder }}
+        path: ${{ matrix.folder }}/**
   commit:
     name: Commit Binaries
     runs-on: ubuntu-latest
