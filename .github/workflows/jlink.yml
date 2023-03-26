@@ -7,7 +7,6 @@ jobs:
   updatejlink:
     name: Update JLink Builds
     strategy:
-      max-parallel: 1
       matrix:
         include:
           - os: ubuntu-latest
@@ -66,7 +65,37 @@ jobs:
         cd development-resources
         chmod +x $SCRIPT
         /bin/bash $SCRIPT
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ format('jre-{0}', matrix.osname) }}
+        path: ${{ matrix.folder }}
+  commit:
+    name: Commit Binaries
+    runs-on: ubuntu-latest
+    needs: updatejlink
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Download Artifact (Linux)
+      uses: actions/download-artifact@v3
+      with:
+        name: jre-Linux
+        path: java-runtime-linux
+    - name: Download Artifact (Windows)
+      uses: actions/download-artifact@v3
+      with:
+        name: jre-Windows
+        path: java-runtime
+    - name: Download Artifact (macOS)
+      uses: actions/download-artifact@v3
+      with:
+        name: jre-macOS
+        path: java-runtime-macos
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
-        message: ${{ format('Updated the {0} Java binaries', matrix.osname) }}
+        message: Updated the Java binaries
