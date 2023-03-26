@@ -21,13 +21,11 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -164,18 +162,16 @@ public final class ViewerCache implements Listener {
             emitter.success(newChatters);
         }).doOnSuccess(newChattersList -> {
             final Instant after = Instant.now().minus(ACTIVE_TIMEOUT);
-            final Stream<Entry<String, Viewer>> chatters = this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat());
-            final Stream<JSONObject> newChatters = newChattersList.stream();
             final List<String> found = new ArrayList<>();
-            chatters.forEach(kv -> {
-                if (newChatters.filter(jso -> jso.getString("user_id").equals(kv.getValue().id())).findAny().isPresent()) {
+            this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).forEach(kv -> {
+                if (newChattersList.stream().filter(jso -> jso.getString("user_id").equals(kv.getValue().id())).findAny().isPresent()) {
                     kv.getValue().seen();
                     found.add(kv.getValue().id());
                 } else if (kv.getValue().lastActive().isBefore(after)) {
                     kv.getValue().inChat(false);
                 }
             });
-            newChatters.forEach(jso -> {
+            newChattersList.stream().forEach(jso -> {
                 String id = jso.getString("user_id");
                 if (!found.contains(id)) {
                     if (this.exists(id)) {
