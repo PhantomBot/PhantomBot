@@ -313,7 +313,7 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 
 **Formulas:**
 
-- `(cpfulfillstatus)` - the fulfillment status of the redemption when it was received by PubSub
+- `(cpfulfillstatus)` - the fulfillment status of the redemption when it was received
 
 **Labels:** twitch channelpointsevent channelpoints
 
@@ -2639,7 +2639,7 @@ Yes&nbsp;&nbsp; | No
 
 Defined in script: _./javascript-source/handlers/channelPointsHandler.js_
 
-#### Hook: pubSubChannelPoints
+#### Hook: eventSubChannelPointsCustomRewardRedemptionAdd
 
 Global&nbsp;&nbsp; | Local
 -------|-------
