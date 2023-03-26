@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":42,"i1":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -145,8 +145,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="PubSubStreamDownEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">PubSubStreamDownEvent</a></code>, <code><a href="PubSubStreamUpEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">PubSubStreamUpEvent</a></code>, <code><a href="PubSubViewCountEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">PubSubViewCountEvent</a></code></dd>
 </dl>
 <hr>
-<pre>public abstract class <span class="typeNameLabel">PubSubVideoPlaybackEvent</span>
+<pre><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public abstract class <span class="typeNameLabel">PubSubVideoPlaybackEvent</span>
 extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub">PubSubEvent</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix</div>
+</div>
 </li>
 </ul>
 </div>
@@ -172,6 +177,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(int,float)">PubSubVideoPlaybackEvent</a></span>&#8203;(int&nbsp;channelId,
                         float&nbsp;serverTime)</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Abstract constructor.</div>
 </td>
 </tr>
@@ -187,7 +193,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -197,6 +203,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelId()">getChannelId</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Method that returns the channel ID that the event was triggered for.</div>
 </td>
 </tr>
@@ -204,6 +211,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 <td class="colFirst"><code>float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getServerTime()">getServerTime</a></span>()</code></th>
 <td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Method that returns the timestamp of the event actually happening</div>
 </td>
 </tr>
@@ -239,6 +247,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 <h4>PubSubVideoPlaybackEvent</h4>
 <pre>protected&nbsp;PubSubVideoPlaybackEvent&#8203;(int&nbsp;channelId,
                                    float&nbsp;serverTime)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Abstract constructor.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -264,6 +273,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 <li class="blockList">
 <h4>getChannelId</h4>
 <pre class="methodSignature">public&nbsp;int&nbsp;getChannelId()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Method that returns the channel ID that the event was triggered for.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
@@ -278,6 +288,7 @@ extends <a href="../PubSubEvent.html" title="class in tv.phantombot.event.pubsub
 <li class="blockList">
 <h4>getServerTime</h4>
 <pre class="methodSignature">public&nbsp;float&nbsp;getServerTime()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Method that returns the timestamp of the event actually happening</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
