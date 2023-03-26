@@ -35,8 +35,7 @@ import tv.phantombot.PhantomBot;
 public class Script {
 
     public static final NativeObject global = new NativeObject();
-    @SuppressWarnings("rawtypes")
-    private final List<ScriptDestroyable> destroyables = new ArrayList<>();
+    private final List<ScriptDestroyable<?>> destroyables = new ArrayList<>();
     private static final NativeObject vars = new NativeObject();
     private final File file;
     private final String fileName;
@@ -160,8 +159,7 @@ public class Script {
         }
     }
 
-    @SuppressWarnings("rawtypes")
-    public List<ScriptDestroyable> destroyables() {
+    public List<ScriptDestroyable<?>> destroyables() {
         return destroyables;
     }
 

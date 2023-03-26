@@ -1,11 +1,56 @@
 name: Release Docs
 on:
   workflow_dispatch:
+    inputs:
+      updateremotepanel:
+        description: Update Remote Panel
+        required: true
+        default: true
+        type: boolean
+      updateguides:
+        description: Update Guides
+        required: true
+        default: true
+        type: boolean
+      javadoc:
+        description: Update JavaDoc
+        required: true
+        default: true
+        type: boolean
 
 jobs:
+  updateremotepanel:
+    name: Update Remote Panel (Stable)
+    if: github.repository == 'PhantomBot/PhantomBot' && inputs.updateremotepanel
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Copy Files
+      run: |
+        mkdir -p docs/panel-stable/
+        rsync -rv --delete-during --progress resources/web/panel/ docs/panel-stable/
+        rsync -rv --delete-during --progress resources/web/common docs
+    - name: Make Path File
+      run: |
+        echo docs/panel-stable/ >> paths.txt
+        echo docs/common/ >> paths.txt
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: docsremotepanel
+        path: |
+          docs/common/**
+          docs/panel-stable/**
+          paths.txt
+        if-no-files-found: error
+        retention-days: 1
   updateguides:
     name: Update Guides (Stable)
-    if: github.repository == 'PhantomBot/PhantomBot'
+    if: github.repository == 'PhantomBot/PhantomBot' && inputs.updateguides
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
@@ -17,7 +62,69 @@ jobs:
       run: |
         mkdir -p docs/guides/content-stable/
         rsync -rv --delete-during --progress docs/guides/content/ docs/guides/content-stable/
+    - name: Make Path File
+      run: |
+        echo docs/guides/content-stable/ >> paths.txt
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: docsguides
+        path: |
+          docs/guides/content-stable/**
+          paths.txt
+        if-no-files-found: error
+        retention-days: 1
+  javadoc:
+    name: Update JavaDoc (Stable)
+    if: github.repository == 'PhantomBot/PhantomBot' && inputs.javadoc
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Copy Files
+      run: |
+        mkdir -p docs/javadoc-stable/
+        rsync -rv --delete-during --progress docs/javadoc/ docs/javadoc-stable/
+    - name: Make Path File
+      run: |
+        echo docs/javadoc-stable/ >> paths.txt
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: docsjavadoc
+        path: |
+          docs/javadoc-stable/**
+          paths.txt
+        if-no-files-found: error
+        retention-days: 1
+  commitdocs:
+    name: Commit Docs
+    runs-on: ubuntu-latest
+    if: |
+      always()
+      && (needs.updateremotepanel.result == 'success' || needs.updateremotepanel.result == 'skipped')
+      && (needs.updateguides.result == 'success' || needs.updateguides.result == 'skipped')
+      && (needs.javadoc.result == 'success' || needs.javadoc.result == 'skipped')
+      && !(needs.updateremotepanel.result == 'skipped' && needs.updateguides.result == 'skipped' && needs.javadoc.result == 'skipped')
+    needs: [updateremotepanel, updateguides, javadoc]
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        ref: 'master'
+    - name: Prep Artifact Dir
+      run: mkdir -p /tmp/docartifacts
+    - name: Download Artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: /tmp/docartifacts
+    - name: Copy Files
+      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::rsync $p; rsync -rv --delete-during --progress $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
-        message: 'Updated the guides (stable)'
+        message: Updated GitHub Pages (Stable)

@@ -83,7 +83,7 @@ jobs:
         echo $?
     - name: Build with Ant
       env:
-        BUILDTYPE: ${{ format('{0}_build', steps.build_env.outputs.branch) }}
+        BUILDTYPE: ${{ format('{0}', steps.build_env.outputs.branch) }}
         ROLLBAR_TOKEN: ${{ secrets.ROLLBAR_TOKEN }}
         ROLLBAR_ENDPOINT: ${{ secrets.ROLLBAR_ENDPOINT }}
         BRANCH: ${{ steps.build_env.outputs.branch }}
