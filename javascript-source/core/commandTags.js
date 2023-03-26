@@ -21,7 +21,7 @@
     let transformers = {},
             tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|=()]*)([\\s=\\|])?((?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
             _lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
-            debugon = true;
+            debugon = false;
 
     function debug(str) {
         if (debugon) {
