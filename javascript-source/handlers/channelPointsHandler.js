@@ -16,16 +16,46 @@
  */
 
 /* global Packages */
-/**
- * This module is to handle channel point redemption actions
- * Author: MzLiv
- */
 
 (function () {
     let commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]')),
             commandConfig = $.getSetIniDbString('channelPointsSettings', 'commandConfig', ''),
             lock = new Packages.java.util.concurrent.locks.ReentrantLock,
             managed = [];
+
+    function subscribeEventSub() {
+        let subscriptions = [
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd
+        ];
+
+        for (let i in subscriptions) {
+            let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
+            try {
+                newSubscription.create().block();
+            } catch (ex) {
+                $.log.error(ex);
+            }
+        }
+    }
+
+    $.bind('twitchBroadcasterType', function(event) {
+        if (!event.wasAffiliateOrPartner() && event.isAffiliateOrPartner()) {
+            subscribeEventSub();
+        }
+    }, true);
+
+    /*
+     * @event eventSubWelcome
+     */
+    $.bind('eventSubWelcome', function (event) {
+        if (!event.isReconnect()) {
+            if (!$.twitchcache.isAffiliateOrPartner()) {
+                return;
+            }
+
+            subscribeEventSub();
+        }
+    }, true);
 
     /*
      * @function updateChannelPointsConfig
@@ -170,9 +200,9 @@
      * @event channelPointRedemptions
      * @usestransformers global twitch commandevent noevent channelpointsevent
      */
-    $.bind('pubSubChannelPoints', function (event) {
-        let rewardID = event.getRewardID(),
-                rewardTitle = event.getRewardTitle();
+    $.bind('eventSubChannelPointsCustomRewardRedemptionAdd', function (event) {
+        let rewardID = event.event().reward().id(),
+                rewardTitle = event.event().reward().title();
 
         Packages.com.gmt2001.Console.debug.println("Channel point event " + rewardTitle + " parsed to javascript." + " ID is: " + rewardID);
 
@@ -207,7 +237,7 @@
         if (cmd !== null) {
             let cmdEvent = new Packages.tv.phantombot.event.command.CommandEvent($.botName, 'channelPoints_' + rewardTitle, '');
             let tag = $.transformers.tags(cmdEvent, cmd.command, ['twitch', ['commandevent', 'noevent', 'channelpointsevent']],
-                    {customArgs: {redemption: event}});
+                    {customArgs: {redemption: event.event()}});
             if (tag !== null) {
                 $.say(tag);
             }

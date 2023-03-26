@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 (function () {
     /*
      * @transformer cpcancel
@@ -25,8 +27,8 @@
      * @cached
      */
     function cpcancel(args) {
-        if (args.customArgs.redemption.getFulfillmentStatus().equals('UNFULFILLED')) {
-            $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.getRewardID(), args.customArgs.redemption.getRedemptionID());
+        if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
+            $.channelpoints.updateRedemptionStatusCancelled(args.customArgs.redemption.reward().id(), args.customArgs.redemption.id());
         }
         return {
             result: '',
@@ -42,7 +44,7 @@
      */
     function cpcost(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getCost()),
+            result: $.jsString(args.customArgs.redemption.reward().cost()),
             cache: true
         };
     }
@@ -55,7 +57,7 @@
      */
     function cpdisplayname(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getDisplayName()),
+            result: $.jsString(args.customArgs.redemption.userName()),
             cache: true
         };
     }
@@ -69,8 +71,8 @@
      * @cached
      */
     function cpfulfill(args) {
-        if (args.customArgs.redemption.getFulfillmentStatus().equals('UNFULFILLED')) {
-            $.channelpoints.updateRedemptionStatusFulfilled(args.customArgs.redemption.getRewardID(), args.customArgs.redemption.getRedemptionID());
+        if (args.customArgs.redemption.status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd.RedemptionStatus.Unfulfilled) {
+            $.channelpoints.updateRedemptionStatusFulfilled(args.customArgs.redemption.reward().id(), args.customArgs.redemption.id());
         }
         return {
             result: '',
@@ -80,13 +82,13 @@
 
     /*
      * @transformer cpfulfillstatus
-     * @formula (cpfulfillstatus) the fulfillment status of the redemption when it was received by PubSub
+     * @formula (cpfulfillstatus) the fulfillment status of the redemption when it was received
      * @labels twitch channelpointsevent channelpoints
      * @cached
      */
     function cpfulfillstatus(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getFulfillmentStatus()),
+            result: $.jsString(args.customArgs.redemption.statusString()),
             cache: true
         };
     }
@@ -100,7 +102,7 @@
      */
     function cpinput(args) {
         return {
-            result: $.replace($.jsString(args.customArgs.redemption.getUserInput()), '\n', '%0A'),
+            result: $.replace($.jsString(args.customArgs.redemption.userInput()), '\n', '%0A'),
             cache: true
         };
     }
@@ -113,7 +115,7 @@
      */
     function cpinputraw(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getUserInput()),
+            result: $.jsString(args.customArgs.redemption.userInput()),
             cache: true
         };
     }
@@ -126,7 +128,7 @@
      */
     function cpprompt(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getInputPrompt()),
+            result: $.jsString(args.customArgs.redemption.reward().prompt()),
             cache: true
         };
     }
@@ -139,7 +141,7 @@
      */
     function cpredemptionid(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getRedemptionID()),
+            result: $.jsString(args.customArgs.redemption.id()),
             cache: true
         };
     }
@@ -152,7 +154,7 @@
      */
     function cpredeemableid(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getRewardID()),
+            result: $.jsString(args.customArgs.redemption.reward().id()),
             cache: true
         };
     }
@@ -199,7 +201,7 @@
      */
     function cptitle(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getRewardTitle()),
+            result: $.jsString(args.customArgs.redemption.reward().title()),
             cache: true
         };
     }
@@ -212,7 +214,7 @@
      */
     function cpuserid(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getUserID()),
+            result: $.jsString(args.customArgs.redemption.userId()),
             cache: true
         };
     }
@@ -225,7 +227,7 @@
      */
     function cpusername(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.getUsername()),
+            result: $.jsString(args.customArgs.redemption.userLogin()),
             cache: true
         };
     }
