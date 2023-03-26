@@ -25,7 +25,7 @@
      * @event eventSubPredictionBegin
      */
     $.bind('eventSubPredictionBegin', function (event) {
-        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             let prediction = null;
 
             try {
@@ -68,7 +68,7 @@
      * @event eventSubPredictionEnd
      */
     $.bind('eventSubPredictionEnd', function (event) {
-        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             try {
                 if (currentPrediction !== null && isCommandPrediction) {
                     if (event.event().status() === Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.PredictionEnd.Status.RESOLVED) {
@@ -101,7 +101,7 @@
      * @event eventSubPredictionLock
      */
     $.bind('eventSubPredictionLock', function (event) {
-        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             if (currentPrediction !== null) {
                 currentPrediction.locked = true;
 
@@ -120,7 +120,7 @@
         ];
 
         for (let i in subscriptions) {
-            let newSubscription = new subscriptions[i]($.username.getIDCaster());
+            let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
             try {
                 newSubscription.create().block();
             } catch (ex) {

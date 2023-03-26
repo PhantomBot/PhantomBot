@@ -22,7 +22,7 @@
     let gamesPlayed;
 
     $.bind('eventSubChannelUpdate', function (event) {
-        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             $.twitchcache.eventSubMode(true);
             $.twitchcache.setStreamStatus(event.event().title());
             $.twitchcache.setGameTitle(event.event().categoryName());
@@ -30,7 +30,7 @@
     });
 
     $.bind('eventSubStreamOnline', function (event) {
-        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             if ($.twitchcache.eventSubMode()) {
                 $.twitchcache.goOnline(true);
             } else {
@@ -40,7 +40,7 @@
     });
 
     $.bind('eventSubStreamOffline', function (event) {
-        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.username.getIDCaster())) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             $.twitchcache.goOffline(true);
         }
     });
@@ -54,7 +54,7 @@
             ];
 
             for (let i in subscriptions) {
-                let newSubscription = new subscriptions[i]($.username.getIDCaster());
+                let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
                 try {
                     newSubscription.create().block();
                 } catch (ex) {
