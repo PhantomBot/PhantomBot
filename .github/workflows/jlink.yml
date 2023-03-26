@@ -68,8 +68,10 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ format('jre-{0}', matrix.osname) }}
-        path: ${{ matrix.folder }}/**
+        name: ${{ matrix.folder }}
+        path: resources/${{ matrix.folder }}/**
+        if-no-files-found: error
+        retention-days: 1
   commit:
     name: Commit Binaries
     runs-on: ubuntu-latest
@@ -80,21 +82,10 @@ jobs:
       with:
         token: ${{ secrets.GH_TOKEN }}
         ref: 'master'
-    - name: Download Artifact (Linux)
+    - name: Download Artifacts
       uses: actions/download-artifact@v3
       with:
-        name: jre-Linux
-        path: java-runtime-linux
-    - name: Download Artifact (Windows)
-      uses: actions/download-artifact@v3
-      with:
-        name: jre-Windows
-        path: java-runtime
-    - name: Download Artifact (macOS)
-      uses: actions/download-artifact@v3
-      with:
-        name: jre-macOS
-        path: java-runtime-macos
+        path: resources
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
