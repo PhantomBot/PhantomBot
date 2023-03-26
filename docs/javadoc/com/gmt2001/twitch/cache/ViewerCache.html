@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -247,27 +247,41 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 </td>
 </tr>
 <tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupIdBylogin(java.lang.String)">lookupIdBylogin</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;login)</code></th>
+<td class="colLast">
+<div class="block">Looks up the specified user login in the mapping database and returns the associated user id</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupLoginAsync(java.util.List)">lookupLoginAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;login)</code></th>
 <td class="colLast">
 <div class="block">Performs an asynchronous operation to lookup the users on Twitch API and add them to the cache</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#lookupLoginById(java.lang.String)">lookupLoginById</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</code></th>
+<td class="colLast">
+<div class="block">Looks up the specified user id in the mapping database and returns the associated user login</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onIrcModerationEvent(tv.phantombot.event.irc.message.IrcModerationEvent)">onIrcModerationEvent</a></span>&#8203;(<a href="../../../../tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a>&nbsp;event)</code></th>
 <td class="colLast">
 <div class="block">Updates the cache when a TMI message is recieved</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(java.lang.String)">remove</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</code></th>
 <td class="colLast">
 <div class="block">Removes the specified user from the cache</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeByLogin(java.lang.String)">removeByLogin</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;login)</code></th>
 <td class="colLast">
@@ -515,7 +529,7 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 <a id="activeChatters()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>activeChatters</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a>&gt;&nbsp;activeChatters()</pre>
@@ -523,6 +537,38 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink"><code>List</code></a> of <a href="Viewer.html" title="class in com.gmt2001.twitch.cache"><code>Viewer</code></a> objects</dd>
+</dl>
+</li>
+</ul>
+<a id="lookupLoginById(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>lookupLoginById</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;lookupLoginById&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</pre>
+<div class="block">Looks up the specified user id in the mapping database and returns the associated user login</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>id</code> - The user id to lookup</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The associated user login; <code>null</code> if the specified user id is not in the database</dd>
+</dl>
+</li>
+</ul>
+<a id="lookupIdBylogin(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>lookupIdBylogin</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;lookupIdBylogin&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;login)</pre>
+<div class="block">Looks up the specified user login in the mapping database and returns the associated user id</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>login</code> - The user login to lookup</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The associated user id; <code>null</code> if the specified user login is not in the database</dd>
 </dl>
 </li>
 </ul>
