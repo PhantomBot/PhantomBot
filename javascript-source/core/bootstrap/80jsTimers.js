@@ -22,12 +22,6 @@
  *
  * A general javascript module to replace Rhino's crappy timer functions
  */
-
-var setTimeout,
-        clearTimeout,
-        setInterval,
-        clearInterval;
-
 (function () {
     /**
      * @function setTimeout
