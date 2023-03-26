@@ -18,6 +18,10 @@ package tv.phantombot.event.pubsub.videoplayback;
 
 import tv.phantombot.event.pubsub.PubSubEvent;
 
+/**
+ * @deprecated Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public abstract class PubSubVideoPlaybackEvent extends PubSubEvent {
 
     private final int channelId;

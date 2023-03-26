@@ -18,6 +18,10 @@ package tv.phantombot.event.pubsub.channelpoints;
 
 import tv.phantombot.event.pubsub.PubSubEvent;
 
+/**
+ * @deprecated This is now handeled by EventSub
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubChannelPointsEvent extends PubSubEvent {
 
     private final String redemptionID;

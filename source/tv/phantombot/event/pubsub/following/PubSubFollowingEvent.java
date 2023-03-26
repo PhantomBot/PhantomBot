@@ -18,6 +18,10 @@ package tv.phantombot.event.pubsub.following;
 
 import tv.phantombot.event.pubsub.PubSubEvent;
 
+/**
+ * @deprecated This is now handeled by EventSub
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public abstract class PubSubFollowingEvent extends PubSubEvent {
 
     private final String username;
