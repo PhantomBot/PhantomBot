@@ -16,6 +16,10 @@
  */
 package tv.phantombot.event.pubsub.following;
 
+/**
+ * @deprecated This is now handeled by EventSub
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubFollowEvent extends PubSubFollowingEvent {
 
     public PubSubFollowEvent(String username, String userid, String displayname) {

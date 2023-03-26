@@ -15,7 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package tv.phantombot.event.pubsub.videoplayback;
-
+/**
+ * @deprecated Viewer counts are updated reasonably frequently by Helix
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubViewCountEvent extends PubSubVideoPlaybackEvent {
 
     private final int viewers;

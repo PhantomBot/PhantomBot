@@ -16,6 +16,10 @@
  */
 package tv.phantombot.event.pubsub.videoplayback;
 
+/**
+ * @deprecated Stream up/down is now handeled by EventSub
+ */
+@Deprecated(since = "3.8.0.0", forRemoval = true)
 public class PubSubStreamDownEvent extends PubSubVideoPlaybackEvent {
 
     /**
