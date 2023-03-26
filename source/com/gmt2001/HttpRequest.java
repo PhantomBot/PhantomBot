@@ -34,10 +34,6 @@ import org.json.JSONObject;
 @Deprecated(since = "3.6.0.0", forRemoval = true)
 public final class HttpRequest {
 
-    /**
-     * @deprecated Please use {@link HttpClient} instead
-     */
-    @Deprecated(since = "3.6.0.0", forRemoval = true)
     public enum RequestType {
 
         GET, POST, PATCH, PUT, DELETE
@@ -46,34 +42,18 @@ public final class HttpRequest {
     private HttpRequest() {
     }
 
-    /**
-     * @deprecated Please use {@link HttpClient} instead
-     */
-    @Deprecated(since = "3.6.0.0", forRemoval = true)
     public static HttpResponse getData(RequestType type, String url, String post, Map<String, String> headers) {
         return getData(type, url, post, headers, false);
     }
 
-    /**
-     * @deprecated Please use {@link HttpClient} instead
-     */
-    @Deprecated(since = "3.6.0.0", forRemoval = true)
     public static HttpResponse getData(RequestType type, String url, String post, Map<String, String> headers, boolean isJson) {
         return getData(type, URIUtil.create(url), post, headers, isJson);
     }
 
-    /**
-     * @deprecated Please use {@link HttpClient} instead
-     */
-    @Deprecated(since = "3.6.0.0", forRemoval = true)
     public static HttpResponse getData(RequestType type, URI uri, String post, Map<String, String> headers) {
         return getData(type, uri, post, headers, false);
     }
 
-    /**
-     * @deprecated Please use {@link HttpClient} instead
-     */
-    @Deprecated(since = "3.6.0.0", forRemoval = true)
     @SuppressWarnings("UseSpecificCatch")
     public static HttpResponse getData(RequestType type, URI uri, String post, Map<String, String> headers, boolean isJson) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -133,9 +113,7 @@ public final class HttpRequest {
      * @param responseCode
      * @param exception
      * @param exceptionMessage
-     * @deprecated
      */
-    @Deprecated(since = "3.6.0.0", forRemoval = true)
     public static void generateJSONObject(JSONObject obj, boolean isSuccess,
             String requestType, String data, String url, int responseCode,
             String exception, String exceptionMessage) throws JSONException {
