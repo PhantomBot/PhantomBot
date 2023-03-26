@@ -23,15 +23,15 @@ jobs:
         rsync -rv --delete-during --progress resources/web/common docs
     - name: Make Path File
       run: |
-        echo docs/web/panel/ >> paths.txt
-        echo docs/web/common/ >> paths.txt
+        echo docs/panel/ >> paths.txt
+        echo docs/common/ >> paths.txt
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: docsremotepanel
         path: |
-          docs/web/common/**
-          docs/web/panel/**
+          docs/common/**
+          docs/panel/**
           paths.txt
         if-no-files-found: error
         retention-days: 1
