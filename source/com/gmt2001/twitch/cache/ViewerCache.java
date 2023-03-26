@@ -36,10 +36,12 @@ import com.gmt2001.ExecutorService;
 import net.engio.mbassy.listener.Handler;
 import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
+import tv.phantombot.event.twitch.TwitchUserLoginChangedEvent;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 
@@ -100,6 +102,33 @@ public final class ViewerCache implements Listener {
         if (!this.registered) {
             EventBus.instance().register(this);
             this.registered = true;
+        }
+    }
+
+    /**
+     * Updates the user mapping database and sends an event if it is a login name change
+     * <br /><br />
+     * The data is stored in two tables: {@code idToLogin} is keyed by user id and valued by user login.
+     * {@code loginToId} is keyed by user login and valued by user id
+     *
+     * @param id The user id
+     * @param login The user login
+     */
+    private void updateDatabase(String id, String login) {
+        String existing = PhantomBot.instance().getDataStore().GetString("idToLogin", "", id);
+
+        if (existing == null || !existing.equals(login)) {
+
+            PhantomBot.instance().getDataStore().SetString("idToLogin", "", id, login);
+            if (existing != null && !existing.isBlank()) {
+                PhantomBot.instance().getDataStore().RemoveKey("loginToId", "", existing);
+            }
+
+            PhantomBot.instance().getDataStore().SetString("loginToId", "", login, id);
+
+            if (existing != null && !existing.isBlank()) {
+                EventBus.instance().postAsync(new TwitchUserLoginChangedEvent(id, existing, login));
+            }
         }
     }
 
@@ -321,8 +350,17 @@ public final class ViewerCache implements Listener {
 
         if (cacheViewer != null) {
             cacheViewer.seen();
+
+            if (!cacheViewer.login().equals(viewer.login())) {
+                cacheViewer.login(viewer.login());
+
+                this.updateDatabase(cacheViewer.id(), cacheViewer.login());
+            }
+
             return false;
         }
+
+        this.updateDatabase(viewer.id(), viewer.login());
 
         return true;
     }
@@ -450,5 +488,33 @@ public final class ViewerCache implements Listener {
     public List<Viewer> activeChatters() {
         Instant after = Instant.now().minus(ACTIVE_TIMEOUT);
         return this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat() && kv.getValue().lastActive().isAfter(after)).map(kv -> kv.getValue()).collect(Collectors.toList());
+    }
+
+    /**
+     * Looks up the specified user id in the mapping database and returns the associated user login
+     *
+     * @param id The user id to lookup
+     * @return The associated user login; {@code null} if the specified user id is not in the database
+     */
+    public String lookupLoginById(String id) {
+        if (PhantomBot.instance().getDataStore().HasKey("idToLogin", "", id)) {
+            return PhantomBot.instance().getDataStore().GetString("idToLogin", "", id);
+        }
+
+        return null;
+    }
+
+    /**
+     * Looks up the specified user login in the mapping database and returns the associated user id
+     *
+     * @param login The user login to lookup
+     * @return The associated user id; {@code null} if the specified user login is not in the database
+     */
+    public String lookupIdBylogin(String login) {
+        if (PhantomBot.instance().getDataStore().HasKey("loginToId", "", login)) {
+            return PhantomBot.instance().getDataStore().GetString("loginToId", "", login);
+        }
+
+        return null;
     }
 }
