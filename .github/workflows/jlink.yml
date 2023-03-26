@@ -70,6 +70,7 @@ jobs:
       with:
         name: ${{ format('jre-{0}', matrix.osname) }}
         path: ${{ matrix.folder }}/**
+        if-no-files-found: error
   commit:
     name: Commit Binaries
     runs-on: ubuntu-latest
