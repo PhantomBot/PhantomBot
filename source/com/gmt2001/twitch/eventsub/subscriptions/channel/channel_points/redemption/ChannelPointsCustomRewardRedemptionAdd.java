@@ -97,7 +97,7 @@ public final class ChannelPointsCustomRewardRedemptionAdd extends EventSubSubscr
         this.id = e.event().getString("id");
         this.user_input = e.event().optString("user_input");
         this.sStatus = e.event().getString("status");
-        this.status = RedemptionStatus.valueOf(this.sStatus.substring(0, 1).toUpperCase() + this.sStatus.substring(1));
+        this.status = RedemptionStatus.valueOf(this.sStatus.substring(0, 1).toUpperCase() + this.sStatus.substring(1).toLowerCase());
         this.reward = new ChannelPointsReward(e.event().getJSONObject("reward"));
         this.sRedeemed_at = e.event().getString("redeemed_at");
         this.redeemed_at = EventSub.parseDate(this.sRedeemed_at);
