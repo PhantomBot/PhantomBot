@@ -21,6 +21,10 @@ jobs:
       run: |
         rsync -rv --delete-during --progress resources/web/panel docs
         rsync -rv --delete-during --progress resources/web/common docs
+    - name: Make Path File
+      run: |
+        echo docs/web/panel/ >> paths.txt
+        echo docs/web/common/ >> paths.txt
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
@@ -28,7 +32,7 @@ jobs:
         path: |
           docs/web/common/**
           docs/web/panel/**
-          build.xml
+          paths.txt
         if-no-files-found: error
         retention-days: 1
   parsecommandtags:
@@ -48,13 +52,16 @@ jobs:
         architecture: 'x64'
     - name: Execute Script
       run: python3 development-resources/parse_transformers.py
+    - name: Make Path File
+      run: |
+        echo docs/guides/content/commands/command-variables.md >> paths.txt
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: docstransformers
         path: |
           docs/guides/content/commands/command-variables.md
-          build.xml
+          paths.txt
         if-no-files-found: error
         retention-days: 1
   parseconsolecommands:
@@ -74,13 +81,16 @@ jobs:
         architecture: 'x64'
     - name: Execute Script
       run: python3 development-resources/parse_consolecommands.py
+    - name: Make Path File
+      run: |
+        echo docs/guides/content/commands/console-commands.md >> paths.txt
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: docsconsolecommands
         path: |
           docs/guides/content/commands/console-commands.md
-          build.xml
+          paths.txt
         if-no-files-found: error
         retention-days: 1
   parsebotproperties:
@@ -100,6 +110,10 @@ jobs:
         architecture: 'x64'
     - name: Execute Script
       run: python3 development-resources/parse_botproperties.py
+    - name: Make Path File
+      run: |
+        echo docs/guides/content/setupbot/properties.md >> paths.txt
+        echo resources/web/common/json/properties.json >> paths.txt
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
@@ -107,7 +121,7 @@ jobs:
         path: |
           docs/guides/content/setupbot/properties.md
           resources/web/common/json/properties.json
-          build.xml
+          paths.txt
         if-no-files-found: error
         retention-days: 1
   javadoc:
@@ -153,13 +167,16 @@ jobs:
     - name: Revert Zips
       if: steps.verify-changed-files.outputs.files_changed == 'false'
       run: cp -fv /tmp/javadoczips/*.zip docs/javadoc/
+    - name: Make Path File
+      run: |
+        echo docs/javadoc/ >> paths.txt
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: docsjavadoc
         path: |
           docs/javadoc/**
-          build.xml
+          paths.txt
         if-no-files-found: error
         retention-days: 1
   commit:
@@ -179,7 +196,7 @@ jobs:
       with:
         path: /tmp/docartifacts
     - name: Copy Files
-      run: for d in /tmp/docartifacts/docs*; do echo rsync $d; rsync -rv --delete-during --progress $d/ .; echo; done
+      run: for d in /tmp/docartifacts/docs*; do while read p; do echo rsync $p; rsync -rv --delete-during --progress $d/$p $p; echo; done < $d/paths.txt; done
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
