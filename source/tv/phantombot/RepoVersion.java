@@ -78,7 +78,7 @@ public final class RepoVersion {
     }
 
     /**
-     * @deprecated
+     * @deprecated This build type is not used
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public static boolean isPrereleaseBuild() {

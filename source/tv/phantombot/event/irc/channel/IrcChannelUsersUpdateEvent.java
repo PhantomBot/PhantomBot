@@ -44,7 +44,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * @param session
      * @param joins
      * @param parts
-     * @deprecated
+     * @deprecated Joins/Parts are not calculated anymore
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public IrcChannelUsersUpdateEvent(TwitchSession session, String[] joins, String[] parts) {
@@ -57,7 +57,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      *
      * @param joins
      * @param parts
-     * @deprecated
+     * @deprecated Joins/Parts are not calculated anymore
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public IrcChannelUsersUpdateEvent(String[] joins, String[] parts) {
@@ -69,7 +69,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * Method that returns the current array of users who joined the channel in the last 10 minutes.
      *
      * @return joins
-     * @deprecated
+     * @deprecated Joins/Parts are not calculated anymore
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public String[] getJoins() {
@@ -80,7 +80,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      * Method that returns the current array of users who left the channel in the last 10 minutes.
      *
      * @return parts
-     * @deprecated
+     * @deprecated Joins/Parts are not calculated anymore
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public String[] getParts() {

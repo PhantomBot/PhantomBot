@@ -23,7 +23,7 @@ import com.gmt2001.twitch.cache.Viewer;
 import com.gmt2001.twitch.cache.ViewerCache;
 
 /**
- * @deprecated Please use {@link ViewerCache} instead
+ * @deprecated Please use {@link ViewerCache} instead. In scripts, use {@code $.viewer} instead of {@code $.username}
  */
 @Deprecated(since = "3.8.0.0", forRemoval = true)
 public class UsernameCache {
