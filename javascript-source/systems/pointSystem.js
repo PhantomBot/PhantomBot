@@ -24,7 +24,7 @@
  * Use the $ API
  */
 (function () {
-    var onlineGain = $.getSetIniDbNumber('pointSettings', 'onlineGain', 1),
+    let onlineGain = $.getSetIniDbNumber('pointSettings', 'onlineGain', 1),
             offlineGain = $.getSetIniDbNumber('pointSettings', 'offlineGain', 1),
             onlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'onlinePayoutInterval', 10),
             offlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'offlinePayoutInterval', 0),
@@ -35,15 +35,13 @@
             pointsBonusAmount = 0,
             pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
             pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
-            pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
-            userCache = {},
-            _userCacheLock = new Packages.java.util.concurrent.locks.ReentrantLock();
+            pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).');
 
     /**
      * @function updateSettings
      */
     function updateSettings() {
-        var tempPointNameSingle,
+        let tempPointNameSingle,
                 tempPointNameMultiple;
 
         onlineGain = $.getIniDbNumber('pointSettings', 'onlineGain');
@@ -148,14 +146,14 @@
     }
 
     function calcPointsGained(username, group, defaultgain, isonline) {
-        var table = 'grouppoints' + (isonline ? '' : 'offline');
+        let table = 'grouppoints' + (isonline ? '' : 'offline');
         username = $.jsString(username);
         group = $.jsString(group);
         defaultgain = Math.max(defaultgain, 0);
-        var amount = -1;
+        let amount = -1;
 
         if ($.inidb.exists(table, group)) {
-            var candidateAmount = parseInt($.inidb.get(table, group));
+            let candidateAmount = parseInt($.inidb.get(table, group));
             if (candidateAmount !== null && !isNaN(candidateAmount)) {
                 amount = candidateAmount;
             }
@@ -163,7 +161,7 @@
 
         if (group === 'Subscriber' && $.inidb.exists('subplan', username)) {
             if ($.inidb.exists(table, 'Subscriber' + $.inidb.get('subplan', username))) {
-                var candidateAmount2 = parseInt($.inidb.get(table, 'Subscriber' + $.inidb.get('subplan', username)));
+                let candidateAmount2 = parseInt($.inidb.get(table, 'Subscriber' + $.inidb.get('subplan', username)));
                 if (candidateAmount2 !== null && !isNaN(candidateAmount2)) {
                     amount = candidateAmount2;
                 }
@@ -181,12 +179,11 @@
      * @function runPointsPayout
      */
     function runPointsPayout() {
-        var now = $.systemTime(),
+        let now = $.systemTime(),
             normalPayoutUsers = [], // users that get the normal online payout, nothing custom.
             isOnline = false,
             username,
-            amount,
-            i;
+            amount;
 
         if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
             return;
@@ -206,8 +203,14 @@
             }
         }
 
+        let activeList = $.viewer.activeChatters();
+        let active = [];
 
-        for (i in $.users) {
+        for (let i = 0; i < activeList.size(); i++) {
+            active.push($.jsString(activeList.get(i)));
+        }
+
+        for (let i in $.users) {
             if ($.users[i] !== null) {
                 username = $.users[i].toLowerCase();
                 if (isOnline) {
@@ -224,23 +227,13 @@
                     }
                 }
 
-                _userCacheLock.lock();
-                try {
-                    if (userCache[username] !== undefined) {
-                        if (userCache[username] - lastPayout > 0) {
-                            delete userCache[username];
-                            amount += activeBonus;
-                        } else {
-                            delete userCache[username];
-                        }
-                    }
-                } finally {
-                    _userCacheLock.unlock();
+                if (active.includes(username)) {
+                    amount += activeBonus;
                 }
 
                 if (getUserPenalty(username)) {
                     for (i in penalties) {
-                        var time = penalties[i].time - now;
+                        let time = penalties[i].time - now;
                         if (time <= 0) {
                             penalties.splice(i, 1);
                         }
@@ -279,7 +272,7 @@
             return;
         }
 
-        var newTime = (time * 6e4) + $.systemTime();
+        let newTime = (time * 6e4) + $.systemTime();
         username = username.toLowerCase();
 
         penalties.push({
@@ -298,7 +291,7 @@
      * @param username
      */
     function getUserPenalty(username) {
-        for (var i in penalties) {
+        for (let i in penalties) {
             if (penalties[i].user.equalsIgnoreCase(username)) {
                 return true;
             }
@@ -313,7 +306,7 @@
      * @param {Number} time
      */
     function setTempBonus(amount, time) {
-        var newTime = (time * 6e4);
+        let newTime = (time * 6e4);
         if (!amount || !time) {
             return;
         }
@@ -346,7 +339,7 @@
         }
 
 
-        for (var i in $.users) {
+        for (let i in $.users) {
             $.inidb.incr('points', $.users[i].toLowerCase(), amount);
         }
 
@@ -365,7 +358,7 @@
         }
 
 
-        for (var i in $.users) {
+        for (let i in $.users) {
             if (getUserPoints($.users[i].toLowerCase()) > amount) {
                 $.inidb.decr('points', $.users[i].toLowerCase(), amount);
             } else {
@@ -381,7 +374,7 @@
      * @function getPointsMessage
      */
     function getPointsMessage(username, displayName) {
-        var s = pointsMessage;
+        let s = pointsMessage;
 
         if (s.match(/\(userprefix\)/)) {
             s = $.replace(s, '(userprefix)', $.whisperPrefix(username).trim());
@@ -414,25 +407,11 @@
         return s;
     }
 
-    /*
-     * @event ircChannelMessage
-     */
-    $.bind('ircChannelMessage', function (event) {
-        if (activeBonus > 0) {
-            _userCacheLock.lock();
-            try {
-                userCache[event.getSender()] = $.systemTime();
-            } finally {
-                _userCacheLock.unlock();
-            }
-        }
-    });
-
     /**
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 username = $.username.resolve(sender, event.getTags()),
                 command = event.getCommand(),
                 args = event.getArgs(),
@@ -785,7 +764,7 @@
          * @commandpath makeitrain [amount] - Send a random amount of points to each user in the channel
          */
         if (command.equalsIgnoreCase('makeitrain')) {
-            var lastAmount = 0,
+            let lastAmount = 0,
                     amount = 0,
                     totalAmount = 0;
 
@@ -864,7 +843,7 @@
     });
 
     // Set the timer for the points payouts
-    var interval = setInterval(function () {
+    let interval = setInterval(function () {
         runPointsPayout();
     }, 6e4, 'scripts::systems::pointSystem.js');
 
