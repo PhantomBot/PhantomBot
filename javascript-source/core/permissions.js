@@ -26,7 +26,7 @@
  * Use the $ API
  */
 (function () {
-    var userGroups = [],
+    let userGroups = [],
             modeOUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             subUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             vipUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
@@ -42,7 +42,7 @@
     /**
      * @export $
      */
-    var PERMISSION = {
+    let PERMISSION = {
         Caster: 0,
         Admin: 1,
         Mod: 2,
@@ -59,9 +59,9 @@
      * @function cleanTwitchBots
      */
     function cleanTwitchBots() {
-        var twitchBots = $.readFile('./addons/ignorebots.txt');
+        let twitchBots = $.readFile('./addons/ignorebots.txt');
 
-        for (var i in twitchBots) {
+        for (let i in twitchBots) {
             $.inidb.del('points', twitchBots[i].toLowerCase());
             $.inidb.del('time', twitchBots[i].toLowerCase());
         }
@@ -72,9 +72,9 @@
      *
      */
     function loadTwitchBots() {
-        var twitchBots = $.readFile('./addons/ignorebots.txt');
+        let twitchBots = $.readFile('./addons/ignorebots.txt');
 
-        for (var i = 0; i < twitchBots.length; i++) {
+        for (let i = 0; i < twitchBots.length; i++) {
             botList.addIfAbsent($.javaString(twitchBots[i].toLowerCase()));
         }
     }
@@ -120,7 +120,7 @@
      * @returns {boolean}
      */
     function hasKey(list, value) {
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             if ($.equalsIgnoreCase(list[i], value)) {
                 return true;
             }
@@ -138,27 +138,9 @@
      * then it disassociates from the original list causing issues.
      *
      *** This can take a very long time to complete and is very hard on your CPU when large array.
+     * @deprecated
      */
-    function updateUsersObject(newUsers) {
-        var i;
-
-        _usersLock.lock();
-        try {
-            for (i in newUsers) {
-                if (!userExists(newUsers[i])) {
-                    users.push(newUsers[i]);
-                }
-            }
-
-            for (i = users.length - 1; i >= 0; i--) {
-                if (!hasKey(newUsers, users[i])) {
-                    users.splice(i, 1);
-                }
-            }
-        } finally {
-            _usersLock.unlock();
-        }
-    }
+    function updateUsersObject(newUsers) {}
 
     /**
      * @function getKeyIndex
@@ -167,7 +149,7 @@
      * @returns {boolean}
      */
     function getKeyIndex(list, value) {
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             if (list[i] !== undefined && $.equalsIgnoreCase(list[i], value)) {
                 return i;
             }
@@ -417,7 +399,7 @@
             return PERMISSION.Caster;
         }
 
-        var id = PERMISSION.Viewer;
+        let id = PERMISSION.Viewer;
 
         if (id > PERMISSION.Caster && isCaster(username)) {
             id = PERMISSION.Caster;
@@ -470,7 +452,7 @@
      */
     function permCom(username, command, subcommand, tags) {
         $.consoleDebug($.findCaller());
-        var commandGroup, allowed;
+        let commandGroup, allowed;
         if (subcommand === '' || subcommand === undefined) {
             commandGroup = $.getCommandGroup(command);
         } else {
@@ -496,7 +478,7 @@
      * @returns {Number}
      */
     function queryDBPermission(username) {
-        var id = PERMISSION.None;
+        let id = PERMISSION.None;
         if ($.inidb.exists('group', username.toLowerCase())) {
             id = parseInt($.inidb.get('group', username.toLowerCase()));
         }
@@ -537,12 +519,12 @@
      * @returns {Number}
      */
     function getGroupIdByName(inGroupName) {
-        var groupName = $.javaString(inGroupName),
+        let groupName = $.javaString(inGroupName),
                 userGroupName;
 
         _usersGroupsLock.lock();
         try {
-            for (var i = 0; i < userGroups.length; i++) {
+            for (let i = 0; i < userGroups.length; i++) {
                 userGroupName = $.javaString(userGroups[i]);
                 if ($.equalsIgnoreCase(userGroupName, groupName.toLowerCase()) || $.equalsIgnoreCase(userGroupName.substring(0, userGroupName.length() - 1), groupName.toLowerCase())) {
                     return i;
@@ -589,13 +571,13 @@
      * @function reloadGroups
      */
     function reloadGroups() {
-        var groupKeys = $.inidb.GetKeyList('groups', '');
+        let groupKeys = $.inidb.GetKeyList('groups', '');
 
         _usersGroupsLock.lock();
         try {
             userGroups = [];
 
-            for (var i in groupKeys) {
+            for (let i in groupKeys) {
                 userGroups[parseInt(groupKeys[i])] = $.getIniDbString('groups', groupKeys[i], '');
             }
         } finally {
@@ -609,21 +591,16 @@
      * @returns {Array}
      */
     function getUsernamesArrayByGroupId(filterId) {
-        var array = [];
+        let array = [];
 
-        _usersLock.lock();
-        try {
-            for (var i in users) {
-                if (filterId) {
-                    if (getUserGroupId(users[i]) <= filterId) {
-                        array.push(users[i]);
-                    }
-                } else {
+        for (let i in users) {
+            if (filterId) {
+                if (getUserGroupId(users[i]) <= filterId) {
                     array.push(users[i]);
                 }
+            } else {
+                array.push(users[i]);
             }
-        } finally {
-            _usersLock.unlock();
         }
 
         return array;
@@ -697,10 +674,10 @@
      * @function loadModeratorsCache
      */
     function loadModeratorsCache() {
-        var keys = $.inidb.GetKeyValueList('group', ''),
+        let keys = $.inidb.GetKeyValueList('group', ''),
             a = new Packages.java.util.ArrayList();
 
-        for (var i in keys) {
+        for (let i in keys) {
             if (parseInt(keys[i].getValue()) <= PERMISSION.Mod) {
                 a.add($.javaString(keys[i].getKey().toLowerCase()));
             }
@@ -725,7 +702,7 @@
             return;
         }
 
-        var oldID = queryDBPermission(username),
+        let oldID = queryDBPermission(username),
             isInCache = subUsers.contains(username);
 
         if (isInCache && oldID !== PERMISSION.Sub) { //User got added to subscriber cache but it's database value is out of sync
@@ -754,7 +731,7 @@
      * @returns {String}
      */
     function getGroupList() {
-        var keys = $.inidb.GetKeyList('groups', ''),
+        let keys = $.inidb.GetKeyList('groups', ''),
                 groups = [],
                 temp = [],
                 i;
@@ -844,7 +821,7 @@
     function swapSubscriberVIP() {
         _usersGroupsLock.lock();
         try {
-            var oldSubL = userGroups[PERMISSION.Sub],
+            let oldSubL = userGroups[PERMISSION.Sub],
                 oldSubD = $.inidb.get('groups', PERMISSION.Sub.toString()),
                 oldSubU = $.inidb.GetKeysByLikeValues('group', '', PERMISSION.Sub.toString()),
                 newSubU = [],
@@ -928,8 +905,6 @@
 
     /**
      * @event ircChannelJoinUpdate
-     *
-     * @info Event that is sent when a large amount of people join/leave. This is done on a new thread.
      */
     $.bind('ircChannelUsersUpdate', function (event) {
         setTimeout(function () {
@@ -972,7 +947,7 @@
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function (event) {
-        var username = event.getUser().toLowerCase();
+        let username = event.getUser().toLowerCase();
 
         if (isTwitchBot(username)) {
             return;
@@ -984,13 +959,6 @@
             }
 
             lastJoinPart = $.systemTime();
-
-            _usersLock.lock();
-            try {
-                users.push($.jsString(username));
-            } finally {
-                _usersLock.unlock();
-            }
         }
     });
 
@@ -998,7 +966,7 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        var username = event.getSender().toLowerCase(),
+        let username = event.getSender().toLowerCase(),
             tags = event.getTags();
 
         if (isTwitchBot(username)) {
@@ -1008,13 +976,6 @@
         if (!isUpdatingUsers && !userExists(username)) {
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
-            }
-
-            _usersLock.lock();
-            try {
-                users.push($.jsString(username));
-            } finally {
-                _usersLock.unlock();
             }
 
             // The subscriber Cache should always be up-to-date for restoreSubscriberStatus() to properly work
@@ -1031,20 +992,13 @@
      * @event ircChannelLeave
      */
     $.bind('ircChannelLeave', function (event) {
-        var username = event.getUser().toLowerCase();
+        let username = event.getUser().toLowerCase();
 
         if (!isUpdatingUsers) {
-            _usersLock.lock();
-            try {
-                let i = getKeyIndex(users, username);
+            let i = getKeyIndex(users, username);
 
-                if (i >= 0) {
-                    users.splice(i, 1);
-                    restoreSubscriberStatus(username.toLowerCase());
-                    $.username.removeUser(username);
-                }
-            } finally {
-                _usersLock.unlock();
+            if (i >= 0) {
+                restoreSubscriberStatus(username.toLowerCase());
             }
         }
     });
@@ -1053,7 +1007,7 @@
      * @event ircChannelUserMode
      */
     $.bind('ircChannelUserMode', function (event) {
-        var username = event.getUser().toLowerCase();
+        let username = event.getUser().toLowerCase();
 
         if (event.getMode().equalsIgnoreCase('o')) {
             if (event.getAdd().toString().equals('true')) {
@@ -1103,7 +1057,7 @@
      * @event ircPrivateMessage
      */
     $.bind('ircPrivateMessage', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 message = event.getMessage().toLowerCase().trim(),
                 subsTxtList = [],
                 spl,
@@ -1131,7 +1085,7 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 command = event.getCommand(),
                 args = event.getArgs(),
                 actionValue = args[0];
@@ -1152,7 +1106,7 @@
         if (command.equalsIgnoreCase('users')) {
             _usersLock.lock();
             try {
-                var len = users.length;
+                let len = users.length;
             } finally {
                 _usersLock.unlock();
             }
@@ -1168,7 +1122,7 @@
          * @commandpath mods - List mods currently in the channel
          */
         if (command.equalsIgnoreCase('mods')) {
-            var tmp = getUsernamesArrayByGroupId(PERMISSION.Mod);
+            let tmp = getUsernamesArrayByGroupId(PERMISSION.Mod);
             if (tmp.length > 20) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', tmp.length));
             } else {
@@ -1234,7 +1188,7 @@
                 return;
             }
 
-            var username = $.user.sanitize(args[0]),
+            let username = $.user.sanitize(args[0]),
                     groupId = parseInt(args[1]);
 
             if (!$.user.isKnown(username)) {
@@ -1279,7 +1233,7 @@
          * @commandpath permissionpoints [permissionID] [online / offline] [points] - Show/set the points gained for each permissions. -1 defaults to the global configuration.
          */
         if (command.equalsIgnoreCase('permissionpoints')) {
-            var groupId,
+            let groupId,
                     channelStatus,
                     points;
 
