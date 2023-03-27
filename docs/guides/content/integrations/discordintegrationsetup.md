@@ -7,7 +7,7 @@
 1. Use the following link https://discord.com/developers/applications
 2. Click *New Application*, set name and click *Create*
 3. Go to *Bot*, click Add Bot - *Yes, do it!*
-4. Turn 2 toggles on *Privileged Gateway Intents*
+4. Turn on all toggles under *Privileged Gateway Intents*
 
 ### Getting and Setup Bot token
 
