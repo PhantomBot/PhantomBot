@@ -579,6 +579,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     }
 
     public void shutdown() {
-        this.client.close(WebSocketCloseStatus.NORMAL_CLOSURE);
+        if (this.client != null) {
+            this.client.close(WebSocketCloseStatus.NORMAL_CLOSURE);
+        }
     }
 }
