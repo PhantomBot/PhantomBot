@@ -33,7 +33,11 @@ import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
-/*
+/**
+ * Updates the game list used for auto-complete when changing the game from the panel
+ * <br /><br />
+ * The list is stored at {@code web/panel/js/utils/gamesList.txt}
+ *
  * @author gmt2001
  */
 public final class GamesListUpdater {
@@ -44,6 +48,11 @@ public final class GamesListUpdater {
     private GamesListUpdater() {
     }
 
+    /**
+     * Handles debug messages based on the class-specific debug flag
+     *
+     * @param message The message to print
+     */
     private static void debug(String message) {
         /**
          * @botproperty gameslistupdaterdebug - If `true` and `debugon` is also enabled, enables debug output for GamesListUpdater. Default `false`
@@ -54,10 +63,23 @@ public final class GamesListUpdater {
         }
     }
 
+    /**
+     * Updates the games list using smart update mode
+     */
     public static void update() {
         update(false);
     }
 
+    /**
+     * Updates the games list
+     * <br /><br />
+     * If {@code force} is {@code false}, a smart update is performed. A smart update only occurs if it has been 7 days since the
+     * last update, and will attempt to perform a patch update if available. If the local index is too old, a full update is performed
+     * instead, where the entire games index is downloaded. A full update can take some time
+     *
+     * @param force {@code true} to force a full update of the index ane enable additional console output; {@code false} to
+     * perform a smart update
+     */
     public static void update(boolean force) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
@@ -194,6 +216,13 @@ public final class GamesListUpdater {
         }
     }
 
+    /**
+     * Performs an update from the specified remote index, adding or renaming games
+     *
+     * @param data The local index to be updated
+     * @param index The index id to update from
+     * @param force Indicates if force mode was used for this update, enabling additional output
+     */
     private static void UpdateFromIndex(List<String> data, int index, boolean force) {
         HttpClientResponse response;
         response = HttpClient.get(URIUtil.create(BASE_URL + "data/games" + index + ".json"));
@@ -228,6 +257,12 @@ public final class GamesListUpdater {
         }
     }
 
+    /**
+     * Performs an update from the remote delete list
+     *
+     * @param data The local index to be updated
+     * @param deletes An array of game titles that have been deleted
+     */
     private static void DoDeletes(List<String> data, JSONArray deletes) {
         for (int i = 0; i < deletes.length(); i++) {
             if (data.contains(deletes.getString(i))) {
