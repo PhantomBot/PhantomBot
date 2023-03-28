@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /*
@@ -42,6 +44,16 @@ public final class GamesListUpdater {
     private GamesListUpdater() {
     }
 
+    private static void debug(String message) {
+        /**
+         * @botproperty gameslistupdaterdebug - If `true` and `debugon` is also enabled, enables debug output for GamesListUpdater. Default `false`
+         * @botpropertycatsort gameslistupdaterdebug 200 900 Debug
+         */
+        if (CaselessProperties.instance().getPropertyAsBoolean("gameslistupdaterdebug", false)) {
+            com.gmt2001.Console.debug.println(message);
+        }
+    }
+
     public static void update() {
         update(false);
     }
@@ -52,25 +64,25 @@ public final class GamesListUpdater {
         if (force) {
             com.gmt2001.Console.out.println("Starting GamesListUpdater");
         } else {
-            com.gmt2001.Console.debug.println("Starting GamesListUpdater");
+            debug("Starting GamesListUpdater");
         }
 
         if (!PhantomBot.instance().getDataStore().HasKey("settings", "", "gamesList-version")) {
-            com.gmt2001.Console.debug.println("Version not set, initializing to 0");
+            debug("Version not set, initializing to 0");
             PhantomBot.instance().getDataStore().SetInteger("settings", "", "gamesList-version", 0);
         }
 
         if (!PhantomBot.instance().getDataStore().HasKey("settings", "", "gamesList-lastCheck")) {
-            com.gmt2001.Console.debug.println("Last Check not set, initializaing to Unix Epoch");
+            debug("Last Check not set, initializaing to Unix Epoch");
             PhantomBot.instance().getDataStore().SetLong("settings", "", "gamesList-lastCheck", 0);
         }
 
         LocalDateTime lastCheck = LocalDateTime.ofEpochSecond(PhantomBot.instance().getDataStore().GetLong("settings", "", "gamesList-lastCheck"), 0, ZoneOffset.UTC);
 
-        com.gmt2001.Console.debug.println("Last Update: " + lastCheck.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        debug("Last Update: " + lastCheck.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
         if (!force && lastCheck.plusDays(UPDATE_INTERVAL_DAYS).isAfter(LocalDateTime.now())) {
-            com.gmt2001.Console.debug.println("Skipping update, interval has not expired...");
+            debug("Skipping update, interval has not expired...");
             return;
         }
 
@@ -82,8 +94,8 @@ public final class GamesListUpdater {
             if (force) {
                 com.gmt2001.Console.out.println("Failed to retrive the main index, update failed...");
             }
-            com.gmt2001.Console.debug.println("Skipping update, request failed...");
-            com.gmt2001.Console.debug.println(response.toString());
+            debug("Skipping update, request failed...");
+            debug(response.toString());
             return;
         }
 
@@ -95,17 +107,17 @@ public final class GamesListUpdater {
         }
 
         if (myVersion >= jso.getInt("version")) {
-            com.gmt2001.Console.debug.println("Skipping update, currently up-to-date...");
+            debug("Skipping update, currently up-to-date...");
             return;
         }
 
         List<String> data = new ArrayList<>();
         try {
             if (myVersion > 0) {
-                com.gmt2001.Console.debug.println("Loading current gamesList.txt...");
+                debug("Loading current gamesList.txt...");
                 List<String> odata = Files.readAllLines(Paths.get("./web/panel/js/utils/gamesList.txt"));
                 data.addAll(odata);
-                com.gmt2001.Console.debug.println("Loaded " + data.size() + " entries");
+                debug("Loaded " + data.size() + " entries");
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -115,26 +127,26 @@ public final class GamesListUpdater {
         if (force) {
             com.gmt2001.Console.out.println("Executing updates to reach version " + jso.getInt("version") + "...");
         } else {
-            com.gmt2001.Console.debug.println("Executing updates to reach version " + jso.getInt("version") + "...");
+            debug("Executing updates to reach version " + jso.getInt("version") + "...");
         }
 
         boolean fullUpdate = force;
         while (myVersion < jso.getInt("version")) {
             int nextVersion = myVersion + 1;
-            com.gmt2001.Console.debug.println("Current version is " + myVersion + ", updating to version " + nextVersion + "...");
+            debug("Current version is " + myVersion + ", updating to version " + nextVersion + "...");
 
             JSONArray indexesToUpdate;
             if (!force && jso.getJSONObject("index_changes").has("" + nextVersion)) {
-                com.gmt2001.Console.debug.println("Found changelist for version " + nextVersion);
+                debug("Found changelist for version " + nextVersion);
                 indexesToUpdate = jso.getJSONObject("index_changes").getJSONArray("" + nextVersion);
             } else {
-                com.gmt2001.Console.debug.println("No changelist for version " + nextVersion + ", executing full update...");
+                debug("No changelist for version " + nextVersion + ", executing full update...");
                 indexesToUpdate = jso.getJSONArray("indexes");
                 fullUpdate = true;
                 data.clear();
             }
 
-            com.gmt2001.Console.debug.println("Processing indexes...");
+            debug("Processing indexes...");
             for (int i = 0; i < indexesToUpdate.length(); i++) {
                 if (force) {
                     com.gmt2001.Console.out.println("Updating from index " + indexesToUpdate.getInt(i) + "...");
@@ -148,12 +160,12 @@ public final class GamesListUpdater {
             UpdateFromIndex(data, -1, force);
 
             if (jso.getJSONObject("deletes").has("" + nextVersion)) {
-                com.gmt2001.Console.debug.println("Found deletes for version " + nextVersion + ", processing...");
+                debug("Found deletes for version " + nextVersion + ", processing...");
                 DoDeletes(data, jso.getJSONObject("deletes").getJSONArray("" + nextVersion));
             }
 
             if (fullUpdate) {
-                com.gmt2001.Console.debug.println("Full update completed, skipping to version " + jso.getInt("version") + "...");
+                debug("Full update completed, skipping to version " + jso.getInt("version") + "...");
                 myVersion = jso.getInt("version");
             } else {
                 myVersion = nextVersion;
@@ -163,10 +175,10 @@ public final class GamesListUpdater {
                 if (force) {
                     com.gmt2001.Console.out.println("Writing gamesList.txt version " + myVersion + "...");
                 } else {
-                    com.gmt2001.Console.debug.println("Writing gamesList.txt version " + myVersion + "...");
+                    debug("Writing gamesList.txt version " + myVersion + "...");
                 }
                 Files.write(Paths.get("./web/panel/js/utils/gamesList.txt"), data);
-                com.gmt2001.Console.debug.println("Saved " + data.size() + " entries");
+                debug("Saved " + data.size() + " entries");
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
                 return;
@@ -178,7 +190,7 @@ public final class GamesListUpdater {
         if (force) {
             com.gmt2001.Console.out.println("Games list update complete, now at version " + myVersion);
         } else {
-            com.gmt2001.Console.debug.println("Games list update complete, now at version " + myVersion);
+            debug("Games list update complete, now at version " + myVersion);
         }
     }
 
@@ -190,21 +202,21 @@ public final class GamesListUpdater {
             if (force) {
                 com.gmt2001.Console.out.println("Failed to retrive index " + index + ", skipping...");
             }
-            com.gmt2001.Console.debug.println("Skipping index " + index + ", request failed...");
-            com.gmt2001.Console.debug.println(response.toString());
+            debug("Skipping index " + index + ", request failed...");
+            debug(response.toString());
             return;
         }
 
         JSONArray jsa = new JSONArray(response.responseBody());
 
         for (int i = 0; i < jsa.length(); i++) {
-            com.gmt2001.Console.debug.println("Processing game \"" + jsa.getJSONObject(i).getString("name") + "\"...");
+            debug("Processing game \"" + jsa.getJSONObject(i).getString("name") + "\"...");
             if (jsa.getJSONObject(i).has("old_names")) {
                 JSONArray old_names = jsa.getJSONObject(i).getJSONArray("old_names");
 
                 for (int k = 0; k < old_names.length(); k++) {
                     if (data.contains(old_names.getString(k))) {
-                        com.gmt2001.Console.debug.println("Found an old name \"" + old_names.getString(k) + "\", removing...");
+                        debug("Found an old name \"" + old_names.getString(k) + "\", removing...");
                         data.remove(old_names.getString(k));
                     }
                 }
@@ -219,7 +231,7 @@ public final class GamesListUpdater {
     private static void DoDeletes(List<String> data, JSONArray deletes) {
         for (int i = 0; i < deletes.length(); i++) {
             if (data.contains(deletes.getString(i))) {
-                com.gmt2001.Console.debug.println("Deleting game \"" + deletes.getString(i) + "\"...");
+                debug("Deleting game \"" + deletes.getString(i) + "\"...");
                 data.remove(deletes.getString(i));
             }
         }
