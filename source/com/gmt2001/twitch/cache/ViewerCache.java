@@ -41,6 +41,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent;
 import tv.phantombot.event.irc.message.IrcModerationEvent;
+import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.twitch.TwitchUserLoginChangedEvent;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
@@ -77,7 +78,26 @@ public final class ViewerCache implements Listener {
     private ViewerCache() {
         ExecutorService.scheduleAtFixedRate(this::doGC, 15, 15, TimeUnit.MINUTES);
         ExecutorService.scheduleAtFixedRate(this::getChatters, 0, 2, TimeUnit.MINUTES);
-        this.lookupAsync(null, List.of(TwitchValidate.instance().getChatLogin().toLowerCase(),
+        this.updateBroadcasterBot().subscribe();
+    }
+
+    /**
+     * EventBus registration
+     */
+    private synchronized void register() {
+        if (!this.registered) {
+            EventBus.instance().register(this);
+            this.registered = true;
+        }
+    }
+
+    /**
+     * Performs a lookup of the broadcaster and bot accounts
+     *
+     * @return A {@link Mono} that can be subscribed to
+     */
+    private Mono<List<Viewer>> updateBroadcasterBot() {
+        return this.lookupAsync(null, List.of(TwitchValidate.instance().getChatLogin().toLowerCase(),
             CaselessProperties.instance().getProperty("channel").toLowerCase())).doOnSuccess(viewers -> {
             for (Viewer viewer: viewers) {
                 this.add(viewer.attributes());
@@ -91,18 +111,8 @@ public final class ViewerCache implements Listener {
                 }
             }
         }).doOnError(ex -> {
-            com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing ctor getUsersAsync");
-        }).subscribe();
-    }
-
-    /**
-     * EventBus registration
-     */
-    private synchronized void register() {
-        if (!this.registered) {
-            EventBus.instance().register(this);
-            this.registered = true;
-        }
+            com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing broadcaster/bot getUsersAsync");
+        });
     }
 
     /**
@@ -216,6 +226,16 @@ public final class ViewerCache implements Listener {
         }).doOnError(ex -> {
             com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getChattersAsync");
         }).subscribe();
+    }
+
+    /**
+     * Updates the broadcaster and bot in the cache if they have changed
+     *
+     * @param event The event to process
+     */
+    @Handler
+    public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
+        ExecutorService.schedule(this::updateBroadcasterBot, 5, TimeUnit.SECONDS);
     }
 
     /**
@@ -459,6 +479,10 @@ public final class ViewerCache implements Listener {
      * @return The {@link Viewer} object representing the bot account
      */
     public Viewer bot() {
+        if (this.bot == null) {
+            this.updateBroadcasterBot().block(Duration.ofSeconds(10));
+        }
+
         return this.bot;
     }
 
@@ -468,6 +492,10 @@ public final class ViewerCache implements Listener {
      * @return The {@link Viewer} object representing the broadcaster account
      */
     public Viewer broadcaster() {
+        if (this.broadcaster == null) {
+            this.updateBroadcasterBot().block(Duration.ofSeconds(10));
+        }
+
         return this.broadcaster;
     }
 
