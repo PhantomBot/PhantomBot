@@ -28,6 +28,7 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.twitch.cache.ViewerCache;
 
+import net.engio.mbassy.listener.Handler;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
 
@@ -53,6 +54,8 @@ import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.Listener;
+import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.twitch.TwitchBroadcasterTypeEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.gamechange.TwitchGameChangeEvent;
@@ -67,7 +70,7 @@ import tv.phantombot.twitch.api.Helix;
  * This class keeps track of certain Twitch information such as if the channel is online or not and sends events to the JS side to indicate when the
  * channel has gone off or online.
  */
-public final class TwitchCache {
+public final class TwitchCache implements Listener {
 
     private static final TwitchCache INSTANCE = new TwitchCache();
 
@@ -105,6 +108,19 @@ public final class TwitchCache {
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private TwitchCache() {
         ExecutorService.schedule(this::startup, 1, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Performs startup if properties are reloaded and previous startup has failed
+     *
+     * @param event
+     */
+    @Handler
+    public void onPropertiesReloadedEvent(PropertiesReloadedEvent event) {
+        if (this.streamUpdate == null || this.clipUpdate == null) {
+            this.kill();
+            ExecutorService.schedule(this::startup, 1, TimeUnit.SECONDS);
+        }
     }
 
     private void startup() {
@@ -791,7 +807,11 @@ public final class TwitchCache {
     }
 
     public void kill() {
-        this.streamUpdate.cancel(true);
-        this.clipUpdate.cancel(true);
+        if (this.streamUpdate != null) {
+            this.streamUpdate.cancel(true);
+        }
+        if (this.clipUpdate != null) {
+            this.clipUpdate.cancel(true);
+        }
     }
 }
