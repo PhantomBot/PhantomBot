@@ -1104,14 +1104,7 @@
          * @commandpath users - List users currently in the channel
          */
         if (command.equalsIgnoreCase('users')) {
-            _usersLock.lock();
-            try {
-                let len = users.length;
-            } finally {
-                _usersLock.unlock();
-            }
-
-            if (len > 20) {
+            if (users.length > 20) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', len));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.users', getUsernamesArrayByGroupId().join(', ')));
