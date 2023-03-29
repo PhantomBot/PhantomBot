@@ -18,6 +18,11 @@ package tv.phantombot.event.jvm;
 
 import tv.phantombot.event.Event;
 
+/**
+ * A Java event has occurred
+ *
+ * @author gmt2001
+ */
 public abstract class JVMEvent extends Event {
 
     /**

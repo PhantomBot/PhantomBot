@@ -16,6 +16,8 @@
  */
 package tv.phantombot.event;
 
+/**
+ * Interface which marks a class as a receiver of events posted by {@link EventBus}
+ */
 public interface Listener {
-
 }
