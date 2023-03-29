@@ -1634,11 +1634,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Returns the <a href="tv/phantombot/event/eventsub/EventSubEvent.html" title="class in tv.phantombot.event.eventsub"><code>EventSubEvent</code></a> that contains data about the event</div>
 </dd>
 <dt><a href="tv/phantombot/event/Event.html" title="class in tv.phantombot.event"><span class="typeNameLink">Event</span></a> - Class in <a href="tv/phantombot/event/package-summary.html">tv.phantombot.event</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Base class for all events that are sent via <a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event"><code>EventBus</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/Event.html#%3Cinit%3E()">Event()</a></span> - Constructor for class tv.phantombot.event.<a href="tv/phantombot/event/Event.html" title="class in tv.phantombot.event">Event</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event"><span class="typeNameLink">EventBus</span></a> - Class in <a href="tv/phantombot/event/package-summary.html">tv.phantombot.event</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Sends events to downstream subscribers
+ <br/><br/>
+ To subscribe to an event, a Java class must be non-static, implement <a href="tv/phantombot/event/Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a>, have a public method for each desired event
+ with the signature <code>public void methodName(EventClass event)</code> where <code>EventClass</code> is the class of the event to be
+ captured, have the <code>@net.engio.mbassy.listener.Handler</code> annotation applied to each event handler method, and must call
+ <a href="tv/phantombot/event/EventBus.html#register(tv.phantombot.event.Listener)"><code>EventBus.register(Listener)</code></a> for each instance of the class that should receive events
+ <br/><br/>
+ The event bus will deliver each event to all subscribers of the matching event class, as well as subscribers of any event class in
+ the parent chain going back up to the <a href="tv/phantombot/event/Event.html" title="class in tv.phantombot.event"><code>Event</code></a> base class.</div>
+</dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html" title="class in com.gmt2001.dns"><span class="typeNameLink">EventLoopDetector</span></a> - Class in <a href="com/gmt2001/dns/package-summary.html">com.gmt2001.dns</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub"><span class="typeNameLink">EventSub</span></a> - Class in <a href="com/gmt2001/twitch/eventsub/package-summary.html">com.gmt2001.twitch.eventsub</a></dt>
@@ -1826,7 +1838,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Handles exceptions that are thrown up the stack</div>
 </dd>
 <dt><a href="tv/phantombot/event/ExceptionHandler.html" title="class in tv.phantombot.event"><span class="typeNameLink">ExceptionHandler</span></a> - Class in <a href="tv/phantombot/event/package-summary.html">tv.phantombot.event</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Error handler for <a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event"><code>EventBus</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/ExceptionHandler.html#%3Cinit%3E()">ExceptionHandler()</a></span> - Constructor for class tv.phantombot.event.<a href="tv/phantombot/event/ExceptionHandler.html" title="class in tv.phantombot.event">ExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ExecutorService.html#execute(java.lang.Runnable)">execute(Runnable)</a></span> - Static method in class com.gmt2001.<a href="com/gmt2001/ExecutorService.html" title="class in com.gmt2001">ExecutorService</a></dt>
@@ -1993,7 +2007,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 class="title">G</h2>
 <dl>
 <dt><a href="com/gmt2001/GamesListUpdater.html" title="class in com.gmt2001"><span class="typeNameLink">GamesListUpdater</span></a> - Class in <a href="com/gmt2001/package-summary.html">com.gmt2001</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Updates the game list used for auto-complete when changing the game from the panel
+ <br/><br/>
+ The list is stored at <code>web/panel/js/utils/gamesList.txt</code></div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpwsserver/x509/SelfSignedX509CertificateGenerator.html#generateCertificate(java.lang.String,java.security.KeyPair,int,java.lang.String)">generateCertificate(String, KeyPair, int, String)</a></span> - Static method in class com.gmt2001.httpwsserver.x509.<a href="com/gmt2001/httpwsserver/x509/SelfSignedX509CertificateGenerator.html" title="class in com.gmt2001.httpwsserver.x509">SelfSignedX509CertificateGenerator</a></dt>
 <dd>
 <div class="block">Create a self-signed X.509 Certificate</div>
@@ -4072,7 +4090,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/EventBus.html#instance()">instance()</a></span> - Static method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
-<div class="block">Method that returns this instance</div>
+<div class="block">Singleton method</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#instance()">instance()</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
@@ -4603,7 +4621,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="com/gmt2001/JSTimers.html" title="class in com.gmt2001"><span class="typeNameLink">JSTimers</span></a> - Class in <a href="com/gmt2001/package-summary.html">com.gmt2001</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/jvm/JVMEvent.html" title="class in tv.phantombot.event.jvm"><span class="typeNameLink">JVMEvent</span></a> - Class in <a href="tv/phantombot/event/jvm/package-summary.html">tv.phantombot.event.jvm</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A Java event has occurred</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/jvm/JVMEvent.html#%3Cinit%3E()">JVMEvent()</a></span> - Constructor for class tv.phantombot.event.jvm.<a href="tv/phantombot/event/jvm/JVMEvent.html" title="class in tv.phantombot.event.jvm">JVMEvent</a></dt>
 <dd>
 <div class="block">Class constructor</div>
@@ -4709,7 +4729,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>FullHttpResponse</code></a> back to the client that lists the contents of the directory pointed to by <code>p</code></div>
 </dd>
 <dt><a href="tv/phantombot/event/Listener.html" title="interface in tv.phantombot.event"><span class="typeNameLink">Listener</span></a> - Interface in <a href="tv/phantombot/event/package-summary.html">tv.phantombot.event</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Interface which marks a class as a receiver of events posted by <a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event"><code>EventBus</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/subscriptions/stream/StreamOnline.Type.html#LIVE">LIVE</a></span> - com.gmt2001.twitch.eventsub.subscriptions.stream.<a href="com/gmt2001/twitch/eventsub/subscriptions/stream/StreamOnline.Type.html" title="enum in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOnline.Type</a></dt>
 <dd>
 <div class="block">A live stream</div>
@@ -5310,8 +5332,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 &nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/illusionaryone/Logger.html#onPropertiesLoadedEvent(tv.phantombot.event.jvm.PropertiesLoadedEvent)">onPropertiesLoadedEvent(PropertiesLoadedEvent)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/ViewerCache.html#onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">onPropertiesReloadedEvent(PropertiesReloadedEvent)</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
+<dd>
+<div class="block">Updates the broadcaster and bot in the cache if they have changed</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/illusionaryone/Logger.html#onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">onPropertiesReloadedEvent(PropertiesReloadedEvent)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">onPropertiesReloadedEvent(PropertiesReloadedEvent)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
+<dd>
+<div class="block">Performs startup if properties are reloaded and previous startup has failed</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html#onSubscribe(java.util.concurrent.Flow.Subscription)">onSubscribe(Flow.Subscription)</a></span> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscriptionType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#onSubscribe(java.util.concurrent.Flow.Subscription)">onSubscribe(Flow.Subscription)</a></span> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
@@ -5554,7 +5584,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/EventBus.html#post(tv.phantombot.event.Event)">post(Event)</a></span> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
-<div class="block">Method that posts an event in sync.</div>
+<div class="block">Performs a blocking publish of an event to the relevant subscribers
+ <br/><br/>
+ This method should only be used in extremely rare circumstances.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/HttpRequest.RequestType.html#POST">POST</a></span> - com.gmt2001.<a href="com/gmt2001/HttpRequest.RequestType.html" title="enum in com.gmt2001">HttpRequest.RequestType</a></dt>
 <dd>
@@ -5562,7 +5594,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 &nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/EventBus.html#postAsync(tv.phantombot.event.Event)">postAsync(Event)</a></span> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
-<div class="block">Method that posts an event in async.</div>
+<div class="block">Publishes an event to the relevant subscribers on a separate thread</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/PredictionBegin.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction"><span class="typeNameLink">PredictionBegin</span></a> - Class in <a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/package-summary.html">com.gmt2001.twitch.eventsub.subscriptions.channel.prediction</a></dt>
 <dd>
@@ -5862,11 +5894,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Shortcut to get the instance of <a href="tv/phantombot/CaselessProperties.html" title="class in tv.phantombot"><code>CaselessProperties</code></a></div>
 </dd>
 <dt><a href="tv/phantombot/event/jvm/PropertiesLoadedEvent.html" title="class in tv.phantombot.event.jvm"><span class="typeNameLink">PropertiesLoadedEvent</span></a> - Class in <a href="tv/phantombot/event/jvm/package-summary.html">tv.phantombot.event.jvm</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The properties in <a href="tv/phantombot/CaselessProperties.html" title="class in tv.phantombot"><code>CaselessProperties</code></a> have been loaded and are now available</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/jvm/PropertiesLoadedEvent.html#%3Cinit%3E()">PropertiesLoadedEvent()</a></span> - Constructor for class tv.phantombot.event.jvm.<a href="tv/phantombot/event/jvm/PropertiesLoadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesLoadedEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm"><span class="typeNameLink">PropertiesReloadedEvent</span></a> - Class in <a href="tv/phantombot/event/jvm/package-summary.html">tv.phantombot.event.jvm</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The properties in <a href="tv/phantombot/CaselessProperties.html" title="class in tv.phantombot"><code>CaselessProperties</code></a> have been reloaded and amy contain new values</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/jvm/PropertiesReloadedEvent.html#%3Cinit%3E()">PropertiesReloadedEvent()</a></span> - Constructor for class tv.phantombot.event.jvm.<a href="tv/phantombot/event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesReloadedEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#property(java.lang.String)">property(String)</a></span> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
@@ -6252,7 +6288,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/EventBus.html#register(tv.phantombot.event.Listener)">register(Listener)</a></span> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
-<div class="block">Method that registers a listener with the bus.</div>
+<div class="block">Registers an instance of a class implementing <a href="tv/phantombot/event/Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to receive events</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#registerHttpHandler(java.lang.String,com.gmt2001.httpwsserver.HttpRequestHandler)">registerHttpHandler(String, HttpRequestHandler)</a></span> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
@@ -6988,7 +7024,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/pubsub/TwitchPubSub.html#shutdown()">shutdown()</a></span> - Method in class tv.phantombot.twitch.pubsub.<a href="tv/phantombot/twitch/pubsub/TwitchPubSub.html" title="class in tv.phantombot.twitch.pubsub">TwitchPubSub</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/jvm/ShutdownEvent.html" title="class in tv.phantombot.event.jvm"><span class="typeNameLink">ShutdownEvent</span></a> - Class in <a href="tv/phantombot/event/jvm/package-summary.html">tv.phantombot.event.jvm</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">The bot has started the shutdown sequence and will exit in approximately 5 seconds</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/jvm/ShutdownEvent.html#%3Cinit%3E()">ShutdownEvent()</a></span> - Constructor for class tv.phantombot.event.jvm.<a href="tv/phantombot/event/jvm/ShutdownEvent.html" title="class in tv.phantombot.event.jvm">ShutdownEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SqliteStore.html" title="class in com.gmt2001.datastore"><span class="typeNameLink">SqliteStore</span></a> - Class in <a href="com/gmt2001/datastore/package-summary.html">com.gmt2001.datastore</a></dt>
@@ -7915,7 +7953,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/EventBus.html#unregister(tv.phantombot.event.Listener)">unregister(Listener)</a></span> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
-<div class="block">Method that removes a listener from the bus.</div>
+<div class="block">Deregisters an instance of a class implementing <a href="tv/phantombot/event/Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to no longer receive events</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/ScriptEventManager.html#unregister(tv.phantombot.script.ScriptEventHandler)">unregister(ScriptEventHandler)</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptEventManager.html" title="class in tv.phantombot.script">ScriptEventManager</a></dt>
 <dd>
@@ -7934,9 +7972,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Attempts to set the current action to <code>Actions.UnTimeout</code></div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/GamesListUpdater.html#update()">update()</a></span> - Static method in class com.gmt2001.<a href="com/gmt2001/GamesListUpdater.html" title="class in com.gmt2001">GamesListUpdater</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Updates the games list using smart update mode</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/GamesListUpdater.html#update(boolean)">update(boolean)</a></span> - Static method in class com.gmt2001.<a href="com/gmt2001/GamesListUpdater.html" title="class in com.gmt2001">GamesListUpdater</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Updates the games list
+ <br/><br/>
+ If <code>force</code> is <code>false</code>, a smart update is performed.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#updateAPIToken(java.lang.String)">updateAPIToken(String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/httpserver/HTTPOAuthHandler.html#updateAuth()">updateAuth()</a></span> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPOAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPOAuthHandler</a></dt>

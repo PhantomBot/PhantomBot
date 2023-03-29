@@ -510,6 +510,14 @@ if `true`, debugging info for twitch helix api requests are sent to the debug lo
 
 &nbsp;
 
+#### gameslistupdaterdebug
+
+Data Type: _Boolean_
+
+if `true` and `debugon` is also enabled, enables debug output for gameslistupdater. default `false`
+
+&nbsp;
+
 #### wsdebug
 
 Data Type: _Boolean_

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":42,"i11":42,"i12":10,"i13":10,"i14":9,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":42,"i11":42,"i12":10,"i13":10,"i14":9,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -130,9 +130,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="../event/Listener.html" title="interface in tv.phantombot.event">Listener</a></code></dd>
+</dl>
 <hr>
 <pre>public final class <span class="typeNameLabel">TwitchCache</span>
-extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>
+implements <a href="../event/Listener.html" title="interface in tv.phantombot.event">Listener</a></pre>
 <div class="block">TwitchCache Class
 
  This class keeps track of certain Twitch information such as if the channel is online or not and sends events to the JS side to indicate when the
@@ -306,20 +311,27 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">onPropertiesReloadedEvent</a></span>&#8203;(<a href="../event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesReloadedEvent</a>&nbsp;event)</code></th>
+<td class="colLast">
+<div class="block">Performs startup if properties are reloaded and previous startup has failed</div>
+</td>
+</tr>
+<tr id="i22" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAffiliatePartner(boolean,boolean)">setAffiliatePartner</a></span>&#8203;(boolean&nbsp;isAffiliate,
                    boolean&nbsp;isPartner)</code></th>
 <td class="colLast">
 <div class="block">Sets the current Affiliate and Partner states, and sends ane vent if they changed</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGameTitle(java.lang.String)">setGameTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;gameTitle)</code></th>
 <td class="colLast">
 <div class="block">Sets the game title</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setGameTitle(java.lang.String,boolean)">setGameTitle</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;gameTitle,
             boolean&nbsp;sendEvent)</code></th>
@@ -327,14 +339,14 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sets the game title</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStreamStatus(java.lang.String)">setStreamStatus</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamTitle)</code></th>
 <td class="colLast">
 <div class="block">Sets the title (status) of the stream</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setStreamStatus(java.lang.String,boolean)">setStreamStatus</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;streamTitle,
                boolean&nbsp;sendEvent)</code></th>
@@ -342,28 +354,28 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sets the title (status) of the stream</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#subscriberPoints()">subscriberPoints</a></span>()</code></th>
 <td class="colLast">
 <div class="block">The current number of subscriber points of the broadcaster.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i28" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#subscribers()">subscribers</a></span>()</code></th>
 <td class="colLast">
 <div class="block">The current number of subscribers of the broadcaster.</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncOnline()">syncOnline</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Syncs the stream status using both Get Streams and Get Channel Information, then calls <a href="#goOnline(boolean)"><code>goOnline(boolean)</code></a> with the parameter set to <code>true</code></div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamInfoFromChannel(boolean,java.util.function.Consumer)">syncStreamInfoFromChannel</a></span>&#8203;(boolean&nbsp;shouldSendEvent,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Consumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&gt;&nbsp;callback)</code></th>
@@ -371,21 +383,21 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Syncs teh current stream title/game via the Get Channel Information endpoint</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamStatus()">syncStreamStatus</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Updates the stream status from the API</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamStatus(boolean)">syncStreamStatus</a></span>&#8203;(boolean&nbsp;shouldSendEvent)</code></th>
 <td class="colLast">
 <div class="block">Updates the stream status from the Get Streams endpoint</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#syncStreamStatus(boolean,java.util.function.Consumer)">syncStreamStatus</a></span>&#8203;(boolean&nbsp;shouldSendEvent,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html?is-external=true" title="class or interface in java.util.function" class="externalLink">Consumer</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&gt;&nbsp;callback)</code></th>
@@ -393,28 +405,28 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates the stream title/game/online status from the Get Streams endpoint</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateGame()">updateGame</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Updates the current game from the API</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateGame(boolean)">updateGame</a></span>&#8203;(boolean&nbsp;sendEvent)</code></th>
 <td class="colLast">
 <div class="block">Updates the current game</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateViewerCount(int)">updateViewerCount</a></span>&#8203;(int&nbsp;viewers)</code></th>
 <td class="colLast">
 <div class="block">Updates the viewer count</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#viewers()">viewers</a></span>()</code></th>
 <td class="colLast">
@@ -452,6 +464,20 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>instance</h4>
 <pre class="methodSignature">public static&nbsp;<a href="TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a>&nbsp;instance()</pre>
+</li>
+</ul>
+<a id="onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onPropertiesReloadedEvent</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onPropertiesReloadedEvent&#8203;(<a href="../event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesReloadedEvent</a>&nbsp;event)</pre>
+<div class="block">Performs startup if properties are reloaded and previous startup has failed</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - </dd>
+</dl>
 </li>
 </ul>
 <a id="setAffiliatePartner(boolean,boolean)">

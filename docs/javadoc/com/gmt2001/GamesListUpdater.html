@@ -133,6 +133,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">GamesListUpdater</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+<div class="block">Updates the game list used for auto-complete when changing the game from the panel
+ <br/><br/>
+ The list is stored at <code>web/panel/js/utils/gamesList.txt</code></div>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
+<dd>gmt2001</dd>
+</dl>
 </li>
 </ul>
 </div>
@@ -156,12 +163,18 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update()">update</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Updates the games list using smart update mode</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(boolean)">update</a></span>&#8203;(boolean&nbsp;force)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Updates the games list
+ <br/><br/>
+ If <code>force</code> is <code>false</code>, a smart update is performed.</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -194,6 +207,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>update</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;update()</pre>
+<div class="block">Updates the games list using smart update mode</div>
 </li>
 </ul>
 <a id="update(boolean)">
@@ -203,6 +217,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>update</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;update&#8203;(boolean&nbsp;force)</pre>
+<div class="block">Updates the games list
+ <br/><br/>
+ If <code>force</code> is <code>false</code>, a smart update is performed. A smart update only occurs if it has been 7 days since the
+ last update, and will attempt to perform a patch update if available. If the local index is too old, a full update is performed
+ instead, where the entire games index is downloaded. A full update can take some time</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>force</code> - <code>true</code> to force a full update of the index ane enable additional console output; <code>false</code> to
+ perform a smart update</dd>
+</dl>
 </li>
 </ul>
 </li>

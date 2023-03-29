@@ -133,6 +133,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">EventBus</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+<div class="block">Sends events to downstream subscribers
+ <br/><br/>
+ To subscribe to an event, a Java class must be non-static, implement <a href="Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a>, have a public method for each desired event
+ with the signature <code>public void methodName(EventClass event)</code> where <code>EventClass</code> is the class of the event to be
+ captured, have the <code>@net.engio.mbassy.listener.Handler</code> annotation applied to each event handler method, and must call
+ <a href="#register(tv.phantombot.event.Listener)"><code>register(Listener)</code></a> for each instance of the class that should receive events
+ <br/><br/>
+ The event bus will deliver each event to all subscribers of the matching event class, as well as subscribers of any event class in
+ the parent chain going back up to the <a href="Event.html" title="class in tv.phantombot.event"><code>Event</code></a> base class. For example: subscribing to <a href="jvm/JVMEvent.html" title="class in tv.phantombot.event.jvm"><code>JVMEvent</code></a> will receive all
+ events in the <code>tv.phantombot.event.jvm</code> package, as it is the base event for the package</div>
 </li>
 </ul>
 </div>
@@ -157,35 +167,37 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <td class="colFirst"><code>static <a href="EventBus.html" title="class in tv.phantombot.event">EventBus</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Method that returns this instance</div>
+<div class="block">Singleton method</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#post(tv.phantombot.event.Event)">post</a></span>&#8203;(<a href="Event.html" title="class in tv.phantombot.event">Event</a>&nbsp;event)</code></th>
 <td class="colLast">
-<div class="block">Method that posts an event in sync.</div>
+<div class="block">Performs a blocking publish of an event to the relevant subscribers
+ <br/><br/>
+ This method should only be used in extremely rare circumstances.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#postAsync(tv.phantombot.event.Event)">postAsync</a></span>&#8203;(<a href="Event.html" title="class in tv.phantombot.event">Event</a>&nbsp;event)</code></th>
 <td class="colLast">
-<div class="block">Method that posts an event in async.</div>
+<div class="block">Publishes an event to the relevant subscribers on a separate thread</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(tv.phantombot.event.Listener)">register</a></span>&#8203;(<a href="Listener.html" title="interface in tv.phantombot.event">Listener</a>&nbsp;listener)</code></th>
 <td class="colLast">
-<div class="block">Method that registers a listener with the bus.</div>
+<div class="block">Registers an instance of a class implementing <a href="Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to receive events</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unregister(tv.phantombot.event.Listener)">unregister</a></span>&#8203;(<a href="Listener.html" title="interface in tv.phantombot.event">Listener</a>&nbsp;listener)</code></th>
 <td class="colLast">
-<div class="block">Method that removes a listener from the bus.</div>
+<div class="block">Deregisters an instance of a class implementing <a href="Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to no longer receive events</div>
 </td>
 </tr>
 </table>
@@ -219,9 +231,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>instance</h4>
 <pre class="methodSignature">public static&nbsp;<a href="EventBus.html" title="class in tv.phantombot.event">EventBus</a>&nbsp;instance()</pre>
-<div class="block">Method that returns this instance</div>
+<div class="block">Singleton method</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
+<dd>An instance of eventbus</dd>
 </dl>
 </li>
 </ul>
@@ -232,10 +245,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>register</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;register&#8203;(<a href="Listener.html" title="interface in tv.phantombot.event">Listener</a>&nbsp;listener)</pre>
-<div class="block">Method that registers a listener with the bus.</div>
+<div class="block">Registers an instance of a class implementing <a href="Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to receive events</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>listener</code> - </dd>
+<dd><code>listener</code> - An instance to register to receive events</dd>
 </dl>
 </li>
 </ul>
@@ -246,10 +259,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>unregister</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;unregister&#8203;(<a href="Listener.html" title="interface in tv.phantombot.event">Listener</a>&nbsp;listener)</pre>
-<div class="block">Method that removes a listener from the bus.</div>
+<div class="block">Deregisters an instance of a class implementing <a href="Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to no longer receive events</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>listener</code> - </dd>
+<dd><code>listener</code> - An instance to deregister to no longer receive events</dd>
 </dl>
 </li>
 </ul>
@@ -260,10 +273,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>post</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;post&#8203;(<a href="Event.html" title="class in tv.phantombot.event">Event</a>&nbsp;event)</pre>
-<div class="block">Method that posts an event in sync.</div>
+<div class="block">Performs a blocking publish of an event to the relevant subscribers
+ <br/><br/>
+ This method should only be used in extremely rare circumstances. Most publishes should be done using <a href="#postAsync(tv.phantombot.event.Event)"><code>postAsync(Event)</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>event</code> - </dd>
+<dd><code>event</code> - An event to publish</dd>
 </dl>
 </li>
 </ul>
@@ -274,10 +289,10 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>postAsync</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;postAsync&#8203;(<a href="Event.html" title="class in tv.phantombot.event">Event</a>&nbsp;event)</pre>
-<div class="block">Method that posts an event in async.</div>
+<div class="block">Publishes an event to the relevant subscribers on a separate thread</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>event</code> - </dd>
+<dd><code>event</code> - An event to publish</dd>
 </dl>
 </li>
 </ul>

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -276,12 +276,19 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 </tr>
 <tr id="i15" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">onPropertiesReloadedEvent</a></span>&#8203;(<a href="../../../../tv/phantombot/event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesReloadedEvent</a>&nbsp;event)</code></th>
+<td class="colLast">
+<div class="block">Updates the broadcaster and bot in the cache if they have changed</div>
+</td>
+</tr>
+<tr id="i16" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remove(java.lang.String)">remove</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</code></th>
 <td class="colLast">
 <div class="block">Removes the specified user from the cache</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeByLogin(java.lang.String)">removeByLogin</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;login)</code></th>
 <td class="colLast">
@@ -323,6 +330,20 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The singleton instance of ViewerCache</dd>
+</dl>
+</li>
+</ul>
+<a id="onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onPropertiesReloadedEvent</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onPropertiesReloadedEvent&#8203;(<a href="../../../../tv/phantombot/event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesReloadedEvent</a>&nbsp;event)</pre>
+<div class="block">Updates the broadcaster and bot in the cache if they have changed</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - The event to process</dd>
 </dl>
 </li>
 </ul>
