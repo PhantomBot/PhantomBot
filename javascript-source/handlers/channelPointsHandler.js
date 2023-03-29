@@ -565,8 +565,6 @@
         $.registerChatSubcommand('channelpoints', 'add', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'edit', $.PERMISSION.Admin);
         $.registerChatSubcommand('channelpoints', 'remove', $.PERMISSION.Admin);
-
-        reloadManagedRedeemables();
     });
 
     $.bind('twitchBroadcasterType', function(event) {

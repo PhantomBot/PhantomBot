@@ -30,7 +30,6 @@
             modeOUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             subUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             vipUsers = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
-            users = [],
             moderatorsCache = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             botList = new Packages.java.util.concurrent.CopyOnWriteArrayList(),
             lastJoinPart = $.systemTime(),
@@ -165,12 +164,7 @@
      * @returns {boolean}
      */
     function userExists(username) {
-        _usersLock.lock();
-        try {
-            return hasKey(users, username);
-        } finally {
-            _usersLock.unlock();
-        }
+        return hasKey($.users, username);
     }
 
     /**
@@ -593,13 +587,13 @@
     function getUsernamesArrayByGroupId(filterId) {
         let array = [];
 
-        for (let i in users) {
+        for (let i in $.users) {
             if (filterId) {
-                if (getUserGroupId(users[i]) <= filterId) {
-                    array.push(users[i]);
+                if (getUserGroupId($.users[i]) <= filterId) {
+                    array.push($.users[i]);
                 }
             } else {
-                array.push(users[i]);
+                array.push($.users[i]);
             }
         }
 
@@ -932,7 +926,7 @@
 
             _usersLock.lock();
             try {
-                users = newUsers;
+                $.users = newUsers;
             } finally {
                 _usersLock.unlock();
             }
@@ -995,7 +989,7 @@
         let username = event.getUser().toLowerCase();
 
         if (!isUpdatingUsers) {
-            let i = getKeyIndex(users, username);
+            let i = getKeyIndex($.users, username);
 
             if (i >= 0) {
                 restoreSubscriberStatus(username.toLowerCase());
@@ -1104,14 +1098,7 @@
          * @commandpath users - List users currently in the channel
          */
         if (command.equalsIgnoreCase('users')) {
-            _usersLock.lock();
-            try {
-                let len = users.length;
-            } finally {
-                _usersLock.unlock();
-            }
-
-            if (len > 20) {
+            if ($.users.length > 20) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', len));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.users', getUsernamesArrayByGroupId().join(', ')));
@@ -1354,7 +1341,7 @@
     $.userGroups = userGroups;
     $.modeOUsers = modeOUsers;
     $.subUsers = subUsers;
-    $.users = users;
+    $.users = [];
     /**
      * @deprecated
      */

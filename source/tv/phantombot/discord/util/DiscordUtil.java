@@ -149,11 +149,7 @@ public class DiscordUtil {
     }
 
     public Message sendMessage(MessageChannel channel, String message) {
-        try {
-            return this.sendMessageAsync(channel, message).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendMessageAsync(channel, message).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendMessageAsync(MessageChannel channel, String message) {
@@ -176,6 +172,7 @@ public class DiscordUtil {
         this.validateParams(channel, message);
 
         if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
+            com.gmt2001.Console.debug.println("Failed");
             if (ex != null) {
                 com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
             }
@@ -189,10 +186,12 @@ public class DiscordUtil {
         }
 
         if (channel.getType() == Channel.Type.DM || channel.getType() == Channel.Type.GROUP_DM) {
+            com.gmt2001.Console.debug.println("Type is DM");
             this.sendPrivateMessage((PrivateChannel) channel, message);
             return null;
         }
 
+        com.gmt2001.Console.debug.println("Type is Guild");
         return channel.createMessage(message).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).doOnSuccess(m -> {
@@ -211,11 +210,7 @@ public class DiscordUtil {
      * @return
      */
     public Message sendMessage(String channelName, String message) {
-        try {
-            return this.sendMessageAsync(channelName, message).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendMessageAsync(channelName, message).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendMessageAsync(String channelName, String message) {
@@ -298,11 +293,7 @@ public class DiscordUtil {
     }
 
     public Message sendMessageEmbed(GuildMessageChannel channel, EmbedCreateSpec embed) {
-        try {
-            return this.sendMessageEmbedAsync(channel, embed).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendMessageEmbedAsync(channel, embed).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, EmbedCreateSpec embed) {
@@ -355,11 +346,7 @@ public class DiscordUtil {
      * @return
      */
     public Message sendMessageEmbed(String channelName, EmbedCreateSpec embed) {
-        try {
-            return this.sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendMessageEmbedAsync(channelName, embed).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendMessageEmbedAsync(String channelName, EmbedCreateSpec embed) {
@@ -375,11 +362,7 @@ public class DiscordUtil {
      * @return
      */
     public Message sendMessageEmbed(GuildMessageChannel channel, String color, String message) {
-        try {
-            return this.sendMessageEmbedAsync(channel, color, message).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendMessageEmbedAsync(channel, color, message).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, String color, String message) {
@@ -398,20 +381,12 @@ public class DiscordUtil {
      */
     public Message sendMessageEmbed(String channelName, String color, String message) {
         this.validateParams(message);
-        try {
-            EmbedCreateSpec embed = new EmbedBuilder().withColor(this.getColor(color)).withDescription(message).build();
-            return this.sendMessageEmbedAsync(channelName, embed).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        EmbedCreateSpec embed = new EmbedBuilder().withColor(this.getColor(color)).withDescription(message).build();
+        return this.sendMessageEmbedAsync(channelName, embed).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Message sendFile(GuildMessageChannel channel, String message, String fileLocation) {
-        try {
-            return this.sendFileAsync(channel, message, fileLocation).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendFileAsync(channel, message, fileLocation).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, String fileLocation) {
@@ -487,11 +462,7 @@ public class DiscordUtil {
      * @return
      */
     public Message sendFile(String channelName, String message, String fileLocation) {
-        try {
-            return this.sendFileAsync(channelName, message, fileLocation).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendFileAsync(channelName, message, fileLocation).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Message> sendFileAsync(String channelName, String message, String fileLocation) {
@@ -517,11 +488,7 @@ public class DiscordUtil {
      * @return
      */
     public Message sendFile(String channelName, String fileLocation) {
-        try {
-            return this.sendFileAsync(channelName, "", fileLocation).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.sendFileAsync(channelName, "", fileLocation).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     /**
@@ -636,11 +603,7 @@ public class DiscordUtil {
      * @return
      */
     public GuildMessageChannel getChannel(String channelName) {
-        try {
-            return this.getChannelAsync(channelName).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
@@ -736,11 +699,7 @@ public class DiscordUtil {
      * @return
      */
     public GuildMessageChannel getChannelByID(String channelId) {
-        try {
-            return this.getChannelByIDAsync(channelId).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getChannelByIDAsync(channelId).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<GuildMessageChannel> getChannelByIDAsync(String channelId) {
@@ -753,11 +712,7 @@ public class DiscordUtil {
     }
 
     public User getUser(String userName) {
-        try {
-            return this.getUserAsync(userName).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getUserAsync(userName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     /**
@@ -788,11 +743,7 @@ public class DiscordUtil {
     }
 
     public User getUserById(long userId) {
-        try {
-            return this.getUserByIdAsync(userId).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getUserByIdAsync(userId).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     /**
@@ -811,11 +762,7 @@ public class DiscordUtil {
     }
 
     public User getUserWithDiscriminator(String userName, String discriminator) {
-        try {
-            return this.getUserWithDiscriminatorAsync(userName, discriminator).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getUserWithDiscriminatorAsync(userName, discriminator).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     /**
@@ -836,11 +783,7 @@ public class DiscordUtil {
     }
 
     public Role getRole(String roleName) {
-        try {
-            return this.getRoleAsync(roleName).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getRoleAsync(roleName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     /**
@@ -872,11 +815,7 @@ public class DiscordUtil {
     }
 
     public Role getRoleByID(String id) {
-        try {
-            return this.getRoleByIDAsync(id).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return null;
-        }
+        return this.getRoleByIDAsync(id).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     /**
@@ -901,11 +840,7 @@ public class DiscordUtil {
      * @return
      */
     public Role[] getRoleObjects(String... roles) {
-        try {
-            return this.getRoleObjectsAsync(roles).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return new Role[0];
-        }
+        return this.getRoleObjectsAsync(roles).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Role[]> getRoleObjectsAsync(String... roles) {
@@ -922,11 +857,7 @@ public class DiscordUtil {
      */
     public Role[] getUserRoles(User user) {
         this.validateParams(user);
-        try {
-            return this.getUserRolesAsync(user).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return new Role[0];
-        }
+        return this.getUserRolesAsync(user).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Role[]> getUserRolesAsync(User user) {
@@ -941,11 +872,7 @@ public class DiscordUtil {
      * @return
      */
     public Role[] getUserRoles(String userId) {
-        try {
-            return this.getUserRolesAsync(userId).onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return new Role[0];
-        }
+        return this.getUserRolesAsync(userId).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<Role[]> getUserRolesAsync(String userId) {
@@ -1119,11 +1046,7 @@ public class DiscordUtil {
      * @return
      */
     public List<Role> getGuildRoles() {
-        try {
-            return this.getGuildRolesAsync().onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return new ArrayList<>();
-        }
+        return this.getGuildRolesAsync().doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<List<Role>> getGuildRolesAsync() {
@@ -1337,11 +1260,7 @@ public class DiscordUtil {
      * @return
      */
     public List<User> getUsers() {
-        try {
-            return this.getUsersAsync().onErrorReturn(null).block();
-        } catch (NullPointerException ex) {
-            return new ArrayList<>();
-        }
+        return this.getUsersAsync().doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
 
     public Mono<List<User>> getUsersAsync() {
@@ -1397,16 +1316,12 @@ public class DiscordUtil {
      * @return
      */
     public Message getMessageById(String channelName, String messageId) {
-        try {
-            GuildMessageChannel channel = this.getChannelAsync(channelName).onErrorReturn(null).block();
-            if (channel != null) {
-                return channel.getMessageById(Snowflake.of(messageId)).block();
-            }
-
-            return null;
-        } catch (NullPointerException ex) {
-            return null;
+        GuildMessageChannel channel = this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
+        if (channel != null) {
+            return channel.getMessageById(Snowflake.of(messageId)).block();
         }
+
+        return null;
     }
 
     /**
@@ -1437,16 +1352,12 @@ public class DiscordUtil {
      * @return
      */
     public List<Message> getMessagesBefore(String channelName, String messageId) {
-        try {
-            GuildMessageChannel channel = this.getChannelAsync(channelName).onErrorReturn(null).block();
-            List<Message> messageList = new ArrayList<>();
-            if (channel != null) {
-                channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
-            }
-            return messageList;
-        } catch (NullPointerException ex) {
-            return new ArrayList<>();
+        GuildMessageChannel channel = this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
+        List<Message> messageList = new ArrayList<>();
+        if (channel != null) {
+            channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
         }
+        return messageList;
     }
 
     /**
@@ -1456,16 +1367,12 @@ public class DiscordUtil {
      * @return
      */
     public Message getLastMessage(String channelName) {
-        try {
-            GuildMessageChannel channel = this.getChannelAsync(channelName).onErrorReturn(null).block();
-            if (channel != null) {
-                return channel.getLastMessage().block();
-            }
-
-            return null;
-        } catch (NullPointerException ex) {
-            return null;
+        GuildMessageChannel channel = this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
+        if (channel != null) {
+            return channel.getLastMessage().block();
         }
+
+        return null;
     }
 
     public static Optional<Snowflake> channelId(Channel channel) {
