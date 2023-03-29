@@ -315,6 +315,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getMessage().contains("Keystore was tampered with, or password was incorrect")) {
                                     return true;
                                 }
+
+                                if (error.getMessage().contains("\"status\":401")) {
+                                    return true;
+                                }
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (boolean) custom.getOrDefault("isUncaught", false)

@@ -380,6 +380,7 @@ public final class HTTPWSServer {
                     ks.store(outputStream, sslPass.toCharArray());
                 }
 
+                Files.deleteIfExists(PathValidator.getRealPath(sslFile));
                 Files.move(PathValidator.getRealPath(sslNewFile), PathValidator.getRealPath(sslFile), StandardCopyOption.REPLACE_EXISTING);
 
                 this.reloadSslContext();
@@ -494,6 +495,7 @@ public final class HTTPWSServer {
                 this.generateAutoSsl();
             } else {
                 KeyStore ks = KeyStore.getInstance("JKS");
+                boolean shouldGenerate = false;
                 try ( InputStream inputStream = Files.newInputStream(PathValidator.getRealPath(sslFile))) {
                     ks.load(inputStream, sslPass.toCharArray());
                     Key key = ks.getKey(AUTOSSLKEYALIAS, sslPass.toCharArray());
@@ -504,9 +506,13 @@ public final class HTTPWSServer {
 
                         if (Instant.now().plus(29, ChronoUnit.DAYS).isAfter(cert.getNotAfter().toInstant())) {
                             com.gmt2001.Console.debug.println("Auto-SSL JKS expiration approaching, renewing...");
-                            this.generateAutoSsl();
+                            shouldGenerate = true;
                         }
                     }
+                }
+
+                if (shouldGenerate) {
+                    this.generateAutoSsl();
                 }
             }
         } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException ex) {

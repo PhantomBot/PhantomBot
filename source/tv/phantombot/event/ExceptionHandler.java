@@ -19,6 +19,9 @@ package tv.phantombot.event;
 import net.engio.mbassy.bus.error.IPublicationErrorHandler;
 import net.engio.mbassy.bus.error.PublicationError;
 
+/**
+ * Error handler for {@link EventBus}
+ */
 public class ExceptionHandler implements IPublicationErrorHandler {
 
     @Override

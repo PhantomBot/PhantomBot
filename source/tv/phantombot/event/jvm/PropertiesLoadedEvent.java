@@ -16,5 +16,12 @@
  */
 package tv.phantombot.event.jvm;
 
+import tv.phantombot.CaselessProperties;
+
+/**
+ * The properties in {@link CaselessProperties} have been loaded and are now available
+ *
+ * @author gmt2001
+ */
 public class PropertiesLoadedEvent extends JVMEvent {
 }

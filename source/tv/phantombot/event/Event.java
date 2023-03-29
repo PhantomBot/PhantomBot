@@ -16,6 +16,8 @@
  */
 package tv.phantombot.event;
 
+/**
+ * Base class for all events that are sent via {@link EventBus}
+ */
 public abstract class Event {
-
 }

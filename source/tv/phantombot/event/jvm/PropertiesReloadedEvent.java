@@ -16,5 +16,12 @@
  */
 package tv.phantombot.event.jvm;
 
+import tv.phantombot.CaselessProperties;
+
+/**
+ * The properties in {@link CaselessProperties} have been reloaded and amy contain new values
+ *
+ * @author gmt2001
+ */
 public class PropertiesReloadedEvent extends PropertiesLoadedEvent {
 }

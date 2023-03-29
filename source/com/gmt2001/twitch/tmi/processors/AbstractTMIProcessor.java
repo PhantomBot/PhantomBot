@@ -134,6 +134,7 @@ public abstract class AbstractTMIProcessor implements Flow.Subscriber<TMIMessage
     public final void onError(Throwable throwable) {
         com.gmt2001.Console.err.printStackTrace(throwable);
         this.onFlowError(throwable);
+        this.subscribe();
     }
 
     /**

@@ -451,7 +451,7 @@ public final class PhantomBot implements Listener {
                     ConfigurationManager.doSetup();
                 } else {
                     com.gmt2001.Console.warn.println();
-                    com.gmt2001.Console.warn.println("Setup not completed yet");
+                    com.gmt2001.Console.warn.println("Setup not completed yet. Please set the channel to join");
                 }
             } else {
                 com.gmt2001.Console.warn.println();
@@ -982,7 +982,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("helix", Helix.instance(), 0);
         Script.global.defineProperty("botName", this.getBotName(), 0);
         Script.global.defineProperty("channelName", this.getChannelName(), 0);
-        Script.global.defineProperty("ownerName", CaselessProperties.instance().getProperty("owner").toLowerCase(), 0);
+        Script.global.defineProperty("ownerName", CaselessProperties.instance().getProperty("owner", this.getChannelName()).toLowerCase(), 0);
         Script.global.defineProperty("ytplayer", this.ytHandler, 0);
         Script.global.defineProperty("panelsocketserver", this.panelHandler, 0);
         Script.global.defineProperty("alertspollssocket", this.alertsPollsHandler, 0);

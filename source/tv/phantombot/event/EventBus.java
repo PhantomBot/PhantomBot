@@ -20,9 +20,21 @@ import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
 import net.engio.mbassy.bus.config.Feature;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.event.jvm.JVMEvent;
 
+/**
+ * Sends events to downstream subscribers
+ * <br /><br />
+ * To subscribe to an event, a Java class must be non-static, implement {@link Listener}, have a public method for each desired event
+ * with the signature {@code public void methodName(EventClass event)} where {@code EventClass} is the class of the event to be
+ * captured, have the {@code @net.engio.mbassy.listener.Handler} annotation applied to each event handler method, and must call
+ * {@link #register(Listener)} for each instance of the class that should receive events
+ * <br /><br />
+ * The event bus will deliver each event to all subscribers of the matching event class, as well as subscribers of any event class in
+ * the parent chain going back up to the {@link Event} base class. For example: subscribing to {@link JVMEvent} will receive all
+ * events in the {@code tv.phantombot.event.jvm} package, as it is the base event for the package
+ */
 public final class EventBus {
-
     private static final EventBus instance = new EventBus();
     private static final MBassador<Event> bus = new MBassador<>(new BusConfiguration().addFeature(Feature.SyncPubSub.Default())
             .addFeature(Feature.AsynchronousHandlerInvocation.Default()).addFeature(Feature.AsynchronousMessageDispatch.Default()
@@ -36,36 +48,38 @@ public final class EventBus {
     }
 
     /**
-     * Method that returns this instance
+     * Singleton method
      *
-     * @return
+     * @return An instance of eventbus
      */
     public static EventBus instance() {
         return instance;
     }
 
     /**
-     * Method that registers a listener with the bus.
+     * Registers an instance of a class implementing {@link Listener} to receive events
      *
-     * @param listener
+     * @param listener An instance to register to receive events
      */
     public void register(Listener listener) {
         bus.subscribe(listener);
     }
 
     /**
-     * Method that removes a listener from the bus.
+     * Deregisters an instance of a class implementing {@link Listener} to no longer receive events
      *
-     * @param listener
+     * @param listener An instance to deregister to no longer receive events
      */
     public void unregister(Listener listener) {
         bus.unsubscribe(listener);
     }
 
     /**
-     * Method that posts an event in sync.
+     * Performs a blocking publish of an event to the relevant subscribers
+     * <br /><br />
+     * This method should only be used in extremely rare circumstances. Most publishes should be done using {@link #postAsync(Event)}
      *
-     * @param event
+     * @param event An event to publish
      */
     public void post(Event event) {
         if (PhantomBot.isInExitState()) {
@@ -76,9 +90,9 @@ public final class EventBus {
     }
 
     /**
-     * Method that posts an event in async.
+     * Publishes an event to the relevant subscribers on a separate thread
      *
-     * @param event
+     * @param event An event to publish
      */
     public void postAsync(Event event) {
         if (PhantomBot.isInExitState()) {

@@ -16,5 +16,10 @@
  */
 package tv.phantombot.event.jvm;
 
+/**
+ * The bot has started the shutdown sequence and will exit in approximately 5 seconds
+ *
+ * @author gmt2001
+ */
 public class ShutdownEvent extends JVMEvent {
 }
