@@ -207,7 +207,7 @@
         let active = [];
 
         for (let i = 0; i < activeList.size(); i++) {
-            active.push($.jsString(activeList.get(i)));
+            active.push($.jsString(activeList.get(i).login()));
         }
 
         for (let i in $.users) {
