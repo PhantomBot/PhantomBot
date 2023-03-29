@@ -196,9 +196,16 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
-        ch.writeAndFlush(resframe).addListener((p) -> {
-            HTTPWSServer.releaseObj(resframe);
-        });
+        if (ch != null) {
+            ChannelFuture future = ch.writeAndFlush(resframe);
+            if (future != null) {
+                future.addListener((p) -> {
+                    HTTPWSServer.releaseObj(resframe);
+                });
+            } else {
+                HTTPWSServer.releaseObj(resframe);
+            }
+        }
     }
 
     /**
