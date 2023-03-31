@@ -385,7 +385,7 @@
                                 if (queryMap.get('state') === state) {
                                     $('#info-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
-                                    $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('state-type') + ' token...');
+                                    $('#info-box').html('Please wait, authorizing the ' + window.sessionStorage.getItem('statetype') + ' token...');
                                     $.ajax({
                                         cache: false,
                                         dataType: 'text',
