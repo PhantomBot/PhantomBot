@@ -432,7 +432,7 @@
                                 $('#info-box').addClass('hide');
                                 $('#error-box').removeClass('hide');
                                 $('#success-error-br').removeClass('hide');
-                                $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + queryMap.get('error') + ' ' + decodeURIComponent(queryMap.get('error_description')) + '!!');
+                                $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + queryMap.get('error') + ' ' + decodeURIComponent(queryMap.get('error_description')).replaceAll('+', ' ') + '!!');
                                 window.sessionStorage.removeItem('statetype');
                             }
                         }
