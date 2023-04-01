@@ -537,7 +537,7 @@ public final class TwitchCache implements Listener {
      * Returns the viewer count.
      *
      * @return
-     * @deprecated Please use {@link #followers()} instead
+     * @deprecated Please use {@link #viewers()} instead
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public int getViewerCount() {
