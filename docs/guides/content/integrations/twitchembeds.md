@@ -151,7 +151,7 @@ If you have the webserver and a domain, but have not yet setup SSL, consider loo
 
 #### Bot Settings
 
-When setting up a reverse proxy for the bot, some settings must be changed to prevent errors such as _TOO\_MANY\_REDIRECTS_ frfom ocurring
+When setting up a reverse proxy for the bot, some settings must be changed to prevent errors such as _TOO\_MANY\_REDIRECTS_ from ocurring
 
 - Visit the **Bot Setup** page on the panel
 - Expand the **HTTP/WS** section

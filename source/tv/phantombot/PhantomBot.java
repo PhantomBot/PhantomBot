@@ -154,7 +154,7 @@ public final class PhantomBot implements Listener {
     private static final int EXIT_STATUS_OK = 0;
     private static final int EXIT_STATUS_ERROR = 1;
 
-    private ExponentialBackoff initChatBackoff = new ExponentialBackoff(5000L, 900000L);
+    private ExponentialBackoff initChatBackoff = new ExponentialBackoff(5000L, 60000L);
 
     /**
      * PhantomBot Instance.
