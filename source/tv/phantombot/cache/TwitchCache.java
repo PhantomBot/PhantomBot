@@ -508,7 +508,11 @@ public final class TwitchCache implements Listener {
      * @return
      */
     public String getDisplayName() {
-        return ViewerCache.instance().broadcaster().name();
+        try {
+            return ViewerCache.instance().broadcaster().name();
+        } catch (Exception ex) {
+            return PhantomBot.instance().getChannelName();
+        }
     }
 
     /**
