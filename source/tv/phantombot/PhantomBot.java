@@ -997,6 +997,9 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
         Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
+        this.twitchCache = TwitchCache.instance();
+        Script.global.defineProperty("twitchcache", this.twitchCache, 0);
+        Script.global.defineProperty("viewer", ViewerCache.instance(), 0);
 
         /* And finally try to load init, that will then load the scripts */
         try {
@@ -1170,7 +1173,6 @@ public final class PhantomBot implements Listener {
         }
 
         /* Load the caches for each channels */
-        this.twitchCache = TwitchCache.instance();
         this.twitchTeamCache = TwitchTeamsCache.instance(this.getChannelName());
         this.emotesCache = EmotesCache.instance(this.getChannelName());
         this.followersCache = FollowersCache.instance();
@@ -1192,12 +1194,10 @@ public final class PhantomBot implements Listener {
         }
 
         /* Export these to the $. api for the sripts to use */
-        Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
-        Script.global.defineProperty("viewer", ViewerCache.instance(), 0);
     }
 
     /**
