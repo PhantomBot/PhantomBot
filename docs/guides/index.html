@@ -90,6 +90,18 @@
             .dropdown-menu {
                 min-width: 100px !important;
             }
+            .hljs, .hljs-keyword, .hljs-selector-tag, .hljs-subst {
+                color: #666 !important;
+            }
+            .hljs-literal, .hljs-number, .hljs-tag .hljs-attr, .hljs-template-variable, .hljs-variable {
+                color: #00b0b0 !important;
+            }
+            .hljs-class .hljs-title, .hljs-type {
+                color:#888 !important;
+            }
+            .hljs-built_in, .hljs-builtin-name {
+                color:#00a6b3 !important;
+            }
         </style>
     </head>
 
@@ -483,7 +495,7 @@
                         elm[0].scrollIntoView({behavior: 'smooth'});
                     }
                 }
-                
+
                 function changeChannel(channel) {
                     let previousChannel = currentChannel;
                     currentChannel = channel.toLowerCase();
@@ -493,7 +505,7 @@
                     } else if (currentChannel === 'stable' && currentPath.startsWith('content/')) {
                         changed = true;
                     }
-                    
+
                     if (changed) {
                         hashmap['channel'] = currentChannel;
                         $('#guide-menu').empty();
@@ -508,7 +520,7 @@
                 $(document).ajaxStart(function() { Pace.restart(); });
 
                 parseHashMap();
-                
+
                 checkURLChannel();
 
                 loadMenuRecursive('content' + (currentChannel === 'nightly' ? '' : '-stable') + '/', '');
