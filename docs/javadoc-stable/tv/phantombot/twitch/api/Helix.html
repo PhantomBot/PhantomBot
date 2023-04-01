@@ -4,7 +4,6 @@
 <head>
 <title>Helix (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-26">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style">
@@ -27,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":10,"i46":9,"i47":10,"i48":10,"i49":10,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":10,"i71":10,"i72":10,"i73":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10,"i36":10,"i37":10,"i38":10,"i39":10,"i40":10,"i41":10,"i42":10,"i43":10,"i44":10,"i45":42,"i46":42,"i47":10,"i48":10,"i49":9,"i50":10,"i51":10,"i52":10,"i53":10,"i54":10,"i55":10,"i56":10,"i57":10,"i58":10,"i59":10,"i60":10,"i61":10,"i62":10,"i63":10,"i64":10,"i65":10,"i66":10,"i67":10,"i68":10,"i69":10,"i70":10,"i71":10,"i72":10,"i73":10,"i74":10,"i75":10,"i76":10,"i77":10,"i78":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -192,7 +191,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -395,47 +394,73 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelFollowers(java.lang.String,int,java.lang.String)">getChannelFollowers</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id,
+                   int&nbsp;first,
+                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
+<td class="colLast">
+<div class="block">Gets a list of users that follow the specified broadcaster.</div>
+</td>
+</tr>
+<tr id="i22" class="altColor">
+<td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)">getChannelFollowersAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id,
+                        int&nbsp;first,
+                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
+<td class="colLast">
+<div class="block">Gets a list of users that follow the specified broadcaster.</div>
+</td>
+</tr>
+<tr id="i23" class="rowColor">
+<td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelInformation(java.lang.String)">getChannelInformation</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id)</code></th>
 <td class="colLast">
 <div class="block">Gets channel information for users.</div>
 </td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelInformationAsync(java.lang.String)">getChannelInformationAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id)</code></th>
 <td class="colLast">
 <div class="block">Gets channel information for users.</div>
 </td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelTeams(java.lang.String)">getChannelTeams</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id)</code></th>
 <td class="colLast">
 <div class="block">Retrieves a list of Twitch Teams of which the specified channel/broadcaster is a member.</div>
 </td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChannelTeamsAsync(java.lang.String)">getChannelTeamsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id)</code></th>
 <td class="colLast">
 <div class="block">Retrieves a list of Twitch Teams of which the specified channel/broadcaster is a member.</div>
 </td>
 </tr>
-<tr id="i25" class="rowColor">
+<tr id="i27" class="rowColor">
+<td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getChattersAsync(int,java.lang.String)">getChattersAsync</a></span>&#8203;(int&nbsp;first,
+                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
+<td class="colLast">
+<div class="block">Gets the list of users that are connected to the broadcaster’s chat session.</div>
+</td>
+</tr>
+<tr id="i28" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCheermotes(java.lang.String)">getCheermotes</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id)</code></th>
 <td class="colLast">
 <div class="block">Retrieves the list of available Cheermotes, animated emotes to which viewers can assign Bits, to cheer in chat.</div>
 </td>
 </tr>
-<tr id="i26" class="altColor">
+<tr id="i29" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCheermotesAsync(java.lang.String)">getCheermotesAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id)</code></th>
 <td class="colLast">
 <div class="block">Retrieves the list of available Cheermotes, animated emotes to which viewers can assign Bits, to cheer in chat.</div>
 </td>
 </tr>
-<tr id="i27" class="rowColor">
+<tr id="i30" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClips(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">getClips</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
@@ -449,7 +474,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </td>
 </tr>
-<tr id="i28" class="altColor">
+<tr id="i31" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClipsAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">getClipsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
@@ -463,7 +488,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </td>
 </tr>
-<tr id="i29" class="rowColor">
+<tr id="i32" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClipsAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.time.ZonedDateTime,java.time.ZonedDateTime)">getClipsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
@@ -477,7 +502,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets clip information by clip ID (one or more), broadcaster ID (one only), or game ID (one only).</div>
 </td>
 </tr>
-<tr id="i30" class="altColor">
+<tr id="i33" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCustomReward(java.util.List,java.lang.Boolean)">getCustomReward</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;only_manageable_rewards)</code></th>
@@ -485,7 +510,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Returns a list of Custom Reward objects for the Custom Rewards on a channel.</div>
 </td>
 </tr>
-<tr id="i31" class="rowColor">
+<tr id="i34" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCustomRewardAsync(java.util.List,java.lang.Boolean)">getCustomRewardAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;only_manageable_rewards)</code></th>
@@ -493,21 +518,21 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Returns a list of Custom Reward objects for the Custom Rewards on a channel.</div>
 </td>
 </tr>
-<tr id="i32" class="altColor">
+<tr id="i35" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGlobalEmotes()">getGlobalEmotes</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets all global emotes.</div>
 </td>
 </tr>
-<tr id="i33" class="rowColor">
+<tr id="i36" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGlobalEmotesAsync()">getGlobalEmotesAsync</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets all global emotes.</div>
 </td>
 </tr>
-<tr id="i34" class="altColor">
+<tr id="i37" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPredictions(java.util.List,int,java.lang.String)">getPredictions</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
               int&nbsp;first,
@@ -516,7 +541,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets a list of Channel Points Predictions that the broadcaster created.</div>
 </td>
 </tr>
-<tr id="i35" class="rowColor">
+<tr id="i38" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPredictionsAsync(java.util.List,int,java.lang.String)">getPredictionsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
                    int&nbsp;first,
@@ -525,7 +550,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets a list of Channel Points Predictions that the broadcaster created.</div>
 </td>
 </tr>
-<tr id="i36" class="altColor">
+<tr id="i39" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStreams(int,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List)">getStreams</a></span>&#8203;(int&nbsp;first,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;before,
@@ -538,7 +563,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets information about active streams.</div>
 </td>
 </tr>
-<tr id="i37" class="rowColor">
+<tr id="i40" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getStreamsAsync(int,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List)">getStreamsAsync</a></span>&#8203;(int&nbsp;first,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;before,
@@ -551,7 +576,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets information about active streams.</div>
 </td>
 </tr>
-<tr id="i38" class="altColor">
+<tr id="i41" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTeams(java.lang.String,java.lang.String)">getTeams</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</code></th>
@@ -559,7 +584,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets information for a specific Twitch Team.</div>
 </td>
 </tr>
-<tr id="i39" class="rowColor">
+<tr id="i42" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getTeamsAsync(java.lang.String,java.lang.String)">getTeamsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;name,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id)</code></th>
@@ -567,7 +592,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets information for a specific Twitch Team.</div>
 </td>
 </tr>
-<tr id="i40" class="altColor">
+<tr id="i43" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsers(java.util.List,java.util.List)">getUsers</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;login)</code></th>
@@ -575,7 +600,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets information about one or more specified Twitch users.</div>
 </td>
 </tr>
-<tr id="i41" class="rowColor">
+<tr id="i44" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsersAsync(java.util.List,java.util.List)">getUsersAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;login)</code></th>
@@ -583,27 +608,31 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets information about one or more specified Twitch users.</div>
 </td>
 </tr>
-<tr id="i42" class="altColor">
+<tr id="i45" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsersFollows(java.lang.String,java.lang.String,int,java.lang.String)">getUsersFollows</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_id,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_id,
                int&nbsp;first,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
 <td class="colLast">
-<div class="block">Gets information on follow relationships between two Twitch users.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 </td>
 </tr>
-<tr id="i43" class="rowColor">
+<tr id="i46" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsersFollowsAsync(java.lang.String,java.lang.String,int,java.lang.String)">getUsersFollowsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_id,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_id,
                     int&nbsp;first,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)</code></th>
 <td class="colLast">
-<div class="block">Gets information on follow relationships between two Twitch users.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 </td>
 </tr>
-<tr id="i44" class="altColor">
+<tr id="i47" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVideos(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">getVideos</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id,
@@ -619,7 +648,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets video information by one or more video IDs, user ID, or game ID.</div>
 </td>
 </tr>
-<tr id="i45" class="rowColor">
+<tr id="i48" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVideosAsync(java.util.List,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">getVideosAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id,
@@ -635,14 +664,28 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Gets video information by one or more video IDs, user ID, or game ID.</div>
 </td>
 </tr>
-<tr id="i46" class="altColor">
+<tr id="i49" class="rowColor">
 <td class="colFirst"><code>static <a href="Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Method that returns the instance of Helix.</div>
 </td>
 </tr>
-<tr id="i47" class="rowColor">
+<tr id="i50" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maxRateLimit()">maxRateLimit</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The maximum value of <a href="#remainingRateLimit()"><code>remainingRateLimit()</code></a></div>
+</td>
+</tr>
+<tr id="i51" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#remainingRateLimit()">remainingRateLimit</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The remaining rate limit for Helix</div>
+</td>
+</tr>
+<tr id="i52" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchCategories(java.lang.String,int,java.lang.String)">searchCategories</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;query,
                 int&nbsp;first,
@@ -651,7 +694,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Returns a list of games or categories that match the query via name either entirely or partially.</div>
 </td>
 </tr>
-<tr id="i48" class="altColor">
+<tr id="i53" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#searchCategoriesAsync(java.lang.String,int,java.lang.String)">searchCategoriesAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;query,
                      int&nbsp;first,
@@ -660,7 +703,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Returns a list of games or categories that match the query via name either entirely or partially.</div>
 </td>
 </tr>
-<tr id="i49" class="rowColor">
+<tr id="i54" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChatAnnouncement(java.lang.String,java.lang.String,java.lang.String)">sendChatAnnouncement</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
@@ -669,7 +712,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends an announcement to the broadcaster's chat room.</div>
 </td>
 </tr>
-<tr id="i50" class="altColor">
+<tr id="i55" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChatAnnouncement(java.lang.String,java.lang.String,tv.phantombot.twitch.api.Helix.AnnouncementColors)">sendChatAnnouncement</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
@@ -678,7 +721,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends an announcement to the broadcaster's chat room.</div>
 </td>
 </tr>
-<tr id="i51" class="rowColor">
+<tr id="i56" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChatAnnouncementAsync(java.lang.String,java.lang.String,java.lang.String)">sendChatAnnouncementAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
@@ -687,7 +730,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends an announcement to the broadcaster's chat room.</div>
 </td>
 </tr>
-<tr id="i52" class="altColor">
+<tr id="i57" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChatAnnouncementAsync(java.lang.String,java.lang.String,tv.phantombot.twitch.api.Helix.AnnouncementColors)">sendChatAnnouncementAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
@@ -696,7 +739,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends an announcement to the broadcaster's chat room.</div>
 </td>
 </tr>
-<tr id="i53" class="rowColor">
+<tr id="i58" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendShoutout(java.lang.String,java.lang.String)">sendShoutout</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_broadcaster_id,
             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_broadcaster_id)</code></th>
@@ -704,7 +747,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends a Shoutout to the specified broadcaster.</div>
 </td>
 </tr>
-<tr id="i54" class="altColor">
+<tr id="i59" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendShoutoutAsync(java.lang.String,java.lang.String)">sendShoutoutAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_broadcaster_id,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_broadcaster_id)</code></th>
@@ -712,7 +755,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends a Shoutout to the specified broadcaster.</div>
 </td>
 </tr>
-<tr id="i55" class="rowColor">
+<tr id="i60" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendWhisper(java.lang.String,java.lang.String)">sendWhisper</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_user_id,
            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
@@ -720,7 +763,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends a whisper message to the specified user.</div>
 </td>
 </tr>
-<tr id="i56" class="altColor">
+<tr id="i61" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendWhisperAsync(java.lang.String,java.lang.String)">sendWhisperAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_user_id,
                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
@@ -728,12 +771,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Sends a whisper message to the specified user.</div>
 </td>
 </tr>
-<tr id="i57" class="rowColor">
+<tr id="i62" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setOAuth(java.lang.String)">setOAuth</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;oauth)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i58" class="altColor">
+<tr id="i63" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#startCommercial(java.lang.String,int)">startCommercial</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                int&nbsp;length)</code></th>
@@ -741,7 +784,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Starts a commercial on a specified channel.</div>
 </td>
 </tr>
-<tr id="i59" class="rowColor">
+<tr id="i64" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#startCommercialAsync(java.lang.String,int)">startCommercialAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                     int&nbsp;length)</code></th>
@@ -749,7 +792,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Starts a commercial on a specified channel.</div>
 </td>
 </tr>
-<tr id="i60" class="altColor">
+<tr id="i65" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#startRaid(java.lang.String,java.lang.String)">startRaid</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_broadcaster_id,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_broadcaster_id)</code></th>
@@ -757,7 +800,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Raid another channel by sending the broadcaster's viewers to the targeted channel.</div>
 </td>
 </tr>
-<tr id="i61" class="rowColor">
+<tr id="i66" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#startRaidAsync(java.lang.String,java.lang.String)">startRaidAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_broadcaster_id,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_broadcaster_id)</code></th>
@@ -765,7 +808,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Raid another channel by sending the broadcaster's viewers to the targeted channel.</div>
 </td>
 </tr>
-<tr id="i62" class="altColor">
+<tr id="i67" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unbanUser(java.lang.String,java.lang.String)">unbanUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id)</code></th>
@@ -773,7 +816,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Removes the ban or timeout that was placed on the specified user.</div>
 </td>
 </tr>
-<tr id="i63" class="rowColor">
+<tr id="i68" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#unbanUserAsync(java.lang.String,java.lang.String)">unbanUserAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id)</code></th>
@@ -781,7 +824,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Removes the ban or timeout that was placed on the specified user.</div>
 </td>
 </tr>
-<tr id="i64" class="altColor">
+<tr id="i69" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateChannelInformation(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int)">updateChannelInformation</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;game_id,
@@ -792,7 +835,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Modifies channel information for users.</div>
 </td>
 </tr>
-<tr id="i65" class="rowColor">
+<tr id="i70" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateChannelInformationAsync(java.lang.String,java.lang.String,java.lang.String,java.lang.String,int)">updateChannelInformationAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;game_id,
@@ -803,7 +846,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Modifies channel information for users.</div>
 </td>
 </tr>
-<tr id="i66" class="altColor">
+<tr id="i71" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateChatSettings(java.lang.String,java.lang.Boolean,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Boolean)">updateChatSettings</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;emote_mode,
@@ -819,7 +862,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates the broadcaster's chat settings.</div>
 </td>
 </tr>
-<tr id="i67" class="rowColor">
+<tr id="i72" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateChatSettingsAsync(java.lang.String,java.lang.Boolean,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Boolean)">updateChatSettingsAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;emote_mode,
@@ -835,7 +878,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates the broadcaster's chat settings.</div>
 </td>
 </tr>
-<tr id="i68" class="altColor">
+<tr id="i73" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCustomReward(java.lang.String,java.lang.String,java.lang.Integer,java.lang.Boolean,java.lang.Boolean,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean)">updateCustomReward</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id,
                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title,
@@ -856,7 +899,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates a custom reward.</div>
 </td>
 </tr>
-<tr id="i69" class="rowColor">
+<tr id="i74" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateCustomRewardAsync(java.lang.String,java.lang.String,java.lang.Integer,java.lang.Boolean,java.lang.Boolean,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean)">updateCustomRewardAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id,
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;title,
@@ -877,7 +920,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates a custom reward.</div>
 </td>
 </tr>
-<tr id="i70" class="altColor">
+<tr id="i75" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateRedemptionStatus(java.util.List,java.lang.String,tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus)">updateRedemptionStatus</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reward_id,
@@ -886,7 +929,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates a redemption\'s status.</div>
 </td>
 </tr>
-<tr id="i71" class="rowColor">
+<tr id="i76" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateRedemptionStatusAsync(java.util.List,java.lang.String,tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus)">updateRedemptionStatusAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;id,
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reward_id,
@@ -895,7 +938,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Updates a redemption\'s status.</div>
 </td>
 </tr>
-<tr id="i72" class="altColor">
+<tr id="i77" class="rowColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateShieldModeStatus(java.lang.String,boolean)">updateShieldModeStatus</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                       boolean&nbsp;isActive)</code></th>
@@ -903,7 +946,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Activates or deactivates the broadcaster’s Shield Mode.</div>
 </td>
 </tr>
-<tr id="i73" class="rowColor">
+<tr id="i78" class="altColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateShieldModeStatusAsync(java.lang.String,boolean)">updateShieldModeStatusAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;broadcaster_id,
                            boolean&nbsp;isActive)</code></th>
@@ -955,6 +998,32 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>setOAuth</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;setOAuth&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;oauth)</pre>
+</li>
+</ul>
+<a id="maxRateLimit()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>maxRateLimit</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;maxRateLimit()</pre>
+<div class="block">The maximum value of <a href="#remainingRateLimit()"><code>remainingRateLimit()</code></a></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="remainingRateLimit()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>remainingRateLimit</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;remainingRateLimit()</pre>
+<div class="block">The remaining rate limit for Helix</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="getChannelInformation(java.lang.String)">
@@ -1121,7 +1190,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>getUsersFollows</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;getUsersFollows&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;getUsersFollows&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_id,
                                   <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_id,
@@ -1130,6 +1201,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
                            throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 <div class="block">Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
  following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
  to_id must be provided for a query to be valid.</div>
@@ -1153,7 +1227,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>getUsersFollowsAsync</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;getUsersFollowsAsync&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+<pre class="methodSignature"><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true" title="class or interface in java.lang" class="externalLink">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#since()" title="class or interface in java.lang" class="externalLink">since</a>="3.8.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Deprecated.html?is-external=true#forRemoval()" title="class or interface in java.lang" class="externalLink">forRemoval</a>=true)
+public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;getUsersFollowsAsync&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;from_id,
                                              <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;to_id,
@@ -1162,6 +1238,9 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
                                       throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
                                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
+</div>
 <div class="block">Gets information on follow relationships between two Twitch users. This can return information like "who is qotrok following," "who is
  following qotrok," or "is user X following user Y." Information returned is sorted in order, most recent follow first. At minimum, from_id or
  to_id must be provided for a query to be valid.</div>
@@ -3134,7 +3213,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <a id="endPredictionAsync(java.lang.String,tv.phantombot.twitch.api.Helix.PredictionStatus,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>endPredictionAsync</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;endPredictionAsync&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;id,
@@ -3154,6 +3233,87 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dd><code>id</code> - The ID of the prediction to update.</dd>
 <dd><code>status</code> - The status to set the prediction to.</dd>
 <dd><code>winningOutcomeId</code> - The ID of the winning outcome. You must set this parameter if you set status to <code>PredictionStatus.RESOLVED</code>.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getChannelFollowers(java.lang.String,int,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getChannelFollowers</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;getChannelFollowers&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id,
+                                      int&nbsp;first,
+                                      <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
+                               throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="block">Gets a list of users that follow the specified broadcaster.
+
+ You can also use this endpoint to see whether a specific user follows the broadcaster.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>user_id</code> - A user's ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this user if they follow the broadcaster. If not specified, the response contains all users that follow the broadcaster.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getChannelFollowersAsync(java.lang.String,int,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getChannelFollowersAsync</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;getChannelFollowersAsync&#8203;(<a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user_id,
+                                                 int&nbsp;first,
+                                                 <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
+                                          throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="block">Gets a list of users that follow the specified broadcaster.
+
+ You can also use this endpoint to see whether a specific user follows the broadcaster.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>user_id</code> - A user's ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this user if they follow the broadcaster. If not specified, the response contains all users that follow the broadcaster.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getChattersAsync(int,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getChattersAsync</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&gt;&nbsp;getChattersAsync&#8203;(int&nbsp;first,
+                                         <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html?is-external=true" title="class or interface in reactor.util.annotation" class="externalLink">@Nullable</a>
+                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;after)
+                                  throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
+                                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="block">Gets the list of users that are connected to the broadcaster’s chat session.
+ <br/><br/>
+ NOTE: There is a delay between when users join and leave a chat and when the list is updated accordingly.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>

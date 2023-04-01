@@ -186,7 +186,7 @@ $(function () {
                     if (e.command.match(/\(customapi/gi) !== null) {
                         tokenButton = $('<button/>', {
                             'type': 'button',
-                            'class': 'btn',
+                            'class': 'btn btn-info',
                             'style': 'float: right; position: relative; bottom: 6px;',
                             'data-command': command,
                             'click': function () {

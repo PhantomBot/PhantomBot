@@ -92,6 +92,14 @@ the timeout, in seconds, after `channel` goes offline before it can be online. d
 
 &nbsp;
 
+#### pullallfollowers
+
+Data Type: _Boolean_
+
+if `true`, pull all followers into the cache on startup; otherwise, only the first 50k. default `false`
+
+&nbsp;
+
 #### usebroadcasterforchatcommands
 
 Data Type: _Boolean_
@@ -105,7 +113,7 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 Data Type: _String_
 
-the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. default `sqlite3store`
+the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `h2store`. default `h2store`
 
 _NOTE: A restart is required for this property to take effect_
 
@@ -156,6 +164,16 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _String_
 
 the password for `mysqluser`
+
+_NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
+#### mysqlssl
+
+Data Type: _String_
+
+indicates if ssl should be used for the mysql connection
 
 _NOTE: A restart is required for this property to take effect_
 
@@ -492,6 +510,14 @@ if `true`, debugging info for twitch helix api requests are sent to the debug lo
 
 &nbsp;
 
+#### gameslistupdaterdebug
+
+Data Type: _Boolean_
+
+if `true` and `debugon` is also enabled, enables debug output for gameslistupdater. default `false`
+
+&nbsp;
+
 #### wsdebug
 
 Data Type: _Boolean_
@@ -584,11 +610,3 @@ No definition
 Data Type: _Char_
 
 No definition
-
-&nbsp;
-
-#### eventsubcallbackurl
-
-Data Type: _String_
-
-the url which will receive eventsub notifications

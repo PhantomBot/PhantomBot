@@ -1071,7 +1071,7 @@ $(function () {
         return helpers.getModuleStatus(id, toggle, swit);
     };
 
-    let _isSwappedSubscriberVIP = false;
+    let _isSwappedSubscriberVIP = true;
     helpers.isSwappedSubscriberVIP = function () {
         return _isSwappedSubscriberVIP;
     };
@@ -1123,16 +1123,23 @@ $(function () {
 
     let updatePermGroups = function () {
         socket.getDBTableValues('permissions_get_all_groups', 'groups', function (results) {
-            permGroups;
-            for (let i = 0; i < results.length; i++) {
-                permGroups[i] = results[i].value;
-                permGroupNames[i] = i.toString() + ' (' + results[i].value + ')';
+            for (let x of results) {
+                permGroupNames[parseInt(x.key)] = x.key + ' (' + x.value + ')';
             }
         });
     };
 
-    let permGroups = [];
-    let permGroupNames = [];
+    let permGroupNames = [
+        '0 (Caster)',
+        '1 (Administrator)',
+        '2 (Moderator)',
+        '3 (VIP)',
+        '4 (Donator)',
+        '5 (Subscriber)',
+        '6 (Regular)',
+        '7 (Viewer)'
+
+    ];
 
     setTimeout(function () {
         updatePermGroups();

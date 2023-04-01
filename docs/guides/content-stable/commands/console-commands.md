@@ -78,22 +78,6 @@ backupdb - Creates a backup of the current database.
 
 &nbsp;
 
-### fixfollowedtable
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-fixfollowedtable - Grabs the last 10,000 followers from the Twitch API.
-
-&nbsp;
-
-### fixfollowedtable-force
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-fixfollowedtable-force - Grabs all followers from the Twitch API.
-
-&nbsp;
-
 ### jointest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
@@ -243,14 +227,6 @@ debugoff - Disables debug mode.
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 debuglog - Prints all debug lines to a file.
-
-&nbsp;
-
-### save
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-save - Forces the database to save.
 
 &nbsp;
 

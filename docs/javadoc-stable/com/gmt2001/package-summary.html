@@ -4,7 +4,6 @@
 <head>
 <title>com.gmt2001 (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-26">
 <link rel="stylesheet" type="text/css" href="../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../jquery-ui.overrides.css" title="Style">
@@ -120,7 +119,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="GamesListUpdater.html" title="class in com.gmt2001">GamesListUpdater</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Updates the game list used for auto-complete when changing the game from the panel
+ <br/><br/>
+ The list is stored at <code>web/panel/js/utils/gamesList.txt</code></div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="HMAC.html" title="class in com.gmt2001">HMAC</a></th>
@@ -130,15 +133,29 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="HttpRequest.html" title="class in com.gmt2001">HttpRequest</a></th>
-<td class="colLast">Deprecated.</td>
+<td class="colLast">Deprecated, for removal: This API element is subject to removal in a future version.
+<div class="deprecationComment">Please use <a href="httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> instead</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="HttpResponse.html" title="class in com.gmt2001">HttpResponse</a></th>
-<td class="colLast">Deprecated.</td>
+<td class="colLast">Deprecated, for removal: This API element is subject to removal in a future version.
+<div class="deprecationComment">Please use <a href="httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> instead</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="JSFileSystem.html" title="class in com.gmt2001">JSFileSystem</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Provides access to File I/O from JS
+ <br/><br/>
+ Paths must in one of these base folders, relative to the location of <code>PhantomBot.jar</code>,
+ otherwise the operation fails: <code>./addons</code>, <code>./config/audio-hooks</code>,
+ <code>./config/gif-alerts</code>, <code>./config/clips</code>, <code>./config/emotes</code>,
+ <code>./logs</code>, or <code>./scripts</code>
+ <br/><br/>
+ If running in Docker, symlinks to the same paths relative to <code>/opt/PhantomBot_data</code>
+ are also allowed.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="JSTimers.html" title="class in com.gmt2001">JSTimers</a></th>
@@ -164,7 +181,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></th>
-<td class="colLast">Deprecated.</td>
+<td class="colLast">Deprecated, for removal: This API element is subject to removal in a future version.
+<div class="deprecationComment">Please use <a href="../../tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api"><code>Helix</code></a> instead.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colFirst" scope="row"><a href="UncaughtExceptionHandler.html" title="class in com.gmt2001">UncaughtExceptionHandler</a></th>
@@ -183,7 +202,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colFirst" scope="row"><a href="HttpRequest.RequestType.html" title="enum in com.gmt2001">HttpRequest.RequestType</a></th>
-<td class="colLast">Deprecated.</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
 </table>

@@ -151,7 +151,7 @@ If you have the webserver and a domain, but have not yet setup SSL, consider loo
 
 #### Bot Settings
 
-When setting up a reverse proxy for the bot, some settings must be changed to prevent errors such as _TOO\_MANY\_REDIRECTS_ frfom ocurring
+When setting up a reverse proxy for the bot, some settings must be changed to prevent errors such as _TOO\_MANY\_REDIRECTS_ from ocurring
 
 - Visit the **Bot Setup** page on the panel
 - Expand the **HTTP/WS** section
@@ -166,6 +166,11 @@ When setting up a reverse proxy for the bot, some settings must be changed to pr
 # NGINX Config
 upstream phantombot {
     server 127.0.0.1:25000; # set this to the IP:Baseport of the bot
+}
+
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  ''      close;
 }
 
 server {
@@ -183,12 +188,14 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/<folder>/privkey.pem; # managed by Certbot, replace with the appropriate path
     ssl_protocols       TLSv1.3;
     ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5;
- 
+
     location / {
         proxy_pass http://phantombot;
         proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
     }
- 
+
     error_log /var/log/nginx/twitch_error.log;
     access_log /var/log/nginx/twitch_access.log;
 }

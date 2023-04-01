@@ -4,7 +4,6 @@
 <head>
 <title>Deprecated List (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-26">
 <link rel="stylesheet" type="text/css" href="stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="jquery-ui.overrides.css" title="Style">
@@ -97,12 +96,173 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h1 title="Deprecated API" class="title">Deprecated API</h1>
 <h2 title="Contents">Contents</h2>
 <ul>
+<li><a href="#forRemoval">For Removal</a></li>
 <li><a href="#class">Classes</a></li>
-<li><a href="#enum">Enums</a></li>
 <li><a href="#method">Methods</a></li>
+<li><a href="#constructor">Constructors</a></li>
 </ul>
 </div>
-<div class="contentContainer"><a id="class">
+<div class="contentContainer"><a id="forRemoval">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary">
+<caption><span>For Removal</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Element</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpRequest.html" title="class in com.gmt2001">com.gmt2001.HttpRequest</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> instead</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpResponse.html" title="class in com.gmt2001">com.gmt2001.HttpResponse</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> instead</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">com.gmt2001.TwitchAPIv5</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api"><code>Helix</code></a> instead. In scripts, use <code>$.helix</code> instead of <code>$.twitch</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/TwitchCache.html#getViewerCount()">tv.phantombot.cache.TwitchCache.getViewerCount()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="tv/phantombot/cache/TwitchCache.html#viewers()"><code>TwitchCache.viewers()</code></a> instead</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/TwitchCache.html#getViews()">tv.phantombot.cache.TwitchCache.getViews()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Twitch does not report this anymore, this method is temporarily available to prevent script errors and will be removed soon</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.UsernameCache</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.username</code></div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.ViewerListCache</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.usernameCache</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String%5B%5D,java.lang.String%5B%5D)">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent&#8203;(TwitchSession, String[], String[])</a></th>
+<td class="colLast">
+<div class="deprecationComment">Joins/Parts are not calculated anymore</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getJoins()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getJoins()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Joins/Parts are not calculated anymore</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getParts()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getParts()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Joins/Parts are not calculated anymore</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/channelpoints/PubSubChannelPointsEvent.html" title="class in tv.phantombot.event.pubsub.channelpoints">tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/following/PubSubFollowEvent.html" title="class in tv.phantombot.event.pubsub.following">tv.phantombot.event.pubsub.following.PubSubFollowEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/following/PubSubFollowingEvent.html" title="class in tv.phantombot.event.pubsub.following">tv.phantombot.event.pubsub.following.PubSubFollowingEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubStreamDownEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubStreamDownEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubStreamUpEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubStreamUpEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubVideoPlaybackEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubVideoPlaybackEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubViewCountEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubViewCountEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Viewer counts are updated reasonably frequently by Helix</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/PhantomBot.html#getProperties()">tv.phantombot.PhantomBot.getProperties()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="tv/phantombot/CaselessProperties.html#instance()"><code>CaselessProperties.instance()</code></a> instead</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/RepoVersion.html#isPrereleaseBuild()">tv.phantombot.RepoVersion.isPrereleaseBuild()</a></th>
+<td class="colLast">
+<div class="deprecationComment">This build type is not used</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollows(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollows&#8203;(String, String, int, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="tv/phantombot/twitch/api/Helix.html#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>Helix.getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollowsAsync(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollowsAsync&#8203;(String, String, int, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="tv/phantombot/twitch/api/Helix.html#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>Helix.getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/pubsub/processors/PubSubChannelPointsProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.PubSubChannelPointsProcessor</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/pubsub/processors/PubSubFollowingProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.PubSubFollowingProcessor</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/pubsub/processors/PubSubStreamUpDownProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.PubSubStreamUpDownProcessor</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a id="class">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -116,35 +276,93 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpRequest.html" title="class in com.gmt2001">com.gmt2001.HttpRequest</a></th>
-<td class="colLast"></td>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> instead</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpResponse.html" title="class in com.gmt2001">com.gmt2001.HttpResponse</a></th>
-<td class="colLast"></td>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> instead</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">com.gmt2001.TwitchAPIv5</a></th>
-<td class="colLast"></td>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api"><code>Helix</code></a> instead. In scripts, use <code>$.helix</code> instead of <code>$.twitch</code></div>
+</td>
 </tr>
-</tbody>
-</table>
-</li>
-</ul>
-<a id="enum">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<table class="deprecatedSummary">
-<caption><span>Enums</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Enum</th>
-<th class="colLast" scope="col">Description</th>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/UsernameCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.UsernameCache</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.username</code></div>
+</td>
 </tr>
-<tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpRequest.RequestType.html" title="enum in com.gmt2001">com.gmt2001.HttpRequest.RequestType</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">tv.phantombot.cache.ViewerListCache</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache"><code>ViewerCache</code></a> instead. In scripts, use <code>$.viewer</code> instead of <code>$.usernameCache</code></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/channelpoints/PubSubChannelPointsEvent.html" title="class in tv.phantombot.event.pubsub.channelpoints">tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/following/PubSubFollowEvent.html" title="class in tv.phantombot.event.pubsub.following">tv.phantombot.event.pubsub.following.PubSubFollowEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/following/PubSubFollowingEvent.html" title="class in tv.phantombot.event.pubsub.following">tv.phantombot.event.pubsub.following.PubSubFollowingEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubStreamDownEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubStreamDownEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubStreamUpEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubStreamUpEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubVideoPlaybackEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubVideoPlaybackEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/pubsub/videoplayback/PubSubViewCountEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">tv.phantombot.event.pubsub.videoplayback.PubSubViewCountEvent</a></th>
+<td class="colLast">
+<div class="deprecationComment">Viewer counts are updated reasonably frequently by Helix</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/pubsub/processors/PubSubChannelPointsProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.PubSubChannelPointsProcessor</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/pubsub/processors/PubSubFollowingProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.PubSubFollowingProcessor</a></th>
+<td class="colLast">
+<div class="deprecationComment">This is now handeled by EventSub</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/pubsub/processors/PubSubStreamUpDownProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">tv.phantombot.twitch.pubsub.processors.PubSubStreamUpDownProcessor</a></th>
+<td class="colLast">
+<div class="deprecationComment">Stream up/down is now handeled by EventSub. Viewer counts are updated reasonably frequently by Helix</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -163,80 +381,74 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpRequest.html#generateJSONObject(org.json.JSONObject,boolean,java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String)">com.gmt2001.HttpRequest.generateJSONObject&#8203;(JSONObject, boolean, String, String, String, int, String, String)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/TwitchCache.html#getViewerCount()">tv.phantombot.cache.TwitchCache.getViewerCount()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="tv/phantombot/cache/TwitchCache.html#viewers()"><code>TwitchCache.viewers()</code></a> instead</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="com/gmt2001/HttpRequest.html#getData(com.gmt2001.HttpRequest.RequestType,java.lang.String,java.lang.String,java.util.Map)">com.gmt2001.HttpRequest.getData&#8203;(HttpRequest.RequestType, String, String, Map&lt;String, String&gt;)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/cache/TwitchCache.html#getViews()">tv.phantombot.cache.TwitchCache.getViews()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Twitch does not report this anymore, this method is temporarily available to prevent script errors and will be removed soon</div>
+</td>
 </tr>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getAllChannelInfo()">tv.phantombot.discord.util.DiscordUtil.getAllChannelInfo()</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getJoins()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getJoins()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Joins/Parts are not calculated anymore</div>
+</td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getChannel(java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getChannel&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getChannelByID(java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getChannelByID&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getGuildRoles()">tv.phantombot.discord.util.DiscordUtil.getGuildRoles()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getRole(java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getRole&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getRoleByID(java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getRoleByID&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getRoleObjects(java.lang.String...)">tv.phantombot.discord.util.DiscordUtil.getRoleObjects&#8203;(String...)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUser(java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getUser&#8203;(String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserById(long)">tv.phantombot.discord.util.DiscordUtil.getUserById&#8203;(long)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserRoles(discord4j.core.object.entity.User)">tv.phantombot.discord.util.DiscordUtil.getUserRoles&#8203;(User)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUsers()">tv.phantombot.discord.util.DiscordUtil.getUsers()</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminator(java.lang.String,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.getUserWithDiscriminator&#8203;(String, String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#isAdministrator(discord4j.core.object.entity.User)">tv.phantombot.discord.util.DiscordUtil.isAdministrator&#8203;(User)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#sendFile(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.sendFile&#8203;(GuildMessageChannel, String, String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#sendMessage(discord4j.core.object.entity.channel.MessageChannel,java.lang.String)">tv.phantombot.discord.util.DiscordUtil.sendMessage&#8203;(MessageChannel, String)</a></th>
-<td class="colLast"></td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/discord/util/DiscordUtil.html#sendMessageEmbed(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.spec.EmbedCreateSpec)">tv.phantombot.discord.util.DiscordUtil.sendMessageEmbed&#8203;(GuildMessageChannel, EmbedCreateSpec)</a></th>
-<td class="colLast"></td>
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#getParts()">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent.getParts()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Joins/Parts are not calculated anymore</div>
+</td>
 </tr>
 <tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/PhantomBot.html#getProperties()">tv.phantombot.PhantomBot.getProperties()</a></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="deprecationComment">Please use <a href="tv/phantombot/CaselessProperties.html#instance()"><code>CaselessProperties.instance()</code></a> instead</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/RepoVersion.html#isPrereleaseBuild()">tv.phantombot.RepoVersion.isPrereleaseBuild()</a></th>
+<td class="colLast">
+<div class="deprecationComment">This build type is not used</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollows(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollows&#8203;(String, String, int, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="tv/phantombot/twitch/api/Helix.html#getChannelFollowers(java.lang.String,int,java.lang.String)"><code>Helix.getChannelFollowers(String, int, String)</code></a>, which requires an OAuth scope</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/twitch/api/Helix.html#getUsersFollowsAsync(java.lang.String,java.lang.String,int,java.lang.String)">tv.phantombot.twitch.api.Helix.getUsersFollowsAsync&#8203;(String, String, int, String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">This endpoint is deprecated by Twitch in favor of <a href="tv/phantombot/twitch/api/Helix.html#getChannelFollowersAsync(java.lang.String,int,java.lang.String)"><code>Helix.getChannelFollowersAsync(String, int, String)</code></a>, which requires an OAuth scope</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a id="constructor">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="tv/phantombot/event/irc/channel/IrcChannelUsersUpdateEvent.html#%3Cinit%3E(tv.phantombot.twitch.irc.TwitchSession,java.lang.String%5B%5D,java.lang.String%5B%5D)">tv.phantombot.event.irc.channel.IrcChannelUsersUpdateEvent&#8203;(TwitchSession, String[], String[])</a></th>
+<td class="colLast">
+<div class="deprecationComment">Joins/Parts are not calculated anymore</div>
+</td>
 </tr>
 </tbody>
 </table>

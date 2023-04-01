@@ -4,7 +4,6 @@
 <head>
 <title>MySQLStore (PhantomBot JavaDoc)</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="dc.created" content="2023-02-26">
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
@@ -27,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":9,"i22":9,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":9,"i21":9,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -166,7 +165,9 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AddFile(java.lang.String)">AddFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Creates a new table</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -179,56 +180,64 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect(java.lang.String,java.lang.String,java.lang.String)">CanConnect</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Tests if the connection to the database succeeds.</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[][]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#executeSql(java.lang.String,java.lang.String%5B%5D)">executeSql</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FileExists(java.lang.String)">FileExists</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if the given table already exists</div>
+</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FileExists(java.sql.Connection,java.lang.String)">FileExists</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/Connection.html?is-external=true" title="class or interface in java.sql" class="externalLink">Connection</a>&nbsp;connection,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetCategoryList(java.lang.String)">GetCategoryList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>section</code> column within the table</div>
+</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetFileList()">GetFileList</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of tables in the database.</div>
+</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">GetKeyByValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>variable</code> column for the given table, section, and value</div>
+</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyList(java.lang.String,java.lang.String)">GetKeyList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section</div>
+</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeys</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase</div>
+</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
@@ -236,112 +245,148 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
+</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeValues</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>value</code> column contains the search phrase</div>
+</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
+</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
+</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally</div>
+</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
+</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyValueList(java.lang.String,java.lang.String)">GetKeyValueList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all <code>variable/value</code> pairs within the table and section</div>
+</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetString(java.lang.String,java.lang.String,java.lang.String)">GetString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a string</div>
+</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if the given table contains a row matching the given section and key</div>
+</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">IncreaseBatchString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Increases the value of the <code>value</code> column as an integer for all keys of the given table and section</div>
+</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>static <a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static <a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance(java.lang.String)">instance</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configStr)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr id="i22" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#query(java.lang.String,java.lang.String%5B%5D)">query</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
+     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</code></th>
+<td class="colLast">
+<div class="block">Executes an SQL query.</div>
+</td>
+</tr>
 <tr id="i23" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveFile(java.lang.String)">RemoveFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the table</div>
+</td>
 </tr>
 <tr id="i24" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">RemoveKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes the row that matches the given table, section, and key</div>
+</td>
 </tr>
 <tr id="i25" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveSection(java.lang.String,java.lang.String)">RemoveSection</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Deletes all rows that matches the given table and section</div>
+</td>
 </tr>
 <tr id="i26" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RenameFile(java.lang.String,java.lang.String)">RenameFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameSource,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameDest)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Renames the table</div>
+</td>
 </tr>
 <tr id="i27" class="rowColor">
 <td class="colFirst"><code>void</code></td>
@@ -349,7 +394,9 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;values)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Performs a bulk <a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>DataStore.SetString(String, String, String, String)</code></a> operation, using available database features to do so more efficiently.</div>
+</td>
 </tr>
 <tr id="i28" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -357,7 +404,9 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -365,7 +414,7 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.gmt2001.datastore.<a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></h3>
-<code><a href="DataStore.html#backupDB(java.lang.String)">backupDB</a>, <a href="DataStore.html#canBackup()">canBackup</a>, <a href="DataStore.html#CanConnect()">CanConnect</a>, <a href="DataStore.html#CreateIndexes()">CreateIndexes</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#del(java.lang.String,java.lang.String)">del</a>, <a href="DataStore.html#dispose()">dispose</a>, <a href="DataStore.html#DropIndexes()">DropIndexes</a>, <a href="DataStore.html#exists(java.lang.String,java.lang.String)">exists</a>, <a href="DataStore.html#get(java.lang.String,java.lang.String)">get</a>, <a href="DataStore.html#GetBoolean(java.lang.String,java.lang.String,java.lang.String)">GetBoolean</a>, <a href="DataStore.html#GetDouble(java.lang.String,java.lang.String,java.lang.String)">GetDouble</a>, <a href="DataStore.html#GetFloat(java.lang.String,java.lang.String,java.lang.String)">GetFloat</a>, <a href="DataStore.html#GetInteger(java.lang.String,java.lang.String,java.lang.String)">GetInteger</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetLong(java.lang.String,java.lang.String,java.lang.String)">GetLong</a>, <a href="DataStore.html#GetObject(java.lang.String,java.lang.String,java.lang.String)">GetObject</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#InsertString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">InsertString</a>, <a href="DataStore.html#SaveAll(boolean)">SaveAll</a>, <a href="DataStore.html#searchByKey(java.lang.String,java.lang.String)">searchByKey</a>, <a href="DataStore.html#searchByValue(java.lang.String,java.lang.String)">searchByValue</a>, <a href="DataStore.html#set(java.lang.String,java.lang.String,java.lang.String)">set</a>, <a href="DataStore.html#setbatch(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">setbatch</a>, <a href="DataStore.html#SetBoolean(java.lang.String,java.lang.String,java.lang.String,boolean)">SetBoolean</a>, <a href="DataStore.html#SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">SetDouble</a>, <a href="DataStore.html#SetFloat(java.lang.String,java.lang.String,java.lang.String,float)">SetFloat</a>, <a href="DataStore.html#SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">SetInteger</a>, <a href="DataStore.html#SetLong(java.lang.String,java.lang.String,java.lang.String,long)">SetLong</a>, <a href="DataStore.html#SetObject(java.lang.String,java.lang.String,java.lang.String,java.lang.Object)">SetObject</a></code></li>
+<code><a href="DataStore.html#backupDB(java.lang.String)">backupDB</a>, <a href="DataStore.html#canBackup()">canBackup</a>, <a href="DataStore.html#CreateIndexes()">CreateIndexes</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#del(java.lang.String,java.lang.String)">del</a>, <a href="DataStore.html#dispose()">dispose</a>, <a href="DataStore.html#DropIndexes()">DropIndexes</a>, <a href="DataStore.html#executeSql(java.lang.String,java.lang.String%5B%5D)">executeSql</a>, <a href="DataStore.html#exists(java.lang.String,java.lang.String)">exists</a>, <a href="DataStore.html#get(java.lang.String,java.lang.String)">get</a>, <a href="DataStore.html#GetBoolean(java.lang.String,java.lang.String,java.lang.String)">GetBoolean</a>, <a href="DataStore.html#GetDouble(java.lang.String,java.lang.String,java.lang.String)">GetDouble</a>, <a href="DataStore.html#GetFloat(java.lang.String,java.lang.String,java.lang.String)">GetFloat</a>, <a href="DataStore.html#GetInteger(java.lang.String,java.lang.String,java.lang.String)">GetInteger</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetLong(java.lang.String,java.lang.String,java.lang.String)">GetLong</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#InsertString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">InsertString</a>, <a href="DataStore.html#searchByKey(java.lang.String,java.lang.String)">searchByKey</a>, <a href="DataStore.html#searchByValue(java.lang.String,java.lang.String)">searchByValue</a>, <a href="DataStore.html#set(java.lang.String,java.lang.String,java.lang.String)">set</a>, <a href="DataStore.html#setbatch(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">setbatch</a>, <a href="DataStore.html#SetBoolean(java.lang.String,java.lang.String,java.lang.String,boolean)">SetBoolean</a>, <a href="DataStore.html#SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">SetDouble</a>, <a href="DataStore.html#SetFloat(java.lang.String,java.lang.String,java.lang.String,float)">SetFloat</a>, <a href="DataStore.html#SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">SetInteger</a>, <a href="DataStore.html#SetLong(java.lang.String,java.lang.String,java.lang.String,long)">SetLong</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -417,9 +466,19 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#CanConnect(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Tests if the connection to the database succeeds.
+
+ This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#CanConnect(java.lang.String,java.lang.String,java.lang.String)">CanConnect</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>db</code> - The JDBC connection string</dd>
+<dd><code>user</code> - The username</dd>
+<dd><code>pass</code> - The password</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> on success or on embedded databases</dd>
 </dl>
 </li>
 </ul>
@@ -430,9 +489,13 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <li class="blockList">
 <h4>AddFile</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;AddFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#AddFile(java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Creates a new table</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#AddFile(java.lang.String)">AddFile</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
 </dl>
 </li>
 </ul>
@@ -455,9 +518,15 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;void&nbsp;RemoveKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Deletes the row that matches the given table, section, and key</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">RemoveKey</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
 </dl>
 </li>
 </ul>
@@ -469,9 +538,14 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <h4>RemoveSection</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;RemoveSection&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveSection(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Deletes all rows that matches the given table and section</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#RemoveSection(java.lang.String,java.lang.String)">RemoveSection</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section</dd>
 </dl>
 </li>
 </ul>
@@ -482,9 +556,13 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <li class="blockList">
 <h4>RemoveFile</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;RemoveFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveFile(java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Deletes the table</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#RemoveFile(java.lang.String)">RemoveFile</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
 </dl>
 </li>
 </ul>
@@ -496,9 +574,14 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <h4>RenameFile</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;RenameFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameSource,
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameDest)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RenameFile(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Renames the table</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#RenameFile(java.lang.String,java.lang.String)">RenameFile</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fNameSource</code> - A table name for an existing table, without the <code>phantombot_</code> prefix</dd>
+<dd><code>fNameDest</code> - A new table name that does not yet exist, without the <code>phantombot_</code> prefix</dd>
 </dl>
 </li>
 </ul>
@@ -509,9 +592,14 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <li class="blockList">
 <h4>FileExists</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;FileExists&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#FileExists(java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Indicates if the given table already exists</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#FileExists(java.lang.String)">FileExists</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -532,9 +620,14 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <li class="blockList">
 <h4>GetFileList</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetFileList()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetFileList()">DataStore</a></code></span></div>
+<div class="block">Returns a list of tables in the database.
+ <br/><br/>
+ Only tables with the <code>phantombot_</code> prefix are returned. The prefix is removed</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#GetFileList()">GetFileList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -545,9 +638,14 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <li class="blockList">
 <h4>GetCategoryList</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetCategoryList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetCategoryList(java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of all values in the <code>section</code> column within the table</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#GetCategoryList(java.lang.String)">GetCategoryList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -559,9 +657,15 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <h4>GetKeyList</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeyList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyList(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of all values in the <code>variable</code> column within the table and section</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#GetKeyList(java.lang.String,java.lang.String)">GetKeyList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -573,9 +677,15 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <h4>GetKeyValueList</h4>
 <pre class="methodSignature">public&nbsp;<a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]&nbsp;GetKeyValueList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyValueList(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of all <code>variable/value</code> pairs within the table and section</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#GetKeyValueList(java.lang.String,java.lang.String)">GetKeyValueList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -590,9 +700,18 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -607,9 +726,18 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -624,9 +752,18 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -641,9 +778,18 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -656,9 +802,16 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeValues&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>value</code> column contains the search phrase</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeValues</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>value</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -671,9 +824,16 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeKeys&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeys</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -689,9 +849,19 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
                                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
+<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - The maximum number of results to return from this query</dd>
+<dd><code>offset</code> - The offset to start reading from</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -704,9 +874,14 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;boolean&nbsp;HasKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Indicates if the given table contains a row matching the given section and key</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) or <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -719,9 +894,16 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetKeyByValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns the value of the <code>variable</code> column for the given table, section, and value</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">GetKeyByValue</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>value</code> - The value of the <code>value</code> column</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -734,9 +916,16 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetString&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetString(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a string</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#GetString(java.lang.String,java.lang.String,java.lang.String)">GetString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
@@ -750,9 +939,17 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;values)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">DataStore</a></code></span></div>
+<div class="block">Performs a bulk <a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>DataStore.SetString(String, String, String, String)</code></a> operation, using available database features to do so more efficiently.
+
+ The array index of the keys and value params are linked</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">SetBatchString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>values</code> - The new values to set the <code>value</code> column to</dd>
 </dl>
 </li>
 </ul>
@@ -766,9 +963,16 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">SetString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - The value of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new value of the <code>value</code> column</dd>
 </dl>
 </li>
 </ul>
@@ -782,23 +986,53 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Increases the value of the <code>value</code> column as an integer for all keys of the given table and section</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="DataStore.html#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">IncreaseBatchString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>keys</code> - The values of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - The new value to increase the <code>value</code> column by</dd>
 </dl>
 </li>
 </ul>
-<a id="executeSql(java.lang.String,java.lang.String[])">
+<a id="query(java.lang.String,java.lang.String[])">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>executeSql</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[][]&nbsp;executeSql&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
-                             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</pre>
+<h4>query</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&gt;&nbsp;query&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#query(java.lang.String,java.lang.String%5B%5D)">DataStore</a></code></span></div>
+<div class="block">Executes an SQL query.
+ <br/><br/>
+ The query is executed using a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement</code></a> with calls to <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a>
+ <br/><br/>
+ For example:<br/>
+ <code>executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])</code>
+ <br/><br/>
+ The value <code>"baz"</code> is escaped to prevent SQL injection, then inserted in place of the <code>?</code>
+ <br/><br/>
+ This yields the final query of<br/>
+ <code>SELECT * FROM foo WHERE bar = "baz"</code>
+ <br/><br/>
+ You can use <code>?</code> as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
+ <br/><br/>
+ Replacements are performed in order from left to right
+ <br/><br/>
+ Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="DataStore.html#executeSql(java.lang.String,java.lang.String%5B%5D)">executeSql</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dd><code><a href="DataStore.html#query(java.lang.String,java.lang.String%5B%5D)">query</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>sql</code> - The query to execute</dd>
+<dd><code>replacements</code> - Replacements for <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>An List of data as strings representing the result set, if the query was a DQL statement; an empty list otherwise. The outer list represents rows; the inner array represents columns; the values of the inner list represent the value of the row-column pair at that index as a string</dd>
 </dl>
 </li>
 </ul>
