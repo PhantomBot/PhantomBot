@@ -526,11 +526,17 @@
                     });
         </script>
         <script>
-            if (!window.location.pathname.endsWith("/")) {
-                let newURL = window.location.toString();
-                newURL = newURL.substring(0, newURL.indexOf(window.location.pathname)) + window.location.pathname + '/' + newURL.substring(newURL.indexOf(window.location.pathname) + window.location.pathname.length);
+            function doFix() {
+                window.sessionStorage.setItem("/setup#fix", (Date.now() + 10000));
+                let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + "/");
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
                 window.location.replace(newURL);
+            }
+
+            if (!window.location.pathname.endsWith("/")) {
+                if (window.sessionStorage.getItem("/setup#fix") === null || parseInt(window.sessionStorage.getItem("/setup#fix")) < Date.now()) {
+                    doFix();
+                }
             }
         </script>
     </body>
