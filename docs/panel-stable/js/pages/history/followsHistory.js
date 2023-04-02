@@ -54,7 +54,7 @@ $(function () {
         return follows;
     }
 
-    socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', true, function (results) {
+    socket.getDBTableValuesByOrder('get_all_follows_by_date', 'followedDate', FOLLOW_STEP, followingOffset, 'DESC', false, function (results) {
 
         let follows = prepareDataForTable(results);
 
