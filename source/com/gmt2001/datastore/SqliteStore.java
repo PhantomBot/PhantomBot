@@ -1248,7 +1248,7 @@ public final class SqliteStore extends DataStore {
         try {
             this.rwl.writeLock().lock();
             try ( Connection connection = GetConnection()) {
-                Files.createDirectories(Paths.get("./dbbackup/"));
+                Files.createDirectories(PathValidator.getRealPath(Paths.get("./dbbackup/")));
 
                 try ( Statement statement = connection.createStatement()) {
                     statement.execute("backup to ./dbbackup/" + filename);

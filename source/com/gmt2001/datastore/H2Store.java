@@ -41,6 +41,8 @@ import java.util.stream.Stream;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 
+import com.gmt2001.PathValidator;
+
 import tv.phantombot.PhantomBot;
 
 /**
@@ -1097,7 +1099,7 @@ public final class H2Store extends DataStore {
     public void backupDB(String filename) {
         filename = filename + BACKUP_SUFFIX;
         try ( Connection connection = GetConnection()) {
-            Files.createDirectories(Paths.get("./dbbackup/"));
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./dbbackup/")));
 
             try ( Statement statement = connection.createStatement()) {
                 statement.execute("SCRIPT DROP TO './dbbackup/" + filename + "' COMPRESSION GZIP");

@@ -316,7 +316,11 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().contains("\"status\":401")) {
+                                if (error.getMessage().contains("\"status\":401") || error.getMessage().contains("\"status\":403")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("\"_exception\":\"TimeoutException\"")) {
                                     return true;
                                 }
                             }
