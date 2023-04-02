@@ -390,10 +390,17 @@
             });
         </script>
         <script>
-            if (!window.location.pathname.endsWith("/")) {
+            function doFix() {
+                window.sessionStorage.setItem("/panel/login#fix", (Date.now() + 10000));
                 let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + "/");
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
                 window.location.replace(newURL);
+            }
+
+            if (!window.location.pathname.endsWith("/")) {
+                if (window.sessionStorage.getItem("/panel/login#fix") === null || parseInt(window.sessionStorage.getItem("/panel/login#fix")) < Date.now()) {
+                    doFix();
+                }
             }
         </script>
     </body>

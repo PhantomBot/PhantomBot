@@ -16,6 +16,7 @@
  */
 package com.gmt2001.twitch.eventsub;
 
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.concurrent.Flow;
@@ -158,7 +159,13 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
         String session_id = EventSub.instance().sessionId();
 
         if (session_id == null || session_id.isBlank()) {
-            throw new IllegalStateException("session_id");
+            EventSub.instance().reconnect();
+            Mono.delay(Duration.ofSeconds(5)).block();
+            session_id = EventSub.instance().sessionId();
+
+            if (session_id == null || session_id.isBlank()) {
+                throw new IllegalStateException("session_id");
+            }
         }
 
         return EventSubTransport.websocket(session_id);

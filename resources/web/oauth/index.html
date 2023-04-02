@@ -534,11 +534,17 @@
                     });
         </script>
         <script>
-            if (!window.location.pathname.endsWith("/") && !window.location.pathname.endsWith("/broadcaster")) {
+            function doFix() {
+                window.sessionStorage.setItem("/oauth#fix", (Date.now() + 10000));
                 let newURL = window.location.toString();
                 newURL = newURL.substring(0, newURL.indexOf(window.location.pathname)) + window.location.pathname + '/' + newURL.substring(newURL.indexOf(window.location.pathname) + window.location.pathname.length);
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
                 window.location.replace(newURL);
+            }
+            if (!window.location.pathname.endsWith("/") && !window.location.pathname.endsWith("/broadcaster")) {
+                if (window.sessionStorage.getItem("/oauth#fix") === null || parseInt(window.sessionStorage.getItem("/oauth#fix")) < Date.now()) {
+                    doFix();
+                }
             }
         </script>
     </body>
