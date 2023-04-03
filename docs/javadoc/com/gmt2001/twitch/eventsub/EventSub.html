@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10};
+var data = {"i0":9,"i1":9,"i2":9,"i3":10,"i4":10,"i5":10,"i6":9,"i7":10,"i8":10,"i9":9,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -171,18 +171,24 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debug()">debug</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Indicates if EventSub debug output is enabled</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debug(java.lang.String)">debug</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Logs a debug message for EventSub</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debug(java.lang.String,java.lang.Throwable)">debug</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&nbsp;ex)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Logs a debug message for EventSub</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html?is-external=true" title="class or interface in reactor.core.publisher" class="externalLink">Mono</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Void.html?is-external=true" title="class or interface in java.lang" class="externalLink">Void</a>&gt;</code></td>
@@ -223,7 +229,9 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onTwitchOAuthReauthorizedEvent(tv.phantombot.event.twitch.TwitchOAuthReauthorizedEvent)">onTwitchOAuthReauthorizedEvent</a></span>&#8203;(<a href="../../../../tv/phantombot/event/twitch/TwitchOAuthReauthorizedEvent.html" title="class in tv.phantombot.event.twitch">TwitchOAuthReauthorizedEvent</a>&nbsp;event)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Restarts EventSub when the API OAuth is re-authorized manually</div>
+</td>
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZonedDateTime.html?is-external=true" title="class or interface in java.time" class="externalLink">ZonedDateTime</a></code></td>
@@ -235,21 +243,32 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reconnect()">reconnect</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Restarts the EventSub connection</div>
+</td>
 </tr>
 <tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#refreshSubscriptions()">refreshSubscriptions</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Refreshes the internal list of existing subscriptions</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sessionId()">sessionId</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the WebSocket session ID</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shutdown()">shutdown</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Shuts down EventSub</div>
+</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="EventSubSubscription.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscription</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#subscriptions()">subscriptions</a></span>()</code></th>
 <td class="colLast">
@@ -307,6 +326,10 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>debug</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;debug()</pre>
+<div class="block">Indicates if EventSub debug output is enabled</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
 </li>
 </ul>
 <a id="debug(java.lang.String)">
@@ -316,6 +339,11 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>debug</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;debug&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
+<div class="block">Logs a debug message for EventSub</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>message</code> - The message to log</dd>
+</dl>
 </li>
 </ul>
 <a id="debug(java.lang.String,java.lang.Throwable)">
@@ -326,6 +354,12 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <h4>debug</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;debug&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Throwable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Throwable</a>&nbsp;ex)</pre>
+<div class="block">Logs a debug message for EventSub</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>message</code> - The message to log</dd>
+<dd><code>ex</code> - The exception to log</dd>
+</dl>
 </li>
 </ul>
 <a id="subscriptions()">
@@ -369,6 +403,16 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 </dl>
 </li>
 </ul>
+<a id="refreshSubscriptions()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>refreshSubscriptions</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;refreshSubscriptions()</pre>
+<div class="block">Refreshes the internal list of existing subscriptions</div>
+</li>
+</ul>
 <a id="parseDate(java.lang.String)">
 <!--   -->
 </a>
@@ -379,7 +423,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <div class="block">Parses a date from an EventSub message into a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/ZonedDateTime.html?is-external=true" title="class or interface in java.time" class="externalLink"><code>ZonedDateTime</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>date</code> - </dd>
+<dd><code>date</code> - A date string to parse in RFC3339 format</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
@@ -391,6 +435,11 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>onTwitchOAuthReauthorizedEvent</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onTwitchOAuthReauthorizedEvent&#8203;(<a href="../../../../tv/phantombot/event/twitch/TwitchOAuthReauthorizedEvent.html" title="class in tv.phantombot.event.twitch">TwitchOAuthReauthorizedEvent</a>&nbsp;event)</pre>
+<div class="block">Restarts EventSub when the API OAuth is re-authorized manually</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>event</code> - The event object</dd>
+</dl>
 </li>
 </ul>
 <a id="reconnect()">
@@ -400,6 +449,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>reconnect</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;reconnect()</pre>
+<div class="block">Restarts the EventSub connection</div>
 </li>
 </ul>
 <a id="handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">
@@ -460,6 +510,7 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <li class="blockList">
 <h4>shutdown</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;shutdown()</pre>
+<div class="block">Shuts down EventSub</div>
 </li>
 </ul>
 </li>

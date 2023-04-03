@@ -185,39 +185,87 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#MODERATOR_REMOVED">MODERATOR_REMOVED</a></span></code></th>
+<td class="colLast">
+<div class="block">The moderator that authorized the subscription is no longer one of the broadcaster's moderators.</div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NOT_CREATED_YET">NOT_CREATED_YET</a></span></code></th>
 <td class="colLast">
 <div class="block">Subscription proposal that has not been submitted to the EventSub endpoint for creation yet.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#NOTIFICATION_FAILURES_EXCEEDED">NOTIFICATION_FAILURES_EXCEEDED</a></span></code></th>
 <td class="colLast">
 <div class="block">Notification delivery failure rate was too high.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#USER_REMOVED">USER_REMOVED</a></span></code></th>
 <td class="colLast">
 <div class="block">A user in the condition of the subscription was removed.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#VERSION_REMOVED">VERSION_REMOVED</a></span></code></th>
 <td class="colLast">
 <div class="block">The specific version of the subscription type was removed.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBHOOK_CALLBACK_VERIFICATION_FAILED">WEBHOOK_CALLBACK_VERIFICATION_FAILED</a></span></code></th>
 <td class="colLast">
 <div class="block">Webhook failed verification of the callback specified in the subscription creation request.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBHOOK_CALLBACK_VERIFICATION_PENDING">WEBHOOK_CALLBACK_VERIFICATION_PENDING</a></span></code></th>
 <td class="colLast">
 <div class="block">Webhook is pending verification of the callback specified in the subscription creation request.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_CONNECTION_UNUSED">WEBSOCKET_CONNECTION_UNUSED</a></span></code></th>
+<td class="colLast">
+<div class="block">The client failed to subscribe to events within the required time.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_DISCONNECTED">WEBSOCKET_DISCONNECTED</a></span></code></th>
+<td class="colLast">
+<div class="block">The client closed the connection.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_FAILED_PING_PONG">WEBSOCKET_FAILED_PING_PONG</a></span></code></th>
+<td class="colLast">
+<div class="block">The client failed to respond to a ping message.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_INTERNAL_ERROR">WEBSOCKET_INTERNAL_ERROR</a></span></code></th>
+<td class="colLast">
+<div class="block">The Twitch WebSocket server experienced an unexpected error.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_NETWORK_ERROR">WEBSOCKET_NETWORK_ERROR</a></span></code></th>
+<td class="colLast">
+<div class="block">The Twitch WebSocket server experienced a network error writing the message to the client.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_NETWORK_TIMEOUT">WEBSOCKET_NETWORK_TIMEOUT</a></span></code></th>
+<td class="colLast">
+<div class="block">The Twitch WebSocket server timed out writing the message to the client.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colFirst" scope="row"><code><span class="memberNameLink"><a href="#WEBSOCKET_RECEIVED_INBOUND_TRAFFIC">WEBSOCKET_RECEIVED_INBOUND_TRAFFIC</a></span></code></th>
+<td class="colLast">
+<div class="block">The client sent a non-pong message.</div>
 </td>
 </tr>
 </table>
@@ -334,6 +382,16 @@ the order they are declared.</div>
 <div class="block">Authorization for user(s) in the condition was revoked.</div>
 </li>
 </ul>
+<a id="MODERATOR_REMOVED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>MODERATOR_REMOVED</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> MODERATOR_REMOVED</pre>
+<div class="block">The moderator that authorized the subscription is no longer one of the broadcaster's moderators.</div>
+</li>
+</ul>
 <a id="USER_REMOVED">
 <!--   -->
 </a>
@@ -352,6 +410,76 @@ the order they are declared.</div>
 <h4>VERSION_REMOVED</h4>
 <pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> VERSION_REMOVED</pre>
 <div class="block">The specific version of the subscription type was removed.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_DISCONNECTED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_DISCONNECTED</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_DISCONNECTED</pre>
+<div class="block">The client closed the connection.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_FAILED_PING_PONG">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_FAILED_PING_PONG</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_FAILED_PING_PONG</pre>
+<div class="block">The client failed to respond to a ping message.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_RECEIVED_INBOUND_TRAFFIC">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_RECEIVED_INBOUND_TRAFFIC</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_RECEIVED_INBOUND_TRAFFIC</pre>
+<div class="block">The client sent a non-pong message.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_CONNECTION_UNUSED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_CONNECTION_UNUSED</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_CONNECTION_UNUSED</pre>
+<div class="block">The client failed to subscribe to events within the required time.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_INTERNAL_ERROR">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_INTERNAL_ERROR</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_INTERNAL_ERROR</pre>
+<div class="block">The Twitch WebSocket server experienced an unexpected error.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_NETWORK_TIMEOUT">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_NETWORK_TIMEOUT</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_NETWORK_TIMEOUT</pre>
+<div class="block">The Twitch WebSocket server timed out writing the message to the client.</div>
+</li>
+</ul>
+<a id="WEBSOCKET_NETWORK_ERROR">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WEBSOCKET_NETWORK_ERROR</h4>
+<pre>public static final&nbsp;<a href="EventSubSubscription.SubscriptionStatus.html" title="enum in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a> WEBSOCKET_NETWORK_ERROR</pre>
+<div class="block">The Twitch WebSocket server experienced a network error writing the message to the client.</div>
 </li>
 </ul>
 <a id="API_REMOVED">
