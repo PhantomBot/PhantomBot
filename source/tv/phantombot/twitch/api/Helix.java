@@ -49,6 +49,7 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.NotJSONException;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.twitch.cache.ViewerCache;
+import com.gmt2001.twitch.eventsub.EventSubSubscription;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
@@ -2488,6 +2489,54 @@ public class Helix {
 
         return this.handleMutatorAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.POST, endpoint);
+        });
+    }
+
+    /**
+     * Gets a list of EventSub subscriptions that the client in the access token created.
+     * <br /><br />
+     * Use the status, type, and user_id query parameters to filter the list of subscriptions that are returned.
+     * The filters are mutually exclusive; the request fails if you specify more than one filter.
+     *
+     * @param status Filter subscriptions by its status.
+     * @param type Filter subscriptions by subscription type.
+     * @param user_id Filter subscriptions by user ID. The response contains subscriptions where this ID matches a user ID that you specified in the Condition when you created the subscription.
+     * @param after The cursor used to get the next page of results.
+     * @return
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getEventSubSubscriptionsAsync(@Nullable EventSubSubscription.SubscriptionStatus status,
+            @Nullable String type, @Nullable String user_id, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+            String condition = "?";
+
+            if (status != null) {
+                condition += this.qspValid("status", status.name().toLowerCase());
+            }
+
+            if (type != null && !type.isBlank()) {
+                if (condition.length() > 1) {
+                    throw new IllegalArgumentException("can only use one of status, type, user_id");
+                }
+
+                condition += this.qspValid("type", type);
+            }
+
+            if (user_id != null && !user_id.isBlank()) {
+                if (condition.length() > 1) {
+                    throw new IllegalArgumentException("can only use one of status, type, user_id");
+                }
+
+                condition += this.qspValid("user_id", user_id);
+            }
+
+            condition += this.qspValid((condition.length() > 1 ? "&" : "") + "after", after);
+
+        String endpoint = "/eventsub/subscriptions" + (condition.length() > 1 ? condition : "");
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 

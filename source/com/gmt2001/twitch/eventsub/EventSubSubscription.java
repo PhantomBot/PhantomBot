@@ -62,6 +62,10 @@ public final class EventSubSubscription {
          */
         AUTHORIZATION_REVOKED,
         /**
+         * The moderator that authorized the subscription is no longer one of the broadcaster's moderators.
+         */
+        MODERATOR_REMOVED,
+        /**
          * A user in the condition of the subscription was removed.
          */
         USER_REMOVED,
@@ -69,6 +73,34 @@ public final class EventSubSubscription {
          * The specific version of the subscription type was removed.
          */
         VERSION_REMOVED,
+        /**
+         * The client closed the connection.
+         */
+        WEBSOCKET_DISCONNECTED,
+        /**
+         * The client failed to respond to a ping message.
+         */
+        WEBSOCKET_FAILED_PING_PONG,
+        /**
+         * The client sent a non-pong message.
+         */
+        WEBSOCKET_RECEIVED_INBOUND_TRAFFIC,
+        /**
+         * The client failed to subscribe to events within the required time.
+         */
+        WEBSOCKET_CONNECTION_UNUSED,
+        /**
+         * The Twitch WebSocket server experienced an unexpected error.
+         */
+        WEBSOCKET_INTERNAL_ERROR,
+        /**
+         * The Twitch WebSocket server timed out writing the message to the client.
+         */
+        WEBSOCKET_NETWORK_TIMEOUT,
+        /**
+         * The Twitch WebSocket server experienced a network error writing the message to the client.
+         */
+        WEBSOCKET_NETWORK_ERROR,
         /**
          * The subscription was removed via API request, probably by a script on the bot.
          */

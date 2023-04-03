@@ -37,6 +37,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.net.ssl.SSLException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -44,6 +45,7 @@ import org.json.JSONStringer;
 import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.URIUtil;
+import com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 
@@ -130,6 +132,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         return EventSub.INSTANCE;
     }
 
+    /**
+     * Indicates if EventSub debug output is enabled
+     *
+     * @return
+     */
     public static boolean debug() {
         /**
          * @botproperty eventsubdebug - If `true`, prints debug messages for EventSub. Default `false`
@@ -138,10 +145,21 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         return CaselessProperties.instance().getPropertyAsBoolean("eventsubdebug", false);
     }
 
+    /**
+     * Logs a debug message for EventSub
+     *
+     * @param message The message to log
+     */
     public static void debug(String message) {
         debug(message, null);
     }
 
+    /**
+     * Logs a debug message for EventSub
+     *
+     * @param message The message to log
+     * @param ex The exception to log
+     */
     public static void debug(String message, Throwable ex) {
         if (debug()) {
             com.gmt2001.Console.debug.println(message);
@@ -213,6 +231,48 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     }
 
     /**
+     * Refreshes the internal list of existing subscriptions
+     */
+    public void refreshSubscriptions() {
+        this.refreshSubscriptions(null);
+    }
+
+    /**
+     * Refreshes the internal list of existing subscriptions
+     *
+     * @param after The pagination cursor
+     */
+    private void refreshSubscriptions(String after) {
+        Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
+            if (response.has("error")) {
+                if (debug()) {
+                    debug("refreshSubscriptions(" + after + ") error " + response.toString(4));
+                }
+            } else {
+                if (debug()) {
+                    debug("refreshSubscriptions(" + after + ") success " + response.toString(4));
+                }
+                JSONArray jsa = response.getJSONArray("data");
+
+                for (int i = 0; i < jsa.length(); i++) {
+                    EventSubSubscription subscription = EventSubSubscription.fromJSON(jsa.getJSONObject(i));
+                    this.updateSubscription(subscription);
+                }
+
+                JSONObject pagination = response.getJSONObject("pagination");
+                if (pagination.has("cursor") && !pagination.isNull("cursor")) {
+                    this.refreshSubscriptions(pagination.getString("cursor"));
+                } else {
+                    this.cleanupSubscriptions();
+                }
+            }
+        }).doOnError(ex -> {
+            debug("refreshSubscriptions(" + after + ") doOnError", ex);
+            com.gmt2001.Console.debug.println("Failed to refresh subscriptions [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
+        }).subscribe();
+    }
+
+    /**
      * Performs the create action for an {@link EventSubSubscriptionType}
      *
      * @param proposedSubscription The {@link EventSubSubscription} spec to create
@@ -274,7 +334,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     /**
      * Parses a date from an EventSub message into a {@link ZonedDateTime}
      *
-     * @param date
+     * @param date A date string to parse in RFC3339 format
      * @return
      */
     public static ZonedDateTime parseDate(String date) {
@@ -347,6 +407,17 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     }
 
     /**
+     * Removes non-enabled subscriptions from the subscription list
+     */
+    private void cleanupSubscriptions() {
+        this.subscriptions.forEach((id, subscription) -> {
+            if (subscription.status() != SubscriptionStatus.ENABLED) {
+                this.subscriptions.remove(id);
+            }
+        });
+    }
+
+    /**
      * Removes expired message ids from the duplicate list
      */
     private void cleanupDuplicates() {
@@ -358,6 +429,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         });
     }
 
+    /**
+     * Checks if the Keep-Alive timeout has been reached
+     */
     private void checkKeepAlive() {
         boolean shouldReconnect = false;
         this.rwl.readLock().lock();
@@ -374,6 +448,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }
     }
 
+    /**
+     * Restarts EventSub when the API OAuth is re-authorized manually
+     *
+     * @param event The event object
+     */
     @Handler
     public void onTwitchOAuthReauthorizedEvent(TwitchOAuthReauthorizedEvent event) {
         if (event.isAPI()) {
@@ -383,14 +462,27 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }
     }
 
+    /**
+     * Restarts the EventSub connection
+     */
     public void reconnect() {
         this.connect();
+        Mono.delay(Duration.ofSeconds(3)).block();
+        this.refreshSubscriptions();
     }
 
+    /**
+     * Connects to EventSub
+     */
     private void connect() {
         this.connect("wss://eventsub-beta.wss.twitch.tv/ws");
     }
 
+    /**
+     * Connects to EventSub at the specified URI
+     *
+     * @param uri The URI to connect to
+     */
     private synchronized void connect(String uri) {
         if (!this.reconnecting) {
             if (this.client != null) {
@@ -426,6 +518,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }, 250, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Parses an EventSub websocket message
+     *
+     * @param jso The JSON data to parse
+     */
     private void handleMessage(JSONObject jso) {
         boolean handled = false;
         if (debug()) {
@@ -578,6 +675,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }
     }
 
+    /**
+     * Shuts down EventSub
+     */
     public void shutdown() {
         if (this.client != null) {
             this.client.close(WebSocketCloseStatus.NORMAL_CLOSURE);
