@@ -738,10 +738,10 @@
         }
 
         for (i in groups) {
-            temp.push('Permission IDs: ' + groups[i].id + ' (' + groups[i].group + ')');
+            temp.push('' + groups[i].id + ' (' + groups[i].group + ')');
         }
 
-        return temp.join(', ');
+        return 'Permission IDs: ' + temp.join(', ');
     }
 
     /**
@@ -1317,7 +1317,7 @@
         $.registerChatCommand('./core/permissions.js', 'ignorelist', $.PERMISSION.Admin);
         $.registerChatCommand('./core/permissions.js', 'ignoreadd', $.PERMISSION.Admin);
         $.registerChatCommand('./core/permissions.js', 'ignoreremove', $.PERMISSION.Admin);
-        $.registerChatCommand('./core/permissions.js', 'swapsubscribervip', $.PERMISSION.Admin1);
+        $.registerChatCommand('./core/permissions.js', 'swapsubscribervip', $.PERMISSION.Admin);
 
         /** Load groups and generate default groups if they don't exist */
         reloadGroups();

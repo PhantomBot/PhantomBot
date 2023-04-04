@@ -751,6 +751,17 @@
         Packages.com.gmt2001.Console.warn.println('');
     }
 
+    $.bind('command', function(event) {
+        if ($.jsString(event.getCommand()).toLowerCase() === 'fixsubscribers') {
+            $.setIniDbBoolean('settings', 'isSwappedSubscriberVIP', false);
+            $.say('Fix applied. Please restart the bot');
+        }
+    });
+
+    $.bind('initReady', function() {
+        $.registerChatCommand('./core/bootstrap/900updates.js', 'fixsubscribers', $.PERMISSION.Admin);
+    });
+
     $.bind('webPanelSocketConnect', function (event) {
         setTimeout(function () {
             if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
