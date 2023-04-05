@@ -41,8 +41,8 @@
      * @function updateSettings
      */
     function updateSettings() {
-        let tempPointNameSingle,
-                tempPointNameMultiple;
+        let tempPointNameSingle = pointNameSingle,
+            tempPointNameMultiple = pointNameMultiple;
 
         onlineGain = $.getIniDbNumber('pointSettings', 'onlineGain');
         offlineGain = $.getIniDbNumber('pointSettings', 'offlineGain');
@@ -53,72 +53,42 @@
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
 
-        if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
-            tempPointNameSingle = pointNameSingle;
-            tempPointNameMultiple = pointNameMultiple;
-        }
-
-        if (!pointNameMultiple.equalsIgnoreCase('points') || !pointNameSingle.equalsIgnoreCase('point')) {
-            registerNewPointsCommands(tempPointNameSingle, tempPointNameMultiple, true);
-        }
+        registerNewPointsCommands([pointNameSingle, pointNameMultiple], [tempPointNameSingle, tempPointNameMultiple]);
     }
 
     /**
      * @function registerPointCommands
      */
-    function registerNewPointsCommands(newName, newName2, newCommand) {
-        newName = newName.toLowerCase();
-        newName2 = newName2.toLowerCase();
-
-        if (newName && newCommand && !$.commandExists(newName)) {
-            $.registerChatCommand('./systems/pointSystem.js', newName, $.PERMISSION.Viewer);
-            $.registerChatSubcommand(newName, 'add', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'give', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'take', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'remove', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'set', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'all', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'takeall', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'setname', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'setgain', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'setofflinegain', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'setinterval', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'user', $.PERMISSION.Viewer);
-            $.registerChatSubcommand(newName, 'check', $.PERMISSION.Viewer);
-            $.registerChatSubcommand(newName, 'bonus', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'resetall', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'setmessage', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName, 'setactivebonus', $.PERMISSION.Admin);
+    function registerNewPointsCommands(newNames, oldNames) {
+        for (let x in newNames) {
+            let newName = newNames[x].toLowerCase();
+            if (!$.commandExists(newName)) {
+                $.registerChatCommand('./systems/pointSystem.js', newName, $.PERMISSION.Viewer);
+                $.registerChatSubcommand(newName, 'add', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'give', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'take', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'remove', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'set', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'all', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'takeall', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'setname', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'setgain', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'setofflinegain', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'setinterval', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'user', $.PERMISSION.Viewer);
+                $.registerChatSubcommand(newName, 'check', $.PERMISSION.Viewer);
+                $.registerChatSubcommand(newName, 'bonus', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'resetall', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'setmessage', $.PERMISSION.Admin);
+                $.registerChatSubcommand(newName, 'setactivebonus', $.PERMISSION.Admin);
+            }
         }
 
-
-        if (newName2 && newCommand && !$.commandExists(newName2)) {
-            $.registerChatCommand('./systems/pointSystem.js', newName2, $.PERMISSION.Viewer);
-            $.registerChatSubcommand(newName2, 'add', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'give', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'take', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'remove', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'set', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'all', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'takeall', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'setname', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'setgain', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'setofflinegain', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'setinterval', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'user', $.PERMISSION.Viewer);
-            $.registerChatSubcommand(newName2, 'check', $.PERMISSION.Viewer);
-            $.registerChatSubcommand(newName2, 'bonus', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'resetall', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'setmessage', $.PERMISSION.Admin);
-            $.registerChatSubcommand(newName2, 'setactivebonus', $.PERMISSION.Admin);
-        }
-
-        if (newName && newName !== 'points' && !newCommand) {
-            $.unregisterChatCommand(newName);
-        }
-
-        if (newName2 && newName2 !== 'points' && !newCommand) {
-            $.unregisterChatCommand(newName2);
+        for (let x in oldNames) {
+            let oldName = oldNames[x].toLowerCase();
+            if (oldName !== 'point' && oldName !== 'points') {
+                $.unregisterChatCommand(oldName);
+            }
         }
     }
 
@@ -578,38 +548,32 @@
                     return;
                 }
                 if (actionArg1.equalsIgnoreCase('single') && actionArg2) {
-                    temp = pointNameSingle;
                     if (actionArg2.equalsIgnoreCase($.inidb.get('pointSettings', 'pointNameSingle'))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.duplicate'));
                         return;
                     }
 
-                    pointNameSingle = actionArg2.toLowerCase();
-                    $.inidb.set('pointSettings', 'pointNameSingle', pointNameSingle);
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', temp, pointNameSingle));
+                    temp = actionArg2.toLowerCase();
+                    $.inidb.set('pointSettings', 'pointNameSingle', temp);
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', pointNameSingle, temp));
                     updateSettings();
                     return;
                 }
                 if (actionArg1.equalsIgnoreCase('multiple') && actionArg2) {
-                    temp = pointNameMultiple;
                     if (actionArg2.equalsIgnoreCase($.inidb.get('pointSettings', 'pointNameMultiple'))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.duplicate'));
                         return;
                     }
 
-                    pointNameMultiple = actionArg2.toLowerCase();
-                    $.inidb.set('pointSettings', 'pointNameMultiple', pointNameMultiple);
-                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', temp, pointNameMultiple));
+                    temp = actionArg2.toLowerCase();
+                    $.inidb.set('pointSettings', 'pointNameMultiple', temp);
+                    $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', pointNameMultiple, temp));
                     updateSettings();
                     return;
                 }
                 if (actionArg1.equalsIgnoreCase('delete')) {
                     $.inidb.set('pointSettings', 'pointNameSingle', 'point');
                     $.inidb.set('pointSettings', 'pointNameMultiple', 'points');
-                    $.unregisterChatCommand(pointNameSingle);
-                    $.unregisterChatCommand(pointNameMultiple);
-                    pointNameSingle = "point";
-                    pointNameMultiple = "points";
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.delete'));
                     updateSettings();
                     return;
@@ -852,29 +816,10 @@
      */
     $.bind('initReady', function () {
         $.registerChatCommand('./systems/pointSystem.js', 'makeitrain', $.PERMISSION.Admin);
-        $.registerChatCommand('./systems/pointSystem.js', 'points', $.PERMISSION.Viewer);
         $.registerChatCommand('./systems/pointSystem.js', 'gift', $.PERMISSION.Viewer);
         $.registerChatCommand('./systems/pointSystem.js', 'penalty', $.PERMISSION.Mod);
 
-        $.registerChatSubcommand('points', 'add', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'give', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'take', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'remove', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'set', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'all', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'takeall', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'setname', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'setgain', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'setofflinegain', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'setinterval', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'bonus', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'resetall', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'setmessage', $.PERMISSION.Admin);
-        $.registerChatSubcommand('points', 'setactivebonus', $.PERMISSION.Admin);
-
-        if (pointNameSingle !== 'point' || pointNameMultiple !== 'points') {
-            updateSettings();
-        }
+        updateSettings();
     });
 
     /** Export functions to API */
