@@ -49,7 +49,9 @@
         onlinePayoutInterval = $.getIniDbNumber('pointSettings', 'onlinePayoutInterval');
         offlinePayoutInterval = $.getIniDbNumber('pointSettings', 'offlinePayoutInterval');
         pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
+        $.pointNameSingle = pointNameSingle;
         pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
+        $.pointNameMultiple = pointNameMultiple;
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
 
