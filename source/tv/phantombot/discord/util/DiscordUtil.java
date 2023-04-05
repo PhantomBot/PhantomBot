@@ -637,58 +637,52 @@ public class DiscordUtil {
                         break;
                     case GUILD_NEWS:
                         NewsChannel rn = (NewsChannel) channel;
-                        if (rn.getCategoryId().isPresent()) {
-                            if (!data.containsKey(rn.getCategoryId().get().asString())) {
-                                data.putIfAbsent(rn.getCategoryId().get().asString(), new HashMap<>());
-                            }
-
-                            data.get(rn.getCategoryId().get().asString()).putIfAbsent(rn.getId().asString(), rn.getType().name() + ":" + rn.getName());
+                        if (!data.containsKey(rn.getCategoryId().map(c -> c.asString()).orElse(""))) {
+                            data.putIfAbsent(rn.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
                         }
+
+                        data.get(rn.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rn.getId().asString(), rn.getType().name() + ":" + rn.getName());
                         break;
                     case GUILD_STAGE_VOICE:
                         VoiceChannel rsv = (VoiceChannel) channel;
-                        if (rsv.getCategoryId().isPresent()) {
-                            if (!data.containsKey(rsv.getCategoryId().get().asString())) {
-                                data.putIfAbsent(rsv.getCategoryId().get().asString(), new HashMap<>());
-                            }
-
-                            data.get(rsv.getCategoryId().get().asString()).putIfAbsent(rsv.getId().asString(), rsv.getType().name() + ":" + rsv.getName());
+                        if (!data.containsKey(rsv.getCategoryId().map(c -> c.asString()).orElse(""))) {
+                            data.putIfAbsent(rsv.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
                         }
+
+                        data.get(rsv.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rsv.getId().asString(), rsv.getType().name() + ":" + rsv.getName());
                         break;
                     case GUILD_STORE:
                         StoreChannel rs = (StoreChannel) channel;
-                        if (rs.getCategoryId().isPresent()) {
-                            if (!data.containsKey(rs.getCategoryId().get().asString())) {
-                                data.putIfAbsent(rs.getCategoryId().get().asString(), new HashMap<>());
-                            }
-
-                            data.get(rs.getCategoryId().get().asString()).putIfAbsent(rs.getId().asString(), rs.getType().name() + ":" + rs.getName());
+                        if (!data.containsKey(rs.getCategoryId().map(c -> c.asString()).orElse(""))) {
+                            data.putIfAbsent(rs.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
                         }
+
+                        data.get(rs.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rs.getId().asString(), rs.getType().name() + ":" + rs.getName());
                         break;
                     case GUILD_TEXT:
                         TextChannel rt = (TextChannel) channel;
-                        if (rt.getCategoryId().isPresent()) {
-                            if (!data.containsKey(rt.getCategoryId().get().asString())) {
-                                data.putIfAbsent(rt.getCategoryId().get().asString(), new HashMap<>());
-                            }
-
-                            data.get(rt.getCategoryId().get().asString()).putIfAbsent(rt.getId().asString(), rt.getType().name() + ":" + rt.getName());
+                        if (!data.containsKey(rt.getCategoryId().map(c -> c.asString()).orElse(""))) {
+                            data.putIfAbsent(rt.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
                         }
+
+                        data.get(rt.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rt.getId().asString(), rt.getType().name() + ":" + rt.getName());
                         break;
                     case GUILD_VOICE:
                         VoiceChannel rv = (VoiceChannel) channel;
-                        if (rv.getCategoryId().isPresent()) {
-                            if (!data.containsKey(rv.getCategoryId().get().asString())) {
-                                data.putIfAbsent(rv.getCategoryId().get().asString(), new HashMap<>());
-                            }
-
-                            data.get(rv.getCategoryId().get().asString()).putIfAbsent(rv.getId().asString(), rv.getType().name() + ":" + rv.getName());
+                        if (!data.containsKey(rv.getCategoryId().map(c -> c.asString()).orElse(""))) {
+                            data.putIfAbsent(rv.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
                         }
+
+                        data.get(rv.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rv.getId().asString(), rv.getType().name() + ":" + rv.getName());
                         break;
                     default:
                         break;
                 }
             }
+        }).doFinally((s) -> {
+            data.forEach((category, channels) -> {
+                data.get(category).putIfAbsent("name", category);
+            });
         });
     }
 
