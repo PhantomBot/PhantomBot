@@ -35,7 +35,6 @@
             lastJoinPart = $.systemTime(),
             isUpdatingUsers = false,
             _isSwappedSubscriberVIP = $.getSetIniDbBoolean('settings', 'isSwappedSubscriberVIP', true),
-            _usersLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             _usersGroupsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
@@ -924,12 +923,7 @@
                 newUsers.push(username);
             }
 
-            _usersLock.lock();
-            try {
-                $.users = newUsers;
-            } finally {
-                _usersLock.unlock();
-            }
+            $.users = newUsers;
 
             $.inidb.SetBatchString('visited', '', keys, values);
 
