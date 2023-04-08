@@ -152,378 +152,453 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js" data-pace-options='{ "eventLag": false }'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
         <script>
-                    'use strict';
-                    $(function () {
-                        let settings = {};
-                        let pendingSettings = {};
-                        function error(msg) {
-                            $('#error-box').removeClass('hide');
-                            $('#success-box').addClass('hide');
-                            $('#info-box').addClass('hide');
-                            $('#error-box').html(msg);
-                        }
-                        function success(msg) {
-                            $('#error-box').addClass('hide');
-                            $('#success-box').removeClass('hide');
-                            $('#info-box').addClass('hide');
-                            $('#success-box').html(msg);
-                        }
-                        function info(msg) {
-                            $('#error-box').addClass('hide');
-                            $('#success-box').addClass('hide');
-                            $('#info-box').removeClass('hide');
-                            $('#info-box').html(msg);
-                        }
-                        function clearAll() {
-                            $('#error-box').addClass('hide');
-                            $('#success-box').addClass('hide');
-                            $('#info-box').addClass('hide');
-                        }
-                        function cat(category, suffix = '', hash = false, suffix2 = '') {
-                            return (hash ? '#' : '') + 'cat-' + category.replace(/[^a-zA-Z0-9]*/g, '')
-                                    + (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9\-]*/g, ''))
-                                    + (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9\-]*/g, ''));
-                        }
-                        function change(event) {
-                            let elm = $(event.target);
-                            let settingName = elm.attr('name');
-                            if (elm.attr('type') !== 'radio') {
-                                settingName = settingName.substr(0, settingName.length - 6);
-                            }
-                            let prop = settings[settingName];
-                            if (elm.attr('type') === 'radio') {
-                                if (elm.prop('checked')) {
-                                    if (elm.attr('id').endsWith('-undef')) {
-                                        if (prop.value !== null) {
-                                            pendingSettings[settingName] = null;
-                                        } else {
-                                            delete pendingSettings[settingName];
-                                        }
-                                    } else if (elm.attr('id').endsWith('-def')) {
-                                        if (prop.type === 'Boolean') {
-                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
-                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
-                                        }
-                                        if (prop.value === null) {
-                                            if (prop.type === 'Boolean') {
-                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
-                                            } else {
-                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
-                                            }
-                                        } else {
-                                            if (prop.type === 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
-                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
-                                            } else if (prop.type !== 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
-                                                pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
-                                            } else {
-                                                delete pendingSettings[settingName];
-                                            }
-                                        }
+            'use strict';
+            $(function () {
+                let settings = {};
+                let pendingSettings = {};
+                function error(msg) {
+                    $('#error-box').removeClass('hide');
+                    $('#success-box').addClass('hide');
+                    $('#info-box').addClass('hide');
+                    $('#error-box').html(msg);
+                }
+                function success(msg) {
+                    $('#error-box').addClass('hide');
+                    $('#success-box').removeClass('hide');
+                    $('#info-box').addClass('hide');
+                    $('#success-box').html(msg);
+                }
+                function info(msg) {
+                    $('#error-box').addClass('hide');
+                    $('#success-box').addClass('hide');
+                    $('#info-box').removeClass('hide');
+                    $('#info-box').html(msg);
+                }
+                function clearAll() {
+                    $('#error-box').addClass('hide');
+                    $('#success-box').addClass('hide');
+                    $('#info-box').addClass('hide');
+                }
+                function cat(category, suffix = '', hash = false, suffix2 = '') {
+                    return (hash ? '#' : '') + 'cat-' + category.replace(/[^a-zA-Z0-9]*/g, '')
+                            + (suffix === undefined || suffix === null || suffix.length === 0 ? '' : '-' + suffix.replace(/[^a-zA-Z0-9\-]*/g, ''))
+                            + (suffix2 === undefined || suffix2 === null || suffix2.length === 0 ? '' : '-' + suffix2.replace(/[^a-zA-Z0-9\-]*/g, ''));
+                }
+                function change(event) {
+                    let elm = $(event.target);
+                    let settingName = elm.attr('name');
+                    if (elm.attr('type') !== 'radio') {
+                        settingName = settingName.substr(0, settingName.length - 6);
+                    }
+                    let prop = settings[settingName];
+                    if (elm.attr('type') === 'radio') {
+                        if (elm.prop('checked')) {
+                            if (elm.attr('id').endsWith('-undef')) {
+                                if (prop.value !== null) {
+                                    pendingSettings[settingName] = null;
+                                } else {
+                                    delete pendingSettings[settingName];
+                                }
+                            } else if (elm.attr('id').endsWith('-def')) {
+                                if (prop.type === 'Boolean') {
+                                    $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                            .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                }
+                                if (prop.value === null) {
+                                    if (prop.type === 'Boolean') {
+                                        pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                    } else {
+                                        pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                    }
+                                } else {
+                                    if (prop.type === 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
+                                        pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                                    } else if (prop.type !== 'Boolean' && prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                                        pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                    } else {
+                                        delete pendingSettings[settingName];
                                     }
                                 }
-                            } else if (elm.attr('type') === 'checkbox') {
+                            }
+                        }
+                    } else if (elm.attr('type') === 'checkbox') {
+                        $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                        if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
+                            pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
+                        } else {
+                            delete pendingSettings[settingName];
+                        }
+                    } else {
+                        if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
+                            pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                        } else {
+                            delete pendingSettings[settingName];
+                        }
+                    }
+                    $('#save-button').prop('disabled', Object.keys(pendingSettings).length === 0);
+                }
+                function createSetting(prop) {
+                    $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).addClass('botproperty')
+                            .appendTo(cat(prop.category, 'ul', true));
+                    $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'property-span'))
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                    $('<b/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'property-span'));
+                    $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                    $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'definition')).addClass('botproperty-definition')
+                            .html(prop.definition.replace(/`(\w*)`/g, '<code>$1</code>'))
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                    $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                    $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'value'))
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-div'))
+                            .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef')).on('change', event => change(event))
+                            .attr('name', prop.botproperty).attr('type', 'radio').prop('checked', true)
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
+                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-state'))
+                            .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
+                    $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
+                            .attr('for', cat(prop.category, prop.botproperty, false, 'undef')).addClass('botproperty-undef')
+                            .html(prop.definition.toLowerCase().includes('default') ? 'Default' : 'Unset')
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-state'));
+                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-div')).addClass('botproperty-def')
+                            .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
+                            .attr('name', prop.botproperty).attr('type', 'radio')
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
+                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-state'))
+                            .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
+                    $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-label'))
+                            .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-state'));
+                    switch (prop.type) {
+                        case 'Long':
+                            prop.type = 'Int';
+                        case 'Int':
+                            $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', true);
+                                }
+                            });
+                            $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', false);
+                                    $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                            .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
+                                }
+                            });
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'int-value')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty + '-value').attr('type', 'number').prop('disabled', true).addClass('form-control')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            break;
+                        case 'Double':
+                            $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', true);
+                                }
+                            });
+                            $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', false);
+                                }
+                            });
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'double-value')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty + '-value').attr('type', 'number').attr('step', '0.01').prop('disabled', true)
+                                    .addClass('form-control').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            break;
+                        case 'Boolean':
+                            $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', true);
+                                    $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label')).html('');
+                                }
+                            });
+                            $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', false);
+                                }
+                            });
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-div'))
+                                    .addClass('pretty').addClass('p-switch').addClass('p-fill')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-value')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty + '-value').attr('type', 'checkbox').prop('disabled', true)
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
+                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-state'))
+                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
+                            $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-label'))
+                                    .html('')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-state'));
+                            break;
+                        default:
+                            $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', true);
+                                }
+                            });
+                            $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
+                                if ($(event.target).prop('checked')) {
+                                    $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', false);
+                                }
+                            });
+                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string-value')).on('change', event => change(event))
+                                    .attr('name', prop.botproperty + '-value').attr('type', 'text').prop('disabled', true).addClass('form-control')
+                                    .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
+                            break;
+                    }
+
+                    if (prop.restart) {
+                        $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                        $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'restart')).addClass('botproperty-restart')
+                                .html('This setting requires a restart to take effect')
+                                .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
+                    }
+
+                    settings[prop.botproperty] = prop;
+                    settings[prop.botproperty].value = null;
+                }
+                function createSettings(data) {
+                    let categorySort = {};
+                    for (let x in data) {
+                        if (!categorySort.hasOwnProperty(data[x].category) || data[x].category_sort < categorySort[data[x].category]) {
+                            categorySort[data[x].category] = data[x].category_sort;
+                        }
+                    }
+                    data.sort((a, b) => {
+                        if (categorySort[a.category] < categorySort[b.category]) {
+                            return -1;
+                        } else if (categorySort[a.category] > categorySort[b.category]) {
+                            return 1;
+                        } else if (a.category.localeCompare(b.category) !== 0) {
+                            return a.category.localeCompare(b.category);
+                        } else if (a.sort < b.sort) {
+                            return -1;
+                        } else if (a.sort > b.sort) {
+                            return 1;
+                        } else {
+                            return a.botproperty.localeCompare(b.botproperty);
+                        }
+                    });
+
+                    let currentCategory = '';
+                    let first = true;
+
+                    data.forEach(prop => {
+                        if (prop.category !== currentCategory) {
+                            $('<div/>').attr('id', cat(prop.category)).addClass('box').addClass('box-solid').addClass('box-primary')
+                                    .appendTo('#setup-sections');
+                            $('<div/>').attr('id', cat(prop.category, 'header')).addClass('box-header').addClass('with-border')
+                                    .attr('data-toggle', 'collapse').attr('data-target', cat(prop.category, 'body', true))
+                                    .attr('aria-expanded', first).attr('aria-controls', cat(prop.category, 'body'))
+                                    .attr('role', 'button').appendTo(cat(prop.category, '', true));
+                            $('<h4/>').attr('id', cat(prop.category, 'h4')).html(prop.category)
+                                    .addClass('fa').addClass('fas').addClass(first ? 'fa-chevron-down' : 'fa-chevron-right')
+                                    .appendTo(cat(prop.category, 'header', true));
+                            $('<div/>').attr('id', cat(prop.category, 'body')).addClass('box-body')
+                                    .addClass('collapse').attr('aria-labelledby', cat(prop.category, 'header'))
+                                    .appendTo(cat(prop.category, '', true));
+                            if (first) {
+                                $(cat(prop.category, 'body', true)).addClass('in');
+                            }
+                            $('<ul/>').attr('id', cat(prop.category, 'ul')).addClass('list-unstyled').appendTo(cat(prop.category, 'body', true));
+                            currentCategory = prop.category;
+                            first = false;
+                        }
+                        createSetting(prop);
+                    });
+                }
+                function populateSettings(props) {
+                    for (const propk in props) {
+                        if (settings.hasOwnProperty(propk)) {
+                            let prop = settings[propk];
+                            $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', false);
+                            $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', true);
+                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', false);
+                            if (prop.type === 'Boolean') {
+                                settings[propk].value = props[propk].match(/(1|true|yes)/i) !== null;
+                                $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
                                 $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
                                         .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
-                                if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked')) {
-                                    pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked');
-                                } else {
-                                    delete pendingSettings[settingName];
-                                }
                             } else {
-                                if (prop.value !== $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val()) {
-                                    pendingSettings[settingName] = $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val();
+                                settings[propk].value = props[propk];
+                                $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
+                            }
+                        }
+                    }
+                }
+                function updateCurrentSettings() {
+                    for (const propk in pendingSettings) {
+                        if (settings.hasOwnProperty(propk)) {
+                            let prop = settings[propk];
+                            $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', pendingSettings[propk] === null);
+                            $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', pendingSettings[propk] !== null);
+                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', pendingSettings[propk] === null);
+                            settings[propk].value = pendingSettings[propk];
+                            if (pendingSettings[propk] !== null) {
+                                if (prop.type === 'Boolean') {
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
+                                    $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
+                                            .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
                                 } else {
-                                    delete pendingSettings[settingName];
+                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
                                 }
                             }
-                            $('#save-button').prop('disabled', Object.keys(pendingSettings).length === 0);
                         }
-                        function createSetting(prop) {
-                            $('<li/>').attr('id', cat(prop.category, prop.botproperty, false, 'li')).addClass('botproperty')
-                                    .appendTo(cat(prop.category, 'ul', true));
-                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'property-span'))
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<b/>').attr('id', cat(prop.category, prop.botproperty, false, 'property')).html(prop.botproperty)
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'property-span'));
-                            $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'definition')).addClass('botproperty-definition')
-                                    .html(prop.definition.replace(/`(\w*)`/g, '<code>$1</code>'))
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'value'))
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-div'))
-                                    .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef')).on('change', event => change(event))
-                                    .attr('name', prop.botproperty).attr('type', 'radio').prop('checked', true)
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
-                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-pretty-state'))
-                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-div'));
-                            $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'undef-label'))
-                                    .attr('for', cat(prop.category, prop.botproperty, false, 'undef')).addClass('botproperty-undef')
-                                    .html(prop.definition.toLowerCase().includes('default') ? 'Default' : 'Unset')
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'undef-pretty-state'));
-                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-div')).addClass('botproperty-def')
-                                    .addClass('pretty').addClass('p-fill').addClass('p-round').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                            $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'def')).on('change', event => change(event))
-                                    .attr('name', prop.botproperty).attr('type', 'radio')
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
-                            $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-pretty-state'))
-                                    .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-div'));
-                            $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'def-label'))
-                                    .appendTo(cat(prop.category, prop.botproperty, true, 'def-pretty-state'));
-                            switch (prop.type) {
-                                case 'Long':
-                                    prop.type = 'Int';
-                                case 'Int':
-                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', true);
-                                        }
-                                    });
-                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'int-value')).prop('disabled', false);
-                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
-                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
-                                        }
-                                    });
-                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'int-value')).on('change', event => change(event))
-                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').prop('disabled', true).addClass('form-control')
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                                    break;
-                                case 'Double':
-                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', true);
-                                        }
-                                    });
-                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'double-value')).prop('disabled', false);
-                                        }
-                                    });
-                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'double-value')).on('change', event => change(event))
-                                            .attr('name', prop.botproperty + '-value').attr('type', 'number').attr('step', '0.01').prop('disabled', true)
-                                            .addClass('form-control').appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                                    break;
-                                case 'Boolean':
-                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', true);
-                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label')).html('');
-                                        }
-                                    });
-                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'boolean-value')).prop('disabled', false);
-                                        }
-                                    });
-                                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-div'))
-                                            .addClass('pretty').addClass('p-switch').addClass('p-fill')
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-value')).on('change', event => change(event))
-                                            .attr('name', prop.botproperty + '-value').attr('type', 'checkbox').prop('disabled', true)
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
-                                    $('<div/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-state'))
-                                            .addClass('state').addClass('p-default').appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-div'));
-                                    $('<label/>').attr('id', cat(prop.category, prop.botproperty, false, 'boolean-pretty-label'))
-                                            .html('')
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'boolean-pretty-state'));
-                                    break;
-                                default:
-                                    $(cat(prop.category, prop.botproperty, true, 'undef')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', true);
-                                        }
-                                    });
-                                    $(cat(prop.category, prop.botproperty, true, 'def')).on('input', event => {
-                                        if ($(event.target).prop('checked')) {
-                                            $(cat(prop.category, prop.botproperty, true, 'string-value')).prop('disabled', false);
-                                        }
-                                    });
-                                    $('<input/>').attr('id', cat(prop.category, prop.botproperty, false, 'string-value')).on('change', event => change(event))
-                                            .attr('name', prop.botproperty + '-value').attr('type', 'text').prop('disabled', true).addClass('form-control')
-                                            .appendTo(cat(prop.category, prop.botproperty, true, 'value'));
-                                    break;
+                    }
+                    pendingSettings = {};
+                }
+                function getCurrentSettings() {
+                    $.ajax({
+                        cache: false,
+                        dataType: 'json',
+                        url: 'currentProperties.json',
+                        method: 'GET',
+                        success: function (data) {
+                            if (data.code !== 200) {
+                                error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
+                            } else {
+                                populateSettings(data.currentProperties);
+                                clearAll();
                             }
+                        },
+                        error: function (jq, status, err) {
+                            let msg = '';
+                            if (status !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += jq.status;
+                            }
+                            if (jq.statusText !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += jq.statusText;
+                            }
+                            if (jq.responseText !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += jq.responseText;
+                            }
+                            if (err !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += err;
+                            }
+                            error('Failed to retrive current settings: ' + msg + '!');
+                        }
+                    });
+                }
+                $.ajax({
+                    cache: false,
+                    dataType: 'json',
+                    url: '../common/json/properties.json',
+                    method: 'GET',
+                    success: function (data) {
+                        createSettings(data);
+                        getCurrentSettings();
+                    },
+                    error: function (jq, status, err) {
+                            let msg = '';
+                            if (status !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += jq.status;
+                            }
+                            if (jq.statusText !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += jq.statusText;
+                            }
+                            if (jq.responseText !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += jq.responseText;
+                            }
+                            if (err !== undefined) {
+                                if (msg.length > 0) {
+                                    msg += ' ';
+                                }
+                                msg += err;
+                            }
+                        error('Failed to retrive settings list: ' + msg + '!');
+                    }
+                });
 
-                            if (prop.restart) {
-                                $('<br/>').appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                                $('<span/>').attr('id', cat(prop.category, prop.botproperty, false, 'restart')).addClass('botproperty-restart')
-                                        .html('This setting requires a restart to take effect')
-                                        .appendTo(cat(prop.category, prop.botproperty, true, 'li'));
-                            }
-
-                            settings[prop.botproperty] = prop;
-                            settings[prop.botproperty].value = null;
-                        }
-                        function createSettings(data) {
-                            let categorySort = {};
-                            for (let x in data) {
-                                if (!categorySort.hasOwnProperty(data[x].category) || data[x].category_sort < categorySort[data[x].category]) {
-                                    categorySort[data[x].category] = data[x].category_sort;
-                                }
-                            }
-                            data.sort((a, b) => {
-                                if (categorySort[a.category] < categorySort[b.category]) {
-                                    return -1;
-                                } else if (categorySort[a.category] > categorySort[b.category]) {
-                                    return 1;
-                                } else if (a.category.localeCompare(b.category) !== 0) {
-                                    return a.category.localeCompare(b.category);
-                                } else if (a.sort < b.sort) {
-                                    return -1;
-                                } else if (a.sort > b.sort) {
-                                    return 1;
-                                } else {
-                                    return a.botproperty.localeCompare(b.botproperty);
-                                }
-                            });
-
-                            let currentCategory = '';
-                            let first = true;
-
-                            data.forEach(prop => {
-                                if (prop.category !== currentCategory) {
-                                    $('<div/>').attr('id', cat(prop.category)).addClass('box').addClass('box-solid').addClass('box-primary')
-                                            .appendTo('#setup-sections');
-                                    $('<div/>').attr('id', cat(prop.category, 'header')).addClass('box-header').addClass('with-border')
-                                            .attr('data-toggle', 'collapse').attr('data-target', cat(prop.category, 'body', true))
-                                            .attr('aria-expanded', first).attr('aria-controls', cat(prop.category, 'body'))
-                                            .attr('role', 'button').appendTo(cat(prop.category, '', true));
-                                    $('<h4/>').attr('id', cat(prop.category, 'h4')).html(prop.category)
-                                            .addClass('fa').addClass('fas').addClass(first ? 'fa-chevron-down' : 'fa-chevron-right')
-                                            .appendTo(cat(prop.category, 'header', true));
-                                    $('<div/>').attr('id', cat(prop.category, 'body')).addClass('box-body')
-                                            .addClass('collapse').attr('aria-labelledby', cat(prop.category, 'header'))
-                                            .appendTo(cat(prop.category, '', true));
-                                    if (first) {
-                                        $(cat(prop.category, 'body', true)).addClass('in');
-                                    }
-                                    $('<ul/>').attr('id', cat(prop.category, 'ul')).addClass('list-unstyled').appendTo(cat(prop.category, 'body', true));
-                                    currentCategory = prop.category;
-                                    first = false;
-                                }
-                                createSetting(prop);
-                            });
-                        }
-                        function populateSettings(props) {
-                            for (const propk in props) {
-                                if (settings.hasOwnProperty(propk)) {
-                                    let prop = settings[propk];
-                                    $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', false);
-                                    $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', true);
-                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', false);
-                                    if (prop.type === 'Boolean') {
-                                        settings[propk].value = props[propk].match(/(1|true|yes)/i) !== null;
-                                        $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
-                                        $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
-                                                .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
-                                    } else {
-                                        settings[propk].value = props[propk];
-                                        $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
-                                    }
-                                }
-                            }
-                        }
-                        function updateCurrentSettings() {
-                            for (const propk in pendingSettings) {
-                                if (settings.hasOwnProperty(propk)) {
-                                    let prop = settings[propk];
-                                    $(cat(prop.category, prop.botproperty, true, 'undef')).prop('checked', pendingSettings[propk] === null);
-                                    $(cat(prop.category, prop.botproperty, true, 'def')).prop('checked', pendingSettings[propk] !== null);
-                                    $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('disabled', pendingSettings[propk] === null);
-                                    settings[propk].value = pendingSettings[propk];
-                                    if (pendingSettings[propk] !== null) {
-                                        if (prop.type === 'Boolean') {
-                                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked', settings[propk].value);
-                                            $(cat(prop.category, prop.botproperty, true, 'boolean-pretty-label'))
-                                                    .html($(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).prop('checked') ? 'true' : 'false');
-                                        } else {
-                                            $(cat(prop.category, prop.botproperty, true, prop.type.toLowerCase() + '-value')).val(settings[propk].value);
-                                        }
-                                    }
-                                }
-                            }
-                            pendingSettings = {};
-                        }
-                        function getCurrentSettings() {
-                            $.ajax({
-                                cache: false,
-                                dataType: 'json',
-                                url: 'currentProperties.json',
-                                method: 'GET',
-                                success: function (data) {
-                                    if (data.code !== 200) {
-                                        error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
-                                    } else {
-                                        populateSettings(data.currentProperties);
-                                        clearAll();
-                                    }
-                                },
-                                error: function (err) {
-                                    error('Failed to retrive current settings: ' + err.statusText + ' ' + err.responseText + '!');
-                                }
-                            });
-                        }
+                let timeout = null;
+                $('#save-button').prop('disabled', true).click(function () {
+                    if (!$('#save-button').prop('disabled')) {
                         $.ajax({
                             cache: false,
+                            contentType: 'application/json',
+                            data: JSON.stringify(pendingSettings),
                             dataType: 'json',
-                            url: '../common/json/properties.json',
-                            method: 'GET',
+                            url: 'currentProperties.json',
+                            method: 'PATCH',
+                            processData: false,
                             success: function (data) {
-                                createSettings(data);
-                                getCurrentSettings();
-                            },
-                            error: function (err) {
-                                error('Failed to retrive settings list: ' + err.statusText + ' ' + err.responseText + '!');
-                            }
-                        });
-
-                        let timeout = null;
-                        $('#save-button').prop('disabled', true).click(function () {
-                            if (!$('#save-button').prop('disabled')) {
-                                $.ajax({
-                                    cache: false,
-                                    contentType: 'application/json',
-                                    data: JSON.stringify(pendingSettings),
-                                    dataType: 'json',
-                                    url: 'currentProperties.json',
-                                    method: 'PATCH',
-                                    processData: false,
-                                    success: function (data) {
-                                        if (data !== undefined && data.code !== 204) {
-                                            error('Failed to update settings: ' + data.status + ' ' + data.error + '!');
-                                        } else {
-                                            if (timeout !== null) {
-                                                clearTimeout(timeout);
-                                            }
-                                            success('Settings updated');
-                                            timeout = setTimeout(function () {
-                                                clearAll();
-                                                timeout = null;
-                                            }, 10e3);
-                                            updateCurrentSettings();
-                                            $('#save-button').prop('disabled', true);
-                                        }
-                                    },
-                                    error: function (err) {
-                                        error('Failed to update settings: ' + err.statusText + ' ' + err.responseText + '!');
+                                if (data !== undefined && data.code !== 204) {
+                                    error('Failed to update settings: ' + data.status + ' ' + data.error + '!');
+                                } else {
+                                    if (timeout !== null) {
+                                        clearTimeout(timeout);
                                     }
-                                });
+                                    success('Settings updated');
+                                    timeout = setTimeout(function () {
+                                        clearAll();
+                                        timeout = null;
+                                    }, 10e3);
+                                    updateCurrentSettings();
+                                    $('#save-button').prop('disabled', true);
+                                }
+                            },
+                            error: function (jq, status, err) {
+                                let msg = '';
+                                if (status !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += jq.status;
+                                }
+                                if (jq.statusText !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += jq.statusText;
+                                }
+                                if (jq.responseText !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += jq.responseText;
+                                }
+                                if (err !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += err;
+                                }
+                                error('Failed to update settings: ' + msg + '!');
                             }
                         });
+                    }
+                });
 
-                        $('#setup-sections').on('hidden.bs.collapse shown.bs.collapse', function (e) {
-                            $(e.target)
-                                    .prev('.box-header')
-                                    .find('h4')
-                                    .toggleClass('fa-chevron-right fa-chevron-down');
-                        });
+                $('#setup-sections').on('hidden.bs.collapse shown.bs.collapse', function (e) {
+                    $(e.target)
+                            .prev('.box-header')
+                            .find('h4')
+                            .toggleClass('fa-chevron-right fa-chevron-down');
+                });
 
-                        $('[data-toggle="tooltip"]').tooltip();
-                    });
+                $('[data-toggle="tooltip"]').tooltip();
+            });
         </script>
         <script>
             function doFix() {
