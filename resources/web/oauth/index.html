@@ -294,10 +294,35 @@
                                     addScopeItem('broadcaster', x, scopes.broadcaster[x]);
                                 }
                             },
-                            error: function (err) {
+                            error: function (jq, status, err) {
+                                let msg = '';
+                                if (status !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += jq.status;
+                                }
+                                if (jq.statusText !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += jq.statusText;
+                                }
+                                if (jq.responseText !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += jq.responseText;
+                                }
+                                if (err !== undefined) {
+                                    if (msg.length > 0) {
+                                        msg += ' ';
+                                    }
+                                    msg += err;
+                                }
                                 $('#error-box').removeClass('hide');
                                 $('#success-error-br').removeClass('hide');
-                                $('#error-box').html('Failed to get scopes: ' + err.statusText + ' ' + err.responseText + '!!');
+                                $('#error-box').html('Failed to get scopes: ' + msg + '!!');
                             }
                         });
 
@@ -344,10 +369,35 @@
                                         $('#connect').removeClass('hide');
                                     }
                                 },
-                                error: function (err) {
+                                error: function (jq, status, err) {
+                                    let msg = '';
+                                    if (status !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += jq.status;
+                                    }
+                                    if (jq.statusText !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += jq.statusText;
+                                    }
+                                    if (jq.responseText !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += jq.responseText;
+                                    }
+                                    if (err !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += err;
+                                    }
                                     $('#error-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + err.statusText + ' ' + err.responseText + '!!');
+                                    $('#error-box').html('Failed to save Client ID and Client Secret: ' + msg + '!!');
                                 }
                             });
                         });
@@ -368,10 +418,35 @@
                                     $('#success-box').html('Generated a new broadcaster token');
                                     $('#broadcastertoken').val(data);
                                 },
-                                error: function (err) {
+                                error: function (jq, status, err) {
+                                    let msg = '';
+                                    if (status !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += jq.status;
+                                    }
+                                    if (jq.statusText !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += jq.statusText;
+                                    }
+                                    if (jq.responseText !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += jq.responseText;
+                                    }
+                                    if (err !== undefined) {
+                                        if (msg.length > 0) {
+                                            msg += ' ';
+                                        }
+                                        msg += err;
+                                    }
                                     $('#error-box').removeClass('hide');
                                     $('#success-error-br').removeClass('hide');
-                                    $('#error-box').html('Failed to generate a broadcaster password: ' + err.statusText + ' ' + err.responseText + '!!');
+                                    $('#error-box').html('Failed to generate a broadcaster password: ' + msg + '!!');
                                 }
                             });
                         });
@@ -414,11 +489,36 @@
                                             }
                                             window.sessionStorage.removeItem('statetype');
                                         },
-                                        error: function (err) {
+                                        error: function (jq, status, err) {
+                                            let msg = '';
+                                            if (status !== undefined) {
+                                                if (msg.length > 0) {
+                                                    msg += ' ';
+                                                }
+                                                msg += jq.status;
+                                            }
+                                            if (jq.statusText !== undefined) {
+                                                if (msg.length > 0) {
+                                                    msg += ' ';
+                                                }
+                                                msg += jq.statusText;
+                                            }
+                                            if (jq.responseText !== undefined) {
+                                                if (msg.length > 0) {
+                                                    msg += ' ';
+                                                }
+                                                msg += jq.responseText;
+                                            }
+                                            if (err !== undefined) {
+                                                if (msg.length > 0) {
+                                                    msg += ' ';
+                                                }
+                                                msg += err;
+                                            }
                                             $('#info-box').addClass('hide');
                                             $('#error-box').removeClass('hide');
                                             $('#success-error-br').removeClass('hide');
-                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + err.statusText + ' ' + err.responseText + '!!');
+                                            $('#error-box').html('Failed to authorize ' + window.sessionStorage.getItem('statetype') + ': ' + msg + '!!');
                                             window.sessionStorage.removeItem('statetype');
                                         }
                                     });
