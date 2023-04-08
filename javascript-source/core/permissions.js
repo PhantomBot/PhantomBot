@@ -193,7 +193,7 @@
      * @returns {boolean}
      */
     function isCaster(username) {
-        return queryDBPermission(username.toLowerCase()) === PERMISSION.Caster || isOwner(username);
+        return queryDBPermission(username.toLowerCase()) === PERMISSION.Caster || $.equalsIgnoreCase(username, $.channelName) || isOwner(username);
     }
 
     /**
