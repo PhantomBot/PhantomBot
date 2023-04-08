@@ -323,6 +323,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getMessage().contains("\"_exception\":\"TimeoutException\"")) {
                                     return true;
                                 }
+
+                                if (error.getMessage().contains("Connection refused")) {
+                                    return true;
+                                }
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (boolean) custom.getOrDefault("isUncaught", false)

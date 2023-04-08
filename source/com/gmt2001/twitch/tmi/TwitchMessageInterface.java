@@ -328,7 +328,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay
      */
     public void reconnect() {
-        if (this.client.connected()) {
+        if (this.client != null && this.client.connected()) {
             this.shutdown();
         }
 

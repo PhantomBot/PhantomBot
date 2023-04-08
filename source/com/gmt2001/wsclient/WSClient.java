@@ -178,7 +178,7 @@ public class WSClient {
      * @return true if the socket is connected and ready to send/receive frames; false otherwise
      */
     public boolean connected() {
-        return this.frameHandler.connected;
+        return this.frameHandler != null && this.frameHandler.connected;
     }
 
     /**
