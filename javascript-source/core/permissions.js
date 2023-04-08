@@ -237,7 +237,7 @@
      */
     function isMod(username, tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && tags.get('user-type').length() > 0) { // Broadcaster should be included here.
+        if (checkTags(tags) && (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1'))) { // Broadcaster should be included here.
             return true;
         }
 
@@ -307,7 +307,7 @@
     function isVIP(username, tags) {
         $.consoleDebug($.findCaller());
         if (checkTags(tags) && tags.containsKey('vip')) {
-            return tags.get('vip').equals('1');
+            return true;
         }
 
         $.consoleDebug('Used isVIP without tags');
