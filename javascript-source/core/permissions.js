@@ -213,7 +213,7 @@
      * @returns {boolean}
      */
     function isModNoTags(username) {
-        return isModeratorCache(username.toLowerCase()) || queryDBPermission(username.toLowerCase()) <= PERMISSION.Mod || isOwner(username);
+        return isModeratorCache(username.toLowerCase()) || queryDBPermission(username.toLowerCase()) <= PERMISSION.Mod || isCaster(username);
     }
 
     /**
@@ -237,7 +237,7 @@
      */
     function isMod(username, tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1'))) { // Broadcaster should be included here.
+        if (checkTags(tags) && (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1'))) {
             return true;
         }
 
