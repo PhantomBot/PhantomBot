@@ -35,7 +35,6 @@
             lastJoinPart = $.systemTime(),
             isUpdatingUsers = false,
             _isSwappedSubscriberVIP = $.getSetIniDbBoolean('settings', 'isSwappedSubscriberVIP', true),
-            _usersLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             _usersGroupsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
@@ -194,7 +193,7 @@
      * @returns {boolean}
      */
     function isCaster(username) {
-        return queryDBPermission(username.toLowerCase()) === PERMISSION.Caster || isOwner(username);
+        return queryDBPermission(username.toLowerCase()) === PERMISSION.Caster || $.equalsIgnoreCase(username, $.channelName) || isOwner(username);
     }
 
     /**
@@ -214,7 +213,7 @@
      * @returns {boolean}
      */
     function isModNoTags(username) {
-        return isModeratorCache(username.toLowerCase()) || queryDBPermission(username.toLowerCase()) <= PERMISSION.Mod || isOwner(username);
+        return isModeratorCache(username.toLowerCase()) || queryDBPermission(username.toLowerCase()) <= PERMISSION.Mod || isCaster(username);
     }
 
     /**
@@ -238,7 +237,7 @@
      */
     function isMod(username, tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && tags.get('user-type').length() > 0) { // Broadcaster should be included here.
+        if (checkTags(tags) && (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1'))) {
             return true;
         }
 
@@ -308,7 +307,7 @@
     function isVIP(username, tags) {
         $.consoleDebug($.findCaller());
         if (checkTags(tags) && tags.containsKey('vip')) {
-            return tags.get('vip').equals('1');
+            return true;
         }
 
         $.consoleDebug('Used isVIP without tags');
@@ -924,12 +923,7 @@
                 newUsers.push(username);
             }
 
-            _usersLock.lock();
-            try {
-                $.users = newUsers;
-            } finally {
-                _usersLock.unlock();
-            }
+            $.users = newUsers;
 
             $.inidb.SetBatchString('visited', '', keys, values);
 
