@@ -72,6 +72,8 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+
         if (req.uri().startsWith("/oauth/broadcaster")) {
             if (!this.authHandlerBroadcaster.checkAuthorization(ctx, req)) {
                 return;
@@ -83,12 +85,10 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
         }
 
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.PUT) && !req.method().equals(HttpMethod.POST)) {
-            com.gmt2001.Console.debug.println("405");
+            com.gmt2001.Console.debug.println("405 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
             return;
         }
-
-        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
             String path = qsd.path().replace("/broadcaster", "");
@@ -121,7 +121,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, p.getFileName().toString()));
             }
         } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("500");
+            com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }

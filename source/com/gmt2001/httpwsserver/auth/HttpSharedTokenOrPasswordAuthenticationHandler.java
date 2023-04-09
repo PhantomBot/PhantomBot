@@ -84,7 +84,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
 
         FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
 
-        com.gmt2001.Console.debug.println("401");
+        com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
         com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
         com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
         com.gmt2001.Console.debug.println("Got: >" + astr + "<");
