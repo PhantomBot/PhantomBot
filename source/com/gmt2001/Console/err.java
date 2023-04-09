@@ -107,6 +107,7 @@ public final class err {
 
     public static void printStackTrace(Throwable e, Map<String, Object> custom, String description, boolean isUncaught, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
+            System.err.println(debug.findCallerInfo());
             e.printStackTrace(System.err);
         } else {
             println(e.getClass().getName() + ": " + e.getMessage());
@@ -140,11 +141,14 @@ public final class err {
             custom = new HashMap<>();
         }
 
-        custom.putIfAbsent("__caller", debug.findCallerInfo());
+        String stackInfo = debug.findCallerInfo();
+
+        custom.putIfAbsent("__caller", stackInfo);
 
         RollbarProvider.instance().error(e, custom, description, isUncaught);
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + getStackTrace(e));
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo);
+        Logger.instance().log(Logger.LogType.Error, getStackTrace(e));
         Logger.instance().log(Logger.LogType.Error, "");
     }
 

@@ -109,7 +109,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        if (!cause.getMessage().contains("certificate_unknown") && !cause.getMessage().contains("bad_certificate")) {
+        if (!cause.getMessage().contains("certificate_unknown") && !cause.getMessage().contains("bad_certificate")
+                && !cause.getMessage().contains("connection was aborted")) {
             com.gmt2001.Console.debug.printOrLogStackTrace(cause);
         }
         ctx.close();

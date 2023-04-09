@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import tv.phantombot.PhantomBot;
 
@@ -93,10 +94,7 @@ public final class debug {
 
     public static void println(Object o, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
-            String stackInfo;
-            StackTraceElement st = findCaller();
-
-            stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
+            String stackInfo = findCallerInfo() + " ";
             Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
@@ -112,11 +110,7 @@ public final class debug {
 
     public static void logln(Object o, boolean force) {
         if (PhantomBot.getEnableDebugging() || force) {
-            String stackInfo;
-            StackTraceElement st = findCaller();
-
-            stackInfo = "[" + st.getMethodName() + "()@" + st.getFileName() + ":" + st.getLineNumber() + "] ";
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + findCallerInfo() + " " + o.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
         }
     }
@@ -154,6 +148,7 @@ public final class debug {
 
     public static void printStackTrace(Throwable e, Map<String, Object> custom, String description) {
         if (PhantomBot.getEnableDebugging()) {
+            System.err.println(findCallerInfo());
             e.printStackTrace(System.err);
         }
 
@@ -191,6 +186,14 @@ public final class debug {
 
     public static void logStackTrace(Throwable e, Map<String, Object> custom, String description) {
         if (PhantomBot.getEnableDebugging()) {
+            if (custom == null) {
+                custom = new HashMap<>();
+            }
+
+            String stackInfo = findCallerInfo();
+
+            custom.putIfAbsent("__caller", stackInfo);
+
             RollbarProvider.instance().debug(e, custom, description);
 
             try ( Writer trace = new StringWriter()) {
@@ -198,7 +201,8 @@ public final class debug {
 
                     e.printStackTrace(ptrace);
 
-                    Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + trace.toString());
+                    Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo);
+                    Logger.instance().log(Logger.LogType.Debug, trace.toString());
                     Logger.instance().log(Logger.LogType.Debug, "");
                 }
             } catch (IOException ex) {
