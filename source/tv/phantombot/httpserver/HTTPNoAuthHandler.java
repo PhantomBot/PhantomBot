@@ -66,13 +66,15 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+
         if (req.uri().startsWith("/presence")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "PBok".getBytes(), null);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
             if (origin != null && !origin.isBlank()) {
                 res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             }
-            com.gmt2001.Console.debug.println("200");
+            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
@@ -83,7 +85,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             if (origin != null && !origin.isBlank()) {
                 res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             }
-            com.gmt2001.Console.debug.println("200");
+            com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
@@ -103,7 +105,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             res.headers().set(HttpHeaderNames.LOCATION, host + "/dbquery");
 
-            com.gmt2001.Console.debug.println("303");
+            com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
@@ -147,19 +149,17 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             }
 
             res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
-            com.gmt2001.Console.debug.println("303");
+            com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.HEAD)) {
-            com.gmt2001.Console.debug.println("405");
+            com.gmt2001.Console.debug.println("405 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
             return;
         }
-
-        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
             String start = "./web/";
@@ -203,7 +203,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 }
             }
         } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("500");
+            com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }

@@ -72,6 +72,8 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+
         if (req.method().equals(HttpMethod.PUT)) {
             if (req.headers().contains("lang-path")) {
                 putLang(ctx, req);
@@ -80,12 +82,11 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
             return;
         } else if (!req.method().equals(HttpMethod.GET)) {
-            com.gmt2001.Console.debug.println("405");
+            com.gmt2001.Console.debug.println("405 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
             return;
         }
 
-        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
         String path = qsd.path();
 
         if (path.startsWith("/dbquery")) {
@@ -122,7 +123,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 }
             }
         } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("500");
+            com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }

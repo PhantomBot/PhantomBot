@@ -107,7 +107,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
             }
 
             if (!req.method().equals(HttpMethod.GET)) {
-                com.gmt2001.Console.debug.println("405");
+                com.gmt2001.Console.debug.println("405 " + req.method().asciiName() + ": " + qsd.path());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED));
                 return;
             }
@@ -132,7 +132,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, data, p.getFileName().toString()));
             }
         } catch (IOException ex) {
-            com.gmt2001.Console.debug.println("500");
+            com.gmt2001.Console.debug.println("500 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.printStackTrace(ex);
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR));
         }

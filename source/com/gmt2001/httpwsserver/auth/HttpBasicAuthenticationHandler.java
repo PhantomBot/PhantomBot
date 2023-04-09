@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.QueryStringDecoder;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -88,6 +89,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         HttpHeaders headers = req.headers();
 
         String auth = headers.get("Authorization");
+        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         if (this.isAuthorized(ctx, req)) {
             return true;
@@ -100,7 +102,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
                 res.headers().set("WWW-Authenticate", "Basic realm=\"" + realm + "\", charset=\"UTF-8\"");
             }
 
-            com.gmt2001.Console.debug.println("401");
+            com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
             if (auth != null) {
                 com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
@@ -122,7 +124,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
             res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + URLEncoder.encode(req.uri(), StandardCharsets.UTF_8));
 
-            com.gmt2001.Console.debug.println("303");
+            com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
             if (auth != null) {
                 com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
