@@ -121,7 +121,7 @@
             return;
         }
 
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/event'));
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/js-event'));
 
         try {
             throw new Error('eventlog');
@@ -129,7 +129,7 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/event/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/js-event/' + getLogDateString() + '.txt', true);
     }
 
     /*
@@ -143,7 +143,7 @@
             return;
         }
 
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/error'));
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/js-error'));
 
         try {
             throw new Error('errorlog');
@@ -151,7 +151,7 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/error/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/js-error/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.err.printlnRhino(java.util.Objects.toString('[' + sourceFile.trim() + '] ' + message));
     }
 
@@ -166,7 +166,7 @@
             return;
         }
 
-        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/warning'));
+        Packages.com.gmt2001.JSFileSystem.MakeDir($.javaString('./logs/js-warning'));
 
         try {
             throw new Error('warninglog');
@@ -174,7 +174,7 @@
             sourceFile = e.stack.split('\n')[1].split('@')[1];
         }
 
-        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/warning/' + getLogDateString() + '.txt', true);
+        writeToFile('[' + getLogEntryTimeDateString() + '] [' + sourceFile.trim() + '] ' + message, './logs/js-warning/' + getLogDateString() + '.txt', true);
         Packages.com.gmt2001.Console.warn.printlnRhino(java.util.Objects.toString(message));
     }
 
