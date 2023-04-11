@@ -58,7 +58,7 @@
         let logFiles,
                 idx,
                 logFileDate,
-                logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
+                logDirs = $.findFiles('./logs/', ''),
                 logDirIdx,
                 match,
                 date,
