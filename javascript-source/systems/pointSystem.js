@@ -55,7 +55,7 @@
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
 
-        registerNewPointsCommands([pointNameSingle, pointNameMultiple], [tempPointNameSingle, tempPointNameMultiple]);
+        registerNewPointsCommands([pointNameSingle, pointNameMultiple, 'point', 'points'], [tempPointNameSingle, tempPointNameMultiple]);
     }
 
     /**
