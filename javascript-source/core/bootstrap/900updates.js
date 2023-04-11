@@ -22,25 +22,16 @@
  *
  * Update PhantomBot database
  *
- * This module will be executed before loading any of the other scripts even the core!
- * Add a new wrapped function if you want to apply updates for a new version
- */
-
-/**
- * PhantomBot v3.5.0
+ * This module will be executed before loading any of the non-bootstrap scripts
  */
 (function () {
-    var modules,
-            versions,
-            sounds,
-            i;
+    let updates = [];
 
-    /** New setup */
-    if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
+    function newSetup() {
         $.consoleLn('');
         $.consoleLn('Initializing PhantomBot version ' + $.version + ' for the first time...');
 
-        modules = [
+        let modules = [
             './commands/topCommand.js',
             './commands/highlightCommand.js',
             './commands/deathctrCommand.js',
@@ -100,7 +91,7 @@
         ];
 
         $.consoleLn('Disabling default modules...');
-        for (i in modules) {
+        for (let i in modules) {
             $.inidb.set('modules', modules[i], 'false');
         }
 
@@ -112,36 +103,29 @@
         $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
-        versions = ['installedv3.3.0', 'installedv3.3.6', 'installedv3.4.1', 'installedv3.5.0', 'installedv3.6.0', 'installedv3.6.2.5',
-            'installedv3.6.3', 'installedv3.6.4', 'installedv3.6.4-1', 'installedv3.6.4.2', 'installedv3.6.4.5', 'installedv3.6.5.0',
-            'installedv3.7.0.0', 'installedv3.7.3.2', 'installedv3.7.5.0'
-        ];
-        for (i in versions) {
-            $.inidb.set('updates', versions[i], 'true');
+        for (let x in updates) {
+            $.inidb.SetBoolean('updates', '', updates[x].variable, true);
         }
 
-        sounds = "";
-        modules = "";
-        versions = "";
         $.changed = false;
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
         $.consoleLn('Initializing complete!');
         $.consoleLn('');
     }
 
-    /* version 3.3.0 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.3.0')) {
-        $.consoleLn('Starting PhantomBot update 3.3.0 updates...');
+    function addUpdate(version, variable, fn) {
+        updates.push({version: version, variable: variable, fn: fn});
+    }
 
+    addUpdate('3.3.0', 'installedv3.3.0', function() {
         $.consoleLn('Updating keywords...');
-        var keys = $.inidb.GetKeyList('keywords', ''),
+        let keys = $.inidb.GetKeyList('keywords', ''),
                 newKeywords = [],
                 key,
                 json,
-                i,
                 strippedKeys = {};
 
-        for (i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             key = keys[i];
             json = JSON.parse($.inidb.get('keywords', key));
             if (json.isRegex) {
@@ -165,34 +149,21 @@
 
         $.inidb.RemoveFile('keywords');
 
-        for (i = 0; i < newKeywords.length; i++) {
+        for (let i = 0; i < newKeywords.length; i++) {
             $.inidb.set('keywords', newKeywords[i].key, JSON.stringify(newKeywords[i].json));
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.3.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.3.0', true);
-    }
-
-    /* version 3.3.6 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.3.6')) {
-        $.consoleLn('Starting PhantomBot update 3.3.6 updates...');
-
+    addUpdate('3.3.6', 'installedv3.3.6', function() {
         $.inidb.set('modules', './systems/welcomeSystem.js', 'false');
+    });
 
-        $.consoleLn('PhantomBot update 3.3.6 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.3.6', true);
-    }
-
-    /* version 3.4.1 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.4.1')) {
-        $.consoleLn('Starting PhantomBot update 3.4.1 updates...');
-
-        var keys = $.inidb.GetKeyList('keywords', ''),
-                i,
+    addUpdate('3.4.1', 'installedv3.4.1', function() {
+        let keys = $.inidb.GetKeyList('keywords', ''),
                 coolkey,
                 json;
 
-        for (i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             json = JSON.parse($.inidb.get('keywords', keys[i]));
 
             if (json.isCaseSensitive) {
@@ -205,18 +176,12 @@
                 $.inidb.set('keywords', json.keyword, JSON.stringify(json));
             }
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.4.1 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.4.1', true);
-    }
-
-    /* version 3.4.8 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.4.8')) {
-        $.consoleLn('Starting PhantomBot update 3.4.8 updates...');
-
+    addUpdate('3.4.8', 'installedv3.4.8', function() {
         if ($.inidb.FileExists('notices') || $.inidb.FileExists('noticeSettings')) {
             $.consoleLn('Updating timers...');
-            var noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages'),
+            let noticeReqMessages = $.getIniDbNumber('noticeSettings', 'reqmessages'),
                     noticeInterval = $.getIniDbNumber('noticeSettings', 'interval'),
                     noticeToggle = $.getIniDbBoolean('noticeSettings', 'noticetoggle'),
                     noticeOffline = $.getIniDbBoolean('noticeSettings', 'noticeOfflineToggle'),
@@ -264,24 +229,16 @@
             $.inidb.RemoveFile('notices');
             $.inidb.RenameFile('noticeTmp', 'notices');
         }
+    });
 
-
-        $.consoleLn('PhantomBot update 3.4.8 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.4.8', true);
-    }
-
-    /* version 3.5.0 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.5.0')) {
-        $.consoleLn('Starting PhantomBot update 3.5.0 updates...');
-
+    addUpdate('3.5.0', 'installedv3.5.0', function() {
         // Remove org.mozilla.javascript entries in phantombot_time
-        var keys = $.inidb.GetKeyList('time', ''),
-                i;
+        let keys = $.inidb.GetKeyList('time', '');
 
         $.consoleLn('Checking ' + keys.length + ' time entries for bad keys...');
 
-        for (i = 0; i < keys.length; i++) {
-            var key = $.javaString(keys[i]);
+        for (let i = 0; i < keys.length; i++) {
+            let key = $.javaString(keys[i]);
             if (key === null || key === undefined || key.startsWith('org.mozilla.javascript')) {
                 $.inidb.RemoveKey('time', '', key);
             }
@@ -289,25 +246,18 @@
                 $.consoleLn('Still checking time entries ' + i + '/' + keys.length + '...');
             }
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.5.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.5.0', true);
-    }
-
-    /* version 3.6.0 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.0')) {
-        $.consoleLn('Starting PhantomBot update 3.6.0 updates...');
-
+    addUpdate('3.6.0', 'installedv3.6.0', function() {
         // Convert cooldowns to separate global and user cooldowns
-        var cooldowns = $.inidb.GetKeyList('cooldown', ''),
-                json,
-                i;
+        let cooldowns = $.inidb.GetKeyList('cooldown', ''),
+                json;
 
 
-        for (i in cooldowns) {
+        for (let i in cooldowns) {
             json = JSON.parse($.inidb.get('cooldown', cooldowns[i]));
 
-            var globalSec,
+            let globalSec,
                     userSec,
                     curSec = parseInt(json.seconds);
 
@@ -331,15 +281,13 @@
         }
 
         // Convert cooldowns to separate global and user cooldowns
-        var cooldowns = $.inidb.GetKeyList('discordCooldown', ''),
-                json,
-                i;
+        cooldowns = $.inidb.GetKeyList('discordCooldown', '');
 
 
-        for (i in cooldowns) {
+        for (let i in cooldowns) {
             json = JSON.parse($.inidb.get('discordCooldown', cooldowns[i]));
 
-            var globalSec,
+            let globalSec,
                     userSec,
                     curSec = parseInt(json.seconds);
 
@@ -360,35 +308,22 @@
 
         //Send cooldown messages in discord channel? (default=false)
         $.inidb.SetBoolean('discordCooldownSettings', '', 'coolDownMsgEnabled', false);
+    });
 
-        $.consoleLn('PhantomBot update 3.6.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.0', true);
-    }
+    addUpdate('3.6.2.5', 'installedv3.6.2.5', function() {
+        let keys = $.inidb.GetKeyList('greeting', '');
 
-    /* version 3.6.2.5 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.2.5')) {
-        $.consoleLn('Starting PhantomBot update 3.6.2.5 updates...');
-
-        var keys = $.inidb.GetKeyList('greeting', ''),
-                i;
-
-        for (i = 0; i < keys.length; i++) {
-            var key = $.javaString(keys[i]);
+        for (let i = 0; i < keys.length; i++) {
+            let key = $.javaString(keys[i]);
 
             if (key === null || key === undefined || key.startsWith('function(n)')) {
                 $.inidb.RemoveKey('greeting', '', key);
             }
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.6.2.5 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.2.5', true);
-    }
-
-    /* version 3.6.3 updates */
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.3')) {
-        $.consoleLn('Starting PhantomBot update 3.6.3 updates...');
-
-        var logFiles,
+    addUpdate('3.6.3', 'installedv3.6.3', function() {
+        let logFiles,
                 idx,
                 logFileDate,
                 logDirs = ['chat', 'chatModerator', 'core', 'core-debug', 'core-error', 'error', 'event', 'patternDetector', 'pointSystem', 'private-messages'],
@@ -403,18 +338,17 @@
             }
         }
 
-        var commands = $.inidb.GetKeyList('cooldown', ''),
-                json,
-                i;
+        let commands = $.inidb.GetKeyList('cooldown', ''),
+                json;
 
-        for (i in commands) {
+        for (let i in commands) {
             json = JSON.parse($.inidb.get('cooldown', commands[i]));
             json.modsSkip = false;
             $.inidb.set('cooldown', commands[i], JSON.stringify(json));
         }
 
         if ($.inidb.FileExists('greeting')) {
-            var autoGreetEnabled = $.inidb.GetBoolean('greeting', '', 'autoGreetEnabled'),
+            let autoGreetEnabled = $.inidb.GetBoolean('greeting', '', 'autoGreetEnabled'),
                     defaultJoinMessage = $.getIniDbString('greeting', 'defaultJoin'),
                     greetingCooldown = $.getIniDbNumber('greeting', 'cooldown');
 
@@ -426,91 +360,87 @@
             $.inidb.RemoveKey('greeting', '', 'defaultJoin');
             $.inidb.RemoveKey('greeting', '', 'cooldown');
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.6.3 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.3', true);
-    }
+    addUpdate('3.6.4', 'installedv3.6.4', function() {
+        let subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
+                primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
+                reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
+                giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
+                giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An anonymous viewer gifted (recipient) a subscription!'),
+                massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
+                massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An anonymous viewer gifted (amount) subscriptions to random viewers!'),
+                subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward', 0),
+                reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
+                giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward', 0),
+                massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
+                customEmote = $.getIniDbString('subscribeHandler', 'resubEmote', ''),
+                subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
+                subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
+                subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
+                subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime', 'Prime');
 
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4') || !$.inidb.GetBoolean('updates', '', 'installedv3.6.4-1')) {
-        $.consoleLn('Starting PhantomBot update 3.6.4 updates...');
-        if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4')) {
-            var subMessage = $.getIniDbString('subscribeHandler', 'subscribeMessage', '(name) just subscribed!'),
-                    primeSubMessage = $.getIniDbString('subscribeHandler', 'primeSubscribeMessage', '(name) just subscribed with Twitch Prime!'),
-                    reSubMessage = $.getIniDbString('subscribeHandler', 'reSubscribeMessage', '(name) just subscribed for (months) months in a row!'),
-                    giftSubMessage = $.getIniDbString('subscribeHandler', 'giftSubMessage', '(name) just gifted (recipient) a subscription!'),
-                    giftAnonSubMessage = $.getIniDbString('subscribeHandler', 'giftAnonSubMessage', 'An anonymous viewer gifted (recipient) a subscription!'),
-                    massGiftSubMessage = $.getIniDbString('subscribeHandler', 'massGiftSubMessage', '(name) just gifted (amount) subscriptions to random users in the channel!'),
-                    massAnonGiftSubMessage = $.getIniDbString('subscribeHandler', 'massAnonGiftSubMessage', 'An anonymous viewer gifted (amount) subscriptions to random viewers!'),
-                    subReward = $.getIniDbNumber('subscribeHandler', 'subscribeReward', 0),
-                    reSubReward = $.getIniDbNumber('subscribeHandler', 'reSubscribeReward', 0),
-                    giftSubReward = $.getIniDbNumber('subscribeHandler', 'giftSubReward', 0),
-                    massGiftSubReward = $.getIniDbNumber('subscribeHandler', 'massGiftSubReward', 0),
-                    customEmote = $.getIniDbString('subscribeHandler', 'resubEmote', ''),
-                    subPlan1000 = $.getIniDbString('subscribeHandler', 'subPlan1000', 'Tier 1'),
-                    subPlan2000 = $.getIniDbString('subscribeHandler', 'subPlan2000', 'Tier 2'),
-                    subPlan3000 = $.getIniDbString('subscribeHandler', 'subPlan3000', 'Tier 3'),
-                    subPlanPrime = $.getIniDbString('subscribeHandler', 'subPlanPrime', 'Prime');
+        let createSingleJson = function (val) {
+            return JSON.stringify({
+                '1000': val,
+                '2000': val,
+                '3000': val,
+                'Prime': val
+            });
+        };
 
-            var createSingleJson = function (val) {
-                return JSON.stringify({
-                    '1000': val,
-                    '2000': val,
-                    '3000': val,
-                    'Prime': val
-                });
-            };
+        let createSingleNPJson = function (val) {
+            return JSON.stringify({
+                '1000': val,
+                '2000': val,
+                '3000': val
+            });
+        };
 
-            var createSingleNPJson = function (val) {
-                return JSON.stringify({
-                    '1000': val,
-                    '2000': val,
-                    '3000': val
-                });
-            };
+        let createDuoJson = function (val, vPrime) {
+            return JSON.stringify({
+                '1000': val,
+                '2000': val,
+                '3000': val,
+                'Prime': vPrime
+            });
+        };
 
-            var createDuoJson = function (val, vPrime) {
-                return JSON.stringify({
-                    '1000': val,
-                    '2000': val,
-                    '3000': val,
-                    'Prime': vPrime
-                });
-            };
+        let createMultiJson = function (v1000, v2000, v3000, vPrime) {
+            return JSON.stringify({
+                '1000': v1000,
+                '2000': v2000,
+                '3000': v3000,
+                'Prime': vPrime
+            });
+        };
 
-            var createMultiJson = function (v1000, v2000, v3000, vPrime) {
-                return JSON.stringify({
-                    '1000': v1000,
-                    '2000': v2000,
-                    '3000': v3000,
-                    'Prime': vPrime
-                });
-            };
+        $.inidb.set('subscribeHandler', 'subscribeMessage', createDuoJson(subMessage, primeSubMessage));
+        $.inidb.del('subscribeHandler', 'primeSubscribeMessage');
+        $.inidb.set('subscribeHandler', 'reSubscribeMessage', createSingleJson(reSubMessage));
+        $.inidb.set('subscribeHandler', 'giftSubMessage', createSingleNPJson(giftSubMessage));
+        $.inidb.set('subscribeHandler', 'giftAnonSubMessage', createSingleNPJson(giftAnonSubMessage));
+        $.inidb.set('subscribeHandler', 'massGiftSubMessage', createSingleNPJson($.jsString(massGiftSubMessage).replace('(reward)', '(giftreward)')));
+        $.inidb.set('subscribeHandler', 'massAnonGiftSubMessage', createSingleNPJson(massAnonGiftSubMessage));
+        $.inidb.del('subscribeHandler', 'primeSubscriberWelcomeToggle');
+        $.inidb.set('subscribeHandler', 'subscribeReward', createSingleJson(subReward));
+        $.inidb.set('subscribeHandler', 'reSubscribeReward', createSingleJson(reSubReward));
+        $.inidb.set('subscribeHandler', 'giftSubReward', createSingleNPJson(giftSubReward));
+        $.inidb.set('subscribeHandler', 'massGiftSubReward', createSingleNPJson(massGiftSubReward));
+        $.inidb.set('subscribeHandler', 'subEmote', createSingleJson(customEmote));
+        $.inidb.del('subscribeHandler', 'resubEmote');
+        $.inidb.set('subscribeHandler', 'subPlans', createMultiJson(subPlan1000, subPlan2000, subPlan3000, subPlanPrime));
+        $.inidb.del('subscribeHandler', 'subPlan1000');
+        $.inidb.del('subscribeHandler', 'subPlan2000');
+        $.inidb.del('subscribeHandler', 'subPlan3000');
+        $.inidb.del('subscribeHandler', 'subPlanPrime');
+    });
 
-            $.inidb.set('subscribeHandler', 'subscribeMessage', createDuoJson(subMessage, primeSubMessage));
-            $.inidb.del('subscribeHandler', 'primeSubscribeMessage');
-            $.inidb.set('subscribeHandler', 'reSubscribeMessage', createSingleJson(reSubMessage));
-            $.inidb.set('subscribeHandler', 'giftSubMessage', createSingleNPJson(giftSubMessage));
-            $.inidb.set('subscribeHandler', 'giftAnonSubMessage', createSingleNPJson(giftAnonSubMessage));
-            $.inidb.set('subscribeHandler', 'massGiftSubMessage', createSingleNPJson($.jsString(massGiftSubMessage).replace('(reward)', '(giftreward)')));
-            $.inidb.set('subscribeHandler', 'massAnonGiftSubMessage', createSingleNPJson(massAnonGiftSubMessage));
-            $.inidb.del('subscribeHandler', 'primeSubscriberWelcomeToggle');
-            $.inidb.set('subscribeHandler', 'subscribeReward', createSingleJson(subReward));
-            $.inidb.set('subscribeHandler', 'reSubscribeReward', createSingleJson(reSubReward));
-            $.inidb.set('subscribeHandler', 'giftSubReward', createSingleNPJson(giftSubReward));
-            $.inidb.set('subscribeHandler', 'massGiftSubReward', createSingleNPJson(massGiftSubReward));
-            $.inidb.set('subscribeHandler', 'subEmote', createSingleJson(customEmote));
-            $.inidb.del('subscribeHandler', 'resubEmote');
-            $.inidb.set('subscribeHandler', 'subPlans', createMultiJson(subPlan1000, subPlan2000, subPlan3000, subPlanPrime));
-            $.inidb.del('subscribeHandler', 'subPlan1000');
-            $.inidb.del('subscribeHandler', 'subPlan2000');
-            $.inidb.del('subscribeHandler', 'subPlan3000');
-            $.inidb.del('subscribeHandler', 'subPlanPrime');
-        }
+    addUpdate('3.6.4-1', 'installedv3.6.4-1', function() {
+        let commands = $.inidb.GetKeyList('tempDisabledCommandScript', ''),
+                cmd;
 
-        var commands = $.inidb.GetKeyList('tempDisabledCommandScript', ''),
-                i, cmd;
-
-        for (i in commands) {
+        for (let i in commands) {
             cmd = $.jsString(commands[i]);
             if (cmd.toLowerCase() !== cmd) {
                 $.inidb.set('tempDisabledCommandScript', cmd.toLowerCase(), $.inidb.get('tempDisabledCommandScript', cmd));
@@ -519,7 +449,7 @@
         }
 
         if ($.inidb.FileExists('traffleState')) {
-            var bools = JSON.parse($.inidb.get('traffleState', 'bools'));
+            let bools = JSON.parse($.inidb.get('traffleState', 'bools'));
 
             $.inidb.SetBoolean('traffleState', '', 'followers', (bools[0] === 'true'));
             $.inidb.RemoveKey('traffleState', '', 'bools');
@@ -539,8 +469,8 @@
         $.inidb.RemoveKey('settings', '', 'traffleMessageInterval');
         $.inidb.RemoveKey('settings', '', 'traffleLimiter');
 
-        var calcBonus = function (subTMulti, regTMulti, user, tickets) {
-            var bonus = tickets;
+        let calcBonus = function (subTMulti, regTMulti, user, tickets) {
+            let bonus = tickets;
 
             if ($.isSub(user, null)) {
                 bonus = tickets * subTMulti;
@@ -552,30 +482,25 @@
         };
 
         if ($.inidb.FileExists('ticketsList') && $.inidb.HasKey('traffleState', '', 'subTMulti') && $.inidb.HasKey('traffleState', '', 'regTMulti')) {
-            var users = $.inidb.GetKeyList('ticketsList', ''),
+            let users = $.inidb.GetKeyList('ticketsList', ''),
                     first = $.inidb.get('ticketsList', users[0]),
                     subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti')),
                     regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
 
             if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
-                for (var i = 0; i < users.length; i++) {
-                    var times = $.getIniDbNumber('ticketsList', users[i]),
+                for (let i = 0; i < users.length; i++) {
+                    let times = $.getIniDbNumber('ticketsList', users[i]),
                             bonus = calcBonus(subTMulti, regTMulti, users[i], times);
 
                     $.inidb.set('ticketsList', users[i], JSON.stringify([times, bonus]));
                 }
             }
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.6.4 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.4', true);
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.4-1', true);
-    }
-
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4.2')) {
-        $.consoleLn('Starting PhantomBot update 3.6.4.2 updates...');
+    addUpdate('3.6.4.2', 'installedv3.6.4.2', function() {
         if ($.inidb.FileExists('raffleState')) {
-            var bools = JSON.parse($.inidb.get('raffleState', 'bools'));
+            let bools = JSON.parse($.inidb.get('raffleState', 'bools'));
 
             $.inidb.SetBoolean('raffleState', '', 'isFollowersOnly', (bools[0] === 'true'));
             $.inidb.SetBoolean('raffleState', '', 'isSubscribersOnly', (bools[1] === 'true'));
@@ -589,47 +514,32 @@
                 $.inidb.RemoveKey('raffleSettings', '', 'isActive');
             }
         }
-
-        $.consoleLn('PhantomBot update 3.6.4.2 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.4.2', true);
-    }
+    });
 
 
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.4.5')) {
-        $.consoleLn('Starting PhantomBot update 3.6.4.5 updates...');
-
+    addUpdate('3.6.4.5', 'installedv3.6.4.5', function() {
         $.inidb.RemoveFile('ytcache');
-
-        $.consoleLn('PhantomBot update 3.6.4.5 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.4.5', true);
-    }
+    });
 
 
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0')) {
-        $.consoleLn('Starting PhantomBot update 3.6.5.0 updates...');
-
+    addUpdate('3.6.5.0', 'installedv3.6.5.0', function() {
         if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0')) {
             $.inidb.RemoveKey('settings', '', 'gamesList-lastCheck');
         }
-
-        $.consoleLn('PhantomBot update 3.6.5.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.6.5.0', true);
-    }
+    });
 
 
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.0.0')) {
-        $.consoleLn('Starting PhantomBot update 3.7.0.0 updates...');
+    addUpdate('3.7.0.0', 'installedv3.7.0.0', function() {
+        let cpcommands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]'));
 
-        var cpcommands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]'));
-
-        var transferID = $.jsString($.getIniDbString('channelPointsSettings', 'transferID', 'noIDSet'));
-        var giveAllID = $.jsString($.getIniDbString('channelPointsSettings', 'giveAllID', 'noIDSet'));
-        var emoteOnlyID = $.jsString($.getIniDbString('channelPointsSettings', 'emoteOnlyID', 'noIDSet'));
-        var timeoutID = $.jsString($.getIniDbString('channelPointsSettings', 'timeoutID', 'noIDSet'));
+        let transferID = $.jsString($.getIniDbString('channelPointsSettings', 'transferID', 'noIDSet'));
+        let giveAllID = $.jsString($.getIniDbString('channelPointsSettings', 'giveAllID', 'noIDSet'));
+        let emoteOnlyID = $.jsString($.getIniDbString('channelPointsSettings', 'emoteOnlyID', 'noIDSet'));
+        let timeoutID = $.jsString($.getIniDbString('channelPointsSettings', 'timeoutID', 'noIDSet'));
 
         if (transferID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'transferToggle', false)) {
-            var transferAmount = $.getIniDbNumber('channelPointsSettings', 'transferAmount', 0);
-            var tdata = {
+            let transferAmount = $.getIniDbNumber('channelPointsSettings', 'transferAmount', 0);
+            let tdata = {
                 'id': transferID,
                 'title': $.jsString($.getIniDbString('channelPointsSettings', 'transferReward', 'noNameSet')),
                 'command': '(addpoints ' + transferAmount + ' (cpusername))@(cpdisplayname), you have been awarded ' + transferAmount + ' (pointname ' + transferAmount
@@ -644,8 +554,8 @@
         $.inidb.del('channelPointsSettings', 'transferReward');
 
         if (giveAllID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'giveAllToggle', false)) {
-            var giveAllAmount = $.getIniDbNumber('channelPointsSettings', 'giveAllAmount', 0);
-            var gdata = {
+            let giveAllAmount = $.getIniDbNumber('channelPointsSettings', 'giveAllAmount', 0);
+            let gdata = {
                 'id': giveAllID,
                 'title': $.jsString($.getIniDbString('channelPointsSettings', 'giveAllReward', 'noNameSet')),
                 'command': '(addpointstoall ' + giveAllAmount + ')'
@@ -659,8 +569,8 @@
         $.inidb.del('channelPointsSettings', 'giveAllReward');
 
         if (emoteOnlyID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'emoteOnlyToggle', false)) {
-            var emoteOnlyDuration = $.getIniDbNumber('channelPointsSettings', 'emoteOnlyDuration', 0);
-            var edata = {
+            let emoteOnlyDuration = $.getIniDbNumber('channelPointsSettings', 'emoteOnlyDuration', 0);
+            let edata = {
                 'id': emoteOnlyID,
                 'title': $.jsString($.getIniDbString('channelPointsSettings', 'emoteOnlyReward', 'noNameSet')),
                 'command': '(delaysay ' + emoteOnlyDuration + ' /emoteonlyoff)/emoteonly'
@@ -674,8 +584,8 @@
         $.inidb.del('channelPointsSettings', 'emoteOnlyReward');
 
         if (timeoutID !== 'noIDSet' && $.getIniDbBoolean('channelPointsSettings', 'timeoutToggle', false)) {
-            var timeoutDuration = $.getIniDbNumber('channelPointsSettings', 'timeoutDuration', 0);
-            var odata = {
+            let timeoutDuration = $.getIniDbNumber('channelPointsSettings', 'timeoutDuration', 0);
+            let odata = {
                 'id': timeoutID,
                 'title': $.jsString($.getIniDbString('channelPointsSettings', 'timeoutReward', 'noNameSet')),
                 'command': '(delaysay 1 (cpinput) has been timed out for ' + timeoutDuration + ' seconds by (cpdisplayname))/timeout (sanitizeuser (cpinput)) ' + timeoutDuration
@@ -689,14 +599,9 @@
         $.inidb.del('channelPointsSettings', 'timeoutReward');
 
         $.setIniDbString('channelPointsSettings', 'commands', JSON.stringify(cpcommands));
+    });
 
-        $.consoleLn('PhantomBot update 3.7.0.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.7.0.0', true);
-    }
-
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.3.2')) {
-        $.consoleLn('Starting PhantomBot update 3.7.3.2 updates...');
-
+    addUpdate('3.7.3.2', 'installedv3.7.3.2', function() {
         let keys = $.inidb.GetKeyList('command', '');
 
         for (let i in keys) {
@@ -728,18 +633,27 @@
                 }
             } catch (e) {}
         }
+    });
 
-        $.consoleLn('PhantomBot update 3.7.3.2 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.7.3.2', true);
-    }
-
-    if (!$.inidb.GetBoolean('updates', '', 'installedv3.7.5.0')) {
-        $.consoleLn('Starting PhantomBot update 3.7.5.0 updates...');
-
+    addUpdate('3.7.5.0', 'installedv3.7.5.0', function() {
         $.getSetIniDbBoolean('settings', 'isSwappedSubscriberVIP', false);
+    });
 
-        $.consoleLn('PhantomBot update 3.7.5.0 completed!');
-        $.inidb.SetBoolean('updates', '', 'installedv3.7.5.0', true);
+    if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
+        newSetup();
+    } else {
+        for (let x in updates) {
+            $.consoleLn('Starting PhantomBot v' + updates[x].version + ' updates...');
+
+            try {
+                updates[x].fn();
+                $.consoleLn('PhantomBot v' + updates[x].version + ' update completed!');
+                $.inidb.SetBoolean('updates', '', updates[x].variable, true);
+            } catch (e) {
+                $.consoleLn('PhantomBot v' + updates[x].version + ' update failed!');
+                $.handleException('900updates#' + updates[x].version, e);
+            }
+        }
     }
 
     if (!Packages.tv.phantombot.twitch.api.TwitchValidate.instance().hasChatScope('moderator:manage:banned_users')) {
@@ -750,17 +664,6 @@
         Packages.com.gmt2001.Console.warn.println('');
         Packages.com.gmt2001.Console.warn.println('');
     }
-
-    $.bind('command', function(event) {
-        if ($.jsString(event.getCommand()).toLowerCase() === 'fixsubscribers') {
-            $.setIniDbBoolean('settings', 'isSwappedSubscriberVIP', false);
-            $.say('Fix applied. Please restart the bot');
-        }
-    });
-
-    $.bind('initReady', function() {
-        $.registerChatCommand('./core/bootstrap/900updates.js', 'fixsubscribers', $.PERMISSION.Admin);
-    });
 
     $.bind('webPanelSocketConnect', function (event) {
         setTimeout(function () {
