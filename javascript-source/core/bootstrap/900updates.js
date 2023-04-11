@@ -450,7 +450,7 @@
             }
         }
 
-        if ($.inidb.FileExists('traffleState')) {
+        if ($.inidb.FileExists('traffleState') && $.inidb.HasKey('traffleState', 'bools')) {
             let bools = JSON.parse($.inidb.get('traffleState', 'bools'));
 
             $.inidb.SetBoolean('traffleState', '', 'followers', (bools[0] === 'true'));
@@ -501,7 +501,7 @@
     });
 
     addUpdate('3.6.4.2', 'installedv3.6.4.2', function() {
-        if ($.inidb.FileExists('raffleState')) {
+        if ($.inidb.FileExists('raffleState') && $.inidb.HasKey('raffleState', 'bools')) {
             let bools = JSON.parse($.inidb.get('raffleState', 'bools'));
 
             $.inidb.SetBoolean('raffleState', '', 'isFollowersOnly', (bools[0] === 'true'));
@@ -673,15 +673,17 @@
         newSetup();
     } else {
         for (let x in updates) {
-            $.consoleLn('Starting PhantomBot v' + updates[x].version + ' updates...');
+            if (!$.inidb.GetBoolean('updates', '', updates[x].variable)) {
+                $.consoleLn('Starting PhantomBot v' + updates[x].version + ' updates...');
 
-            try {
-                updates[x].fn();
-                $.consoleLn('PhantomBot v' + updates[x].version + ' update completed!');
-                $.inidb.SetBoolean('updates', '', updates[x].variable, true);
-            } catch (e) {
-                $.consoleLn('PhantomBot v' + updates[x].version + ' update failed!');
-                $.handleException('900updates#' + updates[x].version, e);
+                try {
+                    updates[x].fn();
+                    $.consoleLn('PhantomBot v' + updates[x].version + ' update completed!');
+                    $.inidb.SetBoolean('updates', '', updates[x].variable, true);
+                } catch (e) {
+                    $.consoleLn('PhantomBot v' + updates[x].version + ' update failed!');
+                    $.handleException('900updates#' + updates[x].version, e);
+                }
             }
         }
     }
