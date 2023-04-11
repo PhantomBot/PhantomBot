@@ -117,6 +117,8 @@
         updates.push({version: version, variable: variable, fn: fn});
     }
 
+    // ------ Add updates below this line in execution order ------
+
     addUpdate('3.3.0', 'installedv3.3.0', function() {
         $.consoleLn('Updating keywords...');
         let keys = $.inidb.GetKeyList('keywords', ''),
@@ -638,6 +640,34 @@
     addUpdate('3.7.5.0', 'installedv3.7.5.0', function() {
         $.getSetIniDbBoolean('settings', 'isSwappedSubscriberVIP', false);
     });
+
+    addUpdate('3.8.1.0', 'installedv3.8.1.0', function() {
+        let pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
+        let pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
+        let subCommands = [
+            'add', 'give', 'take', 'remove', 'set',
+            'all', 'takeall', 'setname', 'setgain',
+            'setofflinegain', 'setinterval', 'user',
+            'check', 'bonus', 'resetall', 'setmessage',
+            'setactivebonus'
+        ];
+
+        if (pointNameSingle !== undefined && pointNameSingle !== 'point') {
+            for (let x in subCommands) {
+                $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])));
+                $.inidb.del('permcom', (pointNameSingle + ' ' + subCommands[x]));
+            }
+        }
+
+        if (pointNameMultiple !== undefined && pointNameMultiple !== 'points') {
+            for (let x in subCommands) {
+                $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
+                $.inidb.del('permcom', (pointNameMultiple + ' ' + subCommands[x]));
+            }
+        }
+    });
+
+    // ------ Add updates above this line in execution order ------
 
     if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
         newSetup();
