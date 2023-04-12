@@ -16,7 +16,6 @@
  */
 package com.scaniatv;
 
-import com.gmt2001.PathValidator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,22 +24,26 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
+import java.util.stream.Stream;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
+import com.gmt2001.PathValidator;
+
 import tv.phantombot.PhantomBot;
 import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptManager;
@@ -195,14 +198,14 @@ public final class LangFileUpdater {
      * @return
      */
     public static String[] getLangFiles() {
-        Collection<File> files = FileUtils.listFiles(new File(DEFAULT_LANG_ROOT), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-        ArrayList<String> fileNames = new ArrayList<>();
+        List<String> fileNames = new ArrayList<>();
+        Path langRoot = Paths.get(DEFAULT_LANG_ROOT);
 
-        String sep = File.separator;
-
-        files.forEach((File file) -> {
-            fileNames.add(file.getPath().replace("." + sep + "scripts" + sep + "lang" + sep + "english" + sep, ""));
-        });
+        try ( Stream<Path> fileStream = Files.find(langRoot, Integer.MAX_VALUE, (p, a) -> p.getFileName().toString().endsWith(".js"), FileVisitOption.FOLLOW_LINKS)) {
+            fileStream.forEach(p -> fileNames.add(langRoot.relativize(p).toString()));
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
 
         return fileNames.toArray(new String[fileNames.size()]);
     }

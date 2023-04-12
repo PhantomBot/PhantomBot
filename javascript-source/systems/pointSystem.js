@@ -55,42 +55,26 @@
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
 
-        registerNewPointsCommands([pointNameSingle, pointNameMultiple, 'point', 'points'], [tempPointNameSingle, tempPointNameMultiple]);
-    }
-
-    /**
-     * @function registerPointCommands
-     */
-    function registerNewPointsCommands(newNames, oldNames) {
-        for (let x in newNames) {
-            let newName = newNames[x].toLowerCase();
-            if (!$.commandExists(newName)) {
-                $.registerChatCommand('./systems/pointSystem.js', newName, $.PERMISSION.Viewer);
-                $.registerChatSubcommand(newName, 'add', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'give', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'take', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'remove', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'set', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'all', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'takeall', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'setname', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'setgain', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'setofflinegain', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'setinterval', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'user', $.PERMISSION.Viewer);
-                $.registerChatSubcommand(newName, 'check', $.PERMISSION.Viewer);
-                $.registerChatSubcommand(newName, 'bonus', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'resetall', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'setmessage', $.PERMISSION.Admin);
-                $.registerChatSubcommand(newName, 'setactivebonus', $.PERMISSION.Admin);
-            }
+        if (tempPointNameSingle !== 'point' && tempPointNameSingle !== pointNameSingle) {
+            $.unregisterChatCommand(tempPointNameSingle);
+            $.inidb.del('aliases', tempPointNameSingle);
         }
 
-        for (let x in oldNames) {
-            let oldName = oldNames[x].toLowerCase();
-            if (oldName !== 'point' && oldName !== 'points') {
-                $.unregisterChatCommand(oldName);
-            }
+        if (tempPointNameMultiple !== 'points' && tempPointNameMultiple !== pointNameMultiple) {
+            $.unregisterChatCommand(tempPointNameMultiple);
+            $.inidb.del('aliases', tempPointNameMultiple);
+        }
+
+        if (pointNameSingle !== 'point') {
+            $.registerChatCommand('./commands/customCommands.js', pointNameSingle);
+            $.inidb.set('aliases', pointNameSingle, 'points');
+            $.registerChatAlias(pointNameSingle);
+        }
+
+        if (pointNameMultiple !== 'points') {
+            $.registerChatCommand('./commands/customCommands.js', pointNameMultiple);
+            $.inidb.set('aliases', pointNameMultiple, 'points');
+            $.registerChatAlias(pointNameMultiple);
         }
     }
 
@@ -820,6 +804,24 @@
         $.registerChatCommand('./systems/pointSystem.js', 'makeitrain', $.PERMISSION.Admin);
         $.registerChatCommand('./systems/pointSystem.js', 'gift', $.PERMISSION.Viewer);
         $.registerChatCommand('./systems/pointSystem.js', 'penalty', $.PERMISSION.Mod);
+        $.registerChatCommand('./systems/pointSystem.js', 'points', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('points', 'add', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'give', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'take', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'remove', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'set', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'all', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'takeall', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'setname', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'setgain', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'setofflinegain', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'setinterval', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'user', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('points', 'check', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('points', 'bonus', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'resetall', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'setmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('points', 'setactivebonus', $.PERMISSION.Admin);
 
         updateSettings();
     });
