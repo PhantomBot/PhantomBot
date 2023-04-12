@@ -21,12 +21,61 @@ $(function () {
     // Load file button
     $('#load-file-button').on('click', function () {
         socket.doRemote('getLangList', 'getLangList', {}, function (e) {
-            helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
+            let tree = [];
+            function updateTree(fullPath, parts, branches) {
+                let found = false;
+                for (let b in branches) {
+                    if (branches[b].text.trim() === parts[0]) {
+                        found = true;
+                        if (parts.length > 1) {
+                            if (!branches[b].hasOwnProperty('nodes')) {
+                                branches[b].nodes = [];
+                            }
+
+                            branches[b].nodes = updateTree(fullPath, parts.slice(1), branches[b].nodes);
+                        }
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    let newBranch = {
+                        text: parts[0],
+                        selectedIcon: 'fa fas fa-circle'
+                    };
+
+                    if (parts.length > 1) {
+                        newBranch.text = ' ' + newBranch.text;
+                        newBranch.icon = 'glyphicon glyphicon-folder-open';
+                        newBranch.selectable = false;
+                        newBranch.state = { expanded: false };
+                        newBranch.nodes = updateTree(fullPath, parts.slice(1), []);
+                    } else {
+                        newBranch.fullPath = fullPath;
+                    }
+
+                    branches.push(newBranch);
+                }
+
+                return branches;
+            }
+
+            for (let x of e) {
+                let parts = x.replaceAll('\\', '/').split('/');
+                tree = updateTree(x, parts, tree);
+            }
+
+            let modal = helpers.getModal('edit-lang', 'Load Lang File', 'Edit', $('<form/>', {
                 'role': 'form'
-            })
+            }).append($('<div />', {id: 'filetree'}))
                     // Add select box.
-                    .append(helpers.getDropdownGroup('file-to-load', 'Lang file: ', 'Choose a File', e)), function () {
-                currentLang = $('#file-to-load').find(':selected').text();
+                    /*.append(helpers.getDropdownGroup('file-to-load', 'Lang file: ', 'Choose a File', e))*/, function () {
+                currentLang = $('#filetree').treeview('getSelected');
+                if (currentLang.length === 0) {
+                    $('#edit-lang').modal('hide');
+                    return;
+                }
+                currentLang = currentLang[0].fullPath;
                 socket.doRemote('loadLang', 'loadLang', {
                     'lang-path': currentLang
                 }, function (e) {
@@ -34,12 +83,17 @@ $(function () {
                     // Alert the user.
                     toastr.success('Successfully loaded the file!');
                     // Close the modal.
-                    $('#edit-lang').modal('toggle');
+                    $('#edit-lang').modal('hide');
                     // Enable the insert and save buttons.
                     $('#save-button').prop('disabled', false);
                     $('#add-line-button').prop('disabled', false);
                 });
             }).modal('toggle');
+            modal.on('shown.bs.modal', function () {
+                $('#filetree').treeview({
+                    data: tree
+                });
+            });
         });
     });
 
