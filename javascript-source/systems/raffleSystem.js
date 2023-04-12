@@ -22,7 +22,7 @@
  *
  */
 (function () {
-    var entries = [],
+    let entries = [],
             entered = {},
             keyword = '',
             entryFee = 0,
@@ -70,7 +70,7 @@
      * @param {arguments} arguments
      */
     function open(username, arguments) {
-        var args,
+        let args,
                 i = 1,
                 tempKeyword,
                 tempFollowMessage = '',
@@ -206,7 +206,7 @@
         status = $.inidb.GetBoolean('raffleState', '', 'isActive');
         lastWinners = [];
         if ($.inidb.HasKey('raffleresults', '', 'winner')) { //Consider raffles saved before winner was a key
-            var temp = $.inidb.get('raffleresults', 'winner');
+            let temp = $.inidb.get('raffleresults', 'winner');
             if (temp !== undefined && !temp.equalsIgnoreCase('undefined')) {
                 lastWinners = JSON.parse(temp); //lastWinners found
             }
@@ -228,7 +228,7 @@
             }
 
             if (timerTime > 0) {
-                var timeleft = timerTime - (($.systemTime() - startTime) / 6e4);
+                let timeleft = timerTime - (($.systemTime() - startTime) / 6e4);
                 timeout = setTimeout(function () {
                     close();
                 }, timeleft * 6e4);
@@ -318,7 +318,7 @@
             lastWinners = [];
         }
 
-        var newWinners = [];
+        let newWinners = [];
 
         _entriesLock.lock();
         try {
@@ -326,7 +326,7 @@
                 newWinners = entries;
             } else {
                 while (newWinners.length < amount) {
-                    var candidate;
+                    let candidate;
                     do {
                         candidate = $.randElement(entries);
                     } while (newWinners.includes(candidate));
@@ -344,7 +344,7 @@
 
         /* whisper the winner if the toggle is on */
         if (whisperWinner) {
-            for (var i = 0; i < newWinners.length; i++) {
+            for (let i = 0; i < newWinners.length; i++) {
                 if ($.user.isFollower(newWinners[i].toLowerCase())) {
                     $.say($.whisperPrefix(newWinners[i], true) + $.lang.get('rafflesystem.whisper.winner', $.channelName));
                 }
@@ -355,9 +355,9 @@
         _entriesLock.lock();
         try {
             if (allowRepick) {
-                for (var j in entries) {
-                    for (var k in newWinners) {
-                        var e = entries[j];
+                for (let j in entries) {
+                    for (let k in newWinners) {
+                        let e = entries[j];
                         if (e.equalsIgnoreCase(newWinners[k])) {
                             entries.splice(j, 1);
                             $.inidb.del('raffleList', newWinners[k]);
@@ -391,15 +391,15 @@
         }
 
         if (winners.length === 1) {
-            var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            let followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
             $.say($.lang.get('rafflesystem.winner.single', $.viewer.getByLogin(winners[0]).name(), followMsg));
             return;
         }
 
-        var msg = $.lang.get('rafflesystem.winner.multiple', winners.join(', '));
+        let msg = $.lang.get('rafflesystem.winner.multiple', winners.join(', '));
 
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
-            var i = msg.substring(0, 500).lastIndexOf(",");
+            let i = msg.substring(0, 500).lastIndexOf(",");
             $.say(msg.substring(0, i));
             $.say(msg.substring(i + 1, msg.length));
         } else {
@@ -416,7 +416,7 @@
      */
     function awardWinners(amount, prize) {
 
-        for (var i = (lastWinners.length - amount); i < lastWinners.length; i++) {
+        for (let i = (lastWinners.length - amount); i < lastWinners.length; i++) {
             $.inidb.incr('points', lastWinners[i], prize);
         }
 
@@ -488,7 +488,7 @@
         try {
             entered[username] = true;
             entries.push(username);
-            var i;
+            let i;
             if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
                 for (i = 0; i < subscriberBonus; i++) {
                     entries.push(username);
@@ -551,7 +551,7 @@
      * @param {object} event
      */
     $.bind('command', function (event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
                 command = event.getCommand(),
                 arguments = event.getArguments(),
                 args = event.getArgs(),
@@ -586,7 +586,7 @@
              * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and closes the raffle if it is still open
              */
             if (action.equalsIgnoreCase('draw')) {
-                var amount = 1;
+                let amount = 1;
                 if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
                     return;
