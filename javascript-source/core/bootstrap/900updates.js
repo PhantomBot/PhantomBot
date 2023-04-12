@@ -293,7 +293,7 @@
                     userSec,
                     curSec = parseInt(json.seconds);
 
-            if (json.isGlobal.toString().equals('true')) {
+            if (json.isGlobal !== undefined && json.isGlobal.toString().equals('true')) {
                 globalSec = curSec;
                 userSec = -1;
             } else {
