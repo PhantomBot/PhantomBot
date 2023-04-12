@@ -18,7 +18,7 @@
 /* global Packages */
 
 (function () {
-    var cost = 0,
+    let cost = 0,
             entries = [],
             subTMulti = 1,
             regTMulti = 1,
@@ -41,7 +41,7 @@
             _entriesLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             _totalTicketsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
-    var POS = {
+    let POS = {
         times: 0,
         bonus: 1
     };
@@ -225,18 +225,24 @@
             $.say($.lang.get('ticketrafflesystem.raffle.closed.and.draw'));
         }
 
-        var newWinners = [];
+        let newWinners = [];
 
         _entriesLock.lock();
         try {
             if (amount >= entries.Length) {
                 newWinners = entries;
             } else {
-                while (newWinners.length < amount) {
-                    var candidate;
-                    do {
-                        candidate = $.randElement(entries);
-                    } while (newWinners.includes(candidate) || lastWinners.includes(candidate));
+                let remainingEntries = JSON.parse(JSON.stringify(entries));
+                for (let x in lastWinners) {
+                    let i = remainingEntries.indexOf(lastWinners[x]);
+                    if (i >= 0) {
+                        remainingEntries.splice(i, 1);
+                    }
+                }
+                while (newWinners.length < amount && remainingEntries.length > 0) {
+                    let candidate = $.randElement(remainingEntries);
+
+                    remainingEntries.splice(remainingEntries.indexOf(candidate), 1);
 
                     newWinners.push(candidate);
                 }
@@ -257,15 +263,15 @@
 
     function winningMsg(winners) {
         if (winners.length === 1) {
-            var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            let followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
             $.say($.lang.get('ticketrafflesystem.winner.single', $.viewer.getByLogin(winners[0]).name(), followMsg));
             return;
         }
 
-        var msg = $.lang.get('ticketrafflesystem.winner.multiple', winners.join(', '));
+        let msg = $.lang.get('ticketrafflesystem.winner.multiple', winners.join(', '));
 
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
-            var i = msg.substring(0, 500).lastIndexOf(",");
+            let i = msg.substring(0, 500).lastIndexOf(",");
             $.say(msg.substring(0, i));
             $.say(msg.substring(i + 1, msg.length));
         } else {
@@ -281,7 +287,7 @@
             return;
         }
 
-        var baseAmount,
+        let baseAmount,
                 tmpMax = maxEntries,
                 multiplier = 1,
                 getsBonus = userGetsBonus(user, event),
@@ -294,7 +300,7 @@
         }
 
         if (isNaN(parseInt(arg)) && ($.equalsIgnoreCase(arg, "max") || $.equalsIgnoreCase(arg, "all"))) {
-            var possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user) / cost) : tmpMax);
+            let possibleBuys = (cost > 0 ? Math.floor($.getUserPoints(user) / cost) : tmpMax);
             baseAmount = tmpMax - currTickets; //Maximum possible entries that can be bought up to the maxEntries limit
             baseAmount = (baseAmount > possibleBuys ? possibleBuys : baseAmount);
         } else if (!isNaN(parseInt(arg)) && parseInt(arg) % 1 === 0) {
@@ -308,7 +314,7 @@
             return;
         }
 
-        var bonus = calcBonus(user, event, baseAmount),
+        let bonus = calcBonus(user, event, baseAmount),
                 amount = baseAmount;
 
         if (limiter) {
@@ -390,11 +396,11 @@
     }
 
     function incr(user, times, bonus) {
-        var total = times + bonus;
+        let total = times + bonus;
         user = $.jsString(user);
         _entriesLock.lock();
         try {
-            for (var i = 0; i < total; i++) {
+            for (let i = 0; i < total; i++) {
                 entries.push(user);
             }
 
@@ -406,7 +412,7 @@
         }
 
         if ($.inidb.exists('ticketsList', user.toLowerCase())) {
-            var current = JSON.parse($.inidb.get('ticketsList', user.toLowerCase()));
+            let current = JSON.parse($.inidb.get('ticketsList', user.toLowerCase()));
             times += current[POS.times];
             bonus += current[POS.bonus];
         }
@@ -434,12 +440,12 @@
     }
 
     function calcBonus(user, event, tickets) {
-        var tags = undefined;
+        let tags = undefined;
         if (event !== undefined) {
             tags = event.getTags();
         }
 
-        var bonus = tickets;
+        let bonus = tickets;
 
         if ($.isSub(user, tags)) {
             bonus = tickets * subTMulti;
@@ -451,7 +457,7 @@
     }
 
     function awardWinners(prize, winners) {
-        for (var i = 0; i < winners.length; i++) {
+        for (let i = 0; i < winners.length; i++) {
             $.inidb.incr('points', winners[i], prize);
         }
 
@@ -467,7 +473,7 @@
      * @param {object} event
      */
     $.bind('command', function (event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
                 command = event.getCommand(),
                 argString = event.getArguments(),
                 args = event.getArgs(),
@@ -514,7 +520,7 @@
              */
             if (action.equalsIgnoreCase('draw')) {
 
-                var amount = 1;
+                let amount = 1;
                 if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.draw.usage'));
                     return;
@@ -534,7 +540,7 @@
                     return;
                 }
 
-                var winners = winner(amount);
+                let winners = winner(amount);
 
                 if (args[2] !== undefined && !isNaN(parseInt(args[2])) && parseInt(args[2]) !== 0) {
                     awardWinners(parseInt(args[2]), winners);

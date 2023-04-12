@@ -648,20 +648,43 @@
             'add', 'give', 'take', 'remove', 'set',
             'all', 'takeall', 'setname', 'setgain',
             'setofflinegain', 'setinterval', 'user',
-            'check', 'bonus', 'resetall', 'setmessage',
-            'setactivebonus'
+            'resetall', 'setmessage', 'setactivebonus'
         ];
 
         if (pointNameSingle !== undefined && pointNameSingle !== 'point') {
             for (let x in subCommands) {
-                $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])));
+                if ($.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])) !== 1) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])));
+                }
                 $.inidb.del('permcom', (pointNameSingle + ' ' + subCommands[x]));
             }
         }
 
         if (pointNameMultiple !== undefined && pointNameMultiple !== 'points') {
             for (let x in subCommands) {
-                $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
+                if ($.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])) !== 1) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
+                }
+                $.inidb.del('permcom', (pointNameMultiple + ' ' + subCommands[x]));
+            }
+        }
+
+        subCommands = ['check', 'bonus'];
+
+        if (pointNameSingle !== undefined && pointNameSingle !== 'point') {
+            for (let x in subCommands) {
+                if ($.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])) !== 7) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])));
+                }
+                $.inidb.del('permcom', (pointNameSingle + ' ' + subCommands[x]));
+            }
+        }
+
+        if (pointNameMultiple !== undefined && pointNameMultiple !== 'points') {
+            for (let x in subCommands) {
+                if ($.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])) !== 7) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
+                }
                 $.inidb.del('permcom', (pointNameMultiple + ' ' + subCommands[x]));
             }
         }

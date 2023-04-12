@@ -22,7 +22,7 @@
  *
  */
 (function () {
-    var entries = [],
+    let entries = [],
             entered = {},
             keyword = '',
             entryFee = 0,
@@ -35,7 +35,7 @@
             sendMessages = $.getSetIniDbBoolean('raffleSettings', 'raffleMSGToggle', false),
             openDraw = $.getSetIniDbBoolean('raffleSettings', 'raffleOpenDraw', false),
             whisperWinner = $.getSetIniDbBoolean('raffleSettings', 'raffleWhisperWinner', false),
-            allowRepick = $.getSetIniDbBoolean('raffleSettings', 'noRepickSame', true),
+            noRepickSame = $.getSetIniDbBoolean('raffleSettings', 'noRepickSame', true),
             raffleMessage = $.getSetIniDbString('raffleSettings', 'raffleMessage', 'A raffle is still opened! Type (keyword) to enter. (entries) users have entered so far.'),
             messageInterval = $.getSetIniDbNumber('raffleSettings', 'raffleMessageInterval', 0),
             subscriberBonus = $.getSetIniDbNumber('raffleSettings', 'subscriberBonusRaffle', 1),
@@ -54,7 +54,7 @@
     function reloadRaffle() {
         sendMessages = $.getIniDbBoolean('raffleSettings', 'raffleMSGToggle');
         openDraw = $.getIniDbBoolean('raffleSettings', 'raffleOpenDraw');
-        allowRepick = $.getIniDbBoolean('raffleSettings', 'noRepickSame');
+        noRepickSame = $.getIniDbBoolean('raffleSettings', 'noRepickSame');
         whisperWinner = $.getIniDbBoolean('raffleSettings', 'raffleWhisperWinner');
         raffleMessage = $.getIniDbString('raffleSettings', 'raffleMessage');
         messageInterval = $.getIniDbNumber('raffleSettings', 'raffleMessageInterval');
@@ -70,7 +70,7 @@
      * @param {arguments} arguments
      */
     function open(username, arguments) {
-        var args,
+        let args,
                 i = 1,
                 tempKeyword,
                 tempFollowMessage = '',
@@ -206,7 +206,7 @@
         status = $.inidb.GetBoolean('raffleState', '', 'isActive');
         lastWinners = [];
         if ($.inidb.HasKey('raffleresults', '', 'winner')) { //Consider raffles saved before winner was a key
-            var temp = $.inidb.get('raffleresults', 'winner');
+            let temp = $.inidb.get('raffleresults', 'winner');
             if (temp !== undefined && !temp.equalsIgnoreCase('undefined')) {
                 lastWinners = JSON.parse(temp); //lastWinners found
             }
@@ -228,7 +228,7 @@
             }
 
             if (timerTime > 0) {
-                var timeleft = timerTime - (($.systemTime() - startTime) / 6e4);
+                let timeleft = timerTime - (($.systemTime() - startTime) / 6e4);
                 timeout = setTimeout(function () {
                     close();
                 }, timeleft * 6e4);
@@ -318,18 +318,18 @@
             lastWinners = [];
         }
 
-        var newWinners = [];
+        let newWinners = [];
 
         _entriesLock.lock();
         try {
             if (amount >= entries.Length) {
                 newWinners = entries;
             } else {
-                while (newWinners.length < amount) {
-                    var candidate;
-                    do {
-                        candidate = $.randElement(entries);
-                    } while (newWinners.includes(candidate));
+                let remainingEntries = JSON.parse(JSON.stringify(entries));
+                while (newWinners.length < amount && remainingEntries.length > 0) {
+                    let candidate = $.randElement(remainingEntries);
+
+                    remainingEntries.splice(remainingEntries.indexOf(candidate), 1);
 
                     newWinners.push(candidate);
                 }
@@ -344,7 +344,7 @@
 
         /* whisper the winner if the toggle is on */
         if (whisperWinner) {
-            for (var i = 0; i < newWinners.length; i++) {
+            for (let i = 0; i < newWinners.length; i++) {
                 if ($.user.isFollower(newWinners[i].toLowerCase())) {
                     $.say($.whisperPrefix(newWinners[i], true) + $.lang.get('rafflesystem.whisper.winner', $.channelName));
                 }
@@ -354,16 +354,11 @@
         /* Remove the user from the array if we are not allowed to have multiple repicks. */
         _entriesLock.lock();
         try {
-            if (allowRepick) {
-                for (var j in entries) {
-                    for (var k in newWinners) {
-                        var e = entries[j];
-                        if (e.equalsIgnoreCase(newWinners[k])) {
-                            entries.splice(j, 1);
-                            $.inidb.del('raffleList', newWinners[k]);
-                            $.inidb.decr('raffleresults', 'raffleEntries', 1);
-                        }
-                    }
+            if (noRepickSame) {
+                for (let k in newWinners) {
+                    entries.splice(entries.indexOf(newWinners[k]), 1);
+                    $.inidb.del('raffleList', newWinners[k]);
+                    $.inidb.decr('raffleresults', 'raffleEntries', 1);
                 }
             }
         } finally {
@@ -391,15 +386,15 @@
         }
 
         if (winners.length === 1) {
-            var followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
+            let followMsg = ($.user.isFollower(winners[0].toLowerCase()) ? $.lang.get('rafflesystem.isfollowing') : $.lang.get('rafflesystem.isnotfollowing'));
             $.say($.lang.get('rafflesystem.winner.single', $.viewer.getByLogin(winners[0]).name(), followMsg));
             return;
         }
 
-        var msg = $.lang.get('rafflesystem.winner.multiple', winners.join(', '));
+        let msg = $.lang.get('rafflesystem.winner.multiple', winners.join(', '));
 
         if (msg.length >= 500) { // I doubt anybody will draw more winners than we can fit in 2 messages
-            var i = msg.substring(0, 500).lastIndexOf(",");
+            let i = msg.substring(0, 500).lastIndexOf(",");
             $.say(msg.substring(0, i));
             $.say(msg.substring(i + 1, msg.length));
         } else {
@@ -416,7 +411,7 @@
      */
     function awardWinners(amount, prize) {
 
-        for (var i = (lastWinners.length - amount); i < lastWinners.length; i++) {
+        for (let i = (lastWinners.length - amount); i < lastWinners.length; i++) {
             $.inidb.incr('points', lastWinners[i], prize);
         }
 
@@ -488,7 +483,7 @@
         try {
             entered[username] = true;
             entries.push(username);
-            var i;
+            let i;
             if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
                 for (i = 0; i < subscriberBonus; i++) {
                     entries.push(username);
@@ -551,7 +546,7 @@
      * @param {object} event
      */
     $.bind('command', function (event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
                 command = event.getCommand(),
                 arguments = event.getArguments(),
                 args = event.getArgs(),
@@ -586,7 +581,7 @@
              * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and closes the raffle if it is still open
              */
             if (action.equalsIgnoreCase('draw')) {
-                var amount = 1;
+                let amount = 1;
                 if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
                     return;
@@ -697,9 +692,9 @@
              * @commandpath raffle togglerepicks - Toggles if the same winner can be repicked more than one.
              */
             if (action.equalsIgnoreCase('togglerepicks')) {
-                allowRepick = !allowRepick;
-                $.inidb.set('raffleSettings', 'noRepickSame', allowRepick);
-                $.say($.whisperPrefix(sender) + (allowRepick ? $.lang.get('rafflesystem.raffle.repick.toggle1') : $.lang.get('rafflesystem.raffle.repick.toggle2')));
+                noRepickSame = !noRepickSame;
+                $.inidb.set('raffleSettings', 'noRepickSame', noRepickSame);
+                $.say($.whisperPrefix(sender) + (noRepickSame ? $.lang.get('rafflesystem.raffle.repick.toggle1') : $.lang.get('rafflesystem.raffle.repick.toggle2')));
                 return;
             }
 

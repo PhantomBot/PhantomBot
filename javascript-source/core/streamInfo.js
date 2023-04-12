@@ -504,8 +504,9 @@
      * @param {boolean} silent
      */
     function updateGame(channelName, game, sender, silent) {
+        let http;
         try {
-            let http = $.twitch.UpdateChannel(channelName, '', game);
+            http = $.twitch.UpdateChannel(channelName, '', game);
         } catch (e) {
             $.log.error('Failed to change the game. Twitch does not recognize it.');
         }
