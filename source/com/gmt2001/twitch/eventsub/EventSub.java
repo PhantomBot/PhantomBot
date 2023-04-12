@@ -475,7 +475,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Connects to EventSub
      */
     private void connect() {
-        this.connect("wss://eventsub-beta.wss.twitch.tv/ws");
+        this.connect("wss://eventsub.wss.twitch.tv/ws");
     }
 
     /**
