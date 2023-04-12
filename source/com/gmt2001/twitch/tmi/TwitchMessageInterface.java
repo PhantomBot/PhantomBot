@@ -346,7 +346,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
                 this.closing = false;
 
                 com.gmt2001.Console.out.println("Connecting to TMI...");
-                if (!this.client.connect()) {
+                if (this.client.channel() != null) {
+                    com.gmt2001.Console.err.println("TMI Client is in an unknown state, aborting...");
+                } else if (!this.client.connect()) {
                     com.gmt2001.Console.err.println("Failed to start connection to TMI");
                 }
             } catch (InterruptedException | IllegalStateException ex) {
