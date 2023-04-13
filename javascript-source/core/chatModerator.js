@@ -525,7 +525,7 @@
                             warning = $.lang.get('chatmoderator.ban');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         } else {
-                            timeoutUser(sender, blackList[i].timeout, blackList[i].banReason, tags);
+                            timeoutDeleteUser(sender, blackList[i].timeout, blackList[i].banReason, tags);
                             warning = $.lang.get('chatmoderator.timeout');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         }
@@ -546,7 +546,7 @@
                             warning = $.lang.get('chatmoderator.ban');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         } else {
-                            timeoutUser(sender, blackList[i].timeout, blackList[i].banReason, tags);
+                            timeoutDeleteUser(sender, blackList[i].timeout, blackList[i].banReason, tags);
                             warning = $.lang.get('chatmoderator.timeout');
                             sendMessage(sender, blackList[i].message, blackList[i].isSilent);
                         }
@@ -1116,7 +1116,7 @@
 
                 obj = {
                     id: String(($.inidb.GetKeyList('blackList', '').length + 1)),
-                    timeout: String(timeout),
+                    timeout: timeout,
                     isRegex: isRegex,
                     phrase: String(word),
                     isSilent: false,

@@ -641,7 +641,7 @@
         $.getSetIniDbBoolean('settings', 'isSwappedSubscriberVIP', false);
     });
 
-    addUpdate('3.8.1.0', 'installedv3.8.1.0', function() {
+    addUpdate('3.8.1.0', 'installedv3.8.1.0-1', function() {
         let pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
         let pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
         let subCommands = [
@@ -686,6 +686,20 @@
                     $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
                 }
                 $.inidb.del('permcom', (pointNameMultiple + ' ' + subCommands[x]));
+            }
+        }
+
+        let keys = $.inidb.GetKeyList('blackList', '');
+
+        for (let i = 0; i < keys.length; i++) {
+            let json = JSON.parse($.inidb.get('blackList', keys[i]));
+
+            if (json !== null && json.timeout !== undefined && json.timeout !== null) {
+                try {
+                    json.timeout = parseInt(json.timeout);
+
+                    $.inidb.set('blackList', keys[i], JSON.stringify(json));
+                } catch (e){}
             }
         }
     });
