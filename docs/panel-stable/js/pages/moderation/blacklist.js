@@ -161,7 +161,7 @@ $(run = function () {
                     switch (false) {
                         case helpers.handleInputString(phrase):
                         case helpers.handleInputString(banMsg):
-                        case helpers.handleInputString(timeoutTime): // Handle as string even if it's a number.
+                        case helpers.handleInputNumber(timeoutTime, -1):
                         case helpers.handleInputString(timeoutMsg):
                             break;
                         default:
@@ -170,7 +170,7 @@ $(run = function () {
                                 // Update the blacklist
                                 socket.updateDBValue('update_moderation_blacklist', 'blackList', phrase.val(), JSON.stringify({
                                     id: 'panel_' + phrase.val(),
-                                    timeout: timeoutTime.val(),
+                                    timeout: parseInt(timeoutTime.val()),
                                     isRegex: isRegex,
                                     phrase: phrase.val(),
                                     isSilent: isSilent,
@@ -260,14 +260,14 @@ $(function () {
             switch (false) {
                 case helpers.handleInputString(phrase):
                 case helpers.handleInputString(banMsg):
-                case helpers.handleInputString(timeoutTime): // Handle as string even if it's a number.
+                case helpers.handleInputNumber(timeoutTime, -1):
                 case helpers.handleInputString(timeoutMsg):
                     break;
                 default:
                     // Add the blacklist.
                     socket.updateDBValue('add_moderation_blacklist', 'blackList', phrase.val(), JSON.stringify({
                         id: 'panel_' + phrase.val(),
-                        timeout: timeoutTime.val(),
+                        timeout: parseInt(timeoutTime.val()),
                         isRegex: isRegex,
                         phrase: phrase.val(),
                         isSilent: isSilent,

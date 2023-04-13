@@ -103,8 +103,10 @@ $(function () {
                     keys: ['timeLevel', 'timeLevelWarning', 'keepTimeWhenOffline', 'timePromoteHours', 'topListAmountTime', 'timezone'],
                     values: [timePromote, timePromoteNotice, countOfflineTime, regHours.val(), (parseInt(timeTop.val()) > 15 ? 15 : timeTop.val()), timeZone.val()]
                 }, function () {
-                    socket.sendCommand('update_time_settings_cmd', 'reloadtop', function () {
-                        toastr.success('Successfully updated time settings!');
+                    socket.sendCommand('update_time_settings_cmd', 'updatetimesettings', function () {
+                        socket.sendCommand('update_top_cmd', 'reloadtop', function () {
+                            toastr.success('Successfully updated time settings!');
+                        });
                     });
                 });
         }
