@@ -704,6 +704,19 @@
         }
     });
 
+    addUpdate('3.8.1.1', 'installedv3.8.1.1', function() {
+        let pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
+        let pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
+
+        if (pointNameSingle !== 'point') {
+            $.inidb.del('aliases', pointNameSingle);
+        }
+
+        if (pointNameMultiple !== 'points') {
+            $.inidb.del('aliases', pointNameMultiple);
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
 
     if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
