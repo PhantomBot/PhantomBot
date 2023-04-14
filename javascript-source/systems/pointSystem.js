@@ -41,8 +41,8 @@
      * @function updateSettings
      */
     function updateSettings() {
-        let tempPointNameSingle = pointNameSingle,
-            tempPointNameMultiple = pointNameMultiple;
+        let tempPointNameSingle = pointNameSingle.toLowerCase(),
+            tempPointNameMultiple = pointNameMultiple.toLowerCase();
 
         onlineGain = $.getIniDbNumber('pointSettings', 'onlineGain');
         offlineGain = $.getIniDbNumber('pointSettings', 'offlineGain');
@@ -55,26 +55,26 @@
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
 
-        if (tempPointNameSingle !== 'point' && tempPointNameSingle !== pointNameSingle) {
+        if (tempPointNameSingle !== 'point' && tempPointNameSingle !== pointNameSingle.toLowerCase()) {
             $.unregisterChatCommand(tempPointNameSingle);
             $.inidb.del('aliases', tempPointNameSingle);
         }
 
-        if (tempPointNameMultiple !== 'points' && tempPointNameMultiple !== pointNameMultiple) {
+        if (tempPointNameMultiple !== 'points' && tempPointNameMultiple !== pointNameMultiple.toLowerCase()) {
             $.unregisterChatCommand(tempPointNameMultiple);
             $.inidb.del('aliases', tempPointNameMultiple);
         }
 
-        if (pointNameSingle !== 'point') {
-            $.registerChatCommand('./commands/customCommands.js', pointNameSingle);
-            $.inidb.set('aliases', pointNameSingle, 'points');
-            $.registerChatAlias(pointNameSingle);
+        if (pointNameSingle.toLowerCase() !== 'point') {
+            $.registerChatCommand('./commands/customCommands.js', pointNameSingle.toLowerCase());
+            $.inidb.set('aliases', pointNameSingle.toLowerCase(), 'points');
+            $.registerChatAlias(pointNameSingle.toLowerCase());
         }
 
-        if (pointNameMultiple !== 'points') {
-            $.registerChatCommand('./commands/customCommands.js', pointNameMultiple);
-            $.inidb.set('aliases', pointNameMultiple, 'points');
-            $.registerChatAlias(pointNameMultiple);
+        if (pointNameMultiple.toLowerCase() !== 'points') {
+            $.registerChatCommand('./commands/customCommands.js', pointNameMultiple.toLowerCase());
+            $.inidb.set('aliases', pointNameMultiple.toLowerCase(), 'points');
+            $.registerChatAlias(pointNameMultiple.toLowerCase());
         }
     }
 
