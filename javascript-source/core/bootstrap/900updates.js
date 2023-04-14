@@ -653,8 +653,8 @@
 
         if (pointNameSingle !== undefined && pointNameSingle !== 'point') {
             for (let x in subCommands) {
-                if ($.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])) !== 1) {
-                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])));
+                if ($.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x]), 1) !== 1) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x]), 1));
                 }
                 $.inidb.del('permcom', (pointNameSingle + ' ' + subCommands[x]));
             }
@@ -662,8 +662,8 @@
 
         if (pointNameMultiple !== undefined && pointNameMultiple !== 'points') {
             for (let x in subCommands) {
-                if ($.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])) !== 1) {
-                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
+                if ($.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x]), 1) !== 1) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x]), 1));
                 }
                 $.inidb.del('permcom', (pointNameMultiple + ' ' + subCommands[x]));
             }
@@ -673,8 +673,8 @@
 
         if (pointNameSingle !== undefined && pointNameSingle !== 'point') {
             for (let x in subCommands) {
-                if ($.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])) !== 7) {
-                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x])));
+                if ($.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x]), 7) !== 7) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameSingle + ' ' + subCommands[x]), 7));
                 }
                 $.inidb.del('permcom', (pointNameSingle + ' ' + subCommands[x]));
             }
@@ -682,8 +682,8 @@
 
         if (pointNameMultiple !== undefined && pointNameMultiple !== 'points') {
             for (let x in subCommands) {
-                if ($.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])) !== 7) {
-                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x])));
+                if ($.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x]), 7) !== 7) {
+                    $.setIniDbNumber('permcom', ('points ' + subCommands[x]), $.getIniDbNumber('permcom', (pointNameMultiple + ' ' + subCommands[x]), 7));
                 }
                 $.inidb.del('permcom', (pointNameMultiple + ' ' + subCommands[x]));
             }
@@ -701,6 +701,19 @@
                     $.inidb.set('blackList', keys[i], JSON.stringify(json));
                 } catch (e){}
             }
+        }
+    });
+
+    addUpdate('3.8.1.1', 'installedv3.8.1.1', function() {
+        let pointNameSingle = $.getIniDbString('pointSettings', 'pointNameSingle');
+        let pointNameMultiple = $.getIniDbString('pointSettings', 'pointNameMultiple');
+
+        if (pointNameSingle !== 'point') {
+            $.inidb.del('aliases', pointNameSingle);
+        }
+
+        if (pointNameMultiple !== 'points') {
+            $.inidb.del('aliases', pointNameMultiple);
         }
     });
 
