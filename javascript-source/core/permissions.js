@@ -255,7 +255,7 @@
      * @returns {boolean}
      */
     function isSubNoTags(username) {
-        return subUsers.contains($.javaString(username.toLowerCase())) || queryDBPermission(username.toLowerCase()) === PERMISSION.Sub;
+        return isSubCache(username) || queryDBPermission(username.toLowerCase()) === PERMISSION.Sub;
     }
 
     /**
@@ -329,7 +329,7 @@
      * @returns {boolean}
      */
     function isVIPNoTags(username) {
-        return vipUsers.contains($.javaString(username.toLowerCase())) || queryDBPermission(username.toLowerCase()) === PERMISSION.VIP;
+        return isVIPCache(username) || queryDBPermission(username.toLowerCase()) === PERMISSION.VIP;
     }
 
     /**
@@ -624,6 +624,16 @@
     function delSubUsersList(username) {
         subUsers.remove($.javaString(username.toLowerCase()));
     }
+    
+    /**
+     * @function isSubCache
+     * @export $
+     * @param {String} username
+     * @returns {boolean}
+     */
+    function isSubCache(username) {
+        return subUsers.contains($.javaString(username.toLowerCase()));
+    }
 
     /**
      * @function addVIPUsersList
@@ -641,6 +651,16 @@
      */
     function delVIPUsersList(username) {
         vipUsers.remove($.javaString(username.toLowerCase()));
+    }
+    
+    /**
+     * @function isVIPCache
+     * @export $
+     * @param {String} username
+     * @returns {boolean}
+     */
+    function isVIPCache(username) {
+        return vipUsers.contains($.javaString(username.toLowerCase()));
     }
 
     /**
@@ -697,14 +717,14 @@
      * VIPs do get updated through OMode and thus shouldn't need to be fixed
      */
     function restoreSubscriberStatus(username) {
-        username = username.toString().toLowerCase();
+        username = $.jsString(username.toString().toLowerCase());
 
         if (isMod(username) || isAdmin(username)) { //Ignore high privileged users
             return;
         }
 
         let oldID = queryDBPermission(username),
-            isInCache = subUsers.contains(username);
+            isInCache = isSubCache(username);
 
         if (isInCache && oldID !== PERMISSION.Sub) { //User got added to subscriber cache but it's database value is out of sync
             if (isVIP(username) && oldID > PERMISSION.VIP) { //User is also a VIP - Only change permissions if needed
@@ -919,7 +939,7 @@
 
             // Handle joins.
             for (let i = 0; i < chatters.size(); i++) {
-                let username = $.jsString(chatters.get(i));
+                let username = $.jsString(chatters.get(i).toLowerCase());
                 $.restoreSubscriberStatus(username);
                 keys.push(username);
                 values.push('true');
@@ -943,7 +963,7 @@
      * @event ircChannelJoin
      */
     $.bind('ircChannelJoin', function (event) {
-        let username = event.getUser().toLowerCase();
+        let username = $.jsString(event.getUser().toLowerCase());
 
         if (isTwitchBot(username)) {
             return;
@@ -962,7 +982,7 @@
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        let username = event.getSender().toLowerCase(),
+        let username = $.jsString(event.getSender().toLowerCase()),
             tags = event.getTags();
 
         if (isTwitchBot(username)) {
@@ -973,17 +993,16 @@
             if (!$.user.isKnown(username)) {
                 $.setIniDbBoolean('visited', username, true);
             }
-
-            // The subscriber Cache should always be up-to-date for restoreSubscriberStatus() to properly work
-            if (checkTags(tags)) {
-                if(tags.getOrDefault('subscriber', '0').equals('1')) {
-                    addSubUsersList(username);
-                }
+        } else if (checkTags(tags)) { // The subscriber and vip cache should always be up-to-date for restoreSubscriberStatus() to properly work
+            if(tags.getOrDefault('subscriber', '0').equals('1')) {
+                addSubUsersList(username);
+            } else {
+                delSubUsersList(username);
             }
-            if (checkTags(tags)) {
-                if (tags.getOrDefault('vip', '0').equals('1')) {
-                    addVIPUsersList(username);
-                }
+            if (tags.getOrDefault('vip', '0').equals('1')) {
+                addVIPUsersList(username);
+            } else {
+                delVIPUsersList(username);
             }
         }
     });
@@ -992,12 +1011,10 @@
      * @event ircChannelLeave
      */
     $.bind('ircChannelLeave', function (event) {
-        let username = event.getUser().toLowerCase();
+        let username = $.jsString(event.getUser().toLowerCase());
 
         if (!isUpdatingUsers) {
-            let i = getKeyIndex($.users, username);
-
-            if (i >= 0) {
+            if (userExists(username)) {
                 restoreSubscriberStatus(username.toLowerCase());
             }
         }
@@ -1363,9 +1380,11 @@
     $.isModeratorCache = isModeratorCache;
     $.isOwner = isOwner;
     $.isSub = isSub;
+    $.isSubCache = isSubCache;
     $.isTurbo = isTurbo;
     $.isDonator = isDonator;
     $.isVIP = isVIP;
+    $.isVIPCache = isVIPCache;
     $.isRegular = isRegular;
     $.isViewer = isViewer;
     $.hasPermissionLevel = hasPermissionLevel;
