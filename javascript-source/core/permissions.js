@@ -225,7 +225,7 @@
      */
     function checkTags(tags) {
         $.consoleDebug('Tags: ' + tags + ', isNull: ' + (tags === null) + ', isUndefined: ' + (tags === undefined) + ', strict -1: ' + (tags !== '-1') + ', strict {}: ' + (tags !== '{}'));
-        return !(tags === null || tags !== '{}' || tags !== '-1' || tags === undefined);
+        return !(tags === null || tags === '{}' || tags === '-1' || tags === undefined);
     }
 
     /**
