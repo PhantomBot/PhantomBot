@@ -224,7 +224,7 @@
      * Checks if provided tags are not empty
      */
     function checkTags(tags) {
-        $.consoleDebug('Tags: ' + tags + ', isNull: ' + (tags === null) + ', isUndefined: ' + (tags === undefined) + ', strict -1: ' + (tags !== '-1') + ', strict {}: ' + (tags !== '{}'));
+        $.consoleDebug('Tags: ' + tags + ', isNull: ' + (tags === null) + ', isUndefined: ' + (tags === undefined) + ', is -1: ' + (tags === '-1') + ', is {}: ' + (tags === '{}'));
         return !(tags === null || tags === '{}' || tags === '-1' || tags === undefined);
     }
 
@@ -237,8 +237,10 @@
      */
     function isMod(username, tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1'))) {
-            return true;
+        if (checkTags(tags)) {
+            if (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1')) {
+                return true;
+            }
         }
 
         $.consoleDebug('Used isMod without tags');
@@ -265,8 +267,10 @@
      */
     function isSub(username, tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && tags.containsKey('subscriber')) {
-            return tags.get('subscriber').equals('1');
+        if (checkTags(tags)) {
+            if (tags.getOrDefault('subscriber', '0').equals('1')) {
+                return true;
+            }
         }
 
         $.consoleDebug('Used isSub without tags');
@@ -281,8 +285,10 @@
      */
     function isTurbo(tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && tags.containsKey('turbo')) {
-            return tags.get('turbo').equals('1');
+        if (checkTags(tags)) {
+            if (tags.containsKey('turbo')) {
+                return tags.get('turbo').equals('1');
+            }
         }
 
         return false;
@@ -306,8 +312,10 @@
      */
     function isVIP(username, tags) {
         $.consoleDebug($.findCaller());
-        if (checkTags(tags) && tags.containsKey('vip')) {
-            return true;
+        if (checkTags(tags)) {
+            if (tags.getOrDefault('vip', '0').equals('1')) {
+                return true;
+            }
         }
 
         $.consoleDebug('Used isVIP without tags');
@@ -967,11 +975,15 @@
             }
 
             // The subscriber Cache should always be up-to-date for restoreSubscriberStatus() to properly work
-            if (checkTags(tags) && tags.containsKey('subscriber') && tags.get('subscriber').equals('1')) {
-                addSubUsersList(username);
+            if (checkTags(tags)) {
+                if(tags.getOrDefault('subscriber', '0').equals('1')) {
+                    addSubUsersList(username);
+                }
             }
-            if (checkTags(tags) && tags.containsKey('vip') && tags.get('vip').equals('1')) {
-                addVIPUsersList(username);
+            if (checkTags(tags)) {
+                if (tags.getOrDefault('vip', '0').equals('1')) {
+                    addVIPUsersList(username);
+                }
             }
         }
     });
