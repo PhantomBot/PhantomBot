@@ -103,25 +103,30 @@ public abstract class AbstractTMIProcessor implements Flow.Subscriber<TMIMessage
      */
     @Override
     public final void onNext(TMIMessage item) {
-        if (null != item.messageType()) {
-            switch (item.messageType()) {
-                case OPEN:
-                    this.onOpen();
-                    break;
-                case MESSAGE:
-                    if (commands.contains(item.command())) {
-                        this.onMessage(item);
-                    }
-                    break;
-                case CLOSE:
-                    this.onClose();
-                    break;
-                default:
-                    break;
+        try {
+            if (null != item.messageType()) {
+                switch (item.messageType()) {
+                    case OPEN:
+                        this.onOpen();
+                        break;
+                    case MESSAGE:
+                        if (commands.contains(item.command())) {
+                            this.onMessage(item);
+                        }
+                        break;
+                    case CLOSE:
+                        this.onClose();
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            this.onFlowNext(item);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        this.onFlowNext(item);
         this.subscription.request(1);
     }
 

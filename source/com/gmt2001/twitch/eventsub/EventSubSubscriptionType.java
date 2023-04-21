@@ -55,18 +55,22 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
 
     @Override
     public final void onNext(EventSubInternalEvent item) {
-        this.onEventSubInternalEvent(item);
+        try {
+            this.onEventSubInternalEvent(item);
 
-        if (item instanceof EventSubInternalNotificationEvent) {
-            this.onEventSubInternalNotificationEvent((EventSubInternalNotificationEvent)item);
-        }
+            if (item instanceof EventSubInternalNotificationEvent) {
+                this.onEventSubInternalNotificationEvent((EventSubInternalNotificationEvent)item);
+            }
 
-        if (item instanceof EventSubInternalRevocationEvent) {
-            this.onEventSubInternalRevocationEvent((EventSubInternalRevocationEvent)item);
-        }
+            if (item instanceof EventSubInternalRevocationEvent) {
+                this.onEventSubInternalRevocationEvent((EventSubInternalRevocationEvent)item);
+            }
 
-        if (item instanceof EventSubInternalVerificationEvent) {
-            this.onEventSubInternalVerificationEvent((EventSubInternalVerificationEvent)item);
+            if (item instanceof EventSubInternalVerificationEvent) {
+                this.onEventSubInternalVerificationEvent((EventSubInternalVerificationEvent)item);
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
         this.flowsubscription.request(1);
