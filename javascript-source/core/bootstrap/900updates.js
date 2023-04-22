@@ -715,6 +715,15 @@
         }
     });
 
+    addUpdate('3.8.1.2', 'installedv3.8.1.2', function() {
+        let keys = $.inidb.GetKeyList('blackList', '');
+
+        for (let i = 0; i < keys.length; i++) {
+            $.inidb.set('blackList', Packages.com.gmt2001.Digest.sha256($.javaString(keys[i])), $.inidb.get('blackList', keys[i]));
+            $.inidb.del('blackList', keys[i]);
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
 
     if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
