@@ -68,13 +68,24 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
             return;
         }
 
+        boolean allowNonSsl = false;
+
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
         for (String u : ALLOWNONSSLPATHS) {
             if (qsd.path().startsWith(u)) {
-                ReferenceCountUtil.retain(req);
-                ctx.fireChannelRead(req);
-                return;
+                allowNonSsl = true;
+                break;
             }
+        }
+
+        if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST)) {
+            allowNonSsl = true;
+        }
+
+        if (allowNonSsl) {
+            ReferenceCountUtil.retain(req);
+            ctx.fireChannelRead(req);
+            return;
         }
 
         String host = req.headers().get(HttpHeaderNames.HOST);

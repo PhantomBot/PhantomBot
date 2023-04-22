@@ -23,6 +23,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -52,6 +53,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      * Represents the {@code ATTR_URI} attribute
      */
     public static final AttributeKey<String> ATTR_URI = AttributeKey.valueOf("uri");
+    /**
+     * Represents the {@code ATTR_URI} attribute
+     */
+    public static final AttributeKey<String> ATTR_ALLOW_NON_SSL = AttributeKey.valueOf("allowNonSsl");
     /**
      * Represents a {@link Queue} containing all current WS Sessions
      */
@@ -109,7 +114,20 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 ctx.close();
             } else {
                 com.gmt2001.Console.debug.println("200 WS: " + hc.requestUri() + "   Remote: [" + ctx.channel().remoteAddress().toString() + "]");
+                boolean allowNonSsl = hc.requestHeaders().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST);
+
+                if (!allowNonSsl) {
+                    QueryStringDecoder qsd = new QueryStringDecoder(hc.requestUri());
+                    for (String u : WsSslErrorHandler.ALLOWNONSSLPATHS) {
+                        if (qsd.path().startsWith(u)) {
+                            allowNonSsl = true;
+                            break;
+                        }
+                    }
+                }
+
                 ctx.channel().attr(ATTR_URI).set(ruri);
+                ctx.channel().attr(ATTR_ALLOW_NON_SSL).set(allowNonSsl ? "true" : "false");
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     WS_SESSIONS.remove(f.channel());

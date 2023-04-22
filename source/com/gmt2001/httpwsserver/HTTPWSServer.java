@@ -69,6 +69,8 @@ public final class HTTPWSServer {
      */
     private static final HTTPWSServer INSTANCE = new HTTPWSServer();
 
+    public static final String HEADER_X_FORWARDED_HOST = "X-Forwarded-Host";
+
     /**
      * Releases a {@link ReferenceCounted} object
      *
