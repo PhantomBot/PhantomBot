@@ -80,7 +80,12 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/sslcheck")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (HTTPWSServer.instance().isSsl() ? "true" : "false").getBytes(), null);
+            boolean isSsl = HTTPWSServer.instance().isSsl();
+            if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST)) {
+                isSsl = true;
+            }
+
+            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (isSsl ? "true" : "false").getBytes(), null);
             String origin = req.headers().get(HttpHeaderNames.ORIGIN);
             if (origin != null && !origin.isBlank()) {
                 res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
@@ -93,17 +98,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
         if (req.headers().contains("password") || req.headers().contains("webauth") || new QueryStringDecoder(req.uri()).parameters().containsKey("webauth")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
-            String host = req.headers().get(HttpHeaderNames.HOST);
-
-            if (host == null) {
-                host = "";
-            } else if (HTTPWSServer.instance().isSsl()) {
-                host = "https://" + host;
-            } else {
-                host = "http://" + host;
-            }
-
-            res.headers().set(HttpHeaderNames.LOCATION, host + "/dbquery");
+            res.headers().set(HttpHeaderNames.LOCATION, "/dbquery");
 
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
@@ -134,21 +129,11 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                         + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
             }
 
-            String host = req.headers().get(HttpHeaderNames.HOST);
-
-            if (host == null) {
-                host = "";
-            } else if (HTTPWSServer.instance().isSsl()) {
-                host = "https://" + host;
-            } else {
-                host = "http://" + host;
-            }
-
             if (kickback.isBlank()) {
                 kickback = "/panel";
             }
 
-            res.headers().set(HttpHeaderNames.LOCATION, host + kickback);
+            res.headers().set(HttpHeaderNames.LOCATION, kickback);
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);

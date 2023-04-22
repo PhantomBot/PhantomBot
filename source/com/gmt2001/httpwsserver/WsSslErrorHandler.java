@@ -16,7 +16,12 @@
  */
 package com.gmt2001.httpwsserver;
 
-import static com.gmt2001.httpwsserver.WebSocketFrameHandler.ATTR_URI;
+import static com.gmt2001.httpwsserver.WebSocketFrameHandler.ATTR_ALLOW_NON_SSL;
+
+import java.util.List;
+
+import org.json.JSONStringer;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -24,8 +29,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.ReferenceCountUtil;
-import java.util.List;
-import org.json.JSONStringer;
 
 /**
  * Processes WebSocket frames and passes successful ones to the appropriate registered final handler
@@ -34,7 +37,7 @@ import org.json.JSONStringer;
  */
 public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
-    private static final List<String> ALLOWNONSSLPATHS = List.of("/ws/alertspolls");
+    public static final List<String> ALLOWNONSSLPATHS = List.of("/ws/alertspolls");
 
     WsSslErrorHandler() {
         super();
@@ -49,13 +52,10 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        QueryStringDecoder qsd = new QueryStringDecoder(ctx.channel().attr(ATTR_URI).get());
-        for (String u : ALLOWNONSSLPATHS) {
-            if (qsd.path().startsWith(u)) {
-                ReferenceCountUtil.retain(frame);
-                ctx.fireChannelRead(frame);
-                return;
-            }
+        if (ctx.channel().attr(ATTR_ALLOW_NON_SSL).get().equals("true")) {
+            ReferenceCountUtil.retain(frame);
+            ctx.fireChannelRead(frame);
+            return;
         }
     }
 
@@ -72,13 +72,23 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof HandshakeComplete) {
             HandshakeComplete hc = (HandshakeComplete) evt;
-            QueryStringDecoder qsd = new QueryStringDecoder(hc.requestUri());
-            for (String u : ALLOWNONSSLPATHS) {
-                if (qsd.path().startsWith(u)) {
-                    ctx.fireUserEventTriggered(evt);
-                    return;
+            boolean allowNonSsl = hc.requestHeaders().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST);
+
+            if (!allowNonSsl) {
+                QueryStringDecoder qsd = new QueryStringDecoder(hc.requestUri());
+                for (String u : ALLOWNONSSLPATHS) {
+                    if (qsd.path().startsWith(u)) {
+                        allowNonSsl = true;
+                        break;
+                    }
                 }
             }
+
+            if (allowNonSsl) {
+                ctx.fireUserEventTriggered(evt);
+                return;
+            }
+
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object().key("errors").array().object()
                     .key("status").value("426")

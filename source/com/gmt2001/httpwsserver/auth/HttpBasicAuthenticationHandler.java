@@ -16,8 +16,13 @@
  */
 package com.gmt2001.httpwsserver.auth;
 
-import com.gmt2001.httpwsserver.HTTPWSServer;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Map;
+
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -25,11 +30,6 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
 
 /**
  * Provides a {@link HttpAuthenticationHandler} that implements HTTP Basic authentication, as well as allowing the same format to be provided in a
@@ -112,17 +112,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         } else {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
 
-            String host = req.headers().get(HttpHeaderNames.HOST);
-
-            if (host == null) {
-                host = "";
-            } else if (HTTPWSServer.instance().isSsl()) {
-                host = "https://" + host;
-            } else {
-                host = "http://" + host;
-            }
-
-            res.headers().set(HttpHeaderNames.LOCATION, host + this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + URLEncoder.encode(req.uri(), StandardCharsets.UTF_8));
+            res.headers().set(HttpHeaderNames.LOCATION, this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + URLEncoder.encode(req.uri(), StandardCharsets.UTF_8));
 
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
             com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
