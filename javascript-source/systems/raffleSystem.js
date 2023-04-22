@@ -363,10 +363,11 @@
             _entriesLock.unlock();
         }
 
+        hasDrawn = true;
+
         if (!openDraw) {
             close(undefined);
         }
-        hasDrawn = true;
         saveState();
     }
 
