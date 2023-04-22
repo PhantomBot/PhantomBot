@@ -77,7 +77,7 @@
                 tempUsePoints,
                 tempFollowers = false,
                 tempSubscribers = false,
-                tempEntryFee;
+                tempEntryFee = 0;
 
         /* Check if there's a raffle already opened */
         if (status) {
@@ -86,14 +86,12 @@
         }
 
         /* Check if the caster wants to use time or points for the raffle */
-        if (arguments.match('-usetime')) {
-            tempUsePoints = false;
-            arguments = arguments.replace('-usetime ', '');
-        } else if (arguments.match('-usepoints')) {
+        arguments = arguments.replace('-usetime ', '');
+        if (arguments.match('-usepoints')) {
             arguments = arguments.replace('-usepoints', '');
             tempUsePoints = true;
         } else {
-            tempUsePoints = null;
+            tempUsePoints = false;
         }
 
         /* Check if the caster wants the raffle to be for followers only or not */
@@ -160,7 +158,7 @@
         }
 
         /* Say in chat that the raffle is now opened. */
-        if (!usePoints && usePoints !== null) {
+        if (!usePoints && entryFee !== 0) {
             $.say($.lang.get('rafflesystem.open.time', keyword, Math.floor(entryFee / 60), followMessage, timerMessage));
         } else if (usePoints && entryFee !== 0) {
             $.say($.lang.get('rafflesystem.open.points', keyword, $.getPointsString(entryFee) + followMessage, timerMessage));
@@ -365,10 +363,11 @@
             _entriesLock.unlock();
         }
 
+        hasDrawn = true;
+
         if (!openDraw) {
             close(undefined);
         }
-        hasDrawn = true;
         saveState();
     }
 
