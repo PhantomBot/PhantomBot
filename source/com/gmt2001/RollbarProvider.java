@@ -331,6 +331,22 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getMessage().contains("Host is down")) {
                                     return true;
                                 }
+
+                                if (error.getMessage().contains("No space left")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("The database is read only")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Script Execution terminated")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.io.UncheckedIOException.class)) {
+                                    return true;
+                                }
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (boolean) custom.getOrDefault("isUncaught", false)

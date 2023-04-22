@@ -99,30 +99,35 @@ public abstract class AbstractPubSubProcessor implements Flow.Subscriber<PubSubM
      */
     @Override
     public final void onNext(PubSubMessage item) {
-        if (null != item.messageType()) {
-            switch (item.messageType()) {
-                case OPEN:
-                    this.onOpen();
-                    break;
-                case SUBSCRIBERESULT:
-                    if (item.body().optString("nonce").equals(this.nonce)) {
-                        this.onSubscribeResult(item.body());
-                    }
-                    break;
-                case MESSAGE:
-                    if (topics.contains(item.topic())) {
-                        this.onMessage(item.body());
-                    }
-                    break;
-                case CLOSE:
-                    this.onClose();
-                    break;
-                default:
-                    break;
+        try {
+            if (null != item.messageType()) {
+                switch (item.messageType()) {
+                    case OPEN:
+                        this.onOpen();
+                        break;
+                    case SUBSCRIBERESULT:
+                        if (item.body().optString("nonce").equals(this.nonce)) {
+                            this.onSubscribeResult(item.body());
+                        }
+                        break;
+                    case MESSAGE:
+                        if (topics.contains(item.topic())) {
+                            this.onMessage(item.body());
+                        }
+                        break;
+                    case CLOSE:
+                        this.onClose();
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            this.onFlowNext(item);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        this.onFlowNext(item);
         this.subscription.request(1);
     }
 

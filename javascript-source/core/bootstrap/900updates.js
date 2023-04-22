@@ -450,7 +450,7 @@
             }
         }
 
-        if ($.inidb.FileExists('traffleState') && $.inidb.HasKey('traffleState', 'bools')) {
+        if ($.inidb.FileExists('traffleState') && $.inidb.HasKey('traffleState', '', 'bools')) {
             let bools = JSON.parse($.inidb.get('traffleState', 'bools'));
 
             $.inidb.SetBoolean('traffleState', '', 'followers', (bools[0] === 'true'));
@@ -501,7 +501,7 @@
     });
 
     addUpdate('3.6.4.2', 'installedv3.6.4.2', function() {
-        if ($.inidb.FileExists('raffleState') && $.inidb.HasKey('raffleState', 'bools')) {
+        if ($.inidb.FileExists('raffleState') && $.inidb.HasKey('raffleState', '', 'bools')) {
             let bools = JSON.parse($.inidb.get('raffleState', 'bools'));
 
             $.inidb.SetBoolean('raffleState', '', 'isFollowersOnly', (bools[0] === 'true'));
@@ -525,9 +525,7 @@
 
 
     addUpdate('3.6.5.0', 'installedv3.6.5.0', function() {
-        if (!$.inidb.GetBoolean('updates', '', 'installedv3.6.5.0')) {
-            $.inidb.RemoveKey('settings', '', 'gamesList-lastCheck');
-        }
+        $.inidb.RemoveKey('settings', '', 'gamesList-lastCheck');
     });
 
 
@@ -714,6 +712,15 @@
 
         if (pointNameMultiple !== 'points') {
             $.inidb.del('aliases', pointNameMultiple);
+        }
+    });
+
+    addUpdate('3.8.1.2', 'installedv3.8.1.2', function() {
+        let keys = $.inidb.GetKeyList('blackList', '');
+
+        for (let i = 0; i < keys.length; i++) {
+            $.inidb.set('blackList', Packages.com.gmt2001.Digest.sha256($.javaString(keys[i])), $.inidb.get('blackList', keys[i]));
+            $.inidb.del('blackList', keys[i]);
         }
     });
 

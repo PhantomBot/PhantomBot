@@ -165,28 +165,30 @@ $(run = function () {
                         case helpers.handleInputString(timeoutMsg):
                             break;
                         default:
-                            // Delete the old blacklist
-                            socket.removeDBValue('rm_moderation_blacklist', 'blackList', blacklist, function () {
-                                // Update the blacklist
-                                socket.updateDBValue('update_moderation_blacklist', 'blackList', phrase.val(), JSON.stringify({
-                                    id: 'panel_' + phrase.val(),
-                                    timeout: parseInt(timeoutTime.val()),
-                                    isRegex: isRegex,
-                                    phrase: phrase.val(),
-                                    isSilent: isSilent,
-                                    excludeRegulars: isReg,
-                                    excludeSubscribers: isSub,
-                                    excludeVips: isVip,
-                                    message: banMsg.val(),
-                                    banReason: timeoutMsg.val()
-                                }), function () {
-                                    socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function () {
-                                        // Update the table.
-                                        run();
-                                        // Close the modal.
-                                        $('#blacklist-edit-modal').modal('hide');
-                                        // Alert the user.
-                                        toastr.success('Successfully edited blacklist!');
+                            socket.doRemote('update_moderation_blacklist_sha256', 'sha256', {message: phrase.val()}, function(data) {
+                                // Delete the old blacklist
+                                socket.removeDBValue('rm_moderation_blacklist', 'blackList', blacklist, function () {
+                                    // Update the blacklist
+                                    socket.updateDBValue('update_moderation_blacklist', 'blackList', data[0].sha256, JSON.stringify({
+                                        id: 'panel_' + data[0].sha256,
+                                        timeout: parseInt(timeoutTime.val()),
+                                        isRegex: isRegex,
+                                        phrase: phrase.val(),
+                                        isSilent: isSilent,
+                                        excludeRegulars: isReg,
+                                        excludeSubscribers: isSub,
+                                        excludeVips: isVip,
+                                        message: banMsg.val(),
+                                        banReason: timeoutMsg.val()
+                                    }), function () {
+                                        socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function () {
+                                            // Update the table.
+                                            run();
+                                            // Close the modal.
+                                            $('#blacklist-edit-modal').modal('hide');
+                                            // Alert the user.
+                                            toastr.success('Successfully edited blacklist!');
+                                        });
                                     });
                                 });
                             });
@@ -265,25 +267,27 @@ $(function () {
                     break;
                 default:
                     // Add the blacklist.
-                    socket.updateDBValue('add_moderation_blacklist', 'blackList', phrase.val(), JSON.stringify({
-                        id: 'panel_' + phrase.val(),
-                        timeout: parseInt(timeoutTime.val()),
-                        isRegex: isRegex,
-                        phrase: phrase.val(),
-                        isSilent: isSilent,
-                        excludeRegulars: isReg,
-                        excludeSubscribers: isSub,
-                        excludeVips: isVip,
-                        message: banMsg.val(),
-                        banReason: timeoutMsg.val()
-                    }), function () {
-                        socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function () {
-                            // Update the table.
-                            run();
-                            // Close the modal.
-                            $('#blacklist-add-modal').modal('hide');
-                            // Alert the user.
-                            toastr.success('Successfully added blacklist!');
+                    socket.doRemote('add_moderation_blacklist_sha256', 'sha256', {message: phrase.val()}, function(data) {
+                        socket.updateDBValue('add_moderation_blacklist', 'blackList', data[0].sha256, JSON.stringify({
+                            id: 'panel_' + data[0].sha256,
+                            timeout: parseInt(timeoutTime.val()),
+                            isRegex: isRegex,
+                            phrase: phrase.val(),
+                            isSilent: isSilent,
+                            excludeRegulars: isReg,
+                            excludeSubscribers: isSub,
+                            excludeVips: isVip,
+                            message: banMsg.val(),
+                            banReason: timeoutMsg.val()
+                        }), function () {
+                            socket.sendCommand('moderation_blacklist_reload_cmd', 'reloadmod', function () {
+                                // Update the table.
+                                run();
+                                // Close the modal.
+                                $('#blacklist-add-modal').modal('hide');
+                                // Alert the user.
+                                toastr.success('Successfully added blacklist!');
+                            });
                         });
                     });
             }

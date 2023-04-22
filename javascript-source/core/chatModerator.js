@@ -1109,13 +1109,14 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.add.usage'));
                     return;
                 }
-                var word = argString.split(' ').slice(2).join(' '),
+                let word = argString.split(' ').slice(2).join(' '),
                         isRegex = word.startsWith('regex:'),
                         timeout = parseInt(subAction),
-                        obj = {};
+                        obj = {},
+                        sha = Packages.com.gmt2001.Digest.sha256($.javaString(word));
 
                 obj = {
-                    id: String(($.inidb.GetKeyList('blackList', '').length + 1)),
+                    id: $.jsString(sha),
                     timeout: timeout,
                     isRegex: isRegex,
                     phrase: String(word),
@@ -1127,7 +1128,7 @@
                     banReason: String(silentTimeout.BlacklistMessage)
                 };
 
-                $.inidb.set('blackList', word, JSON.stringify(obj));
+                $.inidb.set('blackList', sha, JSON.stringify(obj));
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.added'));
                 $.log.event('"' + word + '" was added to the blacklist by ' + sender);
@@ -1140,11 +1141,15 @@
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.remove.usage'));
                     return;
-                } else if (!$.inidb.exists('blackList', argString.split(' ').slice(1).join(' '))) {
+                }
+
+                let sha = Packages.com.gmt2001.Digest.sha256($.javaString(argString.split(' ').slice(1).join(' ')));
+                if (!$.inidb.exists('blackList', sha)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.err'));
                     return;
                 }
-                $.inidb.del('blackList', argString.split(' ').slice(1).join(' '));
+
+                $.inidb.del('blackList', sha);
                 loadBlackList();
                 $.say($.whisperPrefix(sender) + $.lang.get('chatmoderator.blacklist.removed'));
             }

@@ -16,6 +16,7 @@
  */
 package tv.phantombot.panel;
 
+import com.gmt2001.Digest;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
@@ -473,6 +474,10 @@ public class WsPanelHandler implements WsFrameHandler {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
             jsonObject.endArray();
+        } else if (query.equalsIgnoreCase("sha256")) {
+            jsonObject.key("results").array().object();
+            jsonObject.key("sha256").value(Digest.sha256(jso.getJSONObject("params").getString("message")));
+            jsonObject.endObject().endArray();
         }
 
         jsonObject.endObject();
