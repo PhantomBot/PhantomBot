@@ -86,14 +86,12 @@
         }
 
         /* Check if the caster wants to use time or points for the raffle */
-        if (arguments.match('-usetime')) {
-            tempUsePoints = false;
-            arguments = arguments.replace('-usetime ', '');
-        } else if (arguments.match('-usepoints')) {
+        arguments = arguments.replace('-usetime ', '');
+        if (arguments.match('-usepoints')) {
             arguments = arguments.replace('-usepoints', '');
             tempUsePoints = true;
         } else {
-            tempUsePoints = null;
+            tempUsePoints = false;
         }
 
         /* Check if the caster wants the raffle to be for followers only or not */
