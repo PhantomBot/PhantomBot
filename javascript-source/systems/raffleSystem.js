@@ -77,7 +77,7 @@
                 tempUsePoints,
                 tempFollowers = false,
                 tempSubscribers = false,
-                tempEntryFee;
+                tempEntryFee = 0;
 
         /* Check if there's a raffle already opened */
         if (status) {
@@ -158,7 +158,7 @@
         }
 
         /* Say in chat that the raffle is now opened. */
-        if (!usePoints && usePoints !== null) {
+        if (!usePoints && entryFee !== 0) {
             $.say($.lang.get('rafflesystem.open.time', keyword, Math.floor(entryFee / 60), followMessage, timerMessage));
         } else if (usePoints && entryFee !== 0) {
             $.say($.lang.get('rafflesystem.open.points', keyword, $.getPointsString(entryFee) + followMessage, timerMessage));
