@@ -128,7 +128,7 @@ public final class ViewerCache implements Listener {
 
     /**
      * Updates the user mapping database and sends an event if it is a login name change
-     * <br /><br />
+     * <p>
      * The data is stored in two tables: {@code idToLogin} is keyed by user id and valued by user login.
      * {@code loginToId} is keyed by user login and valued by user id
      *
@@ -333,7 +333,7 @@ public final class ViewerCache implements Listener {
 
     /**
      * Performs a Twitch API lookup of the user
-     * <br /><br />
+     * <p>
      * Can only use one of id or login
      *
      * @param id A user id to lookup
@@ -382,7 +382,7 @@ public final class ViewerCache implements Listener {
 
     /**
      * Adds a viewer to the cache
-     * <br /><br />
+     * <p>
      * If a viewer with the same user id exists, then the new object is discarded and the {@link Viewer#seen()} method is called instead
      *
      * @param viewer The viewer object to add
@@ -415,7 +415,7 @@ public final class ViewerCache implements Listener {
 
     /**
      * Returns the {@link Viewer} object for the specified user id
-     * <br /><br />
+     * <p>
      * If the object does not yet exist, a lookup is performed on Twitch API
      *
      * @param id The user id to lookup
@@ -439,7 +439,7 @@ public final class ViewerCache implements Listener {
 
     /**
      * Returns the {@link Viewer} object for the specified user login
-     * <br /><br />
+     * <p>
      * If the object does not yet exist, a lookup is performed on Twitch API
      *
      * @param login The user login to lookup
