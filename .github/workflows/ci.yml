@@ -4,6 +4,8 @@ on:
     branches:
       - '*'
       - '!edge'
+    paths:
+      - '**.java'
   pull_request:
     branches:
       - '*'
