@@ -70,6 +70,7 @@ public final class HTTPWSServer {
     private static final HTTPWSServer INSTANCE = new HTTPWSServer();
 
     public static final String HEADER_X_FORWARDED_HOST = "X-Forwarded-Host";
+    public static final String HEADER_CF_RAY = "CF-Ray";
 
     /**
      * Releases a {@link ReferenceCounted} object

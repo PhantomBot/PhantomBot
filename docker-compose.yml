@@ -38,7 +38,8 @@ services:
       - target: 25000
         #
         # The port the bot webserver will be published to on the host
-        # This is the number that should be changed when hosting multiple bot instances on the same server
+        # This is the number that should be changed, if not using Traefik, when hosting multiple bot instances on the same server
+        # If using Traefik, this should not be changed
         published: 25000
         #
         # TCP protocol for HTTP. Do not change
@@ -46,7 +47,7 @@ services:
     # The restart policy. "always" or "unless-stopped" are the recommended values and are required to use the panel restart button
     # "unless-stopped": The container auto-restarts. If you stop the container using a Docker command, it will stay stopped until you start it using a Docker command
     # "always": The container always auto-restarts. If you stop the container using a Docker command, it will auto-restart if the Docker service or server restarts
-    restart: always
+    restart: unless-stopped
     volumes:
      # Defines the volume mount for data persistence inside the container, do not change
      # See the bottom of this file for the part you can change
@@ -55,8 +56,8 @@ services:
       # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix
       # ------ Note that after first run, botlogin.txt takes priority
       # ------ None of the variables are required
-      # Enables the restart button in the panel
-      PHANTOMBOT_RESTARTCMD: "/opt/PhantomBot/restartbot-docker.sh"
+      # If you uncomment this variable, your ENV variables will always override botlogin.txt
+      # PHANTOMBOT_ENVOVERRIDE: true
   # Service name, used internally by Docker Compose. Can be changed but does not matter
   # The ouroboros service provides auto-update functionality
   # To enable this service, the profile must be activated when using the "docker compose up" command
@@ -121,8 +122,10 @@ volumes:
   # with a guarantee that they will work properly
   #
   # If you still want mount to a host directory, this is where you do it
-  # Remove the # symbols from all 4 lines below, then change the path on the last line
+  # Remove the # symbols from all 5 lines below, then change the path on the last line
   # NOTE: It is important that you do not add or remove any spaces
+  # NOTE: For Windows on WSL2, paths should be specified using forward slashes `/`
+  # NOTE: For Windows on WSL2, the drive letter should be specified as `//c/` instead of `c:/`
   PhantomBot_data:
   #  driver: local
   #  driver_opts:

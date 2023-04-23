@@ -81,7 +81,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
         if (req.uri().startsWith("/sslcheck")) {
             boolean isSsl = HTTPWSServer.instance().isSsl();
-            if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST)) {
+            if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST) || req.headers().contains(HTTPWSServer.HEADER_CF_RAY)) {
                 isSsl = true;
             }
 
