@@ -313,7 +313,7 @@
     function isVIP(username, tags) {
         $.consoleDebug($.findCaller());
         if (checkTags(tags)) {
-            if (tags.getOrDefault('vip', '0').equals('1')) {
+            if (tags.containsKey('vip')) {
                 return true;
             }
         }
@@ -624,7 +624,7 @@
     function delSubUsersList(username) {
         subUsers.remove($.javaString(username.toLowerCase()));
     }
-    
+
     /**
      * @function isSubCache
      * @export $
@@ -652,7 +652,7 @@
     function delVIPUsersList(username) {
         vipUsers.remove($.javaString(username.toLowerCase()));
     }
-    
+
     /**
      * @function isVIPCache
      * @export $
