@@ -78,7 +78,7 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
             }
         }
 
-        if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST)) {
+        if (req.headers().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST) || req.headers().contains(HTTPWSServer.HEADER_CF_RAY)) {
             allowNonSsl = true;
         }
 

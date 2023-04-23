@@ -114,7 +114,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 ctx.close();
             } else {
                 com.gmt2001.Console.debug.println("200 WS: " + hc.requestUri() + "   Remote: [" + ctx.channel().remoteAddress().toString() + "]");
-                boolean allowNonSsl = hc.requestHeaders().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST);
+                boolean allowNonSsl = hc.requestHeaders().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST) || hc.requestHeaders().contains(HTTPWSServer.HEADER_CF_RAY);
 
                 if (!allowNonSsl) {
                     QueryStringDecoder qsd = new QueryStringDecoder(hc.requestUri());
