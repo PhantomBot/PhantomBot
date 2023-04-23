@@ -1,4 +1,4 @@
-# Enable Twitch embeds
+# Enable Twitch Embeds
 
 Due to changes by Twitch, the chat and live feed panel can no longer be displayed without a proper SSL setup
 
@@ -139,6 +139,8 @@ If you are running the bot on a server that already has a running webserver with
 
 If you have the webserver and a domain, but have not yet setup SSL, consider looking into [Let's Encrypt](https://letsencrypt.org/) and using the [Certbot](https://certbot.eff.org/) client to get a free basic SSL certificate for life
 
+Cloudflare is also supported
+
 **NOTE:** When using this method, the bots _baseport_ should be ***blocked*** in your firewall
 
 #### Certbot Setup
@@ -148,17 +150,6 @@ If you have the webserver and a domain, but have not yet setup SSL, consider loo
 2. Download and run Certbot using the instructions at https://certbot.eff.org/instructions to acquire a certificate, which will also update the certificate paths on your server and setup a cron job to renew it
 
 3. Test the SSL setup. You should be able to access `https://mybot.mydomain.com/` (replace with appropriate domain) and have the padlock icon or other successful SSL identifier in your browsers address bar
-
-#### Bot Settings
-
-When setting up a reverse proxy for the bot, some settings must be changed to prevent errors such as _TOO\_MANY\_REDIRECTS_ from ocurring
-
-- Visit the **Bot Setup** page on the panel
-- Expand the **HTTP/WS** section
-- Set the radio button for _usehttps_ to the one on the right to enable the toggle, then set the toggle to `off/false`
-- Set the radio button for _proxybypasshttps_ to the one on the right to enable the toggle, then set the toggle to `on/true`
-- Scroll back to the top and click the **Save** button, ensure a green success bar appears
-- Restart the bot, then continue below
 
 #### NGINX Sample Config
 
@@ -191,7 +182,7 @@ server {
 
     location / {
         proxy_pass http://phantombot;
-        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection $connection_upgrade;
     }
@@ -206,9 +197,9 @@ server {
 * If the bot is running on a port other than 25000, change it in the upstream section
 
 
-#### Apache httpd Sample Config
+#### Apache HTTPd Sample Config
 
-**NOTE:** Proxying with Apache requires Apache httpd 2.2.15 or later with all of the following Apache modules: mod_alias, mod_proxy, mod_proxy_http, mod_proxy_wstunnel
+**NOTE:** Proxying with Apache requires Apache HTTPd 2.2.15 or later with all of the following Apache modules: mod_alias, mod_proxy, mod_proxy_http, mod_proxy_wstunnel
 
 If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/httpd/conf.d_, then it is best to put this config into a new file ending in _.conf_ in that folder, for example _/etc/httpd/conf.d/phantombot.conf_
 
@@ -269,4 +260,20 @@ If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/http
 
     * Option 1: Setup the webserver container as above, but change references to _127.0.0.1:25000_ to point to the PhantomBot container by name (eg. _phantombot:25000_)
 
-    * Option 2: Use an intermediary Docker container that auto-configures proxying and letsencrypt, such as _nginxproxy/nginx-proxy_ with _nginxproxy/acme-companion_
+    * Option 2: Use an intermediary Docker container that auto-configures proxying and letsencrypt, such as [traefik](https://hub.docker.com/_/traefik)
+
+#### Bot Settings
+
+_NOTE:_
+- This is _not_ required for Apache HTTPd, Traefik, or Cloudflare
+- This is required for NGINX only if you do not add the `X-Forwarded-Host` header
+- This is _not_ required for any other reverse proxy that is configured to send the `X-Forwarded-Host` header
+
+When setting up a reverse proxy for the bot, some settings must be changed to prevent errors such as _TOO\_MANY\_REDIRECTS_ from ocurring
+
+- Visit the **Bot Setup** page on the panel
+- Expand the **HTTP/WS** section
+- Set the radio button for _usehttps_ to the one on the right to enable the toggle, then set the toggle to `off/false`
+- Set the radio button for _proxybypasshttps_ to the one on the right to enable the toggle, then set the toggle to `on/true`
+- Scroll back to the top and click the **Save** button, ensure a green success bar appears
+- Restart the bot, then continue below
