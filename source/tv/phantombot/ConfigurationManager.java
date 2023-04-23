@@ -93,6 +93,10 @@ public class ConfigurationManager {
             }
         });
 
+        if (RepoVersion.isDocker()) {
+            startProperties.putIfAbsent("restartcmd", "/opt/PhantomBot/restartbot-docker.sh");
+        }
+
         changed |= generateDefaultValues(startProperties);
 
         /* Make a new botlogin with the botName, oauth or channel is not found */

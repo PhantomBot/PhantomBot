@@ -46,7 +46,7 @@ services:
     # The restart policy. "always" or "unless-stopped" are the recommended values and are required to use the panel restart button
     # "unless-stopped": The container auto-restarts. If you stop the container using a Docker command, it will stay stopped until you start it using a Docker command
     # "always": The container always auto-restarts. If you stop the container using a Docker command, it will auto-restart if the Docker service or server restarts
-    restart: always
+    restart: unless-stopped
     volumes:
      # Defines the volume mount for data persistence inside the container, do not change
      # See the bottom of this file for the part you can change
@@ -55,8 +55,6 @@ services:
       # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix
       # ------ Note that after first run, botlogin.txt takes priority
       # ------ None of the variables are required
-      # Enables the restart button in the panel
-      PHANTOMBOT_RESTARTCMD: "/opt/PhantomBot/restartbot-docker.sh"
       # If you uncomment this variable, your ENV variables will always override botlogin.txt
       # PHANTOMBOT_ENVOVERRIDE: true
   # Service name, used internally by Docker Compose. Can be changed but does not matter
