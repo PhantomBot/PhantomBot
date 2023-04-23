@@ -300,13 +300,6 @@ public final class TMIMessage {
             return rbadges;
         }
 
-        // Add default values.
-        rbadges.put("user-type", "");
-        rbadges.put("subscriber", "0");
-        rbadges.put("turbo", "0");
-        rbadges.put("premium", "0");
-        rbadges.put("vip", "0");
-
         if (rawBadges.length() > 0) {
             String badgeParts[] = rawBadges.split(",");
 
