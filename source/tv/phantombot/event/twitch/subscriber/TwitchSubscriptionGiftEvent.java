@@ -69,6 +69,25 @@ public class TwitchSubscriptionGiftEvent extends TwitchEvent {
      * @param plan
      * @param giftedMonths
      */
+    public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan, String giftedMonths) {
+        this.username = username;
+        this.recipient = recipient;
+        this.months = months;
+        this.plan = plan;
+        this.giftedMonths = giftedMonths;
+        this.fromBulk = false;
+    }
+
+    /**
+     * Class constructor.
+     *
+     * @param username
+     * @param recipient
+     * @param months
+     * @param plan
+     * @param giftedMonths
+     * @param fromBulk
+     */
     public TwitchSubscriptionGiftEvent(String username, String recipient, String months, String plan, String giftedMonths, boolean fromBulk) {
         this.username = username;
         this.recipient = recipient;
