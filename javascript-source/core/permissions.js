@@ -999,7 +999,7 @@
             } else {
                 delSubUsersList(username);
             }
-            if (tags.getOrDefault('vip', '0').equals('1')) {
+            if (tags.containsKey('vip')) {
                 addVIPUsersList(username);
             } else {
                 delVIPUsersList(username);
