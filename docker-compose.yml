@@ -38,7 +38,8 @@ services:
       - target: 25000
         #
         # The port the bot webserver will be published to on the host
-        # This is the number that should be changed when hosting multiple bot instances on the same server
+        # This is the number that should be changed, if not using Traefik, when hosting multiple bot instances on the same server
+        # If using Traefik, this should not be changed
         published: 25000
         #
         # TCP protocol for HTTP. Do not change
@@ -121,8 +122,10 @@ volumes:
   # with a guarantee that they will work properly
   #
   # If you still want mount to a host directory, this is where you do it
-  # Remove the # symbols from all 4 lines below, then change the path on the last line
+  # Remove the # symbols from all 5 lines below, then change the path on the last line
   # NOTE: It is important that you do not add or remove any spaces
+  # NOTE: For Windows on WSL2, paths should be specified using forward slashes `/`
+  # NOTE: For Windows on WSL2, the drive letter should be specified as `//c/` instead of `c:/`
   PhantomBot_data:
   #  driver: local
   #  driver_opts:
