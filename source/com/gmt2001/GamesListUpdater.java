@@ -35,7 +35,7 @@ import tv.phantombot.PhantomBot;
 
 /**
  * Updates the game list used for auto-complete when changing the game from the panel
- * <br /><br />
+ * <p>
  * The list is stored at {@code web/panel/js/utils/gamesList.txt}
  *
  * @author gmt2001
@@ -72,7 +72,7 @@ public final class GamesListUpdater {
 
     /**
      * Updates the games list
-     * <br /><br />
+     * <p>
      * If {@code force} is {@code false}, a smart update is performed. A smart update only occurs if it has been 7 days since the
      * last update, and will attempt to perform a patch update if available. If the local index is too old, a full update is performed
      * instead, where the entire games index is downloaded. A full update can take some time

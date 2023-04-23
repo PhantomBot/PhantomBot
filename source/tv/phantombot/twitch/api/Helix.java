@@ -2494,7 +2494,7 @@ public class Helix {
 
     /**
      * Gets a list of EventSub subscriptions that the client in the access token created.
-     * <br /><br />
+     * <p>
      * Use the status, type, and user_id query parameters to filter the list of subscriptions that are returned.
      * The filters are mutually exclusive; the request fails if you specify more than one filter.
      *
@@ -2854,7 +2854,7 @@ public class Helix {
 
     /**
      * Gets the list of users that are connected to the broadcaster’s chat session.
-     * <br /><br />
+     * <p>
      * NOTE: There is a delay between when users join and leave a chat and when the list is updated accordingly.
      *
      * @param first The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000
