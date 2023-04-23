@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -193,6 +193,17 @@ extends <a href="../TwitchEvent.html" title="class in tv.phantombot.event.twitch
 <div class="block">Class constructor.</div>
 </td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)">TwitchSubscriptionGiftEvent</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;recipient,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;months,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;plan,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;giftedMonths,
+                           boolean&nbsp;fromBulk)</code></th>
+<td class="colLast">
+<div class="block">Class constructor.</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -212,34 +223,41 @@ extends <a href="../TwitchEvent.html" title="class in tv.phantombot.event.twitch
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fromBulk()">fromBulk</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this gift subscription is likely from a bulk gift-sub event</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGiftedMonths()">getGiftedMonths</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Method that returns the number of months gifted.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMonths()">getMonths</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Method that returns the months, can be 0.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPlan()">getPlan</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Method that returns the subscription plan.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRecipient()">getRecipient</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Method that returns the recipient.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsername()">getUsername</a></span>()</code></th>
 <td class="colLast">
@@ -311,7 +329,7 @@ extends <a href="../TwitchEvent.html" title="class in tv.phantombot.event.twitch
 <a id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>TwitchSubscriptionGiftEvent</h4>
 <pre>public&nbsp;TwitchSubscriptionGiftEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
@@ -327,6 +345,30 @@ extends <a href="../TwitchEvent.html" title="class in tv.phantombot.event.twitch
 <dd><code>months</code> - </dd>
 <dd><code>plan</code> - </dd>
 <dd><code>giftedMonths</code> - </dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>TwitchSubscriptionGiftEvent</h4>
+<pre>public&nbsp;TwitchSubscriptionGiftEvent&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
+                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;recipient,
+                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;months,
+                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;plan,
+                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;giftedMonths,
+                                   boolean&nbsp;fromBulk)</pre>
+<div class="block">Class constructor.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>username</code> - </dd>
+<dd><code>recipient</code> - </dd>
+<dd><code>months</code> - </dd>
+<dd><code>plan</code> - </dd>
+<dd><code>giftedMonths</code> - </dd>
+<dd><code>fromBulk</code> - </dd>
 </dl>
 </li>
 </ul>
@@ -399,7 +441,7 @@ extends <a href="../TwitchEvent.html" title="class in tv.phantombot.event.twitch
 <a id="getPlan()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getPlan</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getPlan()</pre>
@@ -407,6 +449,19 @@ extends <a href="../TwitchEvent.html" title="class in tv.phantombot.event.twitch
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>plan</dd>
+</dl>
+</li>
+</ul>
+<a id="fromBulk()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>fromBulk</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;fromBulk()</pre>
+<div class="block">Indicates if this gift subscription is likely from a bulk gift-sub event</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
 </li>
 </ul>
