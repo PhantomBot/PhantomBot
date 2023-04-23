@@ -29,7 +29,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchSubscriptionGift
      * @param plan
      */
     public TwitchAnonymousSubscriptionGiftEvent(String recipient, String plan) {
-        super("anonymous", recipient, null, plan, null);
+        super("anonymous", recipient, null, plan, null, false);
     }
 
     /**
@@ -40,7 +40,7 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchSubscriptionGift
      * @param plan
      */
     public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan) {
-        super("anonymous", recipient, months, plan, null);
+        super("anonymous", recipient, months, plan, null, false);
     }
 
     /**
@@ -52,6 +52,19 @@ public class TwitchAnonymousSubscriptionGiftEvent extends TwitchSubscriptionGift
      * @param giftedMonths
      */
     public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan, String giftedMonths) {
-        super("anonymous", recipient, months, plan, giftedMonths);
+        super("anonymous", recipient, months, plan, giftedMonths, false);
+    }
+
+    /**
+     * The class constructor.
+     *
+     * @param recipient
+     * @param months
+     * @param plan
+     * @param giftedMonths
+     * @param fromBulk
+     */
+    public TwitchAnonymousSubscriptionGiftEvent(String recipient, String months, String plan, String giftedMonths, boolean fromBulk) {
+        super("anonymous", recipient, months, plan, giftedMonths, fromBulk);
     }
 }
