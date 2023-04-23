@@ -260,7 +260,7 @@ public final class ViewerCache implements Listener {
 
             viewer.admin(event.getTags().getOrDefault("user-type", "").equals("admin"))
                 .staff(event.getTags().getOrDefault("user-type", "").equals("staff"))
-                .vip(!event.getTags().getOrDefault("vip", "0").equals("0"))
+                .vip(!event.getTags().containsKey("vip"))
                 .turbo(!event.getTags().getOrDefault("turbo", "0").equals("0"))
                 .moderator(!event.getTags().getOrDefault("mod", "0").equals("0"))
                 .subscriber(!event.getTags().getOrDefault("subscriber", "0").equals("0"))
