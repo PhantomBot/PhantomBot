@@ -57,6 +57,8 @@ services:
       # ------ None of the variables are required
       # Enables the restart button in the panel
       PHANTOMBOT_RESTARTCMD: "/opt/PhantomBot/restartbot-docker.sh"
+      # If you uncomment this variable, your ENV variables will always override botlogin.txt
+      # PHANTOMBOT_ENVOVERRIDE: true
   # Service name, used internally by Docker Compose. Can be changed but does not matter
   # The ouroboros service provides auto-update functionality
   # To enable this service, the profile must be activated when using the "docker compose up" command
