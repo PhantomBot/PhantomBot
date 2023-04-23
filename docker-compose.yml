@@ -92,6 +92,11 @@ services:
         # Verbosity of logging output
       - LOG_LEVEL=info
         # Change to `true` if you want ouroboros to only notify you of new updates, but not install them
+        # --- NOTE: A Docker update necessarily involves an automatic deletion and re-creation of the container
+        # --- This will reset variables on the bot. Some systems, such as raffleSystem, will save their state, but others may not
+        # --- You should consider this information when making a decision on this setting
+        # If this is `true`, you will need to re-run `docker compose up --pull always --profile ouroboros -d`
+        #      each time you want to install an update to PhantomBot
       - MONITOR_ONLY=false
         # Defines where to send notifications to. See https://github.com/caronc/apprise#supported-notifications
         # To send notifications to multiple locations, separate each URI with a space as in the example below
@@ -101,6 +106,7 @@ services:
         # If `true`, ouroboros is allowed to update itself
       - SELF_UPDATE=true
         # Sets the timezone used for logging and the scheduler
+        # For a list of valid timezones, see the `TZ identifier` column at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
       - TZ=America/New_York
     # The restart policy. "always" or "unless-stopped" are the recommended values and are required to use the panel restart button
     # "unless-stopped": The container auto-restarts. If you stop the container using a Docker command, it will stay stopped until you start it using a Docker command

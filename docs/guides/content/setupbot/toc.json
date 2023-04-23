@@ -3,6 +3,7 @@
     },
     "pages": {
         "properties": "Properties for botlogin.txt",
+        "docker": "Docker",
         "windows": "Windows",
         "centos": "CentOS",
         "ubuntu": "Ubuntu",
