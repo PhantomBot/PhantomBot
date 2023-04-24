@@ -16,20 +16,107 @@
  */
 package com.gmt2001.datastore2.tablebuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Provides a fluent interface to define a table, then create or alter it in the database
  *
  * @author gmt2001
  */
-public class TableBuilder {
+public final class TableBuilder {
+    /**
+     * The name of the table
+     */
     private final String name;
+    /**
+     * Whether this is a temporary table
+     */
+    private boolean isTemporary = false;
+    /**
+     * The list of fields
+     */
+    private List<FieldDefinition> fields = new ArrayList<>();
 
     /**
      * Constructor
      *
-     * @param name The name of the table
+     * @param name the name of the table
+     * @throws IllegalArgumentException if the name is null or blank
      */
     public TableBuilder(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("name is null or blank");
+        }
+
         this.name = name;
+    }
+
+    /**
+     * The name of the table
+     *
+     * @return the table name
+     */
+    public String name() {
+        return this.name;
+    }
+
+    /**
+     * Sets whether this is a temporary table
+     * <p>
+     * How a temporary table is handeled is engine-defined,
+     * but it usually means that the table is stored in-memory,
+     * is only visible to the {@link java.sql.Connection} that creates it,
+     * and is dropped once {@link java.sql.Connection#close()} is called
+     *
+     * @param isTemporary whether this is a temporary table
+     * @return {@code this}
+     */
+    public TableBuilder isTemporary(boolean isTemporary) {
+        this.isTemporary = isTemporary;
+        return this;
+    }
+
+    /**
+     * Whether this is a temporary table
+     *
+     * @return {@code true} if a temporary table
+     */
+    public boolean isTemporary() {
+        return this.isTemporary;
+    }
+
+    /**
+     * Adds a field to the end of the fields list
+     *
+     * @param name the name of the field
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public FieldDefinition field(String name) throws IllegalArgumentException {
+        FieldDefinition field = new FieldDefinition(this, name);
+        this.fields.add(field);
+        return field;
+    }
+
+    /**
+     * Adds a field to the specified position of the fields list
+     *
+     * @param name the name of the field
+     * @param position the position to insert the field at
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public FieldDefinition field(String name, int position) throws IllegalArgumentException {
+        FieldDefinition field = new FieldDefinition(this, name);
+        this.fields.add(position, field);
+        return field;
+    }
+
+    /**
+     * The list of fields added to this {@link TableBuilder}
+     *
+     * @return the list of fields
+     */
+    public List<FieldDefinition> fields() {
+        return this.fields;
     }
 }
