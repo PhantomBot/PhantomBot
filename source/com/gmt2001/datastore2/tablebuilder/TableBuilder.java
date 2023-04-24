@@ -30,9 +30,9 @@ public final class TableBuilder {
      */
     private final String name;
     /**
-     * Whether this is a temporary table
+     * Whether this is a memory table
      */
-    private boolean isTemporary = false;
+    private boolean isMemory = false;
     /**
      * The list of fields
      */
@@ -62,28 +62,27 @@ public final class TableBuilder {
     }
 
     /**
-     * Sets whether this is a temporary table
+     * Sets whether this is a memory table
      * <p>
-     * How a temporary table is handeled is engine-defined,
-     * but it usually means that the table is stored in-memory,
-     * is only visible to the {@link java.sql.Connection} that creates it,
-     * and is dropped once {@link java.sql.Connection#close()} is called
+     * This type of table is stored in-memory and is dropped when the server shuts down
+     * <p>
+     * For some datastore types, the bot is the server, and therfore the table drops when the bot shuts down
      *
-     * @param isTemporary whether this is a temporary table
+     * @param isMemory whether this is a memory table
      * @return {@code this}
      */
-    public TableBuilder isTemporary(boolean isTemporary) {
-        this.isTemporary = isTemporary;
+    public TableBuilder isMemory(boolean isMemory) {
+        this.isMemory = isMemory;
         return this;
     }
 
     /**
-     * Whether this is a temporary table
+     * Whether this is a memory table
      *
-     * @return {@code true} if a temporary table
+     * @return {@code true} if a memory table
      */
-    public boolean isTemporary() {
-        return this.isTemporary;
+    public boolean isMemory() {
+        return this.isMemory;
     }
 
     /**
