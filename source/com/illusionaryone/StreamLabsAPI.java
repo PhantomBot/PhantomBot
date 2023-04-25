@@ -31,44 +31,45 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
- * Communicates with the Twitch Alerts v1 API server. (StreamLabs)  Currently only
- * supports the GET donations method.
+ * Communicates with the StreamLabs API
  *
  * @author illusionaryone
  */
-public class TwitchAlertsAPIv1 {
+public class StreamLabsAPI {
 
-    private static TwitchAlertsAPIv1 instance;
-    private static final String APIURL = "https://www.streamlabs.com/api/v1.0";
+    private static StreamLabsAPI instance;
+    private static final String APIURL = "https://www.streamlabs.com/api/v2.0";
     private String sAccessToken = "";
     private int iDonationPullLimit = 5;
     private String sCurrencyCode = "";
 
-    public static TwitchAlertsAPIv1 instance() {
+    public static StreamLabsAPI instance() {
         if (instance == null) {
-            instance = new TwitchAlertsAPIv1();
+            instance = new StreamLabsAPI();
         }
 
         return instance;
     }
 
-    private TwitchAlertsAPIv1() {
+    private StreamLabsAPI() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
+    private JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, null, HttpMethod.GET);
     }
 
-    private static JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException, URISyntaxException {
+    private JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, postString, HttpMethod.POST);
     }
 
     @SuppressWarnings("UseSpecificCatch")
-    private static JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
+    private JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
         HttpHeaders headers = HttpClient.createHeaders(method, true);
+
+        headers.set(HttpHeaderNames.AUTHORIZATION, "Bearer " + this.sAccessToken);
 
         if (method == HttpMethod.POST) {
             headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
@@ -120,7 +121,7 @@ public class TwitchAlertsAPIv1 {
      * @return donationsObject
      */
     public JSONObject GetDonations(int lastId) throws JSONException, URISyntaxException {
-        return readJsonFromUrl("/donations?access_token=" + this.sAccessToken + "&limit=" + this.iDonationPullLimit
+        return this.readJsonFromUrl("/donations?limit=" + this.iDonationPullLimit
                 + "&currency=" + this.sCurrencyCode + (lastId > 0 ? "&after=" + lastId : ""));
     }
 
@@ -133,7 +134,7 @@ public class TwitchAlertsAPIv1 {
      * @return pointsObject
      */
     public JSONObject GetPointsAPI(String userName, String channelName) throws JSONException, URISyntaxException {
-        return readJsonFromUrl("/points?access_token=" + this.sAccessToken + "&username=" + userName + "&channel=" + channelName);
+        return this.readJsonFromUrl("/points?username=" + userName + "&channel=" + channelName);
     }
 
     /*
@@ -145,7 +146,7 @@ public class TwitchAlertsAPIv1 {
      * @return pointsObject
      */
     public JSONObject SetPointsAPI(String userName, int points) throws JSONException, URISyntaxException {
-        return readJsonFromUrl("/points/user_point_edit", "access_token=" + this.sAccessToken + "&username=" + userName + "&points=" + points);
+        return this.readJsonFromUrl("/points/user_point_edit", "username=" + userName + "&points=" + points);
     }
 
     /*
@@ -157,7 +158,7 @@ public class TwitchAlertsAPIv1 {
      * @return pointsToAddObject
      */
     public JSONObject AddToAllPointsAPI(String channelName, int points) throws JSONException, URISyntaxException {
-        return readJsonFromUrl("/points/add_to_all", "access_token=" + this.sAccessToken + "&channel=" + channelName + "&value=" + points);
+        return this.readJsonFromUrl("/points/add_to_all", "channel=" + channelName + "&value=" + points);
     }
 
     /*

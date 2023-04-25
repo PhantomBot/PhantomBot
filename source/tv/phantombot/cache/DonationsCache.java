@@ -18,7 +18,7 @@
  */
 package tv.phantombot.cache;
 
-import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.StreamLabsAPI;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import org.json.JSONArray;
@@ -99,7 +99,7 @@ public class DonationsCache implements Runnable {
 
         com.gmt2001.Console.debug.println("DonationsCache::updateCache");
 
-        jsonResult = TwitchAlertsAPIv1.instance().GetDonations(lastId);
+        jsonResult = StreamLabsAPI.instance().GetDonations(lastId);
 
         if (jsonResult.getBoolean("_success")) {
             if (jsonResult.getInt("_http") == 200) {

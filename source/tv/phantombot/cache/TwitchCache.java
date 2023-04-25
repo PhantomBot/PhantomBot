@@ -644,7 +644,16 @@ public final class TwitchCache implements Listener {
      * @param shouldSendEvent {@code true} to send a {@link TwitchOnlineEvent}
      */
     public void goOnline(boolean shouldSendEvent) {
-        if (!this.isOnline && Instant.now().isAfter(this.offlineTimeout)) {
+        this.goOnline(shouldSendEvent, true);
+    }
+
+    /**
+     * Sets online state
+     *
+     * @param shouldSendEvent {@code true} to send a {@link TwitchOnlineEvent}
+     */
+    public void goOnline(boolean shouldSendEvent, boolean useOfflineTimeout) {
+        if (!this.isOnline && (!useOfflineTimeout || Instant.now().isAfter(this.offlineTimeout))) {
             this.isOnline = true;
             this.streamUptime = ZonedDateTime.now();
 
@@ -680,7 +689,7 @@ public final class TwitchCache implements Listener {
             this.syncStreamStatus(false, (hasStream) -> {
                 if (!hasStream) {
                     this.syncStreamInfoFromChannel(false, (hasChannel) -> {
-                        this.goOnline(true);
+                        this.goOnline(true, false);
                     });
                 } else {
                     this.goOnline(true);
