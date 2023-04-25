@@ -360,7 +360,7 @@ _NOTE: A restart is required for this property to take effect_
 &nbsp;
 
 ### StreamLabs
-#### twitchalertskey
+#### streamlabskey
 
 Data Type: _String_
 
@@ -370,7 +370,7 @@ _NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
-#### twitchalertslimit
+#### streamlabslimit
 
 Data Type: _Int_
 
@@ -608,5 +608,13 @@ No definition
 #### discordcommandprefix
 
 Data Type: _Char_
+
+No definition
+
+&nbsp;
+
+#### twitchalertskey
+
+Data Type: _String_
 
 No definition
