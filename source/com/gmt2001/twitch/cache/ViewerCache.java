@@ -55,6 +55,7 @@ public final class ViewerCache implements Listener {
     private static final ViewerCache INSTANCE = new ViewerCache();
     private static final Duration ACTIVE_TIMEOUT = Duration.ofMinutes(5);
     private boolean registered = false;
+    private boolean chattersUpdated = false;
     private final ConcurrentMap<String, Viewer> viewers = new ConcurrentHashMap<>();
     private Viewer bot;
     private Viewer broadcaster;
@@ -78,6 +79,7 @@ public final class ViewerCache implements Listener {
     private ViewerCache() {
         ExecutorService.scheduleAtFixedRate(this::doGC, 15, 15, TimeUnit.MINUTES);
         ExecutorService.scheduleAtFixedRate(this::getChatters, 0, 2, TimeUnit.MINUTES);
+        ExecutorService.scheduleAtFixedRate(this::sendUpdate, 15, 15, TimeUnit.SECONDS);
         this.updateBroadcasterBot().subscribe();
     }
 
@@ -89,6 +91,15 @@ public final class ViewerCache implements Listener {
             EventBus.instance().register(this);
             this.registered = true;
         }
+    }
+
+    /**
+     * Thread-safe get-and-set
+     */
+    private synchronized boolean chattersUpdated(boolean chattersUpdated) {
+        boolean old = this.chattersUpdated;
+        this.chattersUpdated = chattersUpdated;
+        return old;
     }
 
     /**
@@ -157,6 +168,15 @@ public final class ViewerCache implements Listener {
     }
 
     /**
+     * Sends IrcChannelUsersUpdateEvent if a change has ocurred
+     */
+    private void sendUpdate() {
+        if (this.chattersUpdated(false)) {
+            EventBus.instance().postAsync(new IrcChannelUsersUpdateEvent(this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).map(kv -> kv.getValue().login()).collect(Collectors.toList())));
+        }
+    }
+
+    /**
      * Updates the list of chatters from the API
      */
     private void getChatters() {
@@ -202,6 +222,7 @@ public final class ViewerCache implements Listener {
         }).doOnSuccess(newChattersList -> {
             final Instant after = Instant.now().minus(ACTIVE_TIMEOUT);
             final List<String> found = new ArrayList<>();
+            final long count = this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).count();
             this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).forEach(kv -> {
                 if (newChattersList.stream().filter(jso -> jso.getString("user_id").equals(kv.getValue().id())).findAny().isPresent()) {
                     kv.getValue().seen();
@@ -222,7 +243,7 @@ public final class ViewerCache implements Listener {
                 }
             });
 
-            EventBus.instance().postAsync(new IrcChannelUsersUpdateEvent(this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).map(kv -> kv.getValue().login()).collect(Collectors.toList())));
+            this.chattersUpdated(true);
         }).doOnError(ex -> {
             com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getChattersAsync");
         }).subscribe();
@@ -250,12 +271,19 @@ public final class ViewerCache implements Listener {
         if (id != null && !id.isBlank()) {
             Viewer viewer;
             if (this.exists(id)) {
-                viewer = this.get(id).inChat(true).seen().active();
+                viewer = this.get(id);
+                boolean inChat = viewer.inChat();
+                viewer.inChat(true).seen().active();
+
+                if (!inChat) {
+                    this.chattersUpdated(true);
+                }
             } else {
                 viewer = new Viewer(id).login(event.getSender())
                     .name(event.getTags().getOrDefault("display-name", "").replaceAll("\\\\s", " "))
                     .inChat(true).active();
                 this.add(viewer);
+                this.chattersUpdated(true);
             }
 
             viewer.admin(event.getTags().getOrDefault("user-type", "").equals("admin"))
