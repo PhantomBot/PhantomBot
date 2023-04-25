@@ -84,6 +84,23 @@
             }
 
             $.say($.lang.get('corecommands.settimevar.success', action, time));
+        } else if (command.equalsIgnoreCase('synconline')) {
+            let silent = false;
+            if (action !== undefined && $.jsString(action) === 'silent') {
+                silent = true;
+            }
+
+            if ($.twitchcache !== undefined && $.twitchcache !== null && $.twitchCacheReady) {
+                $.twitchcache.syncOnline();
+
+                if (!silent) {
+                    $.say($.lang.get('corecommands.synconline.success'));
+                }
+            } else {
+                if (!silent) {
+                    $.say($.lang.get('corecommands.synconline.failure'));
+                }
+            }
         }
     });
 
@@ -103,5 +120,6 @@
         $.registerChatCommand('./core/coreCommands.js', 'shoutout', $.PERMISSION.Mod);
         $.registerChatCommand('./core/coreCommands.js', 'shoutoutapitoggle', $.PERMISSION.Mod);
         $.registerChatCommand('./core/coreCommands.js', 'settimevar', $.PERMISSION.Mod);
+        $.registerChatCommand('./core/coreCommands.js', 'synconline', $.PERMISSION.Mod);
     });
 })();

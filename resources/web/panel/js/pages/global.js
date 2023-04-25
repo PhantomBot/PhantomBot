@@ -71,12 +71,10 @@ $(function () {
         }
     });
 
-    $('#set-online-btn').on('click', function () {
-        socket.sendCommand('set-online', getBotName() + ' forceonline', function (e) {});
-    });
-
-    $('#set-offline-btn').on('click', function () {
-        socket.sendCommand('set-offline', getBotName() + ' forceoffline', function (e) {});
+    $('#sync-online-btn').on('click', function () {
+        socket.sendCommand('sync-online', 'synconline silent', function (e) {
+            toastr.info('Syncing title, game, and online state with Twitch API. This may take a moment', 'Sync Online Status', {timeOut: 10000});
+        });
     });
 
     socket.addListener('restart-bot-result', function (e) {

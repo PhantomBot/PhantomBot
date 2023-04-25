@@ -22,3 +22,5 @@ $.lang.register('corecommands.shoutoutapi.disable', '!shoutout will not trigger 
 $.lang.register('corecommands.shoutout.no.game', 'Hey! Go give $1 a follow at $2!');
 $.lang.register('corecommands.settimevar.usage', 'Usage: !settimevar (varName) (Optional: Time to Set)');
 $.lang.register('corecommands.settimevar.success', 'Set the timevar $1 to the time $2');
+$.lang.register('corecommands.synconline.success', 'Syncing title, game, and online state with Twitch API. This may take a moment');
+$.lang.register('corecommands.synconline.failure', 'Stream status cache is not ready yet, please try again in 30 seconds');
