@@ -1,11 +1,17 @@
 # StreamLabs Integration Setup
 
-To setup StreamLabs alerts, go to your bot console (black window) and type `streamlabssetup` and hit enter. Follow the instructions on-screen.
-
 **NOTE:** This integration will only read **donations** from the StreamLabs API.
 
-**NOTE:** Due to the nature of the console, it may scroll away and display more text as you are typing the requested info. Do not worry as the text you already typed is still saved in the input buffer, you can continue typing normally.
+1. Login to your account at [StreamLabs](https://streamlabs.com/dashboard)
+2. Click on **Settings** in the left menu
+3. Switch to the **API Settings** tab
+4. Switch to the **API Tokens** sub-tab
+5. Click in the upper box to reveal **Your API Access Token**
+6. In a separate tab/window, navigate to the _Bot Setup_ page on your bots webserver
+7. Expand the _StreamLabs_ section
+8. Move the radio button for _streamlabskey_ to the right to enable the textbox
+9. Copy/Paste **Your API Access Token** from StreamLabs into the textbox for _streamlabskey_ on the _Bot Setup_ page
+10. Scroll to the top of the _Bot Setup_ page and click _Save_. Ensure you get a green success bar
+11. Restart the bot
 
-**NOTE:** This procedure only works in _interactive_ mode, Linux/macOS users who are running the bot as a daemon/service will have to stop the bot and then run it using _launch.sh_ from SSH or a Terminal. Once the procedure is complete, you can switch back to using the daemon/service. Windows users should already be in _interactive_ mode.
-
-You can now Enable your *StreamLabs Alerts* under *Alerts*.
+You can now Enable your *StreamLabs Alerts* under *Alerts* on the panel.
