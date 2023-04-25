@@ -23,7 +23,6 @@
 
     $.bind('eventSubChannelUpdate', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
-            $.twitchcache.eventSubMode(true);
             $.twitchcache.setStreamStatus(event.event().title());
             $.twitchcache.setGameTitle(event.event().categoryName());
         }
@@ -31,11 +30,7 @@
 
     $.bind('eventSubStreamOnline', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
-            if ($.twitchcache.eventSubMode()) {
-                $.twitchcache.goOnline(true);
-            } else {
-                $.twitchcache.syncOnline();
-            }
+            $.twitchcache.goOnline(true, false);
         }
     });
 
@@ -53,14 +48,18 @@
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOffline
             ];
 
+            let success = true;
             for (let i in subscriptions) {
                 let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
                 try {
                     newSubscription.create().block();
                 } catch (ex) {
+                    success = false;
                     $.log.error(ex);
                 }
             }
+
+            $.twitchcache.eventSubMode(success);
         }
     });
 
