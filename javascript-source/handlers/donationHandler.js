@@ -239,11 +239,11 @@
 
                 if (subAction.equalsIgnoreCase('erase')) {
                     $.inidb.del('donations', 'currencycode');
-                    Packages.com.illusionaryone.TwitchAlertsAPIv1.instance().SetCurrencyCode('');
+                    Packages.com.illusionaryone.StreamLabsAPI.instance().SetCurrencyCode('');
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success-erase'));
                 } else {
                     $.setIniDbString('donations', 'currencycode', subAction);
-                    Packages.com.illusionaryone.TwitchAlertsAPIv1.instance().SetCurrencyCode(subAction);
+                    Packages.com.illusionaryone.StreamLabsAPI.instance().SetCurrencyCode(subAction);
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success', subAction));
                 }
             }

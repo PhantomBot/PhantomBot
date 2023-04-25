@@ -37,7 +37,7 @@ import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.illusionaryone.GitHubAPIv3;
-import com.illusionaryone.TwitchAlertsAPIv1;
+import com.illusionaryone.StreamLabsAPI;
 import com.illusionaryone.YouTubeAPIv3;
 import com.scaniatv.CustomAPI;
 import com.scaniatv.StreamElementsAPIv2;
@@ -820,7 +820,7 @@ public final class PhantomBot implements Listener {
 
         /* Set Streamlabs currency code, if possible */
         if (this.dataStore.HasKey("donations", "", "currencycode")) {
-            TwitchAlertsAPIv1.instance().SetCurrencyCode(this.dataStore.GetString("donations", "", "currencycode"));
+            StreamLabsAPI.instance().SetCurrencyCode(this.dataStore.GetString("donations", "", "currencycode"));
         }
 
         /* Set the TwitchAlerts OAuth key and limiter. */
@@ -835,8 +835,8 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart twitchalertslimit
          */
         if (!CaselessProperties.instance().getProperty("twitchalertskey", "").isEmpty()) {
-            TwitchAlertsAPIv1.instance().SetAccessToken(CaselessProperties.instance().getProperty("twitchalertskey", ""));
-            TwitchAlertsAPIv1.instance().SetDonationPullLimit(CaselessProperties.instance().getPropertyAsInt("twitchalertslimit", 5));
+            StreamLabsAPI.instance().SetAccessToken(CaselessProperties.instance().getProperty("twitchalertskey", ""));
+            StreamLabsAPI.instance().SetDonationPullLimit(CaselessProperties.instance().getPropertyAsInt("twitchalertslimit", 5));
         }
 
         /* Set the YouTube API Key if provided. */
@@ -996,7 +996,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("discordAPI", DiscordAPI.instance(), 0);
         Script.global.defineProperty("hasDiscordToken", hasDiscordToken(), 0);
         Script.global.defineProperty("customAPI", CustomAPI.instance(), 0);
-        Script.global.defineProperty("streamLabsAPI", TwitchAlertsAPIv1.instance(), 0);
+        Script.global.defineProperty("streamLabsAPI", StreamLabsAPI.instance(), 0);
         this.twitchCache = TwitchCache.instance();
         Script.global.defineProperty("twitchcache", this.twitchCache, 0);
         Script.global.defineProperty("viewer", ViewerCache.instance(), 0);
