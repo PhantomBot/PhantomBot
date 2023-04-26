@@ -46,13 +46,9 @@ public class StreamLabsAPI {
     private static final String APIURL = "https://www.streamlabs.com/api/v2.0";
     private String sCurrencyCode = "";
 
-    public static StreamLabsAPI instance() {
+    public static synchronized StreamLabsAPI instance() {
         if (instance == null) {
-            synchronized(APIURL) {
-                if (instance == null) {
-                    instance = new StreamLabsAPI();
-                }
-            }
+            instance = new StreamLabsAPI();
         }
 
         return instance;
