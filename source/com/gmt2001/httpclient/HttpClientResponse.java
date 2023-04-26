@@ -43,6 +43,7 @@ public final class HttpClientResponse {
     private final HttpHeaders responseHeaders;
     private final HttpResponseStatus responseCode;
     private final URI url;
+    private final URI resourceUrl;
 
     /**
      * Constructor
@@ -65,6 +66,7 @@ public final class HttpClientResponse {
         this.responseHeaders = response.responseHeaders().copy();
         this.responseCode = response.status();
         this.url = url;
+        this.resourceUrl = URI.create(response.resourceUrl());
 
         JSONObject jsonT = null;
         Exception jsonExceptionT = null;
@@ -120,6 +122,7 @@ public final class HttpClientResponse {
             this.responseCode = HttpResponseStatus.valueOf(0, "Unknown");
         }
         this.url = url;
+        this.resourceUrl = null;
 
         JSONObject jsonT = null;
         Exception jsonExceptionT = null;
@@ -148,6 +151,7 @@ public final class HttpClientResponse {
             jso.put("isSuccess", this.isSuccess);
             jso.put("method", this.method);
             jso.put("url", this.url.toString());
+            jso.put("resourceUrl", this.resourceUrl == null ? "null" : this.resourceUrl.toString());
             jso.put("requestHeaders", this.requestHeaders);
             jso.put("responseCode", this.responseCode.toString());
             jso.put("responseHeaders", this.responseHeaders);
@@ -335,5 +339,14 @@ public final class HttpClientResponse {
      */
     public URI url() {
         return this.url;
+    }
+
+    /**
+     * Returns the actual URL that was returned, after following any redirects
+     *
+     * @return
+     */
+    public URI resourceUrl() {
+        return this.resourceUrl;
     }
 }

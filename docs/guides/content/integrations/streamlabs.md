@@ -12,6 +12,5 @@
 8. Move the radio button for _streamlabskey_ to the right to enable the textbox
 9. Copy/Paste **Your API Access Token** from StreamLabs into the textbox for _streamlabskey_ on the _Bot Setup_ page
 10. Scroll to the top of the _Bot Setup_ page and click _Save_. Ensure you get a green success bar
-11. Restart the bot
 
 You can now Enable your *StreamLabs Alerts* under *Alerts* on the panel.

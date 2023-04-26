@@ -16,35 +16,32 @@
  */
 package com.scaniatv;
 
+import java.net.URISyntaxException;
+
+import org.json.JSONObject;
+
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
+
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import java.net.URISyntaxException;
-import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
 
 /*
  * @author ScaniaTV
  */
 public class StreamElementsAPIv2 {
 
-    private static StreamElementsAPIv2 instance;
+    private static final StreamElementsAPIv2 instance = new StreamElementsAPIv2();
     private static final String URL = "https://api.streamelements.com/kappa/v2";
-    private static String jwtToken = "";
-    private String id = "";
-    private int pullLimit = 5;
 
     /*
      * Returns the current instance.
      */
     public static synchronized StreamElementsAPIv2 instance() {
-        if (instance == null) {
-            instance = new StreamElementsAPIv2();
-        }
-
         return instance;
     }
 
@@ -52,7 +49,6 @@ public class StreamElementsAPIv2 {
      * Builds the instance for this class.
      */
     private StreamElementsAPIv2() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /*
@@ -62,7 +58,7 @@ public class StreamElementsAPIv2 {
     private static JSONObject readJsonFromUrl(String endpoint) throws URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
         HttpHeaders headers = HttpClient.createHeaders(HttpMethod.GET, true);
-        headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + jwtToken);
+        headers.add(HttpHeaderNames.AUTHORIZATION, "Bearer " + getJWT());
         HttpClientResponse response = HttpClient.get(URIUtil.create(URL + endpoint), headers);
 
         if (response.hasJson()) {
@@ -76,31 +72,32 @@ public class StreamElementsAPIv2 {
         return jsonResult;
     }
 
-    /*
-     * Sets the jwt token to access the api
-     *
-     * @param  jwtToken  jwt key that the user added in the bot login.
+    /**
+     * @botproperty streamelementsjwt - The JWT token for retrieving donations from StreamElements
+     * @botpropertycatsort streamelementsjwt 20 210 StreamElements
      */
-    public void SetJWT(String token) {
-        jwtToken = token.trim();
+    private static String getJWT() {
+        return CaselessProperties.instance().getProperty("streamelementsjwt", "");
     }
 
-    /*
-     * Sets the streamelements user account id
-     *
-     * @param  id
-     */
-    public void SetID(String id) {
-        this.id = id.trim();
+    public static boolean hasJWT() {
+        return !getJWT().isBlank();
     }
 
-    /*
-     * Sets the api pull limit.
-     *
-     * @param  pullLimit  Amount of donations to pull, default is 5.
+    /**
+     * @botproperty streamelementsid - The user id for retrieving donations from StreamElements
+     * @botpropertycatsort streamelementsid 10 210 StreamElements
      */
-    public void SetLimit(int pullLimit) {
-        this.pullLimit = pullLimit;
+    private static String getID() {
+        return CaselessProperties.instance().getProperty("streamelementsid", "");
+    }
+
+    /**
+     * @botproperty streamelementslimit - The maximum number of donations to pull from StreamElements when updating. Default `5`
+     * @botpropertycatsort streamelementslimit 30 210 StreamElements
+     */
+    private static int getLimit() {
+        return CaselessProperties.instance().getPropertyAsInt("streamelementslimit", 5);
     }
 
     /*
@@ -109,6 +106,6 @@ public class StreamElementsAPIv2 {
      * @return  The last 5 donations from the api.
      */
     public JSONObject GetDonations() throws URISyntaxException {
-        return readJsonFromUrl("/tips/" + this.id + "?limit=" + this.pullLimit);
+        return readJsonFromUrl("/tips/" + getID()+ "?limit=" + getLimit());
     }
 }
