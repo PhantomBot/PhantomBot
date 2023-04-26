@@ -20,20 +20,22 @@
  */
 package com.scaniatv;
 
+import java.net.URISyntaxException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
-import java.net.URISyntaxException;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import tv.phantombot.CaselessProperties;
 
 public class TipeeeStreamAPIv1 {
 
     private static TipeeeStreamAPIv1 instance;
     private static final String URL = "https://api.tipeeestream.com/v1.0/events.json";
-    private String apiOauth = "";
-    private int pullLimit = 5;
 
     /*
      * Returns the current instance.
@@ -56,7 +58,6 @@ public class TipeeeStreamAPIv1 {
     /*
      * Reads data from an API. In this case its tipeeestream.
      */
-    @SuppressWarnings("UseSpecificCatch")
     private static JSONObject readJsonFromUrl(String endpoint) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
         HttpClientResponse response = HttpClient.get(URIUtil.create(endpoint));
@@ -72,22 +73,24 @@ public class TipeeeStreamAPIv1 {
         return jsonResult;
     }
 
-    /*
-     * Sets the api oauth for this class to use.
-     *
-     * @param  apiOauth  Oauth key that the user added in the bot login.
+    /**
+     * @botproperty tipeeestreamkey - The access token for retrieving donations from TipeeeStream
+     * @botpropertycatsort tipeeestreamkey 20 220 TipeeeStream
      */
-    public void SetOauth(String apiOauth) {
-        this.apiOauth = apiOauth;
+    private static String getOauth() {
+        return CaselessProperties.instance().getProperty("tipeeestreamkey", "");
     }
 
-    /*
-     * Sets the api pull limit.
-     *
-     * @param  pullLimit  Amount of donations to pull, default is 5.
+    public static boolean hasOauth() {
+        return !getOauth().isBlank();
+    }
+
+    /**
+     * @botproperty tipeeestreamlimit - The maximum number of donations to pull from TipeeeStream when updating. Default `5`
+     * @botpropertycatsort tipeeestreamlimit 30 220 TipeeeStream
      */
-    public void SetLimit(int pullLimit) {
-        this.pullLimit = pullLimit;
+    private int getLimit() {
+        return CaselessProperties.instance().getPropertyAsInt("tipeeestreamlimit", 5);
     }
 
     /*
@@ -96,6 +99,6 @@ public class TipeeeStreamAPIv1 {
      * @return  The last 5 donations from the api.
      */
     public JSONObject GetDonations() throws JSONException, URISyntaxException {
-        return readJsonFromUrl(URL + "?apiKey=" + this.apiOauth + "&type[]=donation&limit=" + this.pullLimit);
+        return readJsonFromUrl(URL + "?apiKey=" + getOauth() + "&type[]=donation&limit=" + getLimit());
     }
 }

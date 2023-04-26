@@ -16,6 +16,28 @@
  */
 package tv.phantombot;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONException;
+
 import com.gmt2001.ExecutorService;
 import com.gmt2001.GamesListUpdater;
 import com.gmt2001.PathValidator;
@@ -40,31 +62,10 @@ import com.illusionaryone.GitHubAPIv3;
 import com.illusionaryone.StreamLabsAPI;
 import com.illusionaryone.YouTubeAPIv3;
 import com.scaniatv.CustomAPI;
-import com.scaniatv.StreamElementsAPIv2;
-import com.scaniatv.TipeeeStreamAPIv1;
+
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.JdkLoggerFactory;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang3.SystemUtils;
-import org.json.JSONException;
 import reactor.util.Loggers;
 import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.cache.DonationsCache;
@@ -828,43 +829,6 @@ public final class PhantomBot implements Listener {
             YouTubeAPIv3.instance().SetAPIKey(CaselessProperties.instance().getProperty("youtubekey", ""));
         }
 
-        /* Set the TipeeeStream oauth key. */
-        /**
-         * @botproperty tipeeestreamkey - The access token for retrieving donations from TipeeeStream
-         * @botpropertycatsort tipeeestreamkey 20 220 TipeeeStream
-         * @botpropertyrestart tipeeestreamkey
-         */
-        /**
-         * @botproperty tipeeestreamlimit - The maximum number of donations to pull from TipeeeStream when updating. Default `5`
-         * @botpropertycatsort tipeeestreamlimit 30 220 TipeeeStream
-         */
-        if (!CaselessProperties.instance().getProperty("tipeeestreamkey", "").isEmpty()) {
-            TipeeeStreamAPIv1.instance().SetOauth(CaselessProperties.instance().getProperty("tipeeestreamkey", ""));
-            TipeeeStreamAPIv1.instance().SetLimit(CaselessProperties.instance().getPropertyAsInt("tipeeestreamlimit", 5));
-        }
-
-        /* Set the StreamElements JWT token. */
-        /**
-         * @botproperty streamelementsjwt - The JWT token for retrieving donations from StreamElements
-         * @botpropertycatsort streamelementsjwt 20 210 StreamElements
-         * @botpropertyrestart streamelementsjwt
-         */
-        /**
-         * @botproperty streamelementsid - The user id for retrieving donations from StreamElements
-         * @botpropertycatsort streamelementsid 10 210 StreamElements
-         * @botpropertyrestart streamelementsid
-         */
-        /**
-         * @botproperty streamelementslimit - The maximum number of donations to pull from StreamElements when updating. Default `5`
-         * @botpropertycatsort streamelementslimit 30 210 StreamElements
-         * @botpropertyrestart streamelementslimit
-         */
-        if (!CaselessProperties.instance().getProperty("streamelementsjwt", "").isEmpty() && !CaselessProperties.instance().getProperty("streamelementsid", "").isEmpty()) {
-            StreamElementsAPIv2.instance().SetJWT(CaselessProperties.instance().getProperty("streamelementsjwt", ""));
-            StreamElementsAPIv2.instance().SetID(CaselessProperties.instance().getProperty("streamelementsid", ""));
-            StreamElementsAPIv2.instance().SetLimit(CaselessProperties.instance().getPropertyAsInt("streamelementslimit", 5));
-        }
-
         /* print a extra line in the console. */
         this.print("");
 
@@ -1067,12 +1031,12 @@ public final class PhantomBot implements Listener {
 
         if (this.tipeeeStreamCache != null) {
             this.print("Terminating the TipeeeStream cache...");
-            TipeeeStreamCache.killall();
+            TipeeeStreamCache.instance().kill();
         }
 
         if (this.streamElementCache != null) {
             this.print("Terminating the StreamElementsCache cache...");
-            StreamElementsCache.killall();
+            StreamElementsCache.instance().kill();
         }
 
         this.print("Terminating all script modules...");
@@ -1158,16 +1122,8 @@ public final class PhantomBot implements Listener {
         this.viewerListCache = ViewerListCache.instance(this.getChannelName());
 
         DonationsCache.instance();
-
-        /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
-        if (CaselessProperties.instance().getProperty("tipeeestreamkey", "") != null && !CaselessProperties.instance().getProperty("tipeeestreamkey", "").isEmpty() && checkModuleEnabled("./handlers/tipeeeStreamHandler.js")) {
-            this.tipeeeStreamCache = TipeeeStreamCache.instance(this.getChannelName());
-        }
-
-        /* Start the StreamElements cache if the keys are not null and the module is enabled. */
-        if (CaselessProperties.instance().getProperty("streamelementsjwt", "") != null && !CaselessProperties.instance().getProperty("streamelementsjwt", "").isEmpty() && checkModuleEnabled("./handlers/streamElementsHandler.js")) {
-            this.streamElementCache = StreamElementsCache.instance(this.getChannelName());
-        }
+        this.tipeeeStreamCache = TipeeeStreamCache.instance();
+        this.streamElementCache = StreamElementsCache.instance();
 
         /* Export these to the $. api for the sripts to use */
         Script.global.defineProperty("twitchteamscache", this.twitchTeamCache, 0);
