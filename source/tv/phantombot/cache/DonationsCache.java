@@ -43,7 +43,6 @@ public class DonationsCache {
     private ScheduledFuture<?> updateFuture = null;
     private boolean firstUpdate = true;
 
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private DonationsCache() {
         this.updateFuture = ExecutorService.scheduleAtFixedRate(this::run, 20, 30, TimeUnit.SECONDS);
     }
