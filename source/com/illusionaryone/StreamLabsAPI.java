@@ -43,7 +43,7 @@ import tv.phantombot.PhantomBot;
 public class StreamLabsAPI {
 
     private static StreamLabsAPI instance;
-    private static final String APIURL = "https://www.streamlabs.com/api/v2.0";
+    private static final String APIURL = "https://streamlabs.com/api/v2.0";
     private String sCurrencyCode = "";
 
     public static synchronized StreamLabsAPI instance() {
