@@ -107,7 +107,7 @@ public class StreamLabsAPI {
      * @botproperty streamlabslimit - The maximum number of donations to pull from StreamLabs when updating. Default `5`
      * @botpropertycatsort streamlabslimit 30 260 StreamLabs
      */
-    public int getDonationPullLimit() {
+    public static int getDonationPullLimit() {
         return CaselessProperties.instance().getPropertyAsInt("streamlabslimit", CaselessProperties.instance().getPropertyAsInt("twitchalertslimit", 5));
     }
 
@@ -126,7 +126,7 @@ public class StreamLabsAPI {
      * @return donationsObject
      */
     public JSONObject GetDonations(int lastId) throws JSONException, URISyntaxException {
-        return this.readJsonFromUrl("/donations?limit=" + this.getDonationPullLimit()
+        return this.readJsonFromUrl("/donations?limit=" + getDonationPullLimit()
                 + "&currency=" + this.sCurrencyCode + (lastId > 0 ? "&after=" + lastId : ""));
     }
 
