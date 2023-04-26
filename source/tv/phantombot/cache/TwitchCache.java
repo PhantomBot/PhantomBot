@@ -682,17 +682,17 @@ public final class TwitchCache implements Listener {
     }
 
     /**
-     * Syncs the stream status using both Get Streams and Get Channel Information, then calls {@link #goOnline(boolean)} with the parameter set to {@code true}
+     * Syncs the stream status using both Get Streams and Get Channel Information, then sets the online status
      */
     public void syncOnline() {
         Mono.delay(Duration.ofSeconds(10)).doFinally((SignalType s) -> {
             this.syncStreamStatus(false, (hasStream) -> {
                 if (!hasStream) {
                     this.syncStreamInfoFromChannel(false, (hasChannel) -> {
-                        this.goOnline(true, false);
+                        this.goOffline(true);
                     });
                 } else {
-                    this.goOnline(true);
+                    this.goOnline(true, false);
                 }
             });
         }).subscribe();
