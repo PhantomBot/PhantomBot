@@ -18,17 +18,22 @@
  */
 package com.illusionaryone;
 
+import java.net.URISyntaxException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
+
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
-import java.net.URISyntaxException;
-import org.json.JSONException;
-import org.json.JSONObject;
+import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 
 /*
  * Communicates with the StreamLabs API
@@ -39,23 +44,26 @@ public class StreamLabsAPI {
 
     private static StreamLabsAPI instance;
     private static final String APIURL = "https://www.streamlabs.com/api/v2.0";
-    private String sAccessToken = "";
-    private int iDonationPullLimit = 5;
     private String sCurrencyCode = "";
 
     public static StreamLabsAPI instance() {
         if (instance == null) {
-            instance = new StreamLabsAPI();
+            synchronized(APIURL) {
+                if (instance == null) {
+                    instance = new StreamLabsAPI();
+                }
+            }
         }
 
         return instance;
     }
 
     private StreamLabsAPI() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        if (PhantomBot.instance().getDataStore().HasKey("donations", "", "currencycode")) {
+            this.SetCurrencyCode(PhantomBot.instance().getDataStore().GetString("donations", "", "currencycode"));
+        }
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     private JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, null, HttpMethod.GET);
     }
@@ -64,12 +72,11 @@ public class StreamLabsAPI {
         return readJsonFromUrl(urlAddress, postString, HttpMethod.POST);
     }
 
-    @SuppressWarnings("UseSpecificCatch")
     private JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
         HttpHeaders headers = HttpClient.createHeaders(method, true);
 
-        headers.set(HttpHeaderNames.AUTHORIZATION, "Bearer " + this.sAccessToken);
+        headers.set(HttpHeaderNames.AUTHORIZATION, "Bearer " + getAccessToken());
 
         if (method == HttpMethod.POST) {
             headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
@@ -88,22 +95,24 @@ public class StreamLabsAPI {
         return jsonResult;
     }
 
-    /*
-     * Sets the Access Token to authenticate with TwitchAlerts API.
-     *
-     * @param sAccessToken
+    /**
+     * @botproperty streamlabskey - The access token for retrieving donations from StreamLabs
+     * @botpropertycatsort streamlabskey 20 260 StreamLabs
      */
-    public void SetAccessToken(String sAccessToken) {
-        this.sAccessToken = sAccessToken;
+    private static String getAccessToken() {
+        return CaselessProperties.instance().getProperty("streamlabskey", CaselessProperties.instance().getProperty("twitchalertskey", ""));
     }
 
-    /*
-     * Sets a new limit to how many donation records to return.
-     *
-     * @param iDonationPullLimit
+    public static boolean hasAccessToken() {
+        return !getAccessToken().isBlank();
+    }
+
+    /**
+     * @botproperty streamlabslimit - The maximum number of donations to pull from StreamLabs when updating. Default `5`
+     * @botpropertycatsort streamlabslimit 30 260 StreamLabs
      */
-    public void SetDonationPullLimit(int iDonationPullLimit) {
-        this.iDonationPullLimit = iDonationPullLimit;
+    public int getDonationPullLimit() {
+        return CaselessProperties.instance().getPropertyAsInt("streamlabslimit", CaselessProperties.instance().getPropertyAsInt("twitchalertslimit", 5));
     }
 
     /*
@@ -121,7 +130,7 @@ public class StreamLabsAPI {
      * @return donationsObject
      */
     public JSONObject GetDonations(int lastId) throws JSONException, URISyntaxException {
-        return this.readJsonFromUrl("/donations?limit=" + this.iDonationPullLimit
+        return this.readJsonFromUrl("/donations?limit=" + this.getDonationPullLimit()
                 + "&currency=" + this.sCurrencyCode + (lastId > 0 ? "&after=" + lastId : ""));
     }
 

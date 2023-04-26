@@ -818,27 +818,6 @@ public final class PhantomBot implements Listener {
             DiscordAPI.instance().connect(CaselessProperties.instance().getProperty("discord_token", ""));
         }
 
-        /* Set Streamlabs currency code, if possible */
-        if (this.dataStore.HasKey("donations", "", "currencycode")) {
-            StreamLabsAPI.instance().SetCurrencyCode(this.dataStore.GetString("donations", "", "currencycode"));
-        }
-
-        /* Set the StreamLabs OAuth key and limiter. */
-        /**
-         * @botproperty streamlabskey - The access token for retrieving donations from StreamLabs
-         * @botpropertycatsort streamlabskey 20 260 StreamLabs
-         * @botpropertyrestart streamlabskey
-         */
-        /**
-         * @botproperty streamlabslimit - The maximum number of donations to pull from StreamLabs when updating. Default `5`
-         * @botpropertycatsort streamlabslimit 30 260 StreamLabs
-         * @botpropertyrestart streamlabslimit
-         */
-        if (!CaselessProperties.instance().getProperty("streamlabskey", CaselessProperties.instance().getProperty("twitchalertskey", "")).isEmpty()) {
-            StreamLabsAPI.instance().SetAccessToken(CaselessProperties.instance().getProperty("streamlabskey", CaselessProperties.instance().getProperty("twitchalertskey", "")));
-            StreamLabsAPI.instance().SetDonationPullLimit(CaselessProperties.instance().getPropertyAsInt("streamlabslimit", CaselessProperties.instance().getPropertyAsInt("twitchalertslimit", 5)));
-        }
-
         /* Set the YouTube API Key if provided. */
         /**
          * @botproperty youtubekey - The access token for YouTube APIv3
@@ -1178,10 +1157,7 @@ public final class PhantomBot implements Listener {
         this.followersCache = FollowersCache.instance();
         this.viewerListCache = ViewerListCache.instance(this.getChannelName());
 
-        /* Start the donations cache if the keys are not null and the module is enabled */
-        if (CaselessProperties.instance().getProperty("twitchalertskey", "") != null && !CaselessProperties.instance().getProperty("twitchalertskey", "").isEmpty() && checkModuleEnabled("./handlers/donationHandler.js")) {
-            DonationsCache.instance().start();
-        }
+        DonationsCache.instance();
 
         /* Start the TipeeeStream cache if the keys are not null and the module is enabled. */
         if (CaselessProperties.instance().getProperty("tipeeestreamkey", "") != null && !CaselessProperties.instance().getProperty("tipeeestreamkey", "").isEmpty() && checkModuleEnabled("./handlers/tipeeeStreamHandler.js")) {
