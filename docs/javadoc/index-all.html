@@ -303,6 +303,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Calls the specified Runnable once the next interval expires</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#BackoffOnce()">BackoffOnce()</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Blocks with Thread.sleep until the next interval, if not already backing off</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#BackoffOnceAsync(java.lang.Runnable)">BackoffOnceAsync(Runnable)</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Calls the specified Runnable once the next interval expires, if not already backing off</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#backupDB(java.lang.String)">backupDB(String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Backs up the database to the specified filename in the <code>dbbackup</code> folder</div>
@@ -1914,9 +1922,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Handles backoff timing using an exponentially increasing duration strategy.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(long,long)">ExponentialBackoff(long, long)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(long,long,long)">ExponentialBackoff(long, long, long)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(java.time.Duration,java.time.Duration)">ExponentialBackoff(Duration, Duration)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(java.time.Duration,java.time.Duration,java.time.Duration)">ExponentialBackoff(Duration, Duration, Duration)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/scripts/handler/EmojiProcessor.html#extractAllEmojiToCodepoint(java.lang.String)">extractAllEmojiToCodepoint(String)</a></span> - Static method in class tv.phantombot.scripts.handler.<a href="tv/phantombot/scripts/handler/EmojiProcessor.html" title="class in tv.phantombot.scripts.handler">EmojiProcessor</a></dt>
 <dd>
 <div class="block">Combines <a href="tv/phantombot/scripts/handler/EmojiProcessor.html#extractEmoji(java.lang.String)"><code>EmojiProcessor.extractEmoji(String)</code></a> and <a href="tv/phantombot/scripts/handler/EmojiProcessor.html#covertEmoteToCodepoint(java.lang.String)"><code>EmojiProcessor.covertEmoteToCodepoint(String)</code></a> in a single method
@@ -8576,15 +8596,33 @@ the order they are declared.</div>
 <div class="block">Handles rate limiting using a window which resets a period of time after the first token is used</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#%3Cinit%3E(long,int)">WindowedRateLimiter(long, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#%3Cinit%3E(java.time.Duration,int)">WindowedRateLimiter(Duration, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><span class="typeNameLink">WindowedSwitchingRateLimiter</span></a> - Class in <a href="com/gmt2001/ratelimiters/package-summary.html">com.gmt2001.ratelimiters</a></dt>
 <dd>
 <div class="block">Handles rate limiting using a window which resets a period of time after the first token is used, and where the limit can switch between two values</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(long,int,int)">WindowedSwitchingRateLimiter(long, int, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(long,int,int,boolean)">WindowedSwitchingRateLimiter(long, int, int, boolean)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(java.time.Duration,int,int)">WindowedSwitchingRateLimiter(Duration, int, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(java.time.Duration,int,int,boolean)">WindowedSwitchingRateLimiter(Duration, int, int, boolean)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#windowMS">windowMS</a></span> - Variable in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#windowMS()">windowMS()</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
