@@ -503,9 +503,9 @@ public final class PhantomBot implements Listener {
 
     /**
      * Tells you if the build is a pre-release.
-     *
-     * @return
+     * @deprecated This build type is not used
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public boolean isPrerelease() {
         return RepoVersion.isPrereleaseBuild();
     }
@@ -670,7 +670,7 @@ public final class PhantomBot implements Listener {
     }
 
     public String getDataStoreType() {
-        return CaselessProperties.instance().getProperty("datastore", "sqlite3store");
+        return CaselessProperties.instance().getProperty("datastore", "h2store");
     }
 
     /**
@@ -950,8 +950,6 @@ public final class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-
-        EventSub.instance();
     }
 
     private void init() {
@@ -1130,6 +1128,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
+        EventSub.instance();
     }
 
     /**
