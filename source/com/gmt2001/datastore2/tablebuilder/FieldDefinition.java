@@ -51,7 +51,7 @@ public final class FieldDefinition {
      */
     private boolean unsigned = true;
     /**
-     * Whether the field is not allowed to be {@code null}
+     * Whether the field is prohibited from storing the SQL literal {@code NULL}
      */
     private boolean notNull = true;
     /**
@@ -308,6 +308,7 @@ public final class FieldDefinition {
      * Adds a field to the end of the fields list
      *
      * @param name the name of the field
+     * @return The new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name) throws IllegalArgumentException {
@@ -319,6 +320,7 @@ public final class FieldDefinition {
      *
      * @param name the name of the field
      * @param position the position to insert the field at
+     * @return The new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name, int position) throws IllegalArgumentException {
