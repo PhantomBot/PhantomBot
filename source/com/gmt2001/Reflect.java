@@ -36,6 +36,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
 /**
+ * Provides methods which perform common reflection operations
  *
  * @author gmt2001
  */
@@ -50,6 +51,11 @@ public final class Reflect {
     private Reflect() {
     }
 
+    /**
+     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the classloaders cache
+     *
+     * @param pkg the package or package prefix to load
+     */
     public void loadPackageRecursive(String pkg) {
         pkg = pkg.replace('.', '/');
         ClassLoader classLoader = Reflect.class.getClassLoader();
@@ -76,6 +82,11 @@ public final class Reflect {
         }
     }
 
+    /**
+     * Gets a list of {@link Class} that are in the cache of the default {@link ClassLoader}
+     *
+     * @return a list of {@link Class}
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Class<?>> getClasses() {
         List<Class<?>> cl = new ArrayList<>();
@@ -96,6 +107,13 @@ public final class Reflect {
         return cl;
     }
 
+    /**
+     * Gets a list of non-abstract {@link Class} that are in the cache of the default {@link ClassLoader} which are assignable from the specified type
+     *
+     * @param <T> the parent class or interface
+     * @param type the parent class or interface
+     * @return a list of sub-classes
+     */
     @SuppressWarnings("unchecked")
     public <T> List<Class<? extends T>> getSubTypesOf(final Class<T> type) {
         List<Class<? extends T>> cl = new ArrayList<>();
@@ -107,6 +125,9 @@ public final class Reflect {
         return cl;
     }
 
+    /**
+     * Dumps the Java Heap to a file
+     */
     public static void dumpHeap() {
         int pid;
         try {
@@ -145,6 +166,13 @@ public final class Reflect {
         }
     }
 
+    /**
+     * Dumps the Java Heap to a file
+     *
+     * @param filePath the path to the file where the heap should be written
+     * @param live {@code true} to only dump <i>live</i> objects
+     * @throws IOException if the file already exists, cannot be created, opened, or written to
+     */
     // https://www.baeldung.com/java-heap-dump-capture
     public static void dumpHeap(String filePath, boolean live) throws IOException {
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
@@ -153,11 +181,22 @@ public final class Reflect {
         mxBean.dumpHeap(filePath, live);
     }
 
+    /**
+     * Gets the PID of this Java process
+     *
+     * @return the PID
+     * @throws NumberFormatException if the runtime did not return a parsable integer
+     */
     public static int pid() throws NumberFormatException {
         RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
         return Integer.parseInt(runtime.getName().split("@")[0]);
     }
 
+    /**
+     * Gets the path to the folder containing the PhantomBot.jar file
+     *
+     * @return the path to the folder; {@code .} if unable to determine
+     */
     public static String GetExecutionPath() {
         try {
             return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toAbsolutePath().toRealPath().toString();
