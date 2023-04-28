@@ -84,6 +84,15 @@ public class ExponentialBackoff {
     }
 
     /**
+     * Blocks with Thread.sleep until the next interval, if not already backing off
+     */
+    public void BackoffOnce() {
+        if (!this.GetIsBackingOff()) {
+            this.Backoff();
+        }
+    }
+
+    /**
      * Blocks with Thread.sleep until the next interval
      */
     public void Backoff() {
@@ -108,6 +117,17 @@ public class ExponentialBackoff {
         }
 
         com.gmt2001.Console.debug.println("Returning control...");
+    }
+
+    /**
+     * Calls the specified Runnable once the next interval expires, if not already backing off
+     *
+     * @param command The Runnable to callback
+     */
+    public void BackoffOnceAsync(Runnable command) {
+        if (!this.GetIsBackingOff()) {
+            this.BackoffAsync(command);
+        }
     }
 
     /**
