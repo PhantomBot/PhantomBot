@@ -17,6 +17,7 @@
 package com.gmt2001.datastore2.tablebuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,6 +38,10 @@ public final class TableBuilder {
      * The list of fields
      */
     private List<FieldDefinition> fields = new ArrayList<>();
+    /**
+     * The list of indexes
+     */
+    private List<IndexDefinition> indexes = new ArrayList<>();
 
     /**
      * Constructor
@@ -89,7 +94,7 @@ public final class TableBuilder {
      * Adds a field to the end of the fields list
      *
      * @param name the name of the field
-     * @return The new {@link FieldDefinition}
+     * @return the new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name) throws IllegalArgumentException {
@@ -103,7 +108,7 @@ public final class TableBuilder {
      *
      * @param name the name of the field
      * @param position the position to insert the field at
-     * @return The new {@link FieldDefinition}
+     * @return the new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name, int position) throws IllegalArgumentException {
@@ -118,6 +123,42 @@ public final class TableBuilder {
      * @return the list of fields
      */
     public List<FieldDefinition> fields() {
-        return this.fields;
+        return Collections.unmodifiableList(this.fields);
+    }
+
+    /**
+     * Adds an index to the end of the indexes list
+     *
+     * @param name the name of the index
+     * @return the new {@link IndexDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public IndexDefinition index(String name) throws IllegalArgumentException {
+        IndexDefinition index = new IndexDefinition(this, name);
+        this.indexes.add(index);
+        return index;
+    }
+
+    /**
+     * Adds an index to the specified position of the indexes list
+     *
+     * @param name the name of the index
+     * @param position the position to insert the index at
+     * @return the new {@link IndexDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public IndexDefinition index(String name, int position) throws IllegalArgumentException {
+        IndexDefinition index = new IndexDefinition(this, name);
+        this.indexes.add(position, index);
+        return index;
+    }
+
+    /**
+     * The list of indexes added to this {@link TableBuilder}
+     *
+     * @return the list of indexes
+     */
+    public List<IndexDefinition> indexes() {
+        return Collections.unmodifiableList(this.indexes);
     }
 }

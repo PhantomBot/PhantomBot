@@ -308,7 +308,7 @@ public final class FieldDefinition {
      * Adds a field to the end of the fields list
      *
      * @param name the name of the field
-     * @return The new {@link FieldDefinition}
+     * @return the new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name) throws IllegalArgumentException {
@@ -320,10 +320,33 @@ public final class FieldDefinition {
      *
      * @param name the name of the field
      * @param position the position to insert the field at
-     * @return The new {@link FieldDefinition}
+     * @return the new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name, int position) throws IllegalArgumentException {
         return parent.field(name, position);
+    }
+
+    /**
+     * Adds an index to the end of the indexes list
+     *
+     * @param name the name of the index
+     * @return the new {@link IndexDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public IndexDefinition index(String name) throws IllegalArgumentException {
+        return parent.index(name);
+    }
+
+    /**
+     * Adds an index to the specified position of the indexes list
+     *
+     * @param name the name of the index
+     * @param position the position to insert the index at
+     * @return the new {@link IndexDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public IndexDefinition index(String name, int position) throws IllegalArgumentException {
+        return parent.index(name, position);
     }
 }
