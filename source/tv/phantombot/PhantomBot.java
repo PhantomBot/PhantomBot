@@ -503,9 +503,9 @@ public final class PhantomBot implements Listener {
 
     /**
      * Tells you if the build is a pre-release.
-     *
-     * @return
+     * @deprecated This build type is not used
      */
+    @Deprecated(since = "3.8.0.0", forRemoval = true)
     public boolean isPrerelease() {
         return RepoVersion.isPrereleaseBuild();
     }
