@@ -71,8 +71,9 @@ public abstract class Datastore2 {
      * <li>Must implement/reference {@link Datastore2} and any other required types in the {@code com.gmt2001.datastore2} namespace</li>
      * <li>Must call {@link #Datastore2(ConnectionPoolDataSource)} via {@code super(ConnectionPoolDataSource)} in the constructor, passing in a valid {@link ConnectionPoolDataSource}</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
-     * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type</li>
-     * <li>The value of the {@code datastore} property in botlogin.txt must match the output of {@link Class#getName()} of the type</li>
+     * <li>The {@code .jar} file exension must be lower-case</li>
+     * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type, including case</li>
+     * <li>The value of the {@code datastore} property in botlogin.txt must match the output of {@link Class#getName()} of the type, including case</li>
      * </ul>
      *
      * @throws IllegalStateException if {@link #init()} was called after a DataStore2 has already been initialized
