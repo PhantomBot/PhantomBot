@@ -89,6 +89,7 @@ public final class TableBuilder {
      * Adds a field to the end of the fields list
      *
      * @param name the name of the field
+     * @return The new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name) throws IllegalArgumentException {
@@ -102,6 +103,7 @@ public final class TableBuilder {
      *
      * @param name the name of the field
      * @param position the position to insert the field at
+     * @return The new {@link FieldDefinition}
      * @throws IllegalArgumentException if the name is null or blank
      */
     public FieldDefinition field(String name, int position) throws IllegalArgumentException {
