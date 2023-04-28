@@ -950,8 +950,6 @@ public final class PhantomBot implements Listener {
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
-
-        EventSub.instance();
     }
 
     private void init() {
@@ -1130,6 +1128,7 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
+        EventSub.instance();
     }
 
     /**
