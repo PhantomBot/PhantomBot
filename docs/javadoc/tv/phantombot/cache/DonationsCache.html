@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10};
+var data = {"i0":9,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -130,9 +130,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt>All Implemented Interfaces:</dt>
+<dd><code><a href="../event/Listener.html" title="interface in tv.phantombot.event">Listener</a></code></dd>
+</dl>
 <hr>
 <pre>public class <span class="typeNameLabel">DonationsCache</span>
-extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a>
+implements <a href="../event/Listener.html" title="interface in tv.phantombot.event">Listener</a></pre>
 </li>
 </ul>
 </div>
@@ -161,6 +166,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#kill()">kill</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onWebPanelSocketUpdateEvent(tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent)">onWebPanelSocketUpdateEvent</a></span>&#8203;(<a href="../event/webpanel/websocket/WebPanelSocketUpdateEvent.html" title="class in tv.phantombot.event.webpanel.websocket">WebPanelSocketUpdateEvent</a>&nbsp;event)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -194,6 +204,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>instance</h4>
 <pre class="methodSignature">public static&nbsp;<a href="DonationsCache.html" title="class in tv.phantombot.cache">DonationsCache</a>&nbsp;instance()</pre>
+</li>
+</ul>
+<a id="onWebPanelSocketUpdateEvent(tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onWebPanelSocketUpdateEvent</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onWebPanelSocketUpdateEvent&#8203;(<a href="../event/webpanel/websocket/WebPanelSocketUpdateEvent.html" title="class in tv.phantombot.event.webpanel.websocket">WebPanelSocketUpdateEvent</a>&nbsp;event)</pre>
 </li>
 </ul>
 <a id="kill()">

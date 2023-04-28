@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":9,"i7":9,"i8":10,"i9":10,"i10":10};
+var data = {"i0":9,"i1":9,"i2":10,"i3":9,"i4":9,"i5":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -154,64 +154,38 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AddToAllPoints(java.lang.String,int)">AddToAllPoints</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName,
-              int&nbsp;points)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#authorize(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">authorize</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;clientId,
+         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;clientSecret,
+         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;redirectUri,
+         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;code)</code></th>
+<td class="colLast">
+<div class="block">Attempts to authorize the user and obtain an access token</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AddToAllPointsAPI(java.lang.String,int)">AddToAllPointsAPI</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName,
-                 int&nbsp;points)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDonationPullLimit()">getDonationPullLimit</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetDonations(int)">GetDonations</a></span>&#8203;(int&nbsp;lastId)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetPoints(java.lang.String,java.lang.String)">GetPoints</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetPointsAPI(java.lang.String,java.lang.String)">GetPointsAPI</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasAccessToken()">hasAccessToken</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetCurrencyCode(java.lang.String)">SetCurrencyCode</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sCurrencyCode)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetPoints(java.lang.String,int)">SetPoints</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-         int&nbsp;points)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetPointsAPI(java.lang.String,int)">SetPointsAPI</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-            int&nbsp;points)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -274,117 +248,42 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre class="methodSignature">public&nbsp;void&nbsp;SetCurrencyCode&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sCurrencyCode)</pre>
 </li>
 </ul>
-<a id="GetDonations(int)">
+<a id="authorize(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
+<li class="blockList">
+<h4>authorize</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;authorize&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;clientId,
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;clientSecret,
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;redirectUri,
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;code)
+                         throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
+                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
+<div class="block">Attempts to authorize the user and obtain an access token</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>clientId</code> - The client ID</dd>
+<dd><code>clientSecret</code> - The client secret</dd>
+<dd><code>redirectUri</code> - The redirect URI that received the code</dd>
+<dd><code>code</code> - The code to exchange for an access token</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if an access token was obtained and saved</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="GetDonations(int)">
+<!--   -->
+</a>
+<ul class="blockListLast">
 <li class="blockList">
 <h4>GetDonations</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;GetDonations&#8203;(int&nbsp;lastId)
                         throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="GetPointsAPI(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetPointsAPI</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;GetPointsAPI&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName)
-                        throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="SetPointsAPI(java.lang.String,int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SetPointsAPI</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;SetPointsAPI&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-                               int&nbsp;points)
-                        throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="AddToAllPointsAPI(java.lang.String,int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>AddToAllPointsAPI</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONObject</a>&nbsp;AddToAllPointsAPI&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName,
-                                    int&nbsp;points)
-                             throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="GetPoints(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetPoints</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;GetPoints&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName)
-              throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
-                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="SetPoints(java.lang.String,int)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SetPoints</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;SetPoints&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;userName,
-                     int&nbsp;points)
-              throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
-                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
-<dl>
-<dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></code></dd>
-</dl>
-</li>
-</ul>
-<a id="AddToAllPoints(java.lang.String,int)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>AddToAllPoints</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;AddToAllPoints&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channelName,
-                              int&nbsp;points)
-                       throws <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a>,
-                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URISyntaxException.html?is-external=true" title="class or interface in java.net" class="externalLink">URISyntaxException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONException</a></code></dd>
