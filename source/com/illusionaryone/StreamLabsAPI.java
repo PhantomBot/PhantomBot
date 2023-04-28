@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
@@ -29,10 +30,10 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
 
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 
 /*
@@ -60,23 +61,19 @@ public class StreamLabsAPI {
         }
     }
 
-    private JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
+    private static JSONObject readJsonFromUrl(String urlAddress) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, null, HttpMethod.GET);
     }
 
-    private JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException, URISyntaxException {
+    private static JSONObject readJsonFromUrl(String urlAddress, String postString) throws JSONException, URISyntaxException {
         return readJsonFromUrl(urlAddress, postString, HttpMethod.POST);
     }
 
-    private JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
+    private static JSONObject readJsonFromUrl(String endpoint, String body, HttpMethod method) throws JSONException, URISyntaxException {
         JSONObject jsonResult = new JSONObject("{}");
         HttpHeaders headers = HttpClient.createHeaders(method, true);
 
         headers.set(HttpHeaderNames.AUTHORIZATION, "Bearer " + getAccessToken());
-
-        if (method == HttpMethod.POST) {
-            headers.set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED);
-        }
 
         HttpClientResponse response = HttpClient.request(method, URIUtil.create(APIURL + endpoint), headers, body);
 
@@ -120,102 +117,45 @@ public class StreamLabsAPI {
         this.sCurrencyCode = sCurrencyCode;
     }
 
+    /**
+     * Attempts to authorize the user and obtain an access token
+     *
+     * @param clientId The client ID
+     * @param clientSecret The client secret
+     * @param redirectUri The redirect URI that received the code
+     * @param code The code to exchange for an access token
+     * @return {@code true} if an access token was obtained and saved
+     * @throws JSONException
+     * @throws URISyntaxException
+     */
+    public static boolean authorize(String clientId, String clientSecret, String redirectUri, String code) throws JSONException, URISyntaxException {
+        JSONStringer jsr = new JSONStringer();
+        jsr.object()
+        .key("grant_type").value("authorization_code")
+        .key("client_id").value(clientId)
+        .key("client_secret").value(clientSecret)
+        .key("redirect_uri").value(redirectUri)
+        .key("code").value(code)
+        .endObject();
+        JSONObject response = readJsonFromUrl("/token", jsr.toString());
+
+        if (response.has("access_token")) {
+            Transaction t = CaselessProperties.instance().startTransaction();
+            t.setProperty("streamlabskey", response.getString("access_token"));
+            t.commit();
+            return true;
+        }
+
+        return false;
+    }
+
     /*
      * Pulls donation information.
      *
      * @return donationsObject
      */
     public JSONObject GetDonations(int lastId) throws JSONException, URISyntaxException {
-        return this.readJsonFromUrl("/donations?limit=" + getDonationPullLimit()
+        return readJsonFromUrl("/donations?limit=" + getDonationPullLimit()
                 + "&currency=" + this.sCurrencyCode + (lastId > 0 ? "&after=" + lastId : ""));
-    }
-
-    /*
-     * Get an individuals points.
-     *
-     * @param userName    User to lookup
-     * @param channelName Channel name to lookup
-     *
-     * @return pointsObject
-     */
-    public JSONObject GetPointsAPI(String userName, String channelName) throws JSONException, URISyntaxException {
-        return this.readJsonFromUrl("/points?username=" + userName + "&channel=" + channelName);
-    }
-
-    /*
-     * Set points for an individual.
-     *
-     * @param userName User to modify
-     * @param points   Points to set to.
-     *
-     * @return pointsObject
-     */
-    public JSONObject SetPointsAPI(String userName, int points) throws JSONException, URISyntaxException {
-        return this.readJsonFromUrl("/points/user_point_edit", "username=" + userName + "&points=" + points);
-    }
-
-    /*
-     * Add points to all in chat.
-     *
-     * @param channelName Channel name
-     * @param points      Points to add.
-     *
-     * @return pointsToAddObject
-     */
-    public JSONObject AddToAllPointsAPI(String channelName, int points) throws JSONException, URISyntaxException {
-        return this.readJsonFromUrl("/points/add_to_all", "channel=" + channelName + "&value=" + points);
-    }
-
-    /*
-     * Get an individuals points.
-     *
-     * @param userName    User to lookup
-     * @param channelName Channel name to lookup
-     *
-     * @return points (-1 on error)
-     */
-    public int GetPoints(String userName, String channelName) throws JSONException, URISyntaxException {
-        JSONObject jsonObject = GetPointsAPI(userName, channelName);
-
-        if (jsonObject.has("points")) {
-            return jsonObject.getInt("points");
-        }
-        return -1;
-    }
-
-    /*
-     * Set points for an individual.
-     *
-     * @param userName User to modify
-     * @param points   Points to set to.
-     *
-     * @return newPoints
-     */
-    public int SetPoints(String userName, int points) throws JSONException, URISyntaxException {
-        JSONObject jsonObject = SetPointsAPI(userName, points);
-
-        if (jsonObject.has("points")) {
-            return jsonObject.getInt("points");
-        }
-        return -1;
-    }
-
-    /*
-     * Add points to all in chat.
-     *
-     * @param channelName Channel name
-     * @param points      Points to add.
-     *
-     * @return boolean
-     */
-    public boolean AddToAllPoints(String channelName, int points) throws JSONException, URISyntaxException {
-        JSONObject jsonObject = AddToAllPointsAPI(channelName, points);
-
-        if (jsonObject.has("message")) {
-            if (jsonObject.getString("message").equalsIgnoreCase("success")) {
-                return true;
-            }
-        }
-        return false;
     }
 }
