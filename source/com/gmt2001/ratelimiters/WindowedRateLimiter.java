@@ -17,6 +17,8 @@
 package com.gmt2001.ratelimiters;
 
 import com.gmt2001.ExecutorService;
+
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +37,18 @@ public class WindowedRateLimiter {
     protected int currentTokens;
 
     /**
+     * Constructor
+     *
+     * @param windowMS The length of the window
+     * @param limit The maximum number of tokens available during the window
+     */
+    public WindowedRateLimiter(Duration window, int limit) {
+        this(window.toMillis(), limit);
+    }
+
+    /**
+     * Constructor
+     *
      * @param windowMS The length of the window, in milliseconds
      * @param limit The maximum number of tokens available during the window
      */

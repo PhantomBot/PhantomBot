@@ -183,14 +183,35 @@ extends <a href="WindowedRateLimiter.html" title="class in com.gmt2001.ratelimit
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long,int,int)">WindowedSwitchingRateLimiter</a></span>&#8203;(long&nbsp;windowMS,
                             int&nbsp;mainLimit,
                             int&nbsp;alternateLimit)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long,int,int,boolean)">WindowedSwitchingRateLimiter</a></span>&#8203;(long&nbsp;windowMS,
                             int&nbsp;mainLimit,
                             int&nbsp;alternateLimit,
                             boolean&nbsp;isMain)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.time.Duration,int,int)">WindowedSwitchingRateLimiter</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;window,
+                            int&nbsp;mainLimit,
+                            int&nbsp;alternateLimit)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.time.Duration,int,int,boolean)">WindowedSwitchingRateLimiter</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;window,
+                            int&nbsp;mainLimit,
+                            int&nbsp;alternateLimit,
+                            boolean&nbsp;isMain)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
 </tr>
 </table>
 </li>
@@ -268,6 +289,44 @@ extends <a href="WindowedRateLimiter.html" title="class in com.gmt2001.ratelimit
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(java.time.Duration,int,int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WindowedSwitchingRateLimiter</h4>
+<pre>public&nbsp;WindowedSwitchingRateLimiter&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;window,
+                                    int&nbsp;mainLimit,
+                                    int&nbsp;alternateLimit)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>windowMS</code> - The length of the window</dd>
+<dd><code>mainLimit</code> - The normal maximum number of tokens available during the window</dd>
+<dd><code>alternateLimit</code> - The alternate maximum number of tokens available during the window</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.time.Duration,int,int,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WindowedSwitchingRateLimiter</h4>
+<pre>public&nbsp;WindowedSwitchingRateLimiter&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;window,
+                                    int&nbsp;mainLimit,
+                                    int&nbsp;alternateLimit,
+                                    boolean&nbsp;isMain)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>windowMS</code> - The length of the window</dd>
+<dd><code>mainLimit</code> - The normal maximum number of tokens available during the window</dd>
+<dd><code>alternateLimit</code> - The alternate maximum number of tokens available during the window</dd>
+<dd><code>isMain</code> - <code>true</code> to select mainLimit; <code>false</code> to select alternateLimit</dd>
+</dl>
+</li>
+</ul>
 <a id="&lt;init&gt;(long,int,int)">
 <!--   -->
 </a>
@@ -277,6 +336,7 @@ extends <a href="WindowedRateLimiter.html" title="class in com.gmt2001.ratelimit
 <pre>public&nbsp;WindowedSwitchingRateLimiter&#8203;(long&nbsp;windowMS,
                                     int&nbsp;mainLimit,
                                     int&nbsp;alternateLimit)</pre>
+<div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>windowMS</code> - The length of the window, in milliseconds</dd>
@@ -295,6 +355,7 @@ extends <a href="WindowedRateLimiter.html" title="class in com.gmt2001.ratelimit
                                     int&nbsp;mainLimit,
                                     int&nbsp;alternateLimit,
                                     boolean&nbsp;isMain)</pre>
+<div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>windowMS</code> - The length of the window, in milliseconds</dd>

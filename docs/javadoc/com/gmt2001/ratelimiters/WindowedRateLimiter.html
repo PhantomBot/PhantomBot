@@ -207,7 +207,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long,int)">WindowedRateLimiter</a></span>&#8203;(long&nbsp;windowMS,
                    int&nbsp;limit)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.time.Duration,int)">WindowedRateLimiter</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;window,
+                   int&nbsp;limit)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
 </tr>
 </table>
 </li>
@@ -359,6 +368,22 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(java.time.Duration,int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>WindowedRateLimiter</h4>
+<pre>public&nbsp;WindowedRateLimiter&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;window,
+                           int&nbsp;limit)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>windowMS</code> - The length of the window</dd>
+<dd><code>limit</code> - The maximum number of tokens available during the window</dd>
+</dl>
+</li>
+</ul>
 <a id="&lt;init&gt;(long,int)">
 <!--   -->
 </a>
@@ -367,6 +392,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>WindowedRateLimiter</h4>
 <pre>public&nbsp;WindowedRateLimiter&#8203;(long&nbsp;windowMS,
                            int&nbsp;limit)</pre>
+<div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>windowMS</code> - The length of the window, in milliseconds</dd>

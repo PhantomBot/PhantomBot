@@ -16,6 +16,8 @@
  */
 package com.gmt2001.ratelimiters;
 
+import java.time.Duration;
+
 /**
  * Handles rate limiting using a window which resets a period of time after the first token is used, and where the limit can switch between two values
  *
@@ -28,17 +30,42 @@ public class WindowedSwitchingRateLimiter extends WindowedRateLimiter {
     private boolean usingMain = true;
 
     /**
+     * Constructor
+     *
+     * @param windowMS The length of the window
+     * @param mainLimit The normal maximum number of tokens available during the window
+     * @param alternateLimit The alternate maximum number of tokens available during the window
+     */
+    public WindowedSwitchingRateLimiter(Duration window, int mainLimit, int alternateLimit) {
+        this(window.toMillis(), mainLimit, alternateLimit);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param windowMS The length of the window
+     * @param mainLimit The normal maximum number of tokens available during the window
+     * @param alternateLimit The alternate maximum number of tokens available during the window
+     * @param isMain {@code true} to select mainLimit; {@code false} to select alternateLimit
+     */
+    public WindowedSwitchingRateLimiter(Duration window, int mainLimit, int alternateLimit, boolean isMain) {
+        this(window.toMillis(), mainLimit, alternateLimit, isMain);
+    }
+
+    /**
+     * Constructor
+     *
      * @param windowMS The length of the window, in milliseconds
      * @param mainLimit The normal maximum number of tokens available during the window
      * @param alternateLimit The alternate maximum number of tokens available during the window
      */
     public WindowedSwitchingRateLimiter(long windowMS, int mainLimit, int alternateLimit) {
-        super(windowMS, mainLimit);
-        this.mainLimit = mainLimit;
-        this.alternateLimit = alternateLimit;
+        this(windowMS, mainLimit, alternateLimit, true);
     }
 
     /**
+     * Constructor
+     *
      * @param windowMS The length of the window, in milliseconds
      * @param mainLimit The normal maximum number of tokens available during the window
      * @param alternateLimit The alternate maximum number of tokens available during the window

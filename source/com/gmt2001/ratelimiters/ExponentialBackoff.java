@@ -39,28 +39,57 @@ public class ExponentialBackoff {
     private boolean isBackingOff = false;
 
     /**
+     * Constructor
+     *
+     * @param minInterval Minimum backoff interval
+     * @param maxInterval Maximum backoff interval
+     */
+    public ExponentialBackoff(Duration minInterval, Duration maxInterval) {
+        this(minInterval.toMillis(), maxInterval.toMillis());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param minInterval Minimum backoff interval
+     * @param maxInterval Maximum backoff interval
+     * @param resetInterval Time since last backoff until an auto-reset occurs; {@code null} to disable
+     */
+    public ExponentialBackoff(Duration minInterval, Duration maxInterval, Duration resetInterval) {
+        this(minInterval.toMillis(), maxInterval.toMillis(), (resetInterval == null ? -1 : resetInterval.toMillis()));
+    }
+
+    /**
+     * Constructor
      *
      * @param minIntervalMS Minimum backoff interval, in MS
      * @param maxIntervalMS Maximum backoff interval, in MS
      */
     public ExponentialBackoff(long minIntervalMS, long maxIntervalMS) {
-        this.minIntervalMS = minIntervalMS;
-        this.maxIntervalMS = maxIntervalMS;
-        this.resetIntervalMS = -1;
-        this.lastIntervalMS = this.minIntervalMS;
+        this(minIntervalMS, maxIntervalMS, -1);
     }
 
     /**
+     * Constructor
      *
      * @param minIntervalMS Minimum backoff interval, in MS
      * @param maxIntervalMS Maximum backoff interval, in MS
-     * @param resetIntervalMS Time since last backoff until an auto-reset occurs
+     * @param resetIntervalMS Time since last backoff until an auto-reset occurs; {@code -1} to disable
      */
     public ExponentialBackoff(long minIntervalMS, long maxIntervalMS, long resetIntervalMS) {
         this.minIntervalMS = minIntervalMS;
         this.maxIntervalMS = maxIntervalMS;
         this.resetIntervalMS = resetIntervalMS;
         this.lastIntervalMS = this.minIntervalMS;
+    }
+
+    /**
+     * Blocks with Thread.sleep until the next interval, if not already backing off
+     */
+    public void BackoffOnce() {
+        if (!this.GetIsBackingOff()) {
+            this.Backoff();
+        }
     }
 
     /**
@@ -88,6 +117,17 @@ public class ExponentialBackoff {
         }
 
         com.gmt2001.Console.debug.println("Returning control...");
+    }
+
+    /**
+     * Calls the specified Runnable once the next interval expires, if not already backing off
+     *
+     * @param command The Runnable to callback
+     */
+    public void BackoffOnceAsync(Runnable command) {
+        if (!this.GetIsBackingOff()) {
+            this.BackoffAsync(command);
+        }
     }
 
     /**
