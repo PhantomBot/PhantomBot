@@ -661,7 +661,7 @@ $(function () {
                         .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
                         // Add the input for the welcome cooldown.
                         .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
-                                'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.'))
+                                'How many hours a user has to not chat to be welcomed again'))
                         // Add the input for excluded users.
                         .append(helpers.getFlatMultiDropdownGroup('welcome-disabled', 'Excluded Users', disabledUserOptions,
                                 'Users that the bot will not welcome. Channel owner and this bot are always excluded.')),
@@ -674,7 +674,7 @@ $(function () {
 
                             // Make sure the user has someone in each box.
                             switch (false) {
-                                case helpers.handleInputNumber($welcomeCooldown, 1):
+                                case helpers.handleInputNumber($welcomeCooldown, 0):
                                     break;
                                 default:
                                     socket.updateDBValues('alerts_update_welcome_settings', {
