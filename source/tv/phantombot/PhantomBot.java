@@ -1563,4 +1563,8 @@ public final class PhantomBot implements Listener {
     public void setSession(TwitchSession session) {
         this.session = session;
     }
+
+    public WsPanelHandler panelhandler() {
+        return this.panelHandler;
+    }
 }
