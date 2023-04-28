@@ -165,12 +165,18 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Retrieves a connection from the connection pool
+     * Retrieves a {@link Connection} from the connection pool
      *
      * <p>
      * If the maximum number of connections are already in use, the method waits until a connection becomes available or the timeout
-     * has elapsed. When the application is finished using the connection, it must call {@link Connection#close()} on it in order
+     * has elapsed
+     * <p>
+     * When the application is finished using the connection, it must call {@link Connection#close()} on it in order
      * to return it to the pool
+     * <p>
+     * Consider using try-with-resources instead to safely auto-close the connection
+     * <p>
+     * Transactions are <b>not</b> comitted automatically when closing a {@link Connection} that has auto-commit disabled
      *
      * @return a new {@link Connection} object
      * @throws SQLException if a database access error occurs
@@ -189,8 +195,7 @@ public abstract class Datastore2 {
      * @throws SQLException if a database access error occurs
      */
     public boolean testConnection() throws SQLException {
-        try {
-            this.connectionPoolManager.getValidConnection().close();
+        try (Connection con = this.connectionPoolManager.getValidConnection()) {
             return true;
         } catch (TimeoutException ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
