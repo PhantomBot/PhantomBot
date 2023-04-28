@@ -670,7 +670,7 @@ public final class PhantomBot implements Listener {
     }
 
     public String getDataStoreType() {
-        return CaselessProperties.instance().getProperty("datastore", "sqlite3store");
+        return CaselessProperties.instance().getProperty("datastore", "h2store");
     }
 
     /**
