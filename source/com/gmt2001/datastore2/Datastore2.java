@@ -68,7 +68,6 @@ public abstract class Datastore2 {
      * <p>
      * If loading a custom datastore, the following requirements must be met:
      * <ul>
-     * <li>Must <b>NOT</b> be in the namespace {@code com.gmt2001.datastore2}, or any sub-namespace thereof</li>
      * <li>Must implement/reference {@link Datastore2} and any other required types in the {@code com.gmt2001.datastore2} namespace</li>
      * <li>Must call {@link #Datastore2(ConnectionPoolDataSource)} via {@code super(ConnectionPoolDataSource)} in the constructor, passing in a valid {@link ConnectionPoolDataSource}</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
