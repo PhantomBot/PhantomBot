@@ -68,6 +68,7 @@ import tv.phantombot.event.eventsub.EventSubDisconnectedEvent;
 import tv.phantombot.event.eventsub.EventSubWelcomeEvent;
 import tv.phantombot.event.twitch.TwitchOAuthReauthorizedEvent;
 import tv.phantombot.twitch.api.Helix;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  * Manages EventSub subscriptions
@@ -98,7 +99,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
                 ExecutorService.schedule(() -> {
                     try {
-                        this.connect();
+                        if (TwitchValidate.instance().isAPIValid()) {
+                            this.connect();
+                        }
                     } catch (Exception ex) {
                         debug("constructor connect", ex);
                     }
@@ -121,6 +124,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     private boolean reconnecting = false;
     private Instant lastKeepAlive = Instant.MIN;
     private Duration keepaliveTimeout = Duration.ZERO;
+    private ExponentialBackoff backoff = new ExponentialBackoff(Duration.ofSeconds(1), Duration.ofMinutes(5), Duration.ofSeconds(30));
     private ScheduledFuture<?> keepAliveFuture;
     private static final EventSub INSTANCE = new EventSub();
 
@@ -445,7 +449,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         if (shouldReconnect) {
             debug("KeepAlive Failed");
             this.reconnecting = false;
-            this.reconnect();
+            if (this.backoff != null) {
+                this.backoff.BackoffOnceAsync(this::reconnect);
+            }
         }
     }
 
@@ -669,6 +675,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     this.keepAliveFuture.cancel(true);
                 }
                 EventBus.instance().postAsync(new EventSubDisconnectedEvent());
+                if (this.backoff != null) {
+                    this.backoff.BackoffOnceAsync(this::reconnect);
+                }
             } finally {
                 this.rwl.writeLock().unlock();
             }
@@ -681,6 +690,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      */
     public void shutdown() {
         if (this.client != null) {
+            this.backoff = null;
             this.client.close(WebSocketCloseStatus.NORMAL_CLOSURE);
         }
     }
