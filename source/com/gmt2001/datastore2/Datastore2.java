@@ -38,6 +38,8 @@ import tv.phantombot.CaselessProperties;
 /**
  * Manages a JDBC-compatible, SQL-based, data storage method
  *
+ * @see <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html" target="_blank">JDBC Basics</a>
+ *
  * @author gmt2001
  */
 public abstract class Datastore2 {
@@ -206,6 +208,8 @@ public abstract class Datastore2 {
 
     /**
      * Creates a {@link PreparedStatement} object for sending parameterized SQL statements to the database
+     *
+     * @see <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html" target="_blank">Using Prepared Statements</a>
      *
      * @param sql an SQL statement that may contain one or more {@code ?} IN parameter placeholders
      * @return a new default {@link PreparedStatement} object containing the pre-compiled SQL statement
