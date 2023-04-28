@@ -18,6 +18,8 @@
  */
 package tv.phantombot.cache;
 
+import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -27,12 +29,15 @@ import org.json.JSONObject;
 import com.gmt2001.ExecutorService;
 import com.illusionaryone.StreamLabsAPI;
 
+import net.engio.mbassy.listener.Handler;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.Listener;
 import tv.phantombot.event.streamlabs.donate.StreamLabsDonationEvent;
 import tv.phantombot.event.streamlabs.donate.StreamLabsDonationInitializedEvent;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
-public class DonationsCache {
+public class DonationsCache implements Listener {
 
     private static final DonationsCache INSTANCE = new DonationsCache();
 
@@ -45,6 +50,7 @@ public class DonationsCache {
 
     private DonationsCache() {
         this.updateFuture = ExecutorService.scheduleAtFixedRate(this::run, 20, 30, TimeUnit.SECONDS);
+        ExecutorService.execute(() -> EventBus.instance().register(this));
     }
 
     private void run() {
@@ -93,6 +99,19 @@ public class DonationsCache {
         }
 
         PhantomBot.instance().getDataStore().SetInteger("settings", "", "DonationsCache_lastId", lastId);
+    }
+
+    @Handler
+    public void onWebPanelSocketUpdateEvent(WebPanelSocketUpdateEvent event) {
+        if (event.getId().equals("streamlabs_authorize") && event.getArgs().length >= 4) {
+            try {
+                PhantomBot.instance().panelhandler().sendObject(event.getId(), Collections.singletonMap("success",
+                StreamLabsAPI.authorize(event.getArgs()[0], event.getArgs()[1], event.getArgs()[2], event.getArgs()[3])));
+            } catch (URISyntaxException ex) {
+                PhantomBot.instance().panelhandler().sendObject(event.getId(), Collections.singletonMap("success", false));
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
     }
 
     public void kill() {
