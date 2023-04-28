@@ -145,7 +145,7 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Constructor
+     * Constructor. Sets a max connections of 30 and a timeout of 20
      *
      * @param dataSource a {@link ConnectionPoolDataSource} which can be used with {@link MiniConnectionPoolManager}
      */
