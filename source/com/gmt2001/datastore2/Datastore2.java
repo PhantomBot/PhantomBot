@@ -69,7 +69,7 @@ public abstract class Datastore2 {
      * If loading a custom datastore, the following requirements must be met:
      * <ul>
      * <li>Must implement/reference {@link Datastore2} and any other required types in the {@code com.gmt2001.datastore2} namespace</li>
-     * <li>Must call {@link #Datastore2(ConnectionPoolDataSource)} or {@link #Datastore2(ConnectionPoolDataSource, int, int)} via {@code super} in the constructor, passing in a valid {@link ConnectionPoolDataSource}</li>
+     * <li>Must call {@link #Datastore2(ConnectionPoolDataSource)} or {@link #Datastore2(ConnectionPoolDataSource, int, int)} via {@code super} in a public, no-parameter constructor, passing in a valid {@link ConnectionPoolDataSource}</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
      * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type, including case</li>
      * <li>The {@code .jar} file exension on the JAR file must be lower-case</li>
