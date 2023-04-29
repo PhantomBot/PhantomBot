@@ -212,6 +212,7 @@
         if (!isDirectory(directory)) {
             return [directory];
         }
+
         if (invalidLocation(directory)) {
             $.consoleLn('[' + $.findCaller() + '] Blocked findFiles() target outside of validPaths: ' + directory);
             return [];
@@ -227,6 +228,7 @@
         } catch (e) {
             $.log.error('[' + $.findCaller() + '] Failed to search in \'' + directory + '\': ' + e);
         }
+
         return [];
     }
 
