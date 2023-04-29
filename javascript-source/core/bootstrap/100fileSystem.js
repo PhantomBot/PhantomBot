@@ -210,8 +210,7 @@
      */
     function findFiles(directory, pattern) {
         if (!isDirectory(directory)) {
-            $.consoleDebug('[' + $.findCaller() + '] Blocked findFiles() due to !isDirectory: ' + directory);
-            return [];
+            return [directory];
         }
         if (invalidLocation(directory)) {
             $.consoleLn('[' + $.findCaller() + '] Blocked findFiles() target outside of validPaths: ' + directory);
