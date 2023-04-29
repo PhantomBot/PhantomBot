@@ -37,7 +37,7 @@
         }
 
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked readFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked readFile() target outside of validPaths: ' + path);
             return lines;
         }
 
@@ -60,7 +60,7 @@
      */
     function mkDir(path) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked mkDir() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked mkDir() target outside of validPaths: ' + path);
             return false;
         }
 
@@ -75,7 +75,7 @@
      */
     function moveFile(file, path) {
         if (invalidLocation(file) || invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked moveFile() source or target outside of validPaths:' + file + ' to ' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked moveFile() source or target outside of validPaths: ' + file + ' to ' + path);
             return;
         }
 
@@ -94,7 +94,7 @@
      */
     function moveRenameFile(file, path) {
         if (invalidLocation(file) || invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked moveRenameFile() source or target outside of validPaths:' + file + ' to ' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked moveRenameFile() source or target outside of validPaths: ' + file + ' to ' + path);
             return;
         }
 
@@ -114,7 +114,7 @@
      */
     function saveArray(array, path, append) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked saveArray() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked saveArray() target outside of validPaths: ' + path);
             return;
         }
 
@@ -138,7 +138,7 @@
      */
     function writeToFile(line, path, append) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked writeToFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked writeToFile() target outside of validPaths: ' + path);
             return;
         }
 
@@ -156,7 +156,7 @@
      */
     function touchFile(path) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked touchFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked touchFile() target outside of validPaths: ' + path);
             return;
         }
 
@@ -175,7 +175,7 @@
      */
     function deleteFile(path, now) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked deleteFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked deleteFile() target outside of validPaths: ' + path);
             return;
         }
 
@@ -194,7 +194,7 @@
      */
     function fileExists(path) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked fileExists() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked fileExists() target outside of validPaths: ' + path);
             return false;
         }
 
@@ -210,7 +210,7 @@
      */
     function findFiles(directory, pattern) {
         if (invalidLocation(directory)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked findFiles() target outside of validPaths:' + directory);
+            $.consoleLn('[' + $.findCaller() + '] Blocked findFiles() target outside of validPaths: ' + directory);
             return [];
         }
 
@@ -235,7 +235,7 @@
      */
     function isDirectory(path) {
         if (invalidLocation(path)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked isDirectory() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked isDirectory() target outside of validPaths: ' + path);
             return false;
         }
 
@@ -250,7 +250,7 @@
      */
     function findSize(file) {
         if (invalidLocation(file)) {
-            $.consoleLn('[' + $.findCaller() + '] Blocked findSize() target outside of validPaths:' + file);
+            $.consoleLn('[' + $.findCaller() + '] Blocked findSize() target outside of validPaths: ' + file);
             return 0;
         }
 
