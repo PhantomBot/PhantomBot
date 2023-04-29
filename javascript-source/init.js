@@ -172,14 +172,11 @@
         Packages.com.gmt2001.Console.out.println(Packages.java.util.Objects.toString(message));
     }
 
-    function findCaller(force) {
-        if (force !== true && !Packages.tv.phantombot.PhantomBot.getEnableDebugging()) {
-            return;
-        }
+    function findCaller() {
         try {
             throw new Error();
         } catch (ex) {
-            return Packages.java.util.Objects.toString(ex.stack.split('\n')[2].trim());
+            return $.jsString(ex.stack.trim().replace(/\r/g, '').split('\n').join(' > ').replace(/anonymous\(\)@|callHook\(\)@/g, ''));
         }
     }
 
