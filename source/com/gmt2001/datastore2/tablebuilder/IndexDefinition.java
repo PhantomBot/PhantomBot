@@ -25,11 +25,7 @@ import java.util.List;
  *
  * @author gmt2001
  */
-public final class IndexDefinition {
-    /**
-     * The parent {@link TableBuilder}
-     */
-    private final TableBuilder parent;
+public final class IndexDefinition extends AbstractDefinition {
     /**
      * The name of the index
      */
@@ -116,11 +112,12 @@ public final class IndexDefinition {
      * @throws IllegalArgumentException if the name is null or blank
      */
     IndexDefinition(TableBuilder parent, String name) {
+        super(parent);
+
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("name is null or blank");
         }
 
-        this.parent = parent;
         this.name = name;
     }
 
@@ -195,51 +192,5 @@ public final class IndexDefinition {
      */
     public List<IndexField> referencedFields() {
         return Collections.unmodifiableList(this.referencedFields);
-    }
-
-    /**
-     * Adds a field to the end of the fields list
-     *
-     * @param name the name of the field
-     * @return the new {@link FieldDefinition}
-     * @throws IllegalArgumentException if the name is null or blank
-     */
-    public FieldDefinition field(String name) throws IllegalArgumentException {
-        return parent.field(name);
-    }
-
-    /**
-     * Adds a field to the specified position of the fields list
-     *
-     * @param name the name of the field
-     * @param position the position to insert the field at
-     * @return the new {@link FieldDefinition}
-     * @throws IllegalArgumentException if the name is null or blank
-     */
-    public FieldDefinition field(String name, int position) throws IllegalArgumentException {
-        return parent.field(name, position);
-    }
-
-    /**
-     * Adds an index to the end of the indexes list
-     *
-     * @param name the name of the index
-     * @return the new {@link IndexDefinition}
-     * @throws IllegalArgumentException if the name is null or blank
-     */
-    public IndexDefinition index(String name) throws IllegalArgumentException {
-        return parent.index(name);
-    }
-
-    /**
-     * Adds an index to the specified position of the indexes list
-     *
-     * @param name the name of the index
-     * @param position the position to insert the index at
-     * @return the new {@link IndexDefinition}
-     * @throws IllegalArgumentException if the name is null or blank
-     */
-    public IndexDefinition index(String name, int position) throws IllegalArgumentException {
-        return parent.index(name, position);
     }
 }
