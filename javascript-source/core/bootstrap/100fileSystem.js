@@ -37,7 +37,7 @@
         }
 
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked readFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked readFile() target outside of validPaths: ' + path);
             return lines;
         }
 
@@ -47,7 +47,7 @@
                 lines.push($.jsString(jlines.get(i)));
             }
         } catch (e) {
-            $.log.error($.findCaller() + ' Failed to open \'' + path + '\': ' + e);
+            $.log.error('[' + $.findCaller() + '] Failed to open \'' + path + '\': ' + e);
         }
         return lines;
     }
@@ -60,7 +60,7 @@
      */
     function mkDir(path) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked mkDir() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked mkDir() target outside of validPaths: ' + path);
             return false;
         }
 
@@ -75,14 +75,14 @@
      */
     function moveFile(file, path) {
         if (invalidLocation(file) || invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked moveFile() source or target outside of validPaths:' + file + ' to ' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked moveFile() source or target outside of validPaths: ' + file + ' to ' + path);
             return;
         }
 
         try {
             Packages.com.gmt2001.JSFileSystem.MoveFileToDirectory($.javaString(file), $.javaString(path));
         } catch (ex) {
-            $.log.error($.findCaller() + ' moveFile(' + file + ', ' + path + ') failed: ' + ex);
+            $.log.error('[' + $.findCaller() + '] moveFile(' + file + ', ' + path + ') failed: ' + ex);
         }
     }
 
@@ -94,14 +94,14 @@
      */
     function moveRenameFile(file, path) {
         if (invalidLocation(file) || invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked moveRenameFile() source or target outside of validPaths:' + file + ' to ' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked moveRenameFile() source or target outside of validPaths: ' + file + ' to ' + path);
             return;
         }
 
         try {
             Packages.com.gmt2001.JSFileSystem.MoveFile($.javaString(file), $.javaString(path));
         } catch (ex) {
-            $.log.error($.findCaller() + ' moveRenameFile(' + file + ', ' + path + ') failed: ' + ex);
+            $.log.error('[' + $.findCaller() + '] moveRenameFile(' + file + ', ' + path + ') failed: ' + ex);
         }
     }
 
@@ -114,7 +114,7 @@
      */
     function saveArray(array, path, append) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked saveArray() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked saveArray() target outside of validPaths: ' + path);
             return;
         }
 
@@ -125,7 +125,7 @@
             }
             Packages.com.gmt2001.JSFileSystem.WriteLinesToFile($.javaString(path), lines, append);
         } catch (e) {
-            $.log.error($.findCaller() + ' Failed to write to \'' + path + '\': ' + e);
+            $.log.error('[' + $.findCaller() + '] Failed to write to \'' + path + '\': ' + e);
         }
     }
 
@@ -138,14 +138,14 @@
      */
     function writeToFile(line, path, append) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked writeToFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked writeToFile() target outside of validPaths: ' + path);
             return;
         }
 
         try {
             Packages.com.gmt2001.JSFileSystem.WriteLineToFile($.javaString(path), $.javaString(line), append);
         } catch (e) {
-            $.log.error($.findCaller() + ' Failed to write to \'' + path + '\': ' + e);
+            $.log.error('[' + $.findCaller() + '] Failed to write to \'' + path + '\': ' + e);
         }
     }
 
@@ -156,14 +156,14 @@
      */
     function touchFile(path) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked touchFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked touchFile() target outside of validPaths: ' + path);
             return;
         }
 
         try {
             Packages.com.gmt2001.JSFileSystem.TouchFile($.javaString(path));
         } catch (e) {
-            $.log.error($.findCaller() + ' Failed to touch \'' + path + '\': ' + e);
+            $.log.error('[' + $.findCaller() + '] Failed to touch \'' + path + '\': ' + e);
         }
     }
 
@@ -175,14 +175,14 @@
      */
     function deleteFile(path, now) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked deleteFile() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked deleteFile() target outside of validPaths: ' + path);
             return;
         }
 
         try {
             Packages.com.gmt2001.JSFileSystem.DeleteFile($.javaString(path));
         } catch (e) {
-            $.log.error($.findCaller() + ' Failed to delete \'' + path + '\': ' + e);
+            $.log.error('[' + $.findCaller() + '] Failed to delete \'' + path + '\': ' + e);
         }
     }
 
@@ -194,7 +194,7 @@
      */
     function fileExists(path) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked fileExists() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked fileExists() target outside of validPaths: ' + path);
             return false;
         }
 
@@ -209,8 +209,12 @@
      * @returns {Array}
      */
     function findFiles(directory, pattern) {
+        if (!isDirectory(directory)) {
+            return [directory];
+        }
+
         if (invalidLocation(directory)) {
-            $.consoleLn($.findCaller() + ' Blocked findFiles() target outside of validPaths:' + directory);
+            $.consoleLn('[' + $.findCaller() + '] Blocked findFiles() target outside of validPaths: ' + directory);
             return [];
         }
 
@@ -222,8 +226,9 @@
             }
             return ret;
         } catch (e) {
-            $.log.error($.findCaller() + ' Failed to search in \'' + directory + '\': ' + e);
+            $.log.error('[' + $.findCaller() + '] Failed to search in \'' + directory + '\': ' + e);
         }
+
         return [];
     }
 
@@ -235,7 +240,7 @@
      */
     function isDirectory(path) {
         if (invalidLocation(path)) {
-            $.consoleLn($.findCaller() + ' Blocked isDirectory() target outside of validPaths:' + path);
+            $.consoleLn('[' + $.findCaller() + '] Blocked isDirectory() target outside of validPaths: ' + path);
             return false;
         }
 
@@ -250,7 +255,7 @@
      */
     function findSize(file) {
         if (invalidLocation(file)) {
-            $.consoleLn($.findCaller() + ' Blocked findSize() target outside of validPaths:' + file);
+            $.consoleLn('[' + $.findCaller() + '] Blocked findSize() target outside of validPaths: ' + file);
             return 0;
         }
 
