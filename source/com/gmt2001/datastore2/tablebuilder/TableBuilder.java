@@ -42,6 +42,10 @@ public final class TableBuilder {
      * The list of indexes
      */
     private List<IndexDefinition> indexes = new ArrayList<>();
+    /**
+     * The list of foreign keys
+     */
+    private List<ForeignKeyDefinition> foreignKeys = new ArrayList<>();
 
     /**
      * Constructor
@@ -160,5 +164,41 @@ public final class TableBuilder {
      */
     public List<IndexDefinition> indexes() {
         return Collections.unmodifiableList(this.indexes);
+    }
+
+    /**
+     * Adds a foreign key to the end of the foreign keys list
+     *
+     * @param name the name of the foreign key
+     * @return the new {@link ForeignKeyDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public ForeignKeyDefinition foreignKey(String name) throws IllegalArgumentException {
+        ForeignKeyDefinition foreignKey = new ForeignKeyDefinition(this, name);
+        this.foreignKeys.add(foreignKey);
+        return foreignKey;
+    }
+
+    /**
+     * Adds a foreign key to the specified position of the foreign keys list
+     *
+     * @param name the name of the foreign key
+     * @param position the position to insert the index at
+     * @return the new {@link ForeignKeyDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public ForeignKeyDefinition foreignKey(String name, int position) throws IllegalArgumentException {
+        ForeignKeyDefinition foreignKey = new ForeignKeyDefinition(this, name);
+        this.foreignKeys.add(position, foreignKey);
+        return foreignKey;
+    }
+
+    /**
+     * The list of foreign keys added to this {@link TableBuilder}
+     *
+     * @return the list of foreign keys
+     */
+    public List<ForeignKeyDefinition> foreignKeys() {
+        return Collections.unmodifiableList(this.foreignKeys);
     }
 }

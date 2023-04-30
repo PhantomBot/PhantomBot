@@ -82,4 +82,27 @@ public abstract class AbstractDefinition {
     public IndexDefinition index(String name, int position) throws IllegalArgumentException {
         return parent.index(name, position);
     }
+
+    /**
+     * Adds a foreign key to the end of the foreign keys list
+     *
+     * @param name the name of the foreign key
+     * @return the new {@link ForeignKeyDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public ForeignKeyDefinition foreignKey(String name) throws IllegalArgumentException {
+        return parent.foreignKey(name);
+    }
+
+    /**
+     * Adds a foreign key to the specified position of the foreign keys list
+     *
+     * @param name the name of the foreign key
+     * @param position the position to insert the index at
+     * @return the new {@link ForeignKeyDefinition}
+     * @throws IllegalArgumentException if the name is null or blank
+     */
+    public ForeignKeyDefinition foreignKey(String name, int position) throws IllegalArgumentException {
+        return parent.foreignKey(name, position);
+    }
 }
