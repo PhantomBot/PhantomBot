@@ -258,21 +258,30 @@ public abstract class Datastore2 {
     /**
      * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table
      * <p>
-     * This method executes a {@code CREATE TABLE} statement. An exception will be thrown if the table already exists
+     * This method executes a {@code CREATE TABLE} statement, and should throw an exception that is ultimately returned by
+     * the database if the table already exists
      *
      * @param tableBuilder a {@link TableBuilder} which provides a definition for the table
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    public abstract void createTable(TableBuilder tableBuilder) throws SQLException;
+    public void createTable(TableBuilder tableBuilder) throws SQLException {
+        this.createTable(tableBuilder, false);
+    }
 
     /**
-     * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table if it doesn't exist
+     * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table
      * <p>
-     * This method executes a {@code CREATE TABLE IF NOT EXISTS} statement, or uses
+     * If the {@code ifNotExists} parameter is set to {@code true},
+     * this method executes a {@code CREATE TABLE IF NOT EXISTS} statement, or uses
      * an implementation-defined alternative if the underlying database doesn't support {@code IF NOT EXISTS}
+     * <p>
+     * If the {@code ifNotExists} parameter is set to {@code false},
+     * this method executes a {@code CREATE TABLE} statement, and should throw an exception that is ultimately returned by
+     * the database if the table already exists
      *
      * @param tableBuilder a {@link TableBuilder} which provides a definition for the table
+     * @param ifNotExists if the {@code IF NOT EXISTS} clause should be used
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    public abstract void createTableIfNotExists(TableBuilder tableBuilder) throws SQLException;
+    public abstract void createTable(TableBuilder tableBuilder, boolean ifNotExists) throws SQLException;
 }
