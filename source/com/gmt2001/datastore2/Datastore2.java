@@ -247,6 +247,15 @@ public abstract class Datastore2 {
     public abstract void dropTable(String table) throws SQLException;
 
     /**
+     * Renames the specified table
+     *
+     * @param table the table to rename
+     * @param newName the new table name
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    public abstract void renameTable(String table, String newName) throws SQLException;
+
+    /**
      * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table
      * <p>
      * This method executes a {@code CREATE TABLE} statement. An exception will be thrown if the table already exists
@@ -266,15 +275,4 @@ public abstract class Datastore2 {
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
     public abstract void createTableIfNotExists(TableBuilder tableBuilder) throws SQLException;
-
-    /**
-     * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table if it doesn't exist or alters the table if it does exist
-     * <p>
-     * This method executes a {@code CREATE TABLE} statement if the table does not exist, or an {@code ALTER TABLE} statement if the
-     * table already exists. How this is achieved is implementation-defined
-     *
-     * @param tableBuilder a {@link TableBuilder} which provides a definition for the table
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public abstract void createOrAlterTable(TableBuilder tableBuilder) throws SQLException;
 }
