@@ -173,19 +173,6 @@ public final class IndexDefinition extends AbstractDefinition {
     }
 
     /**
-     * Adds a referenced field to the specified position of the list
-     *
-     * @param name the name of the referenced field
-     * @param length the length to reference, for text-type fields; {@code -1} if not set
-     * @param position the position to insert the field at
-     * @return {@code this}
-     */
-    public IndexDefinition referencedField(String name, int length, int position) {
-        this.referencedFields.add(position, new IndexField(name, length));
-        return this;
-    }
-
-    /**
      * The list of referenced fields added to this {@link IndexDefinition}
      *
      * @return the list of referenced fields
