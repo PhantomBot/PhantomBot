@@ -208,6 +208,9 @@ public abstract class Datastore2 {
 
     /**
      * Creates a {@link PreparedStatement} object for sending parameterized SQL statements to the database
+     * <p>
+     * This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
+     * or by the implementing {@link Datastore2} sub-classes
      *
      * @see <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html" target="_blank">Using Prepared Statements</a>
      *
@@ -221,6 +224,9 @@ public abstract class Datastore2 {
 
     /**
      * Creates a {@link Statement} object for sending SQL statements to the database
+     * <p>
+     * This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
+     * or by the implementing {@link Datastore2} sub-classes
      *
      * @return a new default {@link Statement} object
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
