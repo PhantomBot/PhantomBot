@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,13 +160,32 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long,long)">ExponentialBackoff</a></span>&#8203;(long&nbsp;minIntervalMS,
                   long&nbsp;maxIntervalMS)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
 </tr>
 <tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(long,long,long)">ExponentialBackoff</a></span>&#8203;(long&nbsp;minIntervalMS,
                   long&nbsp;maxIntervalMS,
                   long&nbsp;resetIntervalMS)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.time.Duration,java.time.Duration)">ExponentialBackoff</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;minInterval,
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;maxInterval)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.time.Duration,java.time.Duration,java.time.Duration)">ExponentialBackoff</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;minInterval,
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;maxInterval,
+                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;resetInterval)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
 </tr>
 </table>
 </li>
@@ -202,47 +221,61 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BackoffOnce()">BackoffOnce</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Blocks with Thread.sleep until the next interval, if not already backing off</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BackoffOnceAsync(java.lang.Runnable)">BackoffOnceAsync</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Runnable</a>&nbsp;command)</code></th>
+<td class="colLast">
+<div class="block">Calls the specified Runnable once the next interval expires, if not already backing off</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CancelReset()">CancelReset</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Cancels a scheduled reset initiated by a call to ResetIn</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetIsBackingOff()">GetIsBackingOff</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns whether a backoff is currently in progress</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetNextInterval()">GetNextInterval</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Determines and returns the next interval to backoff for</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetTotalIterations()">GetTotalIterations</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the total number of times the backoff has been used since the last reset</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IsAtMaxInterval()">IsAtMaxInterval</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns true if the previous interval was equal to the max interval</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#Reset()">Reset</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Resets the backoff to use the minimum values on the next call</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ResetIn(java.time.Duration)">ResetIn</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;duration)</code></th>
 <td class="colLast">
@@ -273,6 +306,40 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(java.time.Duration,java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ExponentialBackoff</h4>
+<pre>public&nbsp;ExponentialBackoff&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;minInterval,
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;maxInterval)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>minInterval</code> - Minimum backoff interval</dd>
+<dd><code>maxInterval</code> - Maximum backoff interval</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.time.Duration,java.time.Duration,java.time.Duration)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ExponentialBackoff</h4>
+<pre>public&nbsp;ExponentialBackoff&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;minInterval,
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;maxInterval,
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;resetInterval)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>minInterval</code> - Minimum backoff interval</dd>
+<dd><code>maxInterval</code> - Maximum backoff interval</dd>
+<dd><code>resetInterval</code> - Time since last backoff until an auto-reset occurs; <code>null</code> to disable</dd>
+</dl>
+</li>
+</ul>
 <a id="&lt;init&gt;(long,long)">
 <!--   -->
 </a>
@@ -281,6 +348,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>ExponentialBackoff</h4>
 <pre>public&nbsp;ExponentialBackoff&#8203;(long&nbsp;minIntervalMS,
                           long&nbsp;maxIntervalMS)</pre>
+<div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>minIntervalMS</code> - Minimum backoff interval, in MS</dd>
@@ -297,11 +365,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <pre>public&nbsp;ExponentialBackoff&#8203;(long&nbsp;minIntervalMS,
                           long&nbsp;maxIntervalMS,
                           long&nbsp;resetIntervalMS)</pre>
+<div class="block">Constructor</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>minIntervalMS</code> - Minimum backoff interval, in MS</dd>
 <dd><code>maxIntervalMS</code> - Maximum backoff interval, in MS</dd>
-<dd><code>resetIntervalMS</code> - Time since last backoff until an auto-reset occurs</dd>
+<dd><code>resetIntervalMS</code> - Time since last backoff until an auto-reset occurs; <code>-1</code> to disable</dd>
 </dl>
 </li>
 </ul>
@@ -315,6 +384,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="BackoffOnce()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BackoffOnce</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;BackoffOnce()</pre>
+<div class="block">Blocks with Thread.sleep until the next interval, if not already backing off</div>
+</li>
+</ul>
 <a id="Backoff()">
 <!--   -->
 </a>
@@ -323,6 +402,20 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>Backoff</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;Backoff()</pre>
 <div class="block">Blocks with Thread.sleep until the next interval</div>
+</li>
+</ul>
+<a id="BackoffOnceAsync(java.lang.Runnable)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BackoffOnceAsync</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;BackoffOnceAsync&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Runnable</a>&nbsp;command)</pre>
+<div class="block">Calls the specified Runnable once the next interval expires, if not already backing off</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>command</code> - The Runnable to callback</dd>
+</dl>
 </li>
 </ul>
 <a id="BackoffAsync(java.lang.Runnable)">

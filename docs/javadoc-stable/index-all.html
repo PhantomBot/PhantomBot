@@ -219,10 +219,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Method to add scripts to the array list.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#AddToAllPoints(java.lang.String,int)">AddToAllPoints(String, int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#AddToAllPointsAPI(java.lang.String,int)">AddToAllPointsAPI(String, int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/ViewerListCache.html#addUser(java.lang.String)">addUser(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/ViewerListCache.html" title="class in tv.phantombot.cache">ViewerListCache</a></dt>
 <dd>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
@@ -289,6 +285,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Authorization for user(s) in the condition was revoked.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/illusionaryone/StreamLabsAPI.html#authorize(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">authorize(String, String, String, String)</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></dt>
+<dd>
+<div class="block">Attempts to authorize the user and obtain an access token</div>
+</dd>
 </dl>
 <a id="I:B">
 <!--   -->
@@ -302,6 +302,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#BackoffAsync(java.lang.Runnable)">BackoffAsync(Runnable)</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
 <dd>
 <div class="block">Calls the specified Runnable once the next interval expires</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#BackoffOnce()">BackoffOnce()</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Blocks with Thread.sleep until the next interval, if not already backing off</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#BackoffOnceAsync(java.lang.Runnable)">BackoffOnceAsync(Runnable)</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Calls the specified Runnable once the next interval expires, if not already backing off</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#backupDB(java.lang.String)">backupDB(String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
@@ -1109,15 +1117,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#createHeaders()">createHeaders()</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Creates a new, empty HttpHeaders</div>
+<div class="block">Creates a new, empty <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a></div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#createHeaders(boolean,boolean)">createHeaders(boolean, boolean)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Creates a new HttpHeaders with some default headers filled in</div>
+<div class="block">Creates a new <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> with some default headers filled in</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#createHeaders(io.netty.handler.codec.http.HttpMethod,boolean)">createHeaders(HttpMethod, boolean)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Creates a new HttpHeaders with some default headers filled in</div>
+<div class="block">Creates a new <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> with some default headers filled in</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#CreateIndexes()">CreateIndexes()</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
@@ -1914,9 +1922,21 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Handles backoff timing using an exponentially increasing duration strategy.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(long,long)">ExponentialBackoff(long, long)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(long,long,long)">ExponentialBackoff(long, long, long)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(java.time.Duration,java.time.Duration)">ExponentialBackoff(Duration, Duration)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/ExponentialBackoff.html#%3Cinit%3E(java.time.Duration,java.time.Duration,java.time.Duration)">ExponentialBackoff(Duration, Duration, Duration)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/ExponentialBackoff.html" title="class in com.gmt2001.ratelimiters">ExponentialBackoff</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/scripts/handler/EmojiProcessor.html#extractAllEmojiToCodepoint(java.lang.String)">extractAllEmojiToCodepoint(String)</a></span> - Static method in class tv.phantombot.scripts.handler.<a href="tv/phantombot/scripts/handler/EmojiProcessor.html" title="class in tv.phantombot.scripts.handler">EmojiProcessor</a></dt>
 <dd>
 <div class="block">Combines <a href="tv/phantombot/scripts/handler/EmojiProcessor.html#extractEmoji(java.lang.String)"><code>EmojiProcessor.extractEmoji(String)</code></a> and <a href="tv/phantombot/scripts/handler/EmojiProcessor.html#covertEmoteToCodepoint(java.lang.String)"><code>EmojiProcessor.covertEmoteToCodepoint(String)</code></a> in a single method
@@ -2565,11 +2585,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 &nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/PathValidator.html#getDockerPath()">getDockerPath()</a></span> - Static method in class com.gmt2001.<a href="com/gmt2001/PathValidator.html" title="class in com.gmt2001">PathValidator</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/illusionaryone/StreamLabsAPI.html#getDonationPullLimit()">getDonationPullLimit()</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/scaniatv/StreamElementsAPIv2.html#GetDonations()">GetDonations()</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/scaniatv/TipeeeStreamAPIv1.html#GetDonations()">GetDonations()</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/TipeeeStreamAPIv1.html" title="class in com.scaniatv">TipeeeStreamAPIv1</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#GetDonations(int)">GetDonations(int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
+<dt><span class="memberNameLink"><a href="com/illusionaryone/StreamLabsAPI.html#GetDonations(int)">GetDonations(int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#GetDouble(java.lang.String,java.lang.String,java.lang.String)">GetDouble(String, String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
@@ -3074,10 +3096,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Method that gets the playlist name.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#GetPoints(java.lang.String,java.lang.String)">GetPoints(String, String)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#GetPointsAPI(java.lang.String,java.lang.String)">GetPointsAPI(String, String)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/Helix.html#getPredictions(java.util.List,int,java.lang.String)">getPredictions(List&lt;String&gt;, int, String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Gets a list of Channel Points Predictions that the broadcaster created.</div>
@@ -3618,6 +3636,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Sets online state</div>
 </dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#goOnline(boolean,boolean)">goOnline(boolean, boolean)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
+<dd>
+<div class="block">Sets online state</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/Helix.AnnouncementColors.html#GREEN">GREEN</a></span> - tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.AnnouncementColors.html" title="enum in tv.phantombot.twitch.api">Helix.AnnouncementColors</a></dt>
 <dd>
 <div class="block">Green</div>
@@ -3718,6 +3740,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/illusionaryone/StreamLabsAPI.html#hasAccessToken()">hasAccessToken()</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#hasAPIScope(java.lang.String)">hasAPIScope(String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/cache/Viewer.html#hasAttributes()">hasAttributes()</a></span> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
@@ -3752,6 +3776,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Returns true if a JSONException was thrown during JSON parsing</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/scaniatv/StreamElementsAPIv2.html#hasJWT()">hasJWT()</a></span> - Static method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey(String, String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Indicates if the given table contains a row matching the given section and key</div>
@@ -3761,6 +3787,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/MySQLStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey(String, String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/SqliteStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey(String, String, String)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SqliteStore.html" title="class in com.gmt2001.datastore">SqliteStore</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="com/scaniatv/TipeeeStreamAPIv1.html#hasOauth()">hasOauth()</a></span> - Static method in class com.scaniatv.<a href="com/scaniatv/TipeeeStreamAPIv1.html" title="class in com.scaniatv">TipeeeStreamAPIv1</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/TwitchAPIv5.html#HasOAuth()">HasOAuth()</a></span> - Method in class com.gmt2001.<a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></dt>
 <dd>
@@ -4092,7 +4120,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/illusionaryone/Logger.html#instance()">instance()</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#instance()">instance()</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
+<dt><span class="memberNameLink"><a href="com/illusionaryone/StreamLabsAPI.html#instance()">instance()</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/illusionaryone/YouTubeAPIv3.html#instance()">instance()</a></span> - Static method in class com.illusionaryone.<a href="com/illusionaryone/YouTubeAPIv3.html" title="class in com.illusionaryone">YouTubeAPIv3</a></dt>
 <dd>&nbsp;</dd>
@@ -4105,6 +4133,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/DonationsCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/DonationsCache.html" title="class in tv.phantombot.cache">DonationsCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/FollowersCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/FollowersCache.html" title="class in tv.phantombot.cache">FollowersCache</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/cache/StreamElementsCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/StreamElementsCache.html" title="class in tv.phantombot.cache">StreamElementsCache</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/cache/TipeeeStreamCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TipeeeStreamCache.html" title="class in tv.phantombot.cache">TipeeeStreamCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#instance()">instance()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>&nbsp;</dd>
@@ -4161,14 +4193,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/SteamCache.html#instance(java.lang.String)">instance(String)</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/SteamCache.html" title="class in tv.phantombot.cache">SteamCache</a></dt>
 <dd>
 <div class="block">Method that returns this instance.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/StreamElementsCache.html#instance(java.lang.String)">instance(String)</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/StreamElementsCache.html" title="class in tv.phantombot.cache">StreamElementsCache</a></dt>
-<dd>
-<div class="block">Used to call and start this instance.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/TipeeeStreamCache.html#instance(java.lang.String)">instance(String)</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TipeeeStreamCache.html" title="class in tv.phantombot.cache">TipeeeStreamCache</a></dt>
-<dd>
-<div class="block">Used to call and start this instance.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchTeamsCache.html#instance(java.lang.String)">instance(String)</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchTeamsCache.html" title="class in tv.phantombot.cache">TwitchTeamsCache</a></dt>
 <dd>
@@ -4558,7 +4582,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#isPrerelease()">isPrerelease()</a></span> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
-<div class="block">Tells you if the build is a pre-release.</div>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecationComment">This build type is not used</div>
+</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/RepoVersion.html#isPrereleaseBuild()">isPrereleaseBuild()</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/RepoVersion.html" title="class in tv.phantombot">RepoVersion</a></dt>
 <dd>
@@ -4720,14 +4746,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/EmotesCache.html#killall()">killall()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/EmotesCache.html" title="class in tv.phantombot.cache">EmotesCache</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/StreamElementsCache.html#killall()">killall()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/StreamElementsCache.html" title="class in tv.phantombot.cache">StreamElementsCache</a></dt>
-<dd>
-<div class="block">Kills all the caches.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/TipeeeStreamCache.html#killall()">killall()</a></span> - Static method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TipeeeStreamCache.html" title="class in tv.phantombot.cache">TipeeeStreamCache</a></dt>
-<dd>
-<div class="block">Kills all the caches.</div>
-</dd>
 </dl>
 <a id="I:L">
 <!--   -->
@@ -5444,6 +5462,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Handles WebSocketUpdateEvent</div>
 </dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/cache/DonationsCache.html#onWebPanelSocketUpdateEvent(tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent)">onWebPanelSocketUpdateEvent(WebPanelSocketUpdateEvent)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/DonationsCache.html" title="class in tv.phantombot.cache">DonationsCache</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/Console/err.html#oops(java.lang.Object,java.util.Map,java.lang.String,boolean)">oops(Object, Map&lt;String, Object&gt;, String, boolean)</a></span> - Static method in class com.gmt2001.Console.<a href="com/gmt2001/Console/err.html" title="class in com.gmt2001.Console">err</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/TMIMessage.TMIMessageType.html#OPEN">OPEN</a></span> - com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.TMIMessageType.html" title="enum in com.gmt2001.twitch.tmi">TMIMessage.TMIMessageType</a></dt>
@@ -5484,6 +5504,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#panelhandler()">panelhandler()</a></span> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String)">panelNotification(String, String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String,java.lang.String)">panelNotification(String, String, String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
@@ -5530,7 +5552,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)">patch(URI, HttpHeaders, JSONObject)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a JSONObject and submit it as a PATCH with the specified headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONObject</code></a> and submit it as a PATCH with the specified headers</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,java.lang.String)">patch(URI, String)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
@@ -5542,7 +5564,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,org.json.JSONObject)">patch(URI, JSONObject)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a JSONObject and submit it as a PATCH with the default headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONObject</code></a> and submit it as a PATCH with the default headers</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/HttpRequest.RequestType.html#PATCH">PATCH</a></span> - com.gmt2001.<a href="com/gmt2001/HttpRequest.RequestType.html" title="enum in com.gmt2001">HttpRequest.RequestType</a></dt>
 <dd>
@@ -5610,7 +5632,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)">post(URI, HttpHeaders, JSONObject)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a JSONObject and submit it as a POST with the specified headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONObject</code></a> and submit it as a POST with the specified headers</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,java.lang.String)">post(URI, String)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
@@ -5622,7 +5644,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,org.json.JSONObject)">post(URI, JSONObject)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a JSONObject and submit it as a POST with the default headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONObject</code></a> and submit it as a POST with the default headers</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/EventBus.html#post(tv.phantombot.event.Event)">post(Event)</a></span> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
@@ -6182,7 +6204,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)">put(URI, HttpHeaders, JSONObject)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a JSONObject and submit it as a PUT with the specified headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONObject</code></a> and submit it as a PUT with the specified headers</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,java.lang.String)">put(URI, String)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
@@ -6194,7 +6216,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,org.json.JSONObject)">put(URI, JSONObject)</a></span> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a JSONObject and submit it as a PUT with the default headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONObject</code></a> and submit it as a PUT with the default headers</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/HttpRequest.RequestType.html#PUT">PUT</a></span> - com.gmt2001.<a href="com/gmt2001/HttpRequest.RequestType.html" title="enum in com.gmt2001">HttpRequest.RequestType</a></dt>
 <dd>
@@ -6500,6 +6522,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">The winning outcome is determined and the Channel Points are distributed to the viewers who predicted the correct outcome.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClientResponse.html#resourceUrl()">resourceUrl()</a></span> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
+<dd>
+<div class="block">Returns the actual URL that was returned, after following any redirects</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpclient/HttpClientResponse.html#responseBody()">responseBody()</a></span> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
 <div class="block">Returns the response body as a string</div>
@@ -6546,22 +6572,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/processors/RoomStateTMIProcessor.html#%3Cinit%3E()">RoomStateTMIProcessor()</a></span> - Constructor for class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/RoomStateTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">RoomStateTMIProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/DonationsCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/DonationsCache.html" title="class in tv.phantombot.cache">DonationsCache</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/EmotesCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/EmotesCache.html" title="class in tv.phantombot.cache">EmotesCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/SteamCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/SteamCache.html" title="class in tv.phantombot.cache">SteamCache</a></dt>
 <dd>
 <div class="block">Run method that runs on a new thread and sleeps every 30 minutes.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/StreamElementsCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/StreamElementsCache.html" title="class in tv.phantombot.cache">StreamElementsCache</a></dt>
-<dd>
-<div class="block">Starts the cache loop.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TipeeeStreamCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TipeeeStreamCache.html" title="class in tv.phantombot.cache">TipeeeStreamCache</a></dt>
-<dd>
-<div class="block">Starts the cache loop.</div>
-</dd>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchTeamsCache.html#run()">run()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchTeamsCache.html" title="class in tv.phantombot.cache">TwitchTeamsCache</a></dt>
 <dd>
 <div class="block">Method that updates the Twitch teams.</div>
@@ -6879,8 +6897,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Sets the value of the <code>value</code> column for the default section of the given table and key as a string</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#SetAccessToken(java.lang.String)">SetAccessToken(String)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#setAffiliatePartner(boolean,boolean)">setAffiliatePartner(boolean, boolean)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>
 <div class="block">Sets the current Affiliate and Partner states, and sends ane vent if they changed</div>
@@ -6931,7 +6947,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/util/DiscordUtil.html#setCompeting(java.lang.String)">setCompeting(String)</a></span> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#SetCurrencyCode(java.lang.String)">SetCurrencyCode(String)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
+<dt><span class="memberNameLink"><a href="com/illusionaryone/StreamLabsAPI.html#SetCurrencyCode(java.lang.String)">SetCurrencyCode(String)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone">StreamLabsAPI</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#setDebugging(boolean)">setDebugging(boolean)</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
@@ -6942,8 +6958,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Enables or disables log only debug mode.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/ObservingDebugger.html#setDisconnected(boolean)">setDisconnected(boolean)</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ObservingDebugger.html" title="class in tv.phantombot.script">ObservingDebugger</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#SetDonationPullLimit(int)">SetDonationPullLimit(int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">SetDouble(String, String, String, double)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
@@ -6965,8 +6979,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Sets the game title</div>
 </dd>
-<dt><span class="memberNameLink"><a href="com/scaniatv/StreamElementsAPIv2.html#SetID(java.lang.String)">SetID(String)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/DataStore.html#SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">SetInteger(String, String, String, int)</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as an integer</div>
@@ -6975,15 +6987,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/JSTimers.html#setInterval(java.lang.Runnable,int,java.lang.String)">setInterval(Runnable, int, String)</a></span> - Method in class com.gmt2001.<a href="com/gmt2001/JSTimers.html" title="class in com.gmt2001">JSTimers</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/scaniatv/StreamElementsAPIv2.html#SetJWT(java.lang.String)">SetJWT(String)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/script/Script.html#setLastModified(long)">setLastModified(long)</a></span> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/Script.html" title="class in tv.phantombot.script">Script</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#setLevel(java.util.logging.Level)">setLevel(Level)</a></span> - Static method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/scaniatv/StreamElementsAPIv2.html#SetLimit(int)">SetLimit(int)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/scaniatv/TipeeeStreamAPIv1.html#SetLimit(int)">SetLimit(int)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/TipeeeStreamAPIv1.html" title="class in com.scaniatv">TipeeeStreamAPIv1</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/util/DiscordUtil.html#setListening(java.lang.String)">setListening(String)</a></span> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
@@ -6995,17 +7001,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/pubsub/TwitchPubSub.html#setOAuth(java.lang.String)">setOAuth(String)</a></span> - Method in class tv.phantombot.twitch.pubsub.<a href="tv/phantombot/twitch/pubsub/TwitchPubSub.html" title="class in tv.phantombot.twitch.pubsub">TwitchPubSub</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/scaniatv/TipeeeStreamAPIv1.html#SetOauth(java.lang.String)">SetOauth(String)</a></span> - Method in class com.scaniatv.<a href="com/scaniatv/TipeeeStreamAPIv1.html" title="class in com.scaniatv">TipeeeStreamAPIv1</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/TwitchAPIv5.html#SetOAuth(java.lang.String)">SetOAuth(String)</a></span> - Method in class com.gmt2001.<a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></dt>
 <dd>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 &nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/util/DiscordUtil.html#setPlaying(java.lang.String)">setPlaying(String)</a></span> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#SetPoints(java.lang.String,int)">SetPoints(String, int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="com/illusionaryone/TwitchAlertsAPIv1.html#SetPointsAPI(java.lang.String,int)">SetPointsAPI(String, int)</a></span> - Method in class com.illusionaryone.<a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone">TwitchAlertsAPIv1</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/CaselessProperties.Transaction.html#setProperty(java.lang.String,boolean)">setProperty(String, boolean)</a></span> - Method in class tv.phantombot.<a href="tv/phantombot/CaselessProperties.Transaction.html" title="class in tv.phantombot">CaselessProperties.Transaction</a></dt>
 <dd>&nbsp;</dd>
@@ -7098,8 +7098,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Updates the Twitch staff status of the viewer</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html#start()">start()</a></span> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.EmoteLocation.html" title="class in com.gmt2001.twitch.tmi">TMIMessage.EmoteLocation</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/cache/DonationsCache.html#start()">start()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/DonationsCache.html" title="class in tv.phantombot.cache">DonationsCache</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/Helix.html#startCommercial(java.lang.String,int)">startCommercial(String, int)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
@@ -7212,6 +7210,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="tv/phantombot/event/streamelements/StreamElementsEvent.html" title="class in tv.phantombot.event.streamelements"><span class="typeNameLink">StreamElementsEvent</span></a> - Class in <a href="tv/phantombot/event/streamelements/package-summary.html">tv.phantombot.event.streamelements</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/streamelements/StreamElementsEvent.html#%3Cinit%3E()">StreamElementsEvent()</a></span> - Constructor for class tv.phantombot.event.streamelements.<a href="tv/phantombot/event/streamelements/StreamElementsEvent.html" title="class in tv.phantombot.event.streamelements">StreamElementsEvent</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/illusionaryone/StreamLabsAPI.html" title="class in com.illusionaryone"><span class="typeNameLink">StreamLabsAPI</span></a> - Class in <a href="com/illusionaryone/package-summary.html">com.illusionaryone</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/streamlabs/donate/StreamLabsDonateEvent.html" title="class in tv.phantombot.event.streamlabs.donate"><span class="typeNameLink">StreamLabsDonateEvent</span></a> - Class in <a href="tv/phantombot/event/streamlabs/donate/package-summary.html">tv.phantombot.event.streamlabs.donate</a></dt>
 <dd>&nbsp;</dd>
@@ -7355,7 +7355,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#syncOnline()">syncOnline()</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>
-<div class="block">Syncs the stream status using both Get Streams and Get Channel Information, then calls <a href="tv/phantombot/cache/TwitchCache.html#goOnline(boolean)"><code>TwitchCache.goOnline(boolean)</code></a> with the parameter set to <code>true</code></div>
+<div class="block">Syncs the stream status using both Get Streams and Get Channel Information, then sets the online status</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/TwitchCache.html#syncStreamInfoFromChannel(boolean,java.util.function.Consumer)">syncStreamInfoFromChannel(boolean, Consumer&lt;Boolean&gt;)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>
@@ -7733,8 +7733,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="tv/phantombot/twitch/pubsub/processors/package-summary.html">tv.phantombot.twitch.pubsub.processors</a> - package tv.phantombot.twitch.pubsub.processors</dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/ytplayer/package-summary.html">tv.phantombot.ytplayer</a> - package tv.phantombot.ytplayer</dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/illusionaryone/TwitchAlertsAPIv1.html" title="class in com.illusionaryone"><span class="typeNameLink">TwitchAlertsAPIv1</span></a> - Class in <a href="com/illusionaryone/package-summary.html">com.illusionaryone</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/twitch/subscriber/TwitchAnonymousSubscriptionGiftEvent.html" title="class in tv.phantombot.event.twitch.subscriber"><span class="typeNameLink">TwitchAnonymousSubscriptionGiftEvent</span></a> - Class in <a href="tv/phantombot/event/twitch/subscriber/package-summary.html">tv.phantombot.event.twitch.subscriber</a></dt>
 <dd>&nbsp;</dd>
@@ -8598,15 +8596,33 @@ the order they are declared.</div>
 <div class="block">Handles rate limiting using a window which resets a period of time after the first token is used</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#%3Cinit%3E(long,int)">WindowedRateLimiter(long, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#%3Cinit%3E(java.time.Duration,int)">WindowedRateLimiter(Duration, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><span class="typeNameLink">WindowedSwitchingRateLimiter</span></a> - Class in <a href="com/gmt2001/ratelimiters/package-summary.html">com.gmt2001.ratelimiters</a></dt>
 <dd>
 <div class="block">Handles rate limiting using a window which resets a period of time after the first token is used, and where the limit can switch between two values</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(long,int,int)">WindowedSwitchingRateLimiter(long, int, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(long,int,int,boolean)">WindowedSwitchingRateLimiter(long, int, int, boolean)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(java.time.Duration,int,int)">WindowedSwitchingRateLimiter(Duration, int, int)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html#%3Cinit%3E(java.time.Duration,int,int,boolean)">WindowedSwitchingRateLimiter(Duration, int, int, boolean)</a></span> - Constructor for class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#windowMS">windowMS</a></span> - Variable in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#windowMS()">windowMS()</a></span> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>

@@ -305,8 +305,6 @@ Data Type: _String_
 
 the user id for retrieving donations from streamelements
 
-_NOTE: A restart is required for this property to take effect_
-
 &nbsp;
 
 #### streamelementsjwt
@@ -314,8 +312,6 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _String_
 
 the jwt token for retrieving donations from streamelements
-
-_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -325,8 +321,6 @@ Data Type: _Int_
 
 the maximum number of donations to pull from streamelements when updating. default `5`
 
-_NOTE: A restart is required for this property to take effect_
-
 &nbsp;
 
 ### TipeeeStream
@@ -335,8 +329,6 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _String_
 
 the access token for retrieving donations from tipeeestream
-
-_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
@@ -360,23 +352,19 @@ _NOTE: A restart is required for this property to take effect_
 &nbsp;
 
 ### StreamLabs
-#### twitchalertskey
+#### streamlabskey
 
 Data Type: _String_
 
 the access token for retrieving donations from streamlabs
 
-_NOTE: A restart is required for this property to take effect_
-
 &nbsp;
 
-#### twitchalertslimit
+#### streamlabslimit
 
 Data Type: _Int_
 
 the maximum number of donations to pull from streamlabs when updating. default `5`
-
-_NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 

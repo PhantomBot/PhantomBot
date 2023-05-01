@@ -25,8 +25,10 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -239,7 +241,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Refreshes the internal list of existing subscriptions
      */
     public void refreshSubscriptions() {
-        this.refreshSubscriptions(null);
+        this.refreshSubscriptions(null).subscribe();
     }
 
     /**
@@ -247,8 +249,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      *
      * @param after The pagination cursor
      */
-    private void refreshSubscriptions(String after) {
-        Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
+    private Mono<JSONObject> refreshSubscriptions(String after) {
+        return Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
             if (response.has("error")) {
                 if (debug()) {
                     debug("refreshSubscriptions(" + after + ") error " + response.toString(4));
@@ -257,6 +259,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                 if (debug()) {
                     debug("refreshSubscriptions(" + after + ") success " + response.toString(4));
                 }
+
                 JSONArray jsa = response.getJSONArray("data");
 
                 for (int i = 0; i < jsa.length(); i++) {
@@ -274,7 +277,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }).doOnError(ex -> {
             debug("refreshSubscriptions(" + after + ") doOnError", ex);
             com.gmt2001.Console.debug.println("Failed to refresh subscriptions [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-        }).subscribe();
+        });
     }
 
     /**
@@ -474,8 +477,6 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      */
     public void reconnect() {
         this.connect();
-        Mono.delay(Duration.ofSeconds(3)).block();
-        this.refreshSubscriptions();
     }
 
     /**
@@ -500,12 +501,19 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
             this.rwl.writeLock().lock();
             try {
+                List<Mono<Void>> deleteList = new ArrayList<>();
+                this.subscriptions.forEach((id, subscription) -> {
+                    deleteList.add(this.deleteSubscription(id).timeout(Duration.ofSeconds(15)));
+                });
                 this.subscriptions.clear();
                 this.session_id = null;
                 this.lastKeepAlive = Instant.MIN;
                 if (this.keepAliveFuture != null) {
                     this.keepAliveFuture.cancel(true);
                 }
+                Mono.whenDelayError(deleteList).block();
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
             } finally {
                 this.rwl.writeLock().unlock();
             }
@@ -567,6 +575,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                                                 EventBus.instance().postAsync(new EventSubWelcomeEvent(this.reconnecting));
 
                                                 if (this.reconnecting) {
+                                                    this.refreshSubscriptions();
                                                     this.reconnecting = false;
                                                     this.oldClient.close(WebSocketCloseStatus.NORMAL_CLOSURE);
                                                 }
@@ -597,6 +606,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
                                                 debug("handleMessage reconnect");
 
+                                                com.gmt2001.Console.out.println("EventSub received a force-reconnect. Reconnect will be attempted in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
+
                                                 this.reconnecting = true;
                                                 this.connect(session.getString("reconnect_url"));
                                             }
@@ -622,6 +633,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                                         break;
                                 }
                             }
+                        } else {
+                            debug("handleMessage duplicate " + message_id);
                         }
                     }
                 }
@@ -657,6 +670,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     @Override
     public void handshakeComplete(ChannelHandlerContext ctx) {
         debug("handshakeComplete");
+        com.gmt2001.Console.out.println("EventSub connected");
     }
 
     @Override
@@ -676,7 +690,10 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                 }
                 EventBus.instance().postAsync(new EventSubDisconnectedEvent());
                 if (this.backoff != null) {
+                    com.gmt2001.Console.out.println("EventSub connection closed. Reconnect will be attempted in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
                     this.backoff.BackoffOnceAsync(this::reconnect);
+                } else {
+                    com.gmt2001.Console.out.println("EventSub connection closed");
                 }
             } finally {
                 this.rwl.writeLock().unlock();

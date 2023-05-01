@@ -100,7 +100,7 @@ This example configuration can be deployed by running `docker compose up --pull 
     * Perform the `Bot OAuth` using the bot account that you want to appear in chat
   * If you have changed anything on the _Bot Setup_ page except for the items in the `Admin` or `Panel Login` sections, you should restart the bot
     * Login to the panel
-    * Click the <i class="fa fa-gears"></i> icon in the top-right corner
+    * Click the <i class="fa fa-cogs"></i> icon in the top-right corner
     * On the `Restart` tool in the <i class="fa fa-wrench"></i> tab, click `Execute`
     * The bot should restart, this normally takes about 30-60 seconds
 
