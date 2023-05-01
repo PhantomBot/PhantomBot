@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -296,27 +296,34 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </td>
 </tr>
 <tr id="i13" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resourceUrl()">resourceUrl</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Returns the actual URL that was returned, after following any redirects</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#responseBody()">responseBody</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the response body as a string</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpResponseStatus.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpResponseStatus</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#responseCode()">responseCode</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the HTTP response status code</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#responseHeaders()">responseHeaders</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the response headers</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#url()">url</a></span>()</code></th>
 <td class="colLast">
@@ -625,11 +632,24 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <a id="url()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>url</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a>&nbsp;url()</pre>
 <div class="block">Returns the URL requested</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="resourceUrl()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>resourceUrl</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink">URI</a>&nbsp;resourceUrl()</pre>
+<div class="block">Returns the actual URL that was returned, after following any redirects</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 </dl>

@@ -661,7 +661,7 @@ $(function () {
                         .append(helpers.getInputGroup('welcome-message-first', 'text', 'First Chatter Welcome Message', '', e.welcomeMessageFirst, 'Welcome message for first time chatters. Leave blank to use the default welcome message. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
                         // Add the input for the welcome cooldown.
                         .append(helpers.getInputGroup('welcome-cooldown', 'number', 'Welcome Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
-                                'How many hours a user has to not chat to be welcomed again. Minimum is 1 hour.'))
+                                'How many hours a user has to not chat to be welcomed again'))
                         // Add the input for excluded users.
                         .append(helpers.getFlatMultiDropdownGroup('welcome-disabled', 'Excluded Users', disabledUserOptions,
                                 'Users that the bot will not welcome. Channel owner and this bot are always excluded.')),
@@ -674,7 +674,7 @@ $(function () {
 
                             // Make sure the user has someone in each box.
                             switch (false) {
-                                case helpers.handleInputNumber($welcomeCooldown, 1):
+                                case helpers.handleInputNumber($welcomeCooldown, 0):
                                     break;
                                 default:
                                     socket.updateDBValues('alerts_update_welcome_settings', {
@@ -714,6 +714,142 @@ $(function () {
             });
         });
     });
+
+    //StreamLabs Authorization Code Flow
+    $('#streamlabsLink').on('click', function () {
+        let href = window.location.toString();
+        if (href.includes('?')) {
+            href = href.substring(0, href.indexOf('?'));
+        }
+        if (href.includes('#')) {
+            href = href.substring(0, href.indexOf('#'));
+        }
+        let cp = $.currentPage();
+        let authUrl = href + '?folder=' + cp.folder + '&page=' + cp.page + '&action=streamlabs-complete-auth';
+        let modal = helpers.getModal('streamlabs-link', 'Link StreamLabs Account', null, $('<form/>', {
+            'role': 'form'
+        })
+                .append($('<div/>', {
+                    'class': 'box box-info'
+                }).append($('<div/>', {
+                    'class': 'box-header',
+                    'html': 'Developer App Setup'
+                })).append($('<div/>', {
+                    'class': 'box-body',
+                    'html': '<ol>'
+                            + '<li>Login to your <a href="https://streamlabs.com/dashboard#/" target="_blank">StreamLabs Dashboard</a></li>'
+                            + '<li>On the left menu, open the <b>Settings</b> page under the <i>Account</i> section</li>'
+                            + '<li>Switch to the <b>Oauth Clients</b> tab'
+                            + '<ul>'
+                            + '<li>To use an existing v2 app:'
+                            + '<ol>'
+                            + '<li>Switch to the <b>My Apps</b> sub-tab</li>'
+                            + '<li>Click <b>View App</b> next to the desired app</li>'
+                            + '<li>Ensure the desired Twitch account is in the <i>Whitelisted Users</i> list and the <i>Redirect URL</i> is <b>' + authUrl + '</b>'
+                            + '<ul><li>To update the whitelist or redirect URL:'
+                            + '<ol><li>Click <b>Edit</b></li>'
+                            + '<li>Click <b>Continue</b></li>'
+                            + '<li>Click <b>Continue</b> again</li>'
+                            + '<li>Click <b>Add</b></li>'
+                            + '<li>Ensure the drop-down has <b>Twitch</b> selected</li>'
+                            + '<li>Put the Username (Login Name) of the Twitch user in the <i>Username</i> text-box</li>'
+                            + '<li>Update the <i>Redirect URL</i>, if neccessary</li>'
+                            + '<li>Click <b>Complete</b></li>'
+                            + '</ol></li></ul></li>'
+                            + '</ol></li>'
+                            + '<li>To create a new app or convert a v1 app:'
+                            + '<ol>'
+                            + '<li>Click <b>Register an App</b></li>'
+                            + '<li>Select if you are creating a new app or converting an old v1 app'
+                            + '<ul><li>If converting an old app, a dropdown will appear asking you to select the app</li></ul></li>'
+                            + '<li>Click <b>Continue</b></li>'
+                            + '<li>Fill in your personal information'
+                            + '<ul><li>If not submitting this app for full approval, we have found that fake information is accepted here for privacy</li></ul></li>'
+                            + '<li>Click <b>Continue</b></li>'
+                            + '<li>Fill in an <b>App Name</b> that you will recognize when authorizing the bot, or reviewing your authorizations later</li>'
+                            + '<li>Fill in any valid URL in the <b>Website/URL</b> box, even an unrelated one</li>'
+                            + '<li>Fill in the other textboxes with any text</li>'
+                            + '<li>Click <b>Continue</b></li>'
+                            + '<li>Ensure the drop-down has <b>Twitch</b> selected</li>'
+                            + '<li>Put the Username (Login Name) of the Twitch user in the <i>Username</i> textbox</li>'
+                            + '<li>Set the <i>Redirect URL</i> to <b>' + authUrl + '</b></li>'
+                            + '<li>Click <b>Complete</b></li>'
+                            + '<li>A popup confirms that the app is created and your app is now in <i>Testing</i> mode</li>'
+                            + '</ol></li>'
+                            + '</ul>'
+                            + '</li>'
+                            + '<li>Copy/Paste the <b>Client ID</b> here <input type="text" id="streamlabs-link-clientid" class="form-control" autocomplete="off" /></li>'
+                            + '<li>Click the <b>Client Secret</b> textbox on StreamLabs (<i>Click to reveal your client secret</i>)</li>'
+                            + '<li>Copy/Paste the <b>Client Secret</b> here <input type="text" id="streamlabs-link-clientsecret" class="form-control" autocomplete="off" /></li>'
+                            + '</ol>'
+                }))).append($('<div/>', {
+            'class': 'box box-warning'
+        }).append($('<div/>', {
+            'class': 'box-header',
+            'html': 'Warning'
+        })).append($('<div/>', {
+            'class': 'box-body',
+            'html': 'Failure to set the <i>Callback URI / Redirect URL</i> exactly as instructed may result in an authorization failure'
+        }))).append($('<div/>', {
+            'class': 'box box-info'
+        }).append($('<div/>', {
+            'class': 'box-header',
+            'html': 'App Authorization'
+        })).append($('<div/>', {
+            'class': 'box-body',
+            'html': '<ol id="streamlabs-link-auth">'
+                    + '<li><button class="btn btn-info btn-sm" type="button" id="streamlabs-link-start-auth-button"><i class="fa fa-refresh"></i>&nbsp; Generate Auth Link</button></li>'
+                    + '</ol>'
+        }))), null, {'cancelclass': 'btn-primary', 'canceltext': 'Cancel'});
+        modal.on('shown.bs.modal', function () {
+            $('#streamlabs-link-start-auth-button').prop('disabled', true);
+            $('#streamlabs-link-clientid').on('input', function() {
+                $('#streamlabs-link-start-auth-button').prop('disabled', $('#streamlabs-link-clientid').val().trim().length === 0 || $('#streamlabs-link-clientsecret').val().trim().length === 0);
+            });
+            $('#streamlabs-link-clientsecret').on('input', function() {
+                $('#streamlabs-link-start-auth-button').prop('disabled', $('#streamlabs-link-clientid').val().trim().length === 0 || $('#streamlabs-link-clientsecret').val().trim().length === 0);
+            });
+            $('#streamlabs-link-start-auth-button').on('click', function () {
+                let clientId = $('#streamlabs-link-clientid').val().trim();
+                let clientSecret = $('#streamlabs-link-clientsecret').val().trim();
+                sessionStorage.setItem('streamlabs_link_clientId', clientId);
+                sessionStorage.setItem('streamlabs_link_clientSecret', clientSecret);
+                sessionStorage.setItem('streamlabs_link_authUrl', authUrl);
+                let slauthUrl = 'https://streamlabs.com/api/v2.0/authorize?client_id=' + clientId + '&scope=donations.read&response_type=code&redirect_uri=' + encodeURIComponent(authUrl);
+                $('#streamlabs-link-auth').append($('<li/>', {
+                    'html': '<button class="btn btn-info btn-sm" type="button" id="streamlabs-link-do-auth-button">Connect with StreamLabs</button>',
+                }));
+                $('#streamlabs-link-do-auth-button').on('click', function () {
+                    window.open(slauthUrl, '_blank');
+                });
+            });
+        });
+
+        modal.modal('toggle');
+    });
+
+    if (helpers.querymap.hasOwnProperty('action') && helpers.querymap.action === 'streamlabs-complete-auth' && helpers.querymap.hasOwnProperty('code')) {
+        window.history.replaceState(null, '', window.location.origin + window.location.pathname);
+        let clientId = sessionStorage.getItem('streamlabs_link_clientId');
+        sessionStorage.removeItem('streamlabs_link_clientId');
+        let clientSecret = sessionStorage.getItem('streamlabs_link_clientSecret');
+        sessionStorage.removeItem('streamlabs_link_clientSecret');
+        let authUrl = sessionStorage.getItem('streamlabs_link_authUrl');
+        sessionStorage.removeItem('streamlabs_link_authUrl');
+        socket.wsEvent('streamlabs_authorize', 'DonationsCache.java', null, [clientId, clientSecret, authUrl, helpers.querymap.code], function (e) {
+            if (e.success) {
+                swal({
+                    'text': 'Successfully linked StreamLabs!',
+                    'icon': 'success'
+                });
+            } else {
+                swal({
+                    'text': 'Failed to link StreamLabs!',
+                    'icon': 'error'
+                });
+            }
+        }, true);
+    }
 
     // StreamLabs settings.
     $('#donationHandlerSettings').on('click', function () {

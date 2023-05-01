@@ -1,13 +1,16 @@
 # StreamElements Integration Setup
 
-### Getting and Setup Bot token
+1. Login to your account at [StreamElements](https://streamelements.com/dashboard)
+2. Click on the account icon (top-right, where your channel icon is)
+3. Click on the channel name to get to your account page
+4. Under **Channels**, on your channel's row, enable **Show Secrets** toggle
+5. In a separate tab/window, navigate to the _Bot Setup_ page on your bots webserver
+6. Expand the _StreamElements_ section
+7. Move the radio button for _streamelementsjwt_ to the right to enable the textbox
+8. Copy/Paste the **JWT Token** from StreamElements into the textbox for _streamelementsjwt_ on the _Bot Setup_ page
+9. Move the radio button for _streamelementsid_ to the right to enable the textbox
+10. Copy/Paste the **Account ID** from StreamElements into the textbox for _streamelementsid_ on the _Bot Setup_ page
+11. Scroll to the top of the _Bot Setup_ page and click _Save_. Ensure you get a green success bar
 
-1. Log into your StreamElements Account and *click* your Username on the right side (next to the sign out button) (or click [here](https://streamelements.com/dashboard/account/channels) )
-2. On the right side *click* Show secrets
-3. Stop the bot
-4. Open file `BotName\config\botlogin.txt`
-5. Create a new line `streamelementsjwt=JWT` (replace *JWT* with the JWT Token that showed up under *My Channels*)
-6. Create a second new line `streamelementsid=ID` (replace *ID* with your Account ID)
-7. Save file and start the bot
+You can now Enable your *StreamElements Alerts* under *Alerts* on the panel.
 
-You can now Enable your *StreamElements Alerts* under *Alerts*.

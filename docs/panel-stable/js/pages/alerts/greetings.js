@@ -208,7 +208,7 @@ $(function () {
                             'If users should be allowed to set their own messages'))
                     // Add the input for the greeting reward.
                     .append(helpers.getInputGroup('greeting-cooldown', 'number', 'Greeting Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),
-                            'How long the greeting message per user will be in hours. Minimum is 5 hours.'))
+                            'How long the cooldown between greeting messages per user will be in hours'))
                     // Add input for the default greeting message
                     .append(helpers.getInputGroup('greeting-default-message', 'text', 'Default Greeting Message', '', e.defaultJoin,
                             'The default greeting message.')),
@@ -221,7 +221,7 @@ $(function () {
 
                         // Make sure the user has someone in each box.
                         switch (false) {
-                            case helpers.handleInputNumber(greetingCooldown, 5):
+                            case helpers.handleInputNumber(greetingCooldown, 0):
                             case helpers.handleInputString(defaultMessage):
                                 break;
                             default:
