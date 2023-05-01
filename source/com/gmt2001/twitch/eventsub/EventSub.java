@@ -692,6 +692,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                 if (this.backoff != null) {
                     com.gmt2001.Console.out.println("EventSub connection closed. Reconnect will be attempted in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
                     this.backoff.BackoffOnceAsync(this::reconnect);
+                } else {
+                    com.gmt2001.Console.out.println("EventSub connection closed");
                 }
             } finally {
                 this.rwl.writeLock().unlock();
