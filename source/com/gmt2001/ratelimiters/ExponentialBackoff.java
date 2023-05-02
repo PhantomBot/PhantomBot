@@ -86,7 +86,7 @@ public class ExponentialBackoff {
     /**
      * Blocks with Thread.sleep until the next interval, if not already backing off
      */
-    public void BackoffOnce() {
+    public synchronized void BackoffOnce() {
         if (!this.GetIsBackingOff()) {
             this.Backoff();
         }
@@ -124,7 +124,7 @@ public class ExponentialBackoff {
      *
      * @param command The Runnable to callback
      */
-    public void BackoffOnceAsync(Runnable command) {
+    public synchronized void BackoffOnceAsync(Runnable command) {
         if (!this.GetIsBackingOff()) {
             this.BackoffAsync(command);
         }
