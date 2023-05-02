@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -248,34 +248,41 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Instant.html?is-external=true" title="class or interface in java.time" class="externalLink">Instant</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetLastBackoff()">GetLastBackoff</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Returns the last timestamp when a backoff was completed</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetNextInterval()">GetNextInterval</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Determines and returns the next interval to backoff for</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetTotalIterations()">GetTotalIterations</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns the total number of times the backoff has been used since the last reset</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IsAtMaxInterval()">IsAtMaxInterval</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Returns true if the previous interval was equal to the max interval</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#Reset()">Reset</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Resets the backoff to use the minimum values on the next call</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ResetIn(java.time.Duration)">ResetIn</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Duration.html?is-external=true" title="class or interface in java.time" class="externalLink">Duration</a>&nbsp;duration)</code></th>
 <td class="colLast">
@@ -477,6 +484,20 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>true if a backoff is executing; false otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="GetLastBackoff()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GetLastBackoff</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/time/Instant.html?is-external=true" title="class or interface in java.time" class="externalLink">Instant</a>&nbsp;GetLastBackoff()</pre>
+<div class="block">Returns the last timestamp when a backoff was completed</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The timestamp</dd>
 </dl>
 </li>
 </ul>
