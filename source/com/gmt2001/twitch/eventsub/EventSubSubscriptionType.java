@@ -100,17 +100,15 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
 
     /**
      * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
-     * If a matching subscription already exists, deletes it first
+     * If a matching subscription already exists, returns that instead
      *
      * @return
      */
     public Mono<EventSubSubscription> create() {
         this.validateParameters();
         try {
-            String subscriptionId = this.findMatchingSubscriptionIdAnyState();
-            if (subscriptionId != null && !subscriptionId.isBlank()) {
-                return EventSub.instance().deleteSubscription(subscriptionId)
-                    .then(EventSub.instance().createSubscription(this.proposeSubscription()));
+            if (this.isAlreadySubscribed()) {
+                return this.delete().then(EventSub.instance().createSubscription(this.proposeSubscription()));
             } else {
                 return EventSub.instance().createSubscription(this.proposeSubscription());
             }
@@ -216,18 +214,6 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
             return this.isMatch(possibleSubscription)
                     && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
                     || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
-        }).findFirst().map(EventSubSubscription::id).orElse(null);
-    }
-
-    /**
-     * Returns the subscription id if a subscription already exists in any state, otherwise
-     * null
-     *
-     * @return
-     */
-    public String findMatchingSubscriptionIdAnyState() {
-        return EventSub.instance().subscriptions().values().stream().filter(possibleSubscription -> {
-            return this.isMatch(possibleSubscription);
         }).findFirst().map(EventSubSubscription::id).orElse(null);
     }
 
