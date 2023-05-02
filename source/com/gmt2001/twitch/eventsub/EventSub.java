@@ -25,7 +25,6 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
@@ -47,6 +46,7 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 
@@ -420,9 +420,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Removes non-enabled subscriptions from the subscription list
      */
     private void cleanupSubscriptions() {
-        Instant cutoff = Instant.now().minus(2, ChronoUnit.HOURS).plus(15, ChronoUnit.MINUTES);
         this.subscriptions.forEach((id, subscription) -> {
-            if (subscription.lastSeen().isBefore(cutoff)) {
+            if (subscription.status() != SubscriptionStatus.ENABLED) {
                 this.subscriptions.remove(id);
             }
         });

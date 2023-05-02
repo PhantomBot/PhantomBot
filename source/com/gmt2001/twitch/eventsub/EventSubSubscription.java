@@ -16,7 +16,6 @@
  */
 package com.gmt2001.twitch.eventsub;
 
-import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,6 @@ public final class EventSubSubscription {
     private final Map<String, String> condition;
     private final ZonedDateTime created_at;
     private final EventSubTransport transport;
-    private final Instant lastSeen = Instant.now();
 
     /**
      * The status of an EventSub subscription
@@ -296,14 +294,5 @@ public final class EventSubSubscription {
      */
     public EventSubTransport transport() {
         return this.transport;
-    }
-
-    /**
-     * The timestamp when this object was cloned
-     *
-     * @return
-     */
-    public Instant lastSeen() {
-        return this.lastSeen;
     }
 }
