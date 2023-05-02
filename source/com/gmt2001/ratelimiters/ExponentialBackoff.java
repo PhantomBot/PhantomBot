@@ -97,7 +97,7 @@ public class ExponentialBackoff {
      */
     public void Backoff() {
         try {
-            com.gmt2001.Console.debug.println("Backoff() called by: " + com.gmt2001.Console.debug.findCaller("com.gmt2001.ExponentialBackoff"));
+            com.gmt2001.Console.debug.println("Backoff() called by: " + com.gmt2001.Console.debug.findCaller(ExponentialBackoff.class.getName()));
             this.setIsBackingOff(true);
             com.gmt2001.Console.debug.println("Locked backoff...");
             this.determineNextInterval();
