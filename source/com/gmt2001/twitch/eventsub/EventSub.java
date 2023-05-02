@@ -25,10 +25,9 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -48,7 +47,6 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
-import com.gmt2001.twitch.eventsub.EventSubSubscription.SubscriptionStatus;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 
@@ -99,9 +97,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     }
                 });
 
-                ExecutorService.submit(() -> {
+                ExecutorService.scheduleAtFixedRate(() -> {
                     this.refreshSubscriptions();
-                });
+                }, 0, 1, TimeUnit.HOURS);
 
                 ExecutorService.schedule(() -> {
                     try {
@@ -422,8 +420,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Removes non-enabled subscriptions from the subscription list
      */
     private void cleanupSubscriptions() {
+        Instant cutoff = Instant.now().minus(2, ChronoUnit.HOURS).plus(15, ChronoUnit.MINUTES);
         this.subscriptions.forEach((id, subscription) -> {
-            if (subscription.status() != SubscriptionStatus.ENABLED) {
+            if (subscription.lastSeen().isBefore(cutoff)) {
                 this.subscriptions.remove(id);
             }
         });
@@ -505,17 +504,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
             this.rwl.writeLock().lock();
             try {
-                List<Mono<Void>> deleteList = new ArrayList<>();
-                this.subscriptions.forEach((id, subscription) -> {
-                    deleteList.add(this.deleteSubscription(id).timeout(Duration.ofSeconds(15)));
-                });
-                this.subscriptions.clear();
                 this.session_id = null;
                 this.lastKeepAlive = Instant.MIN;
                 if (this.keepAliveFuture != null) {
                     this.keepAliveFuture.cancel(true);
                 }
-                Mono.whenDelayError(deleteList).block();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             } finally {
