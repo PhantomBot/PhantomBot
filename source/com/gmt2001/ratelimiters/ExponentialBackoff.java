@@ -87,9 +87,15 @@ public class ExponentialBackoff {
      * Blocks with Thread.sleep until the next interval, if not already backing off
      */
     public void BackoffOnce() {
-        if (!this.GetIsBackingOff()) {
-            this.Backoff();
+        synchronized (this) {
+            if (this.GetIsBackingOff()) {
+                return;
+            } else {
+                this.setIsBackingOff(true);
+            }
         }
+
+        this.Backoff();
     }
 
     /**
@@ -125,9 +131,14 @@ public class ExponentialBackoff {
      * @param command The Runnable to callback
      */
     public void BackoffOnceAsync(Runnable command) {
-        if (!this.GetIsBackingOff()) {
-            this.BackoffAsync(command);
+        synchronized (this) {
+            if (this.GetIsBackingOff()) {
+                return;
+            } else {
+                this.setIsBackingOff(true);
+            }
         }
+        this.BackoffAsync(command);
     }
 
     /**
@@ -136,7 +147,7 @@ public class ExponentialBackoff {
      * @param command The Runnable to callback
      */
     public void BackoffAsync(Runnable command) {
-        com.gmt2001.Console.debug.println("BackoffAsync() called by: " + com.gmt2001.Console.debug.findCaller("com.gmt2001.ExponentialBackoff"));
+        com.gmt2001.Console.debug.println("BackoffAsync() called by: " + com.gmt2001.Console.debug.findCaller(ExponentialBackoff.class.getName()));
         this.setIsBackingOff(true);
         com.gmt2001.Console.debug.println("Locked backoff...");
         this.determineNextInterval();
@@ -193,7 +204,7 @@ public class ExponentialBackoff {
      *
      * @return true if a backoff is executing; false otherwise
      */
-    public synchronized boolean GetIsBackingOff() {
+    public boolean GetIsBackingOff() {
         return this.isBackingOff;
     }
 
