@@ -236,7 +236,7 @@
      * @returns {boolean}
      */
     function isMod(username, tags) {
-        $.consoleDebug($.findCaller());
+        $.consoleDebug('');
         if (checkTags(tags)) {
             if (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1')) {
                 return true;
@@ -266,7 +266,7 @@
      * @returns {boolean}
      */
     function isSub(username, tags) {
-        $.consoleDebug($.findCaller());
+        $.consoleDebug('');
         if (checkTags(tags)) {
             if (tags.getOrDefault('subscriber', '0').equals('1')) {
                 return true;
@@ -284,7 +284,7 @@
      * @returns {boolean}
      */
     function isTurbo(tags) {
-        $.consoleDebug($.findCaller());
+        $.consoleDebug('');
         if (checkTags(tags)) {
             if (tags.containsKey('turbo')) {
                 return tags.get('turbo').equals('1');
@@ -311,7 +311,7 @@
      * @returns {boolean}
      */
     function isVIP(username, tags) {
-        $.consoleDebug($.findCaller());
+        $.consoleDebug('');
         if (checkTags(tags)) {
             if (tags.containsKey('vip')) {
                 return true;
@@ -435,7 +435,7 @@
      * @returns {Number}
      */
     function checkUserPermission(username, tags, permission) {
-        $.consoleDebug($.findCaller());
+        $.consoleDebug('');
         return getUserGroupId(username, tags) <= permission;
     }
 
@@ -452,7 +452,7 @@
      * Checks if the user has adequate permission to execute a command or subcommand
      */
     function permCom(username, command, subcommand, tags) {
-        $.consoleDebug($.findCaller());
+        $.consoleDebug('');
         let commandGroup, allowed;
         if (subcommand === '' || subcommand === undefined) {
             commandGroup = $.getCommandGroup(command);
