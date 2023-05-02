@@ -26,10 +26,6 @@
                 args = event.getArgs(),
                 action = args[0];
 
-        if (!$.isBot(sender)) {
-            return;
-        }
-
         /* reloads the betting vars */
         if (command.equalsIgnoreCase('reloadbet')) {
             $.reloadBet();

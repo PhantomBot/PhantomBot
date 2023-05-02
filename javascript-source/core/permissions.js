@@ -436,6 +436,9 @@
      */
     function checkUserPermission(username, tags, permission) {
         $.consoleDebug($.findCaller());
+        if (permission === PERMISSION.Panel) {
+            return isBot(username);
+        }
         return getUserGroupId(username, tags) <= permission;
     }
 
