@@ -245,7 +245,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Refreshes the internal list of existing subscriptions
      */
     public void refreshSubscriptions() {
-        this.refreshSubscriptions(null).subscribe();
+        this.refreshSubscriptions(null);
     }
 
     /**
@@ -253,8 +253,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      *
      * @param after The pagination cursor
      */
-    private Mono<JSONObject> refreshSubscriptions(String after) {
-        return Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
+    private void refreshSubscriptions(String after) {
+        Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
             if (response.has("error")) {
                 if (debug()) {
                     debug("refreshSubscriptions(" + after + ") error " + response.toString(4));
@@ -281,7 +281,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }).doOnError(ex -> {
             debug("refreshSubscriptions(" + after + ") doOnError", ex);
             com.gmt2001.Console.debug.println("Failed to refresh subscriptions [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-        });
+        }).subscribe();
     }
 
     /**
@@ -575,11 +575,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                                                 }
 
                                                 debug("handleMessage welcome " + (this.reconnecting ? " (reconnecting) " : ""));
+                                                this.refreshSubscriptions();
 
                                                 EventBus.instance().postAsync(new EventSubWelcomeEvent(this.reconnecting));
 
                                                 if (this.reconnecting) {
-                                                    this.refreshSubscriptions();
                                                     this.reconnecting = false;
                                                     this.oldClient.close(WebSocketCloseStatus.NORMAL_CLOSURE);
                                                 }
