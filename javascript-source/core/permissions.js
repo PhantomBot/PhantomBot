@@ -997,7 +997,7 @@
                 $.setIniDbBoolean('visited', username, true);
             }
         } else if (checkTags(tags)) { // The subscriber and vip cache should always be up-to-date for restoreSubscriberStatus() to properly work
-            if(tags.getOrDefault('subscriber', '0').equals('1')) {
+            if (tags.getOrDefault('subscriber', '0').equals('1')) {
                 addSubUsersList(username);
             } else {
                 delSubUsersList(username);
