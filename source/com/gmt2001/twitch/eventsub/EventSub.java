@@ -504,7 +504,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         if (!this.reconnecting) {
             if (this.client != null) {
                 try {
-                    this.client.close();
+                    this.oldClient = this.client;
+                    this.client = null;
+                    this.oldClient.close();
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
