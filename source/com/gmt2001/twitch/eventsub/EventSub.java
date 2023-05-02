@@ -453,10 +453,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
         if (shouldReconnect) {
             debug("KeepAlive Failed");
-            this.reconnecting = false;
-            if (this.backoff != null) {
-                this.backoff.BackoffOnceAsync(this::reconnect);
-            }
+            this.reconnect();
         }
     }
 
@@ -470,7 +467,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         if (event.isAPI()) {
             debug("APIOAuth Reauthorized");
             this.reconnecting = false;
-            this.connect();
+            this.reconnect();
         }
     }
 
@@ -478,7 +475,17 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Restarts the EventSub connection
      */
     public void reconnect() {
-        this.connect();
+        if (this.backoff == null || (this.reconnecting && this.backoff.GetLastBackoff().plusSeconds(10).isAfter(Instant.now()))) {
+            return;
+        }
+
+        if (!this.backoff.GetIsBackingOff()) {
+            com.gmt2001.Console.out.println("Reconnecting to EventSub in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
+            this.reconnecting = false;
+            this.backoff.BackoffOnceAsync(() -> {
+                this.connect();
+            });
+        }
     }
 
     /**
@@ -496,8 +503,10 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     private synchronized void connect(String uri) {
         if (!this.reconnecting) {
             if (this.client != null) {
-                if (this.client.connected()) {
+                try {
                     this.client.close();
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.logStackTrace(ex);
                 }
             }
 
@@ -517,16 +526,14 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
             this.oldClient = this.client;
         }
 
-        ExecutorService.schedule(() -> {
-            debug("Connecting...");
+        debug("Connecting...");
 
-            try {
-                this.client = new WSClient(URIUtil.create(uri), this);
-                this.client.connect();
-            } catch (InterruptedException | SSLException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-        }, 250, TimeUnit.MILLISECONDS);
+        try {
+            this.client = new WSClient(URIUtil.create(uri), this);
+            this.client.connect();
+        } catch (InterruptedException | SSLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     /**
@@ -588,7 +595,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                                         }
                                         debug("handleMessage keepalive");
                                         break;
-                                    case "session_reconnect ":
+                                    case "session_reconnect":
                                         if (payload.has("session")) {
                                             JSONObject session = payload.getJSONObject("session");
                                             if (session.has("reconnect_url")) {
@@ -602,10 +609,15 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
                                                 debug("handleMessage reconnect");
 
-                                                com.gmt2001.Console.out.println("EventSub received a force-reconnect. Reconnect will be attempted in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
+                                                com.gmt2001.Console.out.println("EventSub received a force-reconnect");
 
-                                                this.reconnecting = true;
-                                                this.connect(session.getString("reconnect_url"));
+                                                if (this.backoff != null) {
+                                                    this.reconnecting = true;
+                                                    this.backoff.Reset();
+                                                    this.backoff.BackoffAsync(() -> {
+                                                        this.connect(session.getString("reconnect_url"));
+                                                    });
+                                                }
                                             }
                                         }
                                         break;
@@ -685,12 +697,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     this.keepAliveFuture.cancel(true);
                 }
                 EventBus.instance().postAsync(new EventSubDisconnectedEvent());
-                if (this.backoff != null) {
-                    com.gmt2001.Console.out.println("EventSub connection closed. Reconnect will be attempted in " + Duration.ofMillis(this.backoff.GetNextInterval()).toString());
-                    this.backoff.BackoffOnceAsync(this::reconnect);
-                } else {
-                    com.gmt2001.Console.out.println("EventSub connection closed");
-                }
+                com.gmt2001.Console.out.println("EventSub connection closed");
+                this.reconnect();
             } finally {
                 this.rwl.writeLock().unlock();
             }
