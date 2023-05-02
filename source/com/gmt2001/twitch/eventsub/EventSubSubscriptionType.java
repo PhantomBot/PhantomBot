@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Flow;
+import java.util.stream.Collectors;
 
 import reactor.core.publisher.Mono;
 
@@ -141,7 +142,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
      */
     public List<Mono<Void>> deleteAll() {
         this.validateParameters();
-        return this.findMatchingSubscriptionIds().stream().map(id -> EventSub.instance().deleteSubscription(id)).toList();
+        return this.findMatchingSubscriptionIds().stream().map(id -> EventSub.instance().deleteSubscription(id)).collect(Collectors.toList());
     }
 
     /**
@@ -233,7 +234,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
             return this.isMatch(possibleSubscription)
                     && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
                     || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
-        }).map(EventSubSubscription::id).toList();
+        }).map(EventSubSubscription::id).collect(Collectors.toList());
     }
 
     /**
