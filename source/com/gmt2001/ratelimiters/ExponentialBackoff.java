@@ -198,6 +198,15 @@ public class ExponentialBackoff {
     }
 
     /**
+     * Returns the last timestamp when a backoff was completed
+     *
+     * @return The timestamp
+     */
+    public Instant GetLastBackoff() {
+        return this.lastBackoff;
+    }
+
+    /**
      * Determines and returns the next interval to backoff for
      *
      * @return The next interval that will be used when Backoff() or BackoffAsync(command) is called, in milliseconds
