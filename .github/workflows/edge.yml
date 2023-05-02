@@ -77,8 +77,6 @@ jobs:
       env:
         BRANCH: ${{ steps.build_env.outputs.branch }}
       run: |
-        sed -i -r 's/"version" value="[0-9.]+"/"version" value="'$BRANCH'"/' build.xml
-        echo $?
         sed -i -r 's/revision="[A-Za-z0-9._-]+"/revision="'$BRANCH'"/;s/branch="[A-Za-z0-9._-]+"/branch="'$BRANCH'"/' ivy.xml
         echo $?
     - name: Build with Ant
