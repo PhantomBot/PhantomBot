@@ -17,6 +17,7 @@
 package com.gmt2001.twitch.eventsub;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Flow;
 
@@ -100,7 +101,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
 
     /**
      * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
-     * If a matching subscription already exists, returns that instead
+     * If a matching subscription already exists, it is deleted first
      *
      * @return
      */
@@ -108,7 +109,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
         this.validateParameters();
         try {
             if (this.isAlreadySubscribed()) {
-                return this.delete().then(EventSub.instance().createSubscription(this.proposeSubscription()));
+                return Mono.whenDelayError(this.deleteAll()).onErrorComplete().then(EventSub.instance().createSubscription(this.proposeSubscription()));
             } else {
                 return EventSub.instance().createSubscription(this.proposeSubscription());
             }
@@ -116,6 +117,8 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
             if (ex.getMessage().contains("\"status\":409")) {
                 throw ex;
             }
+
+            com.gmt2001.Console.err.logStackTrace(ex);
         }
 
         return Mono.empty();
@@ -129,6 +132,16 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
     public Mono<Void> delete() {
         this.validateParameters();
         return EventSub.instance().deleteSubscription(this.findMatchingSubscriptionId());
+    }
+
+    /**
+     * Deletes all EventSub subscriptions matching the parameters in this object, if it can be found in the subscription list
+     *
+     * @return
+     */
+    public List<Mono<Void>> deleteAll() {
+        this.validateParameters();
+        return this.findMatchingSubscriptionIds().stream().map(id -> EventSub.instance().deleteSubscription(id)).toList();
     }
 
     /**
@@ -160,11 +173,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
 
         if (session_id == null || session_id.isBlank()) {
             EventSub.instance().reconnect();
-            session_id = EventSub.instance().sessionId();
-
-            if (session_id == null || session_id.isBlank()) {
-                throw new IllegalStateException("session_id");
-            }
+            throw new IllegalStateException("session_id");
         }
 
         return EventSubTransport.websocket(session_id);
@@ -204,17 +213,27 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
     }
 
     /**
-     * Returns the subscription id if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING states, otherwise
-     * null
+     * Returns the subscription id if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING
+     * states, otherwise null
      *
      * @return
      */
     public String findMatchingSubscriptionId() {
+        return this.findMatchingSubscriptionIds().stream().findFirst().orElse(null);
+    }
+
+    /**
+     * Returns all subscription ids if a subscription already exists in either the ENABLED or WEBHOOK_CALLBACK_VERIFICATION_PENDING
+     * states, otherwise an empty list
+     *
+     * @return
+     */
+    public List<String> findMatchingSubscriptionIds() {
         return EventSub.instance().subscriptions().values().stream().filter(possibleSubscription -> {
             return this.isMatch(possibleSubscription)
                     && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
                     || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
-        }).findFirst().map(EventSubSubscription::id).orElse(null);
+        }).map(EventSubSubscription::id).toList();
     }
 
     /**
