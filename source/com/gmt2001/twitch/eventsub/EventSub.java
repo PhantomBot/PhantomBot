@@ -25,10 +25,8 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -99,6 +97,10 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     }
                 });
 
+                ExecutorService.scheduleAtFixedRate(() -> {
+                    this.refreshSubscriptions();
+                }, 0, 1, TimeUnit.HOURS);
+
                 ExecutorService.schedule(() -> {
                     try {
                         if (TwitchValidate.instance().isAPIValid()) {
@@ -107,7 +109,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     } catch (Exception ex) {
                         debug("constructor connect", ex);
                     }
-                }, 1, TimeUnit.SECONDS);
+                }, 15, TimeUnit.SECONDS);
 
                 ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
             } catch (Exception ex) {
@@ -241,7 +243,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      * Refreshes the internal list of existing subscriptions
      */
     public void refreshSubscriptions() {
-        this.refreshSubscriptions(null).subscribe();
+        this.refreshSubscriptions(null);
     }
 
     /**
@@ -249,8 +251,8 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      *
      * @param after The pagination cursor
      */
-    private Mono<JSONObject> refreshSubscriptions(String after) {
-        return Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
+    private void refreshSubscriptions(String after) {
+        Helix.instance().getEventSubSubscriptionsAsync(null, null, null, after).doOnSuccess(response -> {
             if (response.has("error")) {
                 if (debug()) {
                     debug("refreshSubscriptions(" + after + ") error " + response.toString(4));
@@ -277,7 +279,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }).doOnError(ex -> {
             debug("refreshSubscriptions(" + after + ") doOnError", ex);
             com.gmt2001.Console.debug.println("Failed to refresh subscriptions [" + ex.getClass().getSimpleName() + "]: " + ex.getMessage());
-        });
+        }).subscribe();
     }
 
     /**
@@ -501,17 +503,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
             this.rwl.writeLock().lock();
             try {
-                List<Mono<Void>> deleteList = new ArrayList<>();
-                this.subscriptions.forEach((id, subscription) -> {
-                    deleteList.add(this.deleteSubscription(id).timeout(Duration.ofSeconds(15)));
-                });
-                this.subscriptions.clear();
                 this.session_id = null;
                 this.lastKeepAlive = Instant.MIN;
                 if (this.keepAliveFuture != null) {
                     this.keepAliveFuture.cancel(true);
                 }
-                Mono.whenDelayError(deleteList).block();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             } finally {
@@ -571,11 +567,11 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                                                 }
 
                                                 debug("handleMessage welcome " + (this.reconnecting ? " (reconnecting) " : ""));
+                                                this.refreshSubscriptions();
 
                                                 EventBus.instance().postAsync(new EventSubWelcomeEvent(this.reconnecting));
 
                                                 if (this.reconnecting) {
-                                                    this.refreshSubscriptions();
                                                     this.reconnecting = false;
                                                     this.oldClient.close(WebSocketCloseStatus.NORMAL_CLOSURE);
                                                 }
