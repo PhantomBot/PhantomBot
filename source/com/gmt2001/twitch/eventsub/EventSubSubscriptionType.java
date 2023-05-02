@@ -100,31 +100,22 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
 
     /**
      * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
-     * If a matching subscription already exists, returns that instead
+     * If a matching subscription already exists, deletes it first
      *
      * @return
      */
     public Mono<EventSubSubscription> create() {
-        return this.create(false);
-    }
-
-    /**
-     * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
-     * If a matching subscription already exists, returns that instead
-     *
-     * @param force If {@code true}, attempt to create the subscription even if one already exists
-     *
-     * @return
-     */
-    public Mono<EventSubSubscription> create(boolean force) {
         this.validateParameters();
-        if (!force && this.isAlreadySubscribed()) {
-            return Mono.just(this.getExistingSubscription());
-        }
         try {
-            return EventSub.instance().createSubscription(this.proposeSubscription());
+            String subscriptionId = this.findMatchingSubscriptionIdAnyState();
+            if (subscriptionId != null && !subscriptionId.isBlank()) {
+                return EventSub.instance().deleteSubscription(subscriptionId)
+                    .then(EventSub.instance().createSubscription(this.proposeSubscription()));
+            } else {
+                return EventSub.instance().createSubscription(this.proposeSubscription());
+            }
         } catch(Exception ex) {
-            if (force && ex.getMessage().contains("\"status\":409")) {
+            if (ex.getMessage().contains("\"status\":409")) {
                 throw ex;
             }
         }
@@ -225,6 +216,18 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
             return this.isMatch(possibleSubscription)
                     && (possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.ENABLED
                     || possibleSubscription.status() == EventSubSubscription.SubscriptionStatus.WEBHOOK_CALLBACK_VERIFICATION_PENDING);
+        }).findFirst().map(EventSubSubscription::id).orElse(null);
+    }
+
+    /**
+     * Returns the subscription id if a subscription already exists in any state, otherwise
+     * null
+     *
+     * @return
+     */
+    public String findMatchingSubscriptionIdAnyState() {
+        return EventSub.instance().subscriptions().values().stream().filter(possibleSubscription -> {
+            return this.isMatch(possibleSubscription);
         }).findFirst().map(EventSubSubscription::id).orElse(null);
     }
 
