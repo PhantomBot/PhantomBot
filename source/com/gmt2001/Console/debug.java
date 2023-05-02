@@ -58,6 +58,7 @@ public final class debug {
     public static StackTraceElement findCaller(String myClassName) {
         StackTraceElement[] st = Thread.currentThread().getStackTrace();
         StackTraceElement foundme = null;
+
         for (StackTraceElement st1 : st) {
             if (st1.getClassName().startsWith(myClassName)) {
                 foundme = st1;
