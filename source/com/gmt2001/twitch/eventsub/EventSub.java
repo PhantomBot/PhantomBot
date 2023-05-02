@@ -99,6 +99,10 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     }
                 });
 
+                ExecutorService.submit(() -> {
+                    this.refreshSubscriptions();
+                });
+
                 ExecutorService.schedule(() -> {
                     try {
                         if (TwitchValidate.instance().isAPIValid()) {
@@ -107,7 +111,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
                     } catch (Exception ex) {
                         debug("constructor connect", ex);
                     }
-                }, 1, TimeUnit.SECONDS);
+                }, 15, TimeUnit.SECONDS);
 
                 ExecutorService.scheduleWithFixedDelay(() -> this.cleanupDuplicates(), CLEANUP_INTERVAL.toMillis(), CLEANUP_INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
             } catch (Exception ex) {
