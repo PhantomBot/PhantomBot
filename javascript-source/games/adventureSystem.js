@@ -495,6 +495,7 @@
              */
             if (action.equalsIgnoreCase('top5')) {
                 top5();
+                return;
             }
 
             /**
