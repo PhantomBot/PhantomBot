@@ -336,9 +336,13 @@
             }
         }
 
-        do {
+        if (lastStory !== undefined && lastStory.title !== undefined) {
+            do {
+                story = $.randElement(temp);
+            } while (story.title === lastStory.title);
+        } else {
             story = $.randElement(temp);
-        } while (story.title === lastStory.title && stories.length !== 1);
+        }
 
         lastStory = story;
 
@@ -352,6 +356,7 @@
         }
 
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
+        calculateResult();
 
         timer = setInterval(function() {
             _currentAdventureLock.lock();
@@ -363,7 +368,6 @@
                     }
                 } else {
                     endHeist();
-                    clearInterval(timer);
                 }
 
                 currentAdventure.progress++;
@@ -379,8 +383,6 @@
     function endHeist() {
         let maxlength = 0,
             temp = [];
-
-        calculateResult();
 
         _currentAdventureLock.lock();
         try {
@@ -408,6 +410,7 @@
             _currentAdventureLock.unlock();
         }
 
+        clearInterval(timer);
         clearCurrentAdventure();
         $.coolDown.set('adventure', true, coolDown, undefined);
         if (coolDownAnnounce) {
