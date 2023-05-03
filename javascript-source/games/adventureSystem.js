@@ -315,8 +315,7 @@
      * @function runStory
      */
     function runStory() {
-        let progress = 0,
-            temp = [],
+        let temp = [],
             story;
 
         _currentAdventureLock.lock();
@@ -333,14 +332,12 @@
         for (let i in stories) {
             if (stories[i].game !== null) {
                 if (game.equalsIgnoreCase(stories[i].game)) {
-                    //$.consoleLn('gamespec::' + stories[i].title);
                     temp.push({
                         title: stories[i].title,
                         lines: stories[i].lines
                     });
                 }
             } else {
-                //$.consoleLn('normal::' + stories[i].title);
                 temp.push({
                     title: stories[i].title,
                     lines: stories[i].lines
@@ -350,22 +347,37 @@
 
         do {
             story = $.randElement(temp);
-        } while (story === lastStory && stories.length !== 1);
+        } while (story.title === lastStory.title && stories.length !== 1);
+
+        lastStory = story;
+
+        _currentAdventureLock.lock();
+        try {
+            currentAdventure.story = story;
+            currentAdventure.progress = 0;
+        } finally {
+            _currentAdventureLock.unlock();
+        }
 
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
 
         timer = setInterval(function() {
-            if (progress < story.lines.length) {
-                let line = replaceTags(story.lines[progress]);
-                if (line !== '') {
-                    $.say(line.replace(/\(game\)/g, $.twitchcache.getGameTitle() + ''));
+            _currentAdventureLock.lock();
+            try {
+                if (currentAdventure.progress < currentAdventure.story.lines.length) {
+                    let line = replaceTags(currentAdventure.story.lines[currentAdventure.progress]);
+                    if (line !== '') {
+                        $.say(line.replace(/\(game\)/g, $.twitchcache.getGameTitle() + ''));
+                    }
+                } else {
+                    endHeist();
+                    clearInterval(timer);
                 }
-            } else {
-                endHeist();
-                clearInterval(timer);
-            }
 
-            progress++;
+                currentAdventure.progress++;
+            } finally {
+                _currentAdventureLock.unlock();
+            }
         }, 7e3);
     }
 
@@ -421,7 +433,9 @@
                 gameState: 0,
                 users: [],
                 survivors: [],
-                caught: []
+                caught: [],
+                story: {},
+                progress: 0
             };
             $.inidb.RemoveFile('adventurePayoutsTEMP');
         } finally {
