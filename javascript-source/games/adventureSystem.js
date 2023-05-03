@@ -393,7 +393,7 @@
 
             for (let i in currentAdventure.survivors) {
                 let username = currentAdventure.survivors[i].username;
-                maxlength += username.length();
+                maxlength += username.length;
                 temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
             }
 
