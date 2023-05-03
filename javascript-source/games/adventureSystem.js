@@ -189,7 +189,6 @@
      * @function calculateResult
      */
     function calculateResult() {
-        $.consoleLn('Calculating Results now!');
         _currentAdventureLock.lock();
         try {
             for (let i in currentAdventure.users) {
@@ -202,10 +201,6 @@
         } finally {
             _currentAdventureLock.unlock();
         }
-
-        $.consoleLn('Results are:');
-        $.consoleLn('Winners: ' + adventureUsersListJoin(currentAdventure.users));
-        $.consoleLn('Loosers: ' + adventureUsersListJoin(currentAdventure.caught));
     }
 
     /**
@@ -244,7 +239,6 @@
         }
 
         setTimeout(function() {
-            $.consoleLn('Running Story now!');
             runStory();
         }, joinTime * 1e3);
 
@@ -353,8 +347,6 @@
             currentAdventure.story = story;
             currentAdventure.progress = 0;
             currentAdventure.gameState = 2;
-            $.consoleLn('Starting story: ' + currentAdventure.story.title);
-            $.consoleLn('Adventure state: ' + currentAdventure.gameState + ' with progress: ' + currentAdventure.progress);
         } finally {
             _currentAdventureLock.unlock();
         }
@@ -364,19 +356,14 @@
         timer = setInterval(function() {
             _currentAdventureLock.lock();
             try {
-                $.consoleLn('Story tick progress : ' + currentAdventure.progress + ' out of ' + currentAdventure.story.lines.length);
                 if (currentAdventure.progress < currentAdventure.story.lines.length) {
                     let line = replaceTags(currentAdventure.story.lines[currentAdventure.progress]);
                     if (line !== '') {
                         $.say(line.replace(/\(game\)/g, $.twitchcache.getGameTitle() + ''));
                     }
-
-                    $.consoleLn('Story tick said line: ' + line);
                 } else {
-                    $.consoleLn('Story tick finishing story!');
                     endHeist();
                     clearInterval(timer);
-                    $.consoleLn('Story tick finished story!');
                 }
 
                 currentAdventure.progress++;
@@ -397,16 +384,12 @@
 
         _currentAdventureLock.lock();
         try {
-            $.consoleLn('Story End - Calculating survivor payouts!');
             for (let i in currentAdventure.survivors) {
                 let pay = (currentAdventure.survivors[i].bet * (gainPercent / 100));
-                $.consoleLn('Story End - Calculating survivor payouts ( ' + pay + ' ' + $.pointNameMultiple + ') for' + currentAdventure.survivors[i].username);
                 $.inidb.incr('adventurePayouts', currentAdventure.survivors[i].username, pay);
                 $.inidb.incr('adventurePayoutsTEMP', currentAdventure.survivors[i].username, pay);
                 $.inidb.incr('points', currentAdventure.survivors[i].username, currentAdventure.survivors[i].bet + pay);
             }
-
-            $.consoleLn('Story End - Payouts  complete!');
 
             for (let i in currentAdventure.survivors) {
                 let username = currentAdventure.survivors[i].username;
@@ -414,33 +397,23 @@
                 temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
             }
 
-            $.consoleLn('Story End - Ending line is: ' + temp.join(', '));
-
             if (temp.length === 0) {
-                $.consoleLn('Story End - using no win end line');
                 $.say($.lang.get('adventuresystem.completed.no.win'));
             } else if (((maxlength + 14) + $.channelName.length) > 512) {
-                $.consoleLn('Story End - using shortened end line');
                 $.say($.lang.get('adventuresystem.completed.win.total', currentAdventure.survivors.length, currentAdventure.caught.length)); //in case too many people enter.
             } else {
-                $.consoleLn('Story End - using full end line');
                 $.say($.lang.get('adventuresystem.completed', temp.join(', ')));
             }
         } finally {
             _currentAdventureLock.unlock();
         }
 
-        $.consoleLn('Story End - resetting adventure!');
         clearCurrentAdventure();
-        $.consoleLn('Story End - Preparing cooldown!');
         $.coolDown.set('adventure', true, coolDown, undefined);
-        $.consoleLn('Story End - add cooldown message? : ' + coolDownAnnounce);
         if (coolDownAnnounce) {
             setTimeout(function() {
-                $.consoleLn('Story Cooldown - Sending cooldown timeout message!');
                 $.say($.lang.get('adventuresystem.reset', $.pointNameMultiple));
             }, coolDown * 1000);
-            $.consoleLn('Story End - Cooldown message set!');
         }
     }
 
