@@ -308,7 +308,15 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(java.lang.IllegalStateException.class) && error.getMessage().equals("session_id")) {
+                                    return true;
+                                }
+
                                 if (error.getClass().equals(java.lang.IllegalStateException.class) && error.getMessage().startsWith("Not connected to Discord")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.NullPointerException.class) && error.getMessage().equals("t2")) {
                                     return true;
                                 }
 
