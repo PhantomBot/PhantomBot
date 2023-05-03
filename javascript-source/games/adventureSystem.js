@@ -95,7 +95,7 @@
      * loadStoriesFromPrefix('adventuresystem.stories.custom');
      */
     function loadStoriesFromPrefix(prefix) {
-        for (let storyId; $.lang.exists(prefix + '.' + storyId + '.title'); storyId++) {
+        for (let storyId = 1; $.lang.exists(prefix + '.' + storyId + '.title'); storyId++) {
             let lines = [];
             for (let chapterId = 1; $.lang.exists(prefix + '.' + storyId + '.chapter.' + chapterId); chapterId++) {
                 lines.push($.lang.get(prefix + '.' + storyId + '.chapter.' + chapterId));
@@ -107,7 +107,7 @@
                 lines: lines
             });
 
-            $.consoleDebug($.lang.get('adventuresystem.loaded.prefix', storyId - 1, prefix));
+            $.consoleDebug($.lang.get('adventuresystem.loaded.prefix', storyId, prefix));
         }
     }
 
