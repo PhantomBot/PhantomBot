@@ -26,20 +26,13 @@
                 args = event.getArgs(),
                 action = args[0];
 
-
         /* reloads the betting vars */
         if (command.equalsIgnoreCase('reloadbet')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadBet();
         }
 
         /** Adds or removes a user from the moderator cache */
         if (command.equalsIgnoreCase('permissionsetuser')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             if (parseInt(args[1]) <= 2) {
                 $.addModeratorToCache(action.toLowerCase());
             } else {
@@ -48,10 +41,6 @@
         }
 
         if (command.equalsIgnoreCase('reloadmisc')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-
             $.reloadMisc();
             $.reloadWhispers();
         }
@@ -60,9 +49,6 @@
          * Reloads the tipeeestream vars.
          */
         if (command.equalsIgnoreCase('tipeeestreamreload')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadTipeeeStream();
         }
 
@@ -70,9 +56,6 @@
          * Reloads the streamelements vars.
          */
         if (command.equalsIgnoreCase('streamelementsreload')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadStreamElements();
         }
 
@@ -80,12 +63,8 @@
          * Sets permissions on a command.
          */
         if (command.equalsIgnoreCase('permcomsilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-
             action = action.replace('!', '').toLowerCase();
-            var group = 7;
+            let group = $.PERMISSION.Viewer;
 
             if (args.length === 2) {
                 group = args[1];
@@ -104,10 +83,9 @@
                     'sender': sender
                 });
 
-                var list = $.inidb.GetKeyList('aliases', ''),
-                        i;
+                let list = $.inidb.GetKeyList('aliases', '');
 
-                for (i in list) {
+                for (let i in list) {
                     if (list[i].equalsIgnoreCase(action)) {
                         $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
                         $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
@@ -117,7 +95,7 @@
                 $.inidb.set('permcom', action, group);
                 $.updateCommandGroup(action, group);
             } else {
-                var subAction = args[1];
+                let subAction = args[1];
                 group = args[2];
 
                 if (!$.subCommandExists(action, subAction)) {
@@ -143,9 +121,6 @@
          * Reloads the command variables.
          */
         if (command.equalsIgnoreCase('reloadcommand')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.addComRegisterAliases();
             $.addComRegisterCommands();
             if (action) {
@@ -158,9 +133,6 @@
          * Registers a command
          */
         if (command.equalsIgnoreCase('registerpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', args[0].toLowerCase()) ? $.inidb.get('tempDisabledCommandScript', args[0].toLowerCase()) : './commands/customCommands.js'), args[0].toLowerCase());
             $.inidb.del('tempDisabledCommandScript', args[0].toLowerCase());
             return;
@@ -170,9 +142,6 @@
          * unregtisters a command
          */
         if (command.equalsIgnoreCase('unregisterpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.tempUnRegisterChatCommand(args[0].toLowerCase());
             return;
         }
@@ -181,31 +150,19 @@
          * Reloads the moderation variables.
          */
         if (command.equalsIgnoreCase('reloadmod')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadModeration();
         }
 
         if (command.equalsIgnoreCase('reloadkill')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadKill();
         }
 
         if (command.equalsIgnoreCase('reloadraid')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadRaid();
         }
 
         /* reloads the clip vars */
         if (command.equalsIgnoreCase('reloadclip')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadClips();
         }
 
@@ -213,9 +170,6 @@
          * Clears the highlight
          */
         if (command.equalsIgnoreCase("clearhighlightspanel")) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.inidb.RemoveFile("highlights");
             return;
         }
@@ -224,20 +178,20 @@
          * makes a highlight
          */
         if (command.equalsIgnoreCase('highlightpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             if (!$.isOnline($.channelName)) {
                 return;
             }
-            var streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60);
-            var hours = parseInt(streamUptimeMinutes / 60);
-            var minutes = parseInt(streamUptimeMinutes % 60);
+
+            let streamUptimeMinutes = parseInt($.getStreamUptimeSeconds($.channelName) / 60);
+            let hours = parseInt(streamUptimeMinutes / 60);
+            let minutes = parseInt(streamUptimeMinutes % 60);
+
             if (minutes < 10) {
                 minutes = "0" + minutes;
             }
-            timestamp = hours + ":" + minutes;
-            localDate = $.getCurLocalTimeString("'['dd-MM-yyyy']'");
+
+            let timestamp = hours + ":" + minutes;
+            let localDate = $.getCurLocalTimeString("'['dd-MM-yyyy']'");
             $.inidb.set('highlights', timestamp, localDate + ' ' + args.splice(0).join(' '));
         }
 
@@ -245,10 +199,7 @@
          * Sets the title on stream
          */
         if (command.equalsIgnoreCase('settitlesilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            var argsString = args.splice(0).join(' ');
+            let argsString = args.splice(0).join(' ');
             $.updateStatus($.channelName, argsString, sender, true);
             return;
         }
@@ -257,10 +208,7 @@
          * Sets the game on stream
          */
         if (command.equalsIgnoreCase('setgamesilent')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            var argsString = args.splice(0).join(' ');
+            let argsString = args.splice(0).join(' ');
             $.updateGame($.channelName, argsString, sender, true);
             return;
         }
@@ -269,9 +217,6 @@
          * Reloads the adventure variables.
          */
         if (command.equalsIgnoreCase('reloadadventure')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadAdventure();
             return;
         }
@@ -280,9 +225,6 @@
          * Reloads the gambling variables.
          */
         if (command.equalsIgnoreCase('reloadgamble')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadGamble();
             return;
         }
@@ -291,9 +233,6 @@
          * Reloads the roll variables.
          */
         if (command.equalsIgnoreCase('loadprizesroll')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.loadPrizes();
             return;
         }
@@ -302,9 +241,6 @@
          * Reloads the roulette variables.
          */
         if (command.equalsIgnoreCase('reloadroulette')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadRoulette();
             return;
         }
@@ -313,9 +249,6 @@
          * Reloads the slot variables.
          */
         if (command.equalsIgnoreCase('loadprizes')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.loadPrizesSlot();
             return;
         }
@@ -324,9 +257,6 @@
          * Reloads the bits variables.
          */
         if (command.equalsIgnoreCase('reloadbits')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadBits();
             return;
         }
@@ -335,9 +265,6 @@
          * Reloads the donation variables.
          */
         if (command.equalsIgnoreCase('donationpanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.donationpanelupdate();
             return;
         }
@@ -346,9 +273,6 @@
          * Reloads the follow variables.
          */
         if (command.equalsIgnoreCase('followerpanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.updateFollowConfig();
             return;
         }
@@ -357,9 +281,6 @@
          * Reloads the subscriber variables.
          */
         if (command.equalsIgnoreCase('subscriberpanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.updateSubscribeConfig();
             return;
         }
@@ -368,9 +289,6 @@
          * Reloads the greeting variables.
          */
         if (command.equalsIgnoreCase('greetingspanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.greetingspanelupdate();
             return;
         }
@@ -379,9 +297,6 @@
          * Reloads the welcome variables.
          */
         if (command.equalsIgnoreCase('welcomepanelupdate')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.welcomepanelupdate();
             return;
         }
@@ -390,9 +305,6 @@
          * Reloads the notice variables.
          */
         if (command.equalsIgnoreCase('reloadnotice')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadNoticeTimers();
         }
 
@@ -400,9 +312,6 @@
          * Reloads the points variables.
          */
         if (command.equalsIgnoreCase('reloadpoints')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.updateSettings();
             return;
         }
@@ -411,9 +320,6 @@
          * Sets a points bonus
          */
         if (command.equalsIgnoreCase('pointsbonuspanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.setTempBonus(action, args[1]);
             return;
         }
@@ -422,12 +328,10 @@
          * Gives points to everyone in the channel
          */
         if (command.equalsIgnoreCase('pointsallpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            for (var i in $.users) {
+            for (let i in $.users) {
                 $.inidb.incr('points', $.users[i].toLowerCase(), parseInt(action));
             }
+
             return;
         }
 
@@ -435,14 +339,12 @@
          * Takes points from everyone in the channel
          */
         if (command.equalsIgnoreCase('pointstakeallpanel')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
-            for (var i in $.users) {
+            for (let i in $.users) {
                 if ($.getUserPoints($.users[i].toLowerCase()) > parseInt(action)) {
                     $.inidb.decr('points', $.users[i].toLowerCase(), parseInt(action));
                 }
             }
+
             return;
         }
 
@@ -450,9 +352,6 @@
          * Reloads the raffle variables.
          */
         if (command.equalsIgnoreCase('reloadraffle')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadRaffle();
             return;
         }
@@ -461,9 +360,6 @@
          * Reloads the rank variables.
          */
         if (command.equalsIgnoreCase('rankreloadtable')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.loadRanksTimeTable();
             return;
         }
@@ -472,9 +368,6 @@
          * Reloads the ticket raffle variables.
          */
         if (command.equalsIgnoreCase('reloadtraffle')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadTRaffle();
             return;
         }
@@ -483,9 +376,6 @@
          * Reloads the time variables.
          */
         if (command.equalsIgnoreCase('updatetimesettings')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.updateTimeSettings();
             return;
         }
@@ -494,9 +384,6 @@
          * Reloads the log variables.
          */
         if (command.equalsIgnoreCase('reloadlogs')) {
-            if (!$.isBot(sender)) {
-                return;
-            }
             $.reloadLogs();
             return;
         }
