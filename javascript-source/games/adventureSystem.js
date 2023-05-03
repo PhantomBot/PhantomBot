@@ -318,15 +318,6 @@
         let temp = [],
             story;
 
-        _currentAdventureLock.lock();
-        try {
-            currentAdventure.gameState = 2;
-        } finally {
-            _currentAdventureLock.unlock();
-        }
-
-        calculateResult();
-
         let game = $.getGame($.channelName);
 
         for (let i in stories) {
@@ -355,6 +346,7 @@
         try {
             currentAdventure.story = story;
             currentAdventure.progress = 0;
+            currentAdventure.gameState = 2;
         } finally {
             _currentAdventureLock.unlock();
         }
@@ -387,6 +379,8 @@
     function endHeist() {
         let maxlength = 0,
             temp = [];
+
+        calculateResult();
 
         _currentAdventureLock.lock();
         try {
