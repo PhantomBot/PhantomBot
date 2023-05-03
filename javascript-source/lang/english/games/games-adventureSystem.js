@@ -26,7 +26,7 @@ $.lang.register('adventuresystem.join.needpoints', 'You can not join with $1, yo
 $.lang.register('adventuresystem.join.notpossible', 'You can not join now.');
 $.lang.register('adventuresystem.join.success', 'You have joined the adventure with $1!');
 $.lang.register('adventuresystem.loaded', 'Loaded adventure stories (found $1).');
-$.lang.register('adventuresystem.loaded.prefix', 'Loaded $1 adventure stories from $2.');
+$.lang.register('adventuresystem.loaded.prefix', 'Loaded adventure story with id $1 from prefix $2.');
 $.lang.register('adventuresystem.payoutwhisper', 'Adventure completed, $1 + $2 has been added to your balance.');
 $.lang.register('adventuresystem.runstory', 'Starting adventure "$1" with $2 player(s).');
 $.lang.register('adventuresystem.set.success', 'Set $1 to $2.');

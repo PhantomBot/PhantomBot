@@ -247,43 +247,55 @@ $(function () {
 
         queueProcessing = true;
         try {
-            // Process the whole queue at once
-            while (queue.length > 0) {
-                let event = queue.shift();
+            let played = [];
+            for (let i = 0; i < queue.length; i++) {
+                let event = queue.slice(i, i + 1);
                 let ignoreIsPlaying = (event.ignoreIsPlaying !== undefined ? event.ignoreIsPlaying : false);
+                let isplayed = false;
 
-                if (event === undefined) {
-                    console.error('Received event of type undefined. Ignoring.');
-                } else if (event.emoteId !== undefined) {
-                    // do not respect isPlaying for emotes
-                    printDebug('Processing event: ' + JSON.stringify(event));
-                    handleEmote(event);
-                } else if (event.script !== undefined) {
-                    printDebug('Processing event: ' + JSON.stringify(event));
-                    handleMacro(event);
-                } else if (event.stopMedia !== undefined) {
-                    printDebug('Processing event: ' + JSON.stringify(event));
-                    handleStopMedia(event);
-                } else if (ignoreIsPlaying || isPlaying === false) {
-                    // sleep a bit to reduce the overlap
-                    await sleep(100);
-                    printDebug('Processing event: ' + JSON.stringify(event));
-                    // called method is responsible to reset this
-                    isPlaying = true;
-                    if (event.type === 'playVideoClip') {
-                        handleVideoClip(event);
-                    } else if (event.alert_image !== undefined) {
-                        handleGifAlert(event);
-                    } else if (event.audio_panel_hook !== undefined) {
-                        handleAudioHook(event);
-                    } else {
-                        printDebug('Received message and don\'t know what to do about it: ' + event);
-                        isPlaying = false;
+                try {
+                    if (event === undefined) {
+                        isplayed = true;
+                        console.error('Received event of type undefined. Ignoring.');
+                    } else if (event.emoteId !== undefined) {
+                        isplayed = true;
+                        // do not respect isPlaying for emotes
+                        printDebug('Processing event: ' + JSON.stringify(event));
+                        handleEmote(event);
+                    } else if (event.script !== undefined) {
+                        isplayed = true;
+                        printDebug('Processing event: ' + JSON.stringify(event));
+                        handleMacro(event);
+                    } else if (event.stopMedia !== undefined) {
+                        isplayed = true;
+                        printDebug('Processing event: ' + JSON.stringify(event));
+                        handleStopMedia(event);
+                    } else if (ignoreIsPlaying || isPlaying === false) {
+                        isplayed = true;
+                        // sleep a bit to reduce the overlap
+                        await sleep(100);
+                        printDebug('Processing event: ' + JSON.stringify(event));
+                        // called method is responsible to reset this
+                        isPlaying = true;
+                        if (event.type === 'playVideoClip') {
+                            handleVideoClip(event);
+                        } else if (event.alert_image !== undefined) {
+                            handleGifAlert(event);
+                        } else if (event.audio_panel_hook !== undefined) {
+                            handleAudioHook(event);
+                        } else {
+                            printDebug('Received message and don\'t know what to do about it: ' + event);
+                            isPlaying = false;
+                        }
                     }
-                } else {
-                    return;
+                } finally {
+                    if (isplayed) {
+                        played.push(i);
+                    }
                 }
             }
+
+            played.reverse().forEach(i => queue.splice(i, 1));
         } finally {
             queueProcessing = false;
         }
