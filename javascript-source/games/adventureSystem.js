@@ -76,7 +76,12 @@
         }
 
         $.log.warn('You must have at least one adventure that doesn\'t require a game to be set.');
-        currentAdventure.gameState = 2;
+        _currentAdventureLock.lock();
+        try {
+            currentAdventure.gameState = 2;
+        } finally {
+            _currentAdventureLock.unlock();
+        }
     }
 
     /**
@@ -184,12 +189,17 @@
      * @function calculateResult
      */
     function calculateResult() {
-        for (let i in currentAdventure.users) {
-            if ($.randRange(0, 20) > 5) {
-                currentAdventure.survivors.push(currentAdventure.users[i]);
-            } else {
-                currentAdventure.caught.push(currentAdventure.users[i]);
+        _currentAdventureLock.lock();
+        try {
+            for (let i in currentAdventure.users) {
+                if ($.randRange(0, 20) > 5) {
+                    currentAdventure.survivors.push(currentAdventure.users[i]);
+                } else {
+                    currentAdventure.caught.push(currentAdventure.users[i]);
+                }
             }
+        } finally {
+            _currentAdventureLock.unlock();
         }
     }
 
@@ -221,9 +231,14 @@
      * @param {string} username
      */
     function startHeist(username) {
-        currentAdventure.gameState = 1;
+        _currentAdventureLock.lock();
+        try {
+            currentAdventure.gameState = 1;
+        } finally {
+            _currentAdventureLock.unlock();
+        }
 
-        timer = setTimeout(function() {
+        setTimeout(function() {
             runStory();
         }, joinTime * 1e3);
 
@@ -304,7 +319,13 @@
             temp = [],
             story;
 
-        currentAdventure.gameState = 2;
+        _currentAdventureLock.lock();
+        try {
+            currentAdventure.gameState = 2;
+        } finally {
+            _currentAdventureLock.unlock();
+        }
+
         calculateResult();
 
         let game = $.getGame($.channelName);
@@ -333,7 +354,6 @@
 
         $.say($.lang.get('adventuresystem.runstory', story.title, currentAdventure.users.length));
 
-        clearTimeout(timer);
         timer = setInterval(function() {
             if (progress < story.lines.length) {
                 let line = replaceTags(story.lines[progress]);
@@ -356,25 +376,30 @@
         let maxlength = 0,
             temp = [];
 
-        for (let i in currentAdventure.survivors) {
-            let pay = (currentAdventure.survivors[i].bet * (gainPercent / 100));
-            $.inidb.incr('adventurePayouts', currentAdventure.survivors[i].username, pay);
-            $.inidb.incr('adventurePayoutsTEMP', currentAdventure.survivors[i].username, pay);
-            $.inidb.incr('points', currentAdventure.survivors[i].username, currentAdventure.survivors[i].bet + pay);
-        }
+        _currentAdventureLock.lock();
+        try {
+            for (let i in currentAdventure.survivors) {
+                let pay = (currentAdventure.survivors[i].bet * (gainPercent / 100));
+                $.inidb.incr('adventurePayouts', currentAdventure.survivors[i].username, pay);
+                $.inidb.incr('adventurePayoutsTEMP', currentAdventure.survivors[i].username, pay);
+                $.inidb.incr('points', currentAdventure.survivors[i].username, currentAdventure.survivors[i].bet + pay);
+            }
 
-        for (let i in currentAdventure.survivors) {
-            let username = currentAdventure.survivors[i].username;
-            maxlength += username.length();
-            temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
-        }
+            for (let i in currentAdventure.survivors) {
+                let username = currentAdventure.survivors[i].username;
+                maxlength += username.length();
+                temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
+            }
 
-        if (temp.length === 0) {
-            $.say($.lang.get('adventuresystem.completed.no.win'));
-        } else if (((maxlength + 14) + $.channelName.length) > 512) {
-            $.say($.lang.get('adventuresystem.completed.win.total', currentAdventure.survivors.length, currentAdventure.caught.length)); //in case too many people enter.
-        } else {
-            $.say($.lang.get('adventuresystem.completed', temp.join(', ')));
+            if (temp.length === 0) {
+                $.say($.lang.get('adventuresystem.completed.no.win'));
+            } else if (((maxlength + 14) + $.channelName.length) > 512) {
+                $.say($.lang.get('adventuresystem.completed.win.total', currentAdventure.survivors.length, currentAdventure.caught.length)); //in case too many people enter.
+            } else {
+                $.say($.lang.get('adventuresystem.completed', temp.join(', ')));
+            }
+        } finally {
+            _currentAdventureLock.unlock();
         }
 
         clearCurrentAdventure();
@@ -390,13 +415,18 @@
      * @function clearCurrentAdventure
      */
     function clearCurrentAdventure() {
-        currentAdventure = {
-            gameState: 0,
-            users: [],
-            survivors: [],
-            caught: []
-        };
-        $.inidb.RemoveFile('adventurePayoutsTEMP');
+        _currentAdventureLock.lock();
+        try {
+            currentAdventure = {
+                gameState: 0,
+                users: [],
+                survivors: [],
+                caught: []
+            };
+            $.inidb.RemoveFile('adventurePayoutsTEMP');
+        } finally {
+            _currentAdventureLock.unlock();
+        }
     }
 
     /*
