@@ -17,11 +17,11 @@
 package com.gmt2001.datastore2.fluentstatement;
 
 /**
- * Provides a fluent interface to define the components of an SQL statement in a database-agnostic manner
+ * Provides a fluent interface to define the components of a SQL statement in a database-agnostic manner
  *
  * @author gmt2001
  */
-public abstract class FluentStatement {
+public abstract class FluentStatement<T> {
     /**
      * The name of the primary table of the query
      */
@@ -45,5 +45,17 @@ public abstract class FluentStatement {
      */
     public String table() {
         return this.table;
+    }
+
+    /**
+     * Creates a {@code SELECT} statement
+     * <p>
+     * When performing a {@code SELECT} that contains a join, the {@code fromTable} will be aliased as {@code A}
+     *
+     * @param fromTable the primary table of the query
+     * @return a new {@link SelectStatement}
+     */
+    public static SelectStatement Select(String fromTable) {
+        return new SelectStatement(fromTable);
     }
 }
