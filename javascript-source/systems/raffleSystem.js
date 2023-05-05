@@ -631,7 +631,7 @@
              * @commandpath raffle subscriberbonus [0-10] - Sets the bonus luck for subscribers.
              */
             if (action.equalsIgnoreCase('subscriberbonus')) {
-                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
+                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0 || parseInt(subAction) > 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.subbonus.usage'));
                     return;
                 }
@@ -646,7 +646,7 @@
              * @commandpath raffle regularbonus [0-10] - Sets the bonus luck for regulars.
              */
             if (action.equalsIgnoreCase('regularbonus')) {
-                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0) {
+                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0 || parseInt(subAction) > 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.regbonus.usage'));
                     return;
                 }
