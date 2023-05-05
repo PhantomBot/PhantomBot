@@ -280,7 +280,7 @@
      */
     function close(username) {
         /* Clear the timer if there is one active. */
-        clearInterval(timeout);
+        clearTimeout(timeout);
         clearInterval(interval);
         clearInterval(saveStateInterval);
 
@@ -368,6 +368,7 @@
         if (!openDraw) {
             close(undefined);
         }
+
         saveState();
     }
 
@@ -507,7 +508,7 @@
      */
     function clear() {
         /* Clear the timer if there is one active. */
-        clearInterval(timeout);
+        clearTimeout(timeout);
         clearInterval(interval);
         clearInterval(saveStateInterval);
         keyword = '';
