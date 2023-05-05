@@ -326,9 +326,7 @@
                 let remainingEntries = JSON.parse(JSON.stringify(entries));
                 while (newWinners.length < amount && remainingEntries.length > 0) {
                     let candidate = $.randElement(remainingEntries);
-
                     remainingEntries.splice(remainingEntries.indexOf(candidate), 1);
-
                     newWinners.push(candidate);
                 }
             }
@@ -479,20 +477,20 @@
         }
 
         /* Push the user into the array */
+        let entryAmount = 1;
+        if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
+            entryAmount += subscriberBonus;
+        } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
+            entryAmount += regularBonus;
+        }
+
         _entriesLock.lock();
         try {
-            entered[username] = true;
-            entries.push(username);
-            let i;
-            if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
-                for (i = 0; i < subscriberBonus; i++) {
-                    entries.push(username);
-                }
-            } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
-                for (i = 0; i < regularBonus; i++) {
-                    entries.push(username);
-                }
+            for (let i = 0; i < entryAmount; i++) {
+                entries.push(username);
             }
+
+            entered[username] = true;
         } finally {
             _entriesLock.unlock();
         }
