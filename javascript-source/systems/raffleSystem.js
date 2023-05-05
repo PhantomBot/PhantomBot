@@ -124,7 +124,7 @@
             tempKeyword = args[i].toLowerCase();
             i++;
 
-            if (keyword.startsWith('!')) {
+            if (tempKeyword.startsWith('!')) {
                 tempKeyword = ('!' + tempKeyword.match(/(!+)(.+)/)[2]);
             }
 
