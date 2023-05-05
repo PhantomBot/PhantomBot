@@ -37,9 +37,9 @@ $.lang.register('rafflesystem.usage', 'Usage: !raffle [open / close / draw / res
 $.lang.register('rafflesystem.draw.usage', 'Usage: !raffle draw [amount (default = 1)] [prize points (default = 0)]');
 $.lang.register('rafflesystem.results', 'A raffle is still opened! Keyword: $1 - Total entries: $2');
 $.lang.register('rafflesystem.fee', ' - Entry fee: $1');
-$.lang.register('rafflesystem.subbonus.usage', 'Usage: !raffle subscriberbonus [1-10]');
+$.lang.register('rafflesystem.subbonus.usage', 'Usage: !raffle subscriberbonus [0-10]');
 $.lang.register('rafflesystem.subbonus.set', 'Subscriber bonus luck set to $1!');
-$.lang.register('rafflesystem.regbonus.usage', 'Usage: !raffle regularbonus [1-10]');
+$.lang.register('rafflesystem.regbonus.usage', 'Usage: !raffle regularbonus [0-10]');
 $.lang.register('rafflesystem.regbonus.set', 'Regular bonus luck set to $1!');
 $.lang.register('rafflesystem.whisper.winner.toggle', 'Raffle winners will $1 be whispered.');
 $.lang.register('rafflesystem.raffle.repick.toggle1', 'Raffle winners will no longer be repicked.');
