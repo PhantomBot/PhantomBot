@@ -249,7 +249,7 @@ $(function () {
         try {
             let played = [];
             for (let i = 0; i < queue.length; i++) {
-                let event = queue.slice(i, i + 1);
+                let event = queue.slice(i, i + 1)[0];
                 let ignoreIsPlaying = (event.ignoreIsPlaying !== undefined ? event.ignoreIsPlaying : false);
                 let isplayed = false;
 
