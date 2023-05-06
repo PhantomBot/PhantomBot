@@ -30,7 +30,7 @@
         var audioHookFiles = $.findFiles('./config/audio-hooks/', ''),
             audioHookNames = {},
             dbAudioHookNames,
-            reFileExt = new RegExp(/\.mp3$|\.ogg$|\.aac$/);
+            reFileExt = new RegExp(/\.[A-Za-z0-9]+$/);
 
         for (var i in audioHookFiles) {
             var fileName = audioHookFiles[i] + '';

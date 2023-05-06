@@ -124,7 +124,7 @@
             tempKeyword = args[i].toLowerCase();
             i++;
 
-            if (keyword.startsWith('!')) {
+            if (tempKeyword.startsWith('!')) {
                 tempKeyword = ('!' + tempKeyword.match(/(!+)(.+)/)[2]);
             }
 
@@ -280,7 +280,7 @@
      */
     function close(username) {
         /* Clear the timer if there is one active. */
-        clearInterval(timeout);
+        clearTimeout(timeout);
         clearInterval(interval);
         clearInterval(saveStateInterval);
 
@@ -326,9 +326,7 @@
                 let remainingEntries = JSON.parse(JSON.stringify(entries));
                 while (newWinners.length < amount && remainingEntries.length > 0) {
                     let candidate = $.randElement(remainingEntries);
-
                     remainingEntries.splice(remainingEntries.indexOf(candidate), 1);
-
                     newWinners.push(candidate);
                 }
             }
@@ -368,6 +366,7 @@
         if (!openDraw) {
             close(undefined);
         }
+
         saveState();
     }
 
@@ -478,20 +477,20 @@
         }
 
         /* Push the user into the array */
+        let entryAmount = 1;
+        if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
+            entryAmount += subscriberBonus;
+        } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
+            entryAmount += regularBonus;
+        }
+
         _entriesLock.lock();
         try {
-            entered[username] = true;
-            entries.push(username);
-            let i;
-            if (subscriberBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Sub)) {
-                for (i = 0; i < subscriberBonus; i++) {
-                    entries.push(username);
-                }
-            } else if (regularBonus > 0 && $.checkUserPermission(username, tags, $.PERMISSION.Regular)) {
-                for (i = 0; i < regularBonus; i++) {
-                    entries.push(username);
-                }
+            for (let i = 0; i < entryAmount; i++) {
+                entries.push(username);
             }
+
+            entered[username] = true;
         } finally {
             _entriesLock.unlock();
         }
@@ -507,7 +506,7 @@
      */
     function clear() {
         /* Clear the timer if there is one active. */
-        clearInterval(timeout);
+        clearTimeout(timeout);
         clearInterval(interval);
         clearInterval(saveStateInterval);
         keyword = '';
@@ -629,10 +628,10 @@
             }
 
             /**
-             * @commandpath raffle subscriberbonus [1-10] - Sets the bonus luck for subscribers.
+             * @commandpath raffle subscriberbonus [0-10] - Sets the bonus luck for subscribers.
              */
             if (action.equalsIgnoreCase('subscriberbonus')) {
-                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 1) {
+                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0 || parseInt(subAction) > 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.subbonus.usage'));
                     return;
                 }
@@ -644,10 +643,10 @@
             }
 
             /**
-             * @commandpath raffle regularbonus [1-10] - Sets the bonus luck for regulars.
+             * @commandpath raffle regularbonus [0-10] - Sets the bonus luck for regulars.
              */
             if (action.equalsIgnoreCase('regularbonus')) {
-                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 1) {
+                if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0 || parseInt(subAction) > 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.regbonus.usage'));
                     return;
                 }
