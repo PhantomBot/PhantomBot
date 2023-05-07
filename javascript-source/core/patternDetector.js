@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global Packages */
+
 /**
  * patterDetector.js
  *
@@ -22,8 +24,7 @@
  * Use the $.patternDetector API
  */
 (function() {
-    var patterns = {
-        link: new RegExp('((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)' + '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_' + '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?' + '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+' + '(?:' + '(?:aero|a[cdefgilmnoqrstuwxz])' + '|(?:biz|bike|bot|b[abdefghijmnorstvwyz])' + '|(?:com|c[acdfghiklmnoruvxyz])' + '|d[ejkmoz]' + '|(?:edu|e[cegrstu])' + '|(?:fyi|f[ijkmor])' + '|(?:gov|g[abdefghilmnpqrstuwy])' + '|(?:how|h[kmnrtu])' + '|(?:info|i[delmnoqrst])' + '|(?:jobs|j[emop])' + '|k[eghimnrwyz]' + '|l[abcikrstuvy]' + '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])' + '|(?:name|net|n[acefgilopruz])' + '|(?:org|om)' + '|(?:pro|p[aefghklmnrstwy])' + '|qa' + '|(?:r[eouw])' + '|(?:s[abcdeghijklmnortuvyz])' + '|(?:t[cdfghjklmnoprtvwz])' + '|u[agkmsyz]' + '|(?:vote|v[ceginu])' + '|(?:xxx)' + '|(?:watch|w[fs])' + '|y[etu]' + '|z[amw]))' + '|(?:(?:25[0-5]|2[0-4]' + '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]' + '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]' + '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}' + '|[1-9][0-9]|[0-9])))' + '(?:\\:\\d{1,5})?)' + '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~' + '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?' + '(?:\\b|$)' + '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)', 'ig'),
+    let patterns = {
         emotes: new RegExp('([0-9][0-9]-[0-9][0-9])|([0-9]-[0-9])', 'g'),
         repeatedSeq: /(.)(\1+)/ig,
         nonAlphaSeq: /([^a-z0-9 ])(\1+)/ig,
@@ -40,7 +41,7 @@
      * @returns {boolean}
      */
     function hasLinks(event) {
-        return $.test(event.getMessage(), patterns.link);
+        return Packages.com.gmt2001.PatternDetector.hasAnyLinks(event.getMessage());
     }
 
     /**
@@ -50,10 +51,14 @@
      * @returns {string[]}
      */
     function getLinks(message) {
-        // turn Java String into JavaScript string
-        // https://github.com/mozilla/rhino/issues/638
-        message = message + '';
-        return $.match(message, patterns.link);
+        let jlinks = Packages.com.gmt2001.PatternDetector.getLinks(message);
+        let links = [];
+
+        for (let i = 0; i < jlinks.size(); i++) {
+            links.push($.jsString(jlinks.get(i)));
+        }
+
+        return links;
     }
 
     /**
@@ -61,7 +66,13 @@
      * @export $.patternDetector
      */
     function logLastLink(event) {
-        $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + $.regexExec(event.getMessage(), patterns.link)[0]);
+        let jlink = Packages.com.gmt2001.PatternDetector.getLink(event.getMessage());
+
+        if (jlink === null) {
+            jlink = '';
+        }
+
+        $.log.file('patternDetector', 'Matched link on message from ' + event.getSender() + ': ' + jlink);
     }
 
     /**
@@ -71,7 +82,7 @@
      * @returns {number}
      */
     function getLongestRepeatedSequence(event) {
-        var sequences = $.match(event.getMessage(), patterns.repeatedSeq);
+        let sequences = $.match(event.getMessage(), patterns.repeatedSeq);
 
         return (sequences === null ? 0 : sequences.sort(function(a, b) {
             return b.length - a.length;
@@ -85,7 +96,7 @@
      * @returns {number}
      */
     function getLongestNonLetterSequence(event) {
-        var message = (event.getMessage() + ''),
+        let message = (event.getMessage() + ''),
             sequences = $.match(message, patterns.nonAlphaSeq);
 
         return (sequences === null ? 0 : sequences.sort(function(a, b) {
@@ -100,7 +111,7 @@
      * @returns {number}
      */
     function getNumberOfNonLetters(event) {
-        var sequences = $.match(event.getMessage(), patterns.nonAlphaCount);
+        let sequences = $.match(event.getMessage(), patterns.nonAlphaCount);
 
         return (sequences === null ? 0 : sequences.length);
     }
@@ -113,7 +124,7 @@
      * @info this gets the emote count from the ircv3 tags and the emotes cache if enabled.
      */
     function getEmotesCount(event) {
-        var emotes = event.getTags().get('emotes'),
+        let emotes = event.getTags().get('emotes'),
             matched = $.match(emotes, patterns.emotes),
             extraEmotes = $.emotesHandler.getEmotesMatchCount(event.getMessage());
 
@@ -127,13 +138,12 @@
      * @returns {string}
      */
     function getMessageWithoutEmotes(event, message) {
-        var emotes = event.getTags().get('emotes'),
-            str = message,
-            i;
+        let emotes = event.getTags().get('emotes'),
+            str = message;
 
         if (emotes !== null && emotes.length() > 0) {
             emotes = emotes.replaceAll('[0-9]+:', '').split('/');
-            for (i in emotes) {
+            for (let i in emotes) {
                 str = str.replace(getWordAt(message, parseInt(emotes[i].split('-')[0])), '');
             }
         }
@@ -148,10 +158,10 @@
      * @return {String}
      */
     function getWordAt(str, pos) {
-        str = String(str);
+        str = $.jsString(str);
         pos = pos >>> 0;
 
-        var left = str.slice(0, pos + 2).search(/\S+$/),
+        let left = str.slice(0, pos + 2).search(/\S+$/),
             right = str.slice(pos).search(/\s/);
 
         if (right < 0) {
@@ -168,7 +178,7 @@
      * @returns {number}
      */
     function getNumberOfCaps(event) {
-        var sequences = $.match(getMessageWithoutEmotes(event, event.getMessage()), patterns.capsCount);
+        let sequences = $.match(getMessageWithoutEmotes(event, event.getMessage()), patterns.capsCount);
 
         return (sequences === null ? 0 : sequences.length);
     }
@@ -190,7 +200,7 @@
      * @returns {boolean}
      */
     function getFakePurge(event) {
-        return $.test(String(event.getMessage()).replace(patterns.meCheck, ''), patterns.fakePurge);
+        return $.test($.jsString(event.getMessage()).replace(patterns.meCheck, ''), patterns.fakePurge);
     }
 
     /** Export functions to API */
