@@ -23,7 +23,7 @@
             raidReward = $.getSetIniDbNumber('raidSettings', 'raidReward', 0),
             raidOutMessage = $.getSetIniDbString('raidSettings', 'raidOutMessage', 'We are going to raid (username)! Go to their channel (url) now!'),
             raidOutSpam = $.getSetIniDbNumber('raidSettings', 'raidOutSpam', 1),
-            raidOutOfflineMessage = $.getSetIniDbString('raidSettings', 'raidOutOfflineMessage', 'Note: That channel is offline!  Use /unraid if you wish to cancel . . .');
+            raidOutOfflineMessage = $.getSetIniDbString('raidSettings', 'raidOutOfflineMessage', null);
 
     /*
      * @function Reloads the raid variables from the panel.
