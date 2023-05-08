@@ -36,7 +36,7 @@
         raidReward = $.getIniDbNumber('raidSettings', 'raidReward');
         raidOutMessage = $.getIniDbString('raidSettings', 'raidOutMessage');
         raidOutSpam = $.getIniDbNumber('raidSettings', 'raidOutSpam');
-        raidOutOfflineMessage = $.getIniDbNumber('raidSettings', 'raidOutOfflineMessage');
+        raidOutOfflineMessage = $.getIniDbString('raidSettings', 'raidOutOfflineMessage');
     }
 
     /*
