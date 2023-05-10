@@ -140,7 +140,7 @@ $(function() {
 
                 // Add position.
                 row.append($('<td/>', {
-                    'text': i,
+                    'text': i + 1,
                     'style': 'width: 5%;'
                 }));
 
@@ -234,7 +234,7 @@ $(function() {
 
                 // Add position.
                 row.append($('<td/>', {
-                    'text': i
+                    'text': i + 1
                 }));
 
                 // Add song name.
