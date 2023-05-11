@@ -356,6 +356,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().contains("NOT SUPPORTED")) {
+                                    return true;
+                                }
+
                                 if (error.getClass().equals(java.io.UncheckedIOException.class)) {
                                     return true;
                                 }
