@@ -64,6 +64,8 @@ public class HttpSslRedirectHandler extends SimpleChannelInboundHandler<FullHttp
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         if (!req.decoderResult().isSuccess()) {
+            com.gmt2001.Console.debug.println("400 DECODER");
+            com.gmt2001.Console.err.printStackTrace(req.decoderResult().cause());
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
             return;
         }
