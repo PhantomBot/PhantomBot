@@ -78,6 +78,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
         if (!req.decoderResult().isSuccess()) {
+            com.gmt2001.Console.debug.println("400 DECODER");
+            com.gmt2001.Console.err.printStackTrace(req.decoderResult().cause());
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
             return;
         }
