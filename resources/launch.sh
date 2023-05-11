@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
 #
@@ -107,7 +107,26 @@ elif [[ "$MACHTYPE" != "x86_64"* ]]; then
     fi
 else
     cd $(dirname $(readlink -f $0))
+    osdist=$(awk '/^ID(_LIKE)?=/' /etc/os-release | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 1')
+    osdist2=$(awk '/^ID(_LIKE)?=/' /etc/os-release | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 2')
+    osver=$(awk '/^VERSION_ID=/' /etc/os-release | sed 's/"//g' | cut -d = -f 2)
     JAVA="./java-runtime-linux/bin/java"
+
+    if  [[ "$osdist" == *"nixos"* ]]; then
+        JAVA=$(which java)
+
+        if (( $? > 0 )); then
+            jvermaj=0
+        else
+            jvermaj=$(java --version | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+        fi
+
+        if (( jvermaj < 11 )); then
+            echo "PhantomBot requires Java 11 or later to run."
+            echo "Please install it from your package manager and ensure the correct installation is returned by 'which java'"
+            exit 1
+        fi
+    fi
 fi
 
 if mount | grep '/tmp' | grep -q noexec; then

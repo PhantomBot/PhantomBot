@@ -33,3 +33,5 @@ $.lang.register('raidhandler.spam.amount.set', 'Successfully updated the outgoin
 $.lang.register('raidhandler.lookup.usage', 'Usage: !raid lookup [username]');
 $.lang.register('raidhandler.lookup.user', '$1 has raided this channel a total of $2 time(s). Their last raid was on $3 with $4 viewers.');
 $.lang.register('raidhandler.lookup.user.404', '$1 has never raided this channel.');
+$.lang.register('raidhandler.out.messageoffline.usage', 'Usage: !raid setoutgoingofflinemessage [message]');
+$.lang.register('raidhandler.out.messageoffline.set', 'Successfully updated the outgoing raid offline warning message!');
