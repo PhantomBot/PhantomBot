@@ -160,6 +160,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(org.h2.jdbc.JdbcSQLNonTransientConnectionException.class)) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("Timeout while waiting for a free database connection")) {
                                     return true;
                                 }
