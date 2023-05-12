@@ -109,7 +109,7 @@
 
     /*
      * @transformer cpinputraw
-     * @formula (cpinput) the raw input supplied by the redeeming user, if set
+     * @formula (cpinputraw) the raw input supplied by the redeeming user, if set
      * @labels twitch channelpointsevent channelpoints
      * @cached
      */

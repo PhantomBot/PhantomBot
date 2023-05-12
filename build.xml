@@ -215,7 +215,7 @@
 
     <target depends="pre.compile" name="compile.src">
         <echo>Compiling with Java Version ${ant.java.version} (${java.version})</echo>
-        <javac target="${java.source.level}" source="${java.source.level}" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="${java.source.level}" source="${java.source.level}" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" encoding="UTF-8">
             <compilerarg value="-Xlint:unchecked" />
             <compilerarg value="-Xlint:-options" />
             <compilerarg value="-XDenableSunApiLintControl" />
@@ -231,7 +231,7 @@
     </target>
 
     <target depends="clean.build.test" name="compile.src.test">
-        <javac target="${java.source.level}" source="${java.source.level}" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" >
+        <javac target="${java.source.level}" source="${java.source.level}" debug="on" destdir="${classes}" srcdir="${src}" includeantruntime="false" encoding="UTF-8">
             <compilerarg value="-Xlint:all" />
             <compilerarg value="-Xlint:-options" />
             <compilerarg value="-XDenableSunApiLintControl" />
