@@ -150,8 +150,8 @@ $(function () {
                 case helpers.handleInputString(keyword):
                 case helpers.handleInputNumber(cost, 0):
                 case helpers.handleInputNumber(timer, 0):
-                case helpers.handleInputNumber(regLuck, 1, 10):
-                case helpers.handleInputNumber(subLuck, 1, 10):
+                case helpers.handleInputNumber(regLuck, 0, 10):
+                case helpers.handleInputNumber(subLuck, 0, 10):
                     break;
                 default:
                     socket.updateDBValues('update_raffle_settings', {
