@@ -28,7 +28,7 @@
      */
     function isConnected() {
         return $.discordAPI.isLoggedIn() &&
-        $.discordAPI.checkConnectionStatus() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED;
+        $.discordAPI.getConnectionState() == Packages.tv.phantombot.discord.DiscordAPI.ConnectionState.CONNECTED;
     }
 
     $.discord.isConnected = isConnected;
