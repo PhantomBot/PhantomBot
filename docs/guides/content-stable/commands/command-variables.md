@@ -348,7 +348,7 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 
 **Formulas:**
 
-- `(cpinput)` - the raw input supplied by the redeeming user, if set
+- `(cpinputraw)` - the raw input supplied by the redeeming user, if set
 
 **Labels:** twitch channelpointsevent channelpoints
 
