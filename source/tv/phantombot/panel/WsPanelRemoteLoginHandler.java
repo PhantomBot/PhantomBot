@@ -30,6 +30,7 @@ import org.json.JSONStringer;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  *
@@ -82,8 +83,8 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
                 jsonObject.object();
                 if (jso.getJSONObject("params").getString("type").equalsIgnoreCase("AuthRO")) {
                     jsonObject.key("authtoken").value(CaselessProperties.instance().getProperty("webauthro")).key("authtype").value("read");
-                } else if (jso.getJSONObject("params").getString("user").equals(CaselessProperties.instance().getProperty("paneluser", "panel")) && jso.getJSONObject("params").getString("pass").equals(CaselessProperties.instance().getProperty("panelpassword", "panel"))) {
-                    jsonObject.key("authtoken").value(CaselessProperties.instance().getProperty("webauth")).key("authtype").value("read/write");
+                } else if (PanelUserHandler.checkLogin(jso.getJSONObject("params").getString("user"), jso.getJSONObject("params").getString("pass"))) {
+                    jsonObject.key("authtoken").value(PanelUserHandler.getUserAuthToken(jso.getJSONObject("params").getString("user")));
                 } else if (jso.getJSONObject("params").getString("user").equals("broadcaster") && PhantomBot.instance() != null
                         && PhantomBot.instance().getHTTPOAuthHandler().validateBroadcasterToken(jso.getJSONObject("params").getString("pass"))) {
                     jsonObject.key("authtoken").value(jso.getJSONObject("params").getString("pass")).key("authtype").value("oauth/broadcaster");

@@ -51,6 +51,7 @@ import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 import tv.phantombot.twitch.api.Helix;
 
 /**
@@ -129,6 +130,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 handleDiscordChannelList(ctx, frame, jso);
             } else if (jso.has("channelpointslist")) {
                 handleChannelPointsList(ctx, frame, jso);
+            } else if (jso.has("panelUser")) {
+                handlePanelUser(ctx, frame, jso);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
@@ -341,6 +344,43 @@ public class WsPanelHandler implements WsFrameHandler {
         }).doOnError(com.gmt2001.Console.err::printStackTrace).subscribe();
     }
 
+    private void handlePanelUser(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        String uniqueID = jso.has("panelUser") ? jso.getString("panelUser") : "";
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID)
+                            .key("results");
+        if (jso.has("getAll")){
+            PanelUserHandler.getAllUsersJSONObject(jsonObject);
+        } else if (jso.has("delete")) {
+            String username = jso.getString("delete");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.deleteUser(username);
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        } else if (jso.has("add")) {
+            String username = jso.getJSONObject("add").getString("username");
+            String permission = jso.getJSONObject("add").getString("permission");
+            Boolean enabled = jso.getJSONObject("add").getBoolean("enabled");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(username, permission, enabled);
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        } else if (jso.has("edit")) {
+            String currentUsername = jso.getJSONObject("edit").getString("currentUsername");
+            String newUsername = jso.getJSONObject("edit").getString("newUsername");
+            String permission = jso.getJSONObject("edit").getString("permission");
+            Boolean enabled = jso.getJSONObject("edit").getBoolean("enabled");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(currentUsername, newUsername, permission, enabled);
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        } else if (jso.has("resetPassword")) {
+            String username = jso.getString("resetPassword");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(username);
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        } else if (jso.has("getPermissions")) {
+            PanelUserHandler.getPermissionsJSON(jsonObject);
+        } else {
+            return;
+        }
+        jsonObject.endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
     private void handleUnrestrictedCommands(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         try {
             if (jso.has("version")) {
@@ -359,6 +399,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 handleDBValuesByOrderQuery(ctx, frame, jso);
             } else if (jso.has("dbkeyssearch")) {
                 handleDBKeysSearchQuery(ctx, frame, jso);
+            } else if (jso.has("panelUserRO")) {
+                handlePanelUserRO(ctx, frame, jso);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
@@ -664,6 +706,25 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         jsonObject.endArray().endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+    }
+
+    private void handlePanelUserRO(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        String uniqueID = jso.has("panelUserRO") ? jso.getString("panelUserRO") : "";
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID)
+                            .key("results");
+        if (jso.has("get")) {
+            String username = jso.getString("get");
+            PanelUserHandler.getUserJSONObject(username, jsonObject);
+        } else if (jso.has("changePassword")) {
+            String username = jso.getJSONObject("changePassword").getString("username");
+            String currentPassword = jso.getJSONObject("changePassword").getString("currentPassword");
+            String newPassword = jso.getJSONObject("changePassword").getString("newPassword");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.changePassword(username, currentPassword, newPassword);
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        }
+        jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 

@@ -53,6 +53,7 @@ import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 import tv.phantombot.script.Script;
 
 public final class ConsoleEventHandler implements Listener {
@@ -739,6 +740,33 @@ public final class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("dumpheap")) {
             Reflect.dumpHeap();
             com.gmt2001.Console.out.println("Heap Dump Completed");
+        }
+
+        if(message.equalsIgnoreCase("paneluser")) {
+            if (argument != null && argument.length > 1 && !argument[0].isBlank() && !argument[1].isBlank()) {
+                if (argument[0].equalsIgnoreCase("add")) {
+                    String permission = null;
+                    if (argument.length == 4 && !argument[2].isBlank() && !argument[3].isBlank()) {
+                        permission = argument[2] + " " + argument[3]; // Full Access, Read Only
+                    }
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(argument[1], permission, false);
+                    com.gmt2001.Console.out.println("Password for new user " + argument[1] + " is:");
+                    com.gmt2001.Console.out.println(response.getMessage());
+                } else if (argument[0].equalsIgnoreCase("delete")) {
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.deleteUser(argument[1]);
+                    com.gmt2001.Console.out.println(response.getMessage());
+                } else if (argument[0].equalsIgnoreCase("enable")) {
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null, null, true);
+                    com.gmt2001.Console.out.println(response.getMessage());
+                } else if (argument[0].equalsIgnoreCase("disable")) {
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null, null, false);
+                    com.gmt2001.Console.out.println(response.getMessage());
+                } else if (argument[0].equalsIgnoreCase("resetpassword")) {
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(argument[1]);
+                    com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
+                    com.gmt2001.Console.out.println(response.getMessage());
+                }
+            }
         }
 
         // Check to see if any settings have been changed.

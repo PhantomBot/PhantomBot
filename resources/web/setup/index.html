@@ -456,7 +456,7 @@
                         method: 'GET',
                         success: function (data) {
                             if (data.code !== 200) {
-                                error('Failed to retrive current settings: ' + data.status + ' ' + data.error + '!');
+                                error('Failed to retrieve current settings: ' + data.status + ' ' + data.error + '!');
                             } else {
                                 populateSettings(data.currentProperties);
                                 clearAll();
@@ -488,7 +488,7 @@
                                 }
                                 msg += err;
                             }
-                            error('Failed to retrive current settings: ' + msg + '!');
+                            error('Failed to retrieve current settings: ' + msg + '!');
                         }
                     });
                 }
@@ -527,7 +527,7 @@
                                 }
                                 msg += err;
                             }
-                        error('Failed to retrive settings list: ' + msg + '!');
+                        error('Failed to retrieve settings list: ' + msg + '!');
                     }
                 });
 

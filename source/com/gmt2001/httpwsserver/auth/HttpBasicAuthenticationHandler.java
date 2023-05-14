@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  * Provides a {@link HttpAuthenticationHandler} that implements HTTP Basic authentication, as well as allowing the same format to be provided in a
@@ -138,24 +139,13 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         String auth = headers.get("Authorization");
 
         if (auth != null && auth.startsWith("Basic ")) {
-            auth = auth.substring(6);
-            String userpass = new String(Base64.getDecoder().decode(auth));
-            int colon = userpass.indexOf(':');
-
-            if (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass)) {
-                return true;
-            }
+            return PanelUserHandler.checkLoginB64(auth.substring(6), req.uri());
         } else {
             Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
             auth = cookies.getOrDefault("panellogin", null);
 
             if (auth != null) {
-                String userpass = new String(Base64.getDecoder().decode(auth));
-                int colon = userpass.indexOf(':');
-
-                if (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass)) {
-                    return true;
-                }
+                return PanelUserHandler.checkLoginB64(auth, req.uri());
             }
         }
 
@@ -164,6 +154,6 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(String user, String pass) {
-        return user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
+        return PanelUserHandler.checkLogin(user, pass);
     }
 }
