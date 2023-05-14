@@ -1561,9 +1561,9 @@ $(function () {
         let months = ["January", "February", "March", "April", "May", "June",
                         "July", "August", "September", "October", "November", "December"
                         ],
-                hours = (date.getHours().length == 1) ? "0" + date.getHours() : date.getHours(),
-                minutes = (date.getMinutes().length == 1) ? "0" + date.getMinutes() : date.getMinutes(),
-                seconds = (date.getSeconds().length == 1) ? "0" + date.getSeconds() : date.getSeconds();
+                hours = (date.getHours().toString().length == 1) ? "0" + date.getHours() : date.getHours(),
+                minutes = (date.getMinutes().toString().length == 1) ? "0" + date.getMinutes() : date.getMinutes(),
+                seconds = (date.getSeconds().toString().length == 1) ? "0" + date.getSeconds() : date.getSeconds();
 
         return hours +  ":" + minutes + ":" + seconds + " " + date.getDate() + " " + months[date.getMonth()] + " "+ date.getFullYear();
     }

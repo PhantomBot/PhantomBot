@@ -21,7 +21,7 @@ public class PanelUser {
     private boolean enabled;
     private Type userType;
     private long creationDate;
-    private long lastLogin;
+    private long lastLogin = -1;
     private boolean hasSetPassword = false;
     /**
      * User types
