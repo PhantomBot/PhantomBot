@@ -18,8 +18,8 @@ package com.gmt2001.httpwsserver.auth;
 
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import io.netty.util.AttributeKey;
 import org.json.JSONStringer;
 
 /**
@@ -33,11 +33,6 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
      * An instance of {@link WsNoAuthenticationHandler}
      */
     private static WsNoAuthenticationHandler INSTANCE;
-
-    /**
-     * Represents the {@code attrSentAuthReply} attribute
-     */
-    private static final AttributeKey<Boolean> ATTR_SENT_AUTH_REPLY = AttributeKey.valueOf("sentAuthReply");
 
     /**
      * Gets a handler instance
@@ -82,5 +77,10 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
     @Override
     public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
         throw new UnsupportedOperationException("Not supported by this authentication handler.");
+    }
+
+    @Override
+    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+        return false;
     }
 }
