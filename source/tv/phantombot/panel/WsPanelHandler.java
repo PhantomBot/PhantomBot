@@ -349,17 +349,14 @@ public class WsPanelHandler implements WsFrameHandler {
     private void handlePanelUser(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
 
-        if (user != null && !user.canManageUsers()) {
-            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
-            ctx.close();
-            return;
-        }
-
         String uniqueID = jso.has("panelUser") ? jso.getString("panelUser") : "";
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("query_id").value(uniqueID)
                             .key("results");
-        if (jso.has("getAll")){
+        if (user != null && !user.canManageUsers()) {
+            PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.CanNotManageError;
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        } else if (jso.has("getAll")){
             PanelUserHandler.getAllUsersJSONObject(jsonObject);
         } else if (jso.has("delete")) {
             String username = jso.getString("delete");
@@ -385,7 +382,8 @@ public class WsPanelHandler implements WsFrameHandler {
         } else if (jso.has("getPermissions")) {
             PanelUserHandler.getPermissionsJSON(jsonObject);
         } else {
-            return;
+            PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         }
         jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
@@ -735,23 +733,25 @@ public class WsPanelHandler implements WsFrameHandler {
         if (jso.has("get")) {
             String username = jso.getString("get");
             if (!user.canManageUsers() && !user.getUsername().equalsIgnoreCase(username)) {
-                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
-                ctx.close();
-                return;
+                PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.CanNotManageError;
+                jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+            } else {
+                PanelUserHandler.getUserJSONObject(username, jsonObject);
             }
-            PanelUserHandler.getUserJSONObject(username, jsonObject);
         } else if (jso.has("changePassword")) {
             String username = jso.getJSONObject("changePassword").getString("username");
 
             if (!user.getUsername().equalsIgnoreCase(username)) {
-                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
-                ctx.close();
-                return;
+                PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.CanNotManageError;
+                jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+            } else {
+                String currentPassword = jso.getJSONObject("changePassword").getString("currentPassword");
+                String newPassword = jso.getJSONObject("changePassword").getString("newPassword");
+                PanelUserHandler.PanelMessage response = PanelUserHandler.changePassword(username, currentPassword, newPassword);
+                jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
             }
-
-            String currentPassword = jso.getJSONObject("changePassword").getString("currentPassword");
-            String newPassword = jso.getJSONObject("changePassword").getString("newPassword");
-            PanelUserHandler.PanelMessage response = PanelUserHandler.changePassword(username, currentPassword, newPassword);
+        } else {
+            PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         }
         jsonObject.endObject();

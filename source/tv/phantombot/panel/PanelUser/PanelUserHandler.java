@@ -42,9 +42,13 @@ public final class PanelUserHandler {
          */
         SaveError("Changes could not be saved", true),
         /**
+         * {@link PanelUser Panel user} is not allowed to manage other panel users
+         */
+        CanNotManageError("Not allowed to manage other panel users", true),
+        /**
          * General Error/Error placeholder
          */
-        Error("", true),
+        Error("Unknown", true),
         /**
          * General Success/Success placeholder
          */
