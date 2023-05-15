@@ -16,7 +16,7 @@ public final class PanelUserHandler {
     /**
      * Database table suffix for the {@link PanelUser panel users}
      */
-    static final String PANELUSERTABLE = "panelUsers";
+    public static final String PANELUSERTABLE = "panelUsers";
     /**
      * Messages for use as responses to the web panel
      */
@@ -225,7 +225,7 @@ public final class PanelUserHandler {
 
     /**
      * Get the authentication token for a {@link PanelUser panel user}
-     * @param username The user's username 
+     * @param username The user's username
      * @return The user's websocket authentication token if the user exists and is enabled; {@code null} otherwise
      * @see PanelUser#getAuthToken() token generation
      * @see WsPanelHandler#handleFrame() token usage
@@ -399,7 +399,7 @@ public final class PanelUserHandler {
         if (!datastore.FileExists(PANELUSERTABLE)) {
             return users;
         }
-           
+
         String[] keys = datastore.GetKeyList(PANELUSERTABLE, "");
         for (String key : keys) {
             users.add(PanelUser.LookupByUsername(key));

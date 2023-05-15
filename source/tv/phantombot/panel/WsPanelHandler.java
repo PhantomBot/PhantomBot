@@ -61,8 +61,8 @@ import tv.phantombot.twitch.api.Helix;
 public class WsPanelHandler implements WsFrameHandler {
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
-    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
-    private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
+    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken", PanelUserHandler.PANELUSERTABLE};
+    private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{PanelUserHandler.PANELUSERTABLE};
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
