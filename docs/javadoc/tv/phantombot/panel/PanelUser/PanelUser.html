@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":9,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -159,7 +159,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>protected static class&nbsp;</code></td>
+<td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser">PanelUser.Type</a></span></code></th>
 <td class="colLast">
 <div class="block">User types</div>
@@ -177,13 +177,29 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canBeEdited()">canBeEdited</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if the panel user's properties (username, password, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, ...) can be changed
+ <br/><br/>
+ The user defined in the botlogin.txt cannot</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canManageUsers()">canManageUsers</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if this user is allowed to manage other panel users</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#create(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,boolean)">create</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
       <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&nbsp;permission,
@@ -192,7 +208,72 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Creates a new panel user and saves the user in the database</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCreationDate()">getCreationDate</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The time at which this user was created</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLastLogin()">getLastLogin</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The last time this user logged in to the panel</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPassword()">getPassword</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The panel user's password</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPermission()">getPermission</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The user's <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUsername()">getUsername</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The panel user's name</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser">PanelUser.Type</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUserType()">getUserType</a></span>()</code></th>
+<td class="colLast">
+<div class="block">The <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>user's type</code></a>
+ <br/><br/>
+ Used for user management</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hasSetPassword()">hasSetPassword</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if the user has set their password or if it was generated automatically</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isConfigUser()">isConfigUser</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if the user is originating from the botlogin.txt</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isEnabled()">isEnabled</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Indicates if the user is enabled</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>static <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#LookupByUsername(java.lang.String)">LookupByUsername</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username)</code></th>
 <td class="colLast">
@@ -223,6 +304,164 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getUsername()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUsername</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getUsername()</pre>
+<div class="block">The panel user's name</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The panel user's current name</dd>
+</dl>
+</li>
+</ul>
+<a id="getPassword()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPassword</h4>
+<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getPassword()</pre>
+<div class="block">The panel user's password</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The panel user's current password</dd>
+</dl>
+</li>
+</ul>
+<a id="getLastLogin()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLastLogin</h4>
+<pre class="methodSignature">public&nbsp;long&nbsp;getLastLogin()</pre>
+<div class="block">The last time this user logged in to the panel</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The last time this user logged in to the panel as Unix-Time; <code>-1</code> if the user has never logged in</dd>
+</dl>
+</li>
+</ul>
+<a id="getPermission()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getPermission</h4>
+<pre class="methodSignature">public&nbsp;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&nbsp;getPermission()</pre>
+<div class="block">The user's <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The user's <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="getUserType()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getUserType</h4>
+<pre class="methodSignature">public&nbsp;<a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser">PanelUser.Type</a>&nbsp;getUserType()</pre>
+<div class="block">The <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>user's type</code></a>
+ <br/><br/>
+ Used for user management</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>user type</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="canBeEdited()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>canBeEdited</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;canBeEdited()</pre>
+<div class="block">Indicates if the panel user's properties (username, password, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, ...) can be changed
+ <br/><br/>
+ The user defined in the botlogin.txt cannot</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user's properties can be changed; <code>false</code> otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="getCreationDate()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getCreationDate</h4>
+<pre class="methodSignature">public&nbsp;long&nbsp;getCreationDate()</pre>
+<div class="block">The time at which this user was created</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The time at which this user was created as Unix-Time</dd>
+</dl>
+</li>
+</ul>
+<a id="hasSetPassword()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hasSetPassword</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;hasSetPassword()</pre>
+<div class="block">Indicates if the user has set their password or if it was generated automatically</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user's current password has been generated automatically</dd>
+</dl>
+</li>
+</ul>
+<a id="isEnabled()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isEnabled</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isEnabled()</pre>
+<div class="block">Indicates if the user is enabled</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user is enabled</dd>
+</dl>
+</li>
+</ul>
+<a id="isConfigUser()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isConfigUser</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isConfigUser()</pre>
+<div class="block">Indicates if the user is originating from the botlogin.txt</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user has been created from the username and password provided in the botlogin.txt</dd>
+</dl>
+</li>
+</ul>
+<a id="canManageUsers()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>canManageUsers</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;canManageUsers()</pre>
+<div class="block">Indicates if this user is allowed to manage other panel users</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if allowed</dd>
+</dl>
+</li>
+</ul>
 <a id="create(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,boolean)">
 <!--   -->
 </a>

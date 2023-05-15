@@ -26,7 +26,7 @@ $(function () {
             'class': 'form-group'
         }).append($('<div/>', {
             'html': $('<b/>', {
-                'text': 'We\'ve create a random password which the new user can use to login. The user will be requested to change the password during their first login.'
+                'text': 'We\'ve created a random password which the new user can use to login. The user will be requested to change the password during their first login.'
             })
         })).append($('<div/>', {
             'html': $('<b/>', {
@@ -224,7 +224,7 @@ $(function () {
             'role': 'form'
         })
         .append(helpers.getInputGroup('user-name', 'text', 'Username', 'Phantom', '', 'Login name / username of the panel user.'))
-        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Full Access', ['Full Access', 'Read Only'], 'Access permission for the panel user. Full Access does not allow setting up the bot nor changing the oauth settings.'))
+        .append(helpers.getDropdownGroup('user-permission', 'Permission', 'Full Access', ['Full Access', 'Read Only'], 'Access permission for the panel user. Full Access does not allow setting up the bot, changing the oauth settings, or accessing the panel users management page.'))
         .append(helpers.getCheckBox('user-enabled', true, 'Enabled', 'If unchecked, the user cannot log in.')),
         function () {
             let username = $('#user-name'),
