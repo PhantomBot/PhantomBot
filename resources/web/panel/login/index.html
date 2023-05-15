@@ -110,6 +110,8 @@
         <script src="../vendors/PACE/pace.min.js"></script>
         <script src="../vendors/select2/select2.full.min.js"></script>
         <script src="../../common/reconnecting-websocket/reconnectingWS.min.js"></script>
+        <!-- Crypto-JS -->
+        <script src="../vendors/crypto-js/crypto-js-4.1.1.min.js"></script>
         <script>
             let isLocalBot = false;
 
@@ -126,6 +128,8 @@
 
             function doLogin(hostname, port, username, password, remember) {
                 let webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
+
+                password = CryptoJS.SHA256(password).toString();
                 webSocket.onopen = function () {
                     Pace.restart();
 
