@@ -18,6 +18,7 @@ package com.gmt2001.httpwsserver.auth;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * Represents an Authentication Handler for an {@link HttpHandler}
@@ -50,6 +51,18 @@ public interface HttpAuthenticationHandler {
      * @return otherwise
      */
     boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req);
+
+    /**
+     * Checks if the given {@link HttpHeaders} contain a valid authorization, or if the underlying {@link Channel} has already been
+     * authenticated
+     *
+     * When returning {@code false}, this method MUST NOT send a response to the client
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param headers The {@link HttpHeaders} to check
+     * @return otherwise
+     */
+    boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers);
 
     /**
      * Checks if the given username and password is a valid
