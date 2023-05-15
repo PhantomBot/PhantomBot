@@ -180,7 +180,7 @@ public final class PanelUser {
     private void setCreationDateNOW(){
         this.creationDate = System.currentTimeMillis();
     }
-    
+
     /**
      * Updates the last time the user has logged in on the panel
      */
@@ -282,6 +282,7 @@ public final class PanelUser {
         }
         DataStore dataStore = PhantomBot.instance().getDataStore();
         dataStore.del(PanelUserHandler.PANELUSERTABLE, this.username);
+        this.enabled = false;
         return true;
     }
 
@@ -319,7 +320,7 @@ public final class PanelUser {
         String password = user.generateNewPassword();
         user.save();
         return password;
-    }    
+    }
 
     /**
      * Looks up a panel user by their username
