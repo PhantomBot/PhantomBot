@@ -724,6 +724,27 @@
         }
     });
 
+    addUpdate('3.8.4.0', 'installedv3.8.4.0', function() {
+        //Remove $.PERMISSION.None
+        let keys = $.inidb.GetKeysByLikeValues('preSubGroup', '', $.javaString('99'));
+        for (let key in keys) {
+            $.inidb.del('preSubGroup', key);
+        }
+
+        //Remove $.PERMISSION.Viewer and save some space since default of $.PERMISSION.Viewer will be set if no value could be found in the db
+        let keys2 = $.inidb.GetKeysByLikeValues('preSubGroup', '', $.javaString('7'));
+        for (let key in keys2) {
+            $.inidb.del('preSubGroup', key);
+        }
+
+        // Set any users with $.PERMISSION.NONE to $.PERMISSION.Viewer
+        let keys3 = $.inidb.GetKeysByLikeValues('group', '', $.javaString('99'));
+        for (let key in keys3) {
+            $.inidb.set('group', key, $.javaString('7'));
+        }
+
+    });
+
     // ------ Add updates above this line in execution order ------
 
     if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
