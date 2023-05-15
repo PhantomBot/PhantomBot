@@ -458,6 +458,7 @@ public final class PanelUserHandler {
             jsonObject.object()
                 .key("username").value(user.getUsername())
                 .key("isEnabled").value(user.isEnabled())
+                .key("canManageUsers").value(user.canManageUsers())
                 .key("permission").value(user.getPermission().getDisplayName())
                 .key("creationDate").value(user.getCreationDate())
                 .key("lastLogin").value(user.getLastLogin())
@@ -497,6 +498,7 @@ public final class PanelUserHandler {
         }
         jsonObject.object().key("username").value(user.getUsername())
                             .key("isEnabled").value(user.isEnabled())
+                            .key("canManageUsers").value(user.canManageUsers())
                             .key("permission").value(user.getPermission().getDisplayName())
                             .key("hasSetPassword").value(user.hasSetPassword())
                             .key("userType").value(user.getUserType().toString())
