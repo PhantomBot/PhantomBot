@@ -80,7 +80,7 @@ public final class PanelUser {
      * The panel user's name
      * @return The panel user's current name
      */
-    protected String getUsername() {
+    String getUsername() {
         return this.username;
     }
 
@@ -88,7 +88,7 @@ public final class PanelUser {
      * The panel user's password
      * @return The panel user's current password
      */
-    protected String getPassword() {
+    String getPassword() {
         return this.password;
     }
 
@@ -96,7 +96,7 @@ public final class PanelUser {
      * The last time this user logged in to the panel
      * @return The last time this user logged in to the panel as Unix-Time; {@code -1} if the user has never logged in
      */
-    protected long getLastLogin() {
+    long getLastLogin() {
         return this.lastLogin;
     }
 
@@ -107,7 +107,7 @@ public final class PanelUser {
      * @return The user's current websocket authentication token
      * @see WsPanelHandler#handleFrame() token usage
      */
-    protected String getAuthToken() {
+    String getAuthToken() {
         if (this.token == null) {
             generateNewAuthToken();
             if(this.userType == Type.DATABASE) {
@@ -121,7 +121,7 @@ public final class PanelUser {
      * The user's {@link PanelHandler.Permission permission}
      * @return The user's {@link PanelUserHandler.Permission permission}
      */
-    protected Permission getPermission() {
+    Permission getPermission() {
         return this.permission;
     }
 
@@ -131,7 +131,7 @@ public final class PanelUser {
      * Used for user management
      * @return The {@link Type user type}
      */
-    protected Type getUserType() {
+    Type getUserType() {
         return this.userType;
     }
 
@@ -141,7 +141,7 @@ public final class PanelUser {
      * The user defined in the botlogin.txt cannot
      * @return {@code true} if the user's properties can be changed; {@code false} otherwise
      */
-    protected boolean canBeEdited() {
+    boolean canBeEdited() {
         return this.userType != Type.CONFIG;
     }
 
@@ -149,7 +149,7 @@ public final class PanelUser {
      * The time at which this user was created
      * @return The time at which this user was created as Unix-Time
      */
-    protected long getCreationDate() {
+    long getCreationDate() {
         return this.creationDate;
     }
 
@@ -157,7 +157,7 @@ public final class PanelUser {
      * Indicates if the user has set their password or if it was generated automatically
      * @return {@code true} if the user's current password has been generated automatically
      */
-    protected boolean hasSetPassword() {
+    boolean hasSetPassword() {
         return this.hasSetPassword;
     }
 
@@ -165,7 +165,7 @@ public final class PanelUser {
      * Indicates if the user is enabled
      * @return {@code true} if the user is enabled
      */
-    protected boolean isEnabled() {
+    boolean isEnabled() {
         return this.enabled;
     }
 
@@ -173,7 +173,7 @@ public final class PanelUser {
      * Indicates if the user is originating from the botlogin.txt
      * @return {@code true} if the user has been created from the username and password provided in the botlogin.txt
      */
-    protected boolean isConfigUser() {
+    boolean isConfigUser() {
         return this.userType == Type.CONFIG;
     }
 
@@ -184,7 +184,7 @@ public final class PanelUser {
     /**
      * Updates the last time the user has logged in on the panel
      */
-    protected void setLastLoginNOW() {
+    void setLastLoginNOW() {
         this.lastLogin = System.currentTimeMillis();
     }
 
@@ -192,7 +192,7 @@ public final class PanelUser {
      * Changes the user's password and marks that the password has been manually set by the user
      * @param password The new password
      */
-    protected void setPassword(String password) {
+    void setPassword(String password) {
         this.password = password;
         this.hasSetPassword = true;
     }
@@ -201,7 +201,7 @@ public final class PanelUser {
      * Changes the user's {@link PanelUserHandler.Permission permissions}
      * @param permission The new {@link PanelUserHandler.Permission permission}
      */
-    protected void setPermission(Permission permission) {
+    void setPermission(Permission permission) {
         this.permission = permission;
     }
 
@@ -209,7 +209,7 @@ public final class PanelUser {
      * Enables or disables the user
      * @param enabled {@code true} enables the user; {@code false} disabled the user
      */
-    protected void setEnabled(boolean enabled) {
+    void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -233,7 +233,7 @@ public final class PanelUser {
      * @return The new password assigned to the user in plaintext
      * @see PhantomBot#generateRandomString(int) random string generation
      */
-    protected String generateNewPassword() {
+    String generateNewPassword() {
         String temp = PhantomBot.generateRandomString(10);
         this.password = Digest.sha256(temp);
         this.hasSetPassword = false;
@@ -243,7 +243,7 @@ public final class PanelUser {
     /**
      * Changes the user's username
      */
-    protected void changeUsername(String newUsername) {
+    void changeUsername(String newUsername) {
         DataStore dataStore = PhantomBot.instance().getDataStore();
         dataStore.del(PanelUserHandler.PANELUSERTABLE, this.username);
         this.username = newUsername;
@@ -276,7 +276,7 @@ public final class PanelUser {
      * @return {@code false} if the user is not a database user ({@link Type#DATABASE}); {@code true} otherwise
      * @see DataStore#del(String, String)
      */
-    protected boolean delete() {
+    boolean delete() {
         if (this.userType != Type.DATABASE) {
             return false;
         }
@@ -290,7 +290,7 @@ public final class PanelUser {
      * @return {@code false} if the user originated from the values defined in botlogin.txt; {@code true} otherwise
      * @see DataStore#set(String, String, String)
      */
-    protected boolean save() {
+    boolean save() {
         if (this.userType == Type.CONFIG) {
             return false;
         }
