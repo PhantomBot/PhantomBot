@@ -169,17 +169,28 @@ public final class PanelUserHandler {
      * @see PanelUserHandler#checkLogin(String username, String password, String requestUri)
      */
     public static boolean checkLoginB64(String base64Token, String requestUri) {
+        return checkLoginAndGetUserB64(base64Token, requestUri) != null;
+    }
+
+    /**
+     * Checks if the {@link PanelUser panel user} is allowed to logon to the web panel and/or use the websocket
+     * @param base64Token The user's login token in base64 from the HTTP-Headers
+     * @param requestUri The requested uri
+     * @return A {@link PanelUser} if the user exists, is enabled and is allowed to access the uri; {@code null} otherwise
+     * @see PanelUserHandler#checkLoginAndGetUser(String username, String password, String requestUri)
+     */
+    public static PanelUser checkLoginAndGetUserB64(String base64Token, String requestUri) {
         if (base64Token == null || base64Token.isEmpty()) {
-            return false;
+            return null;
         }
         String userpass = new String(Base64.getDecoder().decode(base64Token));
         int colon = userpass.indexOf(':');
         if (colon < 0) {
-            return false;
+            return null;
         }
         String username = userpass.substring(0, colon);
         String password = userpass.substring(colon + 1);
-        return checkLogin(username, password, requestUri);
+        return checkLoginAndGetUser(username, password, requestUri);
     }
 
     /**
@@ -197,30 +208,50 @@ public final class PanelUserHandler {
      * Checks if the {@link PanelUser panel user} is allowed to logon to the web panel and/or use the websocket
      * @param username The user's username
      * @param password The user's password
+     * @return A {@link PanelUser} if the user exists, is enabled and is allowed to access the uri; {@code null} otherwise
+     * @see PanelUserHandler#checkLoginAndGetUser(String username, String password, String requestUri)
+     */
+    public static PanelUser checkLoginAndGetUser(String username, String password) {
+        return checkLoginAndGetUser(username, password, null);
+    }
+
+    /**
+     * Checks if the {@link PanelUser panel user} is allowed to logon to the web panel and/or use the websocket
+     * @param username The user's username
+     * @param password The user's password
      * @param requestUri The requested uri
      * @return {@code true} if the user exists, is enabled and is allowed to access the uri; {@code false} otherwise
+     * @see PanelUserHandler#checkLoginAndGetUser(String username, String password, String requestUri)
+     */
+    public static boolean checkLogin(String username, String password, String requestUri) {
+        return checkLoginAndGetUser(username, password, requestUri) != null;
+    }
+
+    /**
+     * Checks if the {@link PanelUser panel user} is allowed to logon to the web panel and/or use the websocket
+     * @param username The user's username
+     * @param password The user's password
+     * @param requestUri The requested uri
+     * @return A {@link PanelUser} if the user exists, is enabled and is allowed to access the uri; {@code null} otherwise
      * @see PanelUser#LookupByUsername(String) exists
      * @see PanelUser#isEnabled()
      */
-    public static boolean checkLogin(String username, String password, String requestUri) {
+    public static PanelUser checkLoginAndGetUser(String username, String password, String requestUri) {
         PanelUser user = PanelUser.LookupByUsername(username);
-        if (user == null) {
-            return false;
-        }
-        if (!user.isEnabled()) {
-            return false;
+        if (user == null || !user.isEnabled()) {
+            return null;
         }
         if (requestUri != null && (requestUri.contains("/setup/") || requestUri.contains("/oauth/"))) {
             if (!user.isConfigUser()){
-                return false;
+                return null;
             }
         }
         if (password.equals(user.getPassword())) {
             user.setLastLoginNOW();
             user.save();
-            return true;
+            return user;
         }
-        return false;
+        return null;
     }
 
     /**
