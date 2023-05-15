@@ -134,8 +134,26 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
-        HttpHeaders headers = req.headers();
+        return this.isAuthorized(ctx, req.headers(), req.uri());
+    }
 
+    @Override
+    public boolean isAuthorized(String user, String pass) {
+        return PanelUserHandler.checkLogin(user, pass) || (user.equalsIgnoreCase(this.user) && pass.equals(this.pass));
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+        return this.isAuthorized(ctx, headers, null);
+    }
+
+    /**
+     * Checks the given {@link HttpHeaders} for either an {@code Authorization Basic}, or a cookie named {@code panellogin}
+     *
+     * @param headers The {@link HttpHeaders} to check
+     * @return The authorization string, still encoded with Base64, giving preference to {@code Authorization Basic}; {@code null} if neither is found
+     */
+    public static String getAuthorizationString(HttpHeaders headers) {
         String auth = headers.get("Authorization");
 
         if (auth != null && auth.startsWith("Basic ")) {
@@ -145,18 +163,19 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             auth = cookies.getOrDefault("panellogin", null);
         }
 
+        return auth;
+    }
+
+    private boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
+        String auth = getAuthorizationString(headers);
+
         if (auth != null) {
             String userpass = new String(Base64.getDecoder().decode(auth));
             int colon = userpass.indexOf(':');
-            return PanelUserHandler.checkLoginB64(auth, req.uri()) 
-                || userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass);
+            return PanelUserHandler.checkLoginB64(auth, requestUri)
+                || (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass));
         }
 
         return false;
-    }
-
-    @Override
-    public boolean isAuthorized(String user, String pass) {
-        return PanelUserHandler.checkLogin(user, pass) || user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
     }
 }

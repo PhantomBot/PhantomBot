@@ -158,17 +158,15 @@ $(function () {
     // Load the display name.
     $(function () {
         if (helpers.currentPanelUserData.userType === 'CONFIG') {
-            $('#user-pwd-btn').remove();//Paneluser is defined in the config
-        } else { //Remove settings global settings
-            $('#panelUser-tab').remove();
-            $('#second-side-tab').remove();
-            $('#second-side-tab-button').remove();
-            $('#third-side-tab').remove();
-            $('#third-side-tab-button').remove();
+            $('[data-removeForConfigUser="true"]').remove();//Paneluser is defined in the config
+        }
+
+        if (!helpers.currentPanelUserData.canManageUsers) { //Remove settings global settings
+            $('[data-removeForCantManage="true"]').remove();
         }
 
         if (helpers.currentPanelUserData.permission === 'Read only') {
-            $('#restart-from-group').remove();
+            $('[data-removeForReadOnly="true"]').remove();
         }
 
         $('#main-name').text(getChannelName() + ' | ' + helpers.currentPanelUserData.username);

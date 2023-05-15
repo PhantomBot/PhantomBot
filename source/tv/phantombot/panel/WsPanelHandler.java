@@ -28,6 +28,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.base64.Base64;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +52,7 @@ import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
+import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
 import tv.phantombot.twitch.api.Helix;
 
@@ -61,8 +63,8 @@ import tv.phantombot.twitch.api.Helix;
 public class WsPanelHandler implements WsFrameHandler {
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
-    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken"};
-    private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{};
+    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken", PanelUserHandler.PANELUSERTABLE};
+    private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{PanelUserHandler.PANELUSERTABLE};
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
@@ -345,11 +347,16 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handlePanelUser(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+
         String uniqueID = jso.has("panelUser") ? jso.getString("panelUser") : "";
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("query_id").value(uniqueID)
                             .key("results");
-        if (jso.has("getAll")){
+        if (user != null && !user.canManageUsers()) {
+            PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.CanNotManageError;
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+        } else if (jso.has("getAll")){
             PanelUserHandler.getAllUsersJSONObject(jsonObject);
         } else if (jso.has("delete")) {
             String username = jso.getString("delete");
@@ -375,7 +382,8 @@ public class WsPanelHandler implements WsFrameHandler {
         } else if (jso.has("getPermissions")) {
             PanelUserHandler.getPermissionsJSON(jsonObject);
         } else {
-            return;
+            PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
+            jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         }
         jsonObject.endObject();
         WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
@@ -710,18 +718,40 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handlePanelUserRO(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+
+        if (user == null) {
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
+            ctx.close();
+            return;
+        }
+
         String uniqueID = jso.has("panelUserRO") ? jso.getString("panelUserRO") : "";
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("query_id").value(uniqueID)
                             .key("results");
         if (jso.has("get")) {
             String username = jso.getString("get");
-            PanelUserHandler.getUserJSONObject(username, jsonObject);
+            if (!user.canManageUsers() && !user.getUsername().equalsIgnoreCase(username)) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.CanNotManageError;
+                jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+            } else {
+                PanelUserHandler.getUserJSONObject(username, jsonObject);
+            }
         } else if (jso.has("changePassword")) {
             String username = jso.getJSONObject("changePassword").getString("username");
-            String currentPassword = jso.getJSONObject("changePassword").getString("currentPassword");
-            String newPassword = jso.getJSONObject("changePassword").getString("newPassword");
-            PanelUserHandler.PanelMessage response = PanelUserHandler.changePassword(username, currentPassword, newPassword);
+
+            if (!user.getUsername().equalsIgnoreCase(username)) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.CanNotManageError;
+                jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+            } else {
+                String currentPassword = jso.getJSONObject("changePassword").getString("currentPassword");
+                String newPassword = jso.getJSONObject("changePassword").getString("newPassword");
+                PanelUserHandler.PanelMessage response = PanelUserHandler.changePassword(username, currentPassword, newPassword);
+                jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
+            }
+        } else {
+            PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         }
         jsonObject.endObject();

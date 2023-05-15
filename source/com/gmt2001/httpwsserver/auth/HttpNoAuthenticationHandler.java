@@ -18,6 +18,7 @@ package com.gmt2001.httpwsserver.auth;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
 /**
  * Provides a {@link HttpAuthenticationHandler} that allows all requests
@@ -68,6 +69,11 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
 
     @Override
     public boolean isAuthorized(String user, String pass) {
+        return true;
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
         return true;
     }
 }
