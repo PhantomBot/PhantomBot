@@ -139,14 +139,17 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         String auth = headers.get("Authorization");
 
         if (auth != null && auth.startsWith("Basic ")) {
-            return PanelUserHandler.checkLoginB64(auth.substring(6), req.uri());
+            auth = auth.substring(6);
         } else {
             Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
             auth = cookies.getOrDefault("panellogin", null);
+        }
 
-            if (auth != null) {
-                return PanelUserHandler.checkLoginB64(auth, req.uri());
-            }
+        if (auth != null) {
+            String userpass = new String(Base64.getDecoder().decode(auth));
+            int colon = userpass.indexOf(':');
+            return PanelUserHandler.checkLoginB64(auth, req.uri()) 
+                || userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass);
         }
 
         return false;
@@ -154,6 +157,6 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(String user, String pass) {
-        return PanelUserHandler.checkLogin(user, pass);
+        return PanelUserHandler.checkLogin(user, pass) || user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
     }
 }

@@ -16,11 +16,11 @@ public final class PanelUserHandler {
     /**
      * Database table suffix for the {@link PanelUser panel users}
      */
-    protected static final String PANELUSERTABLE = "panelUsers";
+    static final String PANELUSERTABLE = "panelUsers";
     /**
      * Messages for use as responses to the web panel
      */
-    public static enum PanelMessage {
+    public enum PanelMessage {
         /**
          * {@link PanelUser Panel user} could not be found
          */
@@ -54,7 +54,7 @@ public final class PanelUserHandler {
         private boolean isError;
         private String JSONkey;
 
-        private PanelMessage(String message, boolean isError) {
+        PanelMessage(String message, boolean isError) {
             this.message = message;
             this.isError = isError;
             this.JSONkey = isError ? "error" : "success";
@@ -98,7 +98,7 @@ public final class PanelUserHandler {
      /**
      * {@link PanelUser Panel user} web panel and websocket permission
      */
-    public static enum Permission{
+    public enum Permission{
         /**
          * Full access
          */
@@ -111,7 +111,7 @@ public final class PanelUserHandler {
         private int value;
         private String displayName;
 
-        private Permission(int value, String displayName) {
+        Permission(int value, String displayName) {
             this.value = value;
             this.displayName = displayName;
         }
@@ -395,7 +395,7 @@ public final class PanelUserHandler {
 
     private static List<PanelUser> getAllUsers() {
         DataStore datastore = PhantomBot.instance().getDataStore();
-        List<PanelUser> users = new ArrayList<PanelUser>();
+        List<PanelUser> users = new ArrayList<>();
         if (!datastore.FileExists(PANELUSERTABLE)) {
             return users;
         }

@@ -1523,7 +1523,7 @@ $(function () {
     helpers.getCookieField = function (name) {
         let decodedCookie = decodeURIComponent(document.cookie),
             cookieArray = decodedCookie.split(';');
-        name = name + "="
+        name = name + "=";
 
         for(let i = 0; i < cookieArray.length; i++) {
             let cookie = cookieArray[i].trim();
@@ -1534,7 +1534,7 @@ $(function () {
         }
 
         return undefined;
-    }
+    };
 
     helpers.getPanelUserNameFromCookie = function () {
         let b64 = helpers.getCookieField("panellogin");
@@ -1544,7 +1544,7 @@ $(function () {
         let userpass = atob(b64);
         let colon = userpass.indexOf(':');
         return userpass.substring(0, colon);
-    }
+    };
 
     helpers.signOut = function () {
         toastr.info('Signing out...', '', {timeOut: 0});
@@ -1552,7 +1552,7 @@ $(function () {
         window.sessionStorage.removeItem("webauth");
         document.cookie = 'panellogin=; Path=/;' + (window.location.protocol === 'https:' ? ' Secure' : '') +' Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
-    }
+    };
 
     helpers.getDateStringFromDate = function (date) {
         if (date === undefined) {
@@ -1561,12 +1561,12 @@ $(function () {
         let months = ["January", "February", "March", "April", "May", "June",
                         "July", "August", "September", "October", "November", "December"
                         ],
-                hours = (date.getHours().toString().length == 1) ? "0" + date.getHours() : date.getHours(),
-                minutes = (date.getMinutes().toString().length == 1) ? "0" + date.getMinutes() : date.getMinutes(),
-                seconds = (date.getSeconds().toString().length == 1) ? "0" + date.getSeconds() : date.getSeconds();
+                hours = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours(),
+                minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes(),
+                seconds = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
 
         return hours +  ":" + minutes + ":" + seconds + " " + date.getDate() + " " + months[date.getMonth()] + " "+ date.getFullYear();
-    }
+    };
 
     //https://stackoverflow.com/a/57380742
     helpers.promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {

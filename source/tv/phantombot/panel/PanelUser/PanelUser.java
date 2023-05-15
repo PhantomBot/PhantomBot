@@ -13,7 +13,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  *
  * @author Sartharon
  */
-public class PanelUser {
+public final class PanelUser {
     private String username;
     private String password;
     private String token;
@@ -26,7 +26,7 @@ public class PanelUser {
     /**
      * User types
      */
-    protected static enum Type {
+    protected enum Type {
         /**
          * User originating from the botlogin.txt
          */
