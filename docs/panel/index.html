@@ -120,6 +120,9 @@
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="#" class="btn btn-primary btn-flat" id="user-pwd-btn">Change Password</a>
+                                            </div>
                                             <div class="pull-right">
                                                 <a href="#" class="btn btn-primary btn-flat" id="sign-out-btn">Sign out</a>
                                             </div>
@@ -379,6 +382,7 @@
                                 </a>
                                 <ul class="treeview-menu">
                                     <li><a href="#botSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Bot</a></li>
+                                    <li id="panelUser-tab"><a href="#panelUsers.html" data-folder="settings"><i class="fa fa-circle-o"></i> Panel Users</a></li>
                                     <li><a href="#commandSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Commands</a></li>
                                     <li><a href="#moduleList.html" data-folder="settings"><i class="fa fa-circle-o"></i> Modules</a></li>
                                     <li><a href="#localization.html" data-folder="settings"><i class="fa fa-circle-o"></i> Localization</a></li>
@@ -413,12 +417,12 @@
                     </li>
 
                     <!-- Second tab -->
-                    <li>
+                    <li id="second-side-tab-button">
                         <a href="#second-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-home"></i></a>
                     </li>
 
                     <!-- Third tab -->
-                    <li>
+                    <li id="third-side-tab-button">
                         <a href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
                     </li>
                 </ul>
@@ -429,7 +433,7 @@
                     <div id="main-side-tab" class="tab-pane active">
                         <h4 class="control-sidebar-heading">Tools</h4>
 
-                        <div class="form-group">
+                        <div class="form-group" id="restart-from-group">
                             <div class="control-sidebar-subheading">
                                 <button type="button" class="btn btn-primary pull-right disabled" id="restart-bot-btn" data-candisable="true">Execute</button>
                                 <label for="restart-bot-btn">Restart</label>
@@ -550,8 +554,10 @@
         <script src="js/utils/helpers.js"></script>
         <!-- Ajax page loader -->
         <script src="js/utils/ajaxLoader.js"></script>
-        <!-- Reconnecting socket. -->
+        <!-- Reconnecting socket -->
         <script src="../common/reconnecting-websocket/reconnectingWS.min.js"></script>
+        <!-- Crypto-JS -->
+        <script src="vendors/crypto-js/crypto-js-4.1.1.min.js"></script>
         <!-- Main js file -->
         <script>
             $(function () {

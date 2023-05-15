@@ -382,7 +382,9 @@ $(function () {
      *      footerpost: [],                // Array of additional HTML elements for the footer, appended after the "Cancel" button
      *      cancelclass: 'primary',        // Overrides the `btn-default` class on the "Cancel" button. Can be used to add other classes as well
      *      canceltext: 'Close',           // Overrides the text displayed on the "Cancel" button
-     *      cancelclick: function(){}      // Overrides the function triggered on click for the "Cancel" button. Default `undefined`
+     *      cancelclick: function(){},     // Overrides the function triggered on click for the "Cancel" button. Default `undefined`
+     *      blockClosing: boolean          // Overrides all methods to close the dialog other than using the buttons
+     *      removecancel: boolean          // Removes the "Cancel" button from the dialog
      * }
      * @return {jQuery Object} A modal which is ready to be shown using `.modal('show')`
      */
@@ -410,19 +412,31 @@ $(function () {
             footerbuttons.push(...override.footercenter);
         }
 
-        footerbuttons.push($('<button/>', {
-            'class': 'btn ' + (override.hasOwnProperty('cancelclass') ? override.cancelclass : 'btn-default'),
-            'type': 'button',
-            'text': (override.hasOwnProperty('canceltext') ? override.canceltext : 'Cancel'),
-            'data-dismiss': 'modal',
-            'click': (override.hasOwnProperty('cancelclick') ? override.cancelclick : undefined)
-        }));
+        if (!override.hasOwnProperty('removecancel') || (override.hasOwnProperty('removecancel') && !override.removecancel)) {
+            footerbuttons.push($('<button/>', {
+                'class': 'btn ' + (override.hasOwnProperty('cancelclass') ? override.cancelclass : 'btn-default'),
+                'type': 'button',
+                'text': (override.hasOwnProperty('canceltext') ? override.canceltext : 'Cancel'),
+                'data-dismiss': 'modal',
+                'click': (override.hasOwnProperty('cancelclick') ? override.cancelclick : undefined)
+            }));
+        }
 
         if (override.hasOwnProperty('footerpost') && override.footerpost.length > 0) {
             footerbuttons.push(...override.footerpost);
         }
 
-        return $('<div/>', {
+        let closeButton;
+        if(!override.hasOwnProperty('blockClosing') && override.blockClosing) {
+            closeButton = $('<button/>', {
+                'type': 'button',
+                'class': 'close',
+                'data-dismiss': 'modal',
+                'html': '&times;'
+            });
+        }
+
+        return  $('<div/>', {
             'class': 'modal fade',
             'tabindex': '99',
             'id': id
@@ -432,12 +446,7 @@ $(function () {
             'class': 'modal-content'
         }).append($('<div/>', {
             'class': 'modal-header'
-        }).append($('<button/>', {
-            'type': 'button',
-            'class': 'close',
-            'data-dismiss': 'modal',
-            'html': '&times;'
-        })).append($('<h4/>', {
+        }).append(closeButton).append($('<h4/>', {
             'class': 'modal-title',
             'text': title
         }))).append($('<div/>', {
@@ -947,9 +956,18 @@ $(function () {
      * @param  {Boolean}  hasBodyMsg
      * @param  {String}   closeMessage
      * @param  {Function} onClose
+     * @param  {JS Object}     override - optionally overrides some options of the dialog
+     * {
+     *      deleteText: 'Delete',   // Overrides the text displayed on the "Delete" button
+     *      blockClosing: boolean   // Overrides all methods to close the dialog other than using the confirm button
+     * }
      * @return {Object}
      */
-    helpers.getConfirmDeleteModal = function (id, title, hasBodyMsg, closeMessage, onClose) {
+    helpers.getConfirmDeleteModal = function (id, title, hasBodyMsg, closeMessage, onClose, override) {
+        if (override === undefined || override === null) {
+            override = {};
+        }
+
         swal({
             'title': title,
             'text': (hasBodyMsg ? 'Once removed, it be will gone forever.' : ''),
@@ -957,15 +975,17 @@ $(function () {
             'reverseButtons': true,
             'buttons': {
                 'confirm': {
-                    'text': 'Delete',
+                    'text': (override.hasOwnProperty('deleteText') ? override.deleteText : 'Delete'),
                     'visible': true
                 },
                 'cancel': {
                     'text': 'Cancel',
-                    'visible': true
+                    'visible': (override.hasOwnProperty('blockClosing') ? !override.blockClosing : true)
                 }
             },
-            'dangerMode': true
+            'dangerMode': true, 
+            'closeOnClickOutside': (override.hasOwnProperty('blockClosing') ? !override.blockClosing : true),
+            'closeOnEsc': (override.hasOwnProperty('blockClosing') ? !override.blockClosing : true)
         }).then(function (isRemoved) {
             if (isRemoved) {
                 let result = onClose();
@@ -1489,6 +1509,63 @@ $(function () {
                 $('#user-image2').attr('src', 'data:image/jpeg;base64, ' + e[0].logo);
             }
         });
+    };
+
+    helpers.loadCurrentUserInfo = function () {
+        socket.getPanelUser("get_current_panel_user", helpers.getPanelUserNameFromCookie(), function (res) {
+            if (res === undefined || res.error !== undefined) {
+                helpers.signOut();
+            }
+            helpers.currentPanelUserData = res;
+        });
+    };
+
+    helpers.getCookieField = function (name) {
+        let decodedCookie = decodeURIComponent(document.cookie),
+            cookieArray = decodedCookie.split(';');
+        name = name + "=";
+
+        for(let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+
+        return undefined;
+    };
+
+    helpers.getPanelUserNameFromCookie = function () {
+        let b64 = helpers.getCookieField("panellogin");
+        if (b64 === undefined) {
+            return "Phantombot";
+        }
+        let userpass = atob(b64);
+        let colon = userpass.indexOf(':');
+        return userpass.substring(0, colon);
+    };
+
+    helpers.signOut = function () {
+        toastr.info('Signing out...', '', {timeOut: 0});
+        socket.close();
+        window.sessionStorage.removeItem("webauth");
+        document.cookie = 'panellogin=; Path=/;' + (window.location.protocol === 'https:' ? ' Secure' : '') +' Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
+    };
+
+    helpers.getDateStringFromDate = function (date) {
+        if (date === undefined) {
+            return 'Invalid Date';
+        }
+        let months = ["January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                        ],
+                hours = (date.getHours() < 10) ? "0" + date.getHours() : date.getHours(),
+                minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes(),
+                seconds = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
+
+        return hours +  ":" + minutes + ":" + seconds + " " + date.getDate() + " " + months[date.getMonth()] + " "+ date.getFullYear();
     };
 
     //https://stackoverflow.com/a/57380742

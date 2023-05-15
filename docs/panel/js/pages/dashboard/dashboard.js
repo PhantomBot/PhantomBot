@@ -306,6 +306,10 @@ $(function () {
         helpers.handlePanelToggleInfo($(this), e.target.id);
     });
 
+    $(function () {
+        $('#dashboard-title').text(getChannelName() + " | Dashboard");
+    });
+
     $(window).resize(function () {
         $('.small-box').each(function () {
             const h3 = $(this).find('h3');
