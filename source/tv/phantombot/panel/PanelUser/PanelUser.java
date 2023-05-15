@@ -26,7 +26,7 @@ public final class PanelUser {
     /**
      * User types
      */
-    protected enum Type {
+    public enum Type {
         /**
          * User originating from the botlogin.txt
          */
@@ -80,7 +80,7 @@ public final class PanelUser {
      * The panel user's name
      * @return The panel user's current name
      */
-    String getUsername() {
+    public String getUsername() {
         return this.username;
     }
 
@@ -88,7 +88,7 @@ public final class PanelUser {
      * The panel user's password
      * @return The panel user's current password
      */
-    String getPassword() {
+    public String getPassword() {
         return this.password;
     }
 
@@ -96,7 +96,7 @@ public final class PanelUser {
      * The last time this user logged in to the panel
      * @return The last time this user logged in to the panel as Unix-Time; {@code -1} if the user has never logged in
      */
-    long getLastLogin() {
+    public long getLastLogin() {
         return this.lastLogin;
     }
 
@@ -118,10 +118,10 @@ public final class PanelUser {
     }
 
     /**
-     * The user's {@link PanelHandler.Permission permission}
+     * The user's {@link PanelUserHandler.Permission permission}
      * @return The user's {@link PanelUserHandler.Permission permission}
      */
-    Permission getPermission() {
+    public Permission getPermission() {
         return this.permission;
     }
 
@@ -131,7 +131,7 @@ public final class PanelUser {
      * Used for user management
      * @return The {@link Type user type}
      */
-    Type getUserType() {
+    public Type getUserType() {
         return this.userType;
     }
 
@@ -141,7 +141,7 @@ public final class PanelUser {
      * The user defined in the botlogin.txt cannot
      * @return {@code true} if the user's properties can be changed; {@code false} otherwise
      */
-    boolean canBeEdited() {
+    public boolean canBeEdited() {
         return this.userType != Type.CONFIG;
     }
 
@@ -149,7 +149,7 @@ public final class PanelUser {
      * The time at which this user was created
      * @return The time at which this user was created as Unix-Time
      */
-    long getCreationDate() {
+    public long getCreationDate() {
         return this.creationDate;
     }
 
@@ -157,7 +157,7 @@ public final class PanelUser {
      * Indicates if the user has set their password or if it was generated automatically
      * @return {@code true} if the user's current password has been generated automatically
      */
-    boolean hasSetPassword() {
+    public boolean hasSetPassword() {
         return this.hasSetPassword;
     }
 
@@ -165,7 +165,7 @@ public final class PanelUser {
      * Indicates if the user is enabled
      * @return {@code true} if the user is enabled
      */
-    boolean isEnabled() {
+    public boolean isEnabled() {
         return this.enabled;
     }
 
@@ -173,7 +173,7 @@ public final class PanelUser {
      * Indicates if the user is originating from the botlogin.txt
      * @return {@code true} if the user has been created from the username and password provided in the botlogin.txt
      */
-    boolean isConfigUser() {
+    public boolean isConfigUser() {
         return this.userType == Type.CONFIG;
     }
 
