@@ -177,6 +177,15 @@ public final class PanelUser {
         return this.userType == Type.CONFIG;
     }
 
+    /**
+     * Indicates if this user is allowed to manage other panel users
+     *
+     * @return {@code true} if allowed
+     */
+    public boolean canManageUsers() {
+        return this.isConfigUser();
+    }
+
     private void setCreationDateNOW(){
         this.creationDate = System.currentTimeMillis();
     }
