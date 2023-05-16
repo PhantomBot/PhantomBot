@@ -172,6 +172,16 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <div class="block">Constructor</div>
 </td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)">HttpBasicAuthenticationHandler</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;realm,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginUri,
+                              boolean&nbsp;allowPaneluser)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -272,7 +282,7 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <a id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>HttpBasicAuthenticationHandler</h4>
 <pre>public&nbsp;HttpBasicAuthenticationHandler&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;realm,
@@ -286,6 +296,30 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <dd><code>user</code> - The username required for valid authentication</dd>
 <dd><code>pass</code> - The password required for valid authentication</dd>
 <dd><code>loginUri</code> - The login page URI</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - If <code>realm</code> contains any double quotes or <code>user</code> contains any colons</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>HttpBasicAuthenticationHandler</h4>
+<pre>public&nbsp;HttpBasicAuthenticationHandler&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;realm,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginUri,
+                                      boolean&nbsp;allowPaneluser)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>realm</code> - The realm to present to the user</dd>
+<dd><code>user</code> - The username required for valid authentication</dd>
+<dd><code>pass</code> - The password required for valid authentication</dd>
+<dd><code>loginUri</code> - The login page URI</dd>
+<dd><code>allowPanelUser</code> - Whether this instance is allow to authenticate headers against <code>PanelUser</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - If <code>realm</code> contains any double quotes or <code>user</code> contains any colons</dd>
 </dl>
