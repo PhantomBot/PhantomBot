@@ -52,6 +52,10 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * The password required for valid authentication
      */
     private final String pass;
+    /**
+     * Whether this instance is allow to authenticate headers against {@link PanelUser}
+     */
+    private final boolean allowPaneluser;
 
     /**
      * If set, failed authentication redirects to this URI with 303 See Other instead of outputting 401 Unauthorized
@@ -76,6 +80,29 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         this.user = user;
         this.pass = pass;
         this.loginUri = loginUri;
+        this.allowPaneluser = false;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param realm The realm to present to the user
+     * @param user The username required for valid authentication
+     * @param pass The password required for valid authentication
+     * @param loginUri The login page URI
+     * @param allowPanelUser Whether this instance is allow to authenticate headers against {@link PanelUser}
+     * @throws IllegalArgumentException If {@code realm} contains any double quotes or {@code user} contains any colons
+     */
+    public HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri, boolean allowPaneluser) {
+        if (realm.contains("\"") || user.contains(":")) {
+            throw new IllegalArgumentException("Illegal realm or username. Realm must not contain double quotes, user must not contain colon");
+        }
+
+        this.realm = realm;
+        this.user = user;
+        this.pass = pass;
+        this.loginUri = loginUri;
+        this.allowPaneluser = allowPaneluser;
     }
 
     /**
@@ -139,7 +166,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(String user, String pass) {
-        return PanelUserHandler.checkLogin(user, pass) || (user.equalsIgnoreCase(this.user) && pass.equals(this.pass));
+        return (this.allowPaneluser && PanelUserHandler.checkLogin(user, pass)) || (user.equalsIgnoreCase(this.user) && pass.equals(this.pass));
     }
 
     @Override
@@ -172,7 +199,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         if (auth != null) {
             String userpass = new String(Base64.getDecoder().decode(auth));
             int colon = userpass.indexOf(':');
-            return PanelUserHandler.checkLoginB64(auth, requestUri)
+            return (this.allowPaneluser && PanelUserHandler.checkLoginB64(auth, requestUri))
                 || (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass));
         }
 
