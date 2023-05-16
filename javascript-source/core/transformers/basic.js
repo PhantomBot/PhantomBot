@@ -52,6 +52,16 @@
      * @example Caster: !addcom !love (sender) loves (1).
      * User: !love monkeys
      * Bot: User loves monkeys.
+     * @example Caster: !addcom !hello Hello (1=sender)!
+     * User: !hello OtherUser
+     * Bot: Hello OtherUser!
+     * User: !hello
+     * Bot: Hello User!
+     * @example Caster: !addcom !hug (sender) hugs (1|themself)!
+     * User: !hug OtherUser
+     * Bot: User hugs OtherUser!
+     * User: !hug
+     * Bot: User hugs themself!
      * @raw sometimes
      * @cached
      */
