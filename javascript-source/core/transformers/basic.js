@@ -24,6 +24,9 @@
      * @example Caster: !addcom !lucky Your lucky number is (#)
      * User: !lucky
      * Bot: Your lucky number is 7
+     * @example Caster: !addcom !d6 1d6 = [(# 1, 6)]
+     * User: !d6
+     * Bot: 1d6 = [5]
      */
     function randomInt(args) {
         let match;
