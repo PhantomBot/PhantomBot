@@ -399,7 +399,7 @@
                                 $('#hasAltPanelVersion').html('<br/><br/>This login page is for the <b>'
                                     + (window.location.pathname.includes('/panel-stable') ? 'stable' : 'nightly')
                                     + '</b> version of the bot. Click <a href="'
-                                    + (window.location.pathname.includes('/panel-stable') ? window.location.replace('/panel-stable', '/panel') : window.location.replace('/panel', '/panel-stable'))
+                                    + (window.location.pathname.includes('/panel-stable') ? window.location.toString().replace('/panel-stable', '/panel') : window.location.toString().replace('/panel', '/panel-stable'))
                                     + '" target="_self">here</a> to switch to '
                                     + (window.location.pathname.includes('/panel-stable') ? 'nightly' : 'stable'));
                             }
