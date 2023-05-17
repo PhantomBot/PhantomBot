@@ -53,7 +53,7 @@
 
             <div class="login-box-body">
                 <p class="login-box-msg">Log in to start your session<span id="remote-msg"><br/><br/>This version of the panel is entirely client-side.
-                        <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser</span></p>
+                        <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser<span id="hasAltPanelVersion"></span></span></p>
 
                 <div class="alert-error text-center hide" id="error-box"></div>
                 <div class="alert-success text-center hide" id="success-box"></div>
@@ -114,6 +114,7 @@
         <script src="../vendors/crypto-js/crypto-js-4.1.1.min.js"></script>
         <script>
             let isLocalBot = false;
+            let hasAltPanelVersion = false;
 
             let sslHelp = 'Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br /><br />'
                     + 'Troubleshooting Steps:<br />'
@@ -180,19 +181,20 @@
                         document.cookie = 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
                         let params = new URLSearchParams(document.location.search.substring(1));
 
+                        let kickback = window.location.pathname + '../';
                         if (params.get("kickback") !== null && params.get("kickback").length > 0) {
-                            let kickback = decodeURIComponent(params.get("kickback"));
-                            if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
-                                kickback = kickback.replace("/panel", "/panel-stable");
-                            }
-                            window.location = window.location.origin + kickback;
-                        } else {
-                            let kickback = window.location.pathname;
-                            if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
-                                kickback = kickback.replace("/panel", "/panel-stable");
-                            }
-                            window.location = window.location.origin + kickback + '../';
+                            kickback = decodeURIComponent(params.get("kickback"));
                         }
+
+                        if (!isLocalBot && hasAltPanelVersion && kickback.includes("/panel") && message["build-type"] !== undefined){
+                            let stable = kickback.includes("/panel-stable");
+                            if (message["build-type"] === "stable" && !stable) {
+                                kickback = kickback.replace("/panel", "/panel-stable");
+                            } else if (message["build-type"] !== "stable" && stable) {
+                                kickback = kickback.replace("/panel-stable", "/panel");
+                            }
+                        }
+                        window.location = window.location.origin + kickback;
                     }
                 };
             }
@@ -388,6 +390,22 @@
                                     $('#hostname').val(window.location.hostname);
                                     $('#port').val((window.location.port.length > 0 ? window.location.port : (window.location.protocol === 'https:' ? '443' : '80')));
                                 }
+                            }
+                        }
+                );
+
+                $.ajax(
+                        {
+                            type: 'HEAD',
+                            url: window.location.origin + (window.location.pathname.includes('/panel-stable') ? window.location.pathname.replace('/panel-stable', '/panel') : window.location.pathname.replace('/panel', '/panel-stable')),
+                            success: function () {
+                                hasAltPanelVersion = true;
+                                $('#hasAltPanelVersion').html('<br/><br/>This login page is for the <b>'
+                                    + (window.location.pathname.includes('/panel-stable') ? 'stable' : 'nightly')
+                                    + '</b> version of the bot. Click <a href="'
+                                    + (window.location.pathname.includes('/panel-stable') ? window.location.replace('/panel-stable', '/panel') : window.location.replace('/panel', '/panel-stable'))
+                                    + '" target="_self">here</a> to switch to '
+                                    + (window.location.pathname.includes('/panel-stable') ? 'nightly' : 'stable'));
                             }
                         }
                 );
