@@ -30,6 +30,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  * Provides a {@link HttpAuthenticationHandler} that implements HTTP Basic authentication, as well as allowing the same format to be provided in a
@@ -51,6 +52,10 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * The password required for valid authentication
      */
     private final String pass;
+    /**
+     * Whether this instance is allow to authenticate headers against {@link PanelUser}
+     */
+    private final boolean allowPaneluser;
 
     /**
      * If set, failed authentication redirects to this URI with 303 See Other instead of outputting 401 Unauthorized
@@ -75,6 +80,29 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         this.user = user;
         this.pass = pass;
         this.loginUri = loginUri;
+        this.allowPaneluser = false;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param realm The realm to present to the user
+     * @param user The username required for valid authentication
+     * @param pass The password required for valid authentication
+     * @param loginUri The login page URI
+     * @param allowPanelUser Whether this instance is allow to authenticate headers against {@link PanelUser}
+     * @throws IllegalArgumentException If {@code realm} contains any double quotes or {@code user} contains any colons
+     */
+    public HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri, boolean allowPaneluser) {
+        if (realm.contains("\"") || user.contains(":")) {
+            throw new IllegalArgumentException("Illegal realm or username. Realm must not contain double quotes, user must not contain colon");
+        }
+
+        this.realm = realm;
+        this.user = user;
+        this.pass = pass;
+        this.loginUri = loginUri;
+        this.allowPaneluser = allowPaneluser;
     }
 
     /**
@@ -133,37 +161,48 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
-        HttpHeaders headers = req.headers();
-
-        String auth = headers.get("Authorization");
-
-        if (auth != null && auth.startsWith("Basic ")) {
-            auth = auth.substring(6);
-            String userpass = new String(Base64.getDecoder().decode(auth));
-            int colon = userpass.indexOf(':');
-
-            if (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass)) {
-                return true;
-            }
-        } else {
-            Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
-            auth = cookies.getOrDefault("panellogin", null);
-
-            if (auth != null) {
-                String userpass = new String(Base64.getDecoder().decode(auth));
-                int colon = userpass.indexOf(':');
-
-                if (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return this.isAuthorized(ctx, req.headers(), req.uri());
     }
 
     @Override
     public boolean isAuthorized(String user, String pass) {
-        return user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
+        return (this.allowPaneluser && PanelUserHandler.checkLogin(user, pass)) || (user.equalsIgnoreCase(this.user) && pass.equals(this.pass));
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+        return this.isAuthorized(ctx, headers, null);
+    }
+
+    /**
+     * Checks the given {@link HttpHeaders} for either an {@code Authorization Basic}, or a cookie named {@code panellogin}
+     *
+     * @param headers The {@link HttpHeaders} to check
+     * @return The authorization string, still encoded with Base64, giving preference to {@code Authorization Basic}; {@code null} if neither is found
+     */
+    public static String getAuthorizationString(HttpHeaders headers) {
+        String auth = headers.get("Authorization");
+
+        if (auth != null && auth.startsWith("Basic ")) {
+            auth = auth.substring(6);
+        } else {
+            Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
+            auth = cookies.getOrDefault("panellogin", null);
+        }
+
+        return auth;
+    }
+
+    private boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
+        String auth = getAuthorizationString(headers);
+
+        if (auth != null) {
+            String userpass = new String(Base64.getDecoder().decode(auth));
+            int colon = userpass.indexOf(':');
+            return (this.allowPaneluser && PanelUserHandler.checkLoginB64(auth, requestUri))
+                || (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass));
+        }
+
+        return false;
     }
 }

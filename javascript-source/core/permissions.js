@@ -560,7 +560,9 @@
      * @param {Number} id
      */
     function setUserGroupById(username, id) {
-        $.setIniDbNumber('group', username.toLowerCase(), id);
+        if (id < PERMISSION.None) {
+            $.setIniDbNumber('group', username.toLowerCase(), id);
+        }
     }
 
     /**
@@ -738,6 +740,7 @@
                 setUserGroupById(username, PERMISSION.Sub);
             }
 
+            oldID = (oldID > PERMISSION.Regular) ? PERMISSION.Regular : oldID; //Only save meaningful permissions
             $.setIniDbNumber('preSubGroup', username, oldID); //Save the old (permission) id for reference when the subscription runs out
         } else if (!isInCache && oldID === PERMISSION.Sub) { //User is not in the subscriber cache but holds subscriber permissions according to the database
             if (isVIP(username)) { //User is a VIP - Set permission to VIP

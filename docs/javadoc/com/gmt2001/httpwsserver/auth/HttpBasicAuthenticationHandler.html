@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":9,"i2":10,"i3":10,"i4":10,"i5":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -172,6 +172,16 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <div class="block">Constructor</div>
 </td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)">HttpBasicAuthenticationHandler</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;realm,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass,
+                              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginUri,
+                              boolean&nbsp;allowPaneluser)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -184,7 +194,7 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -199,6 +209,13 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAuthorizationString(io.netty.handler.codec.http.HttpHeaders)">getAuthorizationString</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a>&nbsp;headers)</code></th>
+<td class="colLast">
+<div class="block">Checks the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> for either an <code>Authorization Basic</code>, or a cookie named <code>panellogin</code></div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)">invalidateAuthorization</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
                        <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">FullHttpRequest</a>&nbsp;req)</code></th>
@@ -206,7 +223,7 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <div class="block">Invalidates the authentication of the specified <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a>, if supported by the authentication handler</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)">isAuthorized</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
             <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">FullHttpRequest</a>&nbsp;req)</code></th>
@@ -217,7 +234,18 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
  When returning <code>false</code>, this method MUST NOT send a response to the client</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)">isAuthorized</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
+            <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a>&nbsp;headers)</code></th>
+<td class="colLast">
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> contain a valid authorization, or if the underlying <code>Channel</code> has already been
+ authenticated
+
+ When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAuthorized(java.lang.String,java.lang.String)">isAuthorized</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</code></th>
@@ -254,7 +282,7 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <a id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>HttpBasicAuthenticationHandler</h4>
 <pre>public&nbsp;HttpBasicAuthenticationHandler&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;realm,
@@ -268,6 +296,30 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <dd><code>user</code> - The username required for valid authentication</dd>
 <dd><code>pass</code> - The password required for valid authentication</dd>
 <dd><code>loginUri</code> - The login page URI</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - If <code>realm</code> contains any double quotes or <code>user</code> contains any colons</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>HttpBasicAuthenticationHandler</h4>
+<pre>public&nbsp;HttpBasicAuthenticationHandler&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;realm,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass,
+                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;loginUri,
+                                      boolean&nbsp;allowPaneluser)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>realm</code> - The realm to present to the user</dd>
+<dd><code>user</code> - The username required for valid authentication</dd>
+<dd><code>pass</code> - The password required for valid authentication</dd>
+<dd><code>loginUri</code> - The login page URI</dd>
+<dd><code>allowPanelUser</code> - Whether this instance is allow to authenticate headers against <code>PanelUser</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - If <code>realm</code> contains any double quotes or <code>user</code> contains any colons</dd>
 </dl>
@@ -349,7 +401,7 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <a id="isAuthorized(java.lang.String,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>isAuthorized</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isAuthorized&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
@@ -366,6 +418,46 @@ implements <a href="HttpAuthenticationHandler.html" title="interface in com.gmt2
 <dd><code>pass</code> - The password</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isAuthorized</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isAuthorized&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
+                            <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a>&nbsp;headers)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="HttpAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)">HttpAuthenticationHandler</a></code></span></div>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> contain a valid authorization, or if the underlying <code>Channel</code> has already been
+ authenticated
+
+ When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="HttpAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)">isAuthorized</a></code>&nbsp;in interface&nbsp;<code><a href="HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
+<dd><code>headers</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="getAuthorizationString(io.netty.handler.codec.http.HttpHeaders)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getAuthorizationString</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;getAuthorizationString&#8203;(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a>&nbsp;headers)</pre>
+<div class="block">Checks the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> for either an <code>Authorization Basic</code>, or a cookie named <code>panellogin</code></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>headers</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The authorization string, still encoded with Base64, giving preference to <code>Authorization Basic</code>; <code>null</code> if neither is found</dd>
 </dl>
 </li>
 </ul>

@@ -120,6 +120,9 @@
                                         </li>
                                         <!-- Menu Footer-->
                                         <li class="user-footer">
+                                            <div class="pull-left">
+                                                <a href="#" class="btn btn-primary btn-flat" data-removeForConfigUser="true" id="user-pwd-btn">Change Password</a>
+                                            </div>
                                             <div class="pull-right">
                                                 <a href="#" class="btn btn-primary btn-flat" id="sign-out-btn">Sign out</a>
                                             </div>
@@ -379,6 +382,7 @@
                                 </a>
                                 <ul class="treeview-menu">
                                     <li><a href="#botSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Bot</a></li>
+                                    <li data-removeForCantManage="true" id="panelUser-tab"><a href="#panelUsers.html" data-folder="settings"><i class="fa fa-circle-o"></i> Panel Users</a></li>
                                     <li><a href="#commandSettings.html" data-folder="settings"><i class="fa fa-circle-o"></i> Commands</a></li>
                                     <li><a href="#moduleList.html" data-folder="settings"><i class="fa fa-circle-o"></i> Modules</a></li>
                                     <li><a href="#localization.html" data-folder="settings"><i class="fa fa-circle-o"></i> Localization</a></li>
@@ -413,12 +417,12 @@
                     </li>
 
                     <!-- Second tab -->
-                    <li>
+                    <li data-removeForCantManage="true" id="second-side-tab-button">
                         <a href="#second-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-home"></i></a>
                     </li>
 
                     <!-- Third tab -->
-                    <li>
+                    <li data-removeForCantManage="true" id="third-side-tab-button">
                         <a href="#third-side-tab" data-toggle="tab" aria-expanded="true"><i class="fa fa-cogs"></i></a>
                     </li>
                 </ul>
@@ -429,7 +433,7 @@
                     <div id="main-side-tab" class="tab-pane active">
                         <h4 class="control-sidebar-heading">Tools</h4>
 
-                        <div class="form-group">
+                        <div class="form-group" data-removeForReadOnly="true" id="restart-from-group">
                             <div class="control-sidebar-subheading">
                                 <button type="button" class="btn btn-primary pull-right disabled" id="restart-bot-btn" data-candisable="true">Execute</button>
                                 <label for="restart-bot-btn">Restart</label>
@@ -448,7 +452,7 @@
                     </div>
 
                     <!-- Middle tab -->
-                    <div id="second-side-tab" class="tab-pane">
+                    <div data-removeForCantManage="true" id="second-side-tab" class="tab-pane">
                         <h4 class="control-sidebar-heading">Dashboard Page</h4>
 
                         <div class="form-group">
@@ -498,7 +502,7 @@
                     </div>
 
                     <!-- Last tab -->
-                    <div id="third-side-tab" class="tab-pane">
+                    <div data-removeForCantManage="true" id="third-side-tab" class="tab-pane">
                         <h4 class="control-sidebar-heading">Layout Options</h4>
 
                         <div class="form-group">
@@ -546,12 +550,15 @@
         <script src="vendors/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.min.js"></script>
         <!-- Panel config script -->
         <script src="js/utils/panelConfig.js"></script>
+        <script src="/common/js/session.js"></script>
         <!-- Helpers -->
         <script src="js/utils/helpers.js"></script>
         <!-- Ajax page loader -->
         <script src="js/utils/ajaxLoader.js"></script>
-        <!-- Reconnecting socket. -->
+        <!-- Reconnecting socket -->
         <script src="../common/reconnecting-websocket/reconnectingWS.min.js"></script>
+        <!-- Crypto-JS -->
+        <script src="vendors/crypto-js/crypto-js-4.1.1.min.js"></script>
         <!-- Main js file -->
         <script>
             $(function () {

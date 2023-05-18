@@ -32,5 +32,5 @@ function getAuth() {
     return window.panelSettings.auth;
 }
 function getDisplayName() {
-    return window.panelSettings.displayName;
+    return helpers.currentPanelUserData.username;
 }

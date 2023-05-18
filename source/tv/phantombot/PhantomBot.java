@@ -594,6 +594,10 @@ public final class PhantomBot implements Listener {
         return TwitchValidate.instance().getChatLogin();
     }
 
+    public HTTPPanelAndYTHandler getHTTPPanelAndYTHandler() {
+        return this.httpPanelHandler;
+    }
+
     public HTTPOAuthHandler getHTTPOAuthHandler() {
         return this.oauthHandler;
     }

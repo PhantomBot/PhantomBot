@@ -50,11 +50,15 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     static Map<String, WsFrameHandler> wsFrameHandlers = new ConcurrentHashMap<>();
     /**
-     * Represents the {@code ATTR_URI} attribute
+     * Represents the {@code ATTR_URI} attribute, which stores the URI the client has connected to
      */
     public static final AttributeKey<String> ATTR_URI = AttributeKey.valueOf("uri");
     /**
-     * Represents the {@code ATTR_URI} attribute
+     * Represents the {@code ATTR_FRAME_HANDLER} attribute, which stores the {@link WsFrameHandler} that processes frames for this client
+     */
+    public static final AttributeKey<WsFrameHandler> ATTR_FRAME_HANDLER = AttributeKey.valueOf("frameHandler");
+    /**
+     * Represents the {@code ATTR_ALLOW_NON_SSL} attribute, which stores if the client is allowed to bypass SSL requirements
      */
     public static final AttributeKey<String> ATTR_ALLOW_NON_SSL = AttributeKey.valueOf("allowNonSsl");
     /**
@@ -78,7 +82,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
-        WsFrameHandler h = wsFrameHandlers.get(ctx.channel().attr(ATTR_URI).get());
+        WsFrameHandler h = ctx.channel().attr(ATTR_FRAME_HANDLER).get();
 
         if (h.getAuthHandler().checkAuthorization(ctx, frame)) {
             h.handleFrame(ctx, frame);
@@ -99,8 +103,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         if (evt instanceof HandshakeComplete) {
             HandshakeComplete hc = (HandshakeComplete) evt;
             String ruri = determineWsFrameHandler(hc.requestUri());
+            WsFrameHandler h = wsFrameHandlers.get(ruri);
 
-            if (ruri.isBlank()) {
+            if (ruri.isBlank() || h == null) {
                 JSONStringer jsonObject = new JSONStringer();
                 jsonObject.object().key("errors").array().object()
                         .key("status").value("404")
@@ -127,7 +132,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 }
 
                 ctx.channel().attr(ATTR_URI).set(ruri);
+                ctx.channel().attr(ATTR_FRAME_HANDLER).set(h);
                 ctx.channel().attr(ATTR_ALLOW_NON_SSL).set(allowNonSsl ? "true" : "false");
+                h.getAuthHandler().checkAuthorizationHeaders(ctx, hc.requestHeaders());
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     WS_SESSIONS.remove(f.channel());

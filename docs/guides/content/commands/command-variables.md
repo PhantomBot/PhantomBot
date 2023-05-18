@@ -97,6 +97,24 @@ User: !love monkeys
 Bot: User loves monkeys.
 ```
 
+**Example:**
+```text
+Caster: !addcom !hello Hello (1=sender)!
+User: !hello OtherUser
+Bot: Hello OtherUser!
+User: !hello
+Bot: Hello User!
+```
+
+**Example:**
+```text
+Caster: !addcom !hug (sender) hugs (1|themself)!
+User: !hug OtherUser
+Bot: User hugs OtherUser!
+User: !hug
+Bot: User hugs themself!
+```
+
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 Sometimes&nbsp;&nbsp; | Yes&nbsp;&nbsp; | No
@@ -184,6 +202,13 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 Caster: !addcom !lucky Your lucky number is (#)
 User: !lucky
 Bot: Your lucky number is 7
+```
+
+**Example:**
+```text
+Caster: !addcom !d6 1d6 = [(# 1, 6)]
+User: !d6
+Bot: 1d6 = [5]
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]

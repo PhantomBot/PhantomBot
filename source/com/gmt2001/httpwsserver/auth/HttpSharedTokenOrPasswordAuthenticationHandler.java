@@ -23,6 +23,8 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import tv.phantombot.PhantomBot;
+
 import java.util.List;
 
 /**
@@ -70,24 +72,26 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        HttpHeaders headers = req.headers();
-        QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
-
-        String auth1 = headers.get("password");
-        String auth2 = headers.get("webauth");
-        String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
-        String astr = auth1 != null ? auth1 : (auth2 != null ? auth2 : (auth3 != null ? auth3 : ""));
-
         if (this.isAuthorized(ctx, req)) {
             return true;
         }
 
         FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
 
-        com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
-        com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
-        com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
-        com.gmt2001.Console.debug.println("Got: >" + astr + "<");
+        if (PhantomBot.getEnableDebugging()) {
+            HttpHeaders headers = req.headers();
+            QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
+
+            String auth1 = headers.get("password");
+            String auth2 = headers.get("webauth");
+            String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
+            String astr = auth1 != null ? auth1 : (auth2 != null ? auth2 : (auth3 != null ? auth3 : ""));
+
+            com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
+            com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
+            com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
+            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
+        }
 
         HttpServerPageHandler.sendHttpResponse(ctx, req, res);
 
@@ -101,18 +105,23 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
-        HttpHeaders headers = req.headers();
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
-        String auth1 = headers.get("password");
-        String auth2 = headers.get("webauth");
         String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
 
-        return (auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token)) || (auth3 != null && auth3.equals(token));
+        return this.isAuthorized(ctx, req.headers()) || (auth3 != null && auth3.equals(token));
     }
 
     @Override
     public boolean isAuthorized(String user, String pass) {
         return pass.equals(password) || pass.equals("oauth:" + password) || pass.equals(token);
+    }
+
+    @Override
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+        String auth1 = headers.get("password");
+        String auth2 = headers.get("webauth");
+
+        return (auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token));
     }
 }
