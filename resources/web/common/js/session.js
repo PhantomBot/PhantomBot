@@ -16,6 +16,7 @@
  */
 
 onbeforeunload = (event) => {
+    return;
     if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
         if (window.localStorage.getItem('remember') === null || (window.localStorage.getItem('expires') && window.localStorage.getItem('expires') <= Date.now())) {
             document.cookie = 'panellogin=' + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
