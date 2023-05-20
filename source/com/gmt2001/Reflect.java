@@ -20,6 +20,7 @@ import com.illusionaryone.Logger;
 import com.sun.management.HotSpotDiagnosticMXBean;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -196,6 +197,24 @@ public final class Reflect {
     public static int pid() throws NumberFormatException {
         RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
         return Integer.parseInt(runtime.getName().split("@")[0]);
+    }
+
+    /**
+     * Gets a {@link MemoryUsage} containing information about the current memory usage of the heap
+     *
+     * @return a {@link MemoryUsage} for the heap
+     */
+    public static MemoryUsage getHeapMemoryUsage() {
+        return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+    }
+
+    /**
+     * Gets a {@link MemoryUsage} containing information about the current non-heap memory usage
+     *
+     * @return a {@link MemoryUsage} for non-heap memory
+     */
+    public static MemoryUsage getNonHeapMemoryUsage() {
+        return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
     }
 
     /**
