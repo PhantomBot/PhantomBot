@@ -717,6 +717,7 @@ $(function () {
         helpers.logError('Connection lost with the websocket.', helpers.LOG_TYPE.FORCE);
         // Add error toast.
         toastr.error('Connection lost with the websocket.', '', {timeOut: 0});
+        window.updateCookie();
     };
 
     /*

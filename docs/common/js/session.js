@@ -15,18 +15,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-onbeforeunload = (event) => {
-    return;
-    if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
-        if (window.localStorage.getItem('remember') === null || (window.localStorage.getItem('expires') && window.localStorage.getItem('expires') <= Date.now())) {
-            document.cookie = 'panellogin=' + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
-            window.localStorage.removeItem('webauth');
-            window.sessionStorage.removeItem('webauth');
-            window.localStorage.removeItem('remember');
-            window.localStorage.removeItem('expires');
-            window.localStorage.removeItem('b64');
+
+(function () {
+    window.updateCookie = function() {
+        document.cookie = window.sessionStorage.getItem('cookie');
+    };
+    window.updateCookie();
+
+    document.onvisibilitychange = (event) => {
+        if (document.visibilityState === 'hidden') {
+            if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
+                if (window.localStorage.getItem('remember') === null || (window.localStorage.getItem('expires') && window.localStorage.getItem('expires') <= Date.now())) {
+                    window.localStorage.removeItem('webauth');
+                    window.sessionStorage.removeItem('webauth');
+                    window.localStorage.removeItem('remember');
+                    window.localStorage.removeItem('expires');
+                    window.localStorage.removeItem('b64');
+                    window.sessionStorage.removeItem('cookie');
+                }
+            }
+        } else {
+            window.updateCookie();
         }
-    } else {
-        document.cookie = 'panellogin=' + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
+    };
+
+    if ($ !== undefined && $ !== null && $.ajax !== undefined && $.ajax !== null) {
+        let ajax = $.ajax;
+        $.ajax = function(url, options) {
+            window.updateCookie();
+            ajax(url, options);
+        };
     }
-};
+})();
