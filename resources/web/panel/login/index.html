@@ -165,10 +165,12 @@
                         webSocket.close(1000);
                         window.localStorage.setItem('bothostname', hostname);
                         window.localStorage.setItem('botport', port);
+                        let remembersec = 300;
                         if (remember !== 'session') {
+                            remembersec = parseInt(remember) * 3600;
                             window.localStorage.setItem('webauth', webauth);
                             window.localStorage.setItem('remember', remember);
-                            window.localStorage.setItem('expires', Date.now() + (parseInt(remember) * 3600000));
+                            window.localStorage.setItem('expires', Date.now() + (remembersec * 1000));
                             window.localStorage.setItem('b64', btoa(username + ':' + password));
                         } else {
                             window.localStorage.removeItem('webauth');
@@ -178,7 +180,8 @@
                         }
                         history.pushState({}, "PhantomBot | Log in | Success");
                         window.sessionStorage.setItem('webauth', webauth);
-                        document.cookie = 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
+                        window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/; Max-Age=' + remembersec);
+                        document.cookie = window.sessionStorage.getItem('cookie');
                         let params = new URLSearchParams(document.location.search.substring(1));
 
                         let kickback = window.location.pathname + '../';
@@ -327,7 +330,9 @@
                     if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()) {
                         window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
                         window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
-                        document.cookie = 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
+                        let remembersec = parseInt(window.localStorage.getItem('remember')) * 3600;
+                        window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/; Max-Age=' + remembersec);
+                        document.cookie = window.sessionStorage.getItem('cookie');
                         window.location = window.location.origin + window.location.pathname + '../';
                     } else {
                         window.localStorage.removeItem('webauth');

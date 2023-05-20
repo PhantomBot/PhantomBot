@@ -198,9 +198,11 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
         if (auth != null) {
             String userpass = new String(Base64.getDecoder().decode(auth));
-            int colon = userpass.indexOf(':');
-            return (this.allowPaneluser && PanelUserHandler.checkLoginB64(auth, requestUri))
-                || (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass));
+            if (!userpass.isBlank()) {
+                int colon = userpass.indexOf(':');
+                return (this.allowPaneluser && PanelUserHandler.checkLoginB64(auth, requestUri))
+                    || (userpass.substring(0, colon).equalsIgnoreCase(user) && userpass.substring(colon + 1).equals(pass));
+            }
         }
 
         return false;
