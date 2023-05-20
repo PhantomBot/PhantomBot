@@ -36,6 +36,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
 /**
+ * Provides Java reflection services
  *
  * @author gmt2001
  */
@@ -50,6 +51,11 @@ public final class Reflect {
     private Reflect() {
     }
 
+    /**
+     * Recursively loads all classes and sub-packages of the given package from {@code PhantomBot.jar}
+     *
+     * @param pkg the package to load
+     */
     public void loadPackageRecursive(String pkg) {
         pkg = pkg.replace('.', '/');
         ClassLoader classLoader = Reflect.class.getClassLoader();
@@ -76,6 +82,11 @@ public final class Reflect {
         }
     }
 
+    /**
+     * Returns a list of all classes currently loaded into memory by the class loader
+     *
+     * @return a list of classes
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Class<?>> getClasses() {
         List<Class<?>> cl = new ArrayList<>();
@@ -96,6 +107,13 @@ public final class Reflect {
         return cl;
     }
 
+    /**
+     * Returns a list of all classes for which the provided type is assignable from and are not abstract
+     *
+     * @param <T> the parent type to test against
+     * @param type the {@link Class} instance representing the parent type
+     * @return a list of child {@link Class} which are not abstract
+     */
     @SuppressWarnings("unchecked")
     public <T> List<Class<? extends T>> getSubTypesOf(final Class<T> type) {
         List<Class<? extends T>> cl = new ArrayList<>();
@@ -107,6 +125,14 @@ public final class Reflect {
         return cl;
     }
 
+    /**
+     * Dumps the Java heap to an hprof file
+     * <p>
+     * This method tries to generate a filename of {@code java_pid##.TIMESTAMP.hprof} where {@code ##} is
+     * the PID of the running process and {@code TIMESTAMP} is the timestamp when the method was called in {@code yyyy-MM-dd_HH-mm-ss} format
+     * <p>
+     * This method calls {@link #dumpHeap(String, boolean)} with the {@code live} parameter set to {@code true}
+     */
     public static void dumpHeap() {
         int pid;
         try {
@@ -146,18 +172,37 @@ public final class Reflect {
     }
 
     // https://www.baeldung.com/java-heap-dump-capture
-    public static void dumpHeap(String filePath, boolean live) throws IOException {
+    /**
+     * Dumps the Java heap to an hprof file
+     *
+     * @param filePath the path to where the heap dump should be written
+     * @param live {@code true} to only dump <i>live</i> objects (objects which are referenced by others)
+     * @throws IOException if the {@code outputFile} already exists, cannot be created, opened, or written to
+     * @throws IllegalArgumentException if {@code filePath} does not end with the {@code .hprof} extension
+     */
+    public static void dumpHeap(String filePath, boolean live) throws IOException, IllegalArgumentException {
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(
                 server, "com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
         mxBean.dumpHeap(filePath, live);
     }
 
+    /**
+     * Attempts to retrieve the PID of the running process from the {@link RuntimeMXBean} of the JVM process
+     *
+     * @return the PID
+     * @throws NumberFormatException if the {@link RuntimeMXBean} did not have a PID in the name of the JVM
+     */
     public static int pid() throws NumberFormatException {
         RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
         return Integer.parseInt(runtime.getName().split("@")[0]);
     }
 
+    /**
+     * Attempts to retrieve the full, real, absolute path to the directory in which PhantomBot.jar is located
+     *
+     * @return {@code .} on failure; otherwise, the path
+     */
     public static String GetExecutionPath() {
         try {
             return Paths.get(PhantomBot.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent().toAbsolutePath().toRealPath().toString();
