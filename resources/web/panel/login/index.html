@@ -437,15 +437,15 @@
                         }
                     );
                 });
-            });
 
-            Promise.all([p1, p2]).then(() => {
-                checkAlreadyLoggedIn();
-                if (authExpired) {
-                    $('#error-box').removeClass('hide');
-                    $('#alert-br').removeClass('hide');
-                    $('#error-box').html('Your session has expired, please login again');
-                }
+                Promise.all([p1, p2]).then(() => {
+                    checkAlreadyLoggedIn();
+                    if (authExpired) {
+                        $('#error-box').removeClass('hide');
+                        $('#alert-br').removeClass('hide');
+                        $('#error-box').html('Your session has expired, please login again');
+                    }
+                });
             });
         </script>
         <script>

@@ -70,7 +70,7 @@ public class WsPanelHandler implements WsFrameHandler {
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
         this.authHandler = new WsSharedRWTokenAuthenticationHandler(panelAuthRO, panelAuth, 10, () -> {
             EventBus.instance().postAsync(new WebPanelSocketConnectEvent());
-        });
+        }, true);
     }
 
     @Override
