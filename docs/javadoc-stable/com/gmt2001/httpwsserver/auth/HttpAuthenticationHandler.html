@@ -13,7 +13,7 @@
 <!--[if IE]>
 <script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
 <![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="../../../../jquery/jquery-3.6.1.min.js"></script>
 <script type="text/javascript" src="../../../../jquery/jquery-ui.min.js"></script>
 </head>
 <body>
@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -186,6 +186,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)">isAuthorized</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
+            <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a>&nbsp;headers)</code></th>
+<td class="colLast">
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> contain a valid authorization, or if the underlying <code>Channel</code> has already been
+ authenticated
+
+ When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isAuthorized(java.lang.String,java.lang.String)">isAuthorized</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</code></th>
 <td class="colLast">
@@ -249,6 +260,27 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
 <dd><code>req</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>FullHttpRequest</code></a> to check</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isAuthorized</h4>
+<pre class="methodSignature">boolean&nbsp;isAuthorized&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
+                     <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink">HttpHeaders</a>&nbsp;headers)</pre>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> contain a valid authorization, or if the underlying <code>Channel</code> has already been
+ authenticated
+
+ When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
+<dd><code>headers</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> to check</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>otherwise</dd>
 </dl>
