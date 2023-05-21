@@ -67,6 +67,7 @@ import java.util.regex.Pattern;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.RepoVersion;
 import tv.phantombot.discord.DiscordAPI;
 
 /**
@@ -171,6 +172,10 @@ public class DiscordUtil {
     private Mono<Message> sendMessageAsync(MessageChannel channel, String message, boolean isRetry, Throwable ex) {
         this.validateParams(channel, message);
 
+        if (RepoVersion.isStressTest()) {
+            return Mono.empty();
+        }
+
         if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
             com.gmt2001.Console.debug.println("Failed");
             if (ex != null) {
@@ -257,6 +262,11 @@ public class DiscordUtil {
 
     private void sendPrivateMessage(PrivateChannel channel, String message, boolean isRetry, Throwable ex) {
         this.validateParams(channel, message);
+
+        if (RepoVersion.isStressTest()) {
+            return;
+        }
+
         if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
             if (ex != null) {
                 com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
@@ -314,6 +324,12 @@ public class DiscordUtil {
 
     private Mono<Message> sendMessageEmbedAsync(GuildMessageChannel channel, EmbedCreateSpec embed, boolean isRetry, Throwable ex) {
         this.validateParams(channel);
+
+        if (RepoVersion.isStressTest()) {
+            return Mono.empty();
+        }
+
+
         if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
             if (ex != null) {
                 com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());
@@ -412,6 +428,12 @@ public class DiscordUtil {
 
     private Mono<Message> sendFileAsync(GuildMessageChannel channel, String message, MessageCreateFile file, boolean isRetry, Throwable ex) {
         this.validateParams(channel);
+
+        if (RepoVersion.isStressTest()) {
+            return Mono.empty();
+        }
+
+
         if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
             if (ex != null) {
                 com.gmt2001.Console.err.println(ex.getClass().getName() + ": " + ex.getMessage());

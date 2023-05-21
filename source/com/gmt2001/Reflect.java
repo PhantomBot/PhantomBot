@@ -20,6 +20,7 @@ import com.illusionaryone.Logger;
 import com.sun.management.HotSpotDiagnosticMXBean;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -126,17 +127,14 @@ public final class Reflect {
     }
 
     /**
-     * Dumps the Java Heap to a file
+     * Dumps the Java heap to an hprof file
+     * <p>
+     * This method tries to generate a filename of {@code java_pid##.TIMESTAMP.hprof} where {@code ##} is
+     * the PID of the running process and {@code TIMESTAMP} is the timestamp when the method was called in {@code yyyy-MM-dd_HH-mm-ss} format
+     * <p>
+     * This method calls {@link #dumpHeap(String, boolean)} with the {@code live} parameter set to {@code true}
      */
     public static void dumpHeap() {
-        int pid;
-        try {
-            pid = pid();
-        } catch (NumberFormatException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            pid = 0;
-        }
-
         String timestamp;
         try {
             timestamp = Logger.instance().logFileDTTimestamp();
@@ -151,7 +149,7 @@ public final class Reflect {
         }
 
         try {
-            String fName = "java_pid" + Integer.toString(pid) + "." + timestamp + ".hprof";
+            String fName = "java_pid" + Long.toString(pid()) + "." + timestamp + ".hprof";
             String fPath;
 
             if (RepoVersion.isDocker()) {
@@ -174,7 +172,15 @@ public final class Reflect {
      * @throws IOException if the file already exists, cannot be created, opened, or written to
      */
     // https://www.baeldung.com/java-heap-dump-capture
-    public static void dumpHeap(String filePath, boolean live) throws IOException {
+    /**
+     * Dumps the Java heap to an hprof file
+     *
+     * @param filePath the path to where the heap dump should be written
+     * @param live {@code true} to only dump <i>live</i> objects (objects which are referenced by others)
+     * @throws IOException if the {@code outputFile} already exists, cannot be created, opened, or written to
+     * @throws IllegalArgumentException if {@code filePath} does not end with the {@code .hprof} extension
+     */
+    public static void dumpHeap(String filePath, boolean live) throws IOException, IllegalArgumentException {
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(
                 server, "com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
@@ -182,20 +188,36 @@ public final class Reflect {
     }
 
     /**
-     * Gets the PID of this Java process
+     * Attempts to retrieve the PID of the running process from the {@link RuntimeMXBean} of the JVM process
      *
      * @return the PID
-     * @throws NumberFormatException if the runtime did not return a parsable integer
      */
-    public static int pid() throws NumberFormatException {
-        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-        return Integer.parseInt(runtime.getName().split("@")[0]);
+    public static long pid() throws NumberFormatException {
+        return ManagementFactory.getRuntimeMXBean().getPid();
     }
 
     /**
-     * Gets the path to the folder containing the PhantomBot.jar file
+     * Gets a {@link MemoryUsage} containing information about the current memory usage of the heap
      *
-     * @return the path to the folder; {@code .} if unable to determine
+     * @return a {@link MemoryUsage} for the heap
+     */
+    public static MemoryUsage getHeapMemoryUsage() {
+        return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+    }
+
+    /**
+     * Gets a {@link MemoryUsage} containing information about the current non-heap memory usage
+     *
+     * @return a {@link MemoryUsage} for non-heap memory
+     */
+    public static MemoryUsage getNonHeapMemoryUsage() {
+        return ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
+    }
+
+    /**
+     * Attempts to retrieve the full, real, absolute path to the directory in which PhantomBot.jar is located
+     *
+     * @return {@code .} on failure; otherwise, the path
      */
     public static String GetExecutionPath() {
         try {

@@ -40,6 +40,7 @@ $(function () {
                 $.fn.layout.Constuctor.prototype.fix();
             });
 
+            window.updateCookie();
             // Add the load for the master script.
             $('body').append($('<script>', {
                 'async': true,
@@ -71,6 +72,7 @@ $(function () {
             // Remove all temp global functions.
             helpers.temp = {};
 
+            window.updateCookie();
             // Load the page.
             $.ajax({
                 cache: false,

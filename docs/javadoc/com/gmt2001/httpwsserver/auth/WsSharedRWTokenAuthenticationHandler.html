@@ -227,6 +227,16 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <div class="block">Constructor</div>
 </td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,int,java.lang.Runnable,boolean)">WsSharedRWTokenAuthenticationHandler</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;readOnlyToken,
+                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;readWriteToken,
+                                    int&nbsp;maxAttempts,
+                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Runnable</a>&nbsp;authenticatedCallback,
+                                    boolean&nbsp;allowPaneluser)</code></th>
+<td class="colLast">
+<div class="block">Constructor</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -369,7 +379,7 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <a id="&lt;init&gt;(java.lang.String,java.lang.String,int,java.lang.Runnable)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>WsSharedRWTokenAuthenticationHandler</h4>
 <pre>public&nbsp;WsSharedRWTokenAuthenticationHandler&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;readOnlyToken,
@@ -383,6 +393,28 @@ implements <a href="WsAuthenticationHandler.html" title="interface in com.gmt200
 <dd><code>readWriteToken</code> - The authorization token that grants read-write access</dd>
 <dd><code>maxAttempts</code> - The maximum allowed auth failure responses before the connection is shut down</dd>
 <dd><code>authenticatedCallback</code> - A callback to run when a connection authenticates successfully</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.lang.String,int,java.lang.Runnable,boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>WsSharedRWTokenAuthenticationHandler</h4>
+<pre>public&nbsp;WsSharedRWTokenAuthenticationHandler&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;readOnlyToken,
+                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;readWriteToken,
+                                            int&nbsp;maxAttempts,
+                                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html?is-external=true" title="class or interface in java.lang" class="externalLink">Runnable</a>&nbsp;authenticatedCallback,
+                                            boolean&nbsp;allowPaneluser)</pre>
+<div class="block">Constructor</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>readOnlyToken</code> - The authorization token that grants read-only access</dd>
+<dd><code>readWriteToken</code> - The authorization token that grants read-write access</dd>
+<dd><code>maxAttempts</code> - The maximum allowed auth failure responses before the connection is shut down</dd>
+<dd><code>authenticatedCallback</code> - A callback to run when a connection authenticates successfully</dd>
+<dd><code>allowPaneluser</code> - Whether to allow authenticating via HTTP Headers to a <a href="../../../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></dd>
 </dl>
 </li>
 </ul>

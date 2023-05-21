@@ -4,7 +4,7 @@ Using the `ircModeration` hook, custom scripts can implement moderation filters 
 
 ## Hook Event Object
 
-The parameter to the hook is an event object of type `IrcModerationEvent`
+The parameter to the hook is an event object of type [IrcModerationEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/irc/message/IrcModerationEvent.html)
 
 The methods of the object are:
 
@@ -12,14 +12,14 @@ The methods of the object are:
 - `JavaMap<JavaString, JavaString> getTags()` - The IRCv3 tags containing additional information about the user and message
 - `void moderated()` - The custom script should call this method if moderation action is taken against the user
 - `boolean isCommand()` - Indicates if the message looks like a possible _!command_
-- `CommandEvent asCommand()` - Attempts to create a `CommandEvent`, which is the event object for the `command` hook, out of the message. Returns `null` if `isCommand()` would return `false`
+- `CommandEvent asCommand()` - Attempts to create a [CommandEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/command/CommandEvent.html), which is the event object for the `command` hook, out of the message. Returns `null` if `isCommand()` would return `false`
 
 ## Standard Moderation Functions
 
 PhantomBot provides a number of standard methods for properly sending a moderation action to Twitch
 
 - `$.deleteMessage(tagsOrId)` - Deletes only the specified message. The input parameter should either be a jsString (Use `$.jsString(str)` to be sure) or the JavaMap returned by the `getTags()` method of the event object
-- `$.purgeUser(loginName, reason)` - Purges the user. This is equivilent to a 1 second timeout and is generally used as a delete for all previous messages send by the user. `reason` is optional
+- `$.purgeUser(loginName, reason)` - Purges the user. This is equivilent to a 1 second timeout and is generally used as a delete for all previous messages sent by the user. `reason` is optional
 - `$.timeoutUser(loginName, timeInSeconds, reason)` - Times out the user for the specified number of seconds. `reason` is optional
 - `$.untimeoutUser(loginName)` - Cancels a time out on a user, restoring their ability to chat in the channel
 - `$.banUser(loginName, reason)` - Bans the user from the channel. They are permenately blocked from speaking until an un-ban is issued. `reason` is optional
@@ -30,6 +30,7 @@ PhantomBot provides a number of standard methods for properly sending a moderati
 The standard usage of a moderation hook is to check if the message meets some criteria that is desired to be removed from chat, decide on and implement an appropriate action, and then notifiy the bot the action has taken place
 
 ```
+// Script wrapper to prevent escaping into global scope
 (function () {
     // Subscribe to event. The variable `event` will contain the event data
     $.bind('ircModeration', function (event) {
@@ -60,15 +61,14 @@ The order in which the bot processes messages is as follows
 
 - Check for IRC `ACTION` identifier; if found, convert message to `/me` format
 - Print the message to the console
-- Update UsernameCache (`$.username.resolve`) using the IRCv3 tags
-- Run `ircChannelUserMode` hooks for newly-changed moderator status (Deprecated/Legacy)
-- Run `ircModeration` hooks
+- Run `ircChannelUserMode` ([IrcChannelUserMode](https://phantombot.dev/javadoc-stable/tv/phantombot/event/irc/channel/IrcChannelUserModeEvent.html)) hooks for newly-changed moderator status (Deprecated/Legacy)
+- Run `ircModeration` ([IrcModerationEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/irc/message/IrcModerationEvent.html)) hooks (Includes updating [ViewerCache](https://phantombot.dev/javadoc-stable/com/gmt2001/twitch/cache/ViewerCache.html) via its `ircModeration` hook)
 - Wait until all `ircModeration` hooks complete, or 5 seconds pass; whichever comes first
 - If all hooks complete in time, check if `moderated()` was called; if `moderated()` was called, end processing here
-- If user is a subscriber, run `ircPrivateMessage` hook with fake `SPECIALUSER` message (Deprecated/Legacy)
-- If message contains bits, run `twitchBits` hook
-- If message appears to be a _!command_, run `command` hook
-- Run `ircChannelMessage` hook
+- If user is a subscriber, run `ircPrivateMessage` ([IrcPrivateMessageEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/irc/message/IrcPrivateMessageEvent.html)) hook with fake `SPECIALUSER` message (Deprecated/Legacy)
+- If message contains bits, run `twitchBits` ([TwitchBitsEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/twitch/bits/TwitchBitsEvent.html)) hook
+- If message appears to be a _!command_, run `command` ([CommandEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/command/CommandEvent.html)) hook
+- Run `ircChannelMessage` ([IrcChannelMessageEvent](https://phantombot.dev/javadoc-stable/tv/phantombot/event/irc/message/IrcChannelMessageEvent.html)) hook
 
 ## Example
 
@@ -77,7 +77,7 @@ This is an example script which purges a user that sends `<message deleted>` in 
 ```
 (function () {
     // RegEx that catches basic variations such as /me and capital letters
-    var fakePurge = new RegExp(/(^(\/me |)<message \w+>|^(\/me |)<\w+ deleted>)/i);
+    let fakePurge = new RegExp(/(^(\/me |)<message \w+>|^(\/me |)<\w+ deleted>)/i);
 
     $.bind('ircModeration', function (event) {
         // Check if the message matches our filter

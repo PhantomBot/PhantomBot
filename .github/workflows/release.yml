@@ -68,9 +68,15 @@ jobs:
         ref: 'master'
     - name: Copy Files
       run: |
+        echo ::group::update docs/panel-stable/
+        rm -rf docs/panel-stable/
         mkdir -p docs/panel-stable/
-        rsync -rv --delete-during --progress resources/web/panel/ docs/panel-stable/
-        rsync -rv --delete-during --progress resources/web/common docs
+        cp -rv resources/web/panel/ docs/panel-stable/
+        echo ::endgroup::
+        echo ::group::update docs/common/
+        rm -rf docs/common/
+        cp -rv resources/web/common docs
+        echo ::endgroup::
     - name: Make Path File
       run: |
         echo docs/panel-stable/ >> paths.txt
@@ -98,8 +104,11 @@ jobs:
         ref: 'master'
     - name: Copy Files
       run: |
+        echo ::group::update docs/guides/content-stable/
+        rm -rf docs/guides/content-stable/
         mkdir -p docs/guides/content-stable/
-        rsync -rv --delete-during --progress docs/guides/content/ docs/guides/content-stable/
+        cp -rv docs/guides/content/ docs/guides/content-stable/
+        echo ::endgroup::
     - name: Make Path File
       run: |
         echo docs/guides/content-stable/ >> paths.txt
@@ -125,8 +134,11 @@ jobs:
         ref: 'master'
     - name: Copy Files
       run: |
+        echo ::group::update docs/javadoc-stable/
+        rm -rf docs/javadoc-stable/
         mkdir -p docs/javadoc-stable/
-        rsync -rv --delete-during --progress docs/javadoc/ docs/javadoc-stable/
+        cp -rv docs/javadoc/ docs/javadoc-stable/
+        echo ::endgroup::
     - name: Make Path File
       run: |
         echo docs/javadoc-stable/ >> paths.txt
@@ -156,7 +168,7 @@ jobs:
       with:
         path: /tmp/docartifacts
     - name: Copy Files
-      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::rsync $p; rsync -rv --delete-during --progress $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
+      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::update $p; rm -rf $p; cp -rv $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
