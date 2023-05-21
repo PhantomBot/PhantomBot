@@ -135,14 +135,6 @@ public final class Reflect {
      * This method calls {@link #dumpHeap(String, boolean)} with the {@code live} parameter set to {@code true}
      */
     public static void dumpHeap() {
-        int pid;
-        try {
-            pid = pid();
-        } catch (NumberFormatException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-            pid = 0;
-        }
-
         String timestamp;
         try {
             timestamp = Logger.instance().logFileDTTimestamp();
@@ -157,7 +149,7 @@ public final class Reflect {
         }
 
         try {
-            String fName = "java_pid" + Integer.toString(pid) + "." + timestamp + ".hprof";
+            String fName = "java_pid" + Long.toString(pid()) + "." + timestamp + ".hprof";
             String fPath;
 
             if (RepoVersion.isDocker()) {
@@ -192,11 +184,9 @@ public final class Reflect {
      * Attempts to retrieve the PID of the running process from the {@link RuntimeMXBean} of the JVM process
      *
      * @return the PID
-     * @throws NumberFormatException if the {@link RuntimeMXBean} did not have a PID in the name of the JVM
      */
-    public static int pid() throws NumberFormatException {
-        RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-        return Integer.parseInt(runtime.getName().split("@")[0]);
+    public static long pid() throws NumberFormatException {
+        return ManagementFactory.getRuntimeMXBean().getPid();
     }
 
     /**
