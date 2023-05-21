@@ -19,8 +19,14 @@ jobs:
         ref: 'master'
     - name: Copy Files
       run: |
-        rsync -rv --delete-during --progress resources/web/panel docs
-        rsync -rv --delete-during --progress resources/web/common docs
+        echo ::group::update docs/panel/
+        rm -rf docs/panel/
+        cp -rv resources/web/panel docs
+        echo ::endgroup::
+        echo ::group::update docs/common/
+        rm -rf docs/common/
+        cp -rv resources/web/common docs
+        echo ::endgroup::
     - name: Make Path File
       run: |
         echo docs/panel/ >> paths.txt
@@ -156,7 +162,10 @@ jobs:
       run: python3 development-resources/clean_javadoc.py
     - name: Copy Files
       run: |
-        rsync -rv --delete-during --progress dist/javadoc docs
+        echo ::group::update docs/javadoc/
+        rm -rf docs/javadoc/
+        cp -rv dist/javadoc docs
+        echo ::endgroup::
     - name: Verify Changed files
       uses: tj-actions/verify-changed-files@v14
       id: verify-changed-files
@@ -196,7 +205,7 @@ jobs:
       with:
         path: /tmp/docartifacts
     - name: Copy Files
-      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::rsync $p; rsync -rv --delete-during --progress $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
+      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::update $p; rm -rf $p; cp -rv $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:
