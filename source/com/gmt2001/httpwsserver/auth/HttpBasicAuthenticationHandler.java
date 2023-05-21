@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 
+import com.gmt2001.Digest;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -72,15 +73,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * @throws IllegalArgumentException If {@code realm} contains any double quotes or {@code user} contains any colons
      */
     public HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri) {
-        if (realm.contains("\"") || user.contains(":")) {
-            throw new IllegalArgumentException("Illegal realm or username. Realm must not contain double quotes, user must not contain colon");
-        }
-
-        this.realm = realm;
-        this.user = user;
-        this.pass = pass;
-        this.loginUri = loginUri;
-        this.allowPaneluser = false;
+        this(realm, user, pass, loginUri, false);
     }
 
     /**
@@ -100,7 +93,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
         this.realm = realm;
         this.user = user;
-        this.pass = pass;
+        this.pass = Digest.sha256(pass);
         this.loginUri = loginUri;
         this.allowPaneluser = allowPaneluser;
     }

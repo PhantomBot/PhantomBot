@@ -123,7 +123,7 @@ jobs:
       with:
         path: /tmp/docartifacts
     - name: Copy Files
-      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::rsync $p; rsync -rv --delete-during --progress $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
+      run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::update $p; rm -rf $p; cp -rv $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
     - name: Commit Changes
       uses: EndBug/add-and-commit@v9
       with:

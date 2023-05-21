@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLException;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.RepoVersion;
 import tv.phantombot.twitch.api.Helix;
 
 /**
@@ -193,6 +194,10 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param replyToId The {@code id} tag from the {@link TMIMessage#tags} of the message that is being replied to
      */
     public void sendPrivMessage(String channel, String message, String replyToId) {
+        if (RepoVersion.isStressTest()) {
+            return;
+        }
+
         if (message.toLowerCase().startsWith("/me ")) {
             this.sendActionPrivMessage(channel, message.substring(4), replyToId);
         } else {
