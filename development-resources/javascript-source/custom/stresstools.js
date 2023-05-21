@@ -17,13 +17,37 @@
 
 /* global Packages */
 
-// Stress test tools
+/**
+ * Stress testing tools
+ */
 (function () {
+    /**
+     * Number of observed chat messages, modulo 1 million
+     */
     let numMessages = 0;
+    /**
+     * Number of times {@link numMessages} has reached 1 million
+     */
     let numMessagesExt = 0;
+    /**
+     * Number of unique users seen during the session
+     */
     let count = 0;
+    /**
+     * Session start timestamp
+     */
     let start = Packages.java.time.Instant.now();
 
+    /**
+     * Reports on stats from the test to the console and a log file
+     *
+     * Reported stats (in order printed):
+     * - Current uptime
+     * - Current values of {@link numMessages} and {@link numMessagesExt}
+     * - Current length of {@link $.users} and value of {@link count}
+     * - Current used and committed heap memory
+     * - Current used and committed non-heap memory
+     */
     function doStatus() {
         let memHeap = Packages.com.gmt2001.Reflect.getHeapMemoryUsage();
         let memNonHeap = Packages.com.gmt2001.Reflect.getNonHeapMemoryUsage();
@@ -52,19 +76,34 @@
     $.consoleLn('Starting stress tools');
     $.log.file('stress', 'Starting stress tools');
 
+    /**
+     * Reset unique user detection
+     */
     $.inidb.RemoveFile('stress_seen');
 
+    /**
+     * Log startup stats
+     */
     doStatus();
 
+    /**
+     * Sends a PING to TMI every 5 minutes
+     */
     let pinger = setInterval(function() {
         $.consoleLn('PING');
         Packages.tv.phantombot.PhantomBot.instance().getTMI().sendPing();
     }, 300000);
 
+    /**
+     * Reports stats every 10 minutes
+     */
     let status = setInterval(function() {
         doStatus();
     }, 600000);
 
+    /**
+     * Hooks into {@link IrcModerationEvent} to count messages and unique users
+     */
     $.bind('ircModeration', function (event) {
         numMessages++;
 
@@ -79,6 +118,9 @@
         }
     });
 
+    /**
+     * Hooks into {@link ShutdownEvent} to clear the intervals and log end of session stats
+     */
     $.bind('shutdown', function () {
         clearInterval(pinger);
         clearInterval(status);
