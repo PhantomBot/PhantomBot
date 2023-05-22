@@ -14,19 +14,19 @@ jobs:
             script: jlink-jdk-linux.sh
             folder: java-runtime-linux
             java-distribution: 'temurin'
-            java-version: 11
+            java-version: 17
           - os: windows-latest
             osname: Windows
             script: jlink-jdk.bat
             folder: java-runtime
             java-distribution: 'temurin'
-            java-version: 11
+            java-version: 17
           - os: macos-latest
             osname: macOS
             script: jlink-jdk-macos.sh
             folder: java-runtime-macos
             java-distribution: 'temurin'
-            java-version: 11
+            java-version: 17
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout Repository
