@@ -51,56 +51,50 @@ elif [[ "$MACHTYPE" != "x86_64"* ]]; then
         jvermaj=$(java --version | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
     fi
 
-    if (( jvermaj < 11 )); then
-        echo "PhantomBot requires Java 11 or later to run."
+    if (( jvermaj < 17 )); then
+        echo "PhantomBot requires Java 17 or later to run."
         echo
 
         if  [[ "$osdist" == *"debian"* ]]; then
-            echo "Please install the package openjdk-11-jre-headless"
+            echo "Please install the package openjdk-17-jre-headless"
             echo
 
-            if (( osver < 10 )); then
-                echo "WARNING: You are running a Debian derivative lower than version 10 (buster)"
-                echo "Java 11 may not be available on this version"
-                echo "It is recommended to upgrade to at least Debian 10 (buster)"
+            if (( osver < 11 )); then
+                echo "WARNING: You are running a Debian derivative lower than version 11 (bullseye)"
+                echo "Java 17 may not be available on this version"
+                echo "It is recommended to upgrade to at least Debian 11 (bullseye)"
                 echo "NOTE: Upgrading the major version of the OS usually means a clean install (wipe)"
                 echo
-
-                if (( osver == 9 )); then
-                    echo "Alternatively, you can add the stretch-backports repository to apt and then you should be able to install openjdk-11-jre-headless"
-                    echo "You can find instructions at https://github.com/superjamie/lazyweb/wiki/Raspberry-Pi-Debian-Backports#installation"
-                    echo
-                fi
             fi
 
             echo "The commands to do this are:"
-            echo "   sudo apt-get install openjdk-11-jre-headless"
+            echo "   sudo apt-get install openjdk-17-jre-headless"
             echo "   sudo update-alternatives --config java"
             echo
-            echo "When you issue the update-alternatives command, select the option for java-11-openjdk"
+            echo "When you issue the update-alternatives command, select the option for java-17-openjdk"
         elif  [[ "$osdist" == *"fedora"* || "$osdist" == *"rhel"* ]]; then
-            echo "Please install the package java-11-openjdk-headless"
+            echo "Please install the package java-17-openjdk-headless"
             echo
 
-            if [[ "$osdist" == *"rhel"* || "$osdist2" == *"rhel"* ]] && (( osver < 7 )); then
-                echo "WARNING: You are running a RHEL derivative lower than version 7"
-                echo "Java 11 may not be available on this version"
-                echo "It is recommended to upgrade to at least RHEL 7"
+            if [[ "$osdist" == *"rhel"* || "$osdist2" == *"rhel"* ]] && (( osver < 9 )); then
+                echo "WARNING: You are running a RHEL derivative lower than version 9"
+                echo "Java 17 may not be available on this version"
+                echo "It is recommended to upgrade to at least RHEL 9"
                 echo "NOTE: Upgrading the major version of the OS usually means a clean install (wipe)"
                 echo
-            elif (( osver < 29 )); then
-                echo "WARNING: You are running a Fedora derivative lower than version 29"
-                echo "Java 11 may not be available on this version"
-                echo "It is recommended to upgrade to at least Fedora 29"
+            elif (( osver < 37 )); then
+                echo "WARNING: You are running a Fedora derivative lower than version 37"
+                echo "Java 17 may not be available on this version"
+                echo "It is recommended to upgrade to at least Fedora 37"
                 echo "NOTE: Upgrading the major version of the OS usually means a clean install (wipe)"
                 echo
             fi
 
             echo "The commands to do this are:"
-            echo "   sudo yum install java-11-openjdk-headless"
+            echo "   sudo dnf install java-17-openjdk-headless"
             echo "   sudo alternatives --config java"
             echo
-            echo "When you issue the alternatives command, select the option for java-11-openjdk"
+            echo "When you issue the alternatives command, select the option for java-17-openjdk"
         fi
 
         exit 1
@@ -121,8 +115,8 @@ else
             jvermaj=$(java --version | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
         fi
 
-        if (( jvermaj < 11 )); then
-            echo "PhantomBot requires Java 11 or later to run."
+        if (( jvermaj < 17 )); then
+            echo "PhantomBot requires Java 17 or later to run."
             echo "Please install it from your package manager and ensure the correct installation is returned by 'which java'"
             exit 1
         fi

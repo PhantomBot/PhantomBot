@@ -26,7 +26,7 @@ Additional functionality is enabled through the use of third-party modules.
 PhantomBot requires the following software to be installed:
 
 ARM (Raspberry Pi) or x86 (32-bit) architectures
-* [Adoptium Temurin 11](https://adoptium.net/) or [OpenJDK 11](https://openjdk.java.net/)
+* [Adoptium Temurin 17](https://adoptium.net/) or [OpenJDK 17](https://openjdk.java.net/)
 
 x86_64 (64-bit) architectures
 * No pre-requisites
@@ -35,8 +35,8 @@ x86_64 (64-bit) architectures
 Please refer to platform-specific installation documentation.
 * [Windows](https://phantombot.dev/guides/#guide=content/setupbot/windows)
 * Linux:
-  * [Ubuntu 16.04](https://phantombot.dev/guides/#guide=content/setupbot/ubuntu)
-  * [CentOS 7](https://phantombot.dev/guides/#guide=content/setupbot/centos)
+  * [Ubuntu](https://phantombot.dev/guides/#guide=content/setupbot/ubuntu)
+  * [CentOS](https://phantombot.dev/guides/#guide=content/setupbot/centos)
 * [macOS](https://phantombot.dev/guides/#guide=content/setupbot/macos)
 
 ### Docker

@@ -24,7 +24,7 @@
 # % ./launch.sh
 #
 # You can also specify a custom path to the Java executable as the first parameter, using java=PATH
-# ex: ./launch.sh java=/usr/local/jdk-11/bin/java
+# ex: ./launch.sh java=/usr/local/jdk-17/bin/java
 #
 
 unset DISPLAY
@@ -34,7 +34,7 @@ tmp=""
 JAVA=$(which java 2>/dev/null)
 
 if [ "$JAVA" -eq "" ]; then
-    JAVA=$(which /usr/local/*11*/bin/java)
+    JAVA=$(which /usr/local/*17*/bin/java)
 fi
 
 if [ -e "$1" ]; then
@@ -60,34 +60,34 @@ fi
 
 jvermaj=$($JAVA --version | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
 
-if [ $jvermaj -lt 11 ]; then
-    echo "PhantomBot requires Java 11 or later to run."
+if [ $jvermaj -lt 17 ]; then
+    echo "PhantomBot requires Java 17 or later to run."
     echo
 
     osdist=$(uname)
 
     if  [[ "$osdist" == *"OpenBSD"* ]]; then
-        echo "Please install the package jdk and select the version that gives you jdk-11"
+        echo "Please install the package jdk and select the version that gives you jdk-17"
         echo
 
         echo "The command to do this is:"
         echo "   pkg_add jdk"
         echo
-        echo "When you issue the pkg_add command, select the option that starts with java-11"
+        echo "When you issue the pkg_add command, select the option that starts with java-17"
     elif  [[ "$osdist" == *"FreeBSD"* ]]; then
-        echo "Please install the package openjdk11"
+        echo "Please install the package openjdk17"
         echo
 
         echo "The command to do this is:"
-        echo "   sudo pkg install openjdk11"
+        echo "   sudo pkg install openjdk17"
     else
-        echo "Unknown OS detected, please identify and install the appropriate Java 11 package on your system"
+        echo "Unknown OS detected, please identify and install the appropriate Java 17 package on your system"
         echo "The name is generally something starting with JDK or OpenJDK"
     fi
 
     echo
     echo "If you have already installed it, try specifying the path to the java executable as a parameter to this script"
-    echo "Example: ./launch.sh java=/usr/local/jdk-11/bin/java"
+    echo "Example: ./launch.sh java=/usr/local/jdk-17/bin/java"
 
     exit 1
 fi

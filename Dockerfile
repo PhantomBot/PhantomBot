@@ -16,7 +16,7 @@
 #
 
 # Build container
-FROM eclipse-temurin:11-jdk-focal as builder
+FROM eclipse-temurin:17-jdk-focal as builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
@@ -75,7 +75,7 @@ RUN set -eux; \
     rm "./lib"
 
 # Application container
-FROM eclipse-temurin:11-jre-focal as publish
+FROM eclipse-temurin:17-jre-focal as publish
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
