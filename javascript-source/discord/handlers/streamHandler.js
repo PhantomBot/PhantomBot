@@ -143,7 +143,7 @@
                 var s = offlineMessage;
 
                 if (s.match(/\(name\)/)) {
-                    s = $.replace(s, '(name)', $.viewer.getByLogin($.channelName).name());
+                    s = $.replace(s, '(name)', $.viewer.broadcaster().name());
                 }
 
                 // Only say this when there is a mention.
@@ -163,6 +163,7 @@
                         .appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
                         .appendField($.lang.get('discord.streamhandler.offline.chatters'), $.lang.get('discord.streamhandler.offline.chatters.stat', avgChatters, maxChatters), true)
                         .appendField($.lang.get('discord.streamhandler.offline.followers'), $.lang.get('discord.streamhandler.offline.followers.stat', follows, followersNow), true)
+                        .appendField($.lang.get('discord.streamhandler.common.uptime'), $.getTimeString($.twitchcache.getLastStreamUptimeSeconds()), true)
                         .withTimestamp(Date.now())
                         .withFooterText('Twitch')
                         .withFooterIcon($.twitchcache.getLogoLink())
@@ -207,7 +208,7 @@
                     var s = onlineMessage;
 
                     if (s.match(/\(name\)/)) {
-                        s = $.replace(s, '(name)', $.viewer.getByLogin($.channelName).name());
+                        s = $.replace(s, '(name)', $.viewer.broadcaster().name());
                     }
 
                     // Only say this when there is a mention.
@@ -279,7 +280,7 @@
         var s = gameMessage;
 
         if (s.match(/\(name\)/)) {
-            s = $.replace(s, '(name)', $.viewer.getByLogin($.channelName).name());
+            s = $.replace(s, '(name)', $.viewer.broadcaster().name());
         }
 
         // Only say this when there is a mention.
