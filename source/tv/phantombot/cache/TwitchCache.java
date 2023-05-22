@@ -83,6 +83,7 @@ public final class TwitchCache implements Listener {
     private String previewLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private String logoLink = "https://www.twitch.tv/p/assets/uploads/glitch_solo_750x422.png";
     private ZonedDateTime streamUptime = null;
+    private long lastStreamUptimeSeconds = 0L;
     private int viewerCount = 0;
     private int subscriberCount = 0;
     private int subscriberPoints = 0;
@@ -427,6 +428,16 @@ public final class TwitchCache implements Listener {
         return Duration.between(this.streamUptime, ZonedDateTime.now()).getSeconds();
     }
 
+
+    /**
+     * Returns the uptime of the channel in seconds of the previous stream.
+     *
+     * @return {@code 0L} if no streams have ended since the last bot restart
+     */
+    public long getLastStreamUptimeSeconds() {
+        return this.lastStreamUptimeSeconds;
+    }
+
     /**
      * Returns the stream created_at date from Twitch.
      *
@@ -672,6 +683,7 @@ public final class TwitchCache implements Listener {
         if (this.isOnline) {
             this.isOnline = false;
             this.viewerCount = 0;
+            this.lastStreamUptimeSeconds = Duration.between(this.streamUptime, ZonedDateTime.now()).getSeconds();
             this.streamUptime = null;
             this.offlineTimeout = Instant.now().plusSeconds(CaselessProperties.instance().getPropertyAsInt("offlinetimeout", 300));
 
