@@ -2,28 +2,42 @@
 
 ### Creating a Discord Bot Account
 
-**If you have a Discord bot account already, you can skip this step**
+**If you already have a Discord bot account for PhantomBot with the necessary privileged gateway intents, you can skip this step**
 
-1. Use the following link https://discord.com/developers/applications
-2. Click *New Application*, set name and click *Create*
-3. Go to *Bot*, click Add Bot - *Yes, do it!*
-4. Turn on all toggles under *Privileged Gateway Intents*
+1. Open the Discord [developer portal](https://discord.com/developers/applications)
+2. Log-in with your Discord account
+3. Click *New Application* in the top right corner
+4. Give your Application a name, read and accept the terms of services and click *Create*
+5. Go to *Bot*
+6. Turn on all toggles under *Privileged Gateway Intents*
+7. Be sure to save the changes
 
 ### Getting and Setup Bot token
 
-1. Stop the bot
-2. In the *TOKEN* under the nickname, click *Copy* and paste code to safe location.
-3. Open file `BotName\config\botlogin.txt`
-4. Create a line `discord_token=TOKEN` (replace *TOKEN* with what you saved in the first paragraph)
-5. Save file and start the bot
+1. Stop the PhantomBot
+2. Open the Discord [developer portal](https://discord.com/developers/applications)
+3. Log-in with your Discord account
+4. Select your *Discord application*
+5. Go to *Bot*
+6. In the *TOKEN* under the nickname, click *Reset Token* and confirm with *Yes, do it!*
+7. Click *Copy* and paste code to safe location.
+8. Open the file `.\config\botlogin.txt` in your PhantomBots's installation folder
+9. Create a new line `discord_token=TOKEN` or edit the existing one (replace *TOKEN* with what you saved in the previous step)
+10. Save the file
 
-The Discord button will appear in the control panel on the left tab.
+**Starting your bot at this time will throw an expected error, since you haven't invited the bot to a Discord server yet. In this case, a restart is needed after inviting the bot to a Discord server. Only the Discord functionality of the bot will not work at this stage, no other limitations will occur when starting the bot at this stage**
 
 ### Invite Bot to Discord Server
 
-1. Go to your *Discord Application* -> *OAuth2*
-2. In *OAuth2 URL Generator* check the box on *Bot*
-3. In the panel that appears, check the *Administrator* checkbox
-4. Follow the generated link and invite the bot to desired server (administrator rights are required on the server)
+1. Open the Discord [developer portal](https://discord.com/developers/applications)
+2. Log-in with your Discord account
+3. Select your *Discord Application*
+4. Go to *OAuth2* -> *OAuth2 URL Generator*
+5. In *OAuth2 URL Generator* check the box on *Bot*
+6. In the panel that appears, check the *Administrator* checkbox
+7. Open the generated link below and invite the bot to desired server (administrator rights are required on the server)
+8. Start PhantomBot
+
+The Discord button will appear in the control panel in the left tab.
 
 **Your bot should be located on only one Discord server**
