@@ -983,7 +983,7 @@ $(function () {
                     'visible': (override.hasOwnProperty('blockClosing') ? !override.blockClosing : true)
                 }
             },
-            'dangerMode': true, 
+            'dangerMode': true,
             'closeOnClickOutside': (override.hasOwnProperty('blockClosing') ? !override.blockClosing : true),
             'closeOnEsc': (override.hasOwnProperty('blockClosing') ? !override.blockClosing : true)
         }).then(function (isRemoved) {
@@ -1468,13 +1468,6 @@ $(function () {
     };
 
     helpers.setupAuth = function () {
-        if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires')) {
-            if (window.localStorage.getItem('expires') > Date.now()) {
-                window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
-            } else {
-                window.sessionStorage.removeItem('webauth');
-            }
-        }
         window.panelSettings.auth = window.sessionStorage.getItem('webauth') || '!missing';
     };
 
@@ -1549,8 +1542,7 @@ $(function () {
     helpers.signOut = function () {
         toastr.info('Signing out...', '', {timeOut: 0});
         socket.close();
-        window.sessionStorage.removeItem("webauth");
-        document.cookie = 'panellogin=; Path=/;' + (window.location.protocol === 'https:' ? ' Secure' : '') +' Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        window.logoutCookie();
         window.location = window.location.origin + window.location.pathname + 'login/#logoutSuccess=true';
     };
 

@@ -330,7 +330,7 @@
             }
 
             /*
-             * @commandpath raid setoutgoingofflinemessage [message] - Sets the outgoing warning message for when you raid someone who is offline
+             * @commandpath raid setoutgoingofflinemessage [message] - Sets a warning message which is added to chat when you use !raid on a channel that is offline.
              */
             if (action.equalsIgnoreCase('setoutgoingofflinemessage')) {
                 if (subAction === undefined) {

@@ -83,6 +83,10 @@
         <isset property="isdocker" />
     </condition>
 
+    <condition property="isstresstest" value="true" else="false">
+        <isset property="isstresstest" />
+    </condition>
+
     <available file=".git" type="dir" property="git.present"/>
 
     <target name="download-ivy" unless="offline">
@@ -204,6 +208,10 @@
             match="isDocker = false;"
             replace="isDocker = ${isdocker};" />
         <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="isStressTest = false;"
+            replace="isStressTest = ${isstresstest};" />
+        <replaceregexp
             file="source/com/gmt2001/RollbarProvider.java"
             match="ACCESS_TOKEN = &quot;(.*)&quot;;"
             replace="ACCESS_TOKEN = &quot;${rollbar_token}&quot;;" />
@@ -257,6 +265,10 @@
             file="source/tv/phantombot/RepoVersion.java"
             match="isDocker = (.*);"
             replace="isDocker = false;" />
+        <replaceregexp
+            file="source/tv/phantombot/RepoVersion.java"
+            match="isStressTest = (.*);"
+            replace="isStressTest = false;" />
         <replaceregexp
             file="source/com/gmt2001/RollbarProvider.java"
             match="ACCESS_TOKEN = &quot;(.*)&quot;;"
@@ -335,7 +347,7 @@
         </move>
     </target>
 
-    <target depends="clean-no-post,jar" name="clean-jar"></target>
+    <target depends="clean-no-post,jar" name="clean-jar"/>
 
     <target depends="compile.src.test,post.compile" name="test"/>
 

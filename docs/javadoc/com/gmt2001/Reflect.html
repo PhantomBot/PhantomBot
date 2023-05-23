@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":10,"i3":9,"i4":10,"i5":9,"i6":10,"i7":9};
+var data = {"i0":9,"i1":9,"i2":10,"i3":9,"i4":9,"i5":9,"i6":10,"i7":9,"i8":10,"i9":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -133,6 +133,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public final class <span class="typeNameLabel">Reflect</span>
 extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></pre>
+<div class="block">Provides Java reflection services</div>
 <dl>
 <dt><span class="simpleTagLabel">Author:</span></dt>
 <dd>gmt2001</dd>
@@ -160,43 +161,71 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#dumpHeap()">dumpHeap</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Dumps the Java heap to an hprof file</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#dumpHeap(java.lang.String,boolean)">dumpHeap</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;filePath,
         boolean&nbsp;live)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Dumps the Java heap to an hprof file</div>
+</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;?&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClasses()">getClasses</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Returns a list of all classes currently loaded into memory by the class loader</div>
+</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetExecutionPath()">GetExecutionPath</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attempts to retrieve the full, real, absolute path to the directory in which PhantomBot.jar is located</div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends T&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSubTypesOf(java.lang.Class)">getSubTypesOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;type)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink">MemoryUsage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHeapMemoryUsage()">getHeapMemoryUsage</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>MemoryUsage</code></a> containing information about the current memory usage of the heap</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink">MemoryUsage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNonHeapMemoryUsage()">getNonHeapMemoryUsage</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>MemoryUsage</code></a> containing information about the current non-heap memory usage</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends T&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSubTypesOf(java.lang.Class)">getSubTypesOf</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;type)</code></th>
+<td class="colLast">
+<div class="block">Returns a list of all classes for which the provided type is assignable from and are not abstract</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static <a href="Reflect.html" title="class in com.gmt2001">Reflect</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadPackageRecursive(java.lang.String)">loadPackageRecursive</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pkg)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Recursively loads all classes and sub-packages of the given package from <code>PhantomBot.jar</code></div>
+</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static int</code></td>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>static long</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#pid()">pid</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Attempts to retrieve the PID of the running process from the <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/RuntimeMXBean.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>RuntimeMXBean</code></a> of the JVM process</div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -238,6 +267,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>loadPackageRecursive</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;loadPackageRecursive&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pkg)</pre>
+<div class="block">Recursively loads all classes and sub-packages of the given package from <code>PhantomBot.jar</code></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>pkg</code> - the package to load</dd>
+</dl>
 </li>
 </ul>
 <a id="getClasses()">
@@ -247,6 +281,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getClasses</h4>
 <pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;?&gt;&gt;&nbsp;getClasses()</pre>
+<div class="block">Returns a list of all classes currently loaded into memory by the class loader</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a list of classes</dd>
+</dl>
 </li>
 </ul>
 <a id="getSubTypesOf(java.lang.Class)">
@@ -256,6 +295,15 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getSubTypesOf</h4>
 <pre class="methodSignature">public&nbsp;&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;? extends T&gt;&gt;&nbsp;getSubTypesOf&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink">Class</a>&lt;T&gt;&nbsp;type)</pre>
+<div class="block">Returns a list of all classes for which the provided type is assignable from and are not abstract</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - the parent type to test against</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>type</code> - the <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink"><code>Class</code></a> instance representing the parent type</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a list of child <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Class.html?is-external=true" title="class or interface in java.lang" class="externalLink"><code>Class</code></a> which are not abstract</dd>
+</dl>
 </li>
 </ul>
 <a id="dumpHeap()">
@@ -265,6 +313,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>dumpHeap</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;dumpHeap()</pre>
+<div class="block">Dumps the Java heap to an hprof file
+ <p>
+ This method tries to generate a filename of <code>java_pid##.TIMESTAMP.hprof</code> where <code>##</code> is
+ the PID of the running process and <code>TIMESTAMP</code> is the timestamp when the method was called in <code>yyyy-MM-dd_HH-mm-ss</code> format
+ <p>
+ This method calls <a href="#dumpHeap(java.lang.String,boolean)"><code>dumpHeap(String, boolean)</code></a> with the <code>live</code> parameter set to <code>true</code></div>
 </li>
 </ul>
 <a id="dumpHeap(java.lang.String,boolean)">
@@ -275,10 +329,16 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>dumpHeap</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;dumpHeap&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;filePath,
                             boolean&nbsp;live)
-                     throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></pre>
+                     throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a>,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></pre>
+<div class="block">Dumps the Java heap to an hprof file</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>filePath</code> - the path to where the heap dump should be written</dd>
+<dd><code>live</code> - <code>true</code> to only dump <i>live</i> objects (objects which are referenced by others)</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/IOException.html?is-external=true" title="class or interface in java.io" class="externalLink">IOException</a></code> - if the <code>outputFile</code> already exists, cannot be created, opened, or written to</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/IllegalArgumentException.html?is-external=true" title="class or interface in java.lang" class="externalLink">IllegalArgumentException</a></code> - if <code>filePath</code> does not end with the <code>.hprof</code> extension</dd>
 </dl>
 </li>
 </ul>
@@ -288,11 +348,42 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <ul class="blockList">
 <li class="blockList">
 <h4>pid</h4>
-<pre class="methodSignature">public static&nbsp;int&nbsp;pid()
-               throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/NumberFormatException.html?is-external=true" title="class or interface in java.lang" class="externalLink">NumberFormatException</a></pre>
+<pre class="methodSignature">public static&nbsp;long&nbsp;pid()
+                throws <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/NumberFormatException.html?is-external=true" title="class or interface in java.lang" class="externalLink">NumberFormatException</a></pre>
+<div class="block">Attempts to retrieve the PID of the running process from the <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/RuntimeMXBean.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>RuntimeMXBean</code></a> of the JVM process</div>
 <dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the PID</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/NumberFormatException.html?is-external=true" title="class or interface in java.lang" class="externalLink">NumberFormatException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getHeapMemoryUsage()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getHeapMemoryUsage</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink">MemoryUsage</a>&nbsp;getHeapMemoryUsage()</pre>
+<div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>MemoryUsage</code></a> containing information about the current memory usage of the heap</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>MemoryUsage</code></a> for the heap</dd>
+</dl>
+</li>
+</ul>
+<a id="getNonHeapMemoryUsage()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getNonHeapMemoryUsage</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink">MemoryUsage</a>&nbsp;getNonHeapMemoryUsage()</pre>
+<div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>MemoryUsage</code></a> containing information about the current non-heap memory usage</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html?is-external=true" title="class or interface in java.lang.management" class="externalLink"><code>MemoryUsage</code></a> for non-heap memory</dd>
 </dl>
 </li>
 </ul>
@@ -303,6 +394,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>GetExecutionPath</h4>
 <pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetExecutionPath()</pre>
+<div class="block">Attempts to retrieve the full, real, absolute path to the directory in which PhantomBot.jar is located</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>.</code> on failure; otherwise, the path</dd>
+</dl>
 </li>
 </ul>
 </li>

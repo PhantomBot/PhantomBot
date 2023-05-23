@@ -27,6 +27,7 @@ public final class RepoVersion {
     private static final String repoVersion = "@repository.version@";
     private static final String buildType = "@buildtype@";
     private static final boolean isDocker = false;
+    private static final boolean isStressTest = false;
 
     private RepoVersion() {
     }
@@ -110,5 +111,14 @@ public final class RepoVersion {
      */
     public static boolean isDocker() {
         return isDocker;
+    }
+
+    /**
+     * Indicates if this is a Stress Test build that should not send messages to Twitch Chat/Discord
+     *
+     * @return {@code true} if a stress test build
+     */
+    public static boolean isStressTest() {
+        return isStressTest;
     }
 }

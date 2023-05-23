@@ -18,6 +18,7 @@
  */
 
 $(function() {
+    window.updateCookie();
     var socket = new WebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer'),
         listeners = [],
         player = {},
