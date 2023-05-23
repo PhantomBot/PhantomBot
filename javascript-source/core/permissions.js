@@ -1056,6 +1056,8 @@
                     setUserGroupById(username, PERMISSION.Sub);
                 } else if (isVIP(username)) {
                     setUserGroupById(username, PERMISSION.VIP);
+                } else {
+                    setUserGroupById(username, PERMISSION.Viewer);
                 }
             }
         } else if (event.getMode().equalsIgnoreCase('vip')) {
