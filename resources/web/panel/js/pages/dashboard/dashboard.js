@@ -20,6 +20,11 @@ var canScroll = true;
 
 // Function that querys all of the data we need.
 $(function () {
+    $('.event-log').closest('form').resizable({
+        handles: "s",
+        alsoResize: ".event-log",
+        minHeight: "150"
+    });
     // Query our panel settings first.
     socket.getDBValues('panel_get_settings', {
         tables: ['panelData', 'panelData', 'modules'],

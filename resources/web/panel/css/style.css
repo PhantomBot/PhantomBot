@@ -94,7 +94,7 @@ input:checked+.slider:before {
 /* Event log */
 
 .event-log {
-    height: 150px;
+    height: 200px;
     overflow: auto;
     position: relative;
 }
