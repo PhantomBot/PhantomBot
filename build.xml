@@ -298,6 +298,23 @@
     <target name="check-compiled">
         <available file="${version.folder}/PhantomBot.jar" property="compiled"/>
     </target>
+    <target depends="compile.src,post.compile,git.revision" name="jar-only">
+        <jar destfile="${version.folder}/${ant.project.name}.jar">
+            <fileset dir="${classes}" />
+            <manifest>
+                <attribute name="Bundle-Name" value="${ant.project.name}" />
+                <attribute name="Bundle-Version" value="${version}" />
+                <attribute name="Bundle-Revision" value="${git.revision}" />
+                <attribute name="Bundle-Date" value="${NOW}" />
+                <attribute name="Implementation-Title" value="${ant.project.name}" />
+                <attribute name="Implementation-Version" value="${version}" />
+                <attribute name="Implementation-Revision" value="${git.revision}" />
+                <attribute name="Implementation-URL" value="https://phantombot.github.io/PhantomBot" />
+                <attribute name="Class-Path" value="${mf.classpath}" />
+                <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
+            </manifest>
+        </jar>
+    </target>
 
     <target depends="compile.src,post.compile,git.revision" name="jar">
         <jar destfile="${build.dir}/${ant.project.name}.jar">
