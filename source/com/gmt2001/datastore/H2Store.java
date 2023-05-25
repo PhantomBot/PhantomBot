@@ -112,6 +112,11 @@ public final class H2Store extends DataStore {
     }
 
     private void checkInUse(String configStr) {
+        Path dbfile = Paths.get("./config/", configStr + ".mv.db");
+
+        if (!Files.exists(dbfile)) {
+            return;
+        }
         try {
             JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
 
