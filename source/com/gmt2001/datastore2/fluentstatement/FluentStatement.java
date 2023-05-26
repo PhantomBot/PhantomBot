@@ -16,35 +16,84 @@
  */
 package com.gmt2001.datastore2.fluentstatement;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import com.gmt2001.datastore2.Datastore2;
+
 /**
- * Provides a fluent interface to define the components of a SQL statement in a database-agnostic manner
+ * Provides a fluent interface to execute an SQL statement in a database-agnostic manner
  *
  * @author gmt2001
  */
-public abstract class FluentStatement<T> {
+public final class FluentStatement {
     /**
-     * The name of the primary table of the query
+     * A {@link PreparedStatement} that has been compiled for the underlying database
      */
-    private final String table;
+    private final PreparedStatement preparedStatement;
+    /**
+     * A map of string placeholder variables to integer indexes of the associated {@code ?} that will be replaced
+     */
+    private final Map<String, List<Integer>> variables;
 
     /**
      * Constructor
      *
-     * @param table the name of the primary table of the query
+     * @param preparedStatement a {@link PreparedStatement} that has been compiled for the underlying database
+     * @param variables a map of string placeholder variables to integer indexes of the associated {@code ?} that will be replaced
      */
-    protected FluentStatement(String table) {
-        this.table = table;
+    protected FluentStatement(PreparedStatement preparedStatement, Map<String, List<Integer>> variables) {
+        this.preparedStatement = preparedStatement;
+
+        for (Map.Entry<String, List<Integer>> kv : variables.entrySet()) {
+            variables.put(kv.getKey(), Collections.unmodifiableList(kv.getValue()));
+        }
+
+        this.variables = Collections.unmodifiableMap(variables);
     }
 
     /**
-     * The primary table of the query
-     * <p>
-     * When performing a {@code SELECT} that contains a join, this table must be aliased as {@code A}
+     * Constructor
      *
-     * @return the name of the table
+     * @param preparedStatement a {@link PreparedStatement} that has been compiled for the underlying database
      */
-    public String table() {
-        return this.table;
+    protected FluentStatement(PreparedStatement preparedStatement) {
+        this(preparedStatement, Collections.emptyMap());
+    }
+
+    /**
+     * Sets the designated parameter to the given string value
+     * <p>
+     * The database driver automatically escapes the string to prevent SQL injection attacks
+     *
+     * @param variable the variable to replace
+     * @param value the value to set
+     * @throws IllegalArgumentException if the variable specified was not added to the builder before compiling
+     * @throws SQLException if one or more of the {@code ?} marker for the variable was not placed into the SQL statement by
+     * the {@link Datastore2} class for the database, a database access error occurs, or this is called when the
+     * underlying {@link PreparedStatement} is closed
+     */
+    public void setString(String variable, String value) throws IllegalArgumentException, SQLException {
+        if (!variables.containsKey(variable)) {
+            throw new IllegalArgumentException("No variable named " + variable);
+        }
+
+        for (int i : variables.get(variable)) {
+            this.preparedStatement.setString(i, value);
+        }
+    }
+
+    /**
+     * Adds the current set of parameters to the command batch of the udnerlying {@link PreparedStatement}
+     *
+     * @throws SQLException if a database access error occurs, or this is called when the
+     * underlying {@link PreparedStatement} is closed
+     */
+    public void addBatch() throws SQLException {
+        this.preparedStatement.addBatch();
     }
 
     /**

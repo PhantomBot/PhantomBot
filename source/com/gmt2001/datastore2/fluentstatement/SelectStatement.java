@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author gmt2001
  */
-public final class SelectStatement extends FluentStatement<SelectStatement> {
+public final class SelectStatement extends FluentStatementBuilder<SelectStatement> {
     /**
      * Whether this query is a {@code SELECT DISTINCT} query
      */
