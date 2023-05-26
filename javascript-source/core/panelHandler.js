@@ -19,6 +19,8 @@
 
 // Only tracks data for now.
 (function () {
+
+    let _dataLock = new Packages.java.util.concurrent.locks.ReentrantLock();
     /*
      * @function addObjectToArray
      *
@@ -28,31 +30,36 @@
      * @param {Object} object
      */
     function addObjectToArray(table, key, type, object) {
-        var array = ($.inidb.exists(table, key) ? JSON.parse($.inidb.get(table, key)) : []);
+        _dataLock.lock();
+        try {
+            var array = ($.inidb.exists(table, key) ? JSON.parse($.inidb.get(table, key)) : []);
 
-        // Make sure it is an array.
-        if (object.type === undefined) {
-            object.type = type;
+            // Make sure it is an array.
+            if (object.type === undefined) {
+                object.type = type;
+            }
+
+            // Add the object to the array.
+            array.push(object);
+
+            // Only keep 50 objects in the array.
+            if (array.length > 50) {
+                // Sort for newer events
+                /*array.sort(function (a, b) {
+                var d1 = new Date(a.date);
+                var d2 = new Date(b.date);
+                return d1 - d2;
+                });*/
+
+                // Remove old events.
+                array = array.slice(array.length - 50);
+            }
+
+            // Save it.
+            saveObject(table, key, array);
+        } finally {
+            _dataLock.unlock();
         }
-
-        // Add the object to the array.
-        array.push(object);
-
-        // Only keep 50 objects in the array.
-        if (array.length > 50) {
-            // Sort for newer events
-            /*array.sort(function (a, b) {
-             var d1 = new Date(a.date);
-             var d2 = new Date(b.date);
-             return d1 - d2;
-             });*/
-
-            // Remove old events.
-            array = array.slice(array.length - 50);
-        }
-
-        // Save it.
-        saveObject(table, key, array);
     }
 
     /*

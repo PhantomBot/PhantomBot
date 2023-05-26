@@ -430,10 +430,16 @@ public class DiscordAPI extends DiscordUtil {
 
         public static void onDiscordReadyEvent(ReadyEvent event) {
             if (event.getGuilds().size() != 1) {
-                com.gmt2001.Console.err.println("PhantomBot can only be in 1 Discord server at a time, detected " + event.getGuilds().size() + ". Disconnecting Discord...");
+                String errorMsg = "PhantomBot has not been invited into a Discord server. Invite the bot into your Discord Server and restart the bot in order to use the Discord functionality";
+                String disconnectReason = "NotInGuild";
+                if (event.getGuilds().size() > 1) {
+                    disconnectReason = "TooManyGuilds";
+                    errorMsg = "PhantomBot can only be in 1 Discord server at a time, detected " + event.getGuilds().size();
+                }
+                com.gmt2001.Console.err.println(errorMsg + ". Disconnecting Discord...");
                 DiscordAPI.gateway.logout();
                 synchronized (DiscordAPI.instance().mutex) {
-                    DiscordAPI.lastDisconnectReason = "TooManyGuilds";
+                    DiscordAPI.lastDisconnectReason = disconnectReason;
                     DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
                 }
                 return;

@@ -30,6 +30,7 @@ import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
 import com.gmt2001.Reflect;
+import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
@@ -426,6 +427,36 @@ public final class ConsoleEventHandler implements Listener {
             }
             com.gmt2001.Console.out.println("Testing Mass Anonymous Gift Sub (Amount: " + amount + ", tier: " + tier + ")");
             EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(amount, tier));
+            return;
+        }
+
+        /**
+         * @consolecommand masssubgifttest (amount) (tier) - Test a mass sub gift subscription.
+         */
+        if (message.equalsIgnoreCase("masssubgifttest")) {
+            int amount = 10;
+            String tier = "1000";
+            String newLine = System.getProperty("line.separator");
+            if (argument != null && argument.length > 0 && !argument[0].isBlank()) {
+                amount = Integer.parseInt(argument[0]);
+            }
+
+            if (argument != null && argument.length > 1 && !argument[1].isBlank()) {
+                tier = argument[1].equalsIgnoreCase("prime") ? argument[1] : argument[1] + "000";
+            }
+            com.gmt2001.Console.out.println("Testing Mass Anonymous Gift Sub (Amount: " + amount + ", tier: " + tier + ")");
+            TwitchMessageInterface tmi = PhantomBot.instance().getTMI();
+
+
+
+            String messages = "@display-name=testgifter;msg-param-sub-plan=" + tier + ";login=testgifter;msg-id=submysterygift;tmi-sent-ts=" + (System.currentTimeMillis() / 1000L) + ";msg-param-mass-gift-count=" + amount + " :phantombot!phantombot@test USERNOTICE #phantombot :";
+            for (int i = 0; i < amount; i++) {
+                String recipient = PhantomBot.generateRandomString(10).toLowerCase();
+                messages += newLine;
+                messages += "@display-name=testgifter;msg-param-sub-plan=" + tier + ";login=testgifter;msg-id=subgift;tmi-sent-ts=" + (System.currentTimeMillis() / 1000L) + ";msg-param-recipient-user-name=" + recipient + " :phantombot!phantombot@test USERNOTICE #phantombot :";
+            }
+
+            tmi.onMessages(messages);
             return;
         }
 

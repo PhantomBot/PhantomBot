@@ -150,6 +150,14 @@ massanonsubgifttest (amount) (tier) - Test a mass anonymous gift subscription.
 
 &nbsp;
 
+### masssubgifttest
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+masssubgifttest (amount) (tier) - Test a mass sub gift subscription.
+
+&nbsp;
+
 ### anonsubgifttest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_

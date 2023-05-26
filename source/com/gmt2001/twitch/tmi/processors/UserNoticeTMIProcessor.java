@@ -61,29 +61,9 @@ public final class UserNoticeTMIProcessor extends AbstractTMIProcessor {
             } else if (item.tags().get("msg-id").equalsIgnoreCase("anonsubgift")) {
                 this.onNextGift(item.tags());
             } else if (item.tags().get("msg-id").equalsIgnoreCase("submysterygift")) {
-                int remaining = Integer.parseInt(item.tags().get("msg-param-mass-gift-count"));
-                if (this.bulkSubscriberGifters.containsKey(item.tags().get("login"))) {
-
-                    remaining += this.bulkSubscriberGifters.get(item.tags().get("login"));
-                }
-                this.bulkSubscriberGifters.put(item.tags().get("login"), remaining);
-
-                // Send event for this.
-                if (item.tags().get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                    EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(item.tags().get("msg-param-mass-gift-count"), item.tags().get("msg-param-sub-plan")));
-                } else {
-                    EventBus.instance().postAsync(new TwitchMassSubscriptionGiftedEvent(item.tags().get("login"), item.tags().get("msg-param-mass-gift-count"), item.tags().get("msg-param-sub-plan")));
-                }
+                this.onMassGift(item.tags());
             } else if (item.tags().get("msg-id").equalsIgnoreCase("anonsubmysterygift")) {
-                int remaining = Integer.parseInt(item.tags().get("msg-param-mass-gift-count"));
-                if (this.bulkSubscriberGifters.containsKey(item.tags().get("login"))) {
-
-                    remaining += this.bulkSubscriberGifters.get(item.tags().get("login"));
-                }
-
-                this.bulkSubscriberGifters.put(item.tags().get("login"), remaining);
-
-                EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(item.tags().get("msg-param-mass-gift-count"), item.tags().get("msg-param-sub-plan")));
+                this.onMassGift(item.tags());
             } else if (item.tags().get("msg-id").equalsIgnoreCase("raid")) {
                 EventBus.instance().postAsync(new TwitchRaidEvent(item.tags().get("login"), item.tags().get("msg-param-viewerCount")));
             } else if (item.tags().get("msg-id").equalsIgnoreCase("announcement")) {
@@ -94,28 +74,37 @@ public final class UserNoticeTMIProcessor extends AbstractTMIProcessor {
         EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv", item.parameters(), item.tags()));
     }
 
-    private void onNextGift(Map<String, String> item) {
-        try {
-            boolean fromBulk = false;
-            if (this.bulkSubscriberGifters.containsKey(item.get("login"))) {
-                fromBulk = true;
-                int remaining = this.bulkSubscriberGifters.get(item.get("login"));
-                remaining--;
-
-                if (remaining <= 0) {
-                    this.bulkSubscriberGifters.remove(item.get("login"));
-                } else {
-                    this.bulkSubscriberGifters.put(item.get("login"), remaining);
-                }
+    private void onMassGift(Map<String, String> tags){
+        this.bulkSubscriberGifters.compute(tags.get("login"), (key, value) -> {
+            int r = Integer.parseInt(tags.get("msg-param-mass-gift-count"));
+            if (value != null && value > 0) {
+                r += value;
             }
-            if (item.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
-                EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months"), fromBulk));
+            return r;
+        });
+
+        // Send event for this.
+        if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
+            EventBus.instance().postAsync(new TwitchMassAnonymousSubscriptionGiftedEvent(tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+        } else {
+            EventBus.instance().postAsync(new TwitchMassSubscriptionGiftedEvent(tags.get("login"), tags.get("msg-param-mass-gift-count"), tags.get("msg-param-sub-plan")));
+        }
+    }
+
+    private void onNextGift(Map<String, String> tags) {
+        try {
+            Integer newValue = this.bulkSubscriberGifters.computeIfPresent(tags.get("login"), (key, value) -> {
+                return --value >= 0 ? value : null;
+            });
+            this.bulkSubscriberGifters.remove(tags.get("login"), 0);
+            boolean fromBulk = newValue != null;
+            if (tags.get("login").equalsIgnoreCase(ANONYMOUS_GIFTER_TWITCH_USER)) {
+                EventBus.instance().postAsync(new TwitchAnonymousSubscriptionGiftEvent(tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan"), tags.get("msg-param-gift-months"), fromBulk));
             } else {
-                EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(item.get("login"), item.get("msg-param-recipient-user-name"), item.get("msg-param-months"), item.get("msg-param-sub-plan"), item.get("msg-param-gift-months"), fromBulk));
+                EventBus.instance().postAsync(new TwitchSubscriptionGiftEvent(tags.get("login"), tags.get("msg-param-recipient-user-name"), tags.get("msg-param-months"), tags.get("msg-param-sub-plan"), tags.get("msg-param-gift-months"), fromBulk));
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
-
 }
