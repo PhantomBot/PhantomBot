@@ -427,7 +427,7 @@ $(function () {
         }
 
         let closeButton;
-        if(!override.hasOwnProperty('blockClosing') && override.blockClosing) {
+        if(!(override.hasOwnProperty('blockClosing') && override.blockClosing)) {
             closeButton = $('<button/>', {
                 'type': 'button',
                 'class': 'close',
