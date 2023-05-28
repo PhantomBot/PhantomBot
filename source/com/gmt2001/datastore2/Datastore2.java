@@ -29,6 +29,8 @@ import java.util.Optional;
 import javax.sql.ConnectionPoolDataSource;
 
 import com.gmt2001.Reflect;
+import com.gmt2001.datastore2.fluentstatement.FluentStatement;
+import com.gmt2001.datastore2.fluentstatement.FluentStatementBuilder;
 import com.gmt2001.datastore2.tablebuilder.TableBuilder;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
@@ -174,7 +176,7 @@ public abstract class Datastore2 {
      * has elapsed
      * <p>
      * When the application is finished using the connection, it must call {@link Connection#close()} on it in order
-     * to return it to the pool
+     * to return it to the connection pool
      * <p>
      * Consider using try-with-resources instead to safely auto-close the connection
      * <p>
@@ -207,10 +209,35 @@ public abstract class Datastore2 {
     }
 
     /**
+     * Builds a valid SQL statement from the parameters of the provided {@link FluentStatementBuilder} and converts it
+     * into a {@link FluentStatement}
+     * <p>
+     * The {@link FluentStatement} must be closed by calling {@link FluentStatement#close()} to release it back to the connection
+     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
+     * <p>
+     * Consider using try-with-resources instead to safely auto-close the connection
+     * <p>
+     * Transactions are <b>not</b> comitted automatically when closing a {@link FluentStatement} that has auto-commit disabled
+     *
+     * @param <T> the statement type
+     * @param builder the builder containing the parameters of the statement
+     * @return a {@link FluentStatement} that can be used to set input parameters, execute SQL, and retrieve resultsets
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    public abstract <T> FluentStatement prepareFluentStatement(FluentStatementBuilder<T> builder) throws SQLException;
+
+    /**
      * Creates a {@link PreparedStatement} object for sending parameterized SQL statements to the database
      * <p>
      * This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
      * or by the implementing {@link Datastore2} sub-classes
+     * <p>
+     * The {@link PreparedStatement} must be closed by calling {@link PreparedStatement#close()} to release it back to the connection
+     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
+     * <p>
+     * Consider using try-with-resources instead to safely auto-close the connection
+     * <p>
+     * Transactions are <b>not</b> comitted automatically when closing a {@link PreparedStatement} that has auto-commit disabled
      *
      * @see <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html" target="_blank">Using Prepared Statements</a>
      *
@@ -227,6 +254,13 @@ public abstract class Datastore2 {
      * <p>
      * This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
      * or by the implementing {@link Datastore2} sub-classes
+     * <p>
+     * The {@link Statement} must be closed by calling {@link Statement#close()} to release it back to the connection
+     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
+     * <p>
+     * Consider using try-with-resources instead to safely auto-close the connection
+     * <p>
+     * Transactions are <b>not</b> comitted automatically when closing a {@link Statement} that has auto-commit disabled
      *
      * @return a new default {@link Statement} object
      * @throws SQLException if a database access error occurs or this method is called on a closed connection

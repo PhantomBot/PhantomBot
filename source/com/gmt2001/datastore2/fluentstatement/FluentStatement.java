@@ -18,9 +18,13 @@ package com.gmt2001.datastore2.fluentstatement;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.gmt2001.datastore2.Datastore2;
 
@@ -29,39 +33,92 @@ import com.gmt2001.datastore2.Datastore2;
  *
  * @author gmt2001
  */
-public final class FluentStatement {
+public final class FluentStatement implements AutoCloseable {
     /**
      * A {@link PreparedStatement} that has been compiled for the underlying database
      */
     private final PreparedStatement preparedStatement;
     /**
+     * A valid SQL statement for the underlying database
+     */
+    private final String sqlStatement;
+    /**
      * A map of string placeholder variables to integer indexes of the associated {@code ?} that will be replaced
      */
     private final Map<String, List<Integer>> variables;
+    /**
+     * The RegEx for validating replacement variable names
+     * @see {@link #FluentStatement(String)}
+     */
+    public static final Pattern VARNAME_PATTERN = Pattern.compile("[a-zA-Z0-9_\\-\\.]+");
+    /**
+     * The RegEx used for detecting replacement variables in {@link #sqlStatement()}
+     * @see {@link #FluentStatement(String)}
+     */
+    public static final Pattern VAR_PATTERN = Pattern.compile("<<(?<varname>[a-zA-Z0-9_\\-\\.]+)>>");
 
     /**
      * Constructor
+     * <p>
+     * The variables for replacement should be placed in the SQL statement so that they will match the RegEx {@code <<(?<varname>[a-zA-Z0-9_\-\.]+)>>}.
+     * The Datastore2 driver generating the SQL statement should be careful to not intentionally allow the statement to match this RegEx except where a variable appears
+     * <p>
+     * Example: <br />
+     * <blockquote>
+     * <pre>
+     * {@code
+     * FluentStatement fs = new FluentStatement("SELECT * FROM `myTable` WHERE `X`=<<myXVar>>");
+     * }
+     * </pre>
+     * </blockquote>
+     * <p>
+     * If the exact same variable name appears multiple times, then all instances will be replaced when the appropriate set method is called
+     * <p>
+     * Example: <br />
+     * <blockquote>
+     * <pre>
+     * {@code
+     * FluentStatement fs = new FluentStatement("SELECT * FROM `myTable` WHERE `X`=<<myVar>> OR `Y`=<<myVar>>");
+     * fs.setString("myVar", "Z");
+     * // Effective SQL Statement is now: SELECT * FROM `myTable` WHERE `X`='Z' OR `Y`='Z'
+     * }
+     * </pre>
+     * </blockquote>
      *
-     * @param preparedStatement a {@link PreparedStatement} that has been compiled for the underlying database
-     * @param variables a map of string placeholder variables to integer indexes of the associated {@code ?} that will be replaced
+     * @param sqlStatement a valid SQL statement for the underlying database, with optional variables
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    protected FluentStatement(PreparedStatement preparedStatement, Map<String, List<Integer>> variables) {
-        this.preparedStatement = preparedStatement;
+    protected FluentStatement(String sqlStatement) throws SQLException {
+        Map<String, List<Integer>> variablesMap = new HashMap<>();
+        StringBuilder sqlStatementBuilder = new StringBuilder();
 
-        for (Map.Entry<String, List<Integer>> kv : variables.entrySet()) {
-            variables.put(kv.getKey(), Collections.unmodifiableList(kv.getValue()));
+        int i = 1;
+        int lastIdx = 0;
+        Matcher m = VAR_PATTERN.matcher(sqlStatement);
+        while (m.find()) {
+            if (m.start() > 0) {
+                sqlStatementBuilder.append(sqlStatement.substring(lastIdx, m.start()));
+            }
+            if (!variablesMap.containsKey(m.group("varname"))) {
+                variablesMap.put(m.group("varname"), new ArrayList<Integer>());
+            }
+            variablesMap.get(m.group("varname")).add(i++);
+            sqlStatementBuilder.append('?');
+            lastIdx = m.end();
         }
 
-        this.variables = Collections.unmodifiableMap(variables);
-    }
+        if (lastIdx < sqlStatement.length()) {
+            sqlStatementBuilder.append(sqlStatement.substring(lastIdx));
+        }
 
-    /**
-     * Constructor
-     *
-     * @param preparedStatement a {@link PreparedStatement} that has been compiled for the underlying database
-     */
-    protected FluentStatement(PreparedStatement preparedStatement) {
-        this(preparedStatement, Collections.emptyMap());
+        this.sqlStatement = sqlStatementBuilder.toString();
+        this.preparedStatement = Datastore2.instance().prepareStatement(this.sqlStatement);
+
+        for (Map.Entry<String, List<Integer>> kv : variablesMap.entrySet()) {
+            variablesMap.put(kv.getKey(), Collections.unmodifiableList(kv.getValue()));
+        }
+
+        this.variables = Collections.unmodifiableMap(variablesMap);
     }
 
     /**
@@ -97,6 +154,24 @@ public final class FluentStatement {
     }
 
     /**
+     * The underlying SQL statement
+     *
+     * @return the underlying SQL statement
+     */
+    public String sqlStatement() {
+        return this.sqlStatement;
+    }
+
+    /**
+     * A map of string placeholder variables to integer indexes of the associated {@code ?} that will be replaced
+     *
+     * @return An unmodifiable map of placeholder variables to integer indexes
+     */
+    public Map<String, List<Integer>> variables() {
+        return this.variables;
+    }
+
+    /**
      * Creates a {@code SELECT} statement
      * <p>
      * When performing a {@code SELECT} that contains a join, the {@code fromTable} will be aliased as {@code A}
@@ -106,5 +181,15 @@ public final class FluentStatement {
      */
     public static SelectStatement Select(String fromTable) {
         return new SelectStatement(fromTable);
+    }
+
+    /**
+     * Releases the underlying {@link PreparedStatement}, releasing the connection back to the connection pool
+     *
+     * @throws SQLException if a database access error occurs
+     */
+    @Override
+    public void close() throws SQLException {
+        this.preparedStatement.close();
     }
 }
