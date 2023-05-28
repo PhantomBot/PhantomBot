@@ -156,9 +156,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
         String astr = "";
 
-        if (frame instanceof TextWebSocketFrame) {
-            TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
-
+        if (frame instanceof TextWebSocketFrame tframe) {
             try {
                 JSONObject jso = new JSONObject(tframe.text());
 

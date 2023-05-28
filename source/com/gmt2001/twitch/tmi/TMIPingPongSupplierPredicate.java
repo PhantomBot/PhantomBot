@@ -40,8 +40,8 @@ public final class TMIPingPongSupplierPredicate implements PingPongSupplierPredi
 
     @Override
     public boolean test(WebSocketFrame t) {
-        if (t instanceof TextWebSocketFrame) {
-            boolean result = ((TextWebSocketFrame) t).text().lines().anyMatch(message -> message.startsWith("PONG"));
+        if (t instanceof TextWebSocketFrame tframe) {
+            boolean result = tframe.text().lines().anyMatch(message -> message.startsWith("PONG"));
 
             if (result) {
                 EventBus.instance().postAsync(new IrcPongEvent(null));

@@ -658,16 +658,13 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        if (frame instanceof PingWebSocketFrame) {
+        if (frame instanceof PingWebSocketFrame pingFrame) {
             debug("handleFrame PING");
-            PingWebSocketFrame pingFrame = (PingWebSocketFrame) frame;
             this.client.send(new PongWebSocketFrame(pingFrame.content()));
-        } else if (frame instanceof CloseWebSocketFrame) {
+        } else if (frame instanceof CloseWebSocketFrame closeFrame) {
             debug("handleFrame CLOSE");
-            CloseWebSocketFrame closeFrame = (CloseWebSocketFrame) frame;
             com.gmt2001.Console.out.println("EventSub connection closed [" + closeFrame.statusCode() +"] " + closeFrame.reasonText());
-        } else if (frame instanceof TextWebSocketFrame) {
-            TextWebSocketFrame textFrame = (TextWebSocketFrame) frame;
+        } else if (frame instanceof TextWebSocketFrame textFrame) {
             try {
                 debug("handleFrame TEXT");
                 handleMessage(new JSONObject(textFrame.text()));

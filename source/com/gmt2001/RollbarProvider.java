@@ -392,8 +392,7 @@ public final class RollbarProvider implements AutoCloseable {
 
                                     BodyContent bc = data.getBody().getContents();
 
-                                    if (bc instanceof TraceChain) {
-                                        TraceChain tc = (TraceChain) bc;
+                                    if (bc instanceof TraceChain tc) {
                                         tc.getTraces().stream().forEachOrdered(t -> {
                                             md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
                                             md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());

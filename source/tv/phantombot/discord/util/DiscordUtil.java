@@ -1194,8 +1194,8 @@ public class DiscordUtil {
         com.gmt2001.Console.debug.println("Deleteing Discord message: " + message.getId().asString());
 
         message.delete().doOnError(e -> {
-            if (e instanceof ClientException) {
-                ErrorResponse er = ((ClientException) e).getErrorResponse().get();
+            if (e instanceof ClientException ce) {
+                ErrorResponse er = ce.getErrorResponse().get();
                 if (er != null && er.getFields().containsKey("errorResponse")) {
                     ErrorResponse er2 = (ErrorResponse) er.getFields().get("errorResponse");
                     if (er2 != null && er2.getFields().containsKey("code") && (int) er2.getFields().get("code") == 10008) {

@@ -58,9 +58,7 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         JSONStringer jsonObject = new JSONStringer();
         boolean isError = false;
-        if (frame instanceof TextWebSocketFrame) {
-            TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
-
+        if (frame instanceof TextWebSocketFrame tframe) {
             JSONObject jso;
 
             try {
