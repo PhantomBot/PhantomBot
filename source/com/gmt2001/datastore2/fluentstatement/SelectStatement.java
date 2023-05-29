@@ -35,7 +35,7 @@ public final class SelectStatement extends FluentStatementBuilder<SelectStatemen
      */
     private List<String> columns = new ArrayList<>();
     /**
-     * The table to join
+     * The table to join as {@code B}
      */
     private String joinTable = null;
     /**
@@ -185,7 +185,7 @@ public final class SelectStatement extends FluentStatementBuilder<SelectStatemen
      * <p>
      * When performing a {@code SELECT} that contains a join, the specified columns are selected from table {@code A}
      * <p>
-     * If the list is empty, then {@code *} is being selected from both tables
+     * If the list is empty, then {@code *} is being selected
      *
      * @return the list of columns
      */
@@ -269,7 +269,7 @@ public final class SelectStatement extends FluentStatementBuilder<SelectStatemen
      * @return {@code this}
      */
     public SelectStatement columnB(String column) {
-        if (column != null && !column.isBlank()) {
+        if (column != null && !column.isBlank() && !column.equals("*")) {
             this.columnsB.add(column);
         }
 
@@ -287,7 +287,7 @@ public final class SelectStatement extends FluentStatementBuilder<SelectStatemen
             for (int i = 0; i < columns.length; i++) {
                 String column = columns[i];
 
-                if (column != null && !column.isBlank()) {
+                if (column != null && !column.isBlank() && !column.equals("*")) {
                     this.columnsB.add(column);
                 }
             }
