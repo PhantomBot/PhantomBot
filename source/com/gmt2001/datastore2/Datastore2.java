@@ -64,7 +64,7 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Initializes a new instance of DataStore2, based on the property {@code datastore} in botlogin.txt
+     * Initializes a new instance of Datastore2, based on the property {@code datastore} in botlogin.txt
      * <p>
      * If a datastore type is not specified or is blank, defaults to {@code H2Store}
      * <p>
@@ -80,13 +80,13 @@ public abstract class Datastore2 {
      * <li>The value of the {@code datastore} property in botlogin.txt must match the output of {@link Class#getName()} of the type, including case</li>
      * </ul>
      *
-     * @throws IllegalStateException if {@link #init()} was called after a DataStore2 has already been initialized
+     * @throws IllegalStateException if {@link #init()} was called after a Datastore2 has already been initialized
      * @throws ClassNotFoundException if the class specified in the {@code datastore} property could not be found by the class loader
      * @throws RuntimeException if the specified class was unable to be instantiated
      */
     public static synchronized void init() throws IllegalStateException, ClassNotFoundException {
         if (INSTANCE != null) {
-            throw new IllegalStateException("DataStore2 already initialized");
+            throw new IllegalStateException("Datastore2 already initialized");
         }
 
         String packageName;
