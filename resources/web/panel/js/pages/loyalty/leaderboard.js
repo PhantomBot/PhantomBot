@@ -130,7 +130,7 @@ $(function () {
                 $('#currency-top-title').html('Top ' + helpers.parseNumber(currencyOffset) + ' Currency');
             });
         } else {
-            toastr.error('Cannot load more points since there are currently some being loaded or no more entries are present.');
+            toastr.error('Cannot load more points since there are currently some being loaded.');
         }
     });
 
@@ -161,7 +161,7 @@ $(function () {
                 $('#loyalty-top-title').html('Top ' + helpers.parseNumber(loyaltyOffset) + ' Loyalty');
             });
         } else {
-            toastr.error('Cannot load more time since there are currently some being loaded or no more entries are present.');
+            toastr.error('Cannot load more time since there are currently some being loaded.');
         }
     });
 });
