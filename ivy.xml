@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="io.netty" name="netty-transport-native-epoll" rev="4.1.93.Final" />
         <dependency org="io.netty" name="netty-transport-native-kqueue" rev="4.1.93.Final" />
         <dependency org="io.projectreactor.netty" name="reactor-netty" rev="1.1.7"/>
-        <dependency org="mysql" name="mysql-connector-java" rev="5.1.49"/>
+        <dependency org="com.mysql" name="mysql-connector-j" rev="8.0.33"/>
         <dependency org="net.engio" name="mbassador" rev="1.3.2"/>
         <dependency org="org.apache.commons" name="commons-text" rev="1.10.0"/>
         <dependency org="org.json" name="json" rev="20230227"/>

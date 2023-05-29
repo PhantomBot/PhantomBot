@@ -152,11 +152,11 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException.class)) {
+                                if (error.getClass().equals(com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException.class)) {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException.class)) {
+                                if (error.getClass().equals(java.sql.SQLNonTransientConnectionException.class)) {
                                     return true;
                                 }
 
