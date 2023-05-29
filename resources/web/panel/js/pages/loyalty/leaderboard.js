@@ -115,7 +115,7 @@ $(function () {
             toastr.success('Loading more users into the currency table.');
 
             // Get the next 100 users.
-            socket.getDBTableValuesByOrder('points_top_get_order_btn', 'points', 100, (currencyOffset + 100), 'DESC', true, function (results) {
+            socket.getDBTableValuesByOrder('points_top_get_order_btn', 'points', 100, currencyOffset, 'DESC', true, function (results) {
                 for (let i = 0; i < results.length; i++) {
                     tableData.push([
                         (++currencyOffset),
@@ -130,7 +130,7 @@ $(function () {
                 $('#currency-top-title').html('Top ' + helpers.parseNumber(currencyOffset) + ' Currency');
             });
         } else {
-            toastr.error('Cannot load more points since there are currently some being loaded.');
+            toastr.error('Cannot load more points since there are currently some being loaded or no more entries are present.');
         }
     });
 
@@ -145,7 +145,7 @@ $(function () {
             toastr.success('Loading more users into the loyalty table.');
 
             // Get the next 100 users.
-            socket.getDBTableValuesByOrder('time_top_get_order_btn', 'time', 100, (loyaltyOffset + 100), 'DESC', true, function (results) {
+            socket.getDBTableValuesByOrder('time_top_get_order_btn', 'time', 100, loyaltyOffset, 'DESC', true, function (results) {
                 for (let i = 0; i < results.length; i++) {
                     tableData.push([
                         (++loyaltyOffset),
@@ -161,7 +161,7 @@ $(function () {
                 $('#loyalty-top-title').html('Top ' + helpers.parseNumber(loyaltyOffset) + ' Loyalty');
             });
         } else {
-            toastr.error('Cannot load more time since there are currently some being loaded.');
+            toastr.error('Cannot load more time since there are currently some being loaded or no more entries are present.');
         }
     });
 });
