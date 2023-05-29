@@ -17,7 +17,7 @@
 package com.gmt2001.datastore;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -54,7 +54,7 @@ public final class MySQLStore extends DataStore {
         super(configStr);
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace(System.err);
         }
