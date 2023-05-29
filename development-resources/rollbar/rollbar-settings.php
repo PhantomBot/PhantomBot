@@ -79,12 +79,12 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException'
+            'class' => 'com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException'
+            'class' => 'java.sql.SQLNonTransientConnectionException'
         )
     ),
     array(
