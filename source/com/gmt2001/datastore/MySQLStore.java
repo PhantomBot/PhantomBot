@@ -17,6 +17,8 @@
 package com.gmt2001.datastore;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
+import tv.phantombot.CaselessProperties;
+
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -37,6 +39,8 @@ public final class MySQLStore extends DataStore {
     private static final int MAX_CONNECTIONS = 30;
     private static MySQLStore instance;
     private final MiniConnectionPoolManager poolMgr;
+    private static final String COLLATION = "utf8mb4_general_ci";
+    private static final String CHARSET= "utf8mb4";
 
     public static MySQLStore instance() {
         return instance("");
@@ -61,6 +65,20 @@ public final class MySQLStore extends DataStore {
 
         MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
         dataSource.setURL(configStr);
+        try {
+            //Ensure correct collation and encoding
+            dataSource.setConnectionCollation(COLLATION);
+            dataSource.setCharacterEncoding("UTF-8");
+            /**
+             * @botproperty mysqlallowpublickeyretrieval - Indicates if retrieval of the public key from the MySQL server is allowed for authentication (needed for newer authentication methods like 'caching_sha2_password')
+             * @botpropertytype mysqlallowpublickeyretrieval Boolean
+             * @botpropertycatsort mysqlallowpublickeyretrieval 260 30 Datastore
+             * @botpropertyrestart mysqlallowpublickeyretrieval
+             */
+            dataSource.setAllowPublicKeyRetrieval(CaselessProperties.instance().getPropertyAsBoolean("mysqlallowpublickeyretrieval", false));
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        }
 
         poolMgr = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
     }
@@ -129,7 +147,7 @@ public final class MySQLStore extends DataStore {
         fName = validateFname(fName);
 
         try ( Statement statement = connection.createStatement()) {
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (section(30), variable(150))) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS phantombot_" + fName + " (section LONGTEXT, variable varchar(255) NOT NULL, value LONGTEXT, PRIMARY KEY (section(30), variable(150))) DEFAULT CHARSET=" + CHARSET + " COLLATE " + COLLATION + ";");
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
