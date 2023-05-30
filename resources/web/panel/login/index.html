@@ -379,17 +379,26 @@
                 function checkAlreadyLoggedIn() {
                     if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
                         if (window.localStorage.getItem('remember') !== 'forever') {
-                            if (window.localStorage.getItem('remember') !== 'session' && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()) {
+                            if (window.localStorage.getItem('remember') !== 'session' && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()
+                              && (window.sessionStorage.getItem('/panel/login#remember') === null || parseInt(window.sessionStorage.getItem('/panel/login#remember')) < Date.now())) {
+                                window.sessionStorage.setItem('/panel/login#remember', (Date.now() + 10000));
                                 window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
-                                window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=300');
+                                window.sessionStorage.setItem('cookie', 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=300');
+                                history.pushState({}, "PhantomBot | Log in | Success");
                                 document.cookie = window.sessionStorage.getItem('cookie');
                                 doKickback(window.localStorage.getItem('isStable'));
                             } else {
+                                if (window.sessionStorage.getItem('/panel/login#remember') !== null && parseInt(window.sessionStorage.getItem('/panel/login#remember')) >= Date.now()) {
+                                    $('#error-box').removeClass('hide');
+                                    $('#alert-br').removeClass('hide');
+                                    $('#error-box').html('Detected infinite <i>Remember Me</i> loop. You are now logged out');
+                                }
                                 window.localStorage.removeItem('webauth');
                                 window.localStorage.removeItem('remember');
                                 window.localStorage.removeItem('isStable');
                                 window.localStorage.removeItem('expires');
                                 window.localStorage.removeItem('b64');
+                                window.sessionStorage.removeItem('/panel/login#remember');
                                 authExpired = true;
                             }
                         }
@@ -450,14 +459,14 @@
         </script>
         <script>
             function doFix() {
-                window.sessionStorage.setItem("/panel/login#fix", (Date.now() + 10000));
-                let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + "/");
+                window.sessionStorage.setItem('/panel/login#fix', (Date.now() + 10000));
+                let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + '/');
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
                 window.location.replace(newURL);
             }
 
-            if (!window.location.pathname.endsWith("/")) {
-                if (window.sessionStorage.getItem("/panel/login#fix") === null || parseInt(window.sessionStorage.getItem("/panel/login#fix")) < Date.now()) {
+            if (!window.location.pathname.endsWith('/')) {
+                if (window.sessionStorage.getItem('/panel/login#fix') === null || parseInt(window.sessionStorage.getItem('/panel/login#fix')) < Date.now()) {
                     doFix();
                 }
             }
