@@ -81,6 +81,55 @@ public final class MySQLStore extends DataStore {
         }
 
         poolMgr = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
+        checkCollation();
+    }
+
+    private void checkCollation(){
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = poolMgr.getConnection().prepareStatement("SELECT DEFAULT_COLLATION_NAME, DEFAULT_CHARACTER_SET_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = ?");
+            preparedStatement.setString(1, poolMgr.getConnection().getCatalog());
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String collation = resultSet.getString("DEFAULT_COLLATION_NAME");
+                String charset = resultSet.getString("DEFAULT_CHARACTER_SET_NAME");
+                boolean isAsExpected = true;
+
+                if (!charset.equalsIgnoreCase(CHARSET)) {
+                    isAsExpected = false;
+                    com.gmt2001.Console.warn.println("Default database character set could lead to encoding and search or comparison issues in custom tables outside of PhantomBot modules!");
+                    com.gmt2001.Console.warn.println("Expected character set: '" + CHARSET + "'");
+                    com.gmt2001.Console.warn.println("Detected character set: '" + charset + "'");
+                }
+                if (!collation.equalsIgnoreCase(COLLATION)) {
+                    isAsExpected = false;
+                    com.gmt2001.Console.warn.println("Default database collation could lead to encoding and search or comparison issues in custom tables created outside of PhantomBot modules!");
+                    com.gmt2001.Console.warn.println("Expected collation: '" + COLLATION + "'");
+                    com.gmt2001.Console.warn.println("Detected collation: '" + collation + "'");
+                }
+                if(!isAsExpected) {
+                    com.gmt2001.Console.warn.println("We recommend using '" + CHARSET + "' as default database character set and '" + COLLATION + "' as the default database collation!");
+                    com.gmt2001.Console.warn.println("Tables created through PhantomBot are not affected");
+                }
+            } else {
+                com.gmt2001.Console.err.println("Database " + poolMgr.getConnection().getCatalog() + " not found!");
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
     }
 
     private String sanitizeOrder(String order) {
