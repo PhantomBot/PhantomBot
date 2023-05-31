@@ -179,6 +179,16 @@ _NOTE: A restart is required for this property to take effect_
 
 &nbsp;
 
+#### mysqlallowpublickeyretrieval
+
+Data Type: _Boolean_
+
+indicates if retrieval of the public key from the mysql server is allowed for authentication (needed for newer authentication methods like 'caching_sha2_password')
+
+_NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
 #### backupdbauto
 
 Data Type: _Boolean_
