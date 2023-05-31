@@ -39,7 +39,7 @@ public final class FluentStatement implements AutoCloseable {
      */
     private final PreparedStatement preparedStatement;
     /**
-     * A valid SQL statement for the underlying database
+     * A valid SQL statement for the underlying database, after variables are replaced with {@code ?}
      */
     private final String sqlStatement;
     /**
@@ -208,7 +208,7 @@ public final class FluentStatement implements AutoCloseable {
     }
 
     /**
-     * The underlying SQL statement
+     * The underlying SQL statement, after variables are replaced with {@code ?}
      *
      * @return the underlying SQL statement
      */
