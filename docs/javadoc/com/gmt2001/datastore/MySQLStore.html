@@ -177,9 +177,7 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect(java.lang.String,java.lang.String,java.lang.String)">CanConnect</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect()">CanConnect</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Tests if the connection to the database succeeds.</div>
 </td>
@@ -457,26 +455,20 @@ extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStor
 <pre class="methodSignature">public static&nbsp;<a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a>&nbsp;instance&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configStr)</pre>
 </li>
 </ul>
-<a id="CanConnect(java.lang.String,java.lang.String,java.lang.String)">
+<a id="CanConnect()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>CanConnect</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#CanConnect(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#CanConnect()">DataStore</a></code></span></div>
 <div class="block">Tests if the connection to the database succeeds.
 
  This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="DataStore.html#CanConnect(java.lang.String,java.lang.String,java.lang.String)">CanConnect</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>db</code> - The JDBC connection string</dd>
-<dd><code>user</code> - The username</dd>
-<dd><code>pass</code> - The password</dd>
+<dd><code><a href="DataStore.html#CanConnect()">CanConnect</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>true</code> on success or on embedded databases</dd>
 </dl>
