@@ -18,6 +18,7 @@ package com.gmt2001.datastore2.fluentstatement;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -150,6 +151,83 @@ public final class FluentStatement implements AutoCloseable {
         }
 
         this.variables = Collections.unmodifiableMap(variablesMap);
+    }
+
+    /**
+     * Sets the underlying {@link PreparedStatement}'s auto-commit mode to the given state.
+     * <p>
+     * If a connection is in auto-commit mode, then all its SQL statements will be executed and committed as individual
+     * transactions. Otherwise, its SQL statements are grouped into transactions that are terminated by a call
+     * to either {@link #commit()} or the method rollback. By default, new connections are in auto-commit mode
+     * <p>
+     * The commit occurs when the statement completes. The time when the statement completes depends on the type of SQL Statement:
+     * <ul>
+     * <li>For DML statements, such as Insert, Update or Delete, and DDL statements, the statement is complete as soon as it has finished executing</li>
+     * <li>For Select statements, the statement is complete when the associated result set is closed</li>
+     * </Ul>
+     *
+     * @param autoCommit {@code true} to enable auto-commit mode
+     * @throws SQLException if a database access error occurs or this is called when the
+     * underlying {@link PreparedStatement} is closed
+     */
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        this.preparedStatement.getConnection().setAutoCommit(autoCommit);
+    }
+
+    /**
+     * Indicates the current auto-commit mode for the underlying {@link PreparedStatement}
+     *
+     * @return {@code true} if auto-commit mode is enabled
+     * @throws SQLException if a database access error occurs or this is called when the
+     * underlying {@link PreparedStatement} is closed
+     */
+    public boolean getAutoCommit() throws SQLException {
+        return this.preparedStatement.getConnection().getAutoCommit();
+    }
+
+    /**
+     * Creates a savepoint in the current transaction and returns the new {@link Savepoint} object that represents it
+     *
+     * @return the new {@link Savepoint} object
+     * @throws SQLException if a database access error occurs, this is called when the
+     * underlying {@link PreparedStatement} is closed, or auto-commit mode is enabled
+     */
+    public Savepoint setSavepoint() throws SQLException {
+        return this.preparedStatement.getConnection().setSavepoint();
+    }
+
+    /**
+     * Makes all changes made since the previous commit/rollback permanent and releases any
+     * database locks currently held by the underlying {@link PreparedStatement}
+     *
+     * @throws SQLException if a database access error occurs, this is called when the
+     * underlying {@link PreparedStatement} is closed, or auto-commit mode is enabled
+     */
+    public void commit() throws SQLException {
+        this.preparedStatement.getConnection().commit();
+    }
+
+    /**
+     * Undoes all changes made in the current transaction and releases any
+     * database locks currently held by the underlying {@link PreparedStatement}
+     *
+     * @throws SQLException if a database access error occurs, this is called when the
+     * underlying {@link PreparedStatement} is closed, or auto-commit mode is enabled
+     */
+    public void rollback() throws SQLException {
+        this.preparedStatement.getConnection().rollback();
+    }
+
+    /**
+     * Undoes all changes made in the current transaction and releases any
+     * database locks currently held by the underlying {@link PreparedStatement}
+     *
+     * @param savepoint the {@link Savepoint} object to rollback to
+     * @throws SQLException if a database access error occurs, this is called when the
+     * underlying {@link PreparedStatement} is closed, or auto-commit mode is enabled
+     */
+    public void rollback(Savepoint savepoint) throws SQLException {
+        this.preparedStatement.getConnection().rollback(savepoint);
     }
 
     /**
