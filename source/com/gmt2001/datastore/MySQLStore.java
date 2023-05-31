@@ -106,8 +106,8 @@ public final class MySQLStore extends DataStore {
     }
 
     @Override
-    public boolean CanConnect(String db, String user, String pass) {
-        try ( Connection connection = DriverManager.getConnection(db, user, pass)) {
+    public boolean CanConnect() {
+        try (Connection connection = GetConnection()) {
             return true;
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
