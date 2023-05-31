@@ -93,7 +93,7 @@ public final class FluentStatement implements AutoCloseable {
      * <pre>
      * {@code
      * FluentStatement fs = new FluentStatement("SELECT * FROM `myTable` WHERE `X` IN <<myVar:5>>");
-     * fs.setInString("myVar", List.of("A", "B", "C", "D", "E"));
+     * fs.setString("myVar", List.of("A", "B", "C", "D", "E"));
      * // Effective SQL Statement is now: SELECT * FROM `myTable` WHERE `X` IN ("A", "B", "C", "D", "E")
      * }
      * </pre>
@@ -186,11 +186,7 @@ public final class FluentStatement implements AutoCloseable {
      * the {@link Datastore2} class for the database, a database access error occurs, or this is called when the
      * underlying {@link PreparedStatement} is closed
      */
-    public void setInString(String variable, List<String> values) throws IllegalArgumentException, SQLException {
-        if (!variables.containsKey(variable)) {
-            throw new IllegalArgumentException("No variable named " + variable);
-        }
-
+    public void setString(String variable, List<String> values) throws IllegalArgumentException, SQLException {
         this.setString(variable, values.get(0));
 
         for (int i = 0; i < values.size(); i++) {
@@ -222,6 +218,17 @@ public final class FluentStatement implements AutoCloseable {
 
     /**
      * A map of string placeholder variables to integer indexes of the associated {@code ?} that will be replaced
+     * <p>
+     * For {@code IN} expression operands that were defined in the constructor with a count as in {@code <<myVar:5>>}, the map will include:
+     * <ul>
+     * <li>{@code myVar} - used to validate the variable name exists. If spotted elsewhere in the query as {@code <<myVar>>}, will be replaced with {@code myVar:0}
+     * <li>{@code myVar:0} - the first value in the input list to {@link #setString(String, List)}</li>
+     * <li>{@code myVar:1} - the second value in the input list to {@link #setString(String, List)}</li>
+     * <li>{@code myVar:2} - the third value in the input list to {@link #setString(String, List)}</li>
+     * <li>{@code myVar:3} - the fourth value in the input list to {@link #setString(String, List)}</li>
+     * <li>{@code myVar:4} - the fifth value in the input list to {@link #setString(String, List)}</li>
+     * <li>The number of these will match the defined count of the variable</li>
+     * </ul>
      *
      * @return An unmodifiable map of placeholder variables to integer indexes
      */
