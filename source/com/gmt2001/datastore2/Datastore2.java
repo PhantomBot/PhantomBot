@@ -219,12 +219,11 @@ public abstract class Datastore2 {
      * <p>
      * Transactions are <b>not</b> comitted automatically when closing a {@link FluentStatement} that has auto-commit disabled
      *
-     * @param <T> the statement type
      * @param builder the builder containing the parameters of the statement
      * @return a {@link FluentStatement} that can be used to set input parameters, execute SQL, and retrieve resultsets
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    public abstract <T> FluentStatement prepareFluentStatement(FluentStatementBuilder<T> builder) throws SQLException;
+    public abstract FluentStatement prepareFluentStatement(FluentStatementBuilder builder) throws SQLException;
 
     /**
      * Creates a {@link PreparedStatement} object for sending parameterized SQL statements to the database

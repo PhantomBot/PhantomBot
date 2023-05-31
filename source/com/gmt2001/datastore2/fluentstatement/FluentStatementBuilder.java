@@ -21,7 +21,7 @@ package com.gmt2001.datastore2.fluentstatement;
  *
  * @author gmt2001
  */
-public abstract class FluentStatementBuilder<T> {
+public abstract class FluentStatementBuilder {
     /**
      * The name of the primary table of the query
      */
