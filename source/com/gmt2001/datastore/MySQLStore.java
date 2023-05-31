@@ -80,7 +80,7 @@ public final class MySQLStore extends DataStore {
             ex.printStackTrace(System.err);
         }
 
-        poolMgr = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS); 
+        poolMgr = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
     }
 
     private String sanitizeOrder(String order) {
