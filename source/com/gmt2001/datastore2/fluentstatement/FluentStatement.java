@@ -55,12 +55,12 @@ public final class FluentStatement implements AutoCloseable {
      * The RegEx used for detecting replacement variables in {@link #sqlStatement()}
      * @see {@link #FluentStatement(String)}
      */
-    public static final Pattern VAR_PATTERN = Pattern.compile("<<(?<varname>[a-zA-Z0-9_\\-\\.]+)>>");
+    public static final Pattern VAR_PATTERN = Pattern.compile("<<(?<varname>[a-zA-Z0-9_\\-\\.]+)(?::(?<count>[1-9][0-9]*))?>>");
 
     /**
      * Constructor
      * <p>
-     * The variables for replacement should be placed in the SQL statement so that they will match the RegEx {@code <<(?<varname>[a-zA-Z0-9_\-\.]+)>>}.
+     * The variables for replacement should be placed in the SQL statement so that they will match the RegEx {@code <<(?<varname>[a-zA-Z0-9_\-\.]+)(?::(?<count>[1-9][0-9]*))?>>}.
      * The Datastore2 driver generating the SQL statement should be careful to not intentionally allow the statement to match this RegEx except where a variable appears
      * <p>
      * Example: <br />
@@ -84,6 +84,20 @@ public final class FluentStatement implements AutoCloseable {
      * }
      * </pre>
      * </blockquote>
+     * <p>
+     * If the variable is being used for an {@code IN} expression, add a {@code :count} suffix to the variable name indicating the number of
+     * operands for the right side of the {@code IN} expression
+     * <p>
+     * Example: <br />
+     * <blockquote>
+     * <pre>
+     * {@code
+     * FluentStatement fs = new FluentStatement("SELECT * FROM `myTable` WHERE `X` IN <<myVar:5>>");
+     * fs.setInString("myVar", List.of("A", "B", "C", "D", "E"));
+     * // Effective SQL Statement is now: SELECT * FROM `myTable` WHERE `X` IN ("A", "B", "C", "D", "E")
+     * }
+     * </pre>
+     * </blockquote>
      *
      * @param sqlStatement a valid SQL statement for the underlying database, with optional variables
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
@@ -102,8 +116,25 @@ public final class FluentStatement implements AutoCloseable {
             if (!variablesMap.containsKey(m.group("varname"))) {
                 variablesMap.put(m.group("varname"), new ArrayList<Integer>());
             }
-            variablesMap.get(m.group("varname")).add(i++);
-            sqlStatementBuilder.append('?');
+            if (m.group("count") == null) {
+                variablesMap.get(m.group("varname")).add(i++);
+                sqlStatementBuilder.append('?');
+            } else {
+                int count = Integer.parseUnsignedInt(m.group("count"));
+                if (count > 0) {
+                    for (int j = 0; j < count; j++) {
+                        String vj = m.group("varname") + ":" + j;
+                        if (!variablesMap.containsKey(vj)) {
+                            variablesMap.put(vj, new ArrayList<Integer>());
+                        }
+                        variablesMap.get(vj).add(i++);
+                        if (j > 0) {
+                            sqlStatementBuilder.append(',');
+                        }
+                        sqlStatementBuilder.append('?');
+                    }
+                }
+            }
             lastIdx = m.end();
         }
 
@@ -129,7 +160,7 @@ public final class FluentStatement implements AutoCloseable {
      * @param variable the variable to replace
      * @param value the value to set
      * @throws IllegalArgumentException if the variable specified was not added to the builder before compiling
-     * @throws SQLException if one or more of the {@code ?} marker for the variable was not placed into the SQL statement by
+     * @throws SQLException if one or more of the {@code ?} marker for the variable was not found in the SQL statement by
      * the {@link Datastore2} class for the database, a database access error occurs, or this is called when the
      * underlying {@link PreparedStatement} is closed
      */
@@ -140,6 +171,33 @@ public final class FluentStatement implements AutoCloseable {
 
         for (int i : variables.get(variable)) {
             this.preparedStatement.setString(i, value);
+        }
+    }
+
+    /**
+     * Sets the right hand side of the designated {@code IN} expression variable to the given list of string values
+     * <p>
+     * The database driver automatically escapes the strings to prevent SQL injection attacks
+     *
+     * @param variable the variable to replace
+     * @param values the values to set
+     * @throws IllegalArgumentException if the variable specified was not added to the builder before compiling
+     * @throws SQLException if one or more of the {@code ?} marker for the variable was not found in the SQL statement by
+     * the {@link Datastore2} class for the database, a database access error occurs, or this is called when the
+     * underlying {@link PreparedStatement} is closed
+     */
+    public void setInString(String variable, List<String> values) throws IllegalArgumentException, SQLException {
+        if (!variables.containsKey(variable)) {
+            throw new IllegalArgumentException("No variable named " + variable);
+        }
+
+        this.setString(variable, values.get(0));
+
+        for (int i = 0; i < values.size(); i++) {
+            String vi = variable + ":" + i;
+            if (variables.containsKey(vi)) {
+                this.setString(vi, values.get(i));
+            }
         }
     }
 
