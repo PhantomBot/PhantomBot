@@ -220,10 +220,30 @@ public abstract class Datastore2 {
      * Transactions are <b>not</b> comitted automatically when closing a {@link FluentStatement} that has auto-commit disabled
      *
      * @param builder the builder containing the parameters of the statement
+     * @param connection the connection to prepare the statement on
      * @return a {@link FluentStatement} that can be used to set input parameters, execute SQL, and retrieve resultsets
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    public abstract FluentStatement prepareFluentStatement(FluentStatementBuilder builder) throws SQLException;
+    public abstract FluentStatement prepareFluentStatement(FluentStatementBuilder builder, Connection connection) throws SQLException;
+
+    /**
+     * Builds a valid SQL statement from the parameters of the provided {@link FluentStatementBuilder} and converts it
+     * into a {@link FluentStatement}
+     * <p>
+     * The {@link FluentStatement} must be closed by calling {@link FluentStatement#close()} to release it back to the connection
+     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
+     * <p>
+     * Consider using try-with-resources instead to safely auto-close the connection
+     * <p>
+     * Transactions are <b>not</b> comitted automatically when closing a {@link FluentStatement} that has auto-commit disabled
+     *
+     * @param builder the builder containing the parameters of the statement
+     * @return a {@link FluentStatement} that can be used to set input parameters, execute SQL, and retrieve resultsets
+     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     */
+    public FluentStatement prepareFluentStatement(FluentStatementBuilder builder) throws SQLException {
+        return this.prepareFluentStatement(builder, this.getConnection());
+    }
 
     /**
      * Creates a {@link PreparedStatement} object for sending parameterized SQL statements to the database

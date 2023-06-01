@@ -16,6 +16,7 @@
  */
 package com.gmt2001.datastore2.fluentstatement;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -101,9 +102,10 @@ public final class FluentStatement implements AutoCloseable {
      * </blockquote>
      *
      * @param sqlStatement a valid SQL statement for the underlying database, with optional variables
+     * @param connection a connection to the database
      * @throws SQLException if a database access error occurs or this method is called on a closed connection
      */
-    protected FluentStatement(String sqlStatement) throws SQLException {
+    protected FluentStatement(String sqlStatement, Connection connection) throws SQLException {
         Map<String, List<Integer>> variablesMap = new HashMap<>();
         StringBuilder sqlStatementBuilder = new StringBuilder();
 
@@ -144,7 +146,7 @@ public final class FluentStatement implements AutoCloseable {
         }
 
         this.sqlStatement = sqlStatementBuilder.toString();
-        this.preparedStatement = Datastore2.instance().prepareStatement(this.sqlStatement);
+        this.preparedStatement = connection.prepareStatement(this.sqlStatement);
 
         for (Map.Entry<String, List<Integer>> kv : variablesMap.entrySet()) {
             variablesMap.put(kv.getKey(), Collections.unmodifiableList(kv.getValue()));
@@ -158,7 +160,7 @@ public final class FluentStatement implements AutoCloseable {
      * <p>
      * If a connection is in auto-commit mode, then all its SQL statements will be executed and committed as individual
      * transactions. Otherwise, its SQL statements are grouped into transactions that are terminated by a call
-     * to either {@link #commit()} or the method rollback. By default, new connections are in auto-commit mode
+     * to either {@link #commit()} or {@link #rollback()}. By default, new connections are in auto-commit mode
      * <p>
      * The commit occurs when the statement completes. The time when the statement completes depends on the type of SQL Statement:
      * <ul>
