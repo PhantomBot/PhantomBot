@@ -245,6 +245,9 @@ public final class SelectStatement extends FluentStatementBuilder {
      * When performing a {@code SELECT} that contains a join, the specified column will be selected from table {@code A}
      * <p>
      * To perform a {@code SELECT *}, don't call this method
+     * <p>
+     * The order of calls to {@link #column(String)}, {@link #columns(String...)}, {@link #columnB(String)}, and {@link #columnsB(String...)} determines
+     * the order in which the columns appear in the resultset
      *
      * @param column the column to select
      * @return {@code this}
@@ -263,6 +266,9 @@ public final class SelectStatement extends FluentStatementBuilder {
      * When performing a {@code SELECT} that contains a join, the specified columns will be selected from table {@code A}
      * <p>
      * To perform a {@code SELECT *}, don't call this method
+     * <p>
+     * The order of calls to {@link #column(String)}, {@link #columns(String...)}, {@link #columnB(String)}, and {@link #columnsB(String...)} determines
+     * the order in which the columns appear in the resultset
      *
      * @param columns the columns to select
      * @return {@code this}
@@ -363,6 +369,11 @@ public final class SelectStatement extends FluentStatementBuilder {
 
     /**
      * Adds a column to be selected from table {@code B} in a {@code JOIN}
+     * <p>
+     * To perform a {@code SELECT *}, don't call this method
+     * <p>
+     * The order of calls to {@link #column(String)}, {@link #columns(String...)}, {@link #columnB(String)}, and {@link #columnsB(String...)} determines
+     * the order in which the columns appear in the resultset
      *
      * @param column the column to select
      * @return {@code this}
@@ -377,6 +388,11 @@ public final class SelectStatement extends FluentStatementBuilder {
 
     /**
      * Adds multiple columns to be selected from table {@code B} in a {@code JOIN}
+     * <p>
+     * To perform a {@code SELECT *}, don't call this method
+     * <p>
+     * The order of calls to {@link #column(String)}, {@link #columns(String...)}, {@link #columnB(String)}, and {@link #columnsB(String...)} determines
+     * the order in which the columns appear in the resultset
      *
      * @param columns the columns to select
      * @return {@code this}
