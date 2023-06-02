@@ -170,50 +170,6 @@ public final class SelectStatement extends FluentStatementBuilder {
     }
 
     /**
-     * Information about a column
-     */
-    public sealed class ColumnInfo {
-        /**
-         * If this column is from table {@code B}
-         */
-        private final boolean isTableB;
-        /**
-         * The column
-         */
-        private final String column;
-
-        /**
-         * Constructor
-         *
-         * @param isTableB if this column is from table {@code B}
-         * @param column the column
-         * @param sortDirection the sort direction
-         */
-        private ColumnInfo(boolean isTableB, String column) {
-            this.isTableB = isTableB;
-            this.column = column;
-        }
-
-        /**
-         * If this column is from table {@code B}
-         *
-         * @return {@code true} if from table {@code B}; {@code false} if from table {@code A}
-         */
-        public boolean isTableB() {
-            return this.isTableB;
-        }
-
-        /**
-         * The column
-         *
-         * @return the column name
-         */
-        public String column() {
-            return this.column;
-        }
-    }
-
-    /**
      * Constructor
      * <p>
      * When performing a {@code SELECT} that contains a join, the {@code fromTable} will be aliased as {@code A}
