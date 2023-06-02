@@ -47,9 +47,17 @@ public final class SelectStatement extends FluentStatementBuilder {
      */
     private List<JoinOn> joinOn = new ArrayList<>();
     /**
-     * The columns to select from table {@code B}
+     * The limit on the number of rows to return
      */
-    private List<String> columnsB = new ArrayList<>();
+    private long limit = -1L;
+    /**
+     * The offset to start returning rows from
+     */
+    private long offset = -1L;
+    /**
+     * The columns to sort by
+     */
+    private List<ColumnSort> orderBy = new ArrayList<>();
 
     /**
      * Types of table joins
@@ -67,6 +75,20 @@ public final class SelectStatement extends FluentStatementBuilder {
          * {@code RIGHT OUTER JOIN}
          */
         RIGHT_OUTER
+    }
+
+    /**
+     * Sorting directions
+     */
+    public enum SortDirection {
+        /**
+         * Ascending (eg. A-Z or 0-9)
+         */
+        ASC,
+        /**
+         * Descending (eg. Z-A or 9-0)
+         */
+        DESC
     }
 
     /**
@@ -112,6 +134,36 @@ public final class SelectStatement extends FluentStatementBuilder {
         }
     }
 
+    /**
+     * A column and sort order used for {@code ORDER BY}
+     */
+    public final class ColumnSort extends ColumnInfo {
+        /**
+         * The sort direction
+         */
+        private final SortDirection sortDirection;
+
+        /**
+         * Constructor
+         *
+         * @param isTableB if this column is from table {@code B}
+         * @param column the column
+         * @param sortDirection the sort direction
+         */
+        private ColumnSort(boolean isTableB, String column, SortDirection sortDirection) {
+            super(isTableB, column);
+            this.sortDirection = sortDirection;
+        }
+
+        /**
+         * The sort direction
+         *
+         * @return the sort direction
+         */
+        public SortDirection sortDirection() {
+            return this.sortDirection;
+        }
+    }
 
     /**
      * Information about a column
@@ -342,21 +394,97 @@ public final class SelectStatement extends FluentStatementBuilder {
 
         return this;
     }
-                }
-            }
+
+    /**
+     * Sets the limit on the number of rows to return in the resultset
+     *
+     * @param limit the row limit
+     * @return {@code this}
+     */
+    public SelectStatement limit(long limit) {
+        if (limit > 0) {
+            this.limit = limit;
         }
 
         return this;
     }
 
     /**
-     * Returns the columns that are being selected from table {@code B} in a {@code JOIN}
-     * <p>
-     * If the list is empty, then no additional columns are being selected
+     * The limit on the number of rows to return in the resultset
      *
-     * @return the list of columns
+     * @return the limit; {@code -1} if not set
      */
-    public List<String> columnsB() {
-        return Collections.unmodifiableList(this.columnsB);
+    public long limit() {
+        return this.limit;
+    }
+
+    /**
+     * Sets the offset to start returning rows from in the resultset
+     *
+     * @param offset the result offset
+     * @return {@code this}
+     */
+    public SelectStatement offset(long offset) {
+        if (offset > 0) {
+            this.offset = offset;
+        }
+
+        return this;
+    }
+
+    /**
+     * The offset to start returning rows from in the resultset
+     *
+     * @return the offset; {@code -1} if not set
+     */
+    public long offset() {
+        return this.offset;
+    }
+
+    /**
+     * Adds a column to {@code ORDER BY} from table {@code A}
+     * <p>
+     * The order of calls to {@link #orderBy(String, SortDirection)} and {@link #orderByB(String, SortDirection)} determine
+     * the order in which the columns are sorted
+     *
+     * @param column the column to sort by
+     * @param sortDirection the sort direction
+     * @return {@code this}
+     */
+    public SelectStatement orderBy(String column, SortDirection sortDirection) {
+        if (column != null && !column.isBlank()) {
+            this.orderBy.add(new ColumnSort(false, column, sortDirection));
+        }
+
+        return this;
+    }
+
+    /**
+     * Adds a column to {@code ORDER BY} from table {@code B}
+     * <p>
+     * The order of calls to {@link #orderBy(String, SortDirection)} and {@link #orderByB(String, SortDirection)} determine
+     * the order in which the columns are sorted
+     *
+     * @param column the column to sort by
+     * @param sortDirection the sort direction
+     * @return {@code this}
+     */
+    public SelectStatement orderByB(String column, SortDirection sortDirection) {
+        if (column != null && !column.isBlank()) {
+            this.orderBy.add(new ColumnSort(true, column, sortDirection));
+        }
+
+        return this;
+    }
+
+    /**
+     * Returns the list of columns and sort directions from both tables that are being used to sort the resultset
+     * <p>
+     * If the list is empty, then there is no {@code ORDER BY}
+     *
+     * @return the list of column sort data
+     */
+    public List<ColumnSort> orderBy() {
+        return Collections.unmodifiableList(this.orderBy);
     }
 }
