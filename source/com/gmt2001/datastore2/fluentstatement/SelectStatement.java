@@ -58,6 +58,10 @@ public final class SelectStatement extends FluentStatementBuilder {
      * The columns to sort by
      */
     private List<ColumnSort> orderBy = new ArrayList<>();
+    /**
+     * The columns to group by
+     */
+    private List<ColumnInfo> groupBy = new ArrayList<>();
 
     /**
      * Types of table joins
@@ -494,7 +498,7 @@ public final class SelectStatement extends FluentStatementBuilder {
     }
 
     /**
-     * Returns the list of columns and sort directions from both tables that are being used to sort the resultset
+     * Returns the list of columns and sort directions that are being used to sort the resultset
      * <p>
      * If the list is empty, then there is no {@code ORDER BY}
      *
@@ -502,5 +506,50 @@ public final class SelectStatement extends FluentStatementBuilder {
      */
     public List<ColumnSort> orderBy() {
         return Collections.unmodifiableList(this.orderBy);
+    }
+
+    /**
+     * Adds a column to {@code GROUP BY} from table {@code A}
+     * <p>
+     * The order of calls to {@link #groupBy(String)} and {@link #groupByB(String)} determine
+     * the order in which the columns are used to perform grouping
+     *
+     * @param column the column to group by
+     * @return {@code this}
+     */
+    public SelectStatement groupBy(String column) {
+        if (column != null && !column.isBlank()) {
+            this.groupBy.add(new ColumnInfo(false, column));
+        }
+
+        return this;
+    }
+
+    /**
+     * Adds a column to {@code GROUP BY} from table {@code B}
+     * <p>
+     * The order of calls to {@link #groupBy(String)} and {@link #groupByB(String)} determine
+     * the order in which the columns are used to perform grouping
+     *
+     * @param column the column to group by
+     * @return {@code this}
+     */
+    public SelectStatement groupByB(String column) {
+        if (column != null && !column.isBlank()) {
+            this.groupBy.add(new ColumnInfo(true, column));
+        }
+
+        return this;
+    }
+
+    /**
+     * Returns the list of columns that are being used to group the resultset
+     * <p>
+     * If the list is empty, then there is no {@code GROUP BY}
+     *
+     * @return the list of columns to group by
+     */
+    public List<ColumnInfo> groupBy() {
+        return Collections.unmodifiableList(this.groupBy);
     }
 }
