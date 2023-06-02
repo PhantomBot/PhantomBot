@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -775,25 +776,49 @@ public final class ConsoleEventHandler implements Listener {
 
         if(message.equalsIgnoreCase("paneluser")) {
             if (argument != null && argument.length > 1 && !argument[0].isBlank() && !argument[1].isBlank()) {
+                /**
+                 * @consolecommand paneluser add username - Creates a new panel user with full access to all panel sections if the user does not exist and prints the randomly generated password
+                 */
                 if (argument[0].equalsIgnoreCase("add")) {
                     String permission = null;
-                    if (argument.length == 4 && !argument[2].isBlank() && !argument[3].isBlank()) {
-                        permission = argument[2] + " " + argument[3]; // Full Access, Read Only
-                    }
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(argument[1], permission, false);
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(argument[1], false);
                     com.gmt2001.Console.out.println("Password for new user " + argument[1] + " is:");
                     com.gmt2001.Console.out.println(response.getMessage());
-                } else if (argument[0].equalsIgnoreCase("delete")) {
+                }
+                /**
+                 * @consolecommand paneluser delete username - Deletes a panel user if the user exists
+                 */
+                else if (argument[0].equalsIgnoreCase("delete")) {
                     PanelUserHandler.PanelMessage response = PanelUserHandler.deleteUser(argument[1]);
                     com.gmt2001.Console.out.println(response.getMessage());
-                } else if (argument[0].equalsIgnoreCase("enable")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null, null, true);
+                }
+                /**
+                 * @consolecommand paneluser enable username - Enables a panel user if the user exists
+                 */
+                else if (argument[0].equalsIgnoreCase("enable")) {
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null, (Map<String, PanelUserHandler.Permission>)null, true);
                     com.gmt2001.Console.out.println(response.getMessage());
-                } else if (argument[0].equalsIgnoreCase("disable")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null, null, false);
+                }
+                /**
+                 * @consolecommand paneluser enable username - Disables a panel user if the user exists
+                 */
+                else if (argument[0].equalsIgnoreCase("disable")) {
+                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null, (Map<String, PanelUserHandler.Permission>)null, false);
                     com.gmt2001.Console.out.println(response.getMessage());
-                } else if (argument[0].equalsIgnoreCase("resetpassword")) {
+                }
+                /**
+                 * @consolecommand paneluser resetpassword username - Resets a panel users password if the user exists and prints the new and randomly generated password
+                 */
+                else if (argument[0].equalsIgnoreCase("resetpassword")) {
                     PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(argument[1]);
+                    com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
+                    com.gmt2001.Console.out.println(response.getMessage());
+                }
+                /**
+                 * @consolecommand paneluser resetpermission username - Gives a panel user full access to all panel sections if the user exists
+                 */
+                else if (argument[0].equalsIgnoreCase("resetpassword")) {
+                    PanelUserHandler.PanelMessage response =PanelUserHandler.editUser(argument[1], null, PanelUserHandler.getFullAccessPermissions(), false);
                     com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
                     com.gmt2001.Console.out.println(response.getMessage());
                 }

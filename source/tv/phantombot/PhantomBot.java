@@ -644,7 +644,7 @@ public final class PhantomBot implements Listener {
      * @return
      */
     public boolean hasDiscordToken() {
-        return CaselessProperties.instance().getProperty("discord_token", "").isEmpty();
+        return !CaselessProperties.instance().getProperty("discord_token", "").isEmpty();
     }
 
     /**

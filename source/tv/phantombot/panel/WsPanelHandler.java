@@ -63,8 +63,8 @@ import tv.phantombot.twitch.api.Helix;
 public class WsPanelHandler implements WsFrameHandler {
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
-    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken", PanelUserHandler.PANELUSERTABLE};
-    private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{PanelUserHandler.PANELUSERTABLE};
+    private static final String[] BLOCKED_DB_QUERY_TABLES = new String[]{"commandtoken", PanelUserHandler.PANEL_USER_TABLE};
+    private static final String[] BLOCKED_DB_UPDATE_TABLES = new String[]{PanelUserHandler.PANEL_USER_TABLE};
     private final WsAuthenticationHandler authHandler;
 
     public WsPanelHandler(String panelAuthRO, String panelAuth) {
@@ -106,7 +106,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 com.gmt2001.Console.debug.println(jso.toString());
             }
 
-            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+            PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() || user != null) {
                 handleRestrictedCommands(ctx, frame, jso);
             }
 
@@ -139,7 +140,7 @@ public class WsPanelHandler implements WsFrameHandler {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
             com.gmt2001.Console.err.printStackTrace(ex);
             try {
-                this.panelNotification("error", "An exception was thrown while attempting to handle the request. See the core-error log for details", "Processing Error");
+                this.panelNotification(ctx, "error", "An exception was thrown while attempting to handle the request. See the core-error log for details", "Processing Error");
             } catch (Exception ex2) {
                 com.gmt2001.Console.err.printStackTrace(ex2);
             }
@@ -157,6 +158,12 @@ public class WsPanelHandler implements WsFrameHandler {
 
         if (command.charAt(0) == '!') {
             command = command.substring(1);
+        }
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserCommandAccess(user, command, (jso.has("section") ? jso.getString("section") : ""))) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
         }
 
         if (!jso.has("command_sync")) {
@@ -186,6 +193,12 @@ public class WsPanelHandler implements WsFrameHandler {
             return;
         }
 
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().set(table, key, value);
         jsonObject.object().key("query_id").value(uniqueID).endObject();
@@ -203,6 +216,12 @@ public class WsPanelHandler implements WsFrameHandler {
         String uniqueID = jso.has("dbincr") ? jso.getString("dbincr") : "";
 
         if (Arrays.stream(BLOCKED_DB_UPDATE_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
 
@@ -226,6 +245,12 @@ public class WsPanelHandler implements WsFrameHandler {
             return;
         }
 
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+
         JSONStringer jsonObject = new JSONStringer();
         PhantomBot.instance().getDataStore().decr(table, key, Integer.parseInt(value));
         jsonObject.object().key("query_id").value(uniqueID).endObject();
@@ -242,6 +267,12 @@ public class WsPanelHandler implements WsFrameHandler {
         String uniqueID = jso.has("dbdelkey") ? jso.getString("dbdelkey") : "";
 
         if (Arrays.stream(BLOCKED_DB_UPDATE_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), true)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
 
@@ -262,6 +293,12 @@ public class WsPanelHandler implements WsFrameHandler {
         JSONStringer jsonObject = new JSONStringer();
         List<String> tempArgs = new LinkedList<>();
         String[] args = new String[0];
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserScriptAccess(user, script, (jso.has("section") ? jso.getString("section") : ""))) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
 
         if (jsonArray != null) {
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -291,6 +328,11 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleDiscordChannelList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
         HashMap<String, Map<String, String>> data = new HashMap<>();
         DiscordAPI.instance().getAllChannelInfoAsync(data).doOnComplete(() -> {
             String uniqueID = jso.has("discordchannellist") ? jso.getString("discordchannellist") : "";
@@ -326,6 +368,11 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     private void handleChannelPointsList(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
         Helix.instance().getCustomRewardAsync(null, null).doOnSuccess(json -> {
             String uniqueID = jso.has("channelpointslist") ? jso.getString("channelpointslist") : "";
 
@@ -364,14 +411,14 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         } else if (jso.has("add")) {
             String username = jso.getJSONObject("add").getString("username");
-            String permission = jso.getJSONObject("add").getString("permission");
+            JSONArray permission = new JSONArray(jso.getJSONObject("add").getString("permission"));
             Boolean enabled = jso.getJSONObject("add").getBoolean("enabled");
             PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(username, permission, enabled);
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         } else if (jso.has("edit")) {
             String currentUsername = jso.getJSONObject("edit").getString("currentUsername");
             String newUsername = jso.getJSONObject("edit").getString("newUsername");
-            String permission = jso.getJSONObject("edit").getString("permission");
+            JSONArray permission = new JSONArray(jso.getJSONObject("edit").getString("permission"));
             Boolean enabled = jso.getJSONObject("edit").getBoolean("enabled");
             PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(currentUsername, newUsername, permission, enabled);
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
@@ -380,7 +427,7 @@ public class WsPanelHandler implements WsFrameHandler {
             PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(username);
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         } else if (jso.has("getPermissions")) {
-            PanelUserHandler.getPermissionsJSON(jsonObject);
+            PanelUserHandler.getPermissionsJSONObject(jsonObject);
         } else {
             PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
@@ -414,7 +461,7 @@ public class WsPanelHandler implements WsFrameHandler {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
             com.gmt2001.Console.err.printStackTrace(ex);
             try {
-                this.panelNotification("error", "An exception was thrown while attempting to handle the request. See the core-error log for details", "Processing Error");
+                this.panelNotification(ctx, "error", "An exception was thrown while attempting to handle the request. See the core-error log for details", "Processing Error");
             } catch (Exception ex2) {
                 com.gmt2001.Console.err.printStackTrace(ex2);
             }
@@ -444,6 +491,7 @@ public class WsPanelHandler implements WsFrameHandler {
         if (PhantomBot.instance() == null) {
             return;
         }
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
 
         JSONStringer jsonObject = new JSONStringer();
         String uniqueID = jso.has("id") ? jso.getString("id") : "";
@@ -483,10 +531,18 @@ public class WsPanelHandler implements WsFrameHandler {
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("loadLang")) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+                this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+                return;
+            }
             jsonObject.key("results").array().object();
             jsonObject.key("langFile").value(LangFileUpdater.getCustomLang(jso.getJSONObject("params").getString("lang-path")));
             jsonObject.endObject().endArray();
         } else if (query.equalsIgnoreCase("saveLang")) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), true)) {
+                this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+                return;
+            }
             jsonObject.key("results").array();
             if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
                 LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"), jsonObject);
@@ -499,12 +555,17 @@ public class WsPanelHandler implements WsFrameHandler {
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("getLangList")) {
+            if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+                this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+                return;
+            }
             jsonObject.key("results").array();
             for (String langFile : LangFileUpdater.getLangFiles()) {
                 jsonObject.value(langFile);
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("games")) {
+            //TODO: Check
             jsonObject.key("results").array();
             try {
                 String data = Files.readString(Paths.get("./web/panel/js/utils/gamesList.txt"));
@@ -547,6 +608,12 @@ public class WsPanelHandler implements WsFrameHandler {
             return;
         }
 
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+
         String value = PhantomBot.instance().getDataStore().GetString(table, "", key);
 
         JSONStringer jsonObject = new JSONStringer();
@@ -565,6 +632,15 @@ public class WsPanelHandler implements WsFrameHandler {
         String uniqueID = jso.has("dbkeys") ? jso.getString("dbkeys") : "";
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
+        PanelUser user = null;
+        if (ctx != null) {
+            user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        }
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
 
@@ -611,6 +687,12 @@ public class WsPanelHandler implements WsFrameHandler {
                     continue;
                 }
 
+                PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+                if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+                    this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+                    return;
+                }
+
                 String[] dbKeys = PhantomBot.instance().getDataStore().GetKeyList(table, "");
                 for (String dbKey : dbKeys) {
                     String value = PhantomBot.instance().getDataStore().GetString(table, "", dbKey);
@@ -635,6 +717,12 @@ public class WsPanelHandler implements WsFrameHandler {
         String uniqueID = jso.has("dbkeysbyorder") ? jso.getString("dbkeysbyorder") : "";
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
 
@@ -665,6 +753,12 @@ public class WsPanelHandler implements WsFrameHandler {
         String uniqueID = jso.has("dbvaluesbyorder") ? jso.getString("dbvaluesbyorder") : "";
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
 
@@ -700,6 +794,12 @@ public class WsPanelHandler implements WsFrameHandler {
         String uniqueID = jso.has("dbkeyssearch") ? jso.getString("dbkeyssearch") : "";
 
         if (Arrays.stream(BLOCKED_DB_QUERY_TABLES).anyMatch(t -> t.equals(table))) {
+            return;
+        }
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserDatabaseAccess(user, table, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "error", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
 
@@ -750,6 +850,10 @@ public class WsPanelHandler implements WsFrameHandler {
                 PanelUserHandler.PanelMessage response = PanelUserHandler.changePassword(username, currentPassword, newPassword);
                 jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
             }
+        } else if (jso.has("permission")) {
+            PanelUserHandler.getPermissionsJSONObject(jsonObject);
+        } else if (jso.has("sections")) {
+            PanelUserHandler.getAllPanelSectionsJSONObject(jsonObject);
         } else {
             PanelUserHandler.PanelMessage response = PanelUserHandler.PanelMessage.Error;
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
@@ -787,17 +891,24 @@ public class WsPanelHandler implements WsFrameHandler {
         this.panelNotification(type, message, title, null);
     }
 
+    private void panelNotification(ChannelHandlerContext ctx, String type, String message, String title) {
+        this.panelNotification(ctx, type, message, title, null, null, null);
+    }
+
     public void panelNotification(String type, String message, String title, Integer timeout) {
         this.panelNotification(type, message, title, null, null);
     }
 
     public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout) {
-        this.panelNotification(type, message, title, null, null, null);
+        this.panelNotification(null, type, message, title, null, null, null);
     }
 
     /**
-     * Sends a toastr notification to everyone currently authenticated to the panel
+     * Sends a toastr notification to the panel
+     * 
+     * The notification is sent to all currently authenticated users on the panel if the parameter ctx is  {@code null}
      *
+     * @param ctx The {@link ChannelHandlerContext}
      * @param type The type of notification to show. Valid values: {@code success}, {@code error}, {@code warning}, {@code info}. Invalid values are
      * treated as {@code info}
      * @param message The message content of the notification
@@ -809,7 +920,7 @@ public class WsPanelHandler implements WsFrameHandler {
      * @param progressBar {@code true} to show a progress bar indicating the time remaining in {@code timeout} until the notification closes
      * automatically; {@code false} to explicitly disable the progress bar on this notification; {@code null} for default
      */
-    public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout, Boolean progressBar) {
+    public void panelNotification(ChannelHandlerContext ctx, String type, String message, String title, Integer timeout, Integer extendedTimeout, Boolean progressBar) {
         JSONStringer jsonObject = new JSONStringer();
         jsonObject.object().key("query_id").value("notification").key("results").object()
                 .key("type").value(type)
@@ -819,7 +930,11 @@ public class WsPanelHandler implements WsFrameHandler {
                 .key("extendedTimeout").value(extendedTimeout)
                 .key("progressBar").value(progressBar)
                 .endObject().endObject();
-        WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        if (ctx != null) {
+            WebSocketFrameHandler.sendWsFrame(ctx, null, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        } else {
+            WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        }
     }
 
     /**
