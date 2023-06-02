@@ -31,9 +31,9 @@ public final class SelectStatement extends FluentStatementBuilder {
      */
     private boolean distinct = false;
     /**
-     * The columns to select from table {@code A}
+     * The columns to select
      */
-    private List<String> columns = new ArrayList<>();
+    private List<ColumnInfo> columns = new ArrayList<>();
     /**
      * The table to join as {@code B}
      */
@@ -112,6 +112,51 @@ public final class SelectStatement extends FluentStatementBuilder {
         }
     }
 
+
+    /**
+     * Information about a column
+     */
+    public sealed class ColumnInfo {
+        /**
+         * If this column is from table {@code B}
+         */
+        private final boolean isTableB;
+        /**
+         * The column
+         */
+        private final String column;
+
+        /**
+         * Constructor
+         *
+         * @param isTableB if this column is from table {@code B}
+         * @param column the column
+         * @param sortDirection the sort direction
+         */
+        private ColumnInfo(boolean isTableB, String column) {
+            this.isTableB = isTableB;
+            this.column = column;
+        }
+
+        /**
+         * If this column is from table {@code B}
+         *
+         * @return {@code true} if from table {@code B}; {@code false} if from table {@code A}
+         */
+        public boolean isTableB() {
+            return this.isTableB;
+        }
+
+        /**
+         * The column
+         *
+         * @return the column name
+         */
+        public String column() {
+            return this.column;
+        }
+    }
+
     /**
      * Constructor
      * <p>
@@ -146,13 +191,15 @@ public final class SelectStatement extends FluentStatementBuilder {
      * Adds a column to be selected
      * <p>
      * When performing a {@code SELECT} that contains a join, the specified column will be selected from table {@code A}
+     * <p>
+     * To perform a {@code SELECT *}, don't call this method
      *
      * @param column the column to select
      * @return {@code this}
      */
     public SelectStatement column(String column) {
         if (column != null && !column.isBlank() && !column.equals("*")) {
-            this.columns.add(column);
+            this.columns.add(new ColumnInfo(false, column));
         }
 
         return this;
@@ -162,6 +209,8 @@ public final class SelectStatement extends FluentStatementBuilder {
      * Adds multiple columns to be selected
      * <p>
      * When performing a {@code SELECT} that contains a join, the specified columns will be selected from table {@code A}
+     * <p>
+     * To perform a {@code SELECT *}, don't call this method
      *
      * @param columns the columns to select
      * @return {@code this}
@@ -172,7 +221,7 @@ public final class SelectStatement extends FluentStatementBuilder {
                 String column = columns[i];
 
                 if (column != null && !column.isBlank() && !column.equals("*")) {
-                    this.columns.add(column);
+                    this.columns.add(new ColumnInfo(false, column));
                 }
             }
         }
@@ -183,13 +232,11 @@ public final class SelectStatement extends FluentStatementBuilder {
     /**
      * Returns the columns that are being selected
      * <p>
-     * When performing a {@code SELECT} that contains a join, the specified columns are selected from table {@code A}
-     * <p>
      * If the list is empty, then {@code *} is being selected
      *
      * @return the list of columns
      */
-    public List<String> columns() {
+    public List<ColumnInfo> columns() {
         return Collections.unmodifiableList(this.columns);
     }
 
@@ -270,7 +317,7 @@ public final class SelectStatement extends FluentStatementBuilder {
      */
     public SelectStatement columnB(String column) {
         if (column != null && !column.isBlank() && !column.equals("*")) {
-            this.columnsB.add(column);
+            this.columns.add(new ColumnInfo(true, column));
         }
 
         return this;
@@ -288,7 +335,13 @@ public final class SelectStatement extends FluentStatementBuilder {
                 String column = columns[i];
 
                 if (column != null && !column.isBlank() && !column.equals("*")) {
-                    this.columnsB.add(column);
+                    this.columns.add(new ColumnInfo(true, column));
+                }
+            }
+        }
+
+        return this;
+    }
                 }
             }
         }
