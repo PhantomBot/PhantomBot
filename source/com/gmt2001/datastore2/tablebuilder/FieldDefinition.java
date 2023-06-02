@@ -16,6 +16,8 @@
  */
 package com.gmt2001.datastore2.tablebuilder;
 
+import com.gmt2001.datastore2.Datastore2.DataType;
+
 /**
  * Provides a fluent interface to define a field in a {@link TableBuilder}
  *
@@ -62,56 +64,6 @@ public final class FieldDefinition extends AbstractDefinition {
      * The stand-in for the SQL literal {@code NULL}
      */
     public static final String NULL = "____NULL____";
-
-    /**
-     * Represents the potential data types for the field
-     */
-    public static enum DataType {
-        /**
-         * Stores a 1 byte integer
-         */
-        TINYINT,
-        /**
-         * Stores a 2 byte integer
-         */
-        SMALLINT,
-        /**
-         * Stores a 3 byte integer
-         */
-        MEDIUMINT,
-        /**
-         * Stores a 4 byte integer
-         */
-        INTEGER,
-        /**
-         * Stores a 8 byte integer
-         */
-        BIGINT,
-        /**
-         * Stores a double precision floating point number
-         */
-        DOUBLE,
-        /**
-         * Stores a single precision floating point number
-         */
-        FLOAT,
-        /**
-         * Stores an exact value decimal number
-         */
-        DECIMAL,
-        /**
-         * Stores a date and time
-         */
-        DATETIME,
-        /**
-         * Stores a variable number of characters. Requires a length parameter
-         */
-        VARCHAR,
-        /**
-         * Stores a large amount of text
-         */
-        TEXT
-    }
 
     /**
      * Constructor

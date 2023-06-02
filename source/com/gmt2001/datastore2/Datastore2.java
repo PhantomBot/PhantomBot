@@ -53,6 +53,55 @@ public abstract class Datastore2 {
      * Instance of {@link MiniConnectionPoolManager} that provides pooled {@link Connection} objects on demand
      */
     private final MiniConnectionPoolManager connectionPoolManager;
+    /**
+    * Represents the potential data types for a field
+    */
+   public static enum DataType {
+       /**
+        * Stores a 1 byte integer
+        */
+       TINYINT,
+       /**
+        * Stores a 2 byte integer
+        */
+       SMALLINT,
+       /**
+        * Stores a 3 byte integer
+        */
+       MEDIUMINT,
+       /**
+        * Stores a 4 byte integer
+        */
+       INTEGER,
+       /**
+        * Stores a 8 byte integer
+        */
+       BIGINT,
+       /**
+        * Stores a double precision floating point number
+        */
+       DOUBLE,
+       /**
+        * Stores a single precision floating point number
+        */
+       FLOAT,
+       /**
+        * Stores an exact value decimal number
+        */
+       DECIMAL,
+       /**
+        * Stores a date and time
+        */
+       DATETIME,
+       /**
+        * Stores a variable number of characters. Requires a length parameter
+        */
+       VARCHAR,
+       /**
+        * Stores a large amount of text
+        */
+       TEXT
+   }
 
     /**
      * Provides an instance of {@link Datastore2}
