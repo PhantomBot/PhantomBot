@@ -51,6 +51,15 @@ $(function () {
         });
     };
 
+    const addDashboarDefaultPermissions = function (permissions){
+        if (findSectionIndex(permissions, 'dashboard') === -1) {
+            permissions.push({
+                section: 'dashboard',
+                permission: 'Read Only'
+            });
+        }
+    };
+
     const getDisabledIconAttr = function (enabled) {
         return {
             class: 'fa disabled-status-icon ' + (enabled ? 'fa-check' : 'fa-ban text-muted'),
@@ -386,6 +395,7 @@ $(function () {
                             case helpers.handleInputString(user):
                                 break;
                             default:
+                                addDashboarDefaultPermissions(permissions);
                                 socket.editPanelUser('edit_panel_user', username, user.val(), JSON.stringify(permissions), enabled, function (res2) {
                                     if (res2.error !== undefined) {
                                         toastr.error(res2.error);
@@ -424,6 +434,7 @@ $(function () {
                 case helpers.handleInputString(username):
                     break;
                 default:
+                    addDashboarDefaultPermissions(permissions);
                     socket.addPanelUser('add_panel_user', username.val(), JSON.stringify(permissions), enabled, function (res) {
 
                         if (res.error !== undefined) {
