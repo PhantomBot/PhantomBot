@@ -780,7 +780,6 @@ public final class ConsoleEventHandler implements Listener {
                  * @consolecommand paneluser add username - Creates a new panel user with full access to all panel sections if the user does not exist and prints the randomly generated password
                  */
                 if (argument[0].equalsIgnoreCase("add")) {
-                    String permission = null;
                     PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(argument[1], false);
                     com.gmt2001.Console.out.println("Password for new user " + argument[1] + " is:");
                     com.gmt2001.Console.out.println(response.getMessage());
