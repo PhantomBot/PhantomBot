@@ -742,7 +742,8 @@
         for (let key in keys3) {
             $.inidb.set('group', key, $.javaString('7'));
         }
-
+    });
+    addUpdate('3.8.4.0-2', 'installedv3.8.4.0-2', function() { // Ensure nightly bots which already have 3.8.4.0 updates installed can handle the permissions update correctly
         if ($.inidb.FileExists('panelUsers')) {
             let panelUsers = $.inidb.GetKeyList('panelUsers', '');
             for (let i = 0; i < panelUsers.length; i++) {
