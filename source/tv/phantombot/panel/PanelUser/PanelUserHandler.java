@@ -1,6 +1,7 @@
 package tv.phantombot.panel.PanelUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -30,11 +31,11 @@ public final class PanelUserHandler {
                                                     "audio", "stream overlay", "settings", "youtube player"};
     
     /**
-     * Database tables that are generally called on the panel
+     * Database tables that are generally called on the panel and are allowed with {@link Permission.READ_ONLY read only permission}
      */
     private static final List<String> READ_ONLY_TABLES = List.of("paneluser", "settings", "groups", "panelsettings", "paneldata", "modules", "command");
     /**
-     * Sections and their respectively called scripts on the panel
+     * {@link PANEL_SECTIONS Sections} and their respectively called scripts on the panel
      */
     private static final Map<String, List<String>> PANEL_SECTION_SCRIPTS = Map.of("alerts", List.of("donationscache.java"),
                                                                                     "audio", List.of("./core/commandcooldown.js"),
@@ -46,12 +47,12 @@ public final class PanelUserHandler {
                                                                                     "extra", List.of("./systems/commercialsystem.js", "./systems/queuesystem.js"),
                                                                                     "Games", List.of("./games/random.js"),
                                                                                     "keyword & emotes", List.of("./handlers/keywordemoteshandler.js", "./handlers/keywordhandler.js"),
-                                                                                    "loyalty", List.of("./handlers/channelPointshandler.js"),
+                                                                                    "loyalty", List.of("./handlers/channelpointshandler.js"),
                                                                                     "settings", List.of("./core/corecommands.js", "./discord/core/commandcooldown.js", "./core/commandcooldown.js"));
-    private static final List<String> READ_ONLY_COMMANDS = List.of("synconline silent");
-    private static final Map<String, List<String>> PANEL_SECTION_TABLES = Map.of("commands", List.of("aliases", "cooldown", "command", "disabledcommands", "externalcommands", "hiddencommands", "paycom", "permcom", "pricecom"),
-                                                                                    "moderation", List.of("blackList", "chatmoderator", "whitelist", "settings"),
-                                                                                    "permission", List.of(""));
+    /**
+     * Allowed commands with {@link Permission.READ_ONLY read only permission}
+     */
+    private static final List<String> READ_ONLY_COMMANDS = List.of("synconline silent", "reloadaudiopanelhooks");
     /**
      * Messages for use as responses to the web panel
      */
@@ -71,15 +72,15 @@ public final class PanelUserHandler {
         /**
          * {@link PanelUser Panel user} originates from the botlogin.txt
          */
-        UserIsConfig("The config user cannot be edited or removed", true),
+        UserIsConfig("The config user cannot be edited or removed!", true),
         /**
          * {@link PanelUser Panel user} could not be saved correctly
          */
-        SaveError("Changes could not be saved", true),
+        SaveError("Changes could not be saved!", true),
         /**
          * {@link PanelUser Panel user} is not allowed to manage other panel users
          */
-        CanNotManageError("Not allowed to manage other panel users", true),
+        CanNotManageError("You are not allowed to manage other panel users!", true),
         /**
          * {@link PanelUser Panel user} is not allowed to manage other panel users
          */
@@ -635,15 +636,14 @@ public final class PanelUserHandler {
      * @return {@code true} if the user is allowed to access the table under the conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserDatabaseAccess(PanelUser user, String tableName, String section, boolean isWriteAction) {
-        com.gmt2001.Console.out.println("check table: " + tableName.toLowerCase() + " in section: " + section.toLowerCase() + " is read_write: " + isWriteAction);
         tableName = tableName.toLowerCase();
         if (!isWriteAction && READ_ONLY_TABLES.contains(tableName)) {
-            com.gmt2001.Console.out.println("check table: allowed is read_only table");
             return true;
         }
         boolean res = checkPanelUserSectionAccess(user, section, isWriteAction);
-        com.gmt2001.Console.out.println("check table is allowed: " + res);
-        com.gmt2001.Console.err.println("Database access denied on table " + tableName + " for user " + user.getUsername());
+        if (!res) {
+            com.gmt2001.Console.err.println("Database access denied on table " + tableName + " for user " + user.getUsername());
+        }
         return res;
     }
 
@@ -654,26 +654,28 @@ public final class PanelUserHandler {
      * @param section The {@link PANEL_SECTIONS panel section} on which this request was created
      * @return {@code true} if the user is allowed to access the table under the conditions; {@code false} otherwise
      */
-    public static boolean checkPanelUserScriptAccess(PanelUser user, String script, String section) {
-        com.gmt2001.Console.out.println("check script: " + script.toLowerCase() + " in section: " + section.toLowerCase());
+    public static boolean checkPanelUserScriptAccess(PanelUser user, String script, String[] args, String section) {
         if (user.getUserType() == PanelUser.Type.CONFIG) {
-            com.gmt2001.Console.out.println("check script: allowed is config user");
             return true;
         }
         script = script.toLowerCase();
         if (script.equalsIgnoreCase("donationcache.java")) {
-            com.gmt2001.Console.out.println("check script: denied is donationcache");
             com.gmt2001.Console.err.println("Script access denied to script " + script + " for user " + user.getUsername());
             return false;
         }
         section = section.toLowerCase();
         if (section.equalsIgnoreCase("dashboard")) {
-            com.gmt2001.Console.out.println("check script: allowed is dashboard");
             return true;
         }
-        boolean res = PANEL_SECTION_SCRIPTS.containsKey(section) && PANEL_SECTION_SCRIPTS.get(section).contains(script) && checkPanelUserSectionAccess(user, section, true);
-        com.gmt2001.Console.out.println("check script is allowed: " + res);
-        com.gmt2001.Console.err.println("Script access denied to script " + script + " for user " + user.getUsername());
+        boolean isWriteAction = true;
+        if (PANEL_SECTION_SCRIPTS.get("loyalty").contains(script) && args.length > 0 &&
+            args[0].equalsIgnoreCase("redeemable-get-managed") || args[0].equalsIgnoreCase("redeemable-reload-managed")) {
+            isWriteAction = false;
+        }
+        boolean res = PANEL_SECTION_SCRIPTS.containsKey(section) && PANEL_SECTION_SCRIPTS.get(section).contains(script) && checkPanelUserSectionAccess(user, section, isWriteAction);
+        if (!res) {
+            com.gmt2001.Console.err.println("Script access denied to script " + script + " with args: \"" + Arrays.toString(args) + "\" for user " + user.getUsername());
+        }
         return res;
     }
 
@@ -685,24 +687,30 @@ public final class PanelUserHandler {
      * @return {@code true} if the user is allowed to access the table under the conditions; {@code false} otherwise
      */
     public static boolean checkPanelUserSectionAccess(PanelUser user, String section, boolean isWriteAction) {
-        com.gmt2001.Console.out.println("check section: " + section.toLowerCase() + " is read_write: " + isWriteAction);
         if (user.getUserType() == PanelUser.Type.CONFIG) {
-            com.gmt2001.Console.out.println("check section: allowed is config user");
             return true;
         }
         section = section.toLowerCase();
 
+        switch(section) {
+            case "keywords":
+                section = "keywords & emotes";
+                break;
+            case "overlay":
+                section = "stream overlay";
+                break;
+            default:
+                break;
+        }
+
         if (!isWriteAction && user.getPermission().containsKey(section)
             && (user.getPermission().get(section).equals(Permission.READ_ONLY)|| user.getPermission().get(section).equals(Permission.READ_WRITE))) {
-                com.gmt2001.Console.out.println("check section: allowed is read_only");
             return true;
         }
         if (isWriteAction && user.getPermission().containsKey(section)
             && user.getPermission().get(section).equals(Permission.READ_WRITE)) {
-                com.gmt2001.Console.out.println("check section: allowed is read_write");
             return true;
         }
-        com.gmt2001.Console.out.println("check section: denied");
         com.gmt2001.Console.err.println("Section access denied on section " + section + " for user " + user.getUsername());
         return false;
     }

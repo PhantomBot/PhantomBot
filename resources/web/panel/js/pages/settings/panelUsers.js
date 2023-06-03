@@ -76,7 +76,6 @@ $(function () {
                 .append($('<button/>', {
                     'type': 'button',
                     'class': 'btn btn-xs btn-danger',
-                    'style': 'float: right',
                     'data-section': section,
                     'html': $('<i/>', {
                         'class': 'fa fa-trash'
@@ -110,7 +109,7 @@ $(function () {
                     {'className': 'default-table', 'orderable': true, 'targets': [0, 1]},
                     {'width': '40%', 'targets': 0},
                     {'width': '20%', 'targets': 1},
-                    {'width': '10%', 'targets': 2, 'orderable': false}
+                    {'className': 'text-center', 'width': '10%', 'targets': 2, 'orderable': false}
                 ],
                 'columns': [
                     {'title': 'Panel section'},
@@ -121,6 +120,10 @@ $(function () {
         }
 
         let availableSections = getAvailableSectionsAndFillTable(userPermissionTable, permissions);
+        if (availableSections.length === 0) {
+            $('#userPermissionAdd-button').attr('disabled', true);
+        }
+
         userPermissionTable.DataTable().draw();
 
         //Remove permission
@@ -145,9 +148,9 @@ $(function () {
             helpers.getModal('add-user-perm', 'Add Panel User Permission', 'Add', $('<form/>', {
                 'role': 'form'
             })
-            .append(helpers.getDropdownGroup('perm-level', 'Access permission', permissionLevels[0].permission, permissionLevels.map(perm => perm.permission), 'Access permission for the panel user. Full Access allows modification. Read Only disallows changing settings'))
+            .append(helpers.getDropdownGroup('perm-level', 'Access permission', permissionLevels[0].permission, permissionLevels.map(perm => perm.permission), 'Access permission for the panel user. "Full Access" allows modification and sending commands as well as messages. "Read Only" only allows to read settings'))
             .append(helpers.getCheckBox('user-level-all', false, 'All Sections?', 'If checked, access permission will be set for all panel sections (except panel user management).'))
-            .append(helpers.getDropdownGroup('panel-section', 'Panel section', availableSections[0], availableSections, 'Panel section')),
+            .append(helpers.getDropdownGroup('panel-section', 'Panel section', availableSections[0], availableSections, 'Panel section. Some features will not be available even with "Full Access" permissions including panel user management and restarting the bot')),
             function () {
                 let selectedPerm = $('#perm-level').find(':selected').text(),
                         selectedSection = $('#panel-section').find(':selected').text(),

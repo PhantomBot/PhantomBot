@@ -49,6 +49,16 @@ $(function () {
             case 'error':
                 toastr.error(e.message, e.title, options);
                 break;
+            case 'permission':
+                if (!helpers.isPermissionErrorRunning) {
+                    helpers.isPermissionErrorRunning = true;
+                    toastr.error(e.message, e.title, options);
+                    setTimeout(function () {
+                        helpers.isPermissionErrorRunning = false;
+                    }, 5e3);
+                }
+
+                break;
             default:
                 toastr.info(e.message, e.title, options);
         }
@@ -173,12 +183,14 @@ $(function () {
             }
         });
         if (helpers.currentPanelUserData.userType === 'CONFIG') {
-            $('[data-removeForConfigUser="true"]').remove();//Paneluser is defined in the config
+            $('[data-removeForConfigUser="true"]').remove();//Panel user is defined in the config
+        } else {
+            $('[data-removeForCantRestart="true"]').remove();
+            $('[data-removeForNonConfigUser="true"]').remove();
         }
 
-        if (!helpers.currentPanelUserData.canManageUsers) { //Remove settings global settings
+        if (!helpers.currentPanelUserData.canManageUsers) { //Remove panel user manager
             $('[data-removeForCantManage="true"]').remove();
-            $('[data-removeForCantRestart="true"]').remove();
         }
 
 

@@ -743,6 +743,15 @@
             $.inidb.set('group', key, $.javaString('7'));
         }
 
+        if ($.inidb.FileExists('panelUsers')) {
+            let panelUsers = $.inidb.GetKeyList('panelUsers', '');
+            for (let i = 0; i < panelUsers.length; i++) {
+                let user = JSON.parse($.getIniDbString('panelUsers', panelUsers[i]));
+                user.token = "";
+                delete user.permission;
+                $.setIniDbString('panelUsers', panelUsers[i], JSON.stringify(user));
+            }
+        }
     });
 
     // ------ Add updates above this line in execution order ------

@@ -1194,7 +1194,9 @@ $(function () {
           words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
         }
         return words.join(' ');
-      }
+    };
+
+    helpers.isPermissionErrorRunning = false;
 
     /**
      * @function Gets the group name by its ID.
