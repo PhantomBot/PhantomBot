@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9,"i21":9,"i22":9,"i23":9,"i24":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -192,7 +192,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PANELUSERTABLE">PANELUSERTABLE</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PANEL_USER_TABLE">PANEL_USER_TABLE</a></span></code></th>
 <td class="colLast">
 <div class="block">Database table suffix for the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a></div>
 </td>
@@ -248,6 +248,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>static <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkAuthTokenAndGetUser(java.lang.String)">checkAuthTokenAndGetUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;authToken)</code></th>
+<td class="colLast">
+<div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket by his authentication token</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkLogin(java.lang.String,java.lang.String)">checkLogin</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;password)</code></th>
@@ -255,7 +262,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkLogin(java.lang.String,java.lang.String,java.lang.String)">checkLogin</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;password,
@@ -264,7 +271,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkLoginAndGetUser(java.lang.String,java.lang.String)">checkLoginAndGetUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;password)</code></th>
@@ -272,7 +279,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkLoginAndGetUser(java.lang.String,java.lang.String,java.lang.String)">checkLoginAndGetUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;password,
@@ -281,7 +288,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkLoginAndGetUserB64(java.lang.String,java.lang.String)">checkLoginAndGetUserB64</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;base64Token,
                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;requestUri)</code></th>
@@ -289,7 +296,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkLoginB64(java.lang.String,java.lang.String)">checkLoginB64</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;base64Token,
              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;requestUri)</code></th>
@@ -297,25 +304,71 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewUser(java.lang.String,java.lang.String,java.lang.Boolean)">createNewUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
-             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;permission,
-             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</code></th>
-<td class="colLast">
-<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
-</td>
-</tr>
 <tr id="i8" class="altColor">
-<td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewUser(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,java.lang.Boolean)">createNewUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
-             <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&nbsp;permission,
-             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</code></th>
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkPanelUserCommandAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String)">checkPanelUserCommandAccess</a></span>&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
 <td class="colLast">
-<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
+<div class="block">Checks if a user is allowed to send a command to the bots modules</div>
 </td>
 </tr>
 <tr id="i9" class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkPanelUserDatabaseAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String,boolean)">checkPanelUserDatabaseAccess</a></span>&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;tableName,
+                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
+                            boolean&nbsp;isWriteAction)</code></th>
+<td class="colLast">
+<div class="block">Checks if a user is allowed to access a database table</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkPanelUserScriptAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String%5B%5D,java.lang.String)">checkPanelUserScriptAccess</a></span>&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;script,
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;args,
+                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
+<td class="colLast">
+<div class="block">Checks if a user is allowed send websocket events to a specific script</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>static boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,boolean)">checkPanelUserSectionAccess</a></span>&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
+                           boolean&nbsp;isWriteAction)</code></th>
+<td class="colLast">
+<div class="block">Checks if a user has to access a <a href="#PANEL_SECTIONS"><code>panel section</code></a></div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewUser(java.lang.String,java.lang.Boolean)">createNewUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
+             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</code></th>
+<td class="colLast">
+<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> with full access <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a> to all panel sections if the user does not exist</div>
+</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewUser(java.lang.String,java.util.Map,java.lang.Boolean)">createNewUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
+             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
+             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</code></th>
+<td class="colLast">
+<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
+</td>
+</tr>
+<tr id="i14" class="altColor">
+<td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createNewUser(java.lang.String,org.json.JSONArray,java.lang.Boolean)">createNewUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
+             <a href="https://stleary.github.io/JSON-java/org/json/JSONArray.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONArray</a>&nbsp;jsoPermissions,
+             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</code></th>
+<td class="colLast">
+<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
+</td>
+</tr>
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#deleteUser(java.lang.String)">deleteUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username)</code></th>
 <td class="colLast">
@@ -324,11 +377,11 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
  Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#editUser(java.lang.String,java.lang.String,java.lang.String,boolean)">editUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;currentUsername,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#editUser(java.lang.String,java.lang.String,java.util.Map,boolean)">editUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;currentUsername,
         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;newUsername,
-        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;permission,
+        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
         boolean&nbsp;enabled)</code></th>
 <td class="colLast">
 <div class="block">Changes a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> properties
@@ -336,36 +389,62 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
  Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i17" class="rowColor">
+<td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#editUser(java.lang.String,java.lang.String,org.json.JSONArray,boolean)">editUser</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;currentUsername,
+        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;newUsername,
+        <a href="https://stleary.github.io/JSON-java/org/json/JSONArray.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONArray</a>&nbsp;jsoPermissions,
+        boolean&nbsp;enabled)</code></th>
+<td class="colLast">
+<div class="block">Changes a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> properties
+ <br/><br/>
+ Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
+</td>
+</tr>
+<tr id="i18" class="altColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAllPanelSectionsJSONObject(org.json.JSONStringer)">getAllPanelSectionsJSONObject</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</code></th>
+<td class="colLast">
+<div class="block">Adds the available <a href="#PANEL_SECTIONS"><code>panel sections</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
+</td>
+</tr>
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAllUsersJSONObject(org.json.JSONStringer)">getAllUsersJSONObject</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</code></th>
 <td class="colLast">
-<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
+<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i20" class="altColor">
+<td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFullAccessPermissions()">getFullAccessPermissions</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets a permissions map which includes full permission to all available <a href="#PANEL_SECTIONS"><code>panel sections</code></a></div>
+</td>
+</tr>
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPermissionsJSON(org.json.JSONStringer)">getPermissionsJSON</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPermissionsJSONObject(org.json.JSONStringer)">getPermissionsJSONObject</a></span>&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</code></th>
 <td class="colLast">
 <div class="block">Adds the <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>static <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUserAuthToken(java.lang.String)">getUserAuthToken</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username)</code></th>
 <td class="colLast">
 <div class="block">Get the authentication token for a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a></div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>static void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getUserJSONObject(java.lang.String,org.json.JSONStringer)">getUserJSONObject</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
                  <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</code></th>
 <td class="colLast">
-<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
+<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resetPassword(java.lang.String)">resetPassword</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username)</code></th>
 <td class="colLast">
@@ -398,17 +477,17 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <!--   -->
 </a>
 <h3>Field Detail</h3>
-<a id="PANELUSERTABLE">
+<a id="PANEL_USER_TABLE">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>PANELUSERTABLE</h4>
-<pre>public static final&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> PANELUSERTABLE</pre>
+<h4>PANEL_USER_TABLE</h4>
+<pre>public static final&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a> PANEL_USER_TABLE</pre>
 <div class="block">Database table suffix for the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../../../constant-values.html#tv.phantombot.panel.PanelUser.PanelUserHandler.PANELUSERTABLE">Constant Field Values</a></dd>
+<dd><a href="../../../../constant-values.html#tv.phantombot.panel.PanelUser.PanelUserHandler.PANEL_USER_TABLE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -566,6 +645,25 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </dl>
 </li>
 </ul>
+<a id="checkAuthTokenAndGetUser(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkAuthTokenAndGetUser</h4>
+<pre class="methodSignature">public static&nbsp;<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;checkAuthTokenAndGetUser&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;authToken)</pre>
+<div class="block">Checks if the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket by his authentication token</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>authToken</code> - The user's authentication token</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a> if a user with that authentication token exists and is enabled; <code>null</code> otherwise</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="PanelUser.html#LookupByAuthToken(java.lang.String)"><code>PanelUser.LookupByAuthToken(String)</code></a>, 
+<a href="PanelUser.html#isEnabled()"><code>PanelUser.isEnabled()</code></a></dd>
+</dl>
+</li>
+</ul>
 <a id="getUserAuthToken(java.lang.String)">
 <!--   -->
 </a>
@@ -611,48 +709,69 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </dl>
 </li>
 </ul>
-<a id="createNewUser(java.lang.String,java.lang.String,java.lang.Boolean)">
+<a id="createNewUser(java.lang.String,java.lang.Boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createNewUser</h4>
 <pre class="methodSignature">public static&nbsp;<a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a>&nbsp;createNewUser&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
-                                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;permission,
                                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</pre>
-<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
+<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> with full access <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a> to all panel sections if the user does not exist</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>username</code> - The user's name</dd>
-<dd><code>permission</code> - The user's <a href="PanelUserHandler.Permission.html#getDisplayName()"><code>permission display name</code></a></dd>
 <dd><code>enabled</code> - <code>true</code> if the user should be enabled; <code>false</code> otherwise</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="PanelUser.html#create(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,boolean)"><code>User Creation</code></a>, 
+<dd><code>User Creation</code>, 
 <a href="PanelUser.html#LookupByUsername(java.lang.String)"><code>exists</code></a></dd>
 </dl>
 </li>
 </ul>
-<a id="createNewUser(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,java.lang.Boolean)">
+<a id="createNewUser(java.lang.String,org.json.JSONArray,java.lang.Boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createNewUser</h4>
 <pre class="methodSignature">public static&nbsp;<a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a>&nbsp;createNewUser&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
-                                                          <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&nbsp;permission,
+                                                          <a href="https://stleary.github.io/JSON-java/org/json/JSONArray.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONArray</a>&nbsp;jsoPermissions,
                                                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</pre>
 <div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>username</code> - The user's name</dd>
-<dd><code>permission</code> - The user's <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></dd>
+<dd><code>permission</code> - The user's <a href="PanelUserHandler.Permission.html#getDisplayName()"><code>permissions display name</code></a></dd>
 <dd><code>enabled</code> - <code>true</code> if the user should be enabled; <code>false</code> otherwise</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="PanelUser.html#create(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,boolean)"><code>User Creation</code></a>, 
+<dd><code>User Creation</code>, 
+<a href="PanelUser.html#LookupByUsername(java.lang.String)"><code>exists</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="createNewUser(java.lang.String,java.util.Map,java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createNewUser</h4>
+<pre class="methodSignature">public static&nbsp;<a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a>&nbsp;createNewUser&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
+                                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
+                                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Boolean.html?is-external=true" title="class or interface in java.lang" class="externalLink">Boolean</a>&nbsp;enabled)</pre>
+<div class="block">Creates a new <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>username</code> - The user's name</dd>
+<dd><code>permission</code> - The user's <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a></dd>
+<dd><code>enabled</code> - <code>true</code> if the user should be enabled; <code>false</code> otherwise</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>User Creation</code>, 
 <a href="PanelUser.html#LookupByUsername(java.lang.String)"><code>exists</code></a></dd>
 </dl>
 </li>
@@ -678,7 +797,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </dl>
 </li>
 </ul>
-<a id="editUser(java.lang.String,java.lang.String,java.lang.String,boolean)">
+<a id="editUser(java.lang.String,java.lang.String,org.json.JSONArray,boolean)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -686,7 +805,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <h4>editUser</h4>
 <pre class="methodSignature">public static&nbsp;<a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a>&nbsp;editUser&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;currentUsername,
                                                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;newUsername,
-                                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;permission,
+                                                     <a href="https://stleary.github.io/JSON-java/org/json/JSONArray.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONArray</a>&nbsp;jsoPermissions,
                                                      boolean&nbsp;enabled)</pre>
 <div class="block">Changes a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> properties
  <br/><br/>
@@ -695,7 +814,33 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>currentUsername</code> - The user's name which should be edited</dd>
 <dd><code>newUsername</code> - The user's new name; <code>null</code> to not change the username</dd>
-<dd><code>permission</code> - The user's new <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>; <code>null</code> to not change the <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></dd>
+<dd><code>permission</code> - The user's new <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>; <code>null</code> to not change the <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></dd>
+<dd><code>enabled</code> - <code>true</code> to enable the user; <code>false</code> to disable the user</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="PanelUser.html#LookupByUsername(java.lang.String)"><code>exists</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="editUser(java.lang.String,java.lang.String,java.util.Map,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>editUser</h4>
+<pre class="methodSignature">public static&nbsp;<a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a>&nbsp;editUser&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;currentUsername,
+                                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;newUsername,
+                                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
+                                                     boolean&nbsp;enabled)</pre>
+<div class="block">Changes a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> properties
+ <br/><br/>
+ Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>currentUsername</code> - The user's name which should be edited</dd>
+<dd><code>newUsername</code> - The user's new name; <code>null</code> to not change the username</dd>
+<dd><code>permission</code> - The user's new <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>; <code>null</code> to not change the <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a></dd>
 <dd><code>enabled</code> - <code>true</code> to enable the user; <code>false</code> to disable the user</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The fitting <a href="PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser"><code>panel message</code></a></dd>
@@ -732,26 +877,26 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <li class="blockList">
 <h4>getAllUsersJSONObject</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;getAllUsersJSONObject&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</pre>
-<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
+<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>jsonObject</code> - The <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance to which the array should be added to</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="PanelUser.html#getUsername()"><code>username</code></a>, 
 <a href="PanelUser.html#isEnabled()"><code>isEnabled</code></a>, 
-<a href="PanelUser.html#getPermission()"><code>permission</code></a>, 
+<a href="PanelUser.html#getPermission()"><code>permissions</code></a>, 
 <a href="PanelUser.html#getCreationDate()"><code>creationDate</code></a>, 
 <a href="PanelUser.html#getLastLogin()"><code>lastLogin</code></a></dd>
 </dl>
 </li>
 </ul>
-<a id="getPermissionsJSON(org.json.JSONStringer)">
+<a id="getPermissionsJSONObject(org.json.JSONStringer)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getPermissionsJSON</h4>
-<pre class="methodSignature">public static&nbsp;void&nbsp;getPermissionsJSON&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</pre>
+<h4>getPermissionsJSONObject</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;getPermissionsJSONObject&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</pre>
 <div class="block">Adds the <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -762,12 +907,12 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <a id="getUserJSONObject(java.lang.String,org.json.JSONStringer)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getUserJSONObject</h4>
 <pre class="methodSignature">public static&nbsp;void&nbsp;getUserJSONObject&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;username,
                                      <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</pre>
-<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
+<div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>username</code> - The user's name which properties should be returned</dd>
@@ -775,9 +920,116 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="PanelUser.html#getUsername()"><code>username</code></a>, 
 <a href="PanelUser.html#isEnabled()"><code>isEnabled</code></a>, 
-<a href="PanelUser.html#getPermission()"><code>permission</code></a>, 
+<a href="PanelUser.html#getPermission()"><code>permissions</code></a>, 
 <a href="PanelUser.html#hasSetPassword()"><code>hasSetPassword</code></a>, 
 <a href="PanelUser.html#getUserType()"><code>userType</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="getAllPanelSectionsJSONObject(org.json.JSONStringer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getAllPanelSectionsJSONObject</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;getAllPanelSectionsJSONObject&#8203;(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink">JSONStringer</a>&nbsp;jsonObject)</pre>
+<div class="block">Adds the available <a href="#PANEL_SECTIONS"><code>panel sections</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>jsonObject</code> - The <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance to which the <a href="#PANEL_SECTIONS"><code>panel sections</code></a> should be added to</dd>
+</dl>
+</li>
+</ul>
+<a id="getFullAccessPermissions()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFullAccessPermissions</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;getFullAccessPermissions()</pre>
+<div class="block">Gets a permissions map which includes full permission to all available <a href="#PANEL_SECTIONS"><code>panel sections</code></a></div>
+</li>
+</ul>
+<a id="checkPanelUserDatabaseAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkPanelUserDatabaseAccess</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;checkPanelUserDatabaseAccess&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;tableName,
+                                                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
+                                                   boolean&nbsp;isWriteAction)</pre>
+<div class="block">Checks if a user is allowed to access a database table</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>user</code> - The <code>user</code></dd>
+<dd><code>tablename</code> - The tableName to be checked</dd>
+<dd><code>section</code> - The <a href="#PANEL_SECTIONS"><code>panel section</code></a> on which this request was created</dd>
+<dd><code>isWriteAction</code> - Indicates if the action is an action requiring <code>write permissions</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user is allowed to access the table under the conditions; <code>false</code> otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="checkPanelUserScriptAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String[],java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkPanelUserScriptAccess</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;checkPanelUserScriptAccess&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;script,
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;args,
+                                                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Checks if a user is allowed send websocket events to a specific script</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>user</code> - The <code>user</code></dd>
+<dd><code>script</code> - The script path being accessed</dd>
+<dd><code>section</code> - The <a href="#PANEL_SECTIONS"><code>panel section</code></a> on which this request was created</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user is allowed to access the table under the conditions; <code>false</code> otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkPanelUserSectionAccess</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;checkPanelUserSectionAccess&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
+                                                  boolean&nbsp;isWriteAction)</pre>
+<div class="block">Checks if a user has to access a <a href="#PANEL_SECTIONS"><code>panel section</code></a></div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>user</code> - The <code>user</code></dd>
+<dd><code>section</code> - The <a href="#PANEL_SECTIONS"><code>panel section</code></a> on which this request was created</dd>
+<dd><code>isWriteAction</code> - Indicates if the action is an action requiring <code>write permissions</code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user is allowed to access the table under the conditions; <code>false</code> otherwise</dd>
+</dl>
+</li>
+</ul>
+<a id="checkPanelUserCommandAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>checkPanelUserCommandAccess</h4>
+<pre class="methodSignature">public static&nbsp;boolean&nbsp;checkPanelUserCommandAccess&#8203;(<a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a>&nbsp;user,
+                                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
+                                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
+<div class="block">Checks if a user is allowed to send a command to the bots modules</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>user</code> - The <code>user</code></dd>
+<dd><code>command</code> - The command which has been sent by the user through the panel</dd>
+<dd><code>section</code> - The <a href="#PANEL_SECTIONS"><code>panel section</code></a> on which this request was created</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>true</code> if the user is allowed to access the table under the conditions; <code>false</code> otherwise</dd>
 </dl>
 </li>
 </ul>

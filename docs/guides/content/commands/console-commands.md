@@ -291,3 +291,51 @@ ytsetup - Sets up YouTube API Key
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 dumpheap - Creates a heap dump
+
+&nbsp;
+
+### paneluser
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+paneluser add username - Creates a new panel user with full access to all panel sections if the user does not exist and prints the randomly generated password
+
+&nbsp;
+
+### paneluser
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+paneluser delete username - Deletes a panel user if the user exists
+
+&nbsp;
+
+### paneluser
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+paneluser enable username - Enables a panel user if the user exists
+
+&nbsp;
+
+### paneluser
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+paneluser enable username - Disables a panel user if the user exists
+
+&nbsp;
+
+### paneluser
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+paneluser resetpassword username - Resets a panel users password if the user exists and prints the new and randomly generated password
+
+&nbsp;
+
+### paneluser
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+paneluser resetpermission username - Gives a panel user full access to all panel sections if the user exists

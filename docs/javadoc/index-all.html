@@ -235,10 +235,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Updates the Twitch admin status of the viewer</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html#ADMINISTRATOR">ADMINISTRATOR</a></span> - tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a></dt>
-<dd>
-<div class="block">Full access</div>
-</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#alertImage(java.lang.String)">alertImage(String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#alertImage(java.lang.String,boolean)">alertImage(String, boolean)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
@@ -575,7 +571,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUser.html#canBeEdited()">canBeEdited()</a></span> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
-<div class="block">Indicates if the panel user's properties (username, password, <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, ...) can be changed
+<div class="block">Indicates if the panel user's properties (username, password, <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, ...) can be changed
  <br/><br/>
  The user defined in the botlogin.txt cannot</div>
 </dd>
@@ -861,6 +857,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html?is-external=true" title="class or interface in io.netty.handler.codec.http" class="externalLink"><code>HttpHeaders</code></a> contains a valid login for a panel user, if enabled</div>
 </dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkAuthTokenAndGetUser(java.lang.String)">checkAuthTokenAndGetUser(String)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket by his authentication token</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/DiscordAPI.html#checkConnectionStatus()">checkConnectionStatus()</a></span> - Method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
 <dd>
 <div class="block">Method that checks if we are still connected to Discord and reconnects if we are not.</div>
@@ -907,6 +907,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/twitch/api/TwitchValidate.html#checkOAuthInconsistencies(java.lang.String)">checkOAuthInconsistencies(String)</a></span> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkPanelUserCommandAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String)">checkPanelUserCommandAccess(PanelUser, String, String)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if a user is allowed to send a command to the bots modules</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkPanelUserDatabaseAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String,boolean)">checkPanelUserDatabaseAccess(PanelUser, String, String, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if a user is allowed to access a database table</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkPanelUserScriptAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,java.lang.String%5B%5D,java.lang.String)">checkPanelUserScriptAccess(PanelUser, String, String[], String)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if a user is allowed send websocket events to a specific script</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkPanelUserSectionAccess(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String,boolean)">checkPanelUserSectionAccess(PanelUser, String, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Checks if a user has to access a <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#PANEL_SECTIONS"><code>panel section</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/httpserver/HttpSetupHandler.html#checkTokenAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)">checkTokenAuthorization(ChannelHandlerContext, FullHttpRequest)</a></span> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/httpserver/HttpSetupHandler.html#checkTokenAuthorization(java.lang.String,java.lang.String)">checkTokenAuthorization(String, String)</a></span> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
@@ -1169,7 +1185,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Creates a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/net/URI.html?is-external=true" title="class or interface in java.net" class="externalLink"><code>URI</code></a> by parsing the given spec as described in RFC 2396 "Uniform Resource Identifiers: Generic * Syntax" and encoding any
  illegal characters according to the MIME format <code>application/x-www-form-urlencoded</code></div>
 </dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUser.html#create(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,boolean)">create(String, PanelUserHandler.Permission, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUser.html#create(java.lang.String,java.util.Map,boolean)">create(String, Map&lt;String, PanelUserHandler.Permission&gt;, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
 <div class="block">Creates a new panel user and saves the user in the database</div>
 </dd>
@@ -1211,11 +1227,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/datastore/SqliteStore.html#CreateIndexes()">CreateIndexes()</a></span> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SqliteStore.html" title="class in com.gmt2001.datastore">SqliteStore</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#createNewUser(java.lang.String,java.lang.String,java.lang.Boolean)">createNewUser(String, String, Boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#createNewUser(java.lang.String,java.lang.Boolean)">createNewUser(String, Boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Creates a new <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> with full access <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a> to all panel sections if the user does not exist</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#createNewUser(java.lang.String,java.util.Map,java.lang.Boolean)">createNewUser(String, Map&lt;String, PanelUserHandler.Permission&gt;, Boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
 <div class="block">Creates a new <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#createNewUser(java.lang.String,tv.phantombot.panel.PanelUser.PanelUserHandler.Permission,java.lang.Boolean)">createNewUser(String, PanelUserHandler.Permission, Boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#createNewUser(java.lang.String,org.json.JSONArray,java.lang.Boolean)">createNewUser(String, JSONArray, Boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
 <div class="block">Creates a new <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> if the user does not exist</div>
 </dd>
@@ -1673,7 +1693,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Method to edit message embeds.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#editUser(java.lang.String,java.lang.String,java.lang.String,boolean)">editUser(String, String, String, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#editUser(java.lang.String,java.lang.String,java.util.Map,boolean)">editUser(String, String, Map&lt;String, PanelUserHandler.Permission&gt;, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Changes a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> properties
+ <br/><br/>
+ Only existing and <a href="tv/phantombot/panel/PanelUser/PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#editUser(java.lang.String,java.lang.String,org.json.JSONArray,boolean)">editUser(String, String, JSONArray, boolean)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
 <div class="block">Changes a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> properties
  <br/><br/>
@@ -2244,9 +2270,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/discord/util/DiscordUtil.html#getAllChannelInfoAsync(java.util.Map)">getAllChannelInfoAsync(Map&lt;String, Map&lt;String, String&gt;&gt;)</a></span> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getAllPanelSectionsJSONObject(org.json.JSONStringer)">getAllPanelSectionsJSONObject(JSONStringer)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Adds the available <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#PANEL_SECTIONS"><code>panel sections</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getAllUsersJSONObject(org.json.JSONStringer)">getAllUsersJSONObject(JSONStringer)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
-<div class="block">Adds the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
+<div class="block">Adds the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/twitch/subscriber/TwitchMassSubscriptionGiftedEvent.html#getAmount()">getAmount()</a></span> - Method in class tv.phantombot.event.twitch.subscriber.<a href="tv/phantombot/event/twitch/subscriber/TwitchMassSubscriptionGiftedEvent.html" title="class in tv.phantombot.event.twitch.subscriber">TwitchMassSubscriptionGiftedEvent</a></dt>
 <dd>
@@ -2821,6 +2851,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getFullAccessPermissions()">getFullAccessPermissions()</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Gets a permissions map which includes full permission to all available <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#PANEL_SECTIONS"><code>panel sections</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/cache/SteamCache.html#getGameID(java.lang.String)">getGameID(String)</a></span> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/SteamCache.html" title="class in tv.phantombot.cache">SteamCache</a></dt>
 <dd>
 <div class="block">Method that returns the game ID, or null if it doesn't exist.</div>
@@ -3258,9 +3292,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUser.html#getPermission()">getPermission()</a></span> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
-<div class="block">The user's <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a></div>
+<div class="block">The user's <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a></div>
 </dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getPermissionsJSON(org.json.JSONStringer)">getPermissionsJSON(JSONStringer)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getPermissionsJSONObject(org.json.JSONStringer)">getPermissionsJSONObject(JSONStringer)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
 <div class="block">Adds the <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html?is-external=true" title="class or interface in org.json" class="externalLink"><code>JSONStringer</code></a> instance</div>
 </dd>
@@ -3667,7 +3701,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 &nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#getUserJSONObject(java.lang.String,org.json.JSONStringer)">getUserJSONObject(String, JSONStringer)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
-<div class="block">Adds the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permission</code></a>, hasSetPassword, <a href="tv/phantombot/panel/PanelUser/PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
+<div class="block">Adds the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="tv/phantombot/panel/PanelUser/PanelUser.Type.html" title="enum in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
 </dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/event/discord/DiscordEvent.html#getUsername()">getUsername()</a></span> - Method in class tv.phantombot.event.discord.<a href="tv/phantombot/event/discord/DiscordEvent.html" title="class in tv.phantombot.event.discord">DiscordEvent</a></dt>
 <dd>
@@ -4448,6 +4482,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/dns/CompositeAddressResolverGroup.html#INSTANCE">INSTANCE</a></span> - Static variable in class com.gmt2001.dns.<a href="com/gmt2001/dns/CompositeAddressResolverGroup.html" title="class in com.gmt2001.dns">CompositeAddressResolverGroup</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html#InsufficientPermissions">InsufficientPermissions</a></span> - tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></dt>
+<dd>
+<div class="block"><a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>Panel user</code></a> is not allowed to manage other panel users</div>
+</dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)">invalidateAuthorization(ChannelHandlerContext, FullHttpRequest)</a></span> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Invalidates the authentication of the specified <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a>, if supported by the authentication handler</div>
@@ -5186,6 +5224,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Performs an asynchronous operation to lookup the users on Twitch API and add them to the cache</div>
 </dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUser.html#LookupByAuthToken(java.lang.String)">LookupByAuthToken(String)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
+<dd>
+<div class="block">Looks up a panel user by their websocket token</div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUser.html#LookupByUsername(java.lang.String)">LookupByUsername(String)</a></span> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
 <div class="block">Looks up a panel user by their username</div>
@@ -5790,8 +5832,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#PANEL_USER_TABLE">PANEL_USER_TABLE</a></span> - Static variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
+<dd>
+<div class="block">Database table suffix for the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a></div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/PhantomBot.html#panelhandler()">panelhandler()</a></span> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(io.netty.channel.ChannelHandlerContext,java.lang.String,java.lang.String,java.lang.String,java.lang.Integer,java.lang.Integer,java.lang.Boolean)">panelNotification(ChannelHandlerContext, String, String, String, Integer, Integer, Boolean)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dd>
+<div class="block">Sends a toastr notification to the panel
+ 
+ The notification is sent to all currently authenticated users on the panel if the parameter ctx is  <code>null</code></div>
+</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String)">panelNotification(String, String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String,java.lang.String)">panelNotification(String, String, String)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
@@ -5800,10 +5852,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String,java.lang.String,java.lang.Integer,java.lang.Integer)">panelNotification(String, String, String, Integer, Integer)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String,java.lang.String,java.lang.Integer,java.lang.Integer,java.lang.Boolean)">panelNotification(String, String, String, Integer, Integer, Boolean)</a></span> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
-<dd>
-<div class="block">Sends a toastr notification to everyone currently authenticated to the panel</div>
-</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><span class="typeNameLink">PanelUser</span></a> - Class in <a href="tv/phantombot/panel/PanelUser/package-summary.html">tv.phantombot.panel.PanelUser</a></dt>
 <dd>
 <div class="block">Represents a panel user and should be managed through <a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUserHandler</code></a></div>
@@ -5825,10 +5873,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser"><span class="typeNameLink">PanelUserHandler.Permission</span></a> - Enum in <a href="tv/phantombot/panel/PanelUser/package-summary.html">tv.phantombot.panel.PanelUser</a></dt>
 <dd>
 <div class="block"><a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>Panel user</code></a> web panel and websocket permission</div>
-</dd>
-<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#PANELUSERTABLE">PANELUSERTABLE</a></span> - Static variable in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
-<dd>
-<div class="block">Database table suffix for the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a></div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/twitch/tmi/TMIMessage.html#parameters()">parameters()</a></span> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a></dt>
 <dd>&nbsp;</dd>
@@ -6581,6 +6625,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html#READ_ONLY">READ_ONLY</a></span> - tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a></dt>
 <dd>
 <div class="block">Read only access</div>
+</dd>
+<dt><span class="memberNameLink"><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html#READ_WRITE">READ_WRITE</a></span> - tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.Permission.html" title="enum in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a></dt>
+<dd>
+<div class="block">Read and write access</div>
 </dd>
 <dt><span class="memberNameLink"><a href="com/gmt2001/JSFileSystem.html#ReadFileAsLines(java.lang.String)">ReadFileAsLines(String)</a></span> - Static method in class com.gmt2001.<a href="com/gmt2001/JSFileSystem.html" title="class in com.gmt2001">JSFileSystem</a></dt>
 <dd>
