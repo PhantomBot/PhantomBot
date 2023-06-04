@@ -16,19 +16,19 @@
  */
 package com.gmt2001.datastore;
 
-import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
-import tv.phantombot.CaselessProperties;
-
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+
+import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
+import tv.phantombot.CaselessProperties;
 
 /**
  *
@@ -106,8 +106,8 @@ public final class MySQLStore extends DataStore {
     }
 
     @Override
-    public boolean CanConnect(String db, String user, String pass) {
-        try ( Connection connection = DriverManager.getConnection(db, user, pass)) {
+    public boolean CanConnect() {
+        try (Connection connection = GetConnection()) {
             return true;
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);

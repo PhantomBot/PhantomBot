@@ -541,7 +541,7 @@
             // Load other Twitch modules
             loadScriptRecursive('.', silentScriptsLoad, false, false);
 
-            if (!$.hasDiscordToken) {
+            if ($.hasDiscordToken) {
                 // Load Discord core
                 loadScriptRecursive('./discord/core/bootstrap', silentScriptsLoad, false, true);
                 loadScriptRecursive('./discord/core', silentScriptsLoad, false, true);

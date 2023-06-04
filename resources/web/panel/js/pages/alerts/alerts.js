@@ -19,6 +19,10 @@
 
 // Function that querys all of the data we need.
 $(function () {
+    if (helpers.currentPanelUserData.userType !== 'CONFIG') {
+        $('[data-removeForNonConfigUser="true"]').remove();
+    }
+
     // Get all module toggles.
     socket.getDBValues('alerts_get_modules', {
         tables: ['modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules', 'modules'],

@@ -893,12 +893,9 @@ public abstract class DataStore {
      *
      * This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method
      *
-     * @param db The JDBC connection string
-     * @param user The username
-     * @param pass The password
      * @return {@code true} on success or on embedded databases
      */
-    public boolean CanConnect(String db, String user, String pass) {
+    public boolean CanConnect() {
         return true;
     }
 

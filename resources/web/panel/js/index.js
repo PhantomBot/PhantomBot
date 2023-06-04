@@ -50,6 +50,7 @@ $(function () {
      */
     var sendToSocket = function (message) {
         try {
+            message.section = $.currentPage().folder;
             let json = JSON.stringify(message);
 
             webSocket.send(json);
@@ -615,6 +616,40 @@ $(function () {
         sendToSocket({
             panelUser: callback_id,
             resetPassword: String(username)
+        });
+    };
+
+    /*
+     * @function Gets all panel permission level
+     *
+     * @param {String}       callback_id
+     * @param {Function}     callback
+     */
+    socket.getPanelPermissionLevels = function (callback_id, callback) {
+        // Genetate a callback.
+        generateCallBack(callback_id, [], false, true, callback);
+
+        // Query database.
+        sendToSocket({
+            panelUserRO: callback_id,
+            permission: true
+        });
+    };
+
+    /*
+     * @function Gets all panel sections to which permissions can be assigned
+     *
+     * @param {String}       callback_id
+     * @param {Function}     callback
+     */
+    socket.getPanelSections = function (callback_id, callback) {
+        // Genetate a callback.
+        generateCallBack(callback_id, [], false, true, callback);
+
+        // Query database.
+        sendToSocket({
+            panelUserRO: callback_id,
+            sections: true
         });
     };
 

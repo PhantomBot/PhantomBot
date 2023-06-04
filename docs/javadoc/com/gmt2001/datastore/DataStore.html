@@ -208,9 +208,7 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect(java.lang.String,java.lang.String,java.lang.String)">CanConnect</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect()">CanConnect</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Tests if the connection to the database succeeds.</div>
 </td>
@@ -2146,23 +2144,17 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
 <div class="block">Drops all <code>UNIQUE</code> indexes from tables created with <a href="#AddFile(java.lang.String)"><code>AddFile(String)</code></a></div>
 </li>
 </ul>
-<a id="CanConnect(java.lang.String,java.lang.String,java.lang.String)">
+<a id="CanConnect()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>CanConnect</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;db,
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;user,
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;pass)</pre>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect()</pre>
 <div class="block">Tests if the connection to the database succeeds.
 
  This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method</div>
 <dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>db</code> - The JDBC connection string</dd>
-<dd><code>user</code> - The username</dd>
-<dd><code>pass</code> - The password</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>true</code> on success or on embedded databases</dd>
 </dl>
