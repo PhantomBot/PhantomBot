@@ -172,8 +172,9 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                     }
 
                     if (ctx.channel().attr(ATTR_AUTH_USER).get() != null) {
+                        ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
-                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(ctx.channel().attr(ATTR_AUTH_USER).get().getPermission() == PanelUserHandler.Permission.READ_ONLY);
+                        ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                     } else if (astr.equals(readWriteToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
@@ -182,6 +183,14 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
+                    } else {
+                        PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(astr);
+                        if (user != null) {
+                            ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
+                            ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                            ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
+                            ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
+                        }
                     }
                 }
             } catch (JSONException ex) {

@@ -49,6 +49,16 @@ $(function () {
             case 'error':
                 toastr.error(e.message, e.title, options);
                 break;
+            case 'permission':
+                if (!helpers.isPermissionErrorRunning) {
+                    helpers.isPermissionErrorRunning = true;
+                    toastr.error(e.message, e.title, options);
+                    setTimeout(function () {
+                        helpers.isPermissionErrorRunning = false;
+                    }, 5e3);
+                }
+
+                break;
             default:
                 toastr.info(e.message, e.title, options);
         }
@@ -157,17 +167,32 @@ $(function () {
     });
     // Load the display name.
     $(function () {
+        //Remove sections to which the user has no permissions
+        socket.getPanelSections('get_panel_sections', function (res) {
+            let sectionsToRemove = res.filter(item => !helpers.currentPanelUserData.permission.some(obj => obj.section === item));
+
+            for (let i in sectionsToRemove) {
+                if (sectionsToRemove[i] === 'stream overlay') {
+                    sectionsToRemove[i] = 'overlay';
+                }
+                if (sectionsToRemove[i] === 'keywords & emotes') {
+                    sectionsToRemove[i] = 'keywords';
+                }
+
+                $('[data-folder="' + sectionsToRemove[i] + '"]').closest('li.treeview').remove();
+            }
+        });
         if (helpers.currentPanelUserData.userType === 'CONFIG') {
-            $('[data-removeForConfigUser="true"]').remove();//Paneluser is defined in the config
+            $('[data-removeForConfigUser="true"]').remove();//Panel user is defined in the config
+        } else {
+            $('[data-removeForCantRestart="true"]').remove();
+            $('[data-removeForNonConfigUser="true"]').remove();
         }
 
-        if (!helpers.currentPanelUserData.canManageUsers) { //Remove settings global settings
+        if (!helpers.currentPanelUserData.canManageUsers) { //Remove panel user manager
             $('[data-removeForCantManage="true"]').remove();
         }
 
-        if (helpers.currentPanelUserData.permission === 'Read only') {
-            $('[data-removeForReadOnly="true"]').remove();
-        }
 
         $('#main-name').text(getChannelName() + ' | ' + helpers.currentPanelUserData.username);
         $('#second-name').text(helpers.currentPanelUserData.username);

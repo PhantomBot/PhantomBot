@@ -204,7 +204,7 @@ $(function () {
                                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
                                     'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
                                 }));
-                            } else if (e.hasChat) {
+                            } else if (e.hasChat && helpers.currentPanelUserData.userType === 'CONFIG') {
                                 $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
                                 $('#twitch-chat-iframe').addClass('box-body');
                             } else {
@@ -220,7 +220,7 @@ $(function () {
                                     'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
                                     'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
                                 }));
-                            } else if (e.hasPlayer) {
+                            } else if (e.hasPlayer && helpers.currentPanelUserData.userType === 'CONFIG') {
                                 $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
                                 $('#twitch-player-iframe').addClass('box-body');
                             } else {

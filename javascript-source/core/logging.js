@@ -46,7 +46,7 @@
             return '**' + $.lang.get('discord.customcommandlogs.' + key) + '**: ' + info[key];
         });
         $.log.file('customCommands', lines.join('\r\n'));
-        if (!$.hasDiscordToken && cmdLogEnabled && cmdDiscordLogChannel) {
+        if ($.hasDiscordToken && cmdLogEnabled && cmdDiscordLogChannel) {
             $.discordAPI.sendMessageEmbed(cmdDiscordLogChannel, 'blue', lines.join('\r\n\r\n'));
         }
     }

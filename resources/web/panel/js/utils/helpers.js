@@ -44,7 +44,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function adds commas to thousands.
      *
      * @param  {String} number
@@ -76,7 +76,7 @@ $(function () {
         return number;
     };
 
-    /*
+    /**
      * @function checks if the object has a valid string or number.
      *
      * @param  {Object} obj
@@ -97,7 +97,7 @@ $(function () {
         return false;
     };
 
-    /*
+    /**
      * @function Checks if the value is null and returns the default if it is.
      *
      * @param  {String} value
@@ -112,7 +112,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function gets the proper event message.
      *
      * @param  {Object} event
@@ -149,7 +149,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function that gets the right color for an event.
      *
      * @param  {String} event
@@ -187,7 +187,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function handle input validation
      *
      * @param {Object} obj
@@ -237,7 +237,7 @@ $(function () {
         return !obj.parent().hasClass('has-error');
     };
 
-    /*
+    /**
      * @function handles the string input checks.
      *
      * @param {Object} obj
@@ -261,7 +261,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function handles the number input checks.
      *
      * @param  {Object} obj
@@ -279,7 +279,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function handles the date input checks.
      *
      * @param  {Object} obj
@@ -296,7 +296,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function handles hiding info for the panels (the four dashboard info panels).
      *
      * @param {Object} obj
@@ -322,7 +322,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function handles setting the info for the panels (the four dashboard info panels).
      *
      * @param {Object} obj
@@ -349,7 +349,7 @@ $(function () {
         obj.data('parsed', parsed);
     };
 
-    /*
+    /**
      * @function Adds padding to the date with a 0.
      *
      * @param  {String} dateString
@@ -367,7 +367,7 @@ $(function () {
         return dateMatches.join('');
     };
 
-    /*
+    /**
      * @function Generates a basic modal, you have to append your own body with jQuery.
      *
      * @param  {String}        id - Element ID for the modal
@@ -461,7 +461,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function Generates an advanced modal, you have to append your own body with jQuery.
      *
      * Elements which should be hidden behind the "Show Advanced" collapse section should be enclosed in an element defined as
@@ -578,7 +578,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function Generates an input group
      *
      * @param  {String}  id
@@ -610,7 +610,7 @@ $(function () {
         }).prop('disabled', (disabled === undefined ? false : disabled)));
     };
 
-    /*
+    /**
      * @function Generates a textarea group
      *
      * @param  {String}  id
@@ -644,7 +644,7 @@ $(function () {
         }));
     };
 
-    /*
+    /**
      * @function Generates a dropdown.
      *
      * @param  {String} id
@@ -751,7 +751,7 @@ $(function () {
         }))));
     };
 
-    /*
+    /**
      * @function Generates a multi-select dropdown.
      *
      * @param  {String} id
@@ -822,7 +822,7 @@ $(function () {
         }))));
     };
 
-    /*
+    /**
      * @function Generates a multi-select dropdown.
      *
      * @param  {String} id
@@ -875,7 +875,7 @@ $(function () {
         }))));
     };
 
-    /*
+    /**
      * @function gets a checkbox
      *
      * @param  {String}  id
@@ -917,7 +917,7 @@ $(function () {
         // }).prop('checked', value)).append(text));
     };
 
-    /*
+    /**
      * @function gets a collapsible accordion panel.
      *
      * @param  {String} id
@@ -948,7 +948,7 @@ $(function () {
         })));
     };
 
-    /*
+    /**
      * @function gets the confrim delete modal
      *
      * @param  {String}   id
@@ -1002,7 +1002,7 @@ $(function () {
         });
     };
 
-    /*
+    /**
      * @function Generates a random string.
      *
      * @param  {Number} len
@@ -1019,7 +1019,7 @@ $(function () {
         return str;
     };
 
-    /*
+    /**
      * @function Creates a new timer interval.
      *
      * @param {Function} func
@@ -1029,7 +1029,7 @@ $(function () {
         timers.push(setInterval(func, interval));
     };
 
-    /*
+    /**
      * @function Creates a new timer timeout.
      *
      * @param {Function} func
@@ -1039,7 +1039,7 @@ $(function () {
         timers.push(setTimeout(func, timeout));
     };
 
-    /*
+    /**
      * @function Clears all timers.
      */
     helpers.clearTimers = function () {
@@ -1048,7 +1048,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function checked if a module is on.
      *
      * @param  {String}|{Array} id
@@ -1081,7 +1081,7 @@ $(function () {
         return toggle === 'true';
     };
 
-    /*
+    /**
      * @function Same as the function above but doesn't return anything but true.
      *
      * @param  {String}|{Array} id
@@ -1110,7 +1110,7 @@ $(function () {
         checkSwappedSubscriberVIP();
     }, 30e3);
 
-    /*
+    /**
      * @function Gets the group ID by its name.
      *
      * @param  {String}  name
@@ -1122,7 +1122,7 @@ $(function () {
         return (asString ? idx.toString() : parseInt(idx));
     };
 
-    /*
+    /**
      * @function Gets the group ID by its name.
      *
      * @param  {String}  name
@@ -1169,7 +1169,7 @@ $(function () {
         updatePermGroups();
     }, 30e3);
 
-    /*
+    /**
      * @function Gets the group name by its ID.
      *
      * @param  {String} id
@@ -1183,7 +1183,22 @@ $(function () {
         return permGroupNames;
     };
 
-    /*
+    /**
+     * Capitalizes the first letter of each word in a string 
+     * @param {String} str The string to process
+     * @returns The string with the first letter of each word being capitalized
+     */
+    helpers.capitalizeFirstLettersInString = function (str) {
+        var words = str.toLowerCase().split(' ');
+        for (var i = 0; i < words.length; i++) {
+          words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+        }
+        return words.join(' ');
+    };
+
+    helpers.isPermissionErrorRunning = false;
+
+    /**
      * @function Gets the group name by its ID.
      *
      * @param  {String} j
@@ -1218,7 +1233,7 @@ $(function () {
         };
     };
 
-    /*
+    /**
      * @function Handles the dark mode toggle.
      *
      * @param {Boolean} isDark
@@ -1296,7 +1311,7 @@ $(function () {
         $('#notifications-menu-ul').append($('<li/>').append(html));
     };
 
-    /*
+    /**
      * @function Handles showing new updates to the user.
      *
      * @param {String} version
@@ -1351,7 +1366,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function Gets a random rgb color.
      *
      * @return {String}
@@ -1360,7 +1375,7 @@ $(function () {
         return 'rgb(' + Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ')';
     };
 
-    /*
+    /**
      * @function Used to print debug messages in the console.
      *
      * @param {String}  message
@@ -1372,7 +1387,7 @@ $(function () {
         }
     };
 
-    /*
+    /**
      * @function Used to print error messages in the console.
      *
      * @param {String}  message
@@ -1382,7 +1397,7 @@ $(function () {
         console.log('%c[PhantomBot Error]', 'color: red; font-weight: 900;', message);
     };
 
-    /*
+    /**
      * @function Gets the epoch time from a date.
      *
      * @param  {String}  date
@@ -1589,13 +1604,14 @@ $(function () {
         return helpers.getBotHost() === window.location.host;
     };
 
-    // Takes an object {} and an array [] of keys.
-    // Foreach key in keys:
-    //   If obj has the key, and its value is typeof string that starts with '{',
-    //   attempts to parse the value as JSON. On success, the string value is replaced
-    //   with the resulting object. On failure info is sent to debug, the value is left unchanged,
-    //   and the next key is processed.
-    // Does not return anything, the original object will be changed.
+    /** Takes an object {} and an array [] of keys.
+    * Foreach key in keys:
+    *   If obj has the key, and its value is typeof string that starts with '{',
+    *   attempts to parse the value as JSON. On success, the string value is replaced
+    *   with the resulting object. On failure info is sent to debug, the value is left unchanged,
+    *   and the next key is processed.
+    * Does not return anything, the original object will be changed.
+    */
     helpers.parseJSONValues = function (obj, keys) {
         for (let key in keys) {
             key = keys[key];
