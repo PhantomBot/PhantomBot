@@ -63,9 +63,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         mkdir -p docs/panel-stable/
@@ -93,9 +90,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         mkdir -p docs/guides/content-stable/
@@ -120,9 +114,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         mkdir -p docs/javadoc-stable/
