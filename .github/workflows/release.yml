@@ -63,9 +63,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         echo ::group::update docs/panel-stable/
@@ -99,9 +96,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         echo ::group::update docs/guides/content-stable/
@@ -129,9 +123,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         echo ::group::update docs/javadoc-stable/
