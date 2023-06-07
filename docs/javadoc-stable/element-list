@@ -75,7 +75,6 @@ tv.phantombot.event.webpanel.websocket
 tv.phantombot.event.ytplayer
 tv.phantombot.httpserver
 tv.phantombot.panel
-tv.phantombot.panel.PanelUser
 tv.phantombot.script
 tv.phantombot.scripts.handler
 tv.phantombot.twitch.api

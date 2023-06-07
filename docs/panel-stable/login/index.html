@@ -53,7 +53,7 @@
 
             <div class="login-box-body">
                 <p class="login-box-msg">Log in to start your session<span id="remote-msg"><br/><br/>This version of the panel is entirely client-side.
-                        <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser<span id="hasAltPanelVersion"></span></span></p>
+                        <br/>Your credentials will only be transmitted directly to your bot.<br/>All storage is directly in your browser</span></p>
 
                 <div class="alert-error text-center hide" id="error-box"></div>
                 <div class="alert-success text-center hide" id="success-box"></div>
@@ -112,8 +112,6 @@
         <script src="../../common/reconnecting-websocket/reconnectingWS.min.js"></script>
         <script>
             let isLocalBot = false;
-            let hasAltPanelVersion = false;
-            let authExpired = false;
 
             let sslHelp = 'Either the bot is not responding or SSL, which is required, is not enabled on this bot.<br /><br />'
                     + 'Troubleshooting Steps:<br />'
@@ -126,33 +124,8 @@
                     + 'For further instructions on setting up SSL, please see '
                     + '<a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds" target="guide">this guide</a>';
 
-            function doKickback(isStable) {
-                if (isStable === undefined) {
-                    isStable = true;
-                }
-
-                let params = new URLSearchParams(document.location.search.substring(1));
-
-                let kickback = window.location.pathname + '../';
-                if (params.get("kickback") !== null && params.get("kickback").length > 0) {
-                    kickback = decodeURIComponent(params.get("kickback"));
-                }
-
-                if (!isLocalBot && hasAltPanelVersion && kickback.includes("/panel") && isStable){
-                    let stable = kickback.includes("/panel-stable");
-                    if (isStable && !stable) {
-                        kickback = kickback.replace("/panel", "/panel-stable");
-                    } else if (!isStable && stable) {
-                        kickback = kickback.replace("/panel-stable", "/panel");
-                    }
-                }
-
-                window.location = window.location.origin + kickback;
-            }
-
             function doLogin(hostname, port, username, password, remember) {
                 let webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
-
                 webSocket.onopen = function () {
                     Pace.restart();
 
@@ -187,7 +160,6 @@
                         webSocket.close(1000);
                         window.localStorage.setItem('bothostname', hostname);
                         window.localStorage.setItem('botport', port);
-                        window.localStorage.setItem('isStable', message["build-type"] !== undefined && message["build-type"] === "stable");
                         if (remember !== 'session') {
                             window.localStorage.setItem('webauth', webauth);
                             window.localStorage.setItem('remember', remember);
@@ -202,7 +174,21 @@
                         history.pushState({}, "PhantomBot | Log in | Success");
                         window.sessionStorage.setItem('webauth', webauth);
                         document.cookie = 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
-                        doKickback(window.localStorage.getItem('isStable'));
+                        let params = new URLSearchParams(document.location.search.substring(1));
+
+                        if (params.get("kickback") !== null && params.get("kickback").length > 0) {
+                            let kickback = decodeURIComponent(params.get("kickback"));
+                            if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
+                                kickback = kickback.replace("/panel", "/panel-stable");
+                            }
+                            window.location = window.location.origin + kickback;
+                        } else {
+                            let kickback = window.location.pathname;
+                            if (!isLocalBot && kickback.includes("/panel") && !kickback.includes("/panel-stable") && message["build-type"] !== undefined && message["build-type"] === "stable") {
+                                kickback = kickback.replace("/panel", "/panel-stable");
+                            }
+                            window.location = window.location.origin + kickback + '../';
+                        }
                     }
                 };
             }
@@ -296,7 +282,6 @@
                     $('#success-box').html('Successfully logged out');
                     window.localStorage.removeItem('webauth');
                     window.localStorage.removeItem('remember');
-                    window.localStorage.removeItem('isStable');
                     window.localStorage.removeItem('expires');
                     window.localStorage.removeItem('b64');
                 }
@@ -307,7 +292,6 @@
                     $('#error-box').html('Timed out connecting to the bot');
                     window.localStorage.removeItem('webauth');
                     window.localStorage.removeItem('remember');
-                    window.localStorage.removeItem('isStable');
                     window.localStorage.removeItem('expires');
                     window.localStorage.removeItem('b64');
                 }
@@ -318,7 +302,6 @@
                     $('#error-box').html(sslHelp.replaceAll('%hostname%', window.localStorage.getItem('bothostname')).replaceAll('%port%', window.localStorage.getItem('botport')));
                     window.localStorage.removeItem('webauth');
                     window.localStorage.removeItem('remember');
-                    window.localStorage.removeItem('isStable');
                     window.localStorage.removeItem('expires');
                     window.localStorage.removeItem('b64');
                 }
@@ -329,12 +312,27 @@
                     $('#error-box').html('The selected bot hostname was missing from the panel login parameters, please login again');
                     window.localStorage.removeItem('webauth');
                     window.localStorage.removeItem('remember');
-                    window.localStorage.removeItem('isStable');
                     window.localStorage.removeItem('expires');
                     window.localStorage.removeItem('b64');
                 }
 
-                if ((hashmap['missingAuth'] !== undefined && hashmap['missingAuth'] === 'true')) {
+                let authExpired = false;
+                if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
+                    if (window.localStorage.getItem('remember') && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()) {
+                        window.localStorage.setItem('expires', Date.now() + (parseInt(window.localStorage.getItem('remember')) * 3600000));
+                        window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
+                        document.cookie = 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
+                        window.location = window.location.origin + window.location.pathname + '../';
+                    } else {
+                        window.localStorage.removeItem('webauth');
+                        window.localStorage.removeItem('remember');
+                        window.localStorage.removeItem('expires');
+                        window.localStorage.removeItem('b64');
+                        authExpired = true;
+                    }
+                }
+
+                if ((hashmap['missingAuth'] !== undefined && hashmap['missingAuth'] === 'true') || authExpired) {
                     $('#error-box').removeClass('hide');
                     $('#alert-br').removeClass('hide');
                     $('#error-box').html('Your session has expired, please login again');
@@ -373,35 +371,6 @@
                     $('#info-box').html(params.get("message"));
                 }
 
-                function checkAlreadyLoggedIn() {
-                    if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
-                        if (window.localStorage.getItem('remember') !== 'forever') {
-                            if (window.localStorage.getItem('remember') !== 'session' && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()
-                              && (window.sessionStorage.getItem('/panel/login#remember') === null || parseInt(window.sessionStorage.getItem('/panel/login#remember')) < Date.now())) {
-                                window.sessionStorage.setItem('/panel/login#remember', (Date.now() + 10000));
-                                window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
-                                history.pushState({}, "PhantomBot | Log in | Success");
-                                document.cookie = 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; Path=/';
-                                doKickback(window.localStorage.getItem('isStable'));
-                            } else {
-                                if (window.sessionStorage.getItem('/panel/login#remember') !== null && parseInt(window.sessionStorage.getItem('/panel/login#remember')) >= Date.now()) {
-                                    $('#error-box').removeClass('hide');
-                                    $('#alert-br').removeClass('hide');
-                                    $('#error-box').html('Detected infinite <i>Remember Me</i> loop. You are now logged out');
-                                }
-                                window.localStorage.removeItem('webauth');
-                                window.localStorage.removeItem('remember');
-                                window.localStorage.removeItem('isStable');
-                                window.localStorage.removeItem('expires');
-                                window.localStorage.removeItem('b64');
-                                window.sessionStorage.removeItem('/panel/login#remember');
-                                authExpired = true;
-                            }
-                        }
-                    }
-                }
-
-                let p1 = new Promise((resolve) => {
                 $.ajax(
                         {
                             type: 'GET',
@@ -415,54 +384,21 @@
                                     $('#hostname').val(window.location.hostname);
                                     $('#port').val((window.location.port.length > 0 ? window.location.port : (window.location.protocol === 'https:' ? '443' : '80')));
                                 }
-                            },
-                            complete: function() {
-                                resolve();
                             }
                         }
                 );
-                });
-
-                let p2 = new Promise((resolve) => {$.ajax(
-                        {
-                            type: 'HEAD',
-                            url: window.location.origin + (window.location.pathname.includes('/panel-stable') ? window.location.pathname.replace('/panel-stable', '/panel') : window.location.pathname.replace('/panel', '/panel-stable')),
-                            success: function () {
-                                hasAltPanelVersion = true;
-                                $('#hasAltPanelVersion').html('<br/><br/>This login page is for the <b>'
-                                    + (window.location.pathname.includes('/panel-stable') ? 'stable' : 'nightly')
-                                    + '</b> version of the bot. Click <a href="'
-                                    + (window.location.pathname.includes('/panel-stable') ? window.location.toString().replace('/panel-stable', '/panel') : window.location.toString().replace('/panel', '/panel-stable'))
-                                    + '" target="_self">here</a> to switch to '
-                                    + (window.location.pathname.includes('/panel-stable') ? 'nightly' : 'stable'));
-                            },
-                            complete: function() {
-                                resolve();
-                            }
-                        }
-                );
-                });
-
-                Promise.all([p1, p2]).then(() => {
-                    checkAlreadyLoggedIn();
-                    if (authExpired) {
-                        $('#error-box').removeClass('hide');
-                        $('#alert-br').removeClass('hide');
-                        $('#error-box').html('Your session has expired, please login again');
-                    }
-                });
             });
         </script>
         <script>
             function doFix() {
-                window.sessionStorage.setItem('/panel/login#fix', (Date.now() + 10000));
-                let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + '/');
+                window.sessionStorage.setItem("/panel/login#fix", (Date.now() + 10000));
+                let newURL = window.location.toString().replace(window.location.pathname, window.location.pathname + "/");
                 document.body.innerHTML = 'Fixing the URL, click <a href="' + newURL + '" target="_self">here</a> if you didn\'t redirect automatically...';
                 window.location.replace(newURL);
             }
 
-            if (!window.location.pathname.endsWith('/')) {
-                if (window.sessionStorage.getItem('/panel/login#fix') === null || parseInt(window.sessionStorage.getItem('/panel/login#fix')) < Date.now()) {
+            if (!window.location.pathname.endsWith("/")) {
+                if (window.sessionStorage.getItem("/panel/login#fix") === null || parseInt(window.sessionStorage.getItem("/panel/login#fix")) < Date.now()) {
                     doFix();
                 }
             }

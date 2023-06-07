@@ -110,7 +110,7 @@
             if (message.equalsIgnoreCase('clearchat')) {
                 $.log.file('private-messages', '' + $.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') !== -1) {
-                logEvent($.lang.get('console.received.purgetimeoutban', message.substring(10)));
+                $.log.event($.lang.get('console.received.purgetimeoutban', message.substring(10)));
             } else if (message.indexOf('now in slow mode') !== -1) {
                 $.log.file('private-messages', '' + $.lang.get('console.received.slowmode.start', message.substring(message.indexOf('every') + 6)));
             } else if (message.indexOf('no longer in slow mode') !== -1) {
