@@ -41,7 +41,7 @@ public final class PatternDetector {
      *
      * @see #linksMatcher(String) for an explanation of what this pattern captures
      */
-    private final static Pattern LINKS_PATTERN = Pattern.compile("(?i)(?U)(?:\\b|^)?(?<weburi>(?:(?<webscheme>(?:|[st])ftp(?:|s)|http(?:|s)|rtsp(?:|s)|ws(?:|s)):\\/\\/)?(?<webauthority>(?<webdomain>[\\p{L}\\p{S}\\p{Mn}\\p{Nd}\\p{Nl}\\p{No}\\p{Pc}\\p{Pd}\\p{Po}]+)(?:\\s*\\.\\s*)" + TLD_PATTERN + "(?:\\:(?<webport>\\d{1,5}))?))|(?<ip>(?<ipv4>(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9]))|(?<ipv6>(?:::)?(?:[0-9a-fA-F]{1,4}(?:::|:)){2,7}(?:[0-9a-fA-F]{1,4}|)|(?:::[0-9a-fA-F]{1,4})|(?:[0-9a-fA-F]{1,4}::(?:[0-9a-fA-F]{1,4})?)))|(?<protouri>(?<protoscheme>bitcoin(?:|cash)|c(?:allto|ontent)|ed2k|f(?:acetime|eed)|git|i(?:ntent|rc(?:|6|s))|jar|m(?:a(?:gnet|ilto|ps|rket)|ms)|payto|s(?:ip(?:|s)|kype|potify|team)|te(?:ams(?:|peak)|l)|webcal|xmpp):(?:\\/\\/)?(?<protourn>(?:[\\p{L}\\p{S}\\p{Mn}\\p{Nd}\\p{Nl}\\p{No}\\p{Pc}\\p{Pd}\\p{Po}])+))(?:\\b|$)");
+    private final static Pattern LINKS_PATTERN = Pattern.compile("(?i)(?U)(?:\\b|^)(?:(?<weburi>(?:(?<webscheme>(?:|[st])ftp(?:|s)|http(?:|s)|rtsp(?:|s)|ws(?:|s)):\\/\\/)?(?<webauthority>(?<webdomain>[\\p{L}\\p{S}\\p{Mn}\\p{Nd}\\p{Nl}\\p{No}\\p{Pc}\\p{Pd}\\p{Po}]+)(?:\\s*\\.\\s*)" + TLD_PATTERN + "(?:\\:(?<webport>\\d{1,5}))?))|(?<ip>(?<ipv4>(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9]))|(?<ipv6>(?:::)?(?:[0-9a-fA-F]{1,4}(?:::|:)){2,7}(?:[0-9a-fA-F]{1,4}|)|(?:::[0-9a-fA-F]{1,4})|(?:[0-9a-fA-F]{1,4}::(?:[0-9a-fA-F]{1,4})?)))|(?<protouri>(?<protoscheme>bitcoin(?:|cash)|c(?:allto|ontent)|ed2k|f(?:acetime|eed)|git|i(?:ntent|rc(?:|6|s))|jar|m(?:a(?:gnet|ilto|ps|rket)|ms)|payto|s(?:ip(?:|s)|kype|potify|team)|te(?:ams(?:|peak)|l)|webcal|xmpp):(?:\\/\\/)?(?<protourn>(?:[\\p{L}\\p{S}\\p{Mn}\\p{Nd}\\p{Nl}\\p{No}\\p{Pc}\\p{Pd}\\p{Po}])+)))(?:\\b|$)");
 
     /**
      * Static class. Constructor disabled
@@ -126,7 +126,7 @@ public final class PatternDetector {
      * @return {@code true} if a link is detected
      */
     public static boolean hasAnyLinks(String str) {
-        return linksMatcher(str).matches();
+        return linksMatcher(str).find();
     }
 
     /**
@@ -139,13 +139,12 @@ public final class PatternDetector {
      */
     public static boolean hasWebLinks(String str) {
         Matcher matcher = linksMatcher(str);
-        boolean found = matcher.find();
 
-        if (found) {
-            found = matcher.group("weburi") != null;
+        if (matcher.find()) {
+            return matcher.group("weburi") != null;
         }
 
-        return found;
+        return false;
     }
 
     /**
@@ -158,13 +157,12 @@ public final class PatternDetector {
      */
     public static boolean hasIpLinks(String str) {
         Matcher matcher = linksMatcher(str);
-        boolean found = matcher.find();
 
-        if (found) {
-            found = matcher.group("ip") != null;
+        if (matcher.find()) {
+            return matcher.group("ip") != null;
         }
 
-        return found;
+        return false;
     }
 
     /**
@@ -177,13 +175,12 @@ public final class PatternDetector {
      */
     public static boolean hasProtoLinks(String str) {
         Matcher matcher = linksMatcher(str);
-        boolean found = matcher.find();
 
-        if (found) {
-            found = matcher.group("protouri") != null;
+        if (matcher.find()) {
+            return matcher.group("protouri") != null;
         }
 
-        return found;
+        return false;
     }
 
     /**
