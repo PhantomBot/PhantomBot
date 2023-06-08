@@ -14,9 +14,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         echo ::group::update docs/panel/
@@ -48,9 +45,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Set up Python 3.x
       uses: actions/setup-python@v4
       with:
@@ -77,9 +71,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Set up Python 3.x
       uses: actions/setup-python@v4
       with:
@@ -106,9 +97,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Set up Python 3.x
       uses: actions/setup-python@v4
       with:
@@ -137,9 +125,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -210,3 +195,4 @@ jobs:
       uses: EndBug/add-and-commit@v9
       with:
         message: Updated GitHub Pages
+        default_author: github_actions

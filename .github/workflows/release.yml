@@ -5,8 +5,7 @@ on:
 jobs:
   buildtest:
     name: Test Build on ubuntu-latest with JDK 17
-    runs-on: ubuntu-latest
-    steps:
+    runs-on: ubuntu-latest    steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -164,6 +163,7 @@ jobs:
       uses: EndBug/add-and-commit@v9
       with:
         message: Updated GitHub Pages (Stable)
+        default_author: github_actions
   workflowvars:
     name: Setup Workflow Vars
     runs-on: ubuntu-latest
