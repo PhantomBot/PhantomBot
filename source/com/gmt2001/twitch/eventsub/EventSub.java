@@ -19,13 +19,11 @@ package com.gmt2001.twitch.eventsub;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,7 +59,6 @@ import net.engio.mbassy.listener.Handler;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import tv.phantombot.CaselessProperties;
-import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.eventsub.EventSubDisconnectedEvent;
@@ -355,35 +352,6 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
         }
 
         return ZonedDateTime.now();
-    }
-
-    /**
-     * Retrieves the secret used for signature verification
-     *
-     * @return
-     */
-    static String secret() {
-        return CaselessProperties.instance().getProperty("appsecret", EventSub::generateSecret);
-    }
-
-    /**
-     * Generates and stores a new secret for signature verification
-     *
-     * @return
-     */
-    private static String generateSecret() {
-        Transaction transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_NORMAL);
-        byte[] secret = new byte[64];
-        SecureRandom rand = new SecureRandom();
-
-        rand.nextBytes(secret);
-
-        String ssecret = Base64.getEncoder().encodeToString(secret);
-
-        transaction.setProperty("appsecret", ssecret);
-        transaction.commit();
-
-        return ssecret;
     }
 
     /**
