@@ -260,7 +260,13 @@ extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/ja
  <li><i>webauthority</i> - the entire authority, such as <code>hello.examaple.com:25000</code>
  <ul>
  <li><i>webdomain</i> - the domain component, including subdomain, such as <code>hello.example</code></li>
- <li><i>webtld</i> - the TLD, such as <code>com</code></li>
+ <li>the TLD, such as <code>com</code>
+ <ul>
+ <li><i>webtld</i> - if spaces were not used around the dot and no known workarounds were detected <code>example.com</code></li>
+ <li><i>webworkaroundtld</i> - if spaces were used around the dot, or another potential workaround to detection was used <code>example. com</code></li>
+ <li><i>Only some TLDs are covered by workaround detection</i></li>
+ </ul>
+ </li>
  <li><i>webport</i> - the port, if present, such as <code>25000</code></li>
  </ul>
  </li>
