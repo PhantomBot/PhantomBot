@@ -434,6 +434,42 @@
         }
     }
 
+    /**
+     * Returns a keys value from an arguments array which has a syntax of [key1=value1, key2=value2, key3=value3]
+     * @param {String[]} array
+     * @param {String} key
+     * @param {*} defaultValue
+     * @returns the value; the defaultValue if no array element with the key is not present; null if neither key is present nor a default value is provided
+     */
+    function getArgFromArray(array, key, defaultValue) {
+        for (let i = 0; i < array.length; i++) {
+            let pair = $.jsString(array[i]).split('=');
+            if (pair[0].equalsIgnoreCase(key)) {
+                return pair[1];
+            }
+        }
+
+        return defaultValue === undefined ? null : defaultValue;
+    }
+
+    /**
+     * Converts any possible boolean represented as a string ('1', '0', 'true', 'false') to a proper boolean
+     * @param {String} string
+     * @return the boolean; null if it's not a valid boolean represented as a string
+     */
+    function stringToBoolean(string) {
+        if (string === undefined || string === null) {
+            return null;
+        }
+        if (string.equalsIgnoreCase('true') || string === '1') {
+            return true;
+        }
+        if (string.equalsIgnoreCase('false') || string === '0') {
+            return true;
+        }
+        return null;
+    }
+
     /** Export functions to API */
     $.user = {
         isKnown: isKnown,
@@ -460,4 +496,6 @@
     $.getMessageWrites = getMessageWrites;
     $.sayWithTimeout = sayWithTimeout;
     $.usernameResolveIgnoreEx = usernameResolveIgnoreEx;
+    $.getArgFromArray = getArgFromArray;
+    $.stringToBoolean = stringToBoolean;
 })();

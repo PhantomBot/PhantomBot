@@ -143,7 +143,7 @@ $(function () {
                         tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands'],
                         keys: [command, command, command, command, command]
                     }, function (e) {
-                        let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false} : JSON.parse(e.cooldown));
+                        let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false, clearOnOnline: false} : JSON.parse(e.cooldown));
 
                         // Get advance modal from our util functions in /utils/helpers.js
                         helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
@@ -176,6 +176,9 @@ $(function () {
                                             // Append input box for mods skip cooldown.
                                             .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
                                                     'If checked, moderators are exempt from cooldowns on this command.'))
+                                            // Append input box for clear cooldowns on online events
+                                            .append(helpers.getCheckBox('command-cooldown-clearononline', cooldownJson.clearOnOnline, 'Clear Cooldowns at stream start',
+                                                    'If checked, the cooldowns for this command will be cleared when you go live.'))
                                             .append(helpers.getCheckBox('command-disabled', e.disabledCommands !== null, 'Disabled',
                                                     'If checked, the command cannot be used in chat.'))
                                             // Callback function to be called once we hit the save button on the modal.
@@ -186,6 +189,7 @@ $(function () {
                                     commandCooldownGlobal = $('#command-cooldown-global'),
                                     commandCooldownUser = $('#command-cooldown-user'),
                                     commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
+                                    commandCooldownClearOnOnline = $('#command-cooldown-clearononline').is(':checked') ? '1' : '0',
                                     commandDisabled = $('#command-disabled').is(':checked');
 
                             // Handle each input to make sure they have a value.
@@ -205,7 +209,7 @@ $(function () {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip], function () {
+                                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip, commandCooldownClearOnOnline], function () {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
