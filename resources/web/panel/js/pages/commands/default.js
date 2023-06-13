@@ -206,7 +206,7 @@ $(function () {
                                     commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                                     commandCooldownClearOnOnline = $('#command-cooldown-clearononline').is(':checked') ? '1' : '0',
                                     commandDisabled = $('#command-disabled').is(':checked'),
-                                    commandRestriction = $('#command-restriction option:selected').text().replace(/\bonly\b/g, '').trim().toLowerCase();
+                                    commandRestriction = $('#command-restriction option:selected').text().replace(/\b(on|only)\b/g, '').trim().toLowerCase();
                             // Handle each input to make sure they have a value.
                             switch (false) {
                                 case helpers.handleInputNumber(commandCost):
