@@ -140,10 +140,22 @@ $(function () {
 
                     // Get all the info about the command.
                     socket.getDBValues('default_command_edit', {
-                        tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands'],
-                        keys: [command, command, command, command, command]
+                        tables: ['permcom', 'cooldown', 'pricecom', 'paycom', 'disabledCommands', 'commandRestrictions'],
+                        keys: [command, command, command, command, command, command]
                     }, function (e) {
-                        let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false, clearOnOnline: false} : JSON.parse(e.cooldown));
+                        let cooldownJson = (e.cooldown === null ? {globalSec: -1, userSec: -1, modsSkip: false, clearOnOnline: false} : JSON.parse(e.cooldown)),
+                                restriction = (e.commandRestrictions === null || e.commandRestrictions === undefined || isNaN(e.commandRestrictions) ? -1 : parseInt(e.commandRestrictions));
+
+                        switch (restriction) {
+                            case 1:
+                                restriction = 'Online only';
+                                break;
+                            case 2:
+                                restriction = 'Offline only';
+                                break;
+                            default:
+                                restriction = 'None';
+                        }
 
                         // Get advance modal from our util functions in /utils/helpers.js
                         helpers.getAdvanceModal('edit-command', 'Edit Command', 'Save', $('<form/>', {
@@ -173,6 +185,9 @@ $(function () {
                                             // Append input box for per-user cooldown.
                                             .append(helpers.getInputGroup('command-cooldown-user', 'number', 'Per-User Cooldown (Seconds)', '-1', cooldownJson.userSec,
                                                     'Per-User cooldown of the command in seconds. -1 removes per-user cooldown.'))
+                                            // Append a select option for the command restriction
+                                            .append(helpers.getDropdownGroup('command-restriction', 'Restriction', restriction,
+                                                    ['None', 'Online only', 'Offline only']))
                                             // Append input box for mods skip cooldown.
                                             .append(helpers.getCheckBox('command-cooldown-modsskip', cooldownJson.modsSkip, 'Mods Skip Cooldown',
                                                     'If checked, moderators are exempt from cooldowns on this command.'))
@@ -190,8 +205,8 @@ $(function () {
                                     commandCooldownUser = $('#command-cooldown-user'),
                                     commandCooldownModsSkip = $('#command-cooldown-modsskip').is(':checked') ? '1' : '0',
                                     commandCooldownClearOnOnline = $('#command-cooldown-clearononline').is(':checked') ? '1' : '0',
-                                    commandDisabled = $('#command-disabled').is(':checked');
-
+                                    commandDisabled = $('#command-disabled').is(':checked'),
+                                    commandRestriction = $('#command-restriction option:selected').text().replace(/\bonly\b/g, '').trim().toLowerCase();
                             // Handle each input to make sure they have a value.
                             switch (false) {
                                 case helpers.handleInputNumber(commandCost):
@@ -209,7 +224,7 @@ $(function () {
                                         updateCommandDisabled(command, commandDisabled, function () {
                                             // Add the cooldown to the cache.
                                             socket.wsEvent('default_command_edit_cooldown_ws', './core/commandCoolDown.js', null,
-                                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip, commandCooldownClearOnOnline], function () {
+                                                    ['add', command, commandCooldownGlobal.val(), commandCooldownUser.val(), commandCooldownModsSkip, commandCooldownClearOnOnline, commandRestriction], function () {
                                                 // Edit the command permission.
                                                 socket.sendCommand('default_command_permisison_update', 'permcomsilent ' + command + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {

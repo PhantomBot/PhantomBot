@@ -29,17 +29,26 @@
         _aliasesLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
         _commandsLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
+    const RESTRICTION = {
+        NONE: -1,
+        ONLINE: 1,
+        OFFLINE: 2
+    }
+
     /*
      * @function registerChatCommand
      *
      * @param {String} script
      * @param {String} command
      * @param {Number} groupId
+     * @param {RESTRICTION} restriction
      */
-    function registerChatCommand(script, command, groupId) {
+    function registerChatCommand(script, command, groupId, restriction) {
         command = $.jsString(command).toLowerCase();
         // If groupId is undefined set it to 7 (viewer).
         groupId = (groupId === undefined ? $.PERMISSION.Viewer : groupId);
+        restriction = (restriction === undefined ? RESTRICTION.NONE : restriction);
+        restriction = (restriction === RESTRICTION.NONE || restriction === RESTRICTION.ONLINE || restriction === RESTRICTION.OFFLINE ? restriction : RESTRICTION.NONE)
 
         if (commandExists(command)) {
             return;
@@ -50,12 +59,16 @@
             if ($.inidb.exists('permcom', command)) {
                 $.inidb.del('permcom', command);
             }
+            if ($.inidb.exists('commandRestrictions', command)) {
+                $.inidb.del('commandRestrictions', command);
+            }
 
             _commandsLock.lock();
             try {
                 commands[command] = {
                     groupId: groupId,
                     script: script,
+                    restriction: restriction,
                     subcommands: {}
                 };
             } finally {
@@ -76,11 +89,15 @@
         // Get and set the command permission.
         groupId = $.getSetIniDbNumber('permcom', command, groupId);
 
+        // Get command restriction
+        restriction = $.getIniDbNumber('commandRestrictions', command, restriction);
+
         _commandsLock.lock();
         try {
             commands[command] = {
                 groupId: groupId,
                 script: script,
+                restriction: restriction,
                 subcommands: {}
             };
         } finally {
@@ -94,12 +111,15 @@
      * @param {String} command
      * @param {String} subcommand
      * @param {Number} groupId
+     * @param {RESTRICTION} restriction
      */
-    function registerChatSubcommand(command, subcommand, groupId) {
+    function registerChatSubcommand(command, subcommand, groupId, restriction) {
         command = $.jsString(command).toLowerCase();
         subcommand = $.jsString(subcommand).toLowerCase();
         // If groupId is undefined set it to 7 (viewer).
         groupId = (groupId === undefined ? $.PERMISSION.Viewer : groupId);
+        restriction = (restriction === undefined ? RESTRICTION.NONE : restriction);
+        restriction = (restriction === RESTRICTION.NONE || restriction === RESTRICTION.ONLINE || restriction === RESTRICTION.OFFLINE ? restriction : RESTRICTION.NONE)
 
         if (!commandExists(command) || subCommandExists(command, subcommand)) {
             return;
@@ -108,10 +128,14 @@
         // Get and set the command permission.
         groupId = $.getSetIniDbNumber('permcom', (command + ' ' + subcommand), groupId);
 
+        // Get command restriction
+        restriction = $.getIniDbNumber('commandRestrictions', (command + ' ' + subcommand), restriction);
+
         _commandsLock.lock();
         try {
             commands[command].subcommands[subcommand] = {
-                groupId: groupId
+                groupId: groupId,
+                restriction: restriction
             };
         } finally {
             _commandsLock.unlock();
@@ -163,6 +187,7 @@
         $.inidb.del('cooldown', command);
         $.inidb.del('paycom', command);
         $.inidb.del('disabledCommands', command);
+        $.inidb.del('commandRestrictions', command);
     }
 
     /*
@@ -218,6 +243,7 @@
 
         $.inidb.del('permcom', command + ' ' + subcommand);
         $.inidb.del('pricecom', command + ' ' + subcommand);
+        $.inidb.del('commandRestrictions', command + ' ' + subcommand);
     }
 
     /*
@@ -254,6 +280,119 @@
         } finally {
             _commandsLock.unlock();
         }
+    }
+
+    /**
+     * @function commandRestrictionMet
+     * @param {String} command 
+     * @param {String} subCommand
+     * @return {Boolean} true if the command and or subcommand can be run; false otherwise
+     */
+    function commandRestrictionMet(command, subCommand) {
+        command = $.jsString(command).toLowerCase();
+        subCommand = subCommand !== null && subCommand !== undefined ? $.jsString(subCommand).toLowerCase() : null;
+        if (!commandExists(command)) {
+            return false;
+        }
+        
+        let restriction = null;
+
+        _commandsLock.lock();
+        try {
+            restriction = commands[command].restriction;
+        } finally {
+            _commandsLock.unlock();
+        }
+
+        if (subCommand !== null && subCommand !== '') {
+            if (!subCommandExists(command, subCommand)) {
+                return false;
+            }
+
+            _commandsLock.lock();
+            try {
+                let subRestriction = commands[command].subcommands[subCommand].restriction;
+                restriction = subRestriction !== null && subRestriction !== undefined ? subRestriction : restriction;
+            } finally {
+                _commandsLock.unlock();
+            }
+        } 
+
+        if (restriction === undefined || restriction === null) {
+            return false; // Restriction is always set to at least RESTRICTION.NONE
+        }
+
+        switch (restriction) {
+            case RESTRICTION.NONE:
+                return true;
+            case RESTRICTION.ONLINE:
+                return $.isOnline($.channelName);
+            case RESTRICTION.OFFLINE:
+                return !$.isOnline($.channelName);
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @function setCommandRestriction
+     * @param {String} command 
+     * @param {String} subCommand 
+     * @param {RESTRICTION} restriction 
+     */
+    function setCommandRestriction(command, subCommand, restriction) {
+        command = $.jsString(command).toLowerCase();
+        subCommand = subCommand !== null && subCommand !== undefined ? $.jsString(subCommand).toLowerCase() : null;
+
+        switch (restriction) {
+            case RESTRICTION.NONE:
+            case RESTRICTION.ONLINE:
+            case RESTRICTION.OFFLINE:
+                break;
+            default:
+                return;
+        }
+
+        if (subCommand === null) {
+            _commandsLock.lock();
+            try {
+                if (commandExists(command)) {
+                    commands[command].restriction = restriction;
+                    $.setIniDbNumber('commandRestrictions', command, restriction);
+                }
+            } finally {
+                _commandsLock.unlock();
+            }
+        } else {
+            _commandsLock.lock();
+            try {
+                if (subCommandExists(command, subCommand)) {
+                    commands[command].subcommands[subCommand].restriction = restriction;
+                    $.setIniDbNumber('commandRestrictions', (command + ' ' + subCommand), restriction);
+                }
+            } finally {
+                _commandsLock.unlock();
+            }
+        }
+    }
+
+    /**
+     * @function getCommandRestrictionByName
+     * @param {String} restrictionName 
+     * @returns {RESTRICTION} if a restriction with the provided name exists; null otherwise
+     */
+    function getCommandRestrictionByName(restrictionName) {
+        restrictionName = $.jsString(restrictionName).toLowerCase();
+        if (restrictionName.equalsIgnoreCase('none')) {
+            return RESTRICTION.NONE;
+        }
+        if (restrictionName.equalsIgnoreCase('online')) {
+            return RESTRICTION.ONLINE;
+        }
+        if (restrictionName.equalsIgnoreCase('offline')) {
+            return RESTRICTION.OFFLINE;
+        }
+        return null;
     }
 
     /*
@@ -530,6 +669,10 @@
     $.getSubCommandFromArguments = getSubCommandFromArguments;
     $.listCommands = listCommands;
     $.listSubCommands = listSubCommands;
+    $.commandRestriction = RESTRICTION;
+    $.commandRestrictionMet = commandRestrictionMet;
+    $.setCommandRestriction = setCommandRestriction;
+    $.getCommandRestrictionByName = getCommandRestrictionByName;
 
     $.bind('webPanelSocketUpdate', function (event) {
         if (event.getScript().equalsIgnoreCase('./core/commandRegister.js')) {

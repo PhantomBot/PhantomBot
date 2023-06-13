@@ -84,7 +84,11 @@
             }
 
             $.say($.lang.get('corecommands.settimevar.success', action, time));
-        } else if (command.equalsIgnoreCase('synconline')) {
+        }
+        /*
+        * @commandpath synconline (silent) - Synchronizes the stream status (online/offline); Specifying the silent parameter suppresses success and failure messages
+        */
+        else if (command.equalsIgnoreCase('synconline')) {
             let silent = false;
             if (action !== undefined && $.jsString(action) === 'silent') {
                 silent = true;
@@ -100,6 +104,41 @@
                 if (!silent) {
                     $.say($.lang.get('corecommands.synconline.failure'));
                 }
+            }
+        }
+        /*
+        * @commandpath setcommandrestriction [none/online/offline] [command] (subcommand) - Set online/offline only restriction for the specific; subcommand is an optional parameter
+        */ 
+        else if (command.equalsIgnoreCase('setcommandrestriction')) {
+            if (action === undefined || args[1] === undefined) {
+                $.say($.lang.get('corecommands.setcommandrestriction.usage'));
+                return;
+            }
+
+            let restriction = $.jsString(action).toLowerCase(),
+                com = $.jsString(args[1]).toLowerCase(),
+                subCom = args.length >= 3 ? $.jsString(args[2]).toLowerCase() : null;
+
+            if ($.getCommandRestrictionByName(restriction) === null) {
+                $.say($.lang.get('corecommands.setcommandrestriction.usage'));
+                return;
+            }
+
+            if(!$.commandExists(com)) {
+                $.say($.lang.get('corecommands.setcommandrestriction.error', 'Command', action));
+                return;
+            }
+
+            if (subCom !== null && !$.subCommandExists(com, subCom)) {
+                $.say($.lang.get('corecommands.setcommandrestriction.error', 'Subcommand', com + " " + subCom));
+                return;
+            }
+
+            $.setCommandRestriction(com, subCom, $.getCommandRestrictionByName(restriction));
+            if (subCom !== null) {
+                $.say($.lang.get('corecommands.setcommandrestriction.success', 'subcommand', com + ' ' + subCom, restriction));
+            } else {
+                $.say($.lang.get('corecommands.setcommandrestriction.success', 'command', com, restriction));
             }
         }
     });
@@ -121,5 +160,6 @@
         $.registerChatCommand('./core/coreCommands.js', 'shoutoutapitoggle', $.PERMISSION.Mod);
         $.registerChatCommand('./core/coreCommands.js', 'settimevar', $.PERMISSION.Mod);
         $.registerChatCommand('./core/coreCommands.js', 'synconline', $.PERMISSION.Mod);
+        $.registerChatCommand('./core/coreCommands.js', 'setcommandrestriction', $.PERMISSION.Admin);
     });
 })();
