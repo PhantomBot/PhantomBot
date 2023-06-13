@@ -44,7 +44,7 @@
                 UnChanged: -2
             };
 
-    /*
+    /**
      * @class Cooldown
      *
      * @param {String}  command
@@ -63,7 +63,7 @@
         this.clearOnOnline = clearOnOnline;
     }
 
-    /*
+    /**
      * @function toJSONString
      *
      * @param {String}  command
@@ -79,7 +79,7 @@
         });
     }
 
-    /*
+    /**
      * @function loadCooldowns
      */
     function loadCooldowns() {
@@ -98,7 +98,7 @@
         }
     }
 
-    /*
+    /**
      * @function canIgnore
      *
      * @param  {String} username
@@ -109,7 +109,7 @@
         return (!modCooldown && isMod) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin);
     }
 
-    /*
+    /**
      * @function isSpecial
      *
      * @param  {String} command
@@ -125,7 +125,7 @@
                ($.raffleCommand !== undefined && $.raffleCommand !== null && command === $.jsString($.raffleCommand).toLowerCase());
     }
 
-    /*
+    /**
      * @function get
      *
      * @export $.coolDown
@@ -237,7 +237,7 @@
         }
     }
 
-    /*
+    /**
      * @function set
      *
      * @export $.coolDown
@@ -277,7 +277,7 @@
         }
     }
 
-    /*
+    /**
      * @function add
      *
      * @export $.coolDown
@@ -300,9 +300,15 @@
             } else {
                 if (globalSec !== Operation.UnChanged) {
                     cooldowns[command].globalSec = globalSec;
+                    if (globalSec === Operation.UnSet) {
+                        cooldowns[command].globalTime = 0;
+                    }
                 }
                 if (userSec !== Operation.UnChanged) {
                     cooldowns[command].userSec = userSec;
+                    if (userSec === Operation.UnSet) {
+                        cooldowns[command].userTimes = [];
+                    }
                 }
                 if (modsSkip !== undefined && modsSkip !== null) {
                     cooldowns[command].modsSkip = modsSkip;
@@ -318,26 +324,15 @@
         }
     }
 
-    /*
+    /**
      * @function remove
      *
      * @export $.coolDown
-     * @param {String}  command
+     * @param {String} command
      */
     function remove(command) {
         command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
         $.inidb.del('cooldown', command);
-        clear(command);
-    }
-
-    /*
-     * @function clear
-     *
-     * @export $.coolDown
-     * @param {String}  command
-     */
-    function clear(command) {
-        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
         _cooldownsLock.lock();
         _defaultCooldownsLock.lock();
         try {
@@ -353,11 +348,35 @@
         }
     }
 
-    /*
+    /**
+     * @function clear
+     *
+     * @export $.coolDown
+     * @param {String} command
+     */
+    function clear(command) {
+        command = (command !== undefined && command !== null ? $.jsString(command).toLowerCase() : null);
+        _cooldownsLock.lock();
+        _defaultCooldownsLock.lock();
+        try {
+            if (cooldowns[command] !== undefined) {
+                cooldowns[command].userTimes = [];
+                cooldowns[command].globalTime = 0;
+                $.inidb.set('cooldown', command, toJSONString(cooldowns[command]));
+            }
+            if (defaultCooldowns[command] !== undefined) {
+                delete defaultCooldowns[command];
+            }
+        } finally {
+            _defaultCooldownsLock.unlock();
+            _cooldownsLock.unlock();
+        }
+    }
+
+    /**
      * @function clearAll
      *
      * @export $.coolDown
-     * @param {String}  command
      */
     function clearAll() {
         _cooldownsLock.lock();
@@ -375,7 +394,7 @@
         }
     }
 
-    /*
+    /**
      * @function handleCoolCom
      *
      * @param {String}  sender
@@ -418,7 +437,6 @@
             return;
         }
         add(command, secsG, secsU, modsSkip, clearOnOnline);
-        clear(command);
 
         // Build the message
         let message;
@@ -441,7 +459,7 @@
         $.say($.whisperPrefix(sender) + message);
     }
 
-    /*
+    /**
      * @event twitchOnline
      */
     $.bind('twitchOnline', function () {
@@ -471,7 +489,7 @@
         }
     });
 
-    /*
+    /**
      * @event command
      */
     $.bind('command', function(event) {
@@ -481,7 +499,7 @@
             action = args[0],
             subAction = args[1];
 
-        /*
+        /**
          * @commandpath coolcom [command] [user=seconds] [global=seconds] [modsskip=false] [clearOnOnline=false] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown. Specifying the 'modsskip' parameter with a value of 'true' enables moderators to ignore cooldowns for this command. Specifying the 'clearOnOnline' parameter with a value of 'true' clear the commands cooldowns when going online/live. 
          * @commandpath coolcom [command] remove - Removes any command-specific cooldown that was set on the specified command.
          * @commandpath coolcom [command] clear - Clears all active cooldowns for the specified command.
@@ -518,7 +536,7 @@
                 return;
             }
 
-            /*
+            /**
              * @commandpath cooldown togglemoderators - Toggles if moderators ignore command cooldowns.
              */
             if (action.equalsIgnoreCase('togglemoderators')) {
@@ -528,7 +546,7 @@
                 return;
             }
 
-            /*
+            /**
              * @commandpath cooldown setdefault [seconds] - Sets a default global cooldown for commands without a cooldown.
              */
             if (action.equalsIgnoreCase('setdefault')) {
@@ -548,7 +566,7 @@
                 return;
             }
 
-            /*
+            /**
              * @commandpath cooldown clearall - Clears all active cooldowns
              */
             if (action.equalsIgnoreCase('clearall')) {
@@ -559,7 +577,7 @@
         }
     });
 
-    /*
+    /**
      * @event initReady
      */
     $.bind('initReady', function() {
@@ -571,7 +589,7 @@
         loadCooldowns();
     });
 
-    /*
+    /**
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
