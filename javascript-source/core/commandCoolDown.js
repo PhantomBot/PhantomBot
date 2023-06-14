@@ -83,15 +83,13 @@
      * @function loadCooldowns
      */
     function loadCooldowns() {
-        var commands = $.inidb.GetKeyList('cooldown', ''),
-            json,
-            i;
+        let commands = $.inidb.GetKeyList('cooldown', '');
 
         _cooldownsLock.lock();
         try {
-            for (i in commands) {
-                json = JSON.parse($.inidb.get('cooldown', commands[i]));
-                cooldowns[$.jsString(commands[i]).toLowerCase()] = new Cooldown(json.command.toLowerCase(), json.globalSec, json.userSec, json.modsSkip);
+            for (let i in commands) {
+                let json = JSON.parse($.inidb.get('cooldown', commands[i]));
+                cooldowns[$.jsString(commands[i]).toLowerCase()] = new Cooldown(json.command.toLowerCase(), json.globalSec, json.userSec, json.modsSkip, json.clearOnOnline);
             }
         } finally {
             _cooldownsLock.unlock();
@@ -466,23 +464,9 @@
         _cooldownsLock.lock();
         try {
             for (let command in cooldowns) {
-                if (command.clearOnOnline) {
+                if (cooldowns[command].clearOnOnline) {
                     clear(command);
-            }
-        }
-
-        if (action2 !== undefined) {
-            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo' + modsSkip, command, secsG, secsU));
-        } else {
-            var messageType = type1.equalsIgnoreCase(Type.Global) ? "cooldown.coolcom.setGlobal" : "cooldown.coolcom.setUser";
-            $.say($.whisperPrefix(sender) + $.lang.get(messageType + modsSkip, command, (secsG === Operation.UnChanged ? secsU : secsG)));
                 }
-
-        if (action2 !== undefined) {
-            $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.setCombo' + modsSkip, command, secsG, secsU));
-        } else {
-            var messageType = type1.equalsIgnoreCase(Type.Global) ? "cooldown.coolcom.setGlobal" : "cooldown.coolcom.setUser";
-            $.say($.whisperPrefix(sender) + $.lang.get(messageType + modsSkip, command, (secsG === Operation.UnChanged ? secsU : secsG)));
             }
         } finally {
             _cooldownsLock.unlock();

@@ -461,11 +461,11 @@
         if (string === undefined || string === null) {
             return null;
         }
-        if (string.equalsIgnoreCase('true') || string === '1') {
+        if ($.equalsIgnoreCase(string, 'true') || string === '1') {
             return true;
         }
-        if (string.equalsIgnoreCase('false') || string === '0') {
-            return true;
+        if ($.equalsIgnoreCase(string, 'false') || string === '0') {
+            return false;
         }
         return null;
     }
