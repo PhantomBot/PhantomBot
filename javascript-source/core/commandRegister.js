@@ -383,13 +383,13 @@
      */
     function getCommandRestrictionByName(restrictionName) {
         restrictionName = $.jsString(restrictionName).toLowerCase();
-        if (restrictionName.equalsIgnoreCase('none')) {
+        if ($.equalsIgnoreCase(restrictionName, 'none')) {
             return RESTRICTION.NONE;
         }
-        if (restrictionName.equalsIgnoreCase('online')) {
+        if ($.equalsIgnoreCase(restrictionName, 'online')) {
             return RESTRICTION.ONLINE;
         }
-        if (restrictionName.equalsIgnoreCase('offline')) {
+        if ($.equalsIgnoreCase(restrictionName, 'offline')) {
             return RESTRICTION.OFFLINE;
         }
         return null;
