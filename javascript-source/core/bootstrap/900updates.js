@@ -754,6 +754,14 @@
             }
         }
     });
+    addUpdate('3.8.4.0-3', 'installedv3.8.4.0-3', function() { // Ensure nightly bots which already have 3.8.4.0-2 get the change
+        let commands = $.inidb.GetKeyList('cooldown', '');
+        for (let i in commands) {
+            let json = JSON.parse($.inidb.get('cooldown', commands[i]));
+            json.clearOnOnline = false;
+            $.inidb.set('cooldown', command[i], JSON.stringify(json));
+        }
+    });
 
     // ------ Add updates above this line in execution order ------
 
