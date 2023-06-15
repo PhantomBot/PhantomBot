@@ -580,6 +580,13 @@
         if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
             if (event.getArgs()[0].equalsIgnoreCase('add')) {
                 add(event.getArgs()[1], parseInt(event.getArgs()[2]), parseInt(event.getArgs()[3]), $.jsString(event.getArgs()[4]) === '1', $.jsString(event.getArgs()[5]) === '1');
+                let command = $.jsString(event.getArgs()[1]).trim(),
+                    subCommand = null;
+                if (command.indexOf(' ') !== -1) {
+                    subCommand = command.split(' ')[1];
+                    command = command.split(' ')[0];
+                }
+                $.setCommandRestriction(command, subCommand, $.getCommandRestrictionByName($.jsString(event.getArgs()[6])));
             } else if (event.getArgs()[0].equalsIgnoreCase('update')) {
                 defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
                 modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
