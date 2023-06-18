@@ -62,6 +62,10 @@ public final class SelectStatement extends FluentStatementBuilder {
      * The columns to group by
      */
     private List<ColumnInfo> groupBy = new ArrayList<>();
+    /**
+     * The {@code WHERE} clause
+     */
+    private WhereClause where = null;
 
     /**
      * Types of table joins
@@ -507,5 +511,25 @@ public final class SelectStatement extends FluentStatementBuilder {
      */
     public List<ColumnInfo> groupBy() {
         return Collections.unmodifiableList(this.groupBy);
+    }
+
+    /**
+     * Adds a {@code WHERE} clause
+     *
+     * @param where the where clause definition
+     * @return {@code this}
+     */
+    public SelectStatement where(WhereClause where) {
+        this.where = where;
+        return this;
+    }
+
+    /**
+     * Returns the {@code WHERE} clause for filtering the resultset
+     *
+     * @return the where clause definition; {@code null} if there is not set
+     */
+    public WhereClause where() {
+        return this.where;
     }
 }
