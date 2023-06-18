@@ -24,6 +24,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import javax.sql.ConnectionPoolDataSource;
@@ -39,6 +41,7 @@ import com.gmt2001.Reflect;
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager.TimeoutException;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 
 /**
  * Manages a JDBC-compatible, SQL-based, data storage method
@@ -68,6 +71,15 @@ public abstract class Datastore2 {
      */
     public static Datastore2 instance() {
         return INSTANCE;
+    }
+
+    /**
+     * Returns a timestamp sutible for database backup names in the format {@code yyyy-MM-dd.hh-mm-ss}
+     *
+     * @return the timestamp
+     */
+    public static String timestamp() {
+        return LocalDateTime.now(PhantomBot.getTimeZoneId()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd.hh-mm-ss"));
     }
 
     /**
@@ -323,11 +335,20 @@ public abstract class Datastore2 {
     }
 
     /**
+     * Returns the default backup filename, which is usually the database name with {@link #timestamp()} appended
+     *
+     * @return the filename
+     */
+    public abstract String backupFileName();
+
+    /**
      * Performs a backup of the database to the {@code dbbackup} folder
      * <p>
-     * The default backup name is used, which is usually the database name with the current timestamp
+     * The default backup filename is used from {@link #backupFileName()}
      */
-    public abstract void backup();
+    public void backup() {
+        this.backup(this.backupFileName());
+    }
 
     /**
      * Performs a backup of the database to the {@code dbbackup} folder
