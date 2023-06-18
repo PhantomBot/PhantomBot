@@ -55,11 +55,11 @@ public abstract class Datastore2 {
     /**
      * Instance of {@link MiniConnectionPoolManager} that provides pooled {@link Connection} objects on demand
      */
-    private final MiniConnectionPoolManager connectionPoolManager;
+    private MiniConnectionPoolManager connectionPoolManager;
     /**
      * Instance of {@link DSLContext} for generating and executing SQL statements
      */
-    private final DSLContext dslContext;
+    private DSLContext dslContext;
 
     /**
      * Provides an instance of {@link Datastore2}
@@ -79,8 +79,8 @@ public abstract class Datastore2 {
      * <p>
      * If loading a custom datastore, the following requirements must be met:
      * <ul>
-     * <li>Must implement/reference {@link Datastore2}</li>
-     * <li>Must call {@link #Datastore2(ConnectionPoolDataSource)} or {@link #Datastore2(ConnectionPoolDataSource, int, int)} via {@code super} in a public, no-parameter constructor, passing in a valid {@link ConnectionPoolDataSource}</li>
+     * <li>Must extend {@link Datastore2}</li>
+     * <li>Must call {@link #init(ConnectionPoolDataSource, SQLDialect)} or {@link #init(ConnectionPoolDataSource, int, int, SQLDialect)}, passing in a valid {@link ConnectionPoolDataSource}, in the constructor</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
      * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type, including case</li>
      * <li>The {@code .jar} file exension on the JAR file must be lower-case</li>
@@ -156,7 +156,7 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Constructor. Sets a max connections of 30 and a timeout of 20
+     * Instance Initializer. Sets a max connections of 30 and a timeout of 20
      * <p>
      * Valid dialects:
      * <ul>
@@ -176,12 +176,12 @@ public abstract class Datastore2 {
      * @param dataSource a {@link ConnectionPoolDataSource} which can be used with {@link MiniConnectionPoolManager}
      * @param sqlDialect the dialect to use with objects created from the {@link DSLContext}
      */
-    protected Datastore2(ConnectionPoolDataSource dataSource, SQLDialect sqlDialect) {
-        this(dataSource, 30, 20, sqlDialect);
+    protected void init(ConnectionPoolDataSource dataSource, SQLDialect sqlDialect) {
+        this.init(dataSource, 30, 20, sqlDialect);
     }
 
     /**
-     * Constructor
+     * Instance Initializer
      * <p>
      * Valid dialects:
      * <ul>
@@ -203,7 +203,7 @@ public abstract class Datastore2 {
      * @param timeout the number of seconds until a call to {@link MiniConnectionPoolManager#getConnection()} fails waiting for a {@link Connection} to become available
      * @param sqlDialect the dialect to use with objects created from the {@link DSLContext}
      */
-    protected Datastore2(ConnectionPoolDataSource dataSource, int maxConnections, int timeout, SQLDialect sqlDialect) {
+    protected void init(ConnectionPoolDataSource dataSource, int maxConnections, int timeout, SQLDialect sqlDialect) {
         this.connectionPoolManager = new MiniConnectionPoolManager(dataSource, maxConnections, timeout);
         this.dslContext = DSL.using(new ConnectionProvider() {
             @Override
