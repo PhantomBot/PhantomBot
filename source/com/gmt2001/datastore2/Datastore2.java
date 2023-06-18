@@ -63,6 +63,10 @@ public abstract class Datastore2 {
      * Instance of {@link DSLContext} for generating and executing SQL statements
      */
     private DSLContext dslContext;
+    /**
+     * Internal dispose sync
+     */
+    private boolean isDisposed = false;
 
     /**
      * Provides an instance of {@link Datastore2}
@@ -361,4 +365,32 @@ public abstract class Datastore2 {
      * Performs periodic database maintenance
      */
     public abstract void doMaintenance();
+
+    /**
+     * Disposes of resources as neccessary
+     * <p>
+     * Once this is called, the connection pool is invalid and the program must be restarted to futher access the database
+     */
+    public synchronized void dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+
+        this.isDisposed = true;
+
+        if (this.connectionPoolManager != null) {
+            try {
+                this.connectionPoolManager.dispose();
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
+
+        this.driverDispose();
+    }
+
+    /**
+     * Allows the driver to perform additional disposal actions beyond what the abse Datastore2 class performs
+     */
+    protected abstract void driverDispose();
 }
