@@ -16,6 +16,7 @@
  */
 package com.gmt2001.datastore2;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -360,6 +361,14 @@ public abstract class Datastore2 {
      * @param fileName the name of the backup file
      */
     public abstract void backup(String fileName);
+
+    /**
+     * Restores a database from the specified backup file, which must be in the {@code dbbackup} folder
+     *
+     * @param fileName the name of the backup file
+     * @throws FileNotFoundException if the backup file can not be found
+     */
+    public abstract void restoreBackup(String fileName) throws FileNotFoundException;
 
     /**
      * Performs periodic database maintenance
