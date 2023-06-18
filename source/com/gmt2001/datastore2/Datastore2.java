@@ -81,6 +81,7 @@ public abstract class Datastore2 {
      * <ul>
      * <li>Must extend {@link Datastore2}</li>
      * <li>Must call {@link #init(ConnectionPoolDataSource, SQLDialect)} or {@link #init(ConnectionPoolDataSource, int, int, SQLDialect)}, passing in a valid {@link ConnectionPoolDataSource}, in the constructor</li>
+     * <li>May optionally start a timer in the constructor to periodically call {@link #doMaintenance()}</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
      * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type, including case</li>
      * <li>The {@code .jar} file exension on the JAR file must be lower-case</li>
@@ -320,4 +321,23 @@ public abstract class Datastore2 {
     public DSLContext dslContext() {
         return this.dslContext;
     }
+
+    /**
+     * Performs a backup of the database to the {@code dbbackup} folder
+     * <p>
+     * The default backup name is used, which is usually the database name with the current timestamp
+     */
+    public abstract void backup();
+
+    /**
+     * Performs a backup of the database to the {@code dbbackup} folder
+     *
+     * @param fileName the name of the backup file
+     */
+    public abstract void backup(String fileName);
+
+    /**
+     * Performs periodic database maintenance
+     */
+    public abstract void doMaintenance();
 }
