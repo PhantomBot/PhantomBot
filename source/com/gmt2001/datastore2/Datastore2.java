@@ -340,6 +340,15 @@ public abstract class Datastore2 {
     }
 
     /**
+     * Indicates if this driver supports making backups without an external tool
+     *
+     * @return {@code true} if supported
+     */
+    public boolean supportsBackup() {
+        return true;
+    }
+
+    /**
      * Returns the default backup filename, which is usually the database name with {@link #timestamp()} appended
      *
      * @return the filename
