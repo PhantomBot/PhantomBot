@@ -401,6 +401,8 @@ public abstract class Datastore2 {
 
         this.isDisposed = true;
 
+        this.driverDispose();
+
         if (this.connectionPoolManager != null) {
             try {
                 this.connectionPoolManager.dispose();
@@ -408,12 +410,12 @@ public abstract class Datastore2 {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
-
-        this.driverDispose();
     }
 
     /**
-     * Allows the driver to perform additional disposal actions beyond what the abse Datastore2 class performs
+     * Allows the driver to perform additional disposal actions beyond what the base Datastore2 class performs
+     * <p>
+     * This method is called before the connection pool is disposed
      */
     protected void driverDispose() {
     }
