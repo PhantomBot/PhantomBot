@@ -34,8 +34,6 @@ import tv.phantombot.CaselessProperties;
 
 /**
  * Provides a {@link Datastore2} driver for H2 database v2.x
- * <p>
- * <i>NOTE: backup files must be suffixed with {@code .h2.sql} or {@code .h2.sql.gz}</i>
  *
  * @author gmt2001
  */
@@ -76,10 +74,6 @@ public class H2Store2 extends Datastore2 {
 
     @Override
     public void backup(String fileName) {
-        if (!fileName.endsWith(".h2.sql.gz")) {
-            fileName = fileName + ".h2.sql.gz";
-        }
-
         try ( Connection connection = this.getConnection()) {
             Files.createDirectories(PathValidator.getRealPath(Paths.get("./dbbackup/")));
 
@@ -94,10 +88,6 @@ public class H2Store2 extends Datastore2 {
 
     @Override
     public void restoreBackup(String fileName) throws FileNotFoundException {
-        if (!fileName.endsWith(".h2.sql.gz") && !fileName.endsWith(".h2.sql")) {
-            fileName = fileName + ".h2.sql.gz";
-        }
-
         Path p = PathValidator.getRealPath(Paths.get("./dbbackup/"));
 
         if (!Files.exists(p)) {
