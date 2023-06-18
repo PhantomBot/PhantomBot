@@ -436,6 +436,7 @@
             <link href="https://netty.io/4.1/api/" />
             <link href="https://projectreactor.io/docs/core/release/api/" />
             <link href="https://projectreactor.io/docs/netty/release/api/" />
+            <link href="https://www.jooq.org/javadoc/latest/" />
             <doctitle><![CDATA[<h1>PhantomBot</h1>]]></doctitle>
             <header><![CDATA[
                 <a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a>
