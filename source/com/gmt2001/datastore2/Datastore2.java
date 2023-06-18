@@ -28,10 +28,13 @@ import java.util.Optional;
 
 import javax.sql.ConnectionPoolDataSource;
 
+import org.jooq.ConnectionProvider;
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.exception.DataAccessException;
+import org.jooq.impl.DSL;
+
 import com.gmt2001.Reflect;
-import com.gmt2001.datastore2.fluentstatement.FluentStatement;
-import com.gmt2001.datastore2.fluentstatement.FluentStatementBuilder;
-import com.gmt2001.datastore2.tablebuilder.TableBuilder;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager.TimeoutException;
@@ -54,54 +57,9 @@ public abstract class Datastore2 {
      */
     private final MiniConnectionPoolManager connectionPoolManager;
     /**
-    * Represents the potential data types for a field
-    */
-   public static enum DataType {
-       /**
-        * Stores a 1 byte integer
-        */
-       TINYINT,
-       /**
-        * Stores a 2 byte integer
-        */
-       SMALLINT,
-       /**
-        * Stores a 3 byte integer
-        */
-       MEDIUMINT,
-       /**
-        * Stores a 4 byte integer
-        */
-       INTEGER,
-       /**
-        * Stores a 8 byte integer
-        */
-       BIGINT,
-       /**
-        * Stores a double precision floating point number
-        */
-       DOUBLE,
-       /**
-        * Stores a single precision floating point number
-        */
-       FLOAT,
-       /**
-        * Stores an exact value decimal number
-        */
-       DECIMAL,
-       /**
-        * Stores a date and time
-        */
-       DATETIME,
-       /**
-        * Stores a variable number of characters. Requires a length parameter
-        */
-       VARCHAR,
-       /**
-        * Stores a large amount of text
-        */
-       TEXT
-   }
+     * Instance of {@link DSLContext} for generating and executing SQL statements
+     */
+    private final DSLContext dslContext;
 
     /**
      * Provides an instance of {@link Datastore2}
@@ -121,7 +79,7 @@ public abstract class Datastore2 {
      * <p>
      * If loading a custom datastore, the following requirements must be met:
      * <ul>
-     * <li>Must implement/reference {@link Datastore2} and any other required types in the {@code com.gmt2001.datastore2} namespace</li>
+     * <li>Must implement/reference {@link Datastore2}</li>
      * <li>Must call {@link #Datastore2(ConnectionPoolDataSource)} or {@link #Datastore2(ConnectionPoolDataSource, int, int)} via {@code super} in a public, no-parameter constructor, passing in a valid {@link ConnectionPoolDataSource}</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
      * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type, including case</li>
@@ -199,22 +157,74 @@ public abstract class Datastore2 {
 
     /**
      * Constructor. Sets a max connections of 30 and a timeout of 20
+     * <p>
+     * Valid dialects:
+     * <ul>
+     * <li>{@link SQLDialect#DERBY}</li>
+     * <li>{@link SQLDialect#FIREBIRD}</li>
+     * <li>{@link SQLDialect#H2}</li>
+     * <li>{@link SQLDialect#HSQLDB}</li>
+     * <li>{@link SQLDialect#MARIADB}</li>
+     * <li>{@link SQLDialect#MYSQL}</li>
+     * <li>{@link SQLDialect#POSTGRES}</li>
+     * <li>{@link SQLDialect#SQLITE}</li>
+     * <li>{@link SQLDialect#YUGABYTEDB}</li>
+     * </ul>
+     * <p>
+     * <i>NOTE: SQL will be generated according to the latest supported version of the selected database dialect</i>
      *
      * @param dataSource a {@link ConnectionPoolDataSource} which can be used with {@link MiniConnectionPoolManager}
+     * @param sqlDialect the dialect to use with objects created from the {@link DSLContext}
      */
-    protected Datastore2(ConnectionPoolDataSource dataSource) {
-        this(dataSource, 30, 20);
+    protected Datastore2(ConnectionPoolDataSource dataSource, SQLDialect sqlDialect) {
+        this(dataSource, 30, 20, sqlDialect);
     }
 
     /**
      * Constructor
+     * <p>
+     * Valid dialects:
+     * <ul>
+     * <li>{@link SQLDialect#DERBY}</li>
+     * <li>{@link SQLDialect#FIREBIRD}</li>
+     * <li>{@link SQLDialect#H2}</li>
+     * <li>{@link SQLDialect#HSQLDB}</li>
+     * <li>{@link SQLDialect#MARIADB}</li>
+     * <li>{@link SQLDialect#MYSQL}</li>
+     * <li>{@link SQLDialect#POSTGRES}</li>
+     * <li>{@link SQLDialect#SQLITE}</li>
+     * <li>{@link SQLDialect#YUGABYTEDB}</li>
+     * </ul>
+     * <p>
+     * <i>NOTE: SQL will be generated according to the latest supported version of the selected database dialect</i>
      *
      * @param dataSource a {@link ConnectionPoolDataSource} which can be used with {@link MiniConnectionPoolManager}
      * @param maxConnections the maximum number of {@link Connection} objects to hold in the pool
      * @param timeout the number of seconds until a call to {@link MiniConnectionPoolManager#getConnection()} fails waiting for a {@link Connection} to become available
+     * @param sqlDialect the dialect to use with objects created from the {@link DSLContext}
      */
-    protected Datastore2(ConnectionPoolDataSource dataSource, int maxConnections, int timeout) {
+    protected Datastore2(ConnectionPoolDataSource dataSource, int maxConnections, int timeout, SQLDialect sqlDialect) {
         this.connectionPoolManager = new MiniConnectionPoolManager(dataSource, maxConnections, timeout);
+        this.dslContext = DSL.using(new ConnectionProvider() {
+            @Override
+            public Connection acquire() throws DataAccessException {
+                try {
+                    return getConnection();
+                } catch (SQLException ex) {
+                    throw new DataAccessException("failed to aquire connection", ex);
+                }
+            }
+
+            @Override
+            public void release(Connection connection) throws DataAccessException {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    throw new DataAccessException("failed to close connection", ex);
+                }
+            }
+
+        }, sqlDialect);
     }
 
     /**
@@ -255,43 +265,6 @@ public abstract class Datastore2 {
         }
 
         return false;
-    }
-
-    /**
-     * Builds a valid SQL statement from the parameters of the provided {@link FluentStatementBuilder} and converts it
-     * into a {@link FluentStatement}
-     * <p>
-     * The {@link FluentStatement} must be closed by calling {@link FluentStatement#close()} to release it back to the connection
-     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
-     * <p>
-     * Consider using try-with-resources instead to safely auto-close the connection
-     * <p>
-     * Transactions are <b>not</b> comitted automatically when closing a {@link FluentStatement} that has auto-commit disabled
-     *
-     * @param builder the builder containing the parameters of the statement
-     * @param connection the connection to prepare the statement on
-     * @return a {@link FluentStatement} that can be used to set input parameters, execute SQL, and retrieve resultsets
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public abstract FluentStatement prepareFluentStatement(FluentStatementBuilder builder, Connection connection) throws SQLException;
-
-    /**
-     * Builds a valid SQL statement from the parameters of the provided {@link FluentStatementBuilder} and converts it
-     * into a {@link FluentStatement}
-     * <p>
-     * The {@link FluentStatement} must be closed by calling {@link FluentStatement#close()} to release it back to the connection
-     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
-     * <p>
-     * Consider using try-with-resources instead to safely auto-close the connection
-     * <p>
-     * Transactions are <b>not</b> comitted automatically when closing a {@link FluentStatement} that has auto-commit disabled
-     *
-     * @param builder the builder containing the parameters of the statement
-     * @return a {@link FluentStatement} that can be used to set input parameters, execute SQL, and retrieve resultsets
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public FluentStatement prepareFluentStatement(FluentStatementBuilder builder) throws SQLException {
-        return this.prepareFluentStatement(builder, this.getConnection());
     }
 
     /**
@@ -338,58 +311,13 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Indicates if the specified table exists in the database
+     * Returns the {@link DSLContext} which can be used to start a fluent statement
      *
-     * @param table the table to check
-     * @return {@code true} if the table exists
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public abstract boolean tableExists(String table) throws SQLException;
-
-    /**
-     * Drops the specified table from the database
+     * @see <a href="https://www.jooq.org/doc/3.18/manual/sql-building/" target="_blank">JOOQ - SQL Building</a>
      *
-     * @param table the table to drop
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
+     * @return the {@link DSLContext}
      */
-    public abstract void dropTable(String table) throws SQLException;
-
-    /**
-     * Renames the specified table
-     *
-     * @param table the table to rename
-     * @param newName the new table name
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public abstract void renameTable(String table, String newName) throws SQLException;
-
-    /**
-     * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table
-     * <p>
-     * This method executes a {@code CREATE TABLE} statement, and should throw an exception that is ultimately returned by
-     * the database if the table already exists
-     *
-     * @param tableBuilder a {@link TableBuilder} which provides a definition for the table
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public void createTable(TableBuilder tableBuilder) throws SQLException {
-        this.createTable(tableBuilder, false);
+    public DSLContext dslContext() {
+        return this.dslContext;
     }
-
-    /**
-     * Compiles a {@link TableBuilder} into a valid SQL statement for the underlying database, then creates the table
-     * <p>
-     * If the {@code ifNotExists} parameter is set to {@code true},
-     * this method executes a {@code CREATE TABLE IF NOT EXISTS} statement, or uses
-     * an implementation-defined alternative if the underlying database doesn't support {@code IF NOT EXISTS}
-     * <p>
-     * If the {@code ifNotExists} parameter is set to {@code false},
-     * this method executes a {@code CREATE TABLE} statement, and should throw an exception that is ultimately returned by
-     * the database if the table already exists
-     *
-     * @param tableBuilder a {@link TableBuilder} which provides a definition for the table
-     * @param ifNotExists if the {@code IF NOT EXISTS} clause should be used
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public abstract void createTable(TableBuilder tableBuilder, boolean ifNotExists) throws SQLException;
 }
