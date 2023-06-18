@@ -103,12 +103,4 @@ public class H2Store2 extends Datastore2 {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
-
-    @Override
-    public void doMaintenance() {
-    }
-
-    @Override
-    protected void driverDispose() {
-    }
 }

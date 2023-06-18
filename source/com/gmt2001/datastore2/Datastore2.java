@@ -353,7 +353,9 @@ public abstract class Datastore2 {
      *
      * @return the filename
      */
-    public abstract String backupFileName();
+    public String backupFileName() {
+        return timestamp();
+    }
 
     /**
      * Performs a backup of the database to the {@code dbbackup} folder
@@ -369,7 +371,8 @@ public abstract class Datastore2 {
      *
      * @param fileName the name of the backup file
      */
-    public abstract void backup(String fileName);
+    public void backup(String fileName) {
+    }
 
     /**
      * Restores a database from the specified backup file, which must be in the {@code dbbackup} folder
@@ -377,12 +380,14 @@ public abstract class Datastore2 {
      * @param fileName the name of the backup file
      * @throws FileNotFoundException if the backup file can not be found
      */
-    public abstract void restoreBackup(String fileName) throws FileNotFoundException;
+    public void restoreBackup(String fileName) throws FileNotFoundException {
+    }
 
     /**
      * Performs periodic database maintenance
      */
-    public abstract void doMaintenance();
+    public void doMaintenance() {
+    }
 
     /**
      * Disposes of resources as neccessary
@@ -410,5 +415,6 @@ public abstract class Datastore2 {
     /**
      * Allows the driver to perform additional disposal actions beyond what the abse Datastore2 class performs
      */
-    protected abstract void driverDispose();
+    protected void driverDispose() {
+    }
 }
