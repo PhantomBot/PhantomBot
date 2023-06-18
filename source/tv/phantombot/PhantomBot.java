@@ -1346,6 +1346,9 @@ public final class PhantomBot implements Listener {
      * doCheckPhantomBotUpdate
      */
     private void doCheckPhantomBotUpdate() {
+        if (RepoVersion.isEdgeBuild() || RepoVersion.isCustomBuild()) {
+            this.dataStore.del("settings", "newrelease_info");
+        }
         ExecutorService.scheduleAtFixedRate(() -> {
             if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
                 try {

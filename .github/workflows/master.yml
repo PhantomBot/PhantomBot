@@ -152,7 +152,7 @@ jobs:
         cp -rv dist/javadoc docs
         echo ::endgroup::
     - name: Verify Changed files
-      uses: tj-actions/verify-changed-files@v14
+      uses: tj-actions/verify-changed-files@v15
       id: verify-changed-files
       with:
         files: |

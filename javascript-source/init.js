@@ -645,8 +645,8 @@
                         Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
                     }
 
-                    // Check if the command exists or if the module is disabled.
-                    if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command))) {
+                    // Check if the command exists or if the module is disabled or if the command is restricted.
+                    if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command)) || !$.commandRestrictionMet(command, subCommand)) {
                         return;
                     }
 

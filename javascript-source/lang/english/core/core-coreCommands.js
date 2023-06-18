@@ -24,3 +24,6 @@ $.lang.register('corecommands.settimevar.usage', 'Usage: !settimevar (varName) (
 $.lang.register('corecommands.settimevar.success', 'Set the timevar $1 to the time $2');
 $.lang.register('corecommands.synconline.success', 'Syncing title, game, and online state with Twitch API. This may take a moment');
 $.lang.register('corecommands.synconline.failure', 'Stream status cache is not ready yet, please try again in 30 seconds');
+$.lang.register('corecommands.setcommandrestriction.usage', 'Usage: !setcommandrestriction [none/online/offline] [command] (subcommand) - The subcommand variable is optional');
+$.lang.register('corecommands.setcommandrestriction.error', '$1 !$2 does not exist!');
+$.lang.register('corecommands.setcommandrestriction.success', 'Successfully changed the $1 restriction for !$2 to $3');
