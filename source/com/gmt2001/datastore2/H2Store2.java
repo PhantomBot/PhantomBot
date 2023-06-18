@@ -58,7 +58,7 @@ public class H2Store2 extends Datastore2 {
         try {
             Class.forName("org.h2.Driver");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace(System.err);
+            com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
 

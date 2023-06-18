@@ -36,7 +36,7 @@ public class MySQLStore2 extends Datastore2 {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace(System.err);
+            com.gmt2001.Console.err.printStackTrace(ex);
             return;
         }
 
