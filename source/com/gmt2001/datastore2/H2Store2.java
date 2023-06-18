@@ -68,6 +68,11 @@ public class H2Store2 extends Datastore2 {
     }
 
     @Override
+    public boolean supportsBackup() {
+        return true;
+    }
+
+    @Override
     public String backupFileName() {
         return getDbFile() + "." + Datastore2.timestamp() + ".h2.sql.gz";
     }

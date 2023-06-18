@@ -345,7 +345,7 @@ public abstract class Datastore2 {
      * @return {@code true} if supported
      */
     public boolean supportsBackup() {
-        return true;
+        return false;
     }
 
     /**
