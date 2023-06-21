@@ -19,6 +19,16 @@ package com.gmt2001.datastore;
 import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.jooq.Field;
+import org.jooq.Nullability;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+
+import com.gmt2001.datastore2.Datastore2;
 
 /**
  * Database Access Base Class
@@ -52,6 +62,14 @@ public abstract class DataStore {
         return classname;
     }
 
+    private Optional<Table<?>> findTable(String fName) {
+        return Datastore2.instance().dslContext().meta().getTables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
+    }
+
+    private Field<Object> field(String name) {
+        return DSL.field(DSL.name(name));
+    }
+
     /**
      * Returns a list of tables in the database.
      * <p>
@@ -59,7 +77,10 @@ public abstract class DataStore {
      *
      * @return
      */
-    public abstract String[] GetFileList();
+    public String[] GetFileList() {
+        return Datastore2.instance().dslContext().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+            .map(t -> t.getName().replaceFirst("(?i)phantombot_", "")).collect(Collectors.toList()).toArray(new String[0]);
+    }
 
     /**
      * Returns a list of all values in the {@code section} column within the table
@@ -371,7 +392,25 @@ public abstract class DataStore {
      * @param key The value of the {@code variable} column to retrieve
      * @return
      */
-    public abstract String GetString(String fName, String section, String key);
+    public String GetString(String fName, String section, String key) {
+        Optional<Table<?>> tbl = findTable(fName);
+
+        if (tbl.isPresent()) {
+            String r;
+            if (section == null) {
+                r = (String)Datastore2.instance().dslContext().selectFrom(tbl.get())
+                .where(field("variable").eq(key)).fetchAny(2);
+            } else {
+                r = (String)Datastore2.instance().dslContext().selectFrom(tbl.get())
+                .where(field("section").eq(section),
+                field("variable").eq(key)).fetchAny(2);
+            }
+
+            return r;
+        }
+
+        return null;
+    }
 
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a string
@@ -382,7 +421,31 @@ public abstract class DataStore {
      * @param value The new value of the {@code value} column
      * @return
      */
-    public abstract void SetString(String fName, String section, String key, String value);
+    public void SetString(String fName, String section, String key, String value) {
+        Optional<Table<?>> tbl = findTable(fName);
+
+        if (!tbl.isPresent()) {
+            this.AddFile(fName);
+            tbl = findTable(fName);
+        }
+
+        if (tbl.isPresent()) {
+            if (this.HasKey(fName, section, key)) {
+                if (section == null) {
+                    Datastore2.instance().dslContext().update(tbl.get())
+                    .set(field("value"), value)
+                    .where(field("variable").eq(key)).executeAsync();
+                } else {
+                    Datastore2.instance().dslContext().update(tbl.get())
+                    .set(field("value"), value)
+                    .where(field("section").eq(section),
+                    field("variable").eq(key)).executeAsync();
+                }
+            } else {
+                Datastore2.instance().dslContext().insertInto(tbl.get()).values(section, key, value).executeAsync();
+            }
+        }
+    }
 
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a string
@@ -606,7 +669,20 @@ public abstract class DataStore {
      * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key The value of the {@code variable} column
      */
-    public abstract void RemoveKey(String fName, String section, String key);
+    public void RemoveKey(String fName, String section, String key) {
+        Optional<Table<?>> tbl = findTable(fName);
+
+        if (tbl.isPresent()) {
+            if (section == null) {
+                Datastore2.instance().dslContext().deleteFrom(tbl.get())
+                .where(field("variable").eq(key)).executeAsync();
+            } else {
+                Datastore2.instance().dslContext().deleteFrom(tbl.get())
+                .where(field("section").eq(section),
+                field("variable").eq(key)).executeAsync();
+            }
+        }
+    }
 
     /**
      * Deletes all rows that matches the given table and section
@@ -614,21 +690,42 @@ public abstract class DataStore {
      * @param fName A table name, without the {@code phantombot_} prefix
      * @param section A section name. {@code ""} (empty string) for the default section
      */
-    public abstract void RemoveSection(String fName, String section);
+    public void RemoveSection(String fName, String section) {
+        Optional<Table<?>> tbl = findTable(fName);
+
+        if (tbl.isPresent()) {
+            Datastore2.instance().dslContext().deleteFrom(tbl.get())
+            .where(field("section").eq(section)).executeAsync();
+        }
+    }
 
     /**
      * Creates a new table
      *
      * @param fName A table name, without the {@code phantombot_} prefix
      */
-    public abstract void AddFile(String fName);
+    public void AddFile(String fName) {
+        fName = "phantombot_" + fName;
+
+        Datastore2.instance().dslContext().createTableIfNotExists(fName)
+        .column("section", SQLDataType.VARCHAR(255).nullability(Nullability.NULL))
+        .column("varible", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
+        .column("value", Datastore2.instance().longTextDataType())
+        .unique("section", "varible").execute();
+    }
 
     /**
      * Deletes the table
      *
      * @param fName A table name, without the {@code phantombot_} prefix
      */
-    public abstract void RemoveFile(String fName);
+    public void RemoveFile(String fName) {
+        Optional<Table<?>> tbl = findTable(fName);
+
+        if (tbl.isPresent()) {
+            Datastore2.instance().dslContext().dropTable(tbl.get()).executeAsync();
+        }
+    }
 
     /**
      * Renames the table
@@ -636,7 +733,13 @@ public abstract class DataStore {
      * @param fNameSource A table name for an existing table, without the {@code phantombot_} prefix
      * @param fNameDest A new table name that does not yet exist, without the {@code phantombot_} prefix
      */
-    public abstract void RenameFile(String fNameSource, String fNameDest);
+    public void RenameFile(String fNameSource, String fNameDest) {
+        Optional<Table<?>> tbl = findTable(fNameSource);
+
+         if (tbl.isPresent()) {
+            Datastore2.instance().dslContext().alterTable(tbl.get()).renameTo("phantombot_" + fNameDest).executeAsync();
+         }
+    }
 
     /**
      * Indicates if the given table already exists
@@ -644,7 +747,9 @@ public abstract class DataStore {
      * @param fName A table name, without the {@code phantombot_} prefix
      * @return
      */
-    public abstract boolean FileExists(String fName);
+    public boolean FileExists(String fName) {
+        return findTable(fName).isPresent();
+    }
 
     /**
      * Indicates if the given table contains a row matching the given section and key
