@@ -36,6 +36,7 @@ import javax.sql.ConnectionPoolDataSource;
 import org.jooq.Configuration;
 import org.jooq.ConnectionProvider;
 import org.jooq.DSLContext;
+import org.jooq.DataType;
 import org.jooq.ExecutorProvider;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
@@ -361,6 +362,13 @@ public abstract class Datastore2 {
     public DSLContext dslContext() {
         return this.dslContext;
     }
+
+    /**
+     * Returns the {@link DataType} representing the {@code LONGTEXT} equivilent SQL data type for the driver
+     *
+     * @return the DataType
+     */
+    public abstract DataType<?> longTextDataType();
 
     /**
      * Indicates if this driver supports making backups without an external tool

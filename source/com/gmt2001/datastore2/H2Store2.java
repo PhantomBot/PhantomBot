@@ -26,7 +26,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.h2.jdbcx.JdbcDataSource;
+import org.jooq.DataType;
 import org.jooq.SQLDialect;
+import org.jooq.impl.DefaultDataType;
+import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.PathValidator;
 
@@ -38,6 +41,11 @@ import tv.phantombot.CaselessProperties;
  * @author gmt2001
  */
 public class H2Store2 extends Datastore2 {
+    /**
+     * H2 {@code LONGTEXT} type
+     */
+    private static final DataType<String> LONGTEXT = new DefaultDataType<>(SQLDialect.H2, SQLDataType.CLOB, "longtext");
+
     /**
      * Returns the name of the H2 database file, without the trailing {@code .mv.db}
      *
@@ -52,6 +60,9 @@ public class H2Store2 extends Datastore2 {
         return CaselessProperties.instance().getProperty("H2DBFile", "phantombot.h2");
     }
 
+    /**
+     * Constructor
+     */
     public H2Store2() {
         super();
 
@@ -65,6 +76,11 @@ public class H2Store2 extends Datastore2 {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048");
         this.init(dataSource, SQLDialect.H2);
+    }
+
+    @Override
+    public DataType<?> longTextDataType() {
+        return LONGTEXT;
     }
 
     @Override

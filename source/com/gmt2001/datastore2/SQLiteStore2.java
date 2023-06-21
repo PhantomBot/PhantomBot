@@ -30,7 +30,10 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
+import org.jooq.DataType;
 import org.jooq.SQLDialect;
+import org.jooq.impl.DefaultDataType;
+import org.jooq.impl.SQLDataType;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
@@ -53,6 +56,10 @@ public class SQLiteStore2 extends Datastore2 {
      * Instant when the next periodic full {@code VACUUM} will occur
      */
     private Instant nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
+    /**
+     * SQLite {@code LONGTEXT} type
+     */
+    private static final DataType<String> LONGTEXT = new DefaultDataType<>(SQLDialect.SQLITE, SQLDataType.CLOB, "text");
 
     /**
      * Returns the name of the SQLite database file
@@ -68,6 +75,9 @@ public class SQLiteStore2 extends Datastore2 {
         return CaselessProperties.instance().getProperty("SQLiteDBFile", "phantombot.db");
     }
 
+    /**
+     * Constructor
+     */
     public SQLiteStore2() {
         super();
 
@@ -118,6 +128,11 @@ public class SQLiteStore2 extends Datastore2 {
         }
 
         ExecutorService.scheduleAtFixedRate(this::doMaintenance, 3, 3, TimeUnit.HOURS);
+    }
+
+    @Override
+    public DataType<?> longTextDataType() {
+        return LONGTEXT;
     }
 
     @Override

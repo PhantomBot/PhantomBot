@@ -18,7 +18,10 @@ package com.gmt2001.datastore2;
 
 import java.sql.SQLException;
 
+import org.jooq.DataType;
 import org.jooq.SQLDialect;
+import org.jooq.impl.DefaultDataType;
+import org.jooq.impl.SQLDataType;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 
@@ -30,6 +33,14 @@ import tv.phantombot.CaselessProperties;
  * @author gmt2001
  */
 public class MySQLStore2 extends Datastore2 {
+    /**
+     * MySQL {@code LONGTEXT} type
+     */
+    private static final DataType<String> LONGTEXT = new DefaultDataType<>(SQLDialect.MYSQL, SQLDataType.CLOB, "longtext", "char");
+
+    /**
+     * Constructor
+     */
     public MySQLStore2() {
         super();
 
@@ -96,5 +107,10 @@ public class MySQLStore2 extends Datastore2 {
         }
 
         this.init(dataSource, SQLDialect.MYSQL);
+    }
+
+    @Override
+    public DataType<?> longTextDataType() {
+        return LONGTEXT;
     }
 }
