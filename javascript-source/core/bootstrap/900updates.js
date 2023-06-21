@@ -759,7 +759,7 @@
         for (let i in commands) {
             let json = JSON.parse($.inidb.get('cooldown', commands[i]));
             json.clearOnOnline = false;
-            $.inidb.set('cooldown', command[i], JSON.stringify(json));
+            $.inidb.set('cooldown', commands[i], JSON.stringify(json));
         }
     });
 
