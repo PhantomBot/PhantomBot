@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.sql.ConnectionPoolDataSource;
@@ -75,6 +76,10 @@ public abstract class Datastore2 {
      * @return an instance of {@link Datastore2}; {@code null} if {@link #init()} has not been called
      */
     public static Datastore2 instance() {
+        if (INSTANCE == null) {
+            init();
+        }
+
         return INSTANCE;
     }
 
@@ -104,22 +109,18 @@ public abstract class Datastore2 {
      * <li>The {@code .jar} file exension on the JAR file must be lower-case</li>
      * <li>The value of the {@code datastore} property in botlogin.txt must match the output of {@link Class#getName()} of the type, including case</li>
      * </ul>
-     *
-     * @throws IllegalStateException if {@link #init()} was called after a Datastore2 has already been initialized
-     * @throws ClassNotFoundException if the class specified in the {@code datastore} property could not be found by the class loader
-     * @throws RuntimeException if the specified class was unable to be instantiated
      */
-    public static synchronized void init() throws IllegalStateException, ClassNotFoundException {
+    public static synchronized void init() {
         if (INSTANCE != null) {
-            throw new IllegalStateException("Datastore2 already initialized");
+            return;
         }
 
         String packageName;
         String className;
-        String dataStoreType = CaselessProperties.instance().getProperty("datastore", "H2Store");
+        String dataStoreType = CaselessProperties.instance().getProperty("datastore", "H2Store2");
 
         if (dataStoreType.isBlank()) {
-            dataStoreType = "H2Store";
+            dataStoreType = "H2Store2";
         }
 
         // Split into package name and class name
@@ -141,7 +142,7 @@ public abstract class Datastore2 {
             final String fdataStoreType = className;
             Reflect.instance().loadPackageRecursive(Datastore2.class.getName().substring(0, Datastore2.class.getName().lastIndexOf('.')));
             Optional<String> tempdataStoreType = Reflect.instance().getSubTypesOf(Datastore2.class).stream().filter((c) -> {
-                return c.getSimpleName().equalsIgnoreCase(fdataStoreType);
+                return c.getSimpleName().equalsIgnoreCase(fdataStoreType) || c.getSimpleName().equalsIgnoreCase(fdataStoreType + "2");
             }).map(c -> c.getName()).findFirst();
 
             if (tempdataStoreType.isPresent()) {
@@ -161,15 +162,16 @@ public abstract class Datastore2 {
             }
         }
 
-        // Attempt to load into memory
-        t = Class.forName(dataStoreType, true, loader);
 
         try {
+            // Attempt to load into memory
+            t = Class.forName(dataStoreType, true, loader);
             // Attempt to instantiate
             INSTANCE = (Datastore2)t.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException ex) {
-                throw new RuntimeException("Unable to load the Datastore2 type " + dataStoreType, ex);
+                | InvocationTargetException | ClassNotFoundException ex) {
+                com.gmt2001.Console.err.println("Unable to load the Datastore2 type " + dataStoreType);
+                com.gmt2001.Console.err.printStackTrace(ex, Collections.singletonMap("dataStoreType", dataStoreType));
         }
     }
 
