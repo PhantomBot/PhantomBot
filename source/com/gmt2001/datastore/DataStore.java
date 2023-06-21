@@ -35,6 +35,24 @@ public abstract class DataStore {
     }
 
     /**
+     * Converts Datastore1 driver names to Datastore2 driver names
+     *
+     * @param classname the classname of the driver
+     * @return the converted classname
+     */
+    public static String resolveClassname(String classname) {
+        if (classname.equalsIgnoreCase("sqlite3store")) {
+            classname = "SQLiteStore2";
+        }
+
+        if (!classname.endsWith("2")) {
+            classname += "2";
+        }
+
+        return classname;
+    }
+
+    /**
      * Returns a list of tables in the database.
      * <p>
      * Only tables with the {@code phantombot_} prefix are returned. The prefix is removed
