@@ -29,15 +29,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 
 import javax.sql.ConnectionPoolDataSource;
 
+import org.jooq.Configuration;
 import org.jooq.ConnectionProvider;
 import org.jooq.DSLContext;
+import org.jooq.ExecutorProvider;
 import org.jooq.SQLDialect;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
+import org.jooq.impl.DefaultConfiguration;
 
+import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.datastore.DataStore;
 
@@ -233,7 +238,8 @@ public abstract class Datastore2 {
      */
     protected void init(ConnectionPoolDataSource dataSource, int maxConnections, int timeout, SQLDialect sqlDialect) {
         this.connectionPoolManager = new MiniConnectionPoolManager(dataSource, maxConnections, timeout);
-        this.dslContext = DSL.using(new ConnectionProvider() {
+
+        Configuration configuration = new DefaultConfiguration().set(new ConnectionProvider() {
             @Override
             public Connection acquire() throws DataAccessException {
                 try {
@@ -252,7 +258,14 @@ public abstract class Datastore2 {
                 }
             }
 
-        }, sqlDialect);
+        }).set(sqlDialect).set(new ExecutorProvider(){
+            @Override
+            public Executor provide() {
+                return ExecutorService.executorService();
+            }
+
+        });
+        this.dslContext = DSL.using(configuration);
     }
 
     /**
