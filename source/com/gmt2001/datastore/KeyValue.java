@@ -19,6 +19,17 @@ public class KeyValue {
     }
 
     /**
+     * Constructor
+     *
+     * @param key The value of the {@code variable} column
+     * @param value The value of the {@code value} column
+     */
+    public <K,V> KeyValue(K key, V value) {
+        this.key = (String)key;
+        this.value = (String)value;
+    }
+
+    /**
      * The value of the {@code variable} column
      *
      * @return

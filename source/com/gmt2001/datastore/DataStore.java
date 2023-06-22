@@ -22,16 +22,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Nullability;
 import org.jooq.Table;
-import org.jooq.impl.DSL;
 import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.datastore2.Datastore2;
 
 /**
- * Database Access Base Class
+ * Provides access to the database in a key-value store style
  *
  * @author gmt2001
  */
@@ -62,12 +62,36 @@ public abstract class DataStore {
         return classname;
     }
 
-    private Optional<Table<?>> findTable(String fName) {
-        return Datastore2.instance().dslContext().meta().getTables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
+    /**
+     * Attempts to find the named table case-insensitively
+     * <p>
+     * The {@code phantombot_} prefix is automatically prefixed to the table name
+     *
+     * @param fName the table name, without the {@code phantombot_} prefix
+     * @return an {@link Optional} which contains the matching {@link Table}, if found
+     */
+    public Optional<Table<?>> findTable(String fName) {
+        return dsl().meta().getTables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
     }
 
-    private Field<Object> field(String name) {
-        return DSL.field(DSL.name(name));
+    /**
+     * Attempts to find the named field case-insensitively
+     *
+     * @param name the name of the field
+     * @param tbl the {@link Table} to search
+     * @return an {@link Optional} which contains the matching {@link Field}, if found
+     */
+    public Field<String> field(String name, Table<?> tbl) {
+        return tbl.fieldStream().filter(f -> f.getName().equalsIgnoreCase(name)).map(f -> f.coerce(String.class)).findFirst().orElse(null);
+    }
+
+    /**
+     * Shortcut for {@link Datastore2#dslContext()}
+     *
+     * @return the active {@link DSLContext}
+     */
+    public DSLContext dsl() {
+        return Datastore2.instance().dslContext();
     }
 
     /**
@@ -75,43 +99,85 @@ public abstract class DataStore {
      * <p>
      * Only tables with the {@code phantombot_} prefix are returned. The prefix is removed
      *
-     * @return
+     * @return an array of table names
      */
     public String[] GetFileList() {
-        return Datastore2.instance().dslContext().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+        return dsl().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
             .map(t -> t.getName().replaceFirst("(?i)phantombot_", "")).collect(Collectors.toList()).toArray(new String[0]);
     }
 
     /**
      * Returns a list of all values in the {@code section} column within the table
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @return an array of sections
      */
-    public abstract String[] GetCategoryList(String fName);
+    public String[] GetCategoryList(String fName) {
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            return dsl().select(field("section", tbl)).from(tbl)
+            .groupBy(field("section", tbl)).fetch(0).toArray(new String[0]);
+        }
+
+        return new String[0];
+    }
 
     /**
      * Returns a list of all values in the {@code variable} column within the table and section
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @return an array of variables
      */
-    public abstract String[] GetKeyList(String fName, String section);
+    public String[] GetKeyList(String fName, String section) {
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            if (section == null) {
+                return dsl().select(field("variable", tbl)).from(tbl)
+                .fetch(0).toArray(new String[0]);
+            } else {
+                return dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("section", tbl).eq(section)).fetch(0).toArray(new String[0]);
+            }
+        }
+
+        return new String[0];
+    }
 
     /**
      * Returns a list of all {@code variable/value} pairs within the table and section
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @return an array of {@link KeyValue} pairs denoting the variables and values
      */
-    public abstract KeyValue[] GetKeyValueList(String fName, String section);
+    public KeyValue[] GetKeyValueList(String fName, String section) {
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            if (section == null) {
+                return dsl().select(field("variable", tbl), field("value", tbl)).from(tbl)
+                .fetchMap(0, 1).entrySet().stream()
+                .map(e -> new KeyValue(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new KeyValue[0]);
+            } else {
+                return dsl().select(field("variable", tbl), field("value", tbl)).from(tbl)
+                .where(field("section", tbl).eq(section)).fetchMap(0, 1).entrySet().stream()
+                .map(e -> new KeyValue(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new KeyValue[0]);
+            }
+        }
+
+        return new KeyValue[0];
+    }
 
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally in Descending order
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      * @return
      */
     public String[] GetKeysByOrder(String fName) {
@@ -121,8 +187,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally in Descending order
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @return
      */
     public String[] GetKeysByOrder(String fName, String section) {
@@ -132,8 +198,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @return
      */
@@ -144,8 +210,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, sorted naturally
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @param limit The maximum number of results to return from this query
      * @param offset The offset to start reading from
@@ -158,7 +224,7 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally Descending as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      * @return
      */
     public String[] GetKeysByNumberOrder(String fName) {
@@ -168,8 +234,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally Descending as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @return
      */
     public String[] GetKeysByNumberOrder(String fName, String section) {
@@ -179,8 +245,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @return
      */
@@ -191,8 +257,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, sorted naturally as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @param limit The maximum number of results to return from this query
      * @param offset The offset to start reading from
@@ -205,7 +271,7 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally Descending by the {@code value} column
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      * @return
      */
     public String[] GetKeysByOrderValue(String fName) {
@@ -215,8 +281,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally Descending by the {@code value} column
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @return
      */
     public String[] GetKeysByOrderValue(String fName, String section) {
@@ -226,8 +292,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally by the {@code value} column
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @return
      */
@@ -238,8 +304,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, sorted naturally by the {@code value} column
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @param limit The maximum number of results to return from this query
      * @param offset The offset to start reading from
@@ -252,8 +318,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally Descending by the {@code value} column as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @return
      */
     public String[] GetKeysByNumberOrderValue(String fName) {
@@ -263,8 +329,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally Descending by the {@code value} column as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @return
      */
     public String[] GetKeysByNumberOrderValue(String fName, String section) {
@@ -274,8 +340,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, sorted naturally by the {@code value} column as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @return
      */
@@ -286,8 +352,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, sorted naturally by the {@code value} column as integers
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @param limit The maximum number of results to return from this query
      * @param offset The offset to start reading from
@@ -300,9 +366,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code variable} column for the given table, section, and value
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param value The value of the {@code value} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param value the value of the {@code value} column
      * @return
      */
     public String GetKeyByValue(String fName, String section, String value) {
@@ -312,8 +378,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, where the value of the {@code value} column contains the search phrase
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param search The partial value of the {@code value} column to match against
      * @return
      */
@@ -324,8 +390,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, where the value of the {@code variable} column contains the search phrase
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param search The partial value of the {@code variable} column to match against
      * @return
      */
@@ -336,7 +402,7 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, where the value of the {@code variable} column contains the search phrase, sorted naturally Descending
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      * @param search The partial value of the {@code variable} column to match against
      * @return
      */
@@ -347,8 +413,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, where the value of the {@code variable} column contains the search phrase, sorted naturally Descending
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param search The partial value of the {@code variable} column to match against
      * @return
      */
@@ -359,8 +425,8 @@ public abstract class DataStore {
     /**
      * Returns a list of all values in the {@code variable} column within the table and section, where the value of the {@code variable} column contains the search phrase, sorted naturally
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param search The partial value of the {@code variable} column to match against
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @return
@@ -372,8 +438,8 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the table and section, where the value of the {@code variable} column contains the search phrase, sorted naturally
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param search The partial value of the {@code variable} column to match against
      * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
      * @param limit The maximum number of results to return from this query
@@ -387,23 +453,24 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a string
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @return the value; {@code null} if not found
      */
     public String GetString(String fName, String section, String key) {
-        Optional<Table<?>> tbl = findTable(fName);
+        Optional<Table<?>> otbl = findTable(fName);
 
-        if (tbl.isPresent()) {
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
             String r;
             if (section == null) {
-                r = (String)Datastore2.instance().dslContext().selectFrom(tbl.get())
-                .where(field("variable").eq(key)).fetchAny(2);
+                r = (String)dsl().selectFrom(tbl)
+                .where(field("variable", tbl).eq(key)).fetchAny(2);
             } else {
-                r = (String)Datastore2.instance().dslContext().selectFrom(tbl.get())
-                .where(field("section").eq(section),
-                field("variable").eq(key)).fetchAny(2);
+                r = (String)dsl().selectFrom(tbl)
+                .where(field("section", tbl).eq(section),
+                field("variable", tbl).eq(key)).fetchAny(2);
             }
 
             return r;
@@ -415,34 +482,34 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a string
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to update
-     * @param value The new value of the {@code value} column
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to update
+     * @param value the new value of the {@code value} column
      */
     public void SetString(String fName, String section, String key, String value) {
-        Optional<Table<?>> tbl = findTable(fName);
+        Optional<Table<?>> otbl = findTable(fName);
 
-        if (!tbl.isPresent()) {
+        if (!otbl.isPresent()) {
             this.AddFile(fName);
-            tbl = findTable(fName);
+            otbl = findTable(fName);
         }
 
-        if (tbl.isPresent()) {
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
             if (this.HasKey(fName, section, key)) {
                 if (section == null) {
-                    Datastore2.instance().dslContext().update(tbl.get())
-                    .set(field("value"), value)
-                    .where(field("variable").eq(key)).executeAsync();
+                    dsl().update(tbl)
+                    .set(field("value", tbl), value)
+                    .where(field("variable", tbl).eq(key)).executeAsync();
                 } else {
-                    Datastore2.instance().dslContext().update(tbl.get())
-                    .set(field("value"), value)
-                    .where(field("section").eq(section),
-                    field("variable").eq(key)).executeAsync();
+                    dsl().update(tbl)
+                    .set(field("value", tbl), value)
+                    .where(field("section", tbl).eq(section),
+                    field("variable", tbl).eq(key)).executeAsync();
                 }
             } else {
-                Datastore2.instance().dslContext().insertInto(tbl.get()).values(section, key, value).executeAsync();
+                dsl().insertInto(tbl).values(section, key, value).executeAsync();
             }
         }
     }
@@ -450,11 +517,10 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a string
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to update
-     * @param value The new value of the {@code value} column
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to update
+     * @param value the new value of the {@code value} column
      */
     public void InsertString(String fName, String section, String key, String value) {
         SetString(fName, section, key, value);
@@ -463,10 +529,10 @@ public abstract class DataStore {
     /**
      * Increases the value of the {@code value} column as an integer for all keys of the given table and section
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param keys The values of the {@code variable} column to update
-     * @param value The new value to increase the {@code value} column by
+     * @param value the new value to increase the {@code value} column by
      * @return
      */
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
@@ -490,10 +556,10 @@ public abstract class DataStore {
      *
      * The array index of the keys and value params are linked
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param keys The values of the {@code variable} column to update
-     * @param value The new values to set the {@code value} column to
+     * @param value the new values to set the {@code value} column to
      * @return
      */
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
@@ -505,9 +571,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a long
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return The value as a long; {@code 0L} if the conversion fails
      */
     public long GetLong(String fName, String section, String key) {
@@ -523,10 +589,10 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a long
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
-     * @param value The new value of the {@code value} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param value the new value of the {@code value} column
      */
     public void SetLong(String fName, String section, String key, long value) {
         String sval = Long.toString(value);
@@ -537,9 +603,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as an integer
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return The value as an integer; {@code 0} if the conversion fails
      */
     public int GetInteger(String fName, String section, String key) {
@@ -555,10 +621,10 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as an integer
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
-     * @param value The new value of the {@code value} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param value the new value of the {@code value} column
      */
     public void SetInteger(String fName, String section, String key, int value) {
         String sval = Integer.toString(value);
@@ -569,9 +635,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a float
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return The value as a float; {@code 0.0f} if the conversion fails
      */
     public float GetFloat(String fName, String section, String key) {
@@ -587,10 +653,10 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a float
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
-     * @param value The new value of the {@code value} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param value the new value of the {@code value} column
      */
     public void SetFloat(String fName, String section, String key, float value) {
         String sval = Float.toString(value);
@@ -601,9 +667,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a double
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return The value as a double; {@code 0.0} if the conversion fails
      */
     public double GetDouble(String fName, String section, String key) {
@@ -619,10 +685,10 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a double
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
-     * @param value The new value of the {@code value} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param value the new value of the {@code value} column
      */
     public void SetDouble(String fName, String section, String key, double value) {
         String sval = Double.toString(value);
@@ -633,9 +699,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a boolean
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return {@code true} if the value as a string is {@code "1"}, {@code "true"}, or {@code "yes"}; {@code false} otherwise
      */
     public boolean GetBoolean(String fName, String section, String key) {
@@ -647,10 +713,10 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the given table, section, and key as a boolean
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column to retrieve
-     * @param value The new value of the {@code value} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param value the new value of the {@code value} column
      */
     public void SetBoolean(String fName, String section, String key, boolean value) {
         int ival = 0;
@@ -664,50 +730,54 @@ public abstract class DataStore {
 
     /**
      * Deletes the row that matches the given table, section, and key
+     * <p>
+     * If {@code section} is null, deletes all rows with a matching table and key, reguardless of section
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
      */
     public void RemoveKey(String fName, String section, String key) {
-        Optional<Table<?>> tbl = findTable(fName);
+        Optional<Table<?>> otbl = findTable(fName);
 
-        if (tbl.isPresent()) {
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
             if (section == null) {
-                Datastore2.instance().dslContext().deleteFrom(tbl.get())
-                .where(field("variable").eq(key)).executeAsync();
+                dsl().deleteFrom(tbl)
+                .where(field("variable", tbl).eq(key)).executeAsync();
             } else {
-                Datastore2.instance().dslContext().deleteFrom(tbl.get())
-                .where(field("section").eq(section),
-                field("variable").eq(key)).executeAsync();
+                dsl().deleteFrom(tbl)
+                .where(field("section", tbl).eq(section),
+                field("variable", tbl).eq(key)).executeAsync();
             }
         }
     }
 
     /**
-     * Deletes all rows that matches the given table and section
+     * Deletes all rows that match the given table and section
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section
      */
     public void RemoveSection(String fName, String section) {
-        Optional<Table<?>> tbl = findTable(fName);
+        Optional<Table<?>> otbl = findTable(fName);
 
-        if (tbl.isPresent()) {
-            Datastore2.instance().dslContext().deleteFrom(tbl.get())
-            .where(field("section").eq(section)).executeAsync();
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            dsl().deleteFrom(tbl)
+            .where(field("section", tbl).eq(section)).executeAsync();
         }
     }
 
     /**
      * Creates a new table
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      */
     public void AddFile(String fName) {
         fName = "phantombot_" + fName;
 
-        Datastore2.instance().dslContext().createTableIfNotExists(fName)
+        dsl().createTableIfNotExists(fName)
         .column("section", SQLDataType.VARCHAR(255).nullability(Nullability.NULL))
         .column("varible", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
         .column("value", Datastore2.instance().longTextDataType())
@@ -717,35 +787,35 @@ public abstract class DataStore {
     /**
      * Deletes the table
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      */
     public void RemoveFile(String fName) {
-        Optional<Table<?>> tbl = findTable(fName);
+        Optional<Table<?>> otbl = findTable(fName);
 
-        if (tbl.isPresent()) {
-            Datastore2.instance().dslContext().dropTable(tbl.get()).executeAsync();
+        if (otbl.isPresent()) {
+            dsl().dropTable(otbl.get()).executeAsync();
         }
     }
 
     /**
      * Renames the table
      *
-     * @param fNameSource A table name for an existing table, without the {@code phantombot_} prefix
-     * @param fNameDest A new table name that does not yet exist, without the {@code phantombot_} prefix
+     * @param fNameSource a table name for an existing table, without the {@code phantombot_} prefix
+     * @param fNameDest Aanew table name that does not yet exist, without the {@code phantombot_} prefix
      */
     public void RenameFile(String fNameSource, String fNameDest) {
-        Optional<Table<?>> tbl = findTable(fNameSource);
+        Optional<Table<?>> otbl = findTable(fNameSource);
 
-         if (tbl.isPresent()) {
-            Datastore2.instance().dslContext().alterTable(tbl.get()).renameTo("phantombot_" + fNameDest).executeAsync();
+         if (otbl.isPresent()) {
+            dsl().alterTable(otbl.get()).renameTo("phantombot_" + fNameDest).executeAsync();
          }
     }
 
     /**
      * Indicates if the given table already exists
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @return {@code true} if the table exists
      */
     public boolean FileExists(String fName) {
         return findTable(fName).isPresent();
@@ -754,10 +824,10 @@ public abstract class DataStore {
     /**
      * Indicates if the given table contains a row matching the given section and key
      *
-     * @param A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) or {@code null} for all sections
-     * @param key The value of the {@code variable} column
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) or {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @return {@code true} if the key exists
      */
     public boolean HasKey(String fName, String section, String key) {
         return GetString(fName, section, key) != null;
@@ -766,9 +836,9 @@ public abstract class DataStore {
     /**
      * Indicates if the given table contains a row matching the given key
      *
-     * @param A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @return {@code true} if the key exists
      */
     public boolean exists(String fName, String key) {
         return HasKey(fName, null, key);
@@ -777,9 +847,9 @@ public abstract class DataStore {
     /**
      * Returns the value of the {@code value} column from the default section of the given table and key as a string
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column to retrieve
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column to retrieve
+     * @return the value; {@code null} if not found
      */
     public String get(String fName, String key) {
         return GetString(fName, null, key);
@@ -788,10 +858,9 @@ public abstract class DataStore {
     /**
      * Sets the value of the {@code value} column for the default section of the given table and key as a string
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column to update
-     * @param value The new value of the {@code value} column
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column to update
+     * @param value the new value of the {@code value} column
      */
     public void set(String fName, String key, String value) {
         SetString(fName, "", key, value);
@@ -802,20 +871,19 @@ public abstract class DataStore {
      *
      * The array index of the keys and value params are linked
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param keys The values of the {@code variable} column to update
-     * @param value The new values to set the {@code value} column to
-     * @return
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param keys the values of the {@code variable} column to update
+     * @param value the new values to set the {@code value} column to
      */
     public void setbatch(String fName, String[] keys, String[] values) {
         SetBatchString(fName, "", keys, values);
     }
 
     /**
-     * Deletes the row from the default section that matches the given tableand key
+     * Deletes the row from the default section that matches the given table and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
      */
     public void del(String fName, String key) {
         RemoveKey(fName, "", key);
@@ -824,10 +892,10 @@ public abstract class DataStore {
     /**
      * Increases the value of the {@code value} column as an integer in the given table, section, and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to increase the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
      */
     public void incr(String fName, String section, String key, int amount) {
         int ival = GetInteger(fName, section, key);
@@ -838,9 +906,9 @@ public abstract class DataStore {
     /**
      * Increases the value of the {@code value} column as an integer in the default section of the given table and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to increase the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
      */
     public void incr(String fName, String key, int amount) {
         incr(fName, "", key, amount);
@@ -849,10 +917,10 @@ public abstract class DataStore {
     /**
      * Decreases the value of the {@code value} column as an integer in the given table, section, and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to decrease the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param value the amount to decrease the value of the {@code value} column by
      */
     public void decr(String fName, String section, String key, int amount) {
         int ival = GetInteger(fName, section, key);
@@ -863,9 +931,9 @@ public abstract class DataStore {
     /**
      * Decreases the value of the {@code value} column as an integer in the default section of the given table and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to decrease the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to decrease the value of the {@code value} column by
      */
     public void decr(String fName, String key, int amount) {
         decr(fName, "", key, amount);
@@ -874,9 +942,9 @@ public abstract class DataStore {
     /**
      * Decreases the value of the {@code value} column as a long in the default section of the given table and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to decrease the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to decrease the value of the {@code value} column by
      */
     public void decr(String fName, String key, long amount) {
         decr(fName, "", key, amount);
@@ -885,10 +953,10 @@ public abstract class DataStore {
     /**
      * Increases the value of the {@code value} column as a long in the given table, section, and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to increase the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
      */
     public void incr(String fName, String section, String key, long amount) {
         long ival = GetLong(fName, section, key);
@@ -899,9 +967,9 @@ public abstract class DataStore {
     /**
      * Increases the value of the {@code value} column as a long in the default section of the given table and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to increase the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
      */
     public void incr(String fName, String key, long amount) {
         incr(fName, "", key, amount);
@@ -910,10 +978,10 @@ public abstract class DataStore {
     /**
      * Decreases the value of the {@code value} column as a long in the given table, section, and key
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
-     * @param section A section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key The value of the {@code variable} column
-     * @param amount The amount to decrease the value of the {@code value} column by
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to decrease the value of the {@code value} column by
      */
     public void decr(String fName, String section, String key, long amount) {
         long ival = GetLong(fName, section, key);
@@ -924,7 +992,7 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the default section of the table, where the value of the {@code value} column contains the search phrase
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      * @param search The partial value of the {@code value} column to match against
      * @return
      */
@@ -935,7 +1003,7 @@ public abstract class DataStore {
     /**
      * Returns a list of values in the {@code variable} column within the default section of the table, where the value of the {@code variable} column contains the search phrase
      *
-     * @param fName A table name, without the {@code phantombot_} prefix
+     * @param fName a table name, without the {@code phantombot_} prefix
      * @param search The partial value of the {@code variable} column to match against
      * @return
      */
