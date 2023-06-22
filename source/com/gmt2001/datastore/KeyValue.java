@@ -25,8 +25,17 @@ public class KeyValue {
      * @param value The value of the {@code value} column
      */
     public <K,V> KeyValue(K key, V value) {
-        this.key = (String)key;
-        this.value = (String)value;
+        if (key instanceof String ks) {
+            this.key = ks;
+        } else {
+            this.key = key.toString();
+        }
+
+        if (value instanceof String vs) {
+            this.value = vs;
+        } else {
+            this.value = value.toString();
+        }
     }
 
     /**
