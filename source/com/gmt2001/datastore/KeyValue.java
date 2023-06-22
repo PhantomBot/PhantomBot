@@ -10,8 +10,8 @@ public class KeyValue {
     /**
      * Constructor
      *
-     * @param key The value of the {@code variable} column
-     * @param value The value of the {@code value} column
+     * @param key the value of the {@code variable} column
+     * @param value the value of the {@code value} column
      */
     public KeyValue(String key, String value) {
         this.key = key;
@@ -21,8 +21,10 @@ public class KeyValue {
     /**
      * Constructor
      *
-     * @param key The value of the {@code variable} column
-     * @param value The value of the {@code value} column
+     * @param <K> the key type
+     * @param <V> the value type
+     * @param key the value of the {@code variable} column
+     * @param value the value of the {@code value} column
      */
     public <K,V> KeyValue(K key, V value) {
         if (key instanceof String ks) {
@@ -41,7 +43,7 @@ public class KeyValue {
     /**
      * The value of the {@code variable} column
      *
-     * @return
+     * @return the variable
      */
     public String getKey() {
         return key;
@@ -50,7 +52,7 @@ public class KeyValue {
     /**
      * The value of the {@code value} column
      *
-     * @return
+     * @return the value
      */
     public String getValue() {
         return value;
