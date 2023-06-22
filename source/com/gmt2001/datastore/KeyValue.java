@@ -35,28 +35,6 @@ public class KeyValue {
     }
 
     /**
-     * Constructor
-     *
-     * @param <K> the key type
-     * @param <V> the value type
-     * @param key the value of the {@code variable} column
-     * @param value the value of the {@code value} column
-     */
-    public <K,V> KeyValue(K key, V value) {
-        if (key instanceof String ks) {
-            this.key = ks;
-        } else {
-            this.key = key.toString();
-        }
-
-        if (value instanceof String vs) {
-            this.value = vs;
-        } else {
-            this.value = value.toString();
-        }
-    }
-
-    /**
      * The value of the {@code variable} column
      *
      * @return the variable

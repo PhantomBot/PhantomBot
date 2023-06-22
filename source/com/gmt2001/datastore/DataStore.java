@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.InsertValuesStep3;
 import org.jooq.Nullability;
 import org.jooq.Query;
 import org.jooq.Table;
@@ -119,7 +120,7 @@ public abstract class DataStore {
         if (otbl.isPresent()) {
             Table<?> tbl = otbl.get();
             return dsl().select(field("section", tbl)).from(tbl)
-            .groupBy(field("section", tbl)).fetch(0).toArray(new String[0]);
+            .groupBy(field("section", tbl)).fetch(field("section", tbl)).toArray(new String[0]);
         }
 
         return new String[0];
@@ -139,10 +140,10 @@ public abstract class DataStore {
             Table<?> tbl = otbl.get();
             if (section == null) {
                 return dsl().select(field("variable", tbl)).from(tbl)
-                .fetch(0).toArray(new String[0]);
+                .fetch(field("variable", tbl)).toArray(new String[0]);
             } else {
                 return dsl().select(field("variable", tbl)).from(tbl)
-                .where(field("section", tbl).eq(section)).fetch(0).toArray(new String[0]);
+                .where(field("section", tbl).eq(section)).fetch(field("variable", tbl)).toArray(new String[0]);
             }
         }
 
@@ -163,12 +164,15 @@ public abstract class DataStore {
             Table<?> tbl = otbl.get();
             if (section == null) {
                 return dsl().select(field("variable", tbl), field("value", tbl)).from(tbl)
-                .fetchMap(0, 1).entrySet().stream()
-                .map(e -> new KeyValue(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new KeyValue[0]);
+                .fetchMap(field("variable", tbl), field("value", tbl)).entrySet().stream()
+                .map(e -> new KeyValue(e.getKey(), e.getValue())).collect(Collectors.toList())
+                .toArray(new KeyValue[0]);
             } else {
                 return dsl().select(field("variable", tbl), field("value", tbl)).from(tbl)
-                .where(field("section", tbl).eq(section)).fetchMap(0, 1).entrySet().stream()
-                .map(e -> new KeyValue(e.getKey(), e.getValue())).collect(Collectors.toList()).toArray(new KeyValue[0]);
+                .where(field("section", tbl).eq(section))
+                .fetchMap(field("variable", tbl), field("value", tbl)).entrySet().stream()
+                .map(e -> new KeyValue(e.getKey(), e.getValue())).collect(Collectors.toList())
+                .toArray(new KeyValue[0]);
             }
         }
 
@@ -466,12 +470,12 @@ public abstract class DataStore {
             Table<?> tbl = otbl.get();
             String r;
             if (section == null) {
-                r = (String)dsl().selectFrom(tbl)
-                .where(field("variable", tbl).eq(key)).fetchAny(2);
+                r = dsl().selectFrom(tbl)
+                .where(field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
             } else {
-                r = (String)dsl().selectFrom(tbl)
+                r = dsl().selectFrom(tbl)
                 .where(field("section", tbl).eq(section),
-                field("variable", tbl).eq(key)).fetchAny(2);
+                field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
             }
 
             return r;
@@ -489,6 +493,19 @@ public abstract class DataStore {
      * @param value the new value of the {@code value} column
      */
     public void SetString(String fName, String section, String key, String value) {
+        this.SetString(dsl(), fName, section, key, value);
+    }
+
+    /**
+     * Sets the value of the {@code value} column for the given table, section, and key as a string
+     *
+     * @param dsl the {@link DSLContext} on which to execute the query
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to update
+     * @param value the new value of the {@code value} column
+     */
+    public void SetString(DSLContext dsl, String fName, String section, String key, String value) {
         Optional<Table<?>> otbl = findTable(fName);
 
         if (!otbl.isPresent()) {
@@ -500,17 +517,17 @@ public abstract class DataStore {
             Table<?> tbl = otbl.get();
             if (this.HasKey(fName, section, key)) {
                 if (section == null) {
-                    dsl().update(tbl)
+                    dsl.update(tbl)
                     .set(field("value", tbl), value)
                     .where(field("variable", tbl).eq(key)).executeAsync();
                 } else {
-                    dsl().update(tbl)
+                    dsl.update(tbl)
                     .set(field("value", tbl), value)
                     .where(field("section", tbl).eq(section),
                     field("variable", tbl).eq(key)).executeAsync();
                 }
             } else {
-                dsl().insertInto(tbl).values(section, key, value).executeAsync();
+                dsl.insertInto(tbl).values(section, key, value).executeAsync();
             }
         }
     }
@@ -532,9 +549,8 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param keys The values of the {@code variable} column to update
+     * @param keys the values of the {@code variable} column to update
      * @param value the new value to increase the {@code value} column by
-     * @return
      */
     public void IncreaseBatchString(String fName, String section, String[] keys, String value) {
         int amount;
@@ -545,27 +561,63 @@ public abstract class DataStore {
             amount = 0;
         }
 
-        for (String key : keys) {
-            int ival = GetInteger(fName, section, key);
-            ival += amount;
-            SetInteger(fName, section, key, ival);
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            final int famount = amount;
+            final String sfamount = Integer.toString(famount);
+            dsl().batched(c -> {
+                c.dsl().startTransaction().execute();
+                if (section == null) {
+                    c.dsl().update(tbl)
+                    .set(Collections.singletonMap(field("value", tbl), field("value", tbl).cast(SQLDataType.INTEGERUNSIGNED).add(famount)))
+                    .where(field("variable", tbl).in(keys)).execute();
+                } else {
+                    c.dsl().update(tbl)
+                    .set(Collections.singletonMap(field("value", tbl), field("value", tbl).cast(SQLDataType.INTEGERUNSIGNED).add(famount)))
+                    .where(field("section", tbl).eq(section), field("variable", tbl).in(keys)).execute();
+                }
+                String isection = section;
+                if (isection == null) {
+                    isection = "";
+                }
+
+                InsertValuesStep3<?, String, String, String> iq = c.dsl()
+                .insertInto(tbl, field("section", tbl), field("variable", tbl), field("value", tbl));
+
+                for (String key : keys) {
+                    iq = iq.values(isection, key, sfamount);
+                }
+
+                iq.onDuplicateKeyIgnore().execute();
+
+                c.dsl().commit().execute();
+            });
         }
     }
 
     /**
      * Performs a bulk {@link #SetString(String, String, String, String)} operation, using available database features to do so more efficiently.
-     *
+     * <p>
      * The array index of the keys and value params are linked
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param keys The values of the {@code variable} column to update
+     * @param keys the values of the {@code variable} column to update
      * @param value the new values to set the {@code value} column to
-     * @return
      */
     public void SetBatchString(String fName, String section, String[] key, String[] value) {
-        for (int i = 0; i < key.length; i++) {
-            SetString(fName, section, key[i], value[i]);
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            dsl().batched(c -> {
+                c.dsl().startTransaction().execute();
+                for (int i = 0; i < Math.min(key.length, value.length); i++) {
+                    SetString(c.dsl(), fName, section, key[i], value[i]);
+                }
+                c.dsl().commit().execute();
+            });
         }
     }
 
