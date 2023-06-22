@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Nullability;
+import org.jooq.Query;
 import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
 
@@ -775,13 +776,27 @@ public abstract class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      */
     public void AddFile(String fName) {
-        fName = "phantombot_" + fName;
+        this.AddFile(fName, false);
+    }
 
-        dsl().createTableIfNotExists(fName)
+    /**
+     * Creates a new table
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param async {@code true} to execute asynchronously
+     */
+    public void AddFile(String fName, boolean async) {
+        Query q = dsl().createTableIfNotExists("phantombot_" + fName)
         .column("section", SQLDataType.VARCHAR(255).nullability(Nullability.NULL))
         .column("varible", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
         .column("value", Datastore2.instance().longTextDataType())
-        .unique("section", "varible").execute();
+        .unique("section", "varible");
+
+        if (async) {
+            q.executeAsync();
+        } else {
+            q.execute();
+        }
     }
 
     /**
