@@ -565,6 +565,12 @@ public abstract class DataStore {
 
         if (otbl.isPresent()) {
             Table<?> tbl = otbl.get();
+            List<String> updates;
+            if (section == null) {
+                updates = dsl().select(field("variable", tbl)).from(tbl).where(field("variable", tbl).in(keys)).fetch(field("variable", tbl));
+            } else {
+                updates = dsl().select(field("variable", tbl)).from(tbl).where(field("section", tbl).eq(section), field("variable", tbl).in(keys)).fetch(field("variable", tbl));
+            }
             final int famount = amount;
             final String sfamount = Integer.toString(famount);
             dsl().batched(c -> {
@@ -578,19 +584,24 @@ public abstract class DataStore {
                     .set(Collections.singletonMap(field("value", tbl), field("value", tbl).cast(SQLDataType.INTEGERUNSIGNED).add(famount)))
                     .where(field("section", tbl).eq(section), field("variable", tbl).in(keys)).execute();
                 }
-                String isection = section;
-                if (isection == null) {
-                    isection = "";
+
+                if (updates.size() < keys.length) {
+                    String isection = section;
+                    if (isection == null) {
+                        isection = "";
+                    }
+
+                    InsertValuesStep3<?, String, String, String> iq = c.dsl()
+                    .insertInto(tbl, field("section", tbl), field("variable", tbl), field("value", tbl));
+
+                    for (String key : keys) {
+                        if (!updates.contains(key)) {
+                            iq = iq.values(isection, key, sfamount);
+                        }
+                    }
+
+                    iq.onDuplicateKeyIgnore().execute();
                 }
-
-                InsertValuesStep3<?, String, String, String> iq = c.dsl()
-                .insertInto(tbl, field("section", tbl), field("variable", tbl), field("value", tbl));
-
-                for (String key : keys) {
-                    iq = iq.values(isection, key, sfamount);
-                }
-
-                iq.onDuplicateKeyIgnore().execute();
 
                 c.dsl().commit().execute();
             });
