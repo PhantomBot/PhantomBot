@@ -17,6 +17,9 @@
 package com.gmt2001.datastore;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -831,7 +834,7 @@ public abstract class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
-     * @return The value as a long; {@code 0L} if the conversion fails
+     * @return the value as a long; {@code 0L} if the conversion fails
      */
     public long GetLong(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
@@ -863,7 +866,7 @@ public abstract class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
-     * @return The value as an integer; {@code 0} if the conversion fails
+     * @return the value as an integer; {@code 0} if the conversion fails
      */
     public int GetInteger(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
@@ -895,7 +898,7 @@ public abstract class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
-     * @return The value as a float; {@code 0.0f} if the conversion fails
+     * @return the value as a float; {@code 0.0f} if the conversion fails
      */
     public float GetFloat(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
@@ -927,7 +930,7 @@ public abstract class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
-     * @return The value as a double; {@code 0.0} if the conversion fails
+     * @return the value as a double; {@code 0.0} if the conversion fails
      */
     public double GetDouble(String fName, String section, String key) {
         String sval = GetString(fName, section, key);
@@ -1072,7 +1075,7 @@ public abstract class DataStore {
      * Renames the table
      *
      * @param fNameSource a table name for an existing table, without the {@code phantombot_} prefix
-     * @param fNameDest Aanew table name that does not yet exist, without the {@code phantombot_} prefix
+     * @param fNameDest a new table name that does not yet exist, without the {@code phantombot_} prefix
      */
     public void RenameFile(String fNameSource, String fNameDest) {
         Optional<Table<?>> otbl = findTable(fNameSource);
@@ -1139,7 +1142,7 @@ public abstract class DataStore {
 
     /**
      * Performs a bulk {@link #set(String, String, String)} operation, using available database features to do so more efficiently.
-     *
+     * <p>
      * The array index of the keys and value params are linked
      *
      * @param fName a table name, without the {@code phantombot_} prefix
@@ -1265,7 +1268,7 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param search the partial value of the {@code value} column to match against
-     * @return
+     * @return a list of variables
      */
     public String[] searchByValue(String fName, String search) {
         return GetKeysByLikeValues(fName, "", search);
@@ -1276,14 +1279,14 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param search the partial value of the {@code variable} column to match against
-     * @return
+     * @return a list of variables
      */
     public String[] searchByKey(String fName, String search) {
         return GetKeysByLikeKeys(fName, "", search);
     }
 
     /**
-     * Executes an SQL query.
+     * Executes an SQL query
      * <p>
      * The query is executed using a {@link PreparedStatement} with calls to {@link PreparedStatement#setString(int, String)}
      * <p>
@@ -1306,11 +1309,38 @@ public abstract class DataStore {
      * @return An List of data as strings representing the result set, if the query was a DQL statement; an empty list otherwise. The outer list represents rows; the inner array represents columns; the values of the inner list represent the value of the row-column pair at that index as a string
      */
     public List<List<String>> query(String sql, String[] replacements) {
-        return Collections.emptyList();
+        List<List<String>> results = new ArrayList<>();
+
+        try ( PreparedStatement statement = Datastore2.instance().prepareStatement(sql)) {
+            int i = 1;
+            for (String k : replacements) {
+                statement.setString(i++, k);
+            }
+
+            if (statement.execute()) {
+                try ( ResultSet rs = statement.getResultSet()) {
+                    int numcol = rs.getMetaData().getColumnCount();
+
+                    while (rs.next()) {
+                        List<String> row = new ArrayList<>();
+
+                        for (int b = 1; b <= numcol; b++) {
+                            row.add(rs.getString(b));
+                        }
+
+                        results.add(row);
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return results;
     }
 
     /**
-     * Executes an SQL query.
+     * Executes an SQL query
      * <p>
      * The query is executed using a {@link PreparedStatement} with calls to {@link PreparedStatement#setString(int, String)}
      * <p>
@@ -1337,37 +1367,47 @@ public abstract class DataStore {
     }
 
     /**
-     * Ensures that all tables created with {@link #AddFile(String)} have a {@code UNIQUE} index across the {@code section} and {@code variable} columns.
-     *
+     * Ensures that all tables created with {@link #AddFile(String)} have a {@code UNIQUE} index across the {@code section} and {@code variable} columns
+     * <p>
      * If a constraint violation occurs while attempting to create the index, all rows violating the constraint except the first for each pair are deleted
+     *
+     * @deprecated Indexes are created automatically upon {@code CREATE TABLE}
      */
+    @Deprecated(since = "3.9.0.0", forRemoval = true)
     public void CreateIndexes() {
     }
 
     /**
      * Drops all {@code UNIQUE} indexes from tables created with {@link #AddFile(String)}
+     *
+     * @deprecated Indexes are dropped automatically upon {@code DROP TABLE}
      */
+    @Deprecated(since = "3.9.0.0", forRemoval = true)
     public void DropIndexes() {
     }
 
     /**
-     * Tests if the connection to the database succeeds.
+     * Tests if the connection to the database succeeds
      *
-     * This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method
-     *
-     * @return {@code true} on success or on embedded databases
+     * @return {@code true} on success
      */
     public boolean CanConnect() {
-        return true;
+        try {
+            return Datastore2.instance().testConnection();
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return false;
     }
 
     /**
      * Indicates if this database type supports generating backup files
      *
-     * @return
+     * @return {@code true} if backups are supported
      */
     public boolean canBackup() {
-        return false;
+        return Datastore2.instance().supportsBackup();
     }
 
     /**
@@ -1376,8 +1416,15 @@ public abstract class DataStore {
      * @param filename The filename for the backup, without extension
      */
     public void backupDB(String filename) {
+        Datastore2.instance().backup(filename);
     }
 
+    /**
+     * Cleanup open connections
+     *
+     * @deprecated Please instead call {@link Datastore2#dispose()}
+     */
+    @Deprecated(since = "3.9.0.0", forRemoval = true)
     public void dispose() {
     }
 }
