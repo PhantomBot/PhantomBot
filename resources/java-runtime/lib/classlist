@@ -210,9 +210,9 @@ jdk/internal/access/JavaLangAccess
 java/lang/System$2
 jdk/internal/util/SystemProps
 jdk/internal/util/SystemProps$Raw
-jdk/internal/misc/VM
 java/lang/StringConcatHelper
 java/lang/VersionProps
+jdk/internal/misc/VM
 java/util/Arrays
 java/lang/CharacterData
 java/lang/CharacterDataLatin1
@@ -825,10 +825,6 @@ java/lang/invoke/StringConcatFactory
 java/lang/invoke/StringConcatFactory$1
 java/lang/invoke/StringConcatFactory$2
 java/lang/invoke/StringConcatFactory$3
-jdk/internal/vm/PostVMInitHook
-jdk/internal/vm/PostVMInitHook$2
-jdk/internal/util/EnvUtils
-jdk/internal/vm/PostVMInitHook$1
 sun/launcher/LauncherHelper
 java/nio/charset/CharsetDecoder
 sun/nio/cs/ArrayDecoder
@@ -964,7 +960,6 @@ java/nio/DirectIntBufferRU
 jdk/internal/jimage/ImageStrings
 jdk/internal/jimage/ImageStringsReader
 jdk/internal/jimage/decompressor/Decompressor
-jdk/internal/jimage/ImageLocation
 java/util/Collections$EmptyIterator
 java/util/Collections$EmptyEnumeration
 jdk/internal/loader/BuiltinClassLoader$1
