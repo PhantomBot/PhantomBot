@@ -177,6 +177,7 @@ public abstract class Datastore2 {
             }
         }
 
+        com.gmt2001.Console.debug.println("Attempting to load Datastore2 type " + dataStoreType);
 
         try {
             // Attempt to load into memory
