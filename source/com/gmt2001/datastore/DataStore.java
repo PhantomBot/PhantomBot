@@ -493,19 +493,6 @@ public abstract class DataStore {
      * @param value the new value of the {@code value} column
      */
     public void SetString(String fName, String section, String key, String value) {
-        this.SetString(dsl(), fName, section, key, value);
-    }
-
-    /**
-     * Sets the value of the {@code value} column for the given table, section, and key as a string
-     *
-     * @param dsl the {@link DSLContext} on which to execute the query
-     * @param fName a table name, without the {@code phantombot_} prefix
-     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key the value of the {@code variable} column to update
-     * @param value the new value of the {@code value} column
-     */
-    public void SetString(DSLContext dsl, String fName, String section, String key, String value) {
         Optional<Table<?>> otbl = findTable(fName);
 
         if (!otbl.isPresent()) {
@@ -514,8 +501,22 @@ public abstract class DataStore {
         }
 
         if (otbl.isPresent()) {
-            Table<?> tbl = otbl.get();
-            if (this.HasKey(fName, section, key)) {
+            this.SetString(dsl(), otbl.get(), this.HasKey(fName, section, key), section, key, value);
+        }
+    }
+
+    /**
+     * Sets the value of the {@code value} column for the given table, section, and key as a string
+     *
+     * @param dsl the {@link DSLContext} on which to execute the query
+     * @param tbl the {@link Table} to operate on
+     * @param hasKey {@code true} if the key already exists and an {@code UPDATE} should be performed
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to update
+     * @param value the new value of the {@code value} column
+     */
+    private void SetString(DSLContext dsl, Table<?> tbl, boolean hasKey, String section, String key, String value) {
+            if (hasKey) {
                 if (section == null) {
                     dsl.update(tbl)
                     .set(field("value", tbl), value)
@@ -529,7 +530,6 @@ public abstract class DataStore {
             } else {
                 dsl.insertInto(tbl).values(section, key, value).executeAsync();
             }
-        }
     }
 
     /**
@@ -611,10 +611,24 @@ public abstract class DataStore {
         Optional<Table<?>> otbl = findTable(fName);
 
         if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            List<String> updates;
+            if (section == null) {
+                updates = dsl().select(field("variable", tbl)).from(tbl).where(field("variable", tbl).in(key)).fetch(field("variable", tbl));
+            } else {
+                updates = dsl().select(field("variable", tbl)).from(tbl).where(field("section", tbl).eq(section), field("variable", tbl).in(key)).fetch(field("variable", tbl));
+            }
             dsl().batched(c -> {
                 c.dsl().startTransaction().execute();
                 for (int i = 0; i < Math.min(key.length, value.length); i++) {
-                    SetString(c.dsl(), fName, section, key[i], value[i]);
+                    if (updates.contains(key[i])) {
+                        this.SetString(c.dsl(), tbl, true, section, key[i], value[i]);
+                    }
+                }
+                for (int i = 0; i < Math.min(key.length, value.length); i++) {
+                    if (!updates.contains(key[i])) {
+                        this.SetString(c.dsl(), tbl, false, section, key[i], value[i]);
+                    }
                 }
                 c.dsl().commit().execute();
             });
