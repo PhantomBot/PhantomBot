@@ -37,6 +37,7 @@ jobs:
       with:
         distribution: ${{ matrix.java-distribution }}
         java-version: ${{ matrix.java-version }}
+        check-latest: true
     - name: Run JLink (Windows)
       if: matrix.os == 'windows-latest'
       env:
