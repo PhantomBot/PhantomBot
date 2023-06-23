@@ -16,23 +16,29 @@
  */
 package com.gmt2001;
 
-import com.illusionaryone.Logger;
-import com.sun.management.HotSpotDiagnosticMXBean;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+
 import javax.management.MBeanServer;
+
+import com.illusionaryone.Logger;
+import com.sun.management.HotSpotDiagnosticMXBean;
+
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
@@ -84,6 +90,28 @@ public final class Reflect {
     }
 
     /**
+     * Workaround to get the {@link ClassLoader#classes} field in JDK 12+
+     *
+     * @return the field
+     * @throws NoSuchMethodException if unable to load {@link Class#getDeclaredFields0()} or unable to find the field
+     * @throws IllegalAccessException if Java language access control blocks invocation
+     * @throws InvocationTargetException if an exception is thrown by the method being invoked
+     */
+    private Field getClassesField() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
+        getDeclaredFields0.setAccessible(true);
+        Field[] fields = (Field[]) getDeclaredFields0.invoke(ClassLoader.class, false);
+        Field modifiers = null;
+        for (Field each : fields) {
+            if ("classes".equals(each.getName())) {
+                return each;
+            }
+        }
+
+        throw new NoSuchMethodException("Could not find field 'classes'");
+    }
+
+    /**
      * Gets a list of {@link Class} that are in the cache of the default {@link ClassLoader}
      *
      * @return a list of {@link Class}
@@ -93,19 +121,20 @@ public final class Reflect {
         List<Class<?>> cl = new ArrayList<>();
 
         try {
-            Field f = ClassLoader.class.getDeclaredField("classes");
+            Field f = this.getClassesField();
             f.setAccessible(true);
             ClassLoader classLoader = Reflect.class.getClassLoader();
             @SuppressWarnings("UseOfObsoleteCollectionType")
-            java.util.Vector<Class> classes = (java.util.Vector<Class>) f.get(classLoader);
-            classes.forEach((c) -> {
-                cl.add(c);
-            });
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex) {
+            List<Class> classes = (List<Class>) f.get(classLoader);
+            final int size = classes.size();
+            for (int i = 0; i < size; i++) {
+                cl.add(classes.get(i));
+            }
+        } catch (IllegalArgumentException | IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        return cl;
+        return Collections.unmodifiableList(cl);
     }
 
     /**
@@ -123,7 +152,7 @@ public final class Reflect {
             cl.add((Class<? extends T>) c);
         });
 
-        return cl;
+        return Collections.unmodifiableList(cl);
     }
 
     /**
