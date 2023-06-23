@@ -750,12 +750,12 @@ public class DiscordUtil {
         if (PhantomBot.getEnableDebugging()) {
             com.gmt2001.Console.debug.println(filteredMembers.count().block());
         }
-        try {
-            return filteredMembers.take(1).single().map(m -> (User) m);
-        } catch (NoSuchElementException ex) {
-            com.gmt2001.Console.err.println("Unable to find userName [" + userName + "]");
-            throw ex;
-        }
+
+        return filteredMembers.take(1)
+                                .singleOrEmpty()
+                                .switchIfEmpty(Mono.error(new NoSuchElementException("Unable to find userName [" + userName + "]")))
+                                .map(m -> (User) m)
+                                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e));
     }
 
     public User getUserById(long userId) {
@@ -822,12 +822,10 @@ public class DiscordUtil {
             com.gmt2001.Console.debug.println(filteredRoles.count().block());
         }
 
-        try {
-            return filteredRoles.take(1).single();
-        } catch (NoSuchElementException ex) {
-            com.gmt2001.Console.err.println("Unable to find roleName [" + roleName + "]");
-            throw ex;
-        }
+        return filteredRoles.take(1)
+                            .singleOrEmpty()
+                            .switchIfEmpty(Mono.error(new NoSuchElementException("Unable to find roleName [" + roleName + "]")))
+                            .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e));
     }
 
     public Role getRoleByID(String id) {
@@ -960,19 +958,10 @@ public class DiscordUtil {
      */
     public void addRole(String roleName, String userName) {
         com.gmt2001.Console.debug.println(userName + " > " + roleName);
-        try {
-            this.getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> {
-                com.gmt2001.Console.debug.println(role);
-                try {
-                    this.getUserAsync(userName).onErrorReturn(null).subscribe(user -> {
-                        com.gmt2001.Console.debug.println(user);
-                        this.addRole(role, user);
-                    });
-                } catch (NullPointerException ex) {
-                }
-            });
-        } catch (NullPointerException ex) {
-        }
+        this.getUserAsync(userName).subscribe(user -> {
+            com.gmt2001.Console.debug.println(user);
+            this.addRole(roleName, user);
+        });
     }
 
     /**
@@ -982,10 +971,10 @@ public class DiscordUtil {
      * @param user
      */
     public void addRole(String roleName, User user) {
-        try {
-            this.getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> this.addRole(role, user));
-        } catch (NullPointerException ex) {
-        }
+        this.getRoleAsync(roleName).subscribe(role -> {
+            com.gmt2001.Console.debug.println(role);
+            this.addRole(role, user);
+        });
     }
 
     /**
@@ -1015,10 +1004,10 @@ public class DiscordUtil {
      * @param userName
      */
     public void removeRole(String roleName, String userName) {
-        try {
-            this.getRoleAsync(roleName).onErrorReturn(null).subscribe(role -> this.getUserAsync(userName).onErrorReturn(null).subscribe(user -> this.removeRole(role, user)));
-        } catch (NullPointerException ex) {
-        }
+        this.getRoleAsync(roleName).subscribe(role -> 
+            this.getUserAsync(userName).subscribe(user -> 
+                this.removeRole(role, user))
+        );
     }
 
     /**

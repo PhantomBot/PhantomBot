@@ -195,7 +195,7 @@
      * @export $.discord
      */
     function setRole(role, username) {
-        return $.discordAPI.addRole(role, username);
+        $.discordAPI.addRole(role, username);
     }
 
     function sanitizeChannelName(channel) {
