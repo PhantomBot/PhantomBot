@@ -18,9 +18,10 @@ package com.gmt2001.datastore;
 
 /**
  * Final class that is used to convert datastores.
- *
+ * @deprecated No replacement planned
  * @author ScaniaTV
  */
+@Deprecated(since = "3.9.0.0", forRemoval = true)
 public final class DataStoreConverter {
 
     /*

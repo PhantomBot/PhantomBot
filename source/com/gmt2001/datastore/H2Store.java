@@ -46,11 +46,11 @@ import com.gmt2001.PathValidator;
 import tv.phantombot.PhantomBot;
 
 /**
- *
+ * @deprecated Use {@link com.gmt2001.datastore2.MySQLStore2} instead
  * @author illusionaryone
  * @author gmt2001
- *
  */
+@Deprecated(since = "3.9.0.0", forRemoval = true)
 public final class H2Store extends DataStore {
 
     private static final String BACKUP_SUFFIX = ".h2.sql.gz";
@@ -77,8 +77,6 @@ public final class H2Store extends DataStore {
             configStr = "phantombot.h2";
         }
 
-        this.checkInUse(configStr);
-
         try {
             if (this.needsUpgrade(configStr)) {
                 this.startUpgrade(configStr);
@@ -93,7 +91,7 @@ public final class H2Store extends DataStore {
             ex.printStackTrace(System.err);
         }
 
-        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
+        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
         poolMgr.setMaxConnections(MAX_CONNECTIONS);
 
         try {
@@ -107,28 +105,6 @@ public final class H2Store extends DataStore {
                 this.finishUpgrade(configStr);
             }
         } catch (Exception ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
-    private void checkInUse(String configStr) {
-        Path dbfile = Paths.get("./config/", configStr + ".mv.db");
-
-        if (!Files.exists(dbfile)) {
-            return;
-        }
-        try {
-            JdbcConnectionPool connectionPool = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
-
-            // Attempt to acquire a connection from the pool
-            connectionPool.getConnection().close();
-            connectionPool.dispose();
-        } catch (SQLException ex) {
-            // SQLException occurred, check if the SQL state code indicates the database is in use
-            if ("90020".equals(ex.getSQLState())) {
-                com.gmt2001.Console.err.println("Database is already in use. Please close any existing connections.");
-                Runtime.getRuntime().exit(-1);
-            }
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }

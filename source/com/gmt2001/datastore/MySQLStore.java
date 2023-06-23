@@ -31,9 +31,10 @@ import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
 import tv.phantombot.CaselessProperties;
 
 /**
- *
+ * @deprecated Use {@link com.gmt2001.datastore2.MySQLStore2} instead
  * @author gmt2001
  */
+@Deprecated(since = "3.9.0.0", forRemoval = true)
 public final class MySQLStore extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;

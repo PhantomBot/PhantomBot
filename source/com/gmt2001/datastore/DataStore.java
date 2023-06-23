@@ -45,14 +45,26 @@ import com.gmt2001.datastore2.Datastore2;
 /**
  * Provides access to the database in a key-value store style
  *
+ * @see Datastore2
  * @author gmt2001
  */
-public abstract class DataStore {
+public class DataStore {
+    private static final DataStore INSTANCE = new DataStore(null);
 
+    /**
+     * Provides an instance of {@link DataStore}
+     *
+     * @return an instance of {@link DataStore}
+     */
     public static DataStore instance() {
-        return null;
+        return INSTANCE;
     }
 
+    /**
+     * Constructor
+     *
+     * @param unused only used by old classes
+     */
     protected DataStore(String unused) {
     }
 
