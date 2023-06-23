@@ -153,7 +153,8 @@ public abstract class Datastore2 {
 
         if (packageName.startsWith("com.gmt2001.datastore2.")) {
             // Resolve builtin classes case-insensitively
-            final String fdataStoreType = DataStore.resolveClassname(className);
+            dataStoreType = DataStore.resolveClassname(className);
+            final String fdataStoreType = dataStoreType;
             Reflect.instance().loadPackageRecursive(Datastore2.class.getName().substring(0, Datastore2.class.getName().lastIndexOf('.')));
             Optional<String> tempdataStoreType = Reflect.instance().getSubTypesOf(Datastore2.class).stream().filter((c) -> {
                 return c.getSimpleName().equalsIgnoreCase(fdataStoreType);
