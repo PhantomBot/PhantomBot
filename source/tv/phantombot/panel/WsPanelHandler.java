@@ -86,9 +86,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        if (frame instanceof TextWebSocketFrame) {
-            TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
-
+        if (frame instanceof TextWebSocketFrame tframe) {
             JSONObject jso;
 
             try {

@@ -26,9 +26,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         mkdir -p docs/panel-stable/
@@ -55,9 +52,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         mkdir -p docs/guides/content-stable/
@@ -81,9 +75,6 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        ref: 'master'
     - name: Copy Files
       run: |
         mkdir -p docs/javadoc-stable/
@@ -128,3 +119,4 @@ jobs:
       uses: EndBug/add-and-commit@v9
       with:
         message: Updated GitHub Pages (Stable)
+        default_author: github_actions

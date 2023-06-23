@@ -47,9 +47,10 @@ import org.sqlite.SQLiteException;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
 /**
- *
+ * @deprecated Use {@link com.gmt2001.datastore2.MySQLStore2} instead
  * @author gmt2001
  */
+@Deprecated(since = "3.9.0.0", forRemoval = true)
 public final class SqliteStore extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;

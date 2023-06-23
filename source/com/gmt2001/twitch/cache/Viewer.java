@@ -127,7 +127,7 @@ public final class Viewer {
 
     /**
      * Updates the last time this user was seen
-     * <br /><br />
+     * <p>
      * This is used for garbage collection
      *
      * @return {@code this}
@@ -140,7 +140,7 @@ public final class Viewer {
 
     /**
      * The last time this user was seen
-     * <br /><br />
+     * <p>
      * This is used for garbage collection
      *
      * @return The last time this user was seen
@@ -160,7 +160,7 @@ public final class Viewer {
 
     /**
      * Indicates if this user has had their attributes set from an IRC event, such as moderator status
-     * <br /><br />
+     * <p>
      * It is possible for this to return {@code false} but for some attributes to be set if an API lookup was performed
      *
      * @return {@code true} if the user has had their attributes set

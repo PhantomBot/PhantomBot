@@ -37,7 +37,7 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 
 /**
- * Provides Java reflection services
+ * Provides methods which perform common reflection operations
  *
  * @author gmt2001
  */
@@ -53,9 +53,9 @@ public final class Reflect {
     }
 
     /**
-     * Recursively loads all classes and sub-packages of the given package from {@code PhantomBot.jar}
+     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the classloaders cache
      *
-     * @param pkg the package to load
+     * @param pkg the package or package prefix to load
      */
     public void loadPackageRecursive(String pkg) {
         pkg = pkg.replace('.', '/');
@@ -84,9 +84,9 @@ public final class Reflect {
     }
 
     /**
-     * Returns a list of all classes currently loaded into memory by the class loader
+     * Gets a list of {@link Class} that are in the cache of the default {@link ClassLoader}
      *
-     * @return a list of classes
+     * @return a list of {@link Class}
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Class<?>> getClasses() {
@@ -109,11 +109,11 @@ public final class Reflect {
     }
 
     /**
-     * Returns a list of all classes for which the provided type is assignable from and are not abstract
+     * Gets a list of non-abstract {@link Class} that are in the cache of the default {@link ClassLoader} which are assignable from the specified type
      *
-     * @param <T> the parent type to test against
-     * @param type the {@link Class} instance representing the parent type
-     * @return a list of child {@link Class} which are not abstract
+     * @param <T> the parent class or interface
+     * @param type the parent class or interface
+     * @return a list of sub-classes
      */
     @SuppressWarnings("unchecked")
     public <T> List<Class<? extends T>> getSubTypesOf(final Class<T> type) {
@@ -164,6 +164,13 @@ public final class Reflect {
         }
     }
 
+    /**
+     * Dumps the Java Heap to a file
+     *
+     * @param filePath the path to the file where the heap should be written
+     * @param live {@code true} to only dump <i>live</i> objects
+     * @throws IOException if the file already exists, cannot be created, opened, or written to
+     */
     // https://www.baeldung.com/java-heap-dump-capture
     /**
      * Dumps the Java heap to an hprof file

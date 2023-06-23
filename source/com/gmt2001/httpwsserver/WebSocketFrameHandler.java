@@ -100,8 +100,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof HandshakeComplete) {
-            HandshakeComplete hc = (HandshakeComplete) evt;
+        if (evt instanceof HandshakeComplete hc) {
             String ruri = determineWsFrameHandler(hc.requestUri());
             WsFrameHandler h = wsFrameHandlers.get(ruri);
 

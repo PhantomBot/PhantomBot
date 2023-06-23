@@ -24,12 +24,12 @@ import tv.phantombot.event.jvm.JVMEvent;
 
 /**
  * Sends events to downstream subscribers
- * <br /><br />
+ * <p>
  * To subscribe to an event, a Java class must be non-static, implement {@link Listener}, have a public method for each desired event
  * with the signature {@code public void methodName(EventClass event)} where {@code EventClass} is the class of the event to be
  * captured, have the {@code @net.engio.mbassy.listener.Handler} annotation applied to each event handler method, and must call
  * {@link #register(Listener)} for each instance of the class that should receive events
- * <br /><br />
+ * <p>
  * The event bus will deliver each event to all subscribers of the matching event class, as well as subscribers of any event class in
  * the parent chain going back up to the {@link Event} base class. For example: subscribing to {@link JVMEvent} will receive all
  * events in the {@code tv.phantombot.event.jvm} package, as it is the base event for the package
@@ -76,7 +76,7 @@ public final class EventBus {
 
     /**
      * Performs a blocking publish of an event to the relevant subscribers
-     * <br /><br />
+     * <p>
      * This method should only be used in extremely rare circumstances. Most publishes should be done using {@link #postAsync(Event)}
      *
      * @param event An event to publish

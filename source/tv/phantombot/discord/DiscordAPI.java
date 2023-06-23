@@ -495,7 +495,7 @@ public class DiscordAPI extends DiscordUtil {
                     return;
                 }
 
-                User iUser = event.getMember().isPresent() ? event.getMember().get() : (iChannel instanceof PrivateChannel ? ((PrivateChannel) iChannel).getRecipients().stream().findFirst().orElse(null) : null);
+                User iUser = event.getMember().isPresent() ? event.getMember().get() : (iChannel instanceof PrivateChannel pc ? pc.getRecipients().stream().findFirst().orElse(null) : null);
 
                 if (iUser == null) {
                     com.gmt2001.Console.debug.println("Ignored message " + iMessage.getId().asString() + " due to null iUser");

@@ -40,6 +40,15 @@ public class ExecutorService {
     }
 
     /**
+     * The backing {@link ScheduledExecutorService}
+     *
+     * @return the backing {@link ScheduledExecutorService}
+     */
+    public static ScheduledExecutorService executorService() {
+        return SCHEDULEDEXECUTOR;
+    }
+
+    /**
      * Creates and executes a ScheduledFuture that becomes enabled after the given delay.
      *
      * @param <V> the return type of the callable
