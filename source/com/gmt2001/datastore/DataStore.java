@@ -27,6 +27,13 @@ import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Nullability;
 import org.jooq.Query;
+import org.jooq.Record1;
+import org.jooq.SelectConnectByStep;
+import org.jooq.SelectForUpdateStep;
+import org.jooq.SelectLimitPercentStep;
+import org.jooq.SelectSeekStep1;
+import org.jooq.SelectWhereStep;
+import org.jooq.SortOrder;
 import org.jooq.Table;
 import org.jooq.impl.SQLDataType;
 
@@ -180,13 +187,81 @@ public abstract class DataStore {
     }
 
     /**
+     * Returns a list of values in the {@code variable} column within the table and section, sorted naturally
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @param limit the maximum number of results to return from this query; {@code 0} for no limit
+     * @param offset the offset to start reading from; {@code 0} for the beginning
+     * @param isValue {@code true} if sorting on the value instead of the variable
+     * @param isNumber {@code true} if the variable should be cast as an unsigned int for ordering
+     * @param like filters by partial matches on the variable; {@code null} to not use
+     * @return a sorted list of variables
+     */
+    private String[] GetKeysByOrderInternal(String fName, String section, String order, int limit, int offset, boolean isValue, boolean isNumber, String like) {
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            if (!order.equalsIgnoreCase("ASC") && !order.equalsIgnoreCase("DESC")) {
+                order = "DESC";
+            }
+            Table<?> tbl = otbl.get();
+            Field<?> ofield;
+
+            if (isValue) {
+                ofield = field("value", tbl);
+            } else {
+                ofield = field("variable", tbl);
+            }
+            if (isNumber) {
+                ofield = ofield.cast(SQLDataType.INTEGERUNSIGNED);
+            }
+            SelectWhereStep<Record1<String>> w = dsl().select(field("variable", tbl)).from(tbl);
+            SelectConnectByStep<Record1<String>> c = w;
+            if (section == null) {
+                if (like == null) {
+                    c = w.where(field("section", tbl).eq(section));
+                } else {
+                    c = w.where(field("section", tbl).eq(section), field("variable", tbl).like("%" + like + "%"));
+                }
+            } else if (like != null) {
+                c = w.where(field("variable", tbl).like("%" + like + "%"));
+            }
+            SelectSeekStep1<Record1<String>, ?> s = c.orderBy(ofield.sort(SortOrder.valueOf(order.toUpperCase())));
+            SelectLimitPercentStep<Record1<String>> l = null;
+            if (limit > 0) {
+                l = s.limit(limit);
+            }
+            SelectForUpdateStep<Record1<String>> o = null;
+            if (offset > 0) {
+                if (l != null) {
+                    o = l.offset(offset);
+                } else {
+                    o = s.offset(offset);
+                }
+            }
+            List<String> keys;
+            if (o != null) {
+                keys = o.fetch(field("variable", tbl));
+            } else if (l != null) {
+                keys = l.fetch(field("variable", tbl));
+            } else {
+                keys = s.fetch(field("variable", tbl));
+            }
+            return keys.toArray(new String[0]);
+        }
+        return new String[]{};
+    }
+
+    /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally in Descending order
      *
      * @param fName a table name, without the {@code phantombot_} prefix
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrder(String fName) {
-        return this.GetKeysByOrder(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, "", "DESC", 0, 0, false, false, null);
     }
 
     /**
@@ -194,10 +269,10 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrder(String fName, String section) {
-        return this.GetKeysByOrder(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, "DESC", 0, 0, false, false, null);
     }
 
     /**
@@ -205,11 +280,11 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrder(String fName, String section, String order) {
-        return this.GetKeysByOrder(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, order, 0, 0, false, false, null);
     }
 
     /**
@@ -217,23 +292,35 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @param limit The maximum number of results to return from this query
-     * @param offset The offset to start reading from
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @param limit the maximum number of results to return from this query
+     * @param offset the offset to start reading from
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrder(String fName, String section, String order, String limit, String offset) {
-        return new String[]{};
+        int ilimit;
+        int ioffset;
+        try {
+            ilimit = Integer.parseInt(limit);
+        } catch (NumberFormatException ex) {
+            ilimit = 0;
+        }
+        try {
+            ioffset = Integer.parseInt(offset);
+        } catch (NumberFormatException ex) {
+            ioffset = 0;
+        }
+        return this.GetKeysByOrderInternal(fName, section, order, ilimit, ioffset, false, false, null);
     }
 
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally Descending as integers
      *
      * @param fName a table name, without the {@code phantombot_} prefix
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrder(String fName) {
-        return this.GetKeysByNumberOrder(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, "", "DESC", 0, 0, false, true, null);
     }
 
     /**
@@ -241,10 +328,10 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrder(String fName, String section) {
-        return this.GetKeysByNumberOrder(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, "DESC", 0, 0, false, true, null);
     }
 
     /**
@@ -252,11 +339,11 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrder(String fName, String section, String order) {
-        return this.GetKeysByNumberOrder(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, order, 0, 0, false, true, null);
     }
 
     /**
@@ -264,23 +351,35 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @param limit The maximum number of results to return from this query
-     * @param offset The offset to start reading from
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @param limit the maximum number of results to return from this query
+     * @param offset the offset to start reading from
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrder(String fName, String section, String order, String limit, String offset) {
-        return new String[]{};
+        int ilimit;
+        int ioffset;
+        try {
+            ilimit = Integer.parseInt(limit);
+        } catch (NumberFormatException ex) {
+            ilimit = 0;
+        }
+        try {
+            ioffset = Integer.parseInt(offset);
+        } catch (NumberFormatException ex) {
+            ioffset = 0;
+        }
+        return this.GetKeysByOrderInternal(fName, section, order, ilimit, ioffset, false, true, null);
     }
 
     /**
      * Returns a list of all values in the {@code variable} column within the default section of the table, sorted naturally Descending by the {@code value} column
      *
      * @param fName a table name, without the {@code phantombot_} prefix
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrderValue(String fName) {
-        return this.GetKeysByOrderValue(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, "", "DESC", 0, 0, true, false, null);
     }
 
     /**
@@ -288,10 +387,10 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrderValue(String fName, String section) {
-        return this.GetKeysByOrderValue(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, "DESC", 0, 0, true, false, null);
     }
 
     /**
@@ -299,11 +398,11 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrderValue(String fName, String section, String order) {
-        return this.GetKeysByOrderValue(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, order, 0, 0, true, false, null);
     }
 
     /**
@@ -311,13 +410,25 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @param limit The maximum number of results to return from this query
-     * @param offset The offset to start reading from
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @param limit the maximum number of results to return from this query
+     * @param offset the offset to start reading from
+     * @return a sorted list of variables
      */
     public String[] GetKeysByOrderValue(String fName, String section, String order, String limit, String offset) {
-        return new String[]{};
+        int ilimit;
+        int ioffset;
+        try {
+            ilimit = Integer.parseInt(limit);
+        } catch (NumberFormatException ex) {
+            ilimit = 0;
+        }
+        try {
+            ioffset = Integer.parseInt(offset);
+        } catch (NumberFormatException ex) {
+            ioffset = 0;
+        }
+        return this.GetKeysByOrderInternal(fName, section, order, ilimit, ioffset, true, false, null);
     }
 
     /**
@@ -325,10 +436,10 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrderValue(String fName) {
-        return this.GetKeysByNumberOrderValue(fName, "", "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, "", "DESC", 0, 0, true, true, null);
     }
 
     /**
@@ -336,10 +447,10 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @return
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrderValue(String fName, String section) {
-        return this.GetKeysByNumberOrderValue(fName, section, "DESC", String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, "DESC", 0, 0, true, true, null);
     }
 
     /**
@@ -347,11 +458,11 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrderValue(String fName, String section, String order) {
-        return this.GetKeysByNumberOrderValue(fName, section, order, String.valueOf(Integer.MAX_VALUE), "0");
+        return this.GetKeysByOrderInternal(fName, section, order, 0, 0, true, true, null);
     }
 
     /**
@@ -359,13 +470,25 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @param limit The maximum number of results to return from this query
-     * @param offset The offset to start reading from
-     * @return
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @param limit the maximum number of results to return from this query
+     * @param offset the offset to start reading from
+     * @return a sorted list of variables
      */
     public String[] GetKeysByNumberOrderValue(String fName, String section, String order, String limit, String offset) {
-        return new String[]{};
+        int ilimit;
+        int ioffset;
+        try {
+            ilimit = Integer.parseInt(limit);
+        } catch (NumberFormatException ex) {
+            ilimit = 0;
+        }
+        try {
+            ioffset = Integer.parseInt(offset);
+        } catch (NumberFormatException ex) {
+            ioffset = 0;
+        }
+        return this.GetKeysByOrderInternal(fName, section, order, ilimit, ioffset, true, true, null);
     }
 
     /**
@@ -374,10 +497,27 @@ public abstract class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param value the value of the {@code value} column
-     * @return
+     * @return the variable; {@code null} if not found
      */
     public String GetKeyByValue(String fName, String section, String value) {
-        return "";
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            String r;
+            if (section == null) {
+                r = dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("value", tbl).eq(value)).fetchAny(field("variable", tbl));
+            } else {
+                r = dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("section", tbl).eq(section),
+                field("value", tbl).eq(value)).fetchAny(field("variable", tbl));
+            }
+
+            return r;
+        }
+
+        return null;
     }
 
     /**
@@ -385,10 +525,25 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param search The partial value of the {@code value} column to match against
-     * @return
+     * @param search the partial value of the {@code value} column to match against
+     * @return a list of variables
      */
     public String[] GetKeysByLikeValues(String fName, String section, String search) {
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            if (section == null) {
+                return dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("value", tbl).like("%" + search + "%"))
+                .fetch(field("variable", tbl)).toArray(new String[0]);
+            } else {
+                return dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("section", tbl).eq(section),
+                field("value", tbl).like("%" + search + "%"))
+                .fetch(field("variable", tbl)).toArray(new String[0]);
+            }
+        }
         return new String[]{};
     }
 
@@ -397,10 +552,25 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param search The partial value of the {@code variable} column to match against
-     * @return
+     * @param search the partial value of the {@code variable} column to match against
+     * @return a list of variables
      */
     public String[] GetKeysByLikeKeys(String fName, String section, String search) {
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            if (section == null) {
+                return dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("variable", tbl).like("%" + search + "%"))
+                .fetch(field("variable", tbl)).toArray(new String[0]);
+            } else {
+                return dsl().select(field("variable", tbl)).from(tbl)
+                .where(field("section", tbl).eq(section),
+                field("variable", tbl).like("%" + search + "%"))
+                .fetch(field("variable", tbl)).toArray(new String[0]);
+            }
+        }
         return new String[]{};
     }
 
@@ -408,11 +578,11 @@ public abstract class DataStore {
      * Returns a list of all values in the {@code variable} column within the default section of the table, where the value of the {@code variable} column contains the search phrase, sorted naturally Descending
      *
      * @param fName a table name, without the {@code phantombot_} prefix
-     * @param search The partial value of the {@code variable} column to match against
-     * @return
+     * @param search the partial value of the {@code variable} column to match against
+     * @return a sorted list of variables
      */
     public String[] GetKeysByLikeKeysOrder(String fName, String search) {
-        return this.GetKeysByLikeKeysOrder(fName, "", search, "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrderInternal(fName, "", "DESC", 0, 0, false, false, search);
     }
 
     /**
@@ -420,11 +590,11 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param search The partial value of the {@code variable} column to match against
-     * @return
+     * @param search the partial value of the {@code variable} column to match against
+     * @return a sorted list of variables
      */
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search) {
-        return this.GetKeysByLikeKeysOrder(fName, section, search, "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrderInternal(fName, section, "DESC", 0, 0, false, false, search);
     }
 
     /**
@@ -432,12 +602,12 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param search The partial value of the {@code variable} column to match against
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @return
+     * @param search the partial value of the {@code variable} column to match against
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @return a sorted list of variables
      */
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order) {
-        return this.GetKeysByLikeKeysOrder(fName, "", search, "DESC", "0", String.valueOf(Integer.MAX_VALUE));
+        return this.GetKeysByOrderInternal(fName, section, order, 0, 0, false, false, search);
     }
 
     /**
@@ -445,14 +615,26 @@ public abstract class DataStore {
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param search The partial value of the {@code variable} column to match against
-     * @param order Sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
-     * @param limit The maximum number of results to return from this query
-     * @param offset The offset to start reading from
-     * @return
+     * @param search the partial value of the {@code variable} column to match against
+     * @param order sort order. Valid values: {@code "ASC"} (Ascending) or {@code "DESC"} (Descending)
+     * @param limit the maximum number of results to return from this query
+     * @param offset the offset to start reading from
+     * @return a sorted list of variables
      */
     public String[] GetKeysByLikeKeysOrder(String fName, String section, String search, String order, String limit, String offset) {
-        return new String[]{};
+        int ilimit;
+        int ioffset;
+        try {
+            ilimit = Integer.parseInt(limit);
+        } catch (NumberFormatException ex) {
+            ilimit = 0;
+        }
+        try {
+            ioffset = Integer.parseInt(offset);
+        } catch (NumberFormatException ex) {
+            ioffset = 0;
+        }
+        return this.GetKeysByOrderInternal(fName, section, order, ilimit, ioffset, false, false, search);
     }
 
     /**
@@ -468,17 +650,14 @@ public abstract class DataStore {
 
         if (otbl.isPresent()) {
             Table<?> tbl = otbl.get();
-            String r;
             if (section == null) {
-                r = dsl().selectFrom(tbl)
+                return dsl().select(field("value", tbl)).from(tbl)
                 .where(field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
             } else {
-                r = dsl().selectFrom(tbl)
+                return dsl().select(field("value", tbl)).from(tbl)
                 .where(field("section", tbl).eq(section),
                 field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
             }
-
-            return r;
         }
 
         return null;
@@ -1085,7 +1264,7 @@ public abstract class DataStore {
      * Returns a list of values in the {@code variable} column within the default section of the table, where the value of the {@code value} column contains the search phrase
      *
      * @param fName a table name, without the {@code phantombot_} prefix
-     * @param search The partial value of the {@code value} column to match against
+     * @param search the partial value of the {@code value} column to match against
      * @return
      */
     public String[] searchByValue(String fName, String search) {
@@ -1096,7 +1275,7 @@ public abstract class DataStore {
      * Returns a list of values in the {@code variable} column within the default section of the table, where the value of the {@code variable} column contains the search phrase
      *
      * @param fName a table name, without the {@code phantombot_} prefix
-     * @param search The partial value of the {@code variable} column to match against
+     * @param search the partial value of the {@code variable} column to match against
      * @return
      */
     public String[] searchByKey(String fName, String search) {
