@@ -429,6 +429,7 @@
                             $.getPointsString(actionArg2), $.viewer.getByLogin(actionArg1).name(), getPointsString(getUserPoints(actionArg1))));
                 }
 
+                $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.usage.invalid', '!' + command));
                 return;
             }
 
@@ -705,8 +706,6 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.active.bonus.set', getPointsString(activeBonus)));
                 return;
             }
-
-            $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.usage.invalid', '!' + command));
         }
 
 
