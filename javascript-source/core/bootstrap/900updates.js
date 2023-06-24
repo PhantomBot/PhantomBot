@@ -743,6 +743,7 @@
             $.inidb.set('group', key, $.javaString('7'));
         }
     });
+
     addUpdate('3.8.4.0-2', 'installedv3.8.4.0-2', function() { // Ensure nightly bots which already have 3.8.4.0 updates installed can handle the permissions update correctly
         if ($.inidb.FileExists('panelUsers')) {
             let panelUsers = $.inidb.GetKeyList('panelUsers', '');
@@ -754,6 +755,7 @@
             }
         }
     });
+
     addUpdate('3.8.4.0-3', 'installedv3.8.4.0-3', function() { // Ensure nightly bots which already have 3.8.4.0-2 get the change
         let commands = $.inidb.GetKeyList('cooldown', '');
         for (let i in commands) {

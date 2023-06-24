@@ -1085,9 +1085,9 @@ public class DataStore {
     public void AddFile(String fName, boolean async) {
         Query q = dsl().createTableIfNotExists("phantombot_" + fName)
         .column("section", SQLDataType.VARCHAR(255).nullability(Nullability.NULL))
-        .column("varible", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
+        .column("variable", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
         .column("value", Datastore2.instance().longTextDataType())
-        .unique("section", "varible");
+        .unique("section", "variable");
 
         if (async) {
             q.executeAsync();
