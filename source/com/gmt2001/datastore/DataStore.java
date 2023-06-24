@@ -42,6 +42,9 @@ import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.datastore2.Datastore2;
 
+import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
+
 /**
  * Provides access to the database in a key-value store style
  *
@@ -50,6 +53,14 @@ import com.gmt2001.datastore2.Datastore2;
  */
 public class DataStore {
     private static final DataStore INSTANCE = new DataStore(null);
+    /**
+     * Mono that caches the table list
+     */
+    private Mono<List<Table<?>>> tableMono = null;
+    /**
+     * Sink that invalidates the cache of {@link #tableMono}
+     */
+    private Sinks.One<Void> tableInvalidateSink = null;
 
     /**
      * Provides an instance of {@link DataStore}
@@ -87,6 +98,18 @@ public class DataStore {
     }
 
     /**
+     * Instantiates {@link #tableMono}
+     */
+    private synchronized void tableMono() {
+        if (this.tableMono == null) {
+            this.tableMono = Mono.<List<Table<?>>>create(emitter -> emitter.success(dsl().meta().getTables())).cacheInvalidateWhen(c -> {
+                this.tableInvalidateSink = Sinks.one();
+                return this.tableInvalidateSink.asMono();
+            });
+        }
+    }
+
+    /**
      * Attempts to find the named table case-insensitively
      * <p>
      * The {@code phantombot_} prefix is automatically prefixed to the table name
@@ -95,7 +118,10 @@ public class DataStore {
      * @return an {@link Optional} which contains the matching {@link Table}, if found
      */
     public Optional<Table<?>> findTable(String fName) {
-        return dsl().meta().getTables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
+        if (this.tableMono == null) {
+            this.tableMono();
+        }
+        return this.tableMono.block().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
     }
 
     /**
@@ -1068,6 +1094,10 @@ public class DataStore {
         } else {
             q.execute();
         }
+
+        if (this.tableInvalidateSink != null) {
+            this.tableInvalidateSink.tryEmitEmpty();
+        }
     }
 
     /**
@@ -1080,6 +1110,10 @@ public class DataStore {
 
         if (otbl.isPresent()) {
             dsl().dropTable(otbl.get()).executeAsync();
+        }
+
+        if (this.tableInvalidateSink != null) {
+            this.tableInvalidateSink.tryEmitEmpty();
         }
     }
 
@@ -1095,6 +1129,10 @@ public class DataStore {
          if (otbl.isPresent()) {
             dsl().alterTable(otbl.get()).renameTo("phantombot_" + fNameDest).executeAsync();
          }
+
+        if (this.tableInvalidateSink != null) {
+            this.tableInvalidateSink.tryEmitEmpty();
+        }
     }
 
     /**
