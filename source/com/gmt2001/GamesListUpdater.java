@@ -193,6 +193,8 @@ public final class GamesListUpdater {
                 myVersion = nextVersion;
             }
 
+            data.sort(null);
+
             try {
                 if (force) {
                     com.gmt2001.Console.out.println("Writing gamesList.txt version " + myVersion + "...");
