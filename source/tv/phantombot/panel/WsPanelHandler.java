@@ -565,14 +565,20 @@ public class WsPanelHandler implements WsFrameHandler {
             }
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("games")) {
-            jsonObject.key("results").array();
+            jsonObject.key("results").object().key("results").array();
             try {
-                String data = Files.readString(Paths.get("./web/panel/js/utils/gamesList.txt"));
-                String search = jso.getJSONObject("params").getString("search").toLowerCase();
+                List<String> data = Files.readAllLines(Paths.get("./web/panel/js/utils/gamesList.txt"));
+                boolean hasSearch = jso.getJSONObject("params").has("search") && jso.getJSONObject("params").getString("search").length() > 0;
+                String search = hasSearch ? jso.getJSONObject("params").getString("search").toLowerCase() : "";
 
-                for (String g : data.split("\n")) {
-                    if (g.toLowerCase().startsWith(search)) {
-                        jsonObject.value(g.replace("\r", ""));
+                int i = 0;
+                for (String g : data) {
+                    if (!hasSearch || g.toLowerCase().startsWith(search)) {
+                        jsonObject.object().key("id").value(g).key("text").value(g).endObject();
+                        i++;
+                    }
+                    if (i >= 30) {
+                        break;
                     }
                 }
             } catch (IOException ex) {
@@ -583,7 +589,7 @@ public class WsPanelHandler implements WsFrameHandler {
                         .endObject().endArray().endObject();
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-            jsonObject.endArray();
+            jsonObject.endArray().key("pagination").object().key("more").value(false).endObject().endObject();
         } else if (query.equalsIgnoreCase("sha256")) {
             jsonObject.key("results").array().object();
             jsonObject.key("sha256").value(Digest.sha256(jso.getJSONObject("params").getString("message")));
@@ -904,7 +910,7 @@ public class WsPanelHandler implements WsFrameHandler {
 
     /**
      * Sends a toastr notification to the panel
-     * 
+     *
      * The notification is sent to all currently authenticated users on the panel if the parameter ctx is  {@code null}
      *
      * @param ctx The {@link ChannelHandlerContext}
