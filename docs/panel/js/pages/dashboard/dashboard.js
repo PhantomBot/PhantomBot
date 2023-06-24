@@ -141,7 +141,14 @@ $(function () {
                 // Set stream title.
                 $('#stream-title').val(e.title);
                 // Set stream game.
-                $('#stream-game').val(e.game);
+                if ($('#stream-game').find("option[value='" + e.game + "']").length) {
+                    $('#stream-game').val(e.game).trigger('change');
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    let newOption = new Option(e.game, e.game, true, true);
+                    // Append it to the select
+                    $('#stream-game').append(newOption).trigger('change');
+                }
                 // Set uptime.
                 if (e.isLive) {
                     $('#dashboard-uptime').html(e.uptime);
@@ -258,47 +265,42 @@ $(function () {
 
 // Function that handlers the loading of events.
 $(function () {
-    // handle auto complete.
-    var gameSearch = '';
-    var games = [];
-    $('#stream-game').easyAutocomplete({
-        'url': function (game) {
-            gameSearch = game;
-            return window.location;
-        },
-        'ajaxSettings': {
-            'dataType': 'text',
-            'dataFilter': async() => {
-                var isDone = false;
-                socket.doRemote('games', 'games', {
-                    'search': gameSearch
-                }, function (e) {
-                    if (e.length > 0 && !e[0].errors) {
-                        games = e;
-                    } else {
-                        games = [];
-                    }
-                    isDone = true;
-                });
+    let games = {};
+    let isDoneGames = false;
+    function getGames(params) {
+        isDoneGames = false;
+        socket.doRemote('games', 'games', {
+            'search': params.data.q
+        }, function (e) {
+            if (e.results && e.results.length > 0 && !e.results[0].errors) {
+                games = e;
+            } else {
+                games = false;
+            }
+            isDoneGames = true;
+        });
+    }
 
-                var checkIfGamesDoneAsync = async () => {
-                    return isDone;
-                };
+    async function checkIfGamesDoneAsync() {
+        return isDoneGames;
+    }
 
-                await helpers.promisePoll(() => checkIfGamesDoneAsync(), {pollIntervalMs: 250});
+    $('#stream-game').select2({
+        ajax: {
+            transport: async function(params, success, failure) {
+                getGames(params);
 
-                return games;
+                await helpers.promisePoll(() => checkIfGamesDoneAsync(), {pollIntervalMs: 100});
+
+                if (games === false) {
+                    failure('500');
+                } else {
+                    success(games);
+                }
             }
         },
-        'listLocation': function (data) {
-            return games;
-        },
-        'requestDelay': 300,
-        'list': {
-            'match': {
-                'enabled': true
-            }
-        }
+        tags: true,
+        width: '100%'
     });
 
     // Input check for strings.
