@@ -389,7 +389,7 @@
 
             // Replace everything that is not \w
             action = $.user.sanitize(action);
-            if ($.user.isKnown(action)) {
+            if ($.user.isKnown(action) && (actionArg1 === null || actionArg1 === undefined || actionArg1 === '')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.user.success', $.viewer.getByLogin(action).name(), getPointsString(getUserPoints(action))));
                 return;
             }
