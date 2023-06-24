@@ -124,7 +124,7 @@
                 return;
             }
 
-            if(!$.commandExists(com)) {
+            if (!$.commandExists(com)) {
                 $.say($.lang.get('corecommands.setcommandrestriction.error', 'Command', action));
                 return;
             }
