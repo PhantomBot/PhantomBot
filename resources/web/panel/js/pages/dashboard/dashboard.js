@@ -141,7 +141,14 @@ $(function () {
                 // Set stream title.
                 $('#stream-title').val(e.title);
                 // Set stream game.
-                $('#stream-game').val(e.game);
+                if ($('#stream-game').find("option[value='" + e.game + "']").length) {
+                    $('#stream-game').val(e.game).trigger('change');
+                } else {
+                    // Create a DOM Option and pre-select by default
+                    let newOption = new Option(e.game, e.game, true, true);
+                    // Append it to the select
+                    $('#stream-game').append(newOption).trigger('change');
+                }
                 // Set uptime.
                 if (e.isLive) {
                     $('#dashboard-uptime').html(e.uptime);
