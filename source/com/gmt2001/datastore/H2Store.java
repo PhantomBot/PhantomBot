@@ -91,7 +91,7 @@ public final class H2Store extends DataStore {
             ex.printStackTrace(System.err);
         }
 
-        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
+        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
         poolMgr.setMaxConnections(MAX_CONNECTIONS);
 
         try {

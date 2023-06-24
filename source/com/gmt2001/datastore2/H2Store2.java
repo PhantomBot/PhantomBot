@@ -74,7 +74,7 @@ public class H2Store2 extends Datastore2 {
         }
 
         JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048");
+        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
         this.init(dataSource, SQLDialect.H2);
     }
 
