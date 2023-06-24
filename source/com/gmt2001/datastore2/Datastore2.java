@@ -140,6 +140,7 @@ public abstract class Datastore2 {
         // Split into package name and class name
         // Use default package name if missing
         if (!dataStoreType.contains(".")) {
+            com.gmt2001.Console.debug.println("Using default package name");
             packageName = "com.gmt2001.datastore2.";
             className = dataStoreType;
             dataStoreType = packageName + className;
@@ -152,6 +153,7 @@ public abstract class Datastore2 {
         ClassLoader loader = null;
 
         if (packageName.startsWith("com.gmt2001.datastore2.")) {
+            com.gmt2001.Console.debug.println("Checking for a built-in driver");
             // Resolve builtin classes case-insensitively
             dataStoreType = DataStore.resolveClassname(className);
             final String fdataStoreType = dataStoreType;
@@ -161,32 +163,36 @@ public abstract class Datastore2 {
             }).map(c -> c.getName()).findFirst();
 
             if (tempdataStoreType.isPresent()) {
+                com.gmt2001.Console.debug.println("Found a built-in driver");
                 dataStoreType = tempdataStoreType.get();
                 loader = Datastore2.class.getClassLoader();
             }
         }
 
         if (loader == null) {
+            com.gmt2001.Console.debug.println("Preping to load a custom driver");
             // Set loader to retrieve custom classes from jar files
             try {
                 loader = new URLClassLoader(new URL[] { new URL("file://./datastores/" + className + ".jar") },
                         Datastore2.class.getClassLoader());
             } catch (MalformedURLException ex) {
+                com.gmt2001.Console.debug.println("Failed to prep a URLClassLoader");
                 com.gmt2001.Console.err.logStackTrace(ex);
                 loader = Datastore2.class.getClassLoader();
             }
         }
 
-        com.gmt2001.Console.debug.println("Attempting to load Datastore2 type " + dataStoreType);
+        com.gmt2001.Console.debug.println("Attempting to load Datastore2 driver " + dataStoreType);
 
         try {
             // Attempt to load into memory
             t = Class.forName(dataStoreType, true, loader);
             // Attempt to instantiate
             INSTANCE = (Datastore2)t.getDeclaredConstructor().newInstance();
+            com.gmt2001.Console.debug.println("Datastore2 driver initialized");
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException | ClassNotFoundException ex) {
-                com.gmt2001.Console.err.println("Unable to load the Datastore2 type " + dataStoreType);
+                com.gmt2001.Console.err.println("Unable to load the Datastore2 driver " + dataStoreType);
                 com.gmt2001.Console.err.printStackTrace(ex, Collections.singletonMap("dataStoreType", dataStoreType));
         }
     }
