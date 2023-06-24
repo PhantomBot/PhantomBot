@@ -257,7 +257,7 @@
         _commandsLock.lock();
         try {
             if (commands[command] === undefined) {
-                return "Undefined";
+                return 'Undefined';
             }
 
             return commands[command].script;
@@ -284,7 +284,7 @@
 
     /**
      * @function commandRestrictionMet
-     * @param {String} command 
+     * @param {String} command
      * @param {String} subCommand
      * @return {Boolean} true if the command and or subcommand can be run; false otherwise
      */
@@ -294,7 +294,7 @@
         if (!commandExists(command)) {
             return false;
         }
-        
+
         let restriction = null;
 
         _commandsLock.lock();
@@ -316,7 +316,7 @@
             } finally {
                 _commandsLock.unlock();
             }
-        } 
+        }
 
         if (restriction === undefined || restriction === null) {
             return false; // Restriction is always set to at least RESTRICTION.NONE
@@ -336,9 +336,9 @@
 
     /**
      * @function setCommandRestriction
-     * @param {String} command 
-     * @param {String} subCommand 
-     * @param {RESTRICTION} restriction 
+     * @param {String} command
+     * @param {String} subCommand
+     * @param {RESTRICTION} restriction
      */
     function setCommandRestriction(command, subCommand, restriction) {
         command = $.jsString(command).toLowerCase();
@@ -378,20 +378,23 @@
 
     /**
      * @function getCommandRestrictionByName
-     * @param {String} restrictionName 
+     * @param {String} restrictionName
      * @returns {RESTRICTION} if a restriction with the provided name exists; null otherwise
      */
     function getCommandRestrictionByName(restrictionName) {
-        restrictionName = $.jsString(restrictionName).toLowerCase();
-        if ($.equalsIgnoreCase(restrictionName, 'none')) {
-            return RESTRICTION.NONE;
+        if (restrictionName !== undefined && restrictionName !== null) {
+            restrictionName = $.jsString(restrictionName).toLowerCase();
+            if ($.equalsIgnoreCase(restrictionName, 'none')) {
+                return RESTRICTION.NONE;
+            }
+            if ($.equalsIgnoreCase(restrictionName, 'online')) {
+                return RESTRICTION.ONLINE;
+            }
+            if ($.equalsIgnoreCase(restrictionName, 'offline')) {
+                return RESTRICTION.OFFLINE;
+            }
         }
-        if ($.equalsIgnoreCase(restrictionName, 'online')) {
-            return RESTRICTION.ONLINE;
-        }
-        if ($.equalsIgnoreCase(restrictionName, 'offline')) {
-            return RESTRICTION.OFFLINE;
-        }
+
         return null;
     }
 
