@@ -29,7 +29,7 @@ public final class PanelUserHandler {
     private static final String[] PANEL_SECTIONS = {"dashboard", "commands", "moderation", "permissions", "timers", "alerts", "loyalty", "ranking",
                                                     "quotes", "keywords & emotes", "games", "giveaways", "discord", "history", "extra",
                                                     "audio", "stream overlay", "settings", "youtube player"};
-    
+
     /**
      * Database tables that are generally called on the panel and are allowed with {@link Permission.READ_ONLY read only permission}
      */
@@ -310,7 +310,7 @@ public final class PanelUserHandler {
      */
     public static PanelUser checkAuthTokenAndGetUser(String authToken) {
         PanelUser user = PanelUser.LookupByAuthToken(authToken);
-        if (user.isEnabled()) {
+        if (user != null && user.isEnabled()) {
             return user;
         }
         return null;
@@ -612,7 +612,7 @@ public final class PanelUserHandler {
         }
         jsonObject.endArray();
     }
-    
+
     /**
      * Gets a permissions map which includes full permission to all available {@link PANEL_SECTIONS panel sections}
      */

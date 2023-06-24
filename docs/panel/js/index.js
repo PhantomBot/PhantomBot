@@ -661,7 +661,7 @@ $(function () {
      * @param {Object}   params
      * @param {Function} callback
      */
-    socket.doRemote = function (query_id, query, params, callback) {
+    socket.doRemote = function (query_id, query, params, callback, isArray) {
         generateCallBack(query_id, [], false, true, callback);
 
         sendToSocket({
