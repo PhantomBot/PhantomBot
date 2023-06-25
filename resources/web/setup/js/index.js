@@ -18,7 +18,7 @@ $(function(){
 
     // Sanitizes a string.
     function sanitizeStr(str) {
-        return str.replace(/(\s|\/|\\)/, '');
+        return str.replace(/(\s|\/|\\)/g, '');
     }
 
 	// Creates user input setting.
