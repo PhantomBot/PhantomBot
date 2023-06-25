@@ -16,9 +16,69 @@ $(function(){
 	// Enable toastr close button.
 	toastr.options.closeButton = true;
 
+    // Sanitizes a string.
+    function sanitizeStr(str) {
+        return str.replace(/(\s|\/|\\)/g, '');
+    }
+
 	// Creates user input setting.
 	function createInteractableInput(json) {
+        let userInput;
 
+        switch (json.type) {
+            case 'Boolean':
+                userInput = $('<select/>', {
+                    'class': 'form-control',
+                    'style': 'cursor: pointer',
+                    'id': json.botproperty
+                });
+
+                ['true', 'false'].map(val => {
+                    userInput.append($('<option/>', {
+                        'value': val,
+                        'html': val
+                    }));
+                });
+                break;
+            case 'Int':
+            case 'Long':
+                userInput = $('<input/>', {
+                    'class': 'form-control',
+                    'type': 'number',
+                    'step': '1',
+                    'id': json.botproperty,
+                    'placeholder': 'Please enter a value.'
+                });
+                break;
+            case 'Double':
+                userInput = $('<input/>', {
+                    'class': 'form-control',
+                    'type': 'number',
+                    'step': '0.1',
+                    'id': json.botproperty,
+                    'placeholder': 'Please enter a value.'
+                });
+                break;
+            default:
+                userInput = $('<input/>', {
+                    'class': 'form-control',
+                    'type': 'text',
+                    'id': json.botproperty,
+                    'placeholder': 'Please enter a value.'
+                });
+        }
+
+        $('#' + sanitizeStr(json.category).toLowerCase() + '_accodion_html').append($('<form/>',{
+
+        }).append($('<div/>', {
+            'class': 'form-group'
+        }).append($('<label/>', {
+            'html': json.botproperty
+        })).append(userInput)
+        .append($('<small/>', {
+            'class': 'form-text text-muted',
+            'html': json.definition.substring(0, 1).toUpperCase() + json.definition.substring(1)
+        }))));
 	}
 
 	// Creates the settings list.
@@ -52,31 +112,31 @@ $(function(){
         for (let i in json) {
         	if (json[i].category !== currentCategory) {
         		$('#accodion').append($('<div/>', {
-            		'class': 'panel panel-default'
+            		'class': 'panel panel-default',
         		}).append($('<div/>', {
-        		    'class': 'panel-heading'
+        		    'class': 'panel-heading',
         		}).append($('<a/>', {
         		    'data-toggle': 'collapse',
         		    'data-parent': '#accordion',
         		    'style': 'color: #ccc !important',
         		    'text': '',
-        		    'href': '#' + json[i].category + '_accodion' 
+        		    'href': '#' + sanitizeStr(json[i].category).toLowerCase() + '_accodion' 
         		}).append($('<h4/>', {
         		    'class': 'panel-title',
         		    'html': json[i].category
         		})))).append($('<div/>', {
-        		    'class': 'panel-collapse collapse' + (json[i].category === 'Admin' ? ' in' : ''),
-        		    'id': json[i].category + '_accodion'
+        		    'class': 'panel-collapse collapse' + (json[i].category.toLowerCase() === 'admin' ? ' in' : ''),
+        		    'id': sanitizeStr(json[i].category).toLowerCase() + '_accodion'
         		}).append($('<div/>', {
         		    'class': 'panel-body',
-        		    'id': json[i].category + '_accodion_html'
+        		    'id': sanitizeStr(json[i].category).toLowerCase() + '_accodion_html'
         		    //'html': ''
         		}))));
 
         		currentCategory = json[i].category
         	}
         	// Creates the user input and adds it to the currect section in the accordion.
-        	createInteractableInput(json);
+        	createInteractableInput(json[i]);
         }
 
         toastr.success('Loaded all settings!');
