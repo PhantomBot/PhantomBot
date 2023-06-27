@@ -59,7 +59,7 @@
         this.userSec = userSec;
         this.userTimes = [];
         this.globalTime = 0;
-        this.modsSkip = modsSkip,
+        this.modsSkip = modsSkip;
         this.clearOnOnline = clearOnOnline;
     }
 
