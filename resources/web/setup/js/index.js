@@ -141,7 +141,7 @@ $(function(){
                     'type': 'number',
                     'value': defaultValue,
                     'step': '0.1',
-                    'id': json.botpropert.toLowerCase()y,
+                    'id': json.botpropert.toLowerCase(),
                     'placeholder': 'Please enter a value.'
                 });
                 break;
