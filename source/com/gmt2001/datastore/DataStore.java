@@ -684,24 +684,36 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
-     * @return the value; {@code null} if not found
+     * @return an {@link Optional} that may contain the value
      */
-    public String GetString(String fName, String section, String key) {
+    public Optional<String> OptString(String fName, String section, String key) {
         Optional<Table<?>> otbl = findTable(fName);
 
         if (otbl.isPresent()) {
             Table<?> tbl = otbl.get();
             if (section == null) {
-                return dsl().select(field("value", tbl)).from(tbl)
-                .where(field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
+                return Optional.ofNullable(dsl().select(field("value", tbl)).from(tbl)
+                .where(field("variable", tbl).eq(key)).fetchAny(field("value", tbl)));
             } else {
-                return dsl().select(field("value", tbl)).from(tbl)
+                return Optional.ofNullable(dsl().select(field("value", tbl)).from(tbl)
                 .where(field("section", tbl).eq(section),
-                field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
+                field("variable", tbl).eq(key)).fetchAny(field("value", tbl)));
             }
         }
 
-        return null;
+        return Optional.empty();
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a string
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @return the value; {@code null} if not found
+     */
+    public String GetString(String fName, String section, String key) {
+        return this.OptString(fName, section, key).orElse(null);
     }
 
     /**
@@ -872,16 +884,32 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
+     * @return an {@link Optional} that may contain the value as a long
+     */
+    public Optional<Long> OptLong(String fName, String section, String key) {
+        Optional<String> sval = OptString(fName, section, key);
+
+        if (!sval.isPresent()) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Long.valueOf(sval.get()));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a long
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return the value as a long; {@code 0L} if the conversion fails
      */
     public long GetLong(String fName, String section, String key) {
-        String sval = GetString(fName, section, key);
-
-        try {
-            return Long.parseLong(sval);
-        } catch (NumberFormatException ex) {
-            return 0L;
-        }
+        return this.OptLong(fName, section, key).orElse(0L);
     }
 
     /**
@@ -904,16 +932,32 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
+     * @return an {@link Optional} that may contain the value as an integer
+     */
+    public Optional<Integer> OptInteger(String fName, String section, String key) {
+        Optional<String> sval = OptString(fName, section, key);
+
+        if (!sval.isPresent()) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Integer.valueOf(sval.get()));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as an integer
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return the value as an integer; {@code 0} if the conversion fails
      */
     public int GetInteger(String fName, String section, String key) {
-        String sval = GetString(fName, section, key);
-
-        try {
-            return Integer.parseInt(sval);
-        } catch (NumberFormatException ex) {
-            return 0;
-        }
+        return this.OptInteger(fName, section, key).orElse(0);
     }
 
     /**
@@ -936,16 +980,32 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
+     * @return an {@link Optional} that may contain the value as a float
+     */
+    public Optional<Float> OptFloat(String fName, String section, String key) {
+        Optional<String> sval = OptString(fName, section, key);
+
+        if (!sval.isPresent()) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Float.valueOf(sval.get()));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a float
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return the value as a float; {@code 0.0f} if the conversion fails
      */
     public float GetFloat(String fName, String section, String key) {
-        String sval = GetString(fName, section, key);
-
-        try {
-            return Float.parseFloat(sval);
-        } catch (NumberFormatException ex) {
-            return 0.0f;
-        }
+        return this.OptFloat(fName, section, key).orElse(0.0f);
     }
 
     /**
@@ -968,16 +1028,32 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
+     * @return an {@link Optional} that may contain the value as a double
+     */
+    public Optional<Double> OptDouble(String fName, String section, String key) {
+        Optional<String> sval = OptString(fName, section, key);
+
+        if (!sval.isPresent()) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Double.valueOf(sval.get()));
+        } catch (NumberFormatException ex) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a double
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return the value as a double; {@code 0.0} if the conversion fails
      */
     public double GetDouble(String fName, String section, String key) {
-        String sval = GetString(fName, section, key);
-
-        try {
-            return Double.parseDouble(sval);
-        } catch (NumberFormatException ex) {
-            return 0.0;
-        }
+        return this.OptDouble(fName, section, key).orElse(0.0);
     }
 
     /**
@@ -1000,12 +1076,28 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
+     * @return an {@link Optional} that may contain the value as a boolean; {@code true} if the value as a string is {@code "1"}, {@code "true"}, or {@code "yes"}; {@code false} otherwise
+     */
+    public Optional<Boolean> OptBoolean(String fName, String section, String key) {
+        Optional<String> sval = OptString(fName, section, key);
+
+        if (!sval.isPresent()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sval.get().equals("1") || sval.get().equalsIgnoreCase("true") || sval.get().equalsIgnoreCase("yes"));
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a boolean
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
      * @return {@code true} if the value as a string is {@code "1"}, {@code "true"}, or {@code "yes"}; {@code false} otherwise
      */
     public boolean GetBoolean(String fName, String section, String key) {
-        String val = GetString(fName, section, key);
-
-        return val != null && (val.equals("1") || val.equalsIgnoreCase("true") || val.equalsIgnoreCase("yes"));
+        return this.OptBoolean(fName, section, key).orElse(false);
     }
 
     /**
