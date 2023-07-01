@@ -42,7 +42,7 @@ $(function(){
             pendingSettings[key] = null;
         }
 
-        $('#save-button').prop('disabled', pendingSettings.length > 0);
+        $('#save-button').prop('disabled', Object.keys(pendingSettings).length > 0);
     }
 
     // Creates the settings list.
@@ -112,7 +112,7 @@ $(function(){
                 userInput = $('<select/>', {
                     'class': 'form-control',
                     'style': 'cursor: pointer',
-                    'id': json.botproperty
+                    'id': json.botproperty.toLowerCase()
                 });
 
                 ['true', 'false'].map(val => {
@@ -131,7 +131,7 @@ $(function(){
                     'type': 'number',
                     'value': defaultValue,
                     'step': '1',
-                    'id': json.botproperty,
+                    'id': json.botproperty.toLowerCase(),
                     'placeholder': 'Please enter a value.'
                 });
                 break;
@@ -141,7 +141,7 @@ $(function(){
                     'type': 'number',
                     'value': defaultValue,
                     'step': '0.1',
-                    'id': json.botproperty,
+                    'id': json.botpropert.toLowerCase()y,
                     'placeholder': 'Please enter a value.'
                 });
                 break;
@@ -150,7 +150,7 @@ $(function(){
                     'class': 'form-control',
                     'type': 'text',
                     'value': defaultValue,
-                    'id': json.botproperty,
+                    'id': json.botproperty.toLowerCase(),
                     'placeholder': 'Please enter a value.'
                 });
         }
@@ -174,15 +174,15 @@ $(function(){
 
         // For select boxes only, set the default value.
         if (defaultValue === 'true' || defaultValue === 'false') {
-            $('#' + json.botproperty + ' option[value=' + defaultValue + ']').prop('selected', true);
+            $('#' + json.botproperty.toLowerCase() + ' option[value=' + defaultValue + ']').prop('selected', true);
         }
     }
 
     // Fills the user interactable inputs with their acctual values.
     function populateInteractableInputs(json) {
         for (let i in json) {
-            $('#' + i).val(json[i] === null ? '' : json[i]);
-            $('#' + i).attr('data-curval', json[i] === null ? '' : json[i]);
+            $('#' + i.toLowerCase()).val(json[i] === null ? '' : json[i]);
+            $('#' + i.toLowerCase()).attr('data-curval', json[i] === null ? '' : json[i]);
         }
     }
 
