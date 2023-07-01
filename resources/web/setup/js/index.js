@@ -32,12 +32,12 @@ $(function(){
     function onValueChangeEvent(event) {
         const key = $(this).prop('id')
         const value = $(this).prop('value');
-        
+
         if (value.length > 0) {
             pendingSettings[key] = value;
         } else {
             if (pendingSettings[key] !== undefined) {
-                delete pendingSettings[key];
+                pendingSettings[key] = null;
             }
         }
     }
@@ -80,7 +80,7 @@ $(function(){
                     'data-toggle': 'collapse',
                     'data-parent': '#accordion',
                     'style': 'color: #ccc !important',
-                    'href': '#' + json[i].category.sanitize().toLowerCase() + '_accodion' 
+                    'href': '#' + json[i].category.sanitize().toLowerCase() + '_accodion'
                 }).append($('<h4/>', {
                     'class': 'panel-title',
                     'html': json[i].category
@@ -175,13 +175,13 @@ $(function(){
         }
     }
 
-    // Fills the user interactable inputs with their acctual values. 
+    // Fills the user interactable inputs with their acctual values.
     function populateInteractableInputs(json) {
         for (let i in json) {
             $('#' + i).val(json[i]);
         }
     }
- 
+
     // Gets the bot settings from our API.
     function getBotSettings() {
         $.ajax({
@@ -250,7 +250,7 @@ $(function(){
                             scrollTop: 0
                         }, 100);
                         $('#save-button').prop('disabled', false);
-                        
+
                         pendingSettings = {};
                     }
                 },
