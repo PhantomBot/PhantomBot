@@ -40,6 +40,8 @@ $(function(){
                 pendingSettings[key] = null;
             }
         }
+
+        $('#save-button').prop('disabled', pendingSettings.length > 0);
     }
 
     // Creates the settings list.
@@ -249,7 +251,6 @@ $(function(){
                         $('html, body').animate({
                             scrollTop: 0
                         }, 100);
-                        $('#save-button').prop('disabled', false);
 
                         pendingSettings = {};
                     }
@@ -333,4 +334,5 @@ $(function(){
             toastr.error('Failed to retrieve current settings: ' + msg + '!');
         }
     });
+    $('#save-button').prop('disabled', true);
 });
