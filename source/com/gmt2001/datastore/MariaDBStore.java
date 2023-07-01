@@ -25,58 +25,46 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
+import org.mariadb.jdbc.MariaDbPoolDataSource;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
-import tv.phantombot.CaselessProperties;
 
 /**
- * @deprecated Use {@link com.gmt2001.datastore2.MySQLStore2} instead
+ *
  * @author gmt2001
  */
-@Deprecated(since = "3.9.0.0", forRemoval = true)
-public final class MySQLStore extends DataStore {
+public final class MariaDBStore extends DataStore {
 
     private static final int MAX_CONNECTIONS = 30;
-    private static MySQLStore instance;
+    private static MariaDBStore instance;
     private final MiniConnectionPoolManager poolMgr;
     private static final String COLLATION = "utf8mb4_general_ci";
     private static final String CHARSET = "utf8mb4";
 
-    public static MySQLStore instance() {
+    public static MariaDBStore instance() {
         return instance("");
     }
 
-    public static synchronized MySQLStore instance(String configStr) {
+    public static synchronized MariaDBStore instance(String configStr) {
         if (instance == null) {
-            instance = new MySQLStore(configStr);
+            instance = new MariaDBStore(configStr);
         }
 
         return instance;
     }
 
-    private MySQLStore(String configStr) {
+    private MariaDBStore(String configStr) {
         super(configStr);
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace(System.err);
         }
 
-        MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
-        dataSource.setURL(configStr);
+        MariaDbPoolDataSource dataSource = new MariaDbPoolDataSource();
         try {
-            //Ensure correct collation and encoding
-            dataSource.setConnectionCollation(COLLATION);
-            dataSource.setCharacterEncoding("UTF-8");
-            /**
-             * @botproperty mysqlallowpublickeyretrieval - Indicates if retrieval of the public key from the MySQL server is allowed for authentication (needed for newer authentication methods like 'caching_sha2_password')
-             * @botpropertytype mysqlallowpublickeyretrieval Boolean
-             * @botpropertycatsort mysqlallowpublickeyretrieval 260 30 Datastore
-             * @botpropertyrestart mysqlallowpublickeyretrieval
-             */
-            dataSource.setAllowPublicKeyRetrieval(CaselessProperties.instance().getPropertyAsBoolean("mysqlallowpublickeyretrieval", false));
+            dataSource.setUrl(configStr);
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         }
