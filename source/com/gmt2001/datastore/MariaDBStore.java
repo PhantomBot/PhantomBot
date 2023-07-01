@@ -57,7 +57,7 @@ public final class MariaDBStore extends DataStore {
         super(configStr);
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             ex.printStackTrace(System.err);
         }
