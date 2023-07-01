@@ -142,6 +142,11 @@
         <ivy:checkdepsupdate/>
     </target>
 
+    <target depends="init-ivy" name="ivy-list-updates-quiet">
+        <ivy:settings file="ivysettings.xml"/>
+        <ivy:checkdepsupdate log="quiet"/>
+    </target>
+
     <target depends="init-ivy" name="ivy-show-tree">
         <ivy:dependencytree/>
     </target>
