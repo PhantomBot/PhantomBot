@@ -32,13 +32,14 @@ $(function(){
     function onValueChangeEvent(event) {
         const key = $(this).prop('id')
         const value = $(this).prop('value');
+        const curvalue = $(this).attr('data-curval') === undefined || $(this).attr('data-curval') === null ? '' : $(this).attr('data-curval');
 
-        if (value.length > 0) {
+        if (value === curvalue) {
+            delete pendingSettings[key];
+        } else if (value.length > 0) {
             pendingSettings[key] = value;
         } else {
-            if (pendingSettings[key] !== undefined) {
-                pendingSettings[key] = null;
-            }
+            pendingSettings[key] = null;
         }
 
         $('#save-button').prop('disabled', pendingSettings.length > 0);
@@ -180,7 +181,8 @@ $(function(){
     // Fills the user interactable inputs with their acctual values.
     function populateInteractableInputs(json) {
         for (let i in json) {
-            $('#' + i).val(json[i]);
+            $('#' + i).val(json[i] === null ? '' : json[i]);
+            $('#' + i).attr('data-curval', json[i] === null ? '' : json[i]);
         }
     }
 
@@ -251,6 +253,10 @@ $(function(){
                         $('html, body').animate({
                             scrollTop: 0
                         }, 100);
+
+                        for (let i in pendingSettings) {
+                            $('#' + i).attr('data-curval', pendingSettings[i] === null ? '' : pendingSettings[i]);
+                        }
 
                         pendingSettings = {};
                     }
