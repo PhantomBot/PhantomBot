@@ -82,14 +82,15 @@
                     <div class="form-group">
                         Remember me:
                         <select class="form-control select2 select2-hidden-accessible" id="remember" aria-hidden="true">
-                            <option selected value="session">Until I Close the Tab</option>
+                            <option selected value="tab">Until I Close the Tab</option>
+                            <option selected value="session">Until I Close the Browser Window</option>
                             <option value="4">4 hours</option>
                             <option value="12">12 hours</option>
                             <option value="24">24 hours</option>
                             <option value="48">2 days</option>
                             <option value="168">7 days</option>
                             <option value="336">14 days</option>
-                            <option value="forever">Until I Click "Sign Out" On The Panel</option>
+                            <option value="forever">Until I Click "Sign Out" On The Panel (Forever)</option>
                         </select>
                     </div>
 
@@ -190,7 +191,7 @@
                         window.localStorage.setItem('botport', port);
                         window.localStorage.setItem('remember', remember);
                         window.localStorage.setItem('isStable', message["build-type"] !== undefined && message["build-type"] === "stable");
-                        if (remember !== 'session') {
+                        if (remember !== 'tab' && remember !== 'session') {
                             window.localStorage.setItem('webauth', webauth);
                             if (remember !== 'forever') {
                                 window.localStorage.setItem('expires', Date.now() + (parseInt(remember) * 3600000));
@@ -201,9 +202,13 @@
                             window.localStorage.removeItem('expires');
                             window.localStorage.removeItem('b64');
                         }
+                        let age = '; Max-Age=300';
+                        if (remember === 'session') {
+                            age = '';
+                        }
                         history.pushState({}, "PhantomBot | Log in | Success");
                         window.sessionStorage.setItem('webauth', webauth);
-                        window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=300');
+                        window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
                         document.cookie = window.sessionStorage.getItem('cookie');
                         doKickback(window.localStorage.getItem('isStable'));
                     }
@@ -379,7 +384,8 @@
                 function checkAlreadyLoggedIn() {
                     if (window.localStorage.getItem('webauth') && window.localStorage.getItem('bothostname') && window.localStorage.getItem('botport')) {
                         if (window.localStorage.getItem('remember') !== 'forever') {
-                            if (window.localStorage.getItem('remember') !== 'session' && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()
+                            if (window.localStorage.getItem('remember') !== 'tab' && window.localStorage.getItem('remember') !== 'session'
+                              && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()
                               && (window.sessionStorage.getItem('/panel/login#remember') === null || parseInt(window.sessionStorage.getItem('/panel/login#remember')) < Date.now())) {
                                 window.sessionStorage.setItem('/panel/login#remember', (Date.now() + 10000));
                                 window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
