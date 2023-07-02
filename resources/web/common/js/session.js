@@ -43,7 +43,8 @@
      * If session is expired, clears localStorage, but allows sessionStorage to continue so the user session is uninterrupted
      */
     window.checkExpireCookie = function() {
-        if (window.localStorage.getItem('remember') !== 'session' && window.localStorage.getItem('remember') !== 'forever' && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') <= Date.now()) {
+        if (window.localStorage.getItem('remember') !== 'tab' && window.localStorage.getItem('remember') !== 'session'
+          && window.localStorage.getItem('remember') !== 'forever' && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') <= Date.now()) {
             window.localStorage.removeItem('webauth');
             window.localStorage.removeItem('remember');
             window.localStorage.removeItem('isStable');
