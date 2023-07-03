@@ -77,17 +77,17 @@ $(function () {
                     // Add the toggle the cooldown message.
                     .append(helpers.getDropdownGroup('cooldown-message', 'Enable Adventure Off Cooldown Message', (e.coolDownAnnounce === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said when the adventure is no longer on cooldown.'))
-                    // Add the the box for the join time.
+                    // Add the box for the join time.
                     .append(helpers.getInputGroup('join-time', 'number', 'Adventure Join Time (Seconds)', '', e.joinTime, 'How long in seconds users have to join the adventure.'))
-                    // Add the the box for the cooldown.
+                    // Add the box for the cooldown.
                     .append(helpers.getInputGroup('cooldown-time', 'number', 'Adventure Cooldown (Seconds)', '', e.coolDown,
                             'How long users have to wait in seconds before starting a new adventure after one is over.'))
-                    // Add the the box for gain.
+                    // Add the box for gain.
                     .append(helpers.getInputGroup('gain', 'number', 'Adventure Gain Percent', '', e.gainPercent,
                             'How many points a user will get based on the amount they joined with. The join amount is always given back.'))
-                    // Add the the box for min bet.
+                    // Add the box for min bet.
                     .append(helpers.getInputGroup('min-bet', 'number', 'Adventure Minimum Bet', '', e.minBet, 'The minimum amount of points a user can join an adventure with.'))
-                    // Add the the box for max bet.
+                    // Add the box for max bet.
                     .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.'))
                     // Add the box for set up the permission who can start the adventure.
                     .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ?? 7), helpers.getPermGroupNames())),
