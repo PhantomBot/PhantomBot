@@ -68,7 +68,7 @@ jobs:
         echo ::group::update docs/panel-stable/
         rm -rf docs/panel-stable/
         mkdir -p docs/panel-stable/
-        cp -rv resources/web/panel/ docs/panel-stable/
+        cp -rv resources/web/panel/. docs/panel-stable/
         echo ::endgroup::
         echo ::group::update docs/common/
         rm -rf docs/common/
@@ -101,7 +101,7 @@ jobs:
         echo ::group::update docs/guides/content-stable/
         rm -rf docs/guides/content-stable/
         mkdir -p docs/guides/content-stable/
-        cp -rv docs/guides/content/ docs/guides/content-stable/
+        cp -rv docs/guides/content/. docs/guides/content-stable/
         echo ::endgroup::
     - name: Make Path File
       run: |
@@ -128,7 +128,7 @@ jobs:
         echo ::group::update docs/javadoc-stable/
         rm -rf docs/javadoc-stable/
         mkdir -p docs/javadoc-stable/
-        cp -rv docs/javadoc/ docs/javadoc-stable/
+        cp -rv docs/javadoc/. docs/javadoc-stable/
         echo ::endgroup::
     - name: Make Path File
       run: |
