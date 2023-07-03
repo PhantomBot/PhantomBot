@@ -42,7 +42,7 @@ $(function(){
             pendingSettings[key] = null;
         }
 
-        $('#save-button').prop('disabled', Object.keys(pendingSettings).length > 0);
+        $('#save-button').prop('disabled', Object.keys(pendingSettings).length == 0);
     }
 
     // Creates the settings list.
@@ -157,6 +157,7 @@ $(function(){
 
         // Handles the event for when a value is changed.
         userInput.on('change', onValueChangeEvent);
+        userInput.on('keyup', onValueChangeEvent);
 
         // Append the form on the page.
         $('#' + json.category.sanitize().toLowerCase() + '_accodion_html')
