@@ -42,7 +42,7 @@ $(function(){
             pendingSettings[key] = null;
         }
 
-        $('#save-button').prop('disabled', Object.keys(pendingSettings).length > 0);
+        $('#save-button').prop('disabled', Object.keys(pendingSettings).length == 0);
     }
 
     // Creates the settings list.
