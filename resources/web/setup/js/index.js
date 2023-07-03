@@ -157,6 +157,7 @@ $(function(){
 
         // Handles the event for when a value is changed.
         userInput.on('change', onValueChangeEvent);
+        userInput.on('keyup', onValueChangeEvent);
 
         // Append the form on the page.
         $('#' + json.category.sanitize().toLowerCase() + '_accodion_html')
