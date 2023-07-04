@@ -475,11 +475,9 @@
                 }
             }
 
+            connectedPlayerClient.pushPlayList();
             if (this.loadPlaylistKeys() > 0) {
-                connectedPlayerClient.pushPlayList();
                 this.nextVideo();
-            } else {
-                connectedPlayerClient.pushPlayList();
             }
 
             return this.getplaylistLength();
@@ -492,16 +490,23 @@
          */
         this.deleteVideoByID = function(videoId) {
             var keyList = $.inidb.GetKeyList(playListDbId, ''),
-                i;
+                i,
+                isCurrent = false;
 
             for (i = 0; i < keyList.length; i++) {
                 if ($.inidb.get(playListDbId, keyList[i]).equals(videoId)) {
+                    if ($.inidb.get(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
+                        isCurrent = true;
+                    }
                     $.inidb.del(playListDbId, keyList[i]);
                     break;
                 }
             }
             this.loadPlaylistKeys();
             connectedPlayerClient.pushPlayList();
+            if (isCurrent && this.loadPlaylistKeys() > 0) {
+                this.nextVideo();
+            }
         };
 
         /**
@@ -1721,14 +1726,18 @@
             }
 
             /**
-             * @commandpath playlist delete - Delete the current song from the current playlist
+             * @commandpath playlist delete (videoId) - Delete the current song from the current playlist, or the specified video by YouTube Video ID
              */
             if (action.equalsIgnoreCase('delete')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
                 }
-                currentPlaylist.deleteCurrentVideo();
+                if (actionArgs.length > 0) {
+                    currentPlaylist.deleteVideoByID(actionArgs[0]);
+                } else {
+                    currentPlaylist.deleteCurrentVideo();
+                }
                 return;
             }
 
