@@ -1,0 +1,581 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<title>Datastore2 (PhantomBot JavaDoc)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="description" content="declaration: package: com.gmt2001.datastore2, class: Datastore2">
+<meta name="generator" content="javadoc/ClassWriterImpl">
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
+<script type="text/javascript" src="../../../script.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-ui.min.js"></script>
+</head>
+<body class="class-declaration-page">
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../";
+loadScripts(document, 'script');</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<div class="flex-box">
+<header role="banner" class="flex-header">
+<nav role="navigation">
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="top-nav" id="navbar-top">
+<div class="skip-nav"><a href="#skip-navbar-top" title="Skip navigation links">Skip navigation links</a></div>
+<div class="about-language"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<ul id="navbar-top-firstrow" class="nav-list" title="Navigation">
+<li><a href="../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="nav-bar-cell1-rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html#class">Help</a></li>
+</ul>
+</div>
+<div class="sub-nav">
+<div>
+<ul class="sub-nav-list">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor-summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method-summary">Method</a></li>
+</ul>
+<ul class="sub-nav-list">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method-detail">Method</a></li>
+</ul>
+</div>
+<div class="nav-list-search"><label for="search-input">SEARCH:</label>
+<input type="text" id="search-input" value="search" disabled="disabled">
+<input type="reset" id="reset-button" value="reset" disabled="disabled">
+</div>
+</div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<span class="skip-nav" id="skip-navbar-top"></span></nav>
+</header>
+<div class="flex-content">
+<main role="main">
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.datastore2</a></div>
+<h1 title="Class Datastore2" class="title">Class Datastore2</h1>
+</div>
+<div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance">com.gmt2001.datastore2.Datastore2</div>
+</div>
+<section class="class-description" id="class-description">
+<dl class="notes">
+<dt>Direct Known Subclasses:</dt>
+<dd><code><a href="H2Store2.html" title="class in com.gmt2001.datastore2">H2Store2</a></code>, <code><a href="MariaDBStore2.html" title="class in com.gmt2001.datastore2">MariaDBStore2</a></code>, <code><a href="MySQLStore2.html" title="class in com.gmt2001.datastore2">MySQLStore2</a></code>, <code><a href="SQLiteStore2.html" title="class in com.gmt2001.datastore2">SQLiteStore2</a></code></dd>
+</dl>
+<hr>
+<div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">Datastore2</span>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">Manages a JDBC-compatible, SQL-based, data storage method</div>
+<dl class="notes">
+<dt>Author:</dt>
+<dd>gmt2001</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/index.html" target="_blank">JDBC Basics</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section class="summary">
+<ul class="summary-list">
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<li>
+<section class="constructor-summary" id="constructor-summary">
+<h2>Constructor Summary</h2>
+<div class="caption"><span>Constructors</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">Datastore2</a>()</code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
+<!-- ========== METHOD SUMMARY =========== -->
+<li>
+<section class="method-summary" id="method-summary">
+<h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel">
+<div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#backup()" class="member-name-link">backup</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Performs a backup of the database to the <code>dbbackup</code> folder</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#backup(java.lang.String)" class="member-name-link">backup</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Performs a backup of the database to the <code>dbbackup</code> folder</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#backupFileName()" class="member-name-link">backupFileName</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the default backup filename, which is usually the database name with <a href="#timestamp()"><code>timestamp()</code></a> appended</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link">Statement</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createStatement()" class="member-name-link">createStatement</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link"><code>Statement</code></a> object for sending SQL statements to the database</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#dispose()" class="member-name-link">dispose</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Disposes of resources as neccessary</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#doMaintenance()" class="member-name-link">doMaintenance</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Performs periodic database maintenance</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#driverDispose()" class="member-name-link">driverDispose</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Allows the driver to perform additional disposal actions beyond what the base Datastore2 class performs</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link">DSLContext</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#dslContext()" class="member-name-link">dslContext</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link"><code>DSLContext</code></a> which can be used to start a fluent statement</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConnection()" class="member-name-link">getConnection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Retrieves a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> from the connection pool</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#init()" class="member-name-link">init</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Initializes a new instance of Datastore2, based on the property <code>datastore</code> in botlogin.txt</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(javax.sql.ConnectionPoolDataSource,int,int,org.jooq.SQLDialect)" class="member-name-link">init</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link">ConnectionPoolDataSource</a>&nbsp;dataSource,
+ int&nbsp;maxConnections,
+ int&nbsp;timeout,
+ <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html" title="class or interface in org.jooq" class="external-link">SQLDialect</a>&nbsp;sqlDialect)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Instance Initializer</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#init(javax.sql.ConnectionPoolDataSource,org.jooq.SQLDialect)" class="member-name-link">init</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link">ConnectionPoolDataSource</a>&nbsp;dataSource,
+ <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html" title="class or interface in org.jooq" class="external-link">SQLDialect</a>&nbsp;sqlDialect)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Instance Initializer.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Provides an instance of <a href="Datastore2.html" title="class in com.gmt2001.datastore2"><code>Datastore2</code></a></div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>abstract <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link">DataType</a>&lt;?&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#longTextDataType()" class="member-name-link">longTextDataType</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link"><code>DataType</code></a> representing the <code>LONGTEXT</code> equivilent SQL data type for the driver</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link">PreparedStatement</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#prepareStatement(java.lang.String)" class="member-name-link">prepareStatement</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sql)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link"><code>PreparedStatement</code></a> object for sending parameterized SQL statements to the database</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Restores a database from the specified backup file, which must be in the <code>dbbackup</code> folder</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#supportsBackup()" class="member-name-link">supportsBackup</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Indicates if this driver supports making backups without an external tool</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#testConnection()" class="member-name-link">testConnection</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Tests if the database is accessible</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#timestamp()" class="member-name-link">timestamp</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns a timestamp sutible for database backup names in the format <code>yyyy-MM-dd.hh-mm-ss</code></div>
+</div>
+</div>
+</div>
+</div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+</section>
+</li>
+</ul>
+</section>
+<section class="details">
+<ul class="details-list">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<li>
+<section class="constructor-details" id="constructor-detail">
+<h2>Constructor Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="&lt;init&gt;()">
+<h3>Datastore2</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">Datastore2</span>()</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
+<!-- ============ METHOD DETAIL ========== -->
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="instance()">
+<h3>instance</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></span>&nbsp;<span class="element-name">instance</span>()</div>
+<div class="block">Provides an instance of <a href="Datastore2.html" title="class in com.gmt2001.datastore2"><code>Datastore2</code></a></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>an instance of <a href="Datastore2.html" title="class in com.gmt2001.datastore2"><code>Datastore2</code></a>; <code>null</code> if <a href="#init()"><code>init()</code></a> has not been called</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="timestamp()">
+<h3>timestamp</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">timestamp</span>()</div>
+<div class="block">Returns a timestamp sutible for database backup names in the format <code>yyyy-MM-dd.hh-mm-ss</code></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the timestamp</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="init()">
+<h3>init</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span>()</div>
+<div class="block">Initializes a new instance of Datastore2, based on the property <code>datastore</code> in botlogin.txt
+ <p>
+ If a datastore type is not specified or is blank, defaults to <code>H2Store</code>
+ <p>
+ If this function is called when Datastore2 is already initialized, it is a no-op
+ <p>
+ Builtin datastore types are not case-sensitive, but custom types are
+ <p>
+ If loading a custom datastore, the following requirements must be met:
+ <ul>
+ <li>Must extend <a href="Datastore2.html" title="class in com.gmt2001.datastore2"><code>Datastore2</code></a></li>
+ <li>Must call <a href="#init(javax.sql.ConnectionPoolDataSource,org.jooq.SQLDialect)"><code>init(ConnectionPoolDataSource, SQLDialect)</code></a> or <a href="#init(javax.sql.ConnectionPoolDataSource,int,int,org.jooq.SQLDialect)"><code>init(ConnectionPoolDataSource, int, int, SQLDialect)</code></a>, passing in a valid <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link"><code>ConnectionPoolDataSource</code></a>, in the constructor</li>
+ <li>May optionally start a timer in the constructor to periodically call <a href="#doMaintenance()"><code>doMaintenance()</code></a></li>
+ <li>Must be in a JAR file located in the <code>./datastores</code> folder</li>
+ <li>The name of the JAR file must match the output of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#getSimpleName()" title="class or interface in java.lang" class="external-link"><code>Class.getSimpleName()</code></a> of the type, including case</li>
+ <li>The <code>.jar</code> file exension on the JAR file must be lower-case</li>
+ <li>The value of the <code>datastore</code> property in botlogin.txt must match the output of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#getName()" title="class or interface in java.lang" class="external-link"><code>Class.getName()</code></a> of the type, including case</li>
+ </ul></div>
+</section>
+</li>
+<li>
+<section class="detail" id="init(javax.sql.ConnectionPoolDataSource,org.jooq.SQLDialect)">
+<h3>init</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link">ConnectionPoolDataSource</a>&nbsp;dataSource,
+ <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html" title="class or interface in org.jooq" class="external-link">SQLDialect</a>&nbsp;sqlDialect)</span></div>
+<div class="block">Instance Initializer. Sets a max connections of 30 and a timeout of 20
+ <p>
+ Valid dialects:
+ <ul>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#DERBY" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.DERBY</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#FIREBIRD" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.FIREBIRD</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#H2" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.H2</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#HSQLDB" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.HSQLDB</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#MARIADB" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.MARIADB</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#MYSQL" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.MYSQL</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#POSTGRES" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.POSTGRES</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#SQLITE" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.SQLITE</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#YUGABYTEDB" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.YUGABYTEDB</code></a></li>
+ </ul>
+ <p>
+ <i>NOTE: SQL will be generated according to the latest supported version of the selected database dialect</i></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>dataSource</code> - a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link"><code>ConnectionPoolDataSource</code></a> which can be used with <a href="../../../biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html" title="class in biz.source_code.miniConnectionPoolManager"><code>MiniConnectionPoolManager</code></a></dd>
+<dd><code>sqlDialect</code> - the dialect to use with objects created from the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link"><code>DSLContext</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="init(javax.sql.ConnectionPoolDataSource,int,int,org.jooq.SQLDialect)">
+<h3>init</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link">ConnectionPoolDataSource</a>&nbsp;dataSource,
+ int&nbsp;maxConnections,
+ int&nbsp;timeout,
+ <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html" title="class or interface in org.jooq" class="external-link">SQLDialect</a>&nbsp;sqlDialect)</span></div>
+<div class="block">Instance Initializer
+ <p>
+ Valid dialects:
+ <ul>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#DERBY" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.DERBY</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#FIREBIRD" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.FIREBIRD</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#H2" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.H2</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#HSQLDB" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.HSQLDB</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#MARIADB" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.MARIADB</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#MYSQL" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.MYSQL</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#POSTGRES" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.POSTGRES</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#SQLITE" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.SQLITE</code></a></li>
+ <li><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/SQLDialect.html#YUGABYTEDB" title="class or interface in org.jooq" class="external-link"><code>SQLDialect.YUGABYTEDB</code></a></li>
+ </ul>
+ <p>
+ <i>NOTE: SQL will be generated according to the latest supported version of the selected database dialect</i></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>dataSource</code> - a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/javax/sql/ConnectionPoolDataSource.html" title="class or interface in javax.sql" class="external-link"><code>ConnectionPoolDataSource</code></a> which can be used with <a href="../../../biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html" title="class in biz.source_code.miniConnectionPoolManager"><code>MiniConnectionPoolManager</code></a></dd>
+<dd><code>maxConnections</code> - the maximum number of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> objects to hold in the pool</dd>
+<dd><code>timeout</code> - the number of seconds until a call to <a href="../../../biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html#getConnection()"><code>MiniConnectionPoolManager.getConnection()</code></a> fails waiting for a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> to become available</dd>
+<dd><code>sqlDialect</code> - the dialect to use with objects created from the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link"><code>DSLContext</code></a></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getConnection()">
+<h3>getConnection</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a></span>&nbsp;<span class="element-name">getConnection</span>()
+                         throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a>,
+<a href="../../../biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.TimeoutException.html" title="class in biz.source_code.miniConnectionPoolManager">MiniConnectionPoolManager.TimeoutException</a></span></div>
+<div class="block">Retrieves a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> from the connection pool
+
+ <p>
+ If the maximum number of connections are already in use, the method waits until a connection becomes available or the timeout
+ has elapsed
+ <p>
+ When the application is finished using the connection, it must call <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html#close()" title="class or interface in java.sql" class="external-link"><code>Connection.close()</code></a> on it in order
+ to return it to the connection pool
+ <p>
+ Consider using try-with-resources instead to safely auto-close the connection
+ <p>
+ Transactions are <b>not</b> comitted automatically when closing a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> that has auto-commit disabled</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>a new <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> object</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></code> - if a database access error occurs</dd>
+<dd><code><a href="../../../biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.TimeoutException.html" title="class in biz.source_code.miniConnectionPoolManager">MiniConnectionPoolManager.TimeoutException</a></code> - when no connection becomes available within the timeout</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="testConnection()">
+<h3>testConnection</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">testConnection</span>()
+                       throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></span></div>
+<div class="block">Tests if the database is accessible
+ <p>
+ How this is achieved is driver-defined, but is usually something similar to executing <code>SELECT 1;</code></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if a valid connection can be established to the database before the timeout expires</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></code> - if a database access error occurs</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="prepareStatement(java.lang.String)">
+<h3>prepareStatement</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link">PreparedStatement</a></span>&nbsp;<span class="element-name">prepareStatement</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sql)</span>
+                                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></span></div>
+<div class="block">Creates a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link"><code>PreparedStatement</code></a> object for sending parameterized SQL statements to the database
+ <p>
+ This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
+ or by the implementing <a href="Datastore2.html" title="class in com.gmt2001.datastore2"><code>Datastore2</code></a> sub-classes
+ <p>
+ The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link"><code>PreparedStatement</code></a> must be closed by calling <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html#close()" title="class or interface in java.sql" class="external-link"><code>Statement.close()</code></a> to release it back to the connection
+ pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
+ <p>
+ Consider using try-with-resources instead to safely auto-close the connection
+ <p>
+ Transactions are <b>not</b> comitted automatically when closing a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link"><code>PreparedStatement</code></a> that has auto-commit disabled</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>sql</code> - an SQL statement that may contain one or more <code>?</code> IN parameter placeholders</dd>
+<dt>Returns:</dt>
+<dd>a new default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link"><code>PreparedStatement</code></a> object containing the pre-compiled SQL statement</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></code> - if a database access error occurs or this method is called on a closed connection</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html" target="_blank">Using Prepared Statements</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createStatement()">
+<h3>createStatement</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link">Statement</a></span>&nbsp;<span class="element-name">createStatement</span>()
+                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></span></div>
+<div class="block">Creates a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link"><code>Statement</code></a> object for sending SQL statements to the database
+ <p>
+ This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
+ or by the implementing <a href="Datastore2.html" title="class in com.gmt2001.datastore2"><code>Datastore2</code></a> sub-classes
+ <p>
+ The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link"><code>Statement</code></a> must be closed by calling <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html#close()" title="class or interface in java.sql" class="external-link"><code>Statement.close()</code></a> to release it back to the connection
+ pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
+ <p>
+ Consider using try-with-resources instead to safely auto-close the connection
+ <p>
+ Transactions are <b>not</b> comitted automatically when closing a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link"><code>Statement</code></a> that has auto-commit disabled</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>a new default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Statement.html" title="class or interface in java.sql" class="external-link"><code>Statement</code></a> object</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></code> - if a database access error occurs or this method is called on a closed connection</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="dslContext()">
+<h3>dslContext</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link">DSLContext</a></span>&nbsp;<span class="element-name">dslContext</span>()</div>
+<div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link"><code>DSLContext</code></a> which can be used to start a fluent statement</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DSLContext.html" title="class or interface in org.jooq" class="external-link"><code>DSLContext</code></a></dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="https://www.jooq.org/doc/3.18/manual/sql-building/" target="_blank">JOOQ - SQL Building</a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="longTextDataType()">
+<h3>longTextDataType</h3>
+<div class="member-signature"><span class="modifiers">public abstract</span>&nbsp;<span class="return-type"><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link">DataType</a>&lt;?&gt;</span>&nbsp;<span class="element-name">longTextDataType</span>()</div>
+<div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link"><code>DataType</code></a> representing the <code>LONGTEXT</code> equivilent SQL data type for the driver</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the DataType</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="supportsBackup()">
+<h3>supportsBackup</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">supportsBackup</span>()</div>
+<div class="block">Indicates if this driver supports making backups without an external tool</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if supported</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="backupFileName()">
+<h3>backupFileName</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">backupFileName</span>()</div>
+<div class="block">Returns the default backup filename, which is usually the database name with <a href="#timestamp()"><code>timestamp()</code></a> appended</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the filename</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="backup()">
+<h3>backup</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">backup</span>()</div>
+<div class="block">Performs a backup of the database to the <code>dbbackup</code> folder
+ <p>
+ The default backup filename is used from <a href="#backupFileName()"><code>backupFileName()</code></a></div>
+</section>
+</li>
+<li>
+<section class="detail" id="backup(java.lang.String)">
+<h3>backup</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">backup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span></div>
+<div class="block">Performs a backup of the database to the <code>dbbackup</code> folder</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>fileName</code> - the name of the backup file</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="restoreBackup(java.lang.String)">
+<h3>restoreBackup</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">restoreBackup</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</span>
+                   throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/FileNotFoundException.html" title="class or interface in java.io" class="external-link">FileNotFoundException</a></span></div>
+<div class="block">Restores a database from the specified backup file, which must be in the <code>dbbackup</code> folder</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>fileName</code> - the name of the backup file</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/FileNotFoundException.html" title="class or interface in java.io" class="external-link">FileNotFoundException</a></code> - if the backup file can not be found</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="doMaintenance()">
+<h3>doMaintenance</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">doMaintenance</span>()</div>
+<div class="block">Performs periodic database maintenance</div>
+</section>
+</li>
+<li>
+<section class="detail" id="dispose()">
+<h3>dispose</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">dispose</span>()</div>
+<div class="block">Disposes of resources as neccessary
+ <p>
+ Once this is called, the connection pool is invalid and the program must be restarted to futher access the database</div>
+</section>
+</li>
+<li>
+<section class="detail" id="driverDispose()">
+<h3>driverDispose</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">driverDispose</span>()</div>
+<div class="block">Allows the driver to perform additional disposal actions beyond what the base Datastore2 class performs
+ <p>
+ This method is called before the connection pool is disposed</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
+</ul>
+</section>
+<!-- ========= END OF CLASS DATA ========= -->
+</main>
+<footer role="contentinfo">
+<hr>
+<p class="legal-copy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+</footer>
+</div>
+</div>
+</body>
+</html>

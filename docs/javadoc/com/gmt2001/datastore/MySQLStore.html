@@ -1,1103 +1,909 @@
 <!DOCTYPE HTML>
-<!-- NewPage -->
 <html lang="en">
 <head>
 <title>MySQLStore (PhantomBot JavaDoc)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="description" content="declaration: package: com.gmt2001.datastore, class: MySQLStore">
+<meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
-<link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../script.js"></script>
-<script type="text/javascript" src="../../../jquery/jszip/dist/jszip.min.js"></script>
-<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
-<!--[if IE]>
-<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
-<![endif]-->
-<script type="text/javascript" src="../../../jquery/jquery-3.6.1.min.js"></script>
-<script type="text/javascript" src="../../../jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../script-dir/jquery-ui.min.js"></script>
 </head>
-<body>
-<script type="text/javascript"><!--
-    try {
-        if (location.href.indexOf('is-external=true') == -1) {
-            parent.document.title="MySQLStore (PhantomBot JavaDoc)";
-        }
-    }
-    catch(err) {
-    }
-//-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":9,"i21":9,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
+<body class="class-declaration-page">
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
 var pathtoroot = "../../../";
-var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
 </noscript>
-<header role="banner">
+<div class="flex-box">
+<header role="banner" class="flex-header">
 <nav role="navigation">
-<div class="fixedNav">
 <!-- ========= START OF TOP NAVBAR ======= -->
-<div class="topNav"><a id="navbar.top">
-<!--   -->
-</a>
-<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
-<a id="navbar.top.firstrow">
-<!--   -->
-</a>
-<ul class="navList" title="Navigation">
+<div class="top-nav" id="navbar-top">
+<div class="skip-nav"><a href="#skip-navbar-top" title="Skip navigation links">Skip navigation links</a></div>
+<div class="about-language"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<ul id="navbar-top-firstrow" class="nav-list" title="Navigation">
 <li><a href="../../../index.html">Overview</a></li>
 <li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
+<li class="nav-bar-cell1-rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../index-all.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<li><a href="../../../help-doc.html#class">Help</a></li>
 </ul>
-<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
 </div>
-<div class="subNav">
-<ul class="navList" id="allclasses_navbar_top">
-<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
-</ul>
-<ul class="navListSearch">
-<li><label for="search">SEARCH:</label>
-<input type="text" id="search" value="search" disabled="disabled">
-<input type="reset" id="reset" value="reset" disabled="disabled">
-</li>
-</ul>
+<div class="sub-nav">
 <div>
-<script type="text/javascript"><!--
-  allClassesLink = document.getElementById("allclasses_navbar_top");
-  if(window==top) {
-    allClassesLink.style.display = "block";
-  }
-  else {
-    allClassesLink.style.display = "none";
-  }
-  //-->
-</script>
-<noscript>
-<div>JavaScript is disabled on your browser.</div>
-</noscript>
-</div>
-<div>
-<ul class="subNavList">
+<ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#method-summary">Method</a></li>
 </ul>
-<ul class="subNavList">
+<ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
-<a id="skip.navbar.top">
-<!--   -->
-</a></div>
+<div class="nav-list-search"><label for="search-input">SEARCH:</label>
+<input type="text" id="search-input" value="search" disabled="disabled">
+<input type="reset" id="reset-button" value="reset" disabled="disabled">
+</div>
+</div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-</div>
-<div class="navPadding">&nbsp;</div>
-<script type="text/javascript"><!--
-$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
-//-->
-</script>
-</nav>
+<span class="skip-nav" id="skip-navbar-top"></span></nav>
 </header>
-<!-- ======== START OF CLASS DATA ======== -->
+<div class="flex-content">
 <main role="main">
+<!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.datastore</a></div>
-<h2 title="Class MySQLStore" class="title">Class MySQLStore</h2>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.datastore</a></div>
+<h1 title="Class MySQLStore" class="title">Class MySQLStore</h1>
 </div>
-<div class="contentContainer">
-<ul class="inheritance">
-<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">java.lang.Object</a></li>
-<li>
-<ul class="inheritance">
-<li><a href="DataStore.html" title="class in com.gmt2001.datastore">com.gmt2001.datastore.DataStore</a></li>
-<li>
-<ul class="inheritance">
-<li>com.gmt2001.datastore.MySQLStore</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<div class="description">
-<ul class="blockList">
-<li class="blockList">
+<div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance"><a href="DataStore.html" title="class in com.gmt2001.datastore">com.gmt2001.datastore.DataStore</a>
+<div class="inheritance">com.gmt2001.datastore.MySQLStore</div>
+</div>
+</div>
+<section class="class-description" id="class-description">
 <hr>
-<pre>public final class <span class="typeNameLabel">MySQLStore</span>
-extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></pre>
-<dl>
-<dt><span class="simpleTagLabel">Author:</span></dt>
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="3.9.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public final class </span><span class="element-name type-name-label">MySQLStore</span>
+<span class="extends-implements">extends <a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="../datastore2/MySQLStore2.html" title="class in com.gmt2001.datastore2"><code>MySQLStore2</code></a> instead</div>
+</div>
+<dl class="notes">
+<dt>Author:</dt>
 <dd>gmt2001</dd>
 </dl>
-</li>
-</ul>
-</div>
-<div class="summary">
-<ul class="blockList">
-<li class="blockList">
+</section>
+<section class="summary">
+<ul class="summary-list">
 <!-- ========== METHOD SUMMARY =========== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="method.summary">
-<!--   -->
-</a>
-<h3>Method Summary</h3>
-<table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AddFile(java.lang.String)">AddFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">
+<li>
+<section class="method-summary" id="method-summary">
+<h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel">
+<div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#AddFile(java.lang.String)" class="member-name-link">AddFile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Creates a new table</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#AddFile(java.sql.Connection,java.lang.String)">AddFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/Connection.html?is-external=true" title="class or interface in java.sql" class="externalLink">Connection</a>&nbsp;connection,
-       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CanConnect()">CanConnect</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Tests if the connection to the database succeeds.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FileExists(java.lang.String)">FileExists</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#AddFile(java.sql.Connection,java.lang.String)" class="member-name-link">AddFile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a>&nbsp;connection,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#CanConnect()" class="member-name-link">CanConnect</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block">Tests if the connection to the database succeeds</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#FileExists(java.lang.String)" class="member-name-link">FileExists</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Indicates if the given table already exists</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FileExists(java.sql.Connection,java.lang.String)">FileExists</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/Connection.html?is-external=true" title="class or interface in java.sql" class="externalLink">Connection</a>&nbsp;connection,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetCategoryList(java.lang.String)">GetCategoryList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#FileExists(java.sql.Connection,java.lang.String)" class="member-name-link">FileExists</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a>&nbsp;connection,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetCategoryList(java.lang.String)" class="member-name-link">GetCategoryList</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of all values in the <code>section</code> column within the table</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetFileList()">GetFileList</a></span>()</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetFileList()" class="member-name-link">GetFileList</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of tables in the database.</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">GetKeyByValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeyByValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns the value of the <code>variable</code> column for the given table, section, and value</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyList(java.lang.String,java.lang.String)">GetKeyList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeyList(java.lang.String,java.lang.String)" class="member-name-link">GetKeyList</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of all values in the <code>variable</code> column within the table and section</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeys</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                 <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByLikeKeys</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;search)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByLikeKeysOrder</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;search,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeValues</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByLikeValues</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;search)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>value</code> column contains the search phrase</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByNumberOrder</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
-</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByNumberOrderValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByOrder</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally</div>
-</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetKeysByOrderValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
-</td>
-</tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code><a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetKeyValueList(java.lang.String,java.lang.String)">GetKeyValueList</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetKeyValueList(java.lang.String,java.lang.String)" class="member-name-link">GetKeyValueList</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns a list of all <code>variable/value</code> pairs within the table and section</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GetString(java.lang.String,java.lang.String,java.lang.String)">GetString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#GetString(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">GetString</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a string</div>
-</td>
-</tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#HasKey(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">HasKey</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Indicates if the given table contains a row matching the given section and key</div>
-</td>
-</tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">IncreaseBatchString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
-                   <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)" class="member-name-link">IncreaseBatchString</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;keys,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Increases the value of the <code>value</code> column as an integer for all keys of the given table and section</div>
-</td>
-</tr>
-<tr id="i20" class="altColor">
-<td class="colFirst"><code>static <a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i21" class="rowColor">
-<td class="colFirst"><code>static <a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance(java.lang.String)">instance</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configStr)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i22" class="altColor">
-<td class="colFirst"><code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#query(java.lang.String,java.lang.String%5B%5D)">query</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
-     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</code></th>
-<td class="colLast">
-<div class="block">Executes an SQL query.</div>
-</td>
-</tr>
-<tr id="i23" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveFile(java.lang.String)">RemoveFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static <a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#instance(java.lang.String)" class="member-name-link">instance</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configStr)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#query(java.lang.String,java.lang.String%5B%5D)" class="member-name-link">query</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sql,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;replacements)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block">Executes an SQL query</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#RemoveFile(java.lang.String)" class="member-name-link">RemoveFile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Deletes the table</div>
-</td>
-</tr>
-<tr id="i24" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">RemoveKey</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#RemoveKey(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">RemoveKey</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Deletes the row that matches the given table, section, and key</div>
-</td>
-</tr>
-<tr id="i25" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RemoveSection(java.lang.String,java.lang.String)">RemoveSection</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-             <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</code></th>
-<td class="colLast">
-<div class="block">Deletes all rows that matches the given table and section</div>
-</td>
-</tr>
-<tr id="i26" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#RenameFile(java.lang.String,java.lang.String)">RenameFile</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameSource,
-          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameDest)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#RemoveSection(java.lang.String,java.lang.String)" class="member-name-link">RemoveSection</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block">Deletes all rows that match the given table and section</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#RenameFile(java.lang.String,java.lang.String)" class="member-name-link">RenameFile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fNameSource,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fNameDest)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Renames the table</div>
-</td>
-</tr>
-<tr id="i27" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">SetBatchString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
-              <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;values)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)" class="member-name-link">SetBatchString</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;keys,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;values)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Performs a bulk <a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>DataStore.SetString(String, String, String, String)</code></a> operation, using available database features to do so more efficiently.</div>
-</td>
-</tr>
-<tr id="i28" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">SetString</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
-         <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</code></th>
-<td class="colLast">
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">SetString</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
-</td>
-</tr>
-</table>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.com.gmt2001.datastore.DataStore">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;com.gmt2001.datastore.<a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></h3>
-<code><a href="DataStore.html#backupDB(java.lang.String)">backupDB</a>, <a href="DataStore.html#canBackup()">canBackup</a>, <a href="DataStore.html#CreateIndexes()">CreateIndexes</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#del(java.lang.String,java.lang.String)">del</a>, <a href="DataStore.html#dispose()">dispose</a>, <a href="DataStore.html#DropIndexes()">DropIndexes</a>, <a href="DataStore.html#executeSql(java.lang.String,java.lang.String%5B%5D)">executeSql</a>, <a href="DataStore.html#exists(java.lang.String,java.lang.String)">exists</a>, <a href="DataStore.html#get(java.lang.String,java.lang.String)">get</a>, <a href="DataStore.html#GetBoolean(java.lang.String,java.lang.String,java.lang.String)">GetBoolean</a>, <a href="DataStore.html#GetDouble(java.lang.String,java.lang.String,java.lang.String)">GetDouble</a>, <a href="DataStore.html#GetFloat(java.lang.String,java.lang.String,java.lang.String)">GetFloat</a>, <a href="DataStore.html#GetInteger(java.lang.String,java.lang.String,java.lang.String)">GetInteger</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetLong(java.lang.String,java.lang.String,java.lang.String)">GetLong</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#InsertString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">InsertString</a>, <a href="DataStore.html#searchByKey(java.lang.String,java.lang.String)">searchByKey</a>, <a href="DataStore.html#searchByValue(java.lang.String,java.lang.String)">searchByValue</a>, <a href="DataStore.html#set(java.lang.String,java.lang.String,java.lang.String)">set</a>, <a href="DataStore.html#setbatch(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">setbatch</a>, <a href="DataStore.html#SetBoolean(java.lang.String,java.lang.String,java.lang.String,boolean)">SetBoolean</a>, <a href="DataStore.html#SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">SetDouble</a>, <a href="DataStore.html#SetFloat(java.lang.String,java.lang.String,java.lang.String,float)">SetFloat</a>, <a href="DataStore.html#SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">SetInteger</a>, <a href="DataStore.html#SetLong(java.lang.String,java.lang.String,java.lang.String,long)">SetLong</a></code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></h3>
-<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang" class="externalLink">clone</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang" class="externalLink">equals</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang" class="externalLink">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang" class="externalLink">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang" class="externalLink">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang" class="externalLink">notify</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang" class="externalLink">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang" class="externalLink">toString</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long,int)" title="class or interface in java.lang" class="externalLink">wait</a></code></li>
-</ul>
-</li>
-</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-com.gmt2001.datastore.DataStore">Methods inherited from class&nbsp;com.gmt2001.datastore.<a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></h3>
+<code><a href="DataStore.html#AddFile(java.lang.String,boolean)">AddFile</a>, <a href="DataStore.html#backupDB(java.lang.String)">backupDB</a>, <a href="DataStore.html#canBackup()">canBackup</a>, <a href="DataStore.html#CreateIndexes()">CreateIndexes</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,int)">decr</a>, <a href="DataStore.html#decr(java.lang.String,java.lang.String,java.lang.String,long)">decr</a>, <a href="DataStore.html#del(java.lang.String,java.lang.String)">del</a>, <a href="DataStore.html#dispose()">dispose</a>, <a href="DataStore.html#DropIndexes()">DropIndexes</a>, <a href="DataStore.html#dsl()">dsl</a>, <a href="DataStore.html#executeSql(java.lang.String,java.lang.String%5B%5D)">executeSql</a>, <a href="DataStore.html#exists(java.lang.String,java.lang.String)">exists</a>, <a href="DataStore.html#field(java.lang.String,org.jooq.Table)">field</a>, <a href="DataStore.html#findTable(java.lang.String)">findTable</a>, <a href="DataStore.html#get(java.lang.String,java.lang.String)">get</a>, <a href="DataStore.html#GetBoolean(java.lang.String,java.lang.String,java.lang.String)">GetBoolean</a>, <a href="DataStore.html#GetDouble(java.lang.String,java.lang.String,java.lang.String)">GetDouble</a>, <a href="DataStore.html#GetFloat(java.lang.String,java.lang.String,java.lang.String)">GetFloat</a>, <a href="DataStore.html#GetInteger(java.lang.String,java.lang.String,java.lang.String)">GetInteger</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a>, <a href="DataStore.html#GetLong(java.lang.String,java.lang.String,java.lang.String)">GetLong</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,int)">incr</a>, <a href="DataStore.html#incr(java.lang.String,java.lang.String,java.lang.String,long)">incr</a>, <a href="DataStore.html#InsertString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">InsertString</a>, <a href="DataStore.html#OptBoolean(java.lang.String,java.lang.String,java.lang.String)">OptBoolean</a>, <a href="DataStore.html#OptDouble(java.lang.String,java.lang.String,java.lang.String)">OptDouble</a>, <a href="DataStore.html#OptFloat(java.lang.String,java.lang.String,java.lang.String)">OptFloat</a>, <a href="DataStore.html#OptInteger(java.lang.String,java.lang.String,java.lang.String)">OptInteger</a>, <a href="DataStore.html#OptLong(java.lang.String,java.lang.String,java.lang.String)">OptLong</a>, <a href="DataStore.html#OptString(java.lang.String,java.lang.String,java.lang.String)">OptString</a>, <a href="DataStore.html#resolveClassname(java.lang.String)">resolveClassname</a>, <a href="DataStore.html#searchByKey(java.lang.String,java.lang.String)">searchByKey</a>, <a href="DataStore.html#searchByValue(java.lang.String,java.lang.String)">searchByValue</a>, <a href="DataStore.html#set(java.lang.String,java.lang.String,java.lang.String)">set</a>, <a href="DataStore.html#setbatch(java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">setbatch</a>, <a href="DataStore.html#SetBoolean(java.lang.String,java.lang.String,java.lang.String,boolean)">SetBoolean</a>, <a href="DataStore.html#SetDouble(java.lang.String,java.lang.String,java.lang.String,double)">SetDouble</a>, <a href="DataStore.html#SetFloat(java.lang.String,java.lang.String,java.lang.String,float)">SetFloat</a>, <a href="DataStore.html#SetInteger(java.lang.String,java.lang.String,java.lang.String,int)">SetInteger</a>, <a href="DataStore.html#SetLong(java.lang.String,java.lang.String,java.lang.String,long)">SetLong</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
 </section>
 </li>
 </ul>
-</div>
-<div class="details">
-<ul class="blockList">
-<li class="blockList">
+</section>
+<section class="details">
+<ul class="details-list">
 <!-- ============ METHOD DETAIL ========== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a id="instance()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>instance</h4>
-<pre class="methodSignature">public static&nbsp;<a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a>&nbsp;instance()</pre>
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="instance()">
+<h3>instance</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></span>&nbsp;<span class="element-name">instance</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</section>
 </li>
-</ul>
-<a id="instance(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>instance</h4>
-<pre class="methodSignature">public static&nbsp;<a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a>&nbsp;instance&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;configStr)</pre>
+<li>
+<section class="detail" id="instance(java.lang.String)">
+<h3>instance</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="MySQLStore.html" title="class in com.gmt2001.datastore">MySQLStore</a></span>&nbsp;<span class="element-name">instance</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configStr)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</section>
 </li>
-</ul>
-<a id="CanConnect()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>CanConnect</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;CanConnect()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#CanConnect()">DataStore</a></code></span></div>
-<div class="block">Tests if the connection to the database succeeds.
-
- This is a no-op on embedded databases. Only remote databases such as MySQL will provide an implementation of this method</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<li>
+<section class="detail" id="CanConnect()">
+<h3>CanConnect</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">CanConnect</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#CanConnect()">DataStore</a></code></span></div>
+<div class="block">Tests if the connection to the database succeeds</div>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#CanConnect()">CanConnect</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd><code>true</code> on success or on embedded databases</dd>
+<dt>Returns:</dt>
+<dd><code>true</code> on success</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="AddFile(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>AddFile</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;AddFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#AddFile(java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="AddFile(java.lang.String)">
+<h3>AddFile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">AddFile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#AddFile(java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Creates a new table</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#AddFile(java.lang.String)">AddFile</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="AddFile(java.sql.Connection,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>AddFile</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;AddFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/Connection.html?is-external=true" title="class or interface in java.sql" class="externalLink">Connection</a>&nbsp;connection,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<li>
+<section class="detail" id="AddFile(java.sql.Connection,java.lang.String)">
+<h3>AddFile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">AddFile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a>&nbsp;connection,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</section>
 </li>
-</ul>
-<a id="RemoveKey(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>RemoveKey</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;RemoveKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
-<div class="block">Deletes the row that matches the given table, section, and key</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<li>
+<section class="detail" id="RemoveKey(java.lang.String,java.lang.String,java.lang.String)">
+<h3>RemoveKey</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">RemoveKey</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Deletes the row that matches the given table, section, and key
+ <p>
+ If <code>section</code> is null, deletes all rows with a matching table and key, reguardless of section</div>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#RemoveKey(java.lang.String,java.lang.String,java.lang.String)">RemoveKey</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>key</code> - The value of the <code>variable</code> column</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - the value of the <code>variable</code> column</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="RemoveSection(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>RemoveSection</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;RemoveSection&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveSection(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
-<div class="block">Deletes all rows that matches the given table and section</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<li>
+<section class="detail" id="RemoveSection(java.lang.String,java.lang.String)">
+<h3>RemoveSection</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">RemoveSection</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveSection(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<div class="block">Deletes all rows that match the given table and section</div>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#RemoveSection(java.lang.String,java.lang.String)">RemoveSection</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="RemoveFile(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>RemoveFile</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;RemoveFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveFile(java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="RemoveFile(java.lang.String)">
+<h3>RemoveFile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">RemoveFile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#RemoveFile(java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Deletes the table</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#RemoveFile(java.lang.String)">RemoveFile</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="RenameFile(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>RenameFile</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;RenameFile&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameSource,
-                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fNameDest)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#RenameFile(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="RenameFile(java.lang.String,java.lang.String)">
+<h3>RenameFile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">RenameFile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fNameSource,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fNameDest)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#RenameFile(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Renames the table</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#RenameFile(java.lang.String,java.lang.String)">RenameFile</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fNameSource</code> - A table name for an existing table, without the <code>phantombot_</code> prefix</dd>
-<dd><code>fNameDest</code> - A new table name that does not yet exist, without the <code>phantombot_</code> prefix</dd>
+<dt>Parameters:</dt>
+<dd><code>fNameSource</code> - a table name for an existing table, without the <code>phantombot_</code> prefix</dd>
+<dd><code>fNameDest</code> - a new table name that does not yet exist, without the <code>phantombot_</code> prefix</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="FileExists(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FileExists</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;FileExists&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#FileExists(java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="FileExists(java.lang.String)">
+<h3>FileExists</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">FileExists</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#FileExists(java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Indicates if the given table already exists</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#FileExists(java.lang.String)">FileExists</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dt>Returns:</dt>
+<dd><code>true</code> if the table exists</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="FileExists(java.sql.Connection,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>FileExists</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;FileExists&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/Connection.html?is-external=true" title="class or interface in java.sql" class="externalLink">Connection</a>&nbsp;connection,
-                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
+<li>
+<section class="detail" id="FileExists(java.sql.Connection,java.lang.String)">
+<h3>FileExists</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">FileExists</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a>&nbsp;connection,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</section>
 </li>
-</ul>
-<a id="GetFileList()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetFileList</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetFileList()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetFileList()">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetFileList()">
+<h3>GetFileList</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetFileList</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetFileList()">DataStore</a></code></span></div>
 <div class="block">Returns a list of tables in the database.
- <br/><br/>
+ <p>
  Only tables with the <code>phantombot_</code> prefix are returned. The prefix is removed</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetFileList()">GetFileList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Returns:</dt>
+<dd>an array of table names</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetCategoryList(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetCategoryList</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetCategoryList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetCategoryList(java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetCategoryList(java.lang.String)">
+<h3>GetCategoryList</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetCategoryList</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetCategoryList(java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of all values in the <code>section</code> column within the table</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetCategoryList(java.lang.String)">GetCategoryList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dt>Returns:</dt>
+<dd>an array of sections</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeyList(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeyList</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeyList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyList(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeyList(java.lang.String,java.lang.String)">
+<h3>GetKeyList</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeyList</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyList(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of all values in the <code>variable</code> column within the table and section</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeyList(java.lang.String,java.lang.String)">GetKeyList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt>Returns:</dt>
+<dd>an array of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeyValueList(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeyValueList</h4>
-<pre class="methodSignature">public&nbsp;<a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]&nbsp;GetKeyValueList&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyValueList(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeyValueList(java.lang.String,java.lang.String)">
+<h3>GetKeyValueList</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="KeyValue.html" title="class in com.gmt2001.datastore">KeyValue</a>[]</span>&nbsp;<span class="element-name">GetKeyValueList</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyValueList(java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of all <code>variable/value</code> pairs within the table and section</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeyValueList(java.lang.String,java.lang.String)">GetKeyValueList</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dt>Returns:</dt>
+<dd>an array of <a href="KeyValue.html" title="class in com.gmt2001.datastore"><code>KeyValue</code></a> pairs denoting the variables and values</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByOrder</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByOrder</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByOrder</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrder</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
-<dd><code>limit</code> - The maximum number of results to return from this query</dd>
-<dd><code>offset</code> - The offset to start reading from</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - the maximum number of results to return from this query</dd>
+<dd><code>offset</code> - the offset to start reading from</dd>
+<dt>Returns:</dt>
+<dd>a sorted list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByNumberOrder</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByNumberOrder</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByNumberOrder</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally as integers</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByNumberOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrder</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
-<dd><code>limit</code> - The maximum number of results to return from this query</dd>
-<dd><code>offset</code> - The offset to start reading from</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - the maximum number of results to return from this query</dd>
+<dd><code>offset</code> - the offset to start reading from</dd>
+<dt>Returns:</dt>
+<dd>a sorted list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByOrderValue</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByOrderValue</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByOrderValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByOrderValue</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
-<dd><code>limit</code> - The maximum number of results to return from this query</dd>
-<dd><code>offset</code> - The offset to start reading from</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - the maximum number of results to return from this query</dd>
+<dd><code>offset</code> - the offset to start reading from</dd>
+<dt>Returns:</dt>
+<dd>a sorted list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByNumberOrderValue</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByNumberOrderValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                                          <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByNumberOrderValue</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByNumberOrderValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, sorted naturally by the <code>value</code> column as integers</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByNumberOrderValue(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByNumberOrderValue</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
-<dd><code>limit</code> - The maximum number of results to return from this query</dd>
-<dd><code>offset</code> - The offset to start reading from</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>order</code> - sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - the maximum number of results to return from this query</dd>
+<dd><code>offset</code> - the offset to start reading from</dd>
+<dt>Returns:</dt>
+<dd>a sorted list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByLikeValues</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeValues&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByLikeValues</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByLikeValues</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;search)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>value</code> column contains the search phrase</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByLikeValues(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeValues</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>search</code> - The partial value of the <code>value</code> column to match against</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - the partial value of the <code>value</code> column to match against</dd>
+<dt>Returns:</dt>
+<dd>a list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByLikeKeys</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeKeys&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByLikeKeys</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByLikeKeys</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;search)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByLikeKeys(java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeys</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - the partial value of the <code>variable</code> column to match against</dd>
+<dt>Returns:</dt>
+<dd>a list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeysByLikeKeysOrder</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;GetKeysByLikeKeysOrder&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;search,
-                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;order,
-                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;limit,
-                                       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;offset)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeysByLikeKeysOrder</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">GetKeysByLikeKeysOrder</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;search,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;order,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;limit,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;offset)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns a list of values in the <code>variable</code> column within the table and section, where the value of the <code>variable</code> column contains the search phrase, sorted naturally</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeysByLikeKeysOrder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">GetKeysByLikeKeysOrder</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>search</code> - The partial value of the <code>variable</code> column to match against</dd>
-<dd><code>order</code> - Sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
-<dd><code>limit</code> - The maximum number of results to return from this query</dd>
-<dd><code>offset</code> - The offset to start reading from</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>search</code> - the partial value of the <code>variable</code> column to match against</dd>
+<dd><code>order</code> - sort order. Valid values: <code>"ASC"</code> (Ascending) or <code>"DESC"</code> (Descending)</dd>
+<dd><code>limit</code> - the maximum number of results to return from this query</dd>
+<dd><code>offset</code> - the offset to start reading from</dd>
+<dt>Returns:</dt>
+<dd>a sorted list of variables</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="HasKey(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>HasKey</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;HasKey&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="HasKey(java.lang.String,java.lang.String,java.lang.String)">
+<h3>HasKey</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">HasKey</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Indicates if the given table contains a row matching the given section and key</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#HasKey(java.lang.String,java.lang.String,java.lang.String)">HasKey</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) or <code>null</code> for all sections</dd>
-<dd><code>key</code> - The value of the <code>variable</code> column</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) or <code>null</code> for all sections</dd>
+<dd><code>key</code> - the value of the <code>variable</code> column</dd>
+<dt>Returns:</dt>
+<dd><code>true</code> if the key exists</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetKeyByValue</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetKeyByValue&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetKeyByValue</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">GetKeyByValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns the value of the <code>variable</code> column for the given table, section, and value</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetKeyByValue(java.lang.String,java.lang.String,java.lang.String)">GetKeyByValue</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>value</code> - The value of the <code>value</code> column</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>value</code> - the value of the <code>value</code> column</dd>
+<dt>Returns:</dt>
+<dd>the variable; <code>null</code> if not found</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="GetString(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>GetString</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;GetString&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#GetString(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="GetString(java.lang.String,java.lang.String,java.lang.String)">
+<h3>GetString</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">GetString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#GetString(java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Returns the value of the <code>value</code> column for the given table, section, and key as a string</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#GetString(java.lang.String,java.lang.String,java.lang.String)">GetString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>key</code> - The value of the <code>variable</code> column to retrieve</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - the value of the <code>variable</code> column to retrieve</dd>
+<dt>Returns:</dt>
+<dd>the value; <code>null</code> if not found</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="SetBatchString(java.lang.String,java.lang.String,java.lang.String[],java.lang.String[])">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SetBatchString</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;SetBatchString&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
-                           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;values)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="SetBatchString(java.lang.String,java.lang.String,java.lang.String[],java.lang.String[])">
+<h3>SetBatchString</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">SetBatchString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;keys,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;values)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">DataStore</a></code></span></div>
 <div class="block">Performs a bulk <a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)"><code>DataStore.SetString(String, String, String, String)</code></a> operation, using available database features to do so more efficiently.
-
+ <p>
  The array index of the keys and value params are linked</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#SetBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String%5B%5D)">SetBatchString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>values</code> - The new values to set the <code>value</code> column to</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>values</code> - the new values to set the <code>value</code> column to</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SetString</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;SetString&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;key,
-                      <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>SetString</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">SetString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Sets the value of the <code>value</code> column for the given table, section, and key as a string</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#SetString(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">SetString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>key</code> - The value of the <code>variable</code> column to update</dd>
-<dd><code>value</code> - The new value of the <code>value</code> column</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>key</code> - the value of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - the new value of the <code>value</code> column</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String[],java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>IncreaseBatchString</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;IncreaseBatchString&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;fName,
-                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;section,
-                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;keys,
-                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;value)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">DataStore</a></code></span></div>
+<li>
+<section class="detail" id="IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String[],java.lang.String)">
+<h3>IncreaseBatchString</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">IncreaseBatchString</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;keys,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">DataStore</a></code></span></div>
 <div class="block">Increases the value of the <code>value</code> column as an integer for all keys of the given table and section</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#IncreaseBatchString(java.lang.String,java.lang.String,java.lang.String%5B%5D,java.lang.String)">IncreaseBatchString</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>fName</code> - A table name, without the <code>phantombot_</code> prefix</dd>
-<dd><code>section</code> - A section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
-<dd><code>keys</code> - The values of the <code>variable</code> column to update</dd>
-<dd><code>value</code> - The new value to increase the <code>value</code> column by</dd>
+<dt>Parameters:</dt>
+<dd><code>fName</code> - a table name, without the <code>phantombot_</code> prefix</dd>
+<dd><code>section</code> - a section name. <code>""</code> (empty string) for the default section; <code>null</code> for all sections</dd>
+<dd><code>keys</code> - the values of the <code>variable</code> column to update</dd>
+<dd><code>value</code> - the new value to increase the <code>value</code> column by</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="query(java.lang.String,java.lang.String[])">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>query</h4>
-<pre class="methodSignature">public&nbsp;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/List.html?is-external=true" title="class or interface in java.util" class="externalLink">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&gt;&nbsp;query&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;sql,
-                                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;replacements)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="DataStore.html#query(java.lang.String,java.lang.String%5B%5D)">DataStore</a></code></span></div>
-<div class="block">Executes an SQL query.
- <br/><br/>
- The query is executed using a <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement</code></a> with calls to <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a>
- <br/><br/>
+<li>
+<section class="detail" id="query(java.lang.String,java.lang.String[])">
+<h3>query</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;</span>&nbsp;<span class="element-name">query</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;sql,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;replacements)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="DataStore.html#query(java.lang.String,java.lang.String%5B%5D)">DataStore</a></code></span></div>
+<div class="block">Executes an SQL query
+ <p>
+ The query is executed using a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html" title="class or interface in java.sql" class="external-link"><code>PreparedStatement</code></a> with calls to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html#setString(int,java.lang.String)" title="class or interface in java.sql" class="external-link"><code>PreparedStatement.setString(int, String)</code></a>
+ <p>
  For example:<br/>
  <code>executeSql("SELECT * FROM foo WHERE bar = ?", ["baz"])</code>
- <br/><br/>
+ <p>
  The value <code>"baz"</code> is escaped to prevent SQL injection, then inserted in place of the <code>?</code>
- <br/><br/>
+ <p>
  This yields the final query of<br/>
  <code>SELECT * FROM foo WHERE bar = "baz"</code>
- <br/><br/>
+ <p>
  You can use <code>?</code> as many times as necessary, but must provide the same number of elements in the replacements array for the replacement to work
- <br/><br/>
+ <p>
  Replacements are performed in order from left to right
- <br/><br/>
+ <p>
  Exceptions from failed SQL queries are NOT returned or thrown, but are logged in the core-error log</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dl class="notes">
+<dt>Overrides:</dt>
 <dd><code><a href="DataStore.html#query(java.lang.String,java.lang.String%5B%5D)">query</a></code>&nbsp;in class&nbsp;<code><a href="DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dt>Parameters:</dt>
 <dd><code>sql</code> - The query to execute</dd>
-<dd><code>replacements</code> - Replacements for <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.sql/java/sql/PreparedStatement.html?is-external=true#setString(int,java.lang.String)" title="class or interface in java.sql" class="externalLink"><code>PreparedStatement.setString(int, String)</code></a></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>replacements</code> - Replacements for <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/PreparedStatement.html#setString(int,java.lang.String)" title="class or interface in java.sql" class="external-link"><code>PreparedStatement.setString(int, String)</code></a></dd>
+<dt>Returns:</dt>
 <dd>An List of data as strings representing the result set, if the query was a DQL statement; an empty list otherwise. The outer list represents rows; the inner array represents columns; the values of the inner list represent the value of the row-column pair at that index as a string</dd>
 </dl>
-</li>
-</ul>
+</section>
 </li>
 </ul>
 </section>
 </li>
 </ul>
-</div>
-</div>
-</main>
+</section>
 <!-- ========= END OF CLASS DATA ========= -->
+</main>
 <footer role="contentinfo">
-<nav role="navigation">
-<!-- ======= START OF BOTTOM NAVBAR ====== -->
-<div class="bottomNav"><a id="navbar.bottom">
-<!--   -->
-</a>
-<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
-<a id="navbar.bottom.firstrow">
-<!--   -->
-</a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../index.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-all.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
-</ul>
-<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
-</div>
-<div class="subNav">
-<ul class="navList" id="allclasses_navbar_bottom">
-<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
-</ul>
-<div>
-<script type="text/javascript"><!--
-  allClassesLink = document.getElementById("allclasses_navbar_bottom");
-  if(window==top) {
-    allClassesLink.style.display = "block";
-  }
-  else {
-    allClassesLink.style.display = "none";
-  }
-  //-->
-</script>
-<noscript>
-<div>JavaScript is disabled on your browser.</div>
-</noscript>
-</div>
-<div>
-<ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
-</ul>
-</div>
-<a id="skip.navbar.bottom">
-<!--   -->
-</a></div>
-<!-- ======== END OF BOTTOM NAVBAR ======= -->
-</nav>
-<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+<hr>
+<p class="legal-copy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
 </footer>
+</div>
+</div>
 </body>
 </html>
