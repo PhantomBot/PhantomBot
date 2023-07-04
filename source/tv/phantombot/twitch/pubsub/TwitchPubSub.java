@@ -445,11 +445,9 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
 
         @Override
         public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
-            if (frame instanceof TextWebSocketFrame) {
-                TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
+            if (frame instanceof TextWebSocketFrame tframe) {
                 this.onMessage(tframe.text());
-            } else if (frame instanceof CloseWebSocketFrame) {
-                CloseWebSocketFrame cframe = (CloseWebSocketFrame) frame;
+            } else if (frame instanceof CloseWebSocketFrame cframe) {
                 this.onClose(cframe.statusCode(), cframe.reasonText());
             }
         }

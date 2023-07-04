@@ -70,8 +70,7 @@ public class WsSslErrorHandler extends SimpleChannelInboundHandler<WebSocketFram
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof HandshakeComplete) {
-            HandshakeComplete hc = (HandshakeComplete) evt;
+        if (evt instanceof HandshakeComplete hc) {
             boolean allowNonSsl = hc.requestHeaders().contains(HTTPWSServer.HEADER_X_FORWARDED_HOST) || hc.requestHeaders().contains(HTTPWSServer.HEADER_CF_RAY);
 
             if (!allowNonSsl) {

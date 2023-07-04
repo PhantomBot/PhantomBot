@@ -115,7 +115,7 @@ public class WsYTHandler implements WsFrameHandler {
             }
         });
 
-        if (frame instanceof TextWebSocketFrame) {
+        if (frame instanceof TextWebSocketFrame tframe) {
             if (clientConnected && !ctx.channel().attr(ATTR_IS_PLAYER).get() && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
                 JSONStringer jso = new JSONStringer();
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("secondconnection").value(true).endObject().toString()));
@@ -138,8 +138,6 @@ public class WsYTHandler implements WsFrameHandler {
                 ctx.channel().attr(ATTR_IS_PLAYER).set(Boolean.TRUE);
                 EventBus.instance().postAsync(new YTPlayerConnectEvent());
             }
-
-            TextWebSocketFrame tframe = (TextWebSocketFrame) frame;
 
             JSONObject jso;
 

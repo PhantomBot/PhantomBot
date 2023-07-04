@@ -31,12 +31,12 @@ import java.util.stream.Stream;
 
 /**
  * Provides access to File I/O from JS
- * <br /><br />
+ * <p>
  * Paths must in one of these base folders, relative to the location of {@code PhantomBot.jar},
  * otherwise the operation fails: {@code ./addons}, {@code ./config/audio-hooks},
  * {@code ./config/gif-alerts}, {@code ./config/clips}, {@code ./config/emotes},
  * {@code ./logs}, or {@code ./scripts}
- * <br /><br />
+ * <p>
  * If running in Docker, symlinks to the same paths relative to {@code /opt/PhantomBot_data}
  * are also allowed. No other symlinks are allowed unless they still meet the location restrictions
  * above after being resolved to their real paths

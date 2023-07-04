@@ -51,6 +51,7 @@ import com.gmt2001.datastore.H2Store;
 import com.gmt2001.datastore.MariaDBStore;
 import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
+import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
@@ -111,9 +112,6 @@ public final class PhantomBot implements Listener {
 
     /* Bot Information */
     private TwitchAuthorizationCodeFlow authflow;
-
-    /* DataStore Information */
-    private DataStore dataStore;
 
     /* Caches */
     private FollowersCache followersCache;
@@ -326,112 +324,37 @@ public final class PhantomBot implements Listener {
             && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
             && SqliteStore.instance().GetFileList().length > 0) {
             Transaction t = CaselessProperties.instance().startTransaction(CaselessProperties.Transaction.PRIORITY_MAX);
-            t.setProperty("datastore", "sqlite3store");
+            t.setProperty("datastore", "SQLiteStore2");
             t.commit();
         }
 
         /* Load the datastore */
-        /**
-         * @botproperty datastore - The type of DB to use. Valid values: `sqlite3store`, `mysqlstore`, `mariadbstore`, `h2store`. Default `h2store`
-         * @botpropertycatsort datastore 10 30 Datastore
-         * @botpropertyrestart datastore
-         */
-        /**
-         * @botproperty datastoreconfig - If set, H2Store: Overrides the DB file name; SQLiteStore: Links to a file containing config overrides
-         * @botpropertycatsort datastoreconfig 900 30 Datastore
-         * @botpropertyrestart datastoreconfig
-         */
-        if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("mysqlstore")) {
-            /**
-             * @botproperty mysqlport - The port to use for MySQL connections. Default `3306`
-             * @botpropertycatsort mysqlport 210 30 Datastore
-             * @botpropertyrestart mysqlport
-             */
-            /**
-             * @botproperty mysqlhost - The IP, domain name, or hostname of the MySQL server
-             * @botpropertycatsort mysqlhost 200 30 Datastore
-             * @botpropertyrestart mysqlhost
-             */
-            /**
-             * @botproperty mysqlname - The schema where the tables for the bot will be created/located on the MySQL server
-             * @botpropertycatsort mysqlname 220 30 Datastore
-             * @botpropertyrestart mysqlname
-             */
-            /**
-             * @botproperty mysqluser - The username to login as to the MySQL server
-             * @botpropertycatsort mysqluser 230 30 Datastore
-             * @botpropertyrestart mysqluser
-             */
-            /**
-             * @botproperty mysqlpass - The password for `mysqluser`
-             * @botpropertycatsort mysqlpass 240 30 Datastore
-             * @botpropertyrestart mysqlpass
-             */
-            /**
-             * @botproperty mysqlssl - Indicates if SSL should be used for the MySQL connection
-             * @botpropertycatsort mysqlssl 250 30 Datastore
-             * @botpropertyrestart mysqlssl
-             */
-            String mySqlConn;
-            if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-                mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-            } else {
-                mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-            }
-
-            this.dataStore = MySQLStore.instance(mySqlConn);
-
-            /* Check to see if we can create a connection */
-            if (!this.dataStore.CanConnect()) {
-                this.print("Could not create a connection with MySQL Server. PhantomBot now shutting down...");
-                PhantomBot.exitError();
-            }
-            /* Convert to MySql */
-            if (MySQLStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
+        Datastore2.init();
+        String oldds = CaselessProperties.instance().getProperty("datastore", "h2store");
+        if (!oldds.toLowerCase().startsWith("sqlite")) {
+            if (DataStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.instance().GetFileList().length > 0) {
-                DataStoreConverter.convertDataStore(MySQLStore.instance(), SqliteStore.instance());
-            }
-        } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("mariadbstore")) {
-            String mariadbConn;
-            if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-                mariadbConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-            } else {
-                mariadbConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-            }
-
-            this.dataStore = MariaDBStore.instance(mariadbConn);
-
-            /* Check to see if we can create a connection */
-            if (!this.dataStore.CanConnect()) {
-                this.print("Could not create a connection with MariaDB Server. PhantomBot now shutting down...");
-                PhantomBot.exitError();
-            }
-            /* Convert to MariaDB */
-            if (MariaDBStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.instance().GetFileList().length > 0) {
-                DataStoreConverter.convertDataStore(MariaDBStore.instance(), SqliteStore.instance());
-            }
-        } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("h2store")
-            || !SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))) {
-            this.dataStore = H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
-
-            if (H2Store.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.instance().GetFileList().length > 0) {
-                DataStoreConverter.convertDataStore(H2Store.instance(), SqliteStore.instance());
-            }
-        } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("sqlite3store")
-            || CaselessProperties.instance().getProperty("datastore", "h2store").isBlank()) {
-            this.dataStore = SqliteStore.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
-
-            /* Handle index operations. */
-            com.gmt2001.Console.debug.println("Checking database indexes, please wait...");
-            this.dataStore.CreateIndexes();
-        } else {
-            com.gmt2001.Console.err.println("Invalid datastore selected. PhantomBot now shutting down...");
-            PhantomBot.exitError();
+                    if (oldds.startsWith("mysql")) {
+                        String mySqlConn;
+                        if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
+                            mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
+                        } else {
+                            mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
+                        }
+                        DataStoreConverter.convertDataStore(MySQLStore.instance(mySqlConn), SqliteStore.instance());
+                    } else if (oldds.startsWith("mariadb")) {
+                        String mariaDBConn;
+                        if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
+                            mariaDBConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
+                        } else {
+                            mariaDBConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
+                        }
+                        DataStoreConverter.convertDataStore(MariaDBStore.instance(mariaDBConn), SqliteStore.instance());
+                    } else if (oldds.startsWith("h2")) {
+                        DataStoreConverter.convertDataStore(H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", "")), SqliteStore.instance());
+                    }
+                }
         }
 
         /* Set the oauth key in the Twitch api and perform a validation. */
@@ -634,7 +557,7 @@ public final class PhantomBot implements Listener {
      * @return this.dataStore
      */
     public DataStore getDataStore() {
-        return this.dataStore;
+        return DataStore.instance();
     }
 
     /**
@@ -693,14 +616,14 @@ public final class PhantomBot implements Listener {
      */
     public boolean checkModuleEnabled(String module) {
         try {
-            return this.dataStore.GetString("modules", "", module).equals("true");
+            return this.getDataStore().GetString("modules", "", module).equals("true");
         } catch (NullPointerException ex) {
             return false;
         }
     }
 
     public String getDataStoreType() {
-        return CaselessProperties.instance().getProperty("datastore", "h2store");
+        return CaselessProperties.instance().getProperty("datastore", "H2Store2");
     }
 
     /**
@@ -712,7 +635,7 @@ public final class PhantomBot implements Listener {
      */
     public boolean checkDataStore(String table, String key) {
         try {
-            return (this.dataStore.HasKey(table, "", key) && this.dataStore.GetString(table, "", key).equals("true"));
+            return (this.getDataStore().HasKey(table, "", key) && this.getDataStore().GetString(table, "", key).equals("true"));
         } catch (NullPointerException ex) {
             return false;
         }
@@ -949,7 +872,8 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort owner 40 10 Admin
          * @botpropertyrestart owner
          */
-        Script.global.defineProperty("inidb", this.dataStore, 0);
+        Script.global.defineProperty("inidb", DataStore.instance(), 0);
+        Script.global.defineProperty("datastore", Datastore2.instance(), 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
         Script.global.defineProperty("twitch", TwitchAPIv5.instance(), 0);
         Script.global.defineProperty("helix", Helix.instance(), 0);
@@ -1026,7 +950,6 @@ public final class PhantomBot implements Listener {
         this.print("Stopping all events and message dispatching...");
         ScriptFileWatcher.instance().kill();
         ScriptEventManager.instance().kill();
-        ExecutorService.shutdown();
 
         /* Gonna need a way to pass this to all channels */
         if (this.getSession() != null) {
@@ -1091,15 +1014,10 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.out.print("\r\n");
         this.print("Closing the database...");
-        this.dataStore.dispose();
+        this.getDataStore().dispose();
+        Datastore2.instance().dispose();
 
         CaselessProperties.instance().store(false);
-
-        try {
-            RollbarProvider.instance().close();
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
 
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
@@ -1108,6 +1026,14 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
+
+        try {
+            RollbarProvider.instance().close();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        ExecutorService.shutdown();
 
         this.print(this.getBotName() + " is exiting.");
     }
@@ -1369,7 +1295,7 @@ public final class PhantomBot implements Listener {
      */
     private void doCheckPhantomBotUpdate() {
         if (RepoVersion.isEdgeBuild() || RepoVersion.isCustomBuild()) {
-            this.dataStore.del("settings", "newrelease_info");
+            this.getDataStore().del("settings", "newrelease_info");
         }
         ExecutorService.scheduleAtFixedRate(() -> {
             if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
@@ -1379,7 +1305,7 @@ public final class PhantomBot implements Listener {
                     if (RepoVersion.isNightlyBuild()) {
                         String latestNightly = HttpClient.get(URIUtil.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
-                            this.dataStore.del("settings", "newrelease_info");
+                            this.getDataStore().del("settings", "newrelease_info");
                         } else {
                             try {
                                 Thread.sleep(6000);
@@ -1393,7 +1319,7 @@ public final class PhantomBot implements Listener {
                             }
 
                             if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-                                this.dataStore.set("settings", "newrelease_info", "nightly-" + latestNightly + "|https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
+                                this.getDataStore().set("settings", "newrelease_info", "nightly-" + latestNightly + "|https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
                             }
                         }
                     } else {
@@ -1412,10 +1338,10 @@ public final class PhantomBot implements Listener {
                             }
 
                             if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-                                this.dataStore.set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
+                                this.getDataStore().set("settings", "newrelease_info", newVersionInfo[0] + "|" + newVersionInfo[1]);
                             }
                         } else {
-                            this.dataStore.del("settings", "newrelease_info");
+                            this.getDataStore().del("settings", "newrelease_info");
                         }
                     }
                 } catch (JSONException ex) {
@@ -1446,7 +1372,7 @@ public final class PhantomBot implements Listener {
      * Backup the database, keeping so many days.
      */
     private void doBackupDB() {
-        if (!this.dataStore.canBackup()) {
+        if (!this.getDataStore().canBackup()) {
             return;
         }
 
@@ -1455,7 +1381,7 @@ public final class PhantomBot implements Listener {
 
             String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
-            this.dataStore.backupDB("phantombot.auto.backup." + timestamp);
+            this.getDataStore().backupDB("phantombot.auto.backup." + timestamp);
 
             try {
                 Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);

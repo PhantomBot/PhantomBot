@@ -351,7 +351,7 @@ public final class HTTPWSServer {
 
                 if (!forceNew) {
                     Key key = ks.getKey(AUTOSSLKEYALIAS, sslPass.toCharArray());
-                    if (key instanceof PrivateKey) {
+                    if (key instanceof PrivateKey pk) {
                         // Get certificate of public key
                         Certificate cert = ks.getCertificate(AUTOSSLKEYALIAS);
 
@@ -359,7 +359,7 @@ public final class HTTPWSServer {
                         PublicKey publicKey = cert.getPublicKey();
 
                         // Return a key pair
-                        kp = new KeyPair(publicKey, (PrivateKey) key);
+                        kp = new KeyPair(publicKey, pk);
                     }
                 }
             } catch (IOException | CertificateException | KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex) {
