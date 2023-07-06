@@ -92,7 +92,10 @@ public class H2Store2 extends Datastore2 {
         int format = this.checkUpgrade();
 
         if (format >= 0) {
-            this.startUpgrade(format);
+            format = this.startUpgrade(format);
+            if (format == -1) {
+                com.gmt2001.Console.err.println("H2 Database Upgrade Canceled");
+            }
         }
 
         try {
@@ -150,8 +153,9 @@ public class H2Store2 extends Datastore2 {
      * </ul>
      *
      * @param format the format the database is being upgraded from
+     * @return {@code -1} if the upgrade is canceled due to an Exception; otherwise, the format the database is being upgraded from
      */
-    private void startUpgrade(int format) {
+    private int startUpgrade(int format) {
         com.gmt2001.Console.out.println("Upgrading H2 database from v" + format + " to v" + CURRENT_FORMAT);
 
         Path dbfile = Paths.get("./config/", getDbFile() + ".mv.db");
@@ -180,6 +184,7 @@ public class H2Store2 extends Datastore2 {
                 } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
                     com.gmt2001.Console.out.println();
                     com.gmt2001.Console.err.printStackTrace(ex);
+                    return -1;
                 }
 
                 try {
@@ -193,6 +198,7 @@ public class H2Store2 extends Datastore2 {
                     } catch (SQLException ex) {
                         com.gmt2001.Console.out.println();
                         com.gmt2001.Console.err.printStackTrace(ex);
+                        return -1;
                     }
                     Files.delete(dbfile);
                     com.gmt2001.Console.out.println("done");
@@ -204,7 +210,10 @@ public class H2Store2 extends Datastore2 {
         } catch(IOException | URISyntaxException ex) {
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.err.printStackTrace(ex);
+            return -1;
         }
+
+        return format;
     }
 
     /**
