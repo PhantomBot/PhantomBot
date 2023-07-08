@@ -91,7 +91,7 @@ public final class H2Store extends DataStore {
             ex.printStackTrace(System.err);
         }
 
-        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
+        poolMgr = JdbcConnectionPool.create("jdbc:h2:./config/" + configStr + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048", "", "");
         poolMgr.setMaxConnections(MAX_CONNECTIONS);
 
         try {
@@ -166,7 +166,7 @@ public final class H2Store extends DataStore {
                     Properties prop = new Properties();
                     prop.put("user", "");
                     prop.put("password", "");
-                    try (Connection con = drv.connect("jdbc:h2:./config/" + fileName + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", prop);
+                    try (Connection con = drv.connect("jdbc:h2:./config/" + fileName + ";MAX_LENGTH_INPLACE_LOB=2048", prop);
                             Statement st = con.createStatement()) {
                         st.execute("SCRIPT TO '" + scriptfile.toString() + "' COMPRESSION GZIP");
                     } catch (SQLException ex) {
