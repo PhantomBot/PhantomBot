@@ -787,8 +787,8 @@ $(function () {
                         id: 'initLoad.panelSettings',
                         query: 'panelSettings'
                     });
+                    helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 }
-                helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 return;
             }
 
