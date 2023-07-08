@@ -50,6 +50,7 @@ import reactor.core.publisher.Mono;
  * @author gmt2001
  */
 public class DataStore {
+public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteStore {
     private static final DataStore INSTANCE = new DataStore(null);
     /**
      * Mono that caches the table list

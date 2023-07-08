@@ -47,7 +47,7 @@ import tv.phantombot.CaselessProperties;
  *
  * @author gmt2001
  */
-public class SQLiteStore2 extends Datastore2 {
+public final class SQLiteStore2 extends Datastore2 {
     /**
      * Maximum allowed WAL size before an early full {@code VACUUM} occurs
      */

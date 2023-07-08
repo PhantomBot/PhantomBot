@@ -32,7 +32,7 @@ import tv.phantombot.CaselessProperties;
  *
  * @author gmt2001
  */
-public class MySQLStore2 extends Datastore2 {
+public final class MySQLStore2 extends Datastore2 {
     /**
      * MySQL {@code LONGTEXT} type
      */
