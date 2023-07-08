@@ -80,7 +80,7 @@ public abstract class Datastore2 {
     /**
      * Provides an instance of {@link Datastore2}
      *
-     * @return an instance of {@link Datastore2}; {@code null} if {@link #init()} has not been called
+     * @return an instance of {@link Datastore2}
      */
     public static Datastore2 instance() {
         if (INSTANCE == null) {
