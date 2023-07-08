@@ -138,6 +138,7 @@ jobs:
     - name: Set up Ant
       run: sudo apt-get install ant
     - name: Backup Zips
+      continue-on-error: true
       run: mkdir -p /tmp/javadoczips && cp -fv docs/javadoc/*.zip /tmp/javadoczips/
     - name: Retrieve Libs with Ant
       run: ant -noinput -buildfile build.xml ivy-retrieve
@@ -159,6 +160,7 @@ jobs:
           docs/javadoc/**
           !docs/javadoc/*.zip
     - name: Revert Zips
+      continue-on-error: true
       if: steps.verify-changed-files.outputs.files_changed == 'false'
       run: cp -fv /tmp/javadoczips/*.zip docs/javadoc/
     - name: Make Path File
