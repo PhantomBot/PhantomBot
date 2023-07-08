@@ -112,7 +112,7 @@ public class H2Store2 extends Datastore2 {
         this.restoreBackup();
 
         JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
+        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048");
         this.init(dataSource, SQLDialect.H2);
     }
 
@@ -192,7 +192,7 @@ public class H2Store2 extends Datastore2 {
                     Properties prop = new Properties();
                     prop.put("user", "");
                     prop.put("password", "");
-                    try (Connection con = drv.connect("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", prop);
+                    try (Connection con = drv.connect("jdbc:h2:./config/" + getDbFile() + ";MAX_LENGTH_INPLACE_LOB=2048", prop);
                             Statement st = con.createStatement()) {
                         st.execute("SCRIPT TO '" + scriptfile.toString() + "' COMPRESSION GZIP");
                     } catch (SQLException ex) {
