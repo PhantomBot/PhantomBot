@@ -231,7 +231,9 @@ public class H2Store2 extends Datastore2 {
 
         try {
             com.gmt2001.Console.out.print("Importing the database to the latest H2...");
-            try (Connection con = this.getConnection();
+            JdbcDataSource dataSource = new JdbcDataSource();
+            dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048");
+            try (Connection con = dataSource.getConnection();
                         Statement st = con.createStatement()) {
                 st.execute("RUNSCRIPT FROM '" + scriptfile.toString() + "' COMPRESSION GZIP" + (format == 1 ? " FROM_1X" : ""));
             } catch (SQLException ex) {
