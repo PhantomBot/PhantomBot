@@ -79,6 +79,8 @@ public abstract class Datastore2 {
 
     /**
      * Provides an instance of {@link Datastore2}
+     * <p>
+     * If the instance has not been initialized, calls {@link #init()}
      *
      * @return an instance of {@link Datastore2}
      */
@@ -102,21 +104,21 @@ public abstract class Datastore2 {
     /**
      * Initializes a new instance of Datastore2, based on the property {@code datastore} in botlogin.txt
      * <p>
-     * If a datastore type is not specified or is blank, defaults to {@code H2Store}
+     * If a datastore driver is not specified or is blank, defaults to {@link H2Store2}
      * <p>
      * If this function is called when Datastore2 is already initialized, it is a no-op
      * <p>
-     * Builtin datastore types are not case-sensitive, but custom types are
+     * Builtin datastore drivers are not case-sensitive. Custom datastore drivers are case-sensitive
      * <p>
-     * If loading a custom datastore, the following requirements must be met:
+     * If loading a custom datastore driver, the following requirements must be met:
      * <ul>
      * <li>Must extend {@link Datastore2}</li>
      * <li>Must call {@link #init(ConnectionPoolDataSource, SQLDialect)} or {@link #init(ConnectionPoolDataSource, int, int, SQLDialect)}, passing in a valid {@link ConnectionPoolDataSource}, in the constructor</li>
      * <li>May optionally start a timer in the constructor to periodically call {@link #doMaintenance()}</li>
      * <li>Must be in a JAR file located in the {@code ./datastores} folder</li>
-     * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} of the type, including case</li>
+     * <li>The name of the JAR file must match the output of {@link Class#getSimpleName()} (Classname) of the type, including case</li>
      * <li>The {@code .jar} file exension on the JAR file must be lower-case</li>
-     * <li>The value of the {@code datastore} property in botlogin.txt must match the output of {@link Class#getName()} of the type, including case</li>
+     * <li>The value of the {@code datastore} property in botlogin.txt must match the output of {@link Class#getName()} (Fully qualified classname) of the type, including case</li>
      * </ul>
      */
     public static synchronized void init() {
@@ -125,7 +127,7 @@ public abstract class Datastore2 {
         }
 
         /**
-         * @botproperty datastore - The type of DB to use. Valid values: `SQLiteStore2`, `MySQLStore2`, `H2Store2`, a custom type as specified in the JavaDoc for Datastore2#init(). Default `H2Store2`
+         * @botproperty datastore - The type of DB to use. Valid values: `SQLiteStore2`, `MySQLStore2`, `MariaDBStore2`, `H2Store2`, a custom type as specified in the JavaDoc for Datastore2#init(). Default `H2Store2`
          * @botpropertycatsort datastore 10 30 Datastore
          * @botpropertyrestart datastore
          */
