@@ -147,6 +147,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         if (ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_SENT_AUTH_REPLY).get()) {
             if (ctx.channel().attr(ATTR_AUTH_USER).get() != null && !ctx.channel().attr(ATTR_AUTH_USER).get().isEnabled()) {
                 this.invalidateAuthorization(ctx, frame);
+                com.gmt2001.Console.debug.println("Invalidated");
                 return false;
             }
             return true;
@@ -161,6 +162,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                 JSONObject jso = new JSONObject(tframe.text());
 
                 if (jso.has("authenticate") || jso.has("readauth")) {
+                    com.gmt2001.Console.debug.println("TryAuth " + tframe.text());
                     if (jso.has("authenticate")) {
                         astr = jso.getString("authenticate");
                     }
@@ -173,16 +175,20 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
+                        com.gmt2001.Console.debug.println("HasUser");
                     } else if (astr.equals(readWriteToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
+                        com.gmt2001.Console.debug.println("RWToken");
                     } else if (astr.equals(readOnlyToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
+                        com.gmt2001.Console.debug.println("ROToken");
                     } else {
                         PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(astr);
+                        com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                         if (user != null) {
                             ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                             ctx.channel().attr(ATTR_AUTH_USER).set(user);
@@ -236,11 +242,14 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      */
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+        com.gmt2001.Console.debug.println("HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null" : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
         if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getAuthHandler().isAuthorized(ctx, headers)) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
+            com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {
                 ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                 ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                //return true;
             }
         }
 

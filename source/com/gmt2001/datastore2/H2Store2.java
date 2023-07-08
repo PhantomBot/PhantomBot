@@ -112,7 +112,7 @@ public class H2Store2 extends Datastore2 {
         this.restoreBackup();
 
         JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048");
+        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
         this.init(dataSource, SQLDialect.H2);
     }
 
@@ -188,11 +188,11 @@ public class H2Store2 extends Datastore2 {
                 }
 
                 try {
-                    com.gmt2001.Console.out.print("Exporting the database from H2 \" + UPGRADES.get(format) + \"...");
+                    com.gmt2001.Console.out.print("Exporting the database from H2 " + UPGRADES.get(format) + "...");
                     Properties prop = new Properties();
                     prop.put("user", "");
                     prop.put("password", "");
-                    try (Connection con = drv.connect("jdbc:h2:./config/" + getDbFile() + ";MAX_LENGTH_INPLACE_LOB=2048", prop);
+                    try (Connection con = drv.connect("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048", prop);
                             Statement st = con.createStatement()) {
                         st.execute("SCRIPT TO '" + scriptfile.toString() + "' COMPRESSION GZIP");
                     } catch (SQLException ex) {
@@ -232,7 +232,7 @@ public class H2Store2 extends Datastore2 {
         try {
             com.gmt2001.Console.out.print("Importing the database to the latest H2...");
             JdbcDataSource dataSource = new JdbcDataSource();
-            dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";AUTO_SERVER=TRUE;MAX_LENGTH_INPLACE_LOB=2048");
+            dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
             try (Connection con = dataSource.getConnection();
                         Statement st = con.createStatement()) {
                 st.execute("RUNSCRIPT FROM '" + scriptfile.toString() + "' COMPRESSION GZIP" + (format == 1 ? " FROM_1X" : ""));
@@ -268,7 +268,9 @@ public class H2Store2 extends Datastore2 {
             if (backup.isPresent()) {
                 com.gmt2001.Console.out.print("Restoring H2 database from backup at " + backup.get().toString() + "...");
                 Path dbfile = Paths.get("./config/", getDbFile() + ".mv.db");
-                try (Connection con = this.getConnection();
+                JdbcDataSource dataSource = new JdbcDataSource();
+                dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
+                try (Connection con = dataSource.getConnection();
                         Statement st = con.createStatement()) {
                     st.execute("DROP ALL OBJECTS");
                     st.execute("RUNSCRIPT FROM '" + backup.get().toString() + "' COMPRESSION GZIP");

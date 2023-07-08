@@ -775,6 +775,7 @@ $(function () {
                 if (message.authresult === 'false') {
                     helpers.logError('Failed to auth with the socket.', helpers.LOG_TYPE.FORCE);
                     toastr.error('Failed to auth with the socket.', '', {timeOut: 0});
+                    webSocket.close();
                 } else {
                     // This is to stop a reconnect loading the main page.
                     if (helpers.isAuth === true) {
@@ -787,8 +788,8 @@ $(function () {
                         id: 'initLoad.panelSettings',
                         query: 'panelSettings'
                     });
+                    helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 }
-                helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 return;
             }
 

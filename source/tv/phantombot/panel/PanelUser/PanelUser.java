@@ -19,6 +19,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  * @author Sartharon
  */
 public final class PanelUser {
+    private static final PanelUser PROPUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
     private String username;
     private String password;
     private String token;
@@ -68,6 +69,7 @@ public final class PanelUser {
     private PanelUser(String username, String password) {
         this(username, PanelUserHandler.getFullAccessPermissions(), Type.CONFIG, true, true);
         this.password = password;
+        this.generateNewAuthToken();
     }
 
     /**
@@ -113,7 +115,18 @@ public final class PanelUser {
      * @see WsPanelHandler#handleFrame() token usage
      */
     String getAuthToken() {
-        if (this.token == null || this.token.isEmpty()) {
+        return this.getAuthToken(false);
+    }
+    /**
+     * The user's current websocket authentication token
+     * <br /><br />
+     * A new token will automatically be generated and the user saved if there is no current token
+     * @param recurse prevents recursion if {@code true}
+     * @return The user's current websocket authentication token
+     * @see WsPanelHandler#handleFrame() token usage
+     */
+    String getAuthToken(boolean recurse) {
+        if (!recurse && (this.token == null || this.token.isEmpty())) {
             generateNewAuthToken();
             if(this.userType == Type.DATABASE) {
                 this.save();
@@ -236,7 +249,7 @@ public final class PanelUser {
      */
     private void generateNewAuthToken() {
         String tempToken = PhantomBot.generateRandomString(30);
-        while (PanelUser.LookupByAuthToken(tempToken) != null) {
+        while (PanelUser.LookupByAuthToken(tempToken, true) != null) {
             tempToken = PhantomBot.generateRandomString(30);
         }
         this.token = tempToken;
@@ -377,8 +390,7 @@ public final class PanelUser {
             return new PanelUser(username, new JSONObject(userJSONStr));
         }
         if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
-            String password = Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel"));
-            return new PanelUser(username, password);
+            return PROPUSER;
         }
         return null;
     }
@@ -390,13 +402,19 @@ public final class PanelUser {
      * @see PanelUser#LookupByUsername(String)
      */
     public static PanelUser LookupByAuthToken(String token) {
+        return LookupByAuthToken(token, false);
+    }
+
+    private static PanelUser LookupByAuthToken(String token, boolean recurse) {
         String username = null;
         if (token.equals(CaselessProperties.instance().getProperty("webauth")) || token.equals(CaselessProperties.instance().getProperty("webauthro"))) {
             username = CaselessProperties.instance().getProperty("paneluser", "panel");
+        } else if (PROPUSER != null && token.equals(PROPUSER.getAuthToken(recurse))) {
+            return PROPUSER;
         } else {
             DataStore dataStore = PhantomBot.instance().getDataStore();
             String res[] = dataStore.GetKeysByLikeValues(PanelUserHandler.PANEL_USER_TABLE, "", "\"token\":\"" + token + "\"");
-            
+
             if (res.length == 1) {
                 username = res[0];
             }
