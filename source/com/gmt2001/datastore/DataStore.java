@@ -29,7 +29,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
 import org.jooq.Nullability;
-import org.jooq.Query;
 import org.jooq.Record1;
 import org.jooq.SelectConnectByStep;
 import org.jooq.SelectForUpdateStep;
@@ -43,7 +42,6 @@ import org.jooq.impl.SQLDataType;
 import com.gmt2001.datastore2.Datastore2;
 
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.Sinks;
 
 /**
  * Provides access to the database in a key-value store style
@@ -57,10 +55,6 @@ public class DataStore {
      * Mono that caches the table list
      */
     private Mono<List<Table<?>>> tableMono = null;
-    /**
-     * Sink that invalidates the cache of {@link #tableMono}
-     */
-    private Sinks.One<Void> tableInvalidateSink = null;
 
     /**
      * Provides an instance of {@link DataStore}
@@ -100,13 +94,8 @@ public class DataStore {
     /**
      * Instantiates {@link #tableMono}
      */
-    private synchronized void tableMono() {
-        if (this.tableMono == null) {
-            this.tableMono = Mono.<List<Table<?>>>create(emitter -> emitter.success(dsl().meta().getTables())).cacheInvalidateWhen(c -> {
-                this.tableInvalidateSink = Sinks.one();
-                return this.tableInvalidateSink.asMono();
-            });
-        }
+    private void tableMono() {
+        this.tableMono = Mono.<List<Table<?>>>create(emitter -> emitter.success(dsl().meta().getTables())).cache();
     }
 
     /**
@@ -118,8 +107,10 @@ public class DataStore {
      * @return an {@link Optional} which contains the matching {@link Table}, if found
      */
     public Optional<Table<?>> findTable(String fName) {
-        if (this.tableMono == null) {
-            this.tableMono();
+        synchronized(this) {
+            if (this.tableMono == null) {
+                this.tableMono();
+            }
         }
         return this.tableMono.block().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
     }
@@ -680,40 +671,43 @@ public class DataStore {
 
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a string
-     *
+     * <p>
+     * It is not possible to distinguish between the SQL value {@code NULL} and the table/row not being found with this method
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
      * @return an {@link Optional} that may contain the value
      */
     public Optional<String> OptString(String fName, String section, String key) {
+        return Optional.ofNullable(this.GetString(fName, section, key));
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a string
+     * <p>
+     * A return value of {@code null} may denote that the table/row is not found, or that the actual stored value is SQL {@code NULL}.
+     * Use {@link #HasKey(String, String, String)} to verify if the row exists
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @return the value
+     */
+    public String GetString(String fName, String section, String key) {
         Optional<Table<?>> otbl = findTable(fName);
 
         if (otbl.isPresent()) {
             Table<?> tbl = otbl.get();
             if (section == null) {
-                return Optional.ofNullable(dsl().select(field("value", tbl)).from(tbl)
-                .where(field("variable", tbl).eq(key)).fetchAny(field("value", tbl)));
+                return dsl().select(field("value", tbl)).from(tbl)
+                .where(field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
             } else {
-                return Optional.ofNullable(dsl().select(field("value", tbl)).from(tbl)
+                return dsl().select(field("value", tbl)).from(tbl)
                 .where(field("section", tbl).eq(section),
-                field("variable", tbl).eq(key)).fetchAny(field("value", tbl)));
+                field("variable", tbl).eq(key)).fetchAny(field("value", tbl));
             }
         }
 
-        return Optional.empty();
-    }
-
-    /**
-     * Returns the value of the {@code value} column for the given table, section, and key as a string
-     *
-     * @param fName a table name, without the {@code phantombot_} prefix
-     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
-     * @param key the value of the {@code variable} column to retrieve
-     * @return the value; {@code null} if not found
-     */
-    public String GetString(String fName, String section, String key) {
-        return this.OptString(fName, section, key).orElse(null);
+        return null;
     }
 
     /**
@@ -748,20 +742,20 @@ public class DataStore {
      * @param value the new value of the {@code value} column
      */
     private void SetString(DSLContext dsl, Table<?> tbl, boolean hasKey, String section, String key, String value) {
-            if (hasKey) {
-                if (section == null) {
-                    dsl.update(tbl)
-                    .set(field("value", tbl), value)
-                    .where(field("variable", tbl).eq(key)).executeAsync();
-                } else {
-                    dsl.update(tbl)
-                    .set(field("value", tbl), value)
-                    .where(field("section", tbl).eq(section),
-                    field("variable", tbl).eq(key)).executeAsync();
-                }
+        if (hasKey) {
+            if (section == null) {
+                dsl.update(tbl)
+                .set(field("value", tbl), value)
+                .where(field("variable", tbl).eq(key)).execute();
             } else {
-                dsl.insertInto(tbl).values(section, key, value).executeAsync();
+                dsl.update(tbl)
+                .set(field("value", tbl), value)
+                .where(field("section", tbl).eq(section),
+                field("variable", tbl).eq(key)).execute();
             }
+        } else {
+            dsl.insertInto(tbl).values(section, key, value).execute();
+        }
     }
 
     /**
@@ -1134,11 +1128,11 @@ public class DataStore {
             Table<?> tbl = otbl.get();
             if (section == null) {
                 dsl().deleteFrom(tbl)
-                .where(field("variable", tbl).eq(key)).executeAsync();
+                .where(field("variable", tbl).eq(key)).execute();
             } else {
                 dsl().deleteFrom(tbl)
                 .where(field("section", tbl).eq(section),
-                field("variable", tbl).eq(key)).executeAsync();
+                field("variable", tbl).eq(key)).execute();
             }
         }
     }
@@ -1155,7 +1149,7 @@ public class DataStore {
         if (otbl.isPresent()) {
             Table<?> tbl = otbl.get();
             dsl().deleteFrom(tbl)
-            .where(field("section", tbl).eq(section)).executeAsync();
+            .where(field("section", tbl).eq(section)).execute();
         }
     }
 
@@ -1165,30 +1159,16 @@ public class DataStore {
      * @param fName a table name, without the {@code phantombot_} prefix
      */
     public void AddFile(String fName) {
-        this.AddFile(fName, false);
-    }
-
-    /**
-     * Creates a new table
-     *
-     * @param fName a table name, without the {@code phantombot_} prefix
-     * @param async {@code true} to execute asynchronously
-     */
-    public void AddFile(String fName, boolean async) {
-        Query q = dsl().createTableIfNotExists("phantombot_" + fName)
+        dsl().createTableIfNotExists("phantombot_" + fName)
         .column("section", SQLDataType.VARCHAR(255).nullability(Nullability.NULL))
         .column("variable", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
         .column("value", Datastore2.instance().longTextDataType())
-        .unique("section", "variable");
+        .unique("section", "variable").execute();
 
-        if (async) {
-            q.executeAsync();
-        } else {
-            q.execute();
-        }
-
-        if (this.tableInvalidateSink != null) {
-            this.tableInvalidateSink.tryEmitEmpty();
+        if (this.tableMono != null) {
+            synchronized(this) {
+                this.tableMono = null;
+            }
         }
     }
 
@@ -1201,11 +1181,13 @@ public class DataStore {
         Optional<Table<?>> otbl = findTable(fName);
 
         if (otbl.isPresent()) {
-            dsl().dropTable(otbl.get()).executeAsync();
+            dsl().dropTable(otbl.get()).execute();
         }
 
-        if (this.tableInvalidateSink != null) {
-            this.tableInvalidateSink.tryEmitEmpty();
+        if (this.tableMono != null) {
+            synchronized(this) {
+                this.tableMono = null;
+            }
         }
     }
 
@@ -1219,11 +1201,13 @@ public class DataStore {
         Optional<Table<?>> otbl = findTable(fNameSource);
 
          if (otbl.isPresent()) {
-            dsl().alterTable(otbl.get()).renameTo("phantombot_" + fNameDest).executeAsync();
+            dsl().alterTable(otbl.get()).renameTo("phantombot_" + fNameDest).execute();
          }
 
-        if (this.tableInvalidateSink != null) {
-            this.tableInvalidateSink.tryEmitEmpty();
+        if (this.tableMono != null) {
+            synchronized(this) {
+                this.tableMono = null;
+            }
         }
     }
 
@@ -1246,7 +1230,21 @@ public class DataStore {
      * @return {@code true} if the key exists
      */
     public boolean HasKey(String fName, String section, String key) {
-        return GetString(fName, section, key) != null;
+        Optional<Table<?>> otbl = findTable(fName);
+
+        if (otbl.isPresent()) {
+            Table<?> tbl = otbl.get();
+            if (section == null) {
+                return dsl().select(field("value", tbl)).from(tbl)
+                .where(field("variable", tbl).eq(key)).execute() > 0;
+            } else {
+                return dsl().select(field("value", tbl)).from(tbl)
+                .where(field("section", tbl).eq(section),
+                field("variable", tbl).eq(key)).execute() > 0;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1262,7 +1260,9 @@ public class DataStore {
 
     /**
      * Returns the value of the {@code value} column from the default section of the given table and key as a string
-     *
+     * <p>
+     * A return value of {@code null} may denote that the table/row is not found, or that the actual stored value is SQL {@code NULL}.
+     * Use {@link #exists(String, String)} to verify if the row exists
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param key the value of the {@code variable} column to retrieve
      * @return the value; {@code null} if not found
