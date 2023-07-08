@@ -19,6 +19,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  * @author Sartharon
  */
 public final class PanelUser {
+    private static final PanelUser PROPUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
     private String username;
     private String password;
     private String token;
@@ -377,8 +378,7 @@ public final class PanelUser {
             return new PanelUser(username, new JSONObject(userJSONStr));
         }
         if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
-            String password = Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel"));
-            return new PanelUser(username, password);
+            return PROPUSER;
         }
         return null;
     }
@@ -396,7 +396,7 @@ public final class PanelUser {
         } else {
             DataStore dataStore = PhantomBot.instance().getDataStore();
             String res[] = dataStore.GetKeysByLikeValues(PanelUserHandler.PANEL_USER_TABLE, "", "\"token\":\"" + token + "\"");
-            
+
             if (res.length == 1) {
                 username = res[0];
             }
