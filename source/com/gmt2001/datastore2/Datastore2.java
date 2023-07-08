@@ -155,11 +155,11 @@ public abstract class Datastore2 {
         if (packageName.startsWith("com.gmt2001.datastore2.")) {
             com.gmt2001.Console.debug.println("Checking for a built-in driver");
             // Resolve builtin classes case-insensitively
-            dataStoreType = DataStore.resolveClassname(className);
             final String fdataStoreType = dataStoreType;
+            final String fdataStoreType2 = DataStore.resolveClassname(className);
             Reflect.instance().loadPackageRecursive(Datastore2.class.getName().substring(0, Datastore2.class.getName().lastIndexOf('.')));
             Optional<String> tempdataStoreType = Reflect.instance().getSubTypesOf(Datastore2.class).stream().filter((c) -> {
-                return c.getSimpleName().equalsIgnoreCase(fdataStoreType);
+                return c.getSimpleName().equalsIgnoreCase(fdataStoreType) || c.getSimpleName().equalsIgnoreCase(fdataStoreType2);
             }).map(c -> c.getName()).findFirst();
 
             if (tempdataStoreType.isPresent()) {
