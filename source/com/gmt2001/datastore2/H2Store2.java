@@ -188,7 +188,7 @@ public class H2Store2 extends Datastore2 {
                 }
 
                 try {
-                    com.gmt2001.Console.out.print("Exporting the database from H2 \" + UPGRADES.get(format) + \"...");
+                    com.gmt2001.Console.out.print("Exporting the database from H2 " + UPGRADES.get(format) + "...");
                     Properties prop = new Properties();
                     prop.put("user", "");
                     prop.put("password", "");
