@@ -259,6 +259,7 @@ public final class PhantomBot implements Listener {
      * Constructor for PhantomBot object.
      *
      */
+    @SuppressWarnings({"removal"})
     public PhantomBot() {
         /**
          * @botproperty reactordebug - If `true`, internal debugging for Reactor HTTP and WS processing is sent to the console. Default `false`
@@ -862,6 +863,7 @@ public final class PhantomBot implements Listener {
         }
     }
 
+    @SuppressWarnings({"removal"})
     private void initScripts() {
         if (!TwitchValidate.instance().isChatValid()) {
             return;
@@ -1014,7 +1016,6 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.out.print("\r\n");
         this.print("Closing the database...");
-        this.getDataStore().dispose();
         Datastore2.instance().dispose();
 
         CaselessProperties.instance().store(false);
@@ -1050,6 +1051,7 @@ public final class PhantomBot implements Listener {
      *
      * @param event
      */
+    @SuppressWarnings({"removal"})
     @Handler
     public void ircJoinComplete(IrcJoinCompleteEvent event) {
         if (this.joined) {

@@ -84,6 +84,7 @@ public final class ConsoleEventHandler implements Listener {
      *
      * @param event
      */
+    @SuppressWarnings({"removal"})
     @Handler
     public void onConsoleInput(ConsoleInputEvent event) throws JSONException {
         // The message said in the console.
