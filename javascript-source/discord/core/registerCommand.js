@@ -210,7 +210,7 @@
 
     function updateCommandChannel(command) {
         if (commandExists(command)) {
-            commands[command].channels = ($.inidb.exists('discordChannelcom', command) ? $.inidb.get('discordChannelcom', command) : '');
+            commands[command].channels = $.inidb.GetString('discordChannelcom', '', command, '');
         }
     }
 
@@ -261,17 +261,13 @@
      */
     function registerCommand(scriptFile, command, permission) {
         if (!commandExists(command)) {
-            if ($.inidb.exists('discordPermcom', command)) {
-                permission = $.getIniDbString('discordPermcom', command);
-            } else {
-                permission = $.getSetIniDbString('discordPermcom', command, getJSONCommandPermission(command, permission));
-            }
+            permission = $.getSetIniDbString('discordPermcom', command, getJSONCommandPermission(command, permission));
 
             commands[command] = {
                 permission: getJSONCommandPermission(command, permission),
-                cost: ($.inidb.exists('discordPricecom', command) ? $.inidb.get('discordPricecom', command) : 0),
-                alias: ($.inidb.exists('discordAliascom', command) ? $.inidb.get('discordAliascom', command) : ''),
-                channels: ($.inidb.exists('discordChannelcom', command) ? $.inidb.get('discordChannelcom', command) : ''),
+                cost: $.inidb.GetInteger('discordPricecom', command, 0),
+                alias: $.inidb.GetString('discordAliascom', command, ''),
+                channels: $.inidb.GetString('discordChannelcom', command, ''),
                 scriptFile: scriptFile,
                 subCommand: {}
             };
@@ -293,11 +289,7 @@
      */
     function registerSubCommand(command, subCommand, permission) {
         if (commandExists(command) && !subCommandExists(command, subCommand)) {
-            if ($.inidb.exists('discordPermcom', command)) {
-                permission = $.getIniDbString('discordPermcom', command);
-            } else {
-                permission = $.getSetIniDbString('discordPermcom', command, getJSONCommandPermission(command, permission));
-            }
+            permission = $.getSetIniDbString('discordPermcom', command, getJSONCommandPermission(command, permission));
 
             commands[command].subCommand[subCommand] = {
                 permission: getJSONCommandPermission((command + ' ' + subCommand), permission)

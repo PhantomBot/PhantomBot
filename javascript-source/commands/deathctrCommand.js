@@ -98,8 +98,7 @@
                  * @commandpath deathctr incr - Add one to the death counter for the game being played.
                  */
                 if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('incr') || action.equalsIgnoreCase('+')) {
-
-                    $.say($.lang.get('deathcounter.add-success', $.ownerName, game, ($.inidb.exists('deaths', game) ? (parseInt($.inidb.get('deaths', game)) + 1) : 1)));
+                    $.say($.lang.get('deathcounter.add-success', $.ownerName, game, ($.getIniDbNumber('deaths', game, 0) + 1)));
                     $.inidb.incr('deaths', game, 1);
                     $.deathUpdateFile(game);
                     return;
@@ -114,7 +113,7 @@
                         return;
                     }
 
-                    $.say($.lang.get('deathcounter.sub-success', game, ($.inidb.exists('deaths', game) ? (parseInt($.inidb.get('deaths', game)) - 1) : 0)));
+                    $.say($.lang.get('deathcounter.sub-success', game, ($.getIniDbNumber('deaths', game, 0) - 1)));
                     $.inidb.decr('deaths', game, 1);
                     $.deathUpdateFile(game);
                     return;

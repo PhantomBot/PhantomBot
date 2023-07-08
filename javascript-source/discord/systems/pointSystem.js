@@ -30,9 +30,7 @@
             return 0;
         }
 
-        username = username.toLowerCase();
-
-        return ($.inidb.exists('points', username) ? parseInt($.inidb.get('points', username)) : 0);
+        return $.inidb.GetInteger('points', '', username.toLowerCase(), 0);
     }
 
     /*

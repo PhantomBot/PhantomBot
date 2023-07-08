@@ -73,18 +73,13 @@
      * @cached
      */
     function pay(args) {
-        let temp;
         let cmd = args.args || '';
-        if (cmd.length === 0) {
+        if (args.args.length === 0) {
             cmd = args.event.getCommand();
         }
-        if ($.inidb.exists('paycom', cmd)) {
-            temp = $.inidb.get('paycom', cmd);
-        } else {
-            temp = 0;
-        }
+
         return {
-            result: $.getPoints($.jsString(temp)),
+            result: $.getPoints($.inidb.GetInteger('paycom', '', cmd, 0)),
             cache: true
         };
     }
@@ -141,18 +136,13 @@
      * @cached
      */
     function price(args) {
-        let temp;
         let cmd = args.args || '';
         if (cmd.length === 0) {
             cmd = args.event.getCommand();
         }
-        if ($.inidb.exists('pricecom', cmd)) {
-            temp = $.inidb.get('pricecom', cmd);
-        } else {
-            temp = 0;
-        }
+
         return {
-            result: $.getPointsString(temp),
+            result: $.getPointsString($.inidb.GetInteger('pricecom', '', cmd, 0)),
             cache: true
         };
     }

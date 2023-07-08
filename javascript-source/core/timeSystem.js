@@ -83,7 +83,7 @@
      *     getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss zzz '('Z')'");
      */
     function getCurLocalTimeString(format) {
-        let zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
+        let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
         try {
             return Packages.java.time.ZonedDateTime.now(getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
         } catch (ex) {
@@ -99,7 +99,7 @@
      * @return {String}
      */
     function getLocalTimeString(format, utc_secs) {
-        let zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
+        let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
         try {
             return Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
         } catch (ex) {
@@ -130,7 +130,7 @@
      * @return {String}
      */
     function getLocalTime() {
-        let zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT";
+        let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
         try {
             return Packages.java.time.ZonedDateTime.now(getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
         } catch (ex) {
@@ -309,7 +309,8 @@
      * @returns {number}
      */
     function getUserTime(username) {
-        return ($.inidb.exists('time', username.toLowerCase()) ? $.inidb.get('time', username.toLowerCase()) : 0);
+        let time = $.inidb.OptInteger('time', '', username.toLowerCase());
+        return (time ? parseInt(time.get()) : 0);
     }
 
     /**
@@ -485,7 +486,8 @@
             let tzData;
 
             if (!action) {
-                $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.usage', ($.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : "GMT")));
+                let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
+                $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.usage', zone));
                 return;
             }
 
@@ -516,11 +518,12 @@
             for (i in $.users) {
                 if ($.users[i] !== null) {
                     username = $.users[i].toLowerCase();
+                    let time = $.inidb.OptInteger('time', '', username);
                     // Only level viewers to regulars and ignore TwitchBots
                     if (!$.isTwitchBot(username)
                         && (!$.hasPermissionLevel(username) || $.isViewer(username)) //Assume users without permissions level are viewers, if they are too new the check will fail in the next condition
-                        && $.inidb.exists('time', username)
-                        && Math.floor(parseInt($.inidb.get('time', username)) / 3600) >= hoursForLevelUp) {
+                        && time.isPresent()
+                        && Math.floor(time.get() / 3600) >= hoursForLevelUp) {
                         if (!$.isMod(username)) { // Added a second check here to be 100% sure the user is not a mod.
                             $.setUserGroupById(username, $.PERMISSION.Regular);
                             if (timeLevelWarning) {

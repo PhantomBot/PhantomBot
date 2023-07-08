@@ -484,11 +484,7 @@
      * @returns {Number}
      */
     function queryDBPermission(username) {
-        let id = PERMISSION.None;
-        if ($.inidb.exists('group', username.toLowerCase())) {
-            id = parseInt($.inidb.get('group', username.toLowerCase()));
-        }
-        return id;
+        return $.inidb.GetInteger('group', '', username.toLowerCase(), PERMISSION.None);
     }
 
     /**
@@ -1268,11 +1264,14 @@
                 return;
             }
 
+            let onlinePoints = $.inidb.OptInteger('grouppoints', '', getGroupNameById(groupId)),
+                    offlinePoints = $.inidb.OptInteger('grouppointsoffline', '', getGroupNameById(groupId));
             if (!args[1]) {
+
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup', getGroupNameById(groupId),
-                        ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
+                        (onlinePoints.isPresent() ? onlinePoints.get() : '(undefined)'),
                         $.pointNameMultiple,
-                        ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
+                        (offlinePoints.isPresent() ? offlinePoints.get() : '(undefined)'),
                         $.pointNameMultiple));
                 return;
             }
@@ -1286,11 +1285,11 @@
             if (!args[2]) {
                 if (channelStatus.equalsIgnoreCase('online')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.online', getGroupNameById(groupId),
-                            ($.inidb.exists('grouppoints', getGroupNameById(groupId)) ? $.inidb.get('grouppoints', getGroupNameById(groupId)) : '(undefined)'),
+                            (onlinePoints.isPresent() ? onlinePoints.get() : '(undefined)'),
                             $.pointNameMultiple));
                 } else if (channelStatus.equalsIgnoreCase('offline')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.offline', getGroupNameById(groupId),
-                            ($.inidb.exists('grouppointsoffline', getGroupNameById(groupId)) ? $.inidb.get('grouppointsoffline', getGroupNameById(groupId)) : '(undefined)'),
+                            (offlinePoints.isPresent() ? offlinePoints.get() : '(undefined)'),
                             $.pointNameMultiple));
                 }
                 return;

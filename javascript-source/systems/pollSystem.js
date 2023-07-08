@@ -151,12 +151,19 @@
     }
 
     function reopen() {
-        if (!$.inidb.FileExists('pollState') || !$.inidb.HasKey('pollState', '', 'poll') || !$.inidb.HasKey('pollState', '', 'objOBS')) {
+        if (!$.inidb.FileExists('pollState')) {
             return;
         }
 
-        poll = JSON.parse($.inidb.get('pollState', 'poll'));
-        objOBS = JSON.parse($.inidb.get('pollState', 'objOBS'));
+        let tempPoll = $.inidb.get('pollState', 'poll'),
+                tempObjOBs = $.inidb.get('pollState', 'objOBS');
+
+        if (tempPoll === null || tempObjOBs === null) {
+            return;
+        }
+
+        poll = JSON.parse(tempPoll);
+        objOBS = JSON.parse(tempObjOBs);
         poll.callback = saywinner;
 
         if (poll.pollRunning) {

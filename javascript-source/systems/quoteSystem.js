@@ -102,7 +102,7 @@
      * @returns {Array}
      */
     function getQuote(quoteId) {
-        var quote;
+        let quote;
 
         if (!quoteId) {
             quoteId = $.rand($.inidb.GetKeyList('quotes', '').length);
@@ -118,8 +118,9 @@
             quoteId = ids.length > 0 ? $.randElement(ids) : $.rand(quotes.length);
         }
 
-        if ($.inidb.exists('quotes', quoteId)) {
-            quote = JSON.parse($.inidb.get('quotes', quoteId));
+        quote = $.inidb.OptString('quotes', '', quoteId);
+        if (quote.isPresent()) {
+            quote = JSON.parse(quote.get());
             quote.push(quoteId);
             return quote;
         }
@@ -210,7 +211,7 @@
                 return;
             }
 
-            var useTwitchNames = ($.inidb.exists('settings', 'quoteTwitchNamesToggle')) ? $.inidb.GetBoolean('settings', '', 'quoteTwitchNamesToggle') : true;
+            var useTwitchNames = $.inidb.GetBoolean('settings', '', 'quoteTwitchNamesToggle', true);
             var target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
             if (useTwitchNames && !$.user.isKnown(target)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
@@ -281,7 +282,7 @@
         if (command.equalsIgnoreCase('quote')) {
             quote = getQuote(args[0]);
             if (quote.length > 0) {
-                quoteStr = ($.inidb.exists('settings', 'quoteMessage') ? $.inidb.get('settings', 'quoteMessage') : $.lang.get('quotesystem.get.success'));
+                quoteStr = $.inidb.GetString('settings', '', 'quoteMessage', $.lang.get('quotesystem.get.success'));
                 quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString()))
                                     .replace('(quote)', quote[1])
                                     .replace('(userrank)', $.resolveRank(quote[0]))

@@ -185,34 +185,38 @@
     }
 
     function reopen() {
-        if (!$.inidb.FileExists('raffleState') || !$.inidb.HasKey('raffleState', '', 'entries') || !$.inidb.HasKey('raffleState', '', 'entered')
-                || !$.inidb.HasKey('raffleState', '', 'keyword') || !$.inidb.HasKey('raffleState', '', 'entryFee') || !$.inidb.HasKey('raffleState', '', 'timerTime')
-                || !$.inidb.HasKey('raffleState', '', 'startTime') || !$.inidb.HasKey('raffleState', '', 'isFollowersOnly') || !$.inidb.HasKey('raffleState', '', 'isSubscribersOnly')
-                || !$.inidb.HasKey('raffleState', '', 'usePoints') || !$.inidb.HasKey('raffleState', '', 'isActive')) {
+        if (!$.inidb.FileExists('raffleState')) {
             return;
         }
 
-        entries = JSON.parse($.inidb.get('raffleState', 'entries'));
-        entered = JSON.parse($.inidb.get('raffleState', 'entered'));
-        keyword = $.inidb.get('raffleState', 'keyword');
-        entryFee = parseInt($.inidb.get('raffleState', 'entryFee'));
-        timerTime = parseInt($.inidb.get('raffleState', 'timerTime'));
-        startTime = parseInt($.inidb.get('raffleState', 'startTime'));
-        followers = $.inidb.GetBoolean('raffleState', '', 'isFollowersOnly');
-        subscribers = $.inidb.GetBoolean('raffleState', '', 'isSubscribersOnly');
-        usePoints = $.inidb.GetBoolean('raffleState', '', 'usePoints');
-        status = $.inidb.GetBoolean('raffleState', '', 'isActive');
-        lastWinners = [];
-        if ($.inidb.HasKey('raffleresults', '', 'winner')) { //Consider raffles saved before winner was a key
-            let temp = $.inidb.get('raffleresults', 'winner');
-            if (temp !== undefined && !temp.equalsIgnoreCase('undefined')) {
-                lastWinners = JSON.parse(temp); //lastWinners found
-            }
+        entries = $.getIniDbArray('raffleState', 'entries', []);
+        entered = $.getIniDbArray('raffleState', 'entered', {});
+
+        let tempKeyword = $.inidb.OptString('raffleState', '', 'keyword'),
+                tempEntryFee = $.inidb.OptInteger('raffleState', '', 'entryFee'),
+                tempTimerTime = $.inidb.OptInteger('raffleState', '', 'timerTime'),
+                tempStartTime = $.inidb.OptInteger('raffleState', '', 'startTime'),
+                tempFollowers = $.inidb.OptBoolean('raffleState', '', 'isFollowersOnly'),
+                tempSubscribers = $.inidb.OptBoolean('raffleState', '', 'isSubscribersOnly'),
+                tempUsePoints = $.inidb.OptBoolean('raffleState', '', 'usePoints');
+                
+
+        if (entries.length === 0 || entered.length === 0 || !tempKeyword.isPresent() || !tempEntryFee.isPresent() || !tempTimerTime.isPresent() || !tempStartTime.isPresent()
+            || !tempFollowers.isPresent() || !tempSubscribers.isPresent() || !tempUsePoints.isPresent()) {
+            return;
         }
 
-        if ($.inidb.HasKey('raffleState', '', 'hasDrawn')) { //Consider raffles saved before hasDrawn was implemented
-            hasDrawn = $.inidb.GetBoolean('raffleState', '', 'hasDrawn');
-        }
+        keyword = tempKeyword.get();
+        entryFee = tempEntryFee.get();
+        timerTime = tempTimerTime.get();
+        startTime = tempStartTime.get();
+        followers = tempFollowers.get();
+        subscribers = tempSubscribers.get();
+        usePoints = tempUsePoints.get();
+
+        status = $.getIniDbBoolean('raffleState', 'isActive', false);
+        lastWinners = $.getIniDbArray('raffleresults', 'winner', []);
+        hasDrawn = $.getIniDbBoolean('raffleState', 'hasDrawn', false);
 
         if (status === true) {
             if (keyword.startsWith('!') && $.commandExists(keyword.substring(1))) {
@@ -250,8 +254,8 @@
     function saveState() {
         _entriesLock.lock();
         try {
-            $.inidb.set('raffleState', 'entries', JSON.stringify(entries));
-            $.inidb.set('raffleState', 'entered', JSON.stringify(entered));
+            $.setIniDbArray('raffleState', 'entries', entries);
+            $.setIniDbArray('raffleState', 'entered', entered);
         } finally {
             _entriesLock.unlock();
         }

@@ -133,7 +133,7 @@
          * Registers a command
          */
         if (command.equalsIgnoreCase('registerpanel')) {
-            $.registerChatCommand(($.inidb.exists('tempDisabledCommandScript', args[0].toLowerCase()) ? $.inidb.get('tempDisabledCommandScript', args[0].toLowerCase()) : './commands/customCommands.js'), args[0].toLowerCase());
+            $.registerChatCommand($.inidb.GetString('tempDisabledCommandScript', args[0].toLowerCase(), './commands/customCommands.js'), args[0].toLowerCase());
             $.inidb.del('tempDisabledCommandScript', args[0].toLowerCase());
             return;
         }

@@ -712,6 +712,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a string
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param fallback the fallback String; returned if the key is not present or the string is {@code null}
+     * @return the value; {@code fallback} if not found or the value being {@code null}
+     */
+    public String GetString(String fName, String section, String key, String fallback) {
+        return this.OptString(fName, section, key).orElse(fallback);
+    }
+
+    /**
      * Sets the value of the {@code value} column for the given table, section, and key as a string
      *
      * @param fName a table name, without the {@code phantombot_} prefix
@@ -785,7 +798,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
         try {
             amount = Integer.parseInt(value);
         } catch (NumberFormatException ex) {
-            amount = 0;
+            return;
         }
 
         Optional<Table<?>> otbl = findTable(fName);
@@ -908,6 +921,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a long
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param fallback the fallback int; returned if the key is not present
+      @return the value as a long; {@code fallback} if the conversion fails
+     */
+    public long GetLong(String fName, String section, String key, long fallback) {
+        return this.OptLong(fName, section, key).orElse(fallback);
+    }
+
+    /**
      * Sets the value of the {@code value} column for the given table, section, and key as a long
      *
      * @param fName a table name, without the {@code phantombot_} prefix
@@ -956,6 +982,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
+     * Returns the value of the {@code value} column for the given table, section, and key as an integer
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param fallback the fallback integer; returned if the key is not present
+     * @return the value as an integer; {@code fallback} if the conversion fails
+     */
+    public int GetInteger(String fName, String section, String key, int fallback) {
+        return this.OptInteger(fName, section, key).orElse(fallback);
+    }
+
+    /**
      * Sets the value of the {@code value} column for the given table, section, and key as an integer
      *
      * @param fName a table name, without the {@code phantombot_} prefix
@@ -1001,6 +1040,20 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      */
     public float GetFloat(String fName, String section, String key) {
         return this.OptFloat(fName, section, key).orElse(0.0f);
+    }
+
+    
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a float
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param fallback the fallback float; returned if the key is not present
+     * @return the value as a float; {@code fallback} if the conversion fails
+     */
+    public float GetFloat(String fName, String section, String key, float fallback) {
+        return this.OptFloat(fName, section, key).orElse(fallback);
     }
 
     /**
@@ -1052,6 +1105,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a double
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param fallback the fallback double; returned if the key is not present
+     * @return the value as a double; {@code fallback} if the conversion fails
+     */
+    public double GetDouble(String fName, String section, String key, double fallback) {
+        return this.OptDouble(fName, section, key).orElse(fallback);
+    }
+
+    /**
      * Sets the value of the {@code value} column for the given table, section, and key as a double
      *
      * @param fName a table name, without the {@code phantombot_} prefix
@@ -1093,6 +1159,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      */
     public boolean GetBoolean(String fName, String section, String key) {
         return this.OptBoolean(fName, section, key).orElse(false);
+    }
+
+    /**
+     * Returns the value of the {@code value} column for the given table, section, and key as a boolean
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param fallback the fallback boolean; returned if the key is not present
+     * @return {@code true} if the value as a string is {@code "1"}, {@code "true"}, or {@code "yes"}; {@code fallback} otherwise
+     */
+    public boolean GetBoolean(String fName, String section, String key, boolean fallback) {
+        return this.OptBoolean(fName, section, key).orElse(fallback);
     }
 
     /**
@@ -1315,6 +1394,10 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param amount the amount to increase the value of the {@code value} column by
      */
     public void incr(String fName, String section, String key, int amount) {
+        if (amount == 0) {
+            return;
+        }
+
         int ival = GetInteger(fName, section, key);
         ival += amount;
         SetInteger(fName, section, key, ival);
@@ -1332,6 +1415,93 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
+     * Increases the value of the {@code value} column as a long in the given table, section, and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
+     */
+    public void incr(String fName, String section, String key, long amount) {
+        if (amount == 0L) {
+            return;
+        }
+
+        long ival = GetLong(fName, section, key);
+        ival += amount;
+        SetLong(fName, section, key, ival);
+    }
+
+    /**
+     * Increases the value of the {@code value} column as a long in the default section of the given table and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
+     */
+    public void incr(String fName, String key, long amount) {
+        incr(fName, "", key, amount);
+    }
+
+    /**
+     * Increases the value of the {@code value} column as an integer in the given table, section, and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
+     */
+    public void incr(String fName, String section, String key, double amount) {
+        if (amount == 0.0d) {
+            return;
+        }
+
+        double ival = GetDouble(fName, section, key);
+        ival += amount;
+        SetDouble(fName, section, key, ival);
+    }
+
+    /**
+     * Increases the value of the {@code value} column as an integer in the default section of the given table and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
+     */
+    public void incr(String fName, String key, double amount) {
+        incr(fName, "", key, amount);
+    }
+
+    /**
+     * Increases the value of the {@code value} column as an integer in the given table, section, and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
+     */
+    public void incr(String fName, String section, String key, float amount) {
+        if (amount == 0.0f) {
+            return;
+        }
+
+        float ival = GetFloat(fName, section, key);
+        ival += amount;
+        SetFloat(fName, section, key, ival);
+    }
+
+    /**
+     * Increases the value of the {@code value} column as an integer in the default section of the given table and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to increase the value of the {@code value} column by
+     */
+    public void incr(String fName, String key, float amount) {
+        incr(fName, "", key, amount);
+    }
+
+    /**
      * Decreases the value of the {@code value} column as an integer in the given table, section, and key
      *
      * @param fName a table name, without the {@code phantombot_} prefix
@@ -1340,9 +1510,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param value the amount to decrease the value of the {@code value} column by
      */
     public void decr(String fName, String section, String key, int amount) {
-        int ival = GetInteger(fName, section, key);
-        ival -= amount;
-        SetInteger(fName, section, key, ival);
+        incr(fName, section, key, -amount);
     }
 
     /**
@@ -1368,28 +1536,26 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
-     * Increases the value of the {@code value} column as a long in the given table, section, and key
+     * Decreases the value of the {@code value} column as a long in the given table, section, and key
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column
-     * @param amount the amount to increase the value of the {@code value} column by
+     * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void incr(String fName, String section, String key, long amount) {
-        long ival = GetLong(fName, section, key);
-        ival += amount;
-        SetLong(fName, section, key, ival);
+    public void decr(String fName, String section, String key, long amount) {
+        incr(fName, section, key, -amount);
     }
 
     /**
-     * Increases the value of the {@code value} column as a long in the default section of the given table and key
+     * Decreases the value of the {@code value} column as a long in the default section of the given table and key
      *
      * @param fName a table name, without the {@code phantombot_} prefix
      * @param key the value of the {@code variable} column
-     * @param amount the amount to increase the value of the {@code value} column by
+     * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void incr(String fName, String key, long amount) {
-        incr(fName, "", key, amount);
+    public void decr(String fName, String key, double amount) {
+        decr(fName, "", key, amount);
     }
 
     /**
@@ -1400,10 +1566,31 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String section, String key, long amount) {
-        long ival = GetLong(fName, section, key);
-        ival -= amount;
-        SetLong(fName, section, key, ival);
+    public void decr(String fName, String section, String key, double amount) {
+        incr(fName, section, key, -amount);
+    }
+
+    /**
+     * Decreases the value of the {@code value} column as a long in the default section of the given table and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to decrease the value of the {@code value} column by
+     */
+    public void decr(String fName, String key, float amount) {
+        decr(fName, "", key, amount);
+    }
+
+    /**
+     * Decreases the value of the {@code value} column as a long in the given table, section, and key
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column
+     * @param amount the amount to decrease the value of the {@code value} column by
+     */
+    public void decr(String fName, String section, String key, float amount) {
+        incr(fName, section, key, (-amount));
     }
 
     /**

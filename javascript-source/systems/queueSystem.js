@@ -176,7 +176,7 @@
      * @return {String}
      */
     function date(time, simple) {
-        var zone = $.inidb.exists('settings', 'timezone') ? $.inidb.get('settings', 'timezone') : 'GMT';
+        var zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
         var ldate = Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(time), Packages.java.time.ZoneId.of(zone));
         var datevar = ldate.format(Packages.java.time.format.DateTimeFormatter.ofPattern('HH:mm:ss z'));
         var string = $.getTimeString(Packages.java.time.Duration.between(ldate, Packages.java.time.ZonedDateTime.now()).toSeconds());

@@ -67,8 +67,9 @@
         /**
          * Checks for custom commands, no command path needed here.
          */
-        if ($.inidb.exists('discordCommands', command)) {
-            var tag = $.transformers.tags(event, $.inidb.get('discordCommands', command), ['discord', ['commandevent', 'noevent']], {platform: 'discord'});
+        let discordCommand = $.inidb.OptString('discordCommands', '', command);
+        if (discordCommand.isPresent()) {
+            var tag = $.transformers.tags(event, discordCommand.get(), ['discord', ['commandevent', 'noevent']], {platform: 'discord'});
             if (tag !== null) {
                 $.discord.say(channel, tag);
             }
@@ -160,10 +161,11 @@
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.global', action));
                 return;
             } else if (subAction.equalsIgnoreCase('--list') || subAction.equalsIgnoreCase('-l')) {
-                var keys = ($.inidb.exists('discordChannelcom', action) ? $.inidb.get('discordChannelcom', action).split(',') : []),
+                let keys = $.inidb.OptString('discordChannelcom', '',action),
                         key = [],
                         i;
 
+                keys = keys.isPresent() ? keys.get().split(',') : []
                 for (i in keys) {
                     key.push('#' + keys[i]);
                 }

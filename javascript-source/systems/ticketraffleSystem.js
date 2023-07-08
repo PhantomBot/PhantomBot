@@ -47,11 +47,11 @@
     };
 
     function reloadTRaffle() {
-        msgToggle = $.inidb.GetBoolean('traffleSettings', '', 'traffleMSGToggle');
-        openDraw = $.getIniDbBoolean('raffleSettings', 'raffleOpenDraw');
-        raffleMessage = $.getSetIniDbString('traffleSettings', 'traffleMessage');
-        messageInterval = $.getSetIniDbNumber('traffleSettings', 'traffleMessageInterval');
-        limiter = $.inidb.GetBoolean('traffleSettings', '', 'traffleLimiter');
+        msgToggle = $.getIniDbBoolean('traffleSettings', 'traffleMSGToggle', msgToggle);
+        openDraw = $.getIniDbBoolean('raffleSettings', 'raffleOpenDraw', openDraw);
+        raffleMessage = $.getIniDbString('traffleSettings', 'traffleMessage', raffleMessage);
+        messageInterval = $.getIniDbNumber('traffleSettings', 'traffleMessageInterval', messageInterval);
+        limiter = $.getIniDbBoolean('traffleSettings', '', 'traffleLimiter', limiter);
 
     }
 

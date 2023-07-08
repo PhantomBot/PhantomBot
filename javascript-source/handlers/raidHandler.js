@@ -165,11 +165,13 @@
 
         if (raidToggle === true && viewers >= raidIncMinViewers) {
             // If the user has raided before.
-            if ((hasRaided = $.inidb.exists('incoming_raids', username))) {
+            let incRaids = $.inidb.OptString('incoming_raids', '', username);
+            if (incRaids.isPresent()) {
+                hasRaided = true;
                 // Set the message.
                 message = raidIncMessage;
                 // Get the raid object.
-                raidObj = JSON.parse($.getIniDbString('incoming_raids', username));
+                raidObj = JSON.parse(incRaids.get());
             } else {
                 message = newRaidIncMessage;
             }
@@ -368,8 +370,9 @@
                     return;
                 }
 
-                if ($.inidb.exists('incoming_raids', subAction.toLowerCase())) {
-                    var raidObj = JSON.parse($.inidb.get('incoming_raids', subAction.toLowerCase())),
+                let incRaids = $.inidb.OptString('incoming_raids', '', subAction.toLowerCase());
+                if (incRaids.isPresent()) {
+                    var raidObj = JSON.parse(incRaids.get()),
                             displayName = $.viewer.getByLogin(subAction).name();
 
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.lookup.user', displayName, raidObj.totalRaids, new Date(raidObj.lastRaidTime).toLocaleString(), raidObj.lastRaidViewers));

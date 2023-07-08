@@ -74,12 +74,13 @@
          * @commandpath count [word] - Tells you how many times that word as been said in chat.
          */
         if (command.equalsIgnoreCase('count')) {
-            if (!action || !$.inidb.exists('wordCounter', action.toLowerCase())) {
+            let counter = $.inidb.OptInteger('wordCounter', '', action.toLowerCase());
+            if (!action || !counter.isPresent()) {
                 $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.err.404'));
                 return;
             }
 
-            $.say($.lang.get('wordcounter.count', action, $.inidb.get('wordCounter', action.toLowerCase())));
+            $.say($.lang.get('wordcounter.count', action, counter.get()));
         }
     });
 
