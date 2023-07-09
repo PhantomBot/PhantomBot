@@ -31,7 +31,7 @@ import tv.phantombot.CaselessProperties;
  *
  * @author gmt2001
  */
-public class MariaDBStore2 extends Datastore2 {
+public final class MariaDBStore2 extends Datastore2 {
     /**
      * MariaDB {@code LONGTEXT} type
      */

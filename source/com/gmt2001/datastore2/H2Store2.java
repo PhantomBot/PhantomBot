@@ -52,7 +52,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author gmt2001
  */
-public class H2Store2 extends Datastore2 {
+public final class H2Store2 extends Datastore2 {
     /**
      * H2 {@code LONGTEXT} type
      */

@@ -21,7 +21,7 @@ package com.gmt2001.datastore;
  *
  * @author gmt2001
  */
-public class KeyValue {
+public final class KeyValue {
 
     /**
      * Constructor
