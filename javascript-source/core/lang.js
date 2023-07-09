@@ -38,15 +38,15 @@
          */
         if (command.equalsIgnoreCase('lang')) {
             if (!action) {
-                $.say($.whisperPrefix(sender) + get('lang.curlang', $.jsString($.getSetIniDbString('settings', 'lang', 'english'))));
+                $.say($.whisperPrefix(sender) + $.lang.get('lang.curlang', $.jsString($.getSetIniDbString('settings', 'lang', 'english'))));
             } else {
                 action = action.toLowerCase();
                 if (!$.fileExists('./scripts/lang/' + action + '/main.js')) {
-                    $.say($.whisperPrefix(sender) + get('lang.lang.404'));
+                    $.say($.whisperPrefix(sender) + $.lang.get('lang.lang.404'));
                 } else {
                     $.inidb.set('settings', 'lang', action);
                     $.lang.load(true);
-                    $.say($.whisperPrefix(sender) + get('lang.lang.changed', action));
+                    $.say($.whisperPrefix(sender) + $.lang.get('lang.lang.changed', action));
                 }
             }
         }
@@ -59,11 +59,11 @@
 
             $.setIniDbBoolean('settings', 'response_@chat', inversedState);
             if (!inversedState) {
-                $.say($.whisperPrefix(sender) + get('lang.response.disabled'));
+                $.say($.whisperPrefix(sender) + $.lang.get('lang.response.disabled'));
                 $.reloadMisc();
             } else {
                 $.reloadMisc();
-                $.say($.whisperPrefix(sender) + get('lang.response.enabled'));
+                $.say($.whisperPrefix(sender) + $.lang.get('lang.response.enabled'));
             }
         }
 
@@ -75,7 +75,7 @@
 
             $.setIniDbBoolean('settings', 'response_action', inversedState);
             $.reloadMisc();
-            $.say($.whisperPrefix(sender) + (inversedState ? get('lang.response.action.enabled') : get('lang.response.action.disabled')));
+            $.say($.whisperPrefix(sender) + (inversedState ? $.lang.get('lang.response.action.enabled') : $.lang.get('lang.response.action.disabled')));
         }
     });
 
