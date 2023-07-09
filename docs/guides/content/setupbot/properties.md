@@ -113,7 +113,7 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 Data Type: _String_
 
-the type of db to use. valid values: `sqlitestore2`, `mysqlstore2`, `h2store2`, a custom type as specified in the javadoc for datastore2#init(). default `h2store2`
+the type of db to use. valid values: `sqlitestore2`, `mysqlstore2`, `mariadbstore2`, `h2store2`, a custom type as specified in the javadoc for datastore2#init(). default `h2store2`
 
 _NOTE: A restart is required for this property to take effect_
 
