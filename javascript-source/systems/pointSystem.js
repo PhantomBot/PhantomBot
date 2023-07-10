@@ -29,13 +29,14 @@
             onlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'onlinePayoutInterval', 10),
             offlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'offlinePayoutInterval', 0),
             activeBonus = $.getSetIniDbNumber('pointSettings', 'activeBonus', 0),
-            lastPayout = 0,
             penalties = [],
             pointsBonus = false,
             pointsBonusAmount = 0,
             pointNameSingle = $.getSetIniDbString('pointSettings', 'pointNameSingle', 'point'),
             pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
-            pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).');
+            pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
+            payoutInterval,
+            currentPayoutIntervalTime = -1;
 
     /**
      * @function updateSettings
@@ -76,6 +77,8 @@
             $.inidb.set('aliases', pointNameMultiple.toLowerCase(), 'points');
             $.registerChatAlias(pointNameMultiple.toLowerCase());
         }
+
+        setupPayoutRun();
     }
 
     /**
@@ -101,31 +104,37 @@
         return points + ' ' + pointNameMultiple;
     }
 
-    function calcPointsGained(username, group, defaultgain, isonline) {
-        let table = 'grouppoints' + (isonline ? '' : 'offline');
+    function calcPointsGained(username, group, isOnline) {
+        let table = 'grouppoints' + (isOnline ? '' : 'offline'),
+                defaultGain = isOnline ? Math.max(onlineGain, 0) : Math.max(offlineGain, 0),
+                amount = -1,
+                candidateAmount,
+                candidateAmount2;
+
         username = $.jsString(username);
         group = $.jsString(group);
-        defaultgain = Math.max(defaultgain, 0);
-        let amount = -1;
 
         if ($.inidb.exists(table, group)) {
-            let candidateAmount = parseInt($.inidb.get(table, group));
-            if (candidateAmount !== null && !isNaN(candidateAmount)) {
-                amount = candidateAmount;
-            }
+            candidateAmount = $.inidb.get(table, group);
         }
 
         if (group === 'Subscriber' && $.inidb.exists('subplan', username)) {
             if ($.inidb.exists(table, 'Subscriber' + $.inidb.get('subplan', username))) {
-                let candidateAmount2 = parseInt($.inidb.get(table, 'Subscriber' + $.inidb.get('subplan', username)));
-                if (candidateAmount2 !== null && !isNaN(candidateAmount2)) {
-                    amount = candidateAmount2;
-                }
+                candidateAmount2 = $.inidb.get(table, 'Subscriber' + $.inidb.get('subplan', username));
             }
         }
 
+        if (!isNaN(candidateAmount)) {
+            amount = parseInt(candidateAmount);
+        }
+
+        if (!isNaN(candidateAmount2)) {
+            let temp = parseInt(candidateAmount);
+            amount = temp > amount ? temp : amount;
+        }
+
         if (amount < 0) {
-            amount = defaultgain;
+            amount = defaultGain;
         }
 
         return amount;
@@ -135,86 +144,71 @@
      * @function runPointsPayout
      */
     function runPointsPayout() {
-        let now = $.systemTime(),
-            normalPayoutUsers = [], // users that get the normal online payout, nothing custom.
-            isOnline = false,
-            username,
-            amount;
-
         if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
+            payoutInterval = clearInterval(payoutInterval);
             return;
         }
 
-        if ((isOnline = $.isOnline($.channelName))) {
-            if (onlinePayoutInterval > 0 && (lastPayout + (onlinePayoutInterval * 6e4)) <= now) {
-                amount = onlineGain;
-            } else {
-                return;
-            }
-        } else {
-            if (offlinePayoutInterval > 0 && (lastPayout + (offlinePayoutInterval * 6e4)) <= now) {
-                amount = offlineGain;
-            } else {
-                return;
-            }
-        }
+        let isOnline = $.isOnline($.channelName),
+                activeList,
+                active,
+                chatList = $.viewer.chatters(),
+                normalPayoutUsers = []; // users that get the normal online payout, nothing custom.
 
-        let activeList = $.viewer.activeChatters();
-        let active = [];
-
-        for (let i = 0; i < activeList.size(); i++) {
-            active.push($.jsString(activeList.get(i).login()));
-        }
-
-        for (let i in $.users) {
-            if ($.users[i] !== null) {
-                username = $.users[i].toLowerCase();
-                if (isOnline) {
-                    if ($.checkUserPermission(username, undefined, $.PERMISSION.Mod) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub)) {
-                        amount = calcPointsGained(username, 'Subscriber', onlineGain, true);
-                    } else {
-                        amount = calcPointsGained(username, $.getUserGroupName(username), onlineGain, true);
-                    }
-                } else {
-                    if ($.checkUserPermission(username, undefined, $.PERMISSION.Mod) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub)) {
-                        amount = calcPointsGained(username, 'Subscriber', offlineGain, false);
-                    } else {
-                        amount = calcPointsGained(username, $.getUserGroupName(username), offlineGain, false);
-                    }
-                }
-
-                if (active.includes(username)) {
-                    amount += activeBonus;
-                }
-
-                if (getUserPenalty(username)) {
-                    for (i in penalties) {
-                        let time = penalties[i].time - now;
-                        if (time <= 0) {
-                            penalties.splice(i, 1);
-                        }
-                    }
-                }
-
-                if (pointsBonus) {
-                    amount = (amount + pointsBonusAmount);
-                }
-
-                if (!getUserPenalty(username)) {
-                    if (amount === onlineGain || amount === offlineGain) {
-                        normalPayoutUsers.push(username);
-                    } else {
-                        $.inidb.incr('points', username, amount);
-                    }
-                }
+        if (isOnline && activeBonus > 0) {
+            activeList = $.viewer.activeChatters();
+            active = [];
+            for (let i = 0; i < activeList.size(); i++) {
+                active.push($.jsString(activeList.get(i).login().toLowerCase()));
             }
         }
 
+        for (let i = 0; i < chatList.size(); i++) {
+            let username = $.jsString(chatList.get(i).login().toLowerCase()),
+                    amount = calcPointsGained(username, $.getUserGroupName(username), isOnline);
+
+            if (active !== undefined && active.includes(username)) {
+                amount += activeBonus;
+            }
+
+            if (pointsBonus && pointsBonusAmount > 0) {
+                amount += pointsBonusAmount;
+            }
+
+            if (!getUserPenalty(username)) {
+                if ((isOnline && onlineGain > 0 && amount === onlineGain) || (!isOnline && offlineGain > 0 && amount === offlineGain)) {
+                    normalPayoutUsers.push($.javaString(username));
+                } else if (amount > 0) {
+                    $.inidb.incr('points', username, amount);
+                }
+            }
+        }
 
         // Update points for all users with the same amount of online/offline gain.
-        $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
+        if (normalPayoutUsers.length > 0) {
+            $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
+        }
+    }
 
-        lastPayout = now;
+    /**
+     * @function setupPayoutRun
+     */
+    function setupPayoutRun() {
+        let minutes = $.isOnline($.channelName) ? onlinePayoutInterval : offlinePayoutInterval;
+        if (currentPayoutIntervalTime === minutes) {
+            return;
+        }
+
+        payoutInterval = clearInterval(payoutInterval);
+        currentPayoutIntervalTime = minutes;
+
+        if (minutes <= 0) {
+            return;
+        }
+
+        payoutInterval = setInterval(function () {
+            runPointsPayout();
+        }, minutes * 6e4, 'scripts::systems::pointSystem.js');
     }
 
     /**
@@ -229,7 +223,7 @@
         }
 
         let newTime = (time * 6e4) + $.systemTime();
-        username = username.toLowerCase();
+        username = $.jsString(username.toLowerCase());
 
         penalties.push({
             user: username,
@@ -248,8 +242,13 @@
      */
     function getUserPenalty(username) {
         for (let i in penalties) {
-            if (penalties[i].user.equalsIgnoreCase(username)) {
-                return true;
+            if ($.equalsIgnoreCase(penalties[i].user, username)) {
+                if (penalties[i].time - $.systemTime() > 0) {
+                    return true;
+                }
+
+                penalties.splice(i, 1);
+                return false;
             }
         }
 
@@ -294,11 +293,9 @@
             return;
         }
 
-
         for (let i in $.users) {
             $.inidb.incr('points', $.users[i].toLowerCase(), amount);
         }
-
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
     }
@@ -364,6 +361,20 @@
     }
 
     /**
+     * @event twitchOnline
+     */
+    $.bind('twitchOnline', function () {
+        setupPayoutRun();
+    });
+
+    /**
+     * @event twitchOffline
+     */
+    $.bind('twitchOffline', function () {
+        setupPayoutRun();
+    });
+
+    /**
      * @event command
      */
     $.bind('command', function (event) {
@@ -373,10 +384,7 @@
                 args = event.getArgs(),
                 action = args[0],
                 actionArg1 = args[1],
-                actionArg2 = args[2],
-                temp,
-                user,
-                i;
+                actionArg2 = args[2];
 
         /**
          * @commandpath points - Announce points in chat when no parameters are given.
@@ -540,7 +548,7 @@
                         return;
                     }
 
-                    temp = actionArg2.toLowerCase();
+                    let temp = actionArg2.toLowerCase();
                     $.inidb.set('pointSettings', 'pointNameSingle', temp);
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.single.success', pointNameSingle, temp));
                     updateSettings();
@@ -552,7 +560,7 @@
                         return;
                     }
 
-                    temp = actionArg2.toLowerCase();
+                    let temp = actionArg2.toLowerCase();
                     $.inidb.set('pointSettings', 'pointNameMultiple', temp);
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.multiple.success', pointNameMultiple, temp));
                     updateSettings();
@@ -630,6 +638,7 @@
 
                 onlinePayoutInterval = actionArg1;
                 $.inidb.set('pointSettings', 'onlinePayoutInterval', onlinePayoutInterval);
+                setupPayoutRun();
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.interval.success', pointNameSingle, onlinePayoutInterval));
                 return;
             }
@@ -651,6 +660,7 @@
 
                 offlinePayoutInterval = actionArg1;
                 $.inidb.set('pointSettings', 'offlinePayoutInterval', offlinePayoutInterval);
+                setupPayoutRun();
                 $.say($.whisperPrefix(sender) + $.lang.get("pointsystem.set.interval.offline.success", pointNameSingle, offlinePayoutInterval));
                 return;
             }
@@ -728,7 +738,7 @@
                 return;
             }
 
-            for (i in $.users) {
+            for (let i in $.users) {
                 do {
                     amount = $.randRange(1, action);
                 } while (amount === lastAmount);
@@ -790,11 +800,6 @@
             setPenalty(sender, action.toLowerCase(), parseInt(actionArg1));
         }
     });
-
-    // Set the timer for the points payouts
-    let interval = setInterval(function () {
-        runPointsPayout();
-    }, 6e4, 'scripts::systems::pointSystem.js');
 
     /**
      * @event initReady
