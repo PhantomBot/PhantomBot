@@ -30,6 +30,14 @@
      * @returns {boolean}
      */
     function getIniDbBoolean(fileName, key, defaultValue) {
+        if (defaultValue === undefined || defaultValue === null) {
+            return $.inidb.GetBoolean(fileName, '', key);
+        }
+
+        if (typeof defaultValue !== 'boolean') {
+            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1'); //Ensure compatibility
+        }
+
         return $.inidb.GetBoolean(fileName, '', key, defaultValue);
     }
 
@@ -45,6 +53,10 @@
         let res = $.inidb.OptBoolean(fileName, '', key);
         if (res.isPresent()) {
             return res.get().booleanValue();
+        }
+
+        if (typeof defaultValue !== 'boolean') {
+            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1'); //Ensure compatibility
         }
 
         $.inidb.SetBoolean(fileName, '', key, defaultValue);
@@ -71,6 +83,10 @@
      * @param {string}
      */
     function getIniDbString(fileName, key, defaultValue) {
+        if (defaultValue === undefined) { //Null could be a valid defaultValue
+            return $.jsString($.inidb.GetString(fileName, '', key));
+        }
+
         return $.jsString($.inidb.GetString(fileName, '', key, defaultValue));
     }
 
@@ -110,6 +126,9 @@
      * @param {number}
      */
     function getIniDbNumber(fileName, key, defaultValue) {
+        if (defaultValue === undefined || defaultValue === null) {
+            return parseInt($.inidb.GetInteger(fileName, '', key));
+        }
         return parseInt($.inidb.GetInteger(fileName, '', key, defaultValue));
     }
 
@@ -149,6 +168,10 @@
      * @param {number}
      */
     function getIniDbFloat(fileName, key, defaultValue) {
+        if (defaultValue === undefined || defaultValue === null) {
+            return parseFloat($.inidb.GetDouble(fileName, '', key));
+        }
+
         return parseFloat($.inidb.GetDouble(fileName, '', key, defaultValue));
     }
 
@@ -185,6 +208,7 @@
      * @export $
      * @param {string} fileName
      * @param {string} key
+     * @param {[*]}
      * @returns empty array if non is present
      */
     function getIniDbArray(fileName, key, defaultValue) {
