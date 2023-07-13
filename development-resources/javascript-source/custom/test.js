@@ -29,7 +29,7 @@
         // Lists the test commands
         if (command.equalsIgnoreCase('testhelp')) {
             $.say('Test Commands: !testcmd | !addmon | !delmod | !addsub | !delsub | !setcaster | !setadmin | !setvip | !setdonator | !setregular'
-                    + ' | !setviewer | !testexception | !testtimeout | !testinterval | !testcleartimeout | !testclearinterval');
+                    + ' | !setviewer | !testexception | !testtimeout | !testinterval | !testcleartimeout | !testclearinterval | !testdb');
         }
 
         // Runs a command as another (real or fake) user
@@ -185,6 +185,108 @@
         if (command.equalsIgnoreCase('testclearinterval')) {
             clearInterval(testIntervalId);
         }
+
+        // Tests batched operations on the DB
+        if (command.equalsIgnoreCase('testdb')) {
+            let tbl = 'testtable';
+            let keys1 = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+            let values1 = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26'];
+            let keys2 = ['ival', 'bval', 'dval', 'sval', 'fval', 'lval', 'nval'];
+            let types2 = ['int', 'bool', 'double', 'string', 'float', 'long', 'string'];
+            let values2 = ['1', 'true', '3.645678903456784567', 'something', '0.12', '12345678923456789', null];
+            let pass = true;
+
+
+            $.inidb.RemoveFile(tbl);
+
+            if (!$.inidb.FileExists(tbl)) {
+                $.consoleDebug('Table remove success');
+            } else {
+                $.consoleDebug('Table remove fail');
+                pass = false;
+            }
+
+            $.inidb.AddFile(tbl);
+
+            if ($.inidb.FileExists(tbl)) {
+                $.consoleDebug('Table create success');
+            } else {
+                $.consoleDebug('Table create fail');
+                pass = false;
+            }
+
+            $.inidb.setbatch(tbl, keys1, values1);
+            $.inidb.setbatch(tbl, keys2, values2);
+
+            let found = [];
+            let kvs = $.inidb.GetKeyValueList(tbl, '');
+            for (let i in kvs) {
+                let key = $.jsString(kvs[i].getKey());
+                let value = $.jsString(kvs[i].getValue());
+                for (let b in keys1) {
+                    if (keys1[b] === key && !found.includes(key)) {
+                        if (values1[b] === value) {
+                            found.push(key);
+                        }
+                    }
+                }
+            }
+
+            if (found.length === keys1.length) {
+                $.consoleDebug('Find keys1 success');
+            } else {
+                $.consoleDebug('Find keys1 fail ' + found.length + ' vs ' + keys1.length);
+                pass = false;
+            }
+
+            for (let i in keys2) {
+                let key = keys2[i];
+                let value = values2[i];
+                let type = types2[i];
+                let dvalue;
+
+                try {
+                    if (type === 'int') {
+                        value = Packages.java.lang.Integer.parseInt(value);
+                        dvalue = $.inidb.GetInteger(tbl, '', key);
+                        type = 'I';
+                    } else if (type === 'bool') {
+                        value = (value === '1' || value === 'true' || value === 'yes');
+                        dvalue = $.inidb.GetBoolean(tbl, '', key);
+                        type = 'B';
+                    } else if (type === 'double') {
+                        value = Packages.java.lang.Double.parseDouble(value);
+                        dvalue = $.inidb.GetDouble(tbl, '', key);
+                        type = 'D';
+                    } else if (type === 'float') {
+                        value = Packages.java.lang.Float.parseFloat(value);
+                        dvalue = $.inidb.GetFloat(tbl, '', key);
+                        type = 'F';
+                    } else if (type === 'long') {
+                        value = Packages.java.lang.Long.parseLong(value);
+                        dvalue = $.inidb.GetLong(tbl, '', key);
+                        type = 'L';
+                    } else if (type === 'string') {
+                        dvalue = $.jsString($.inidb.GetString(tbl, '', key));
+                        type = 'S';
+                    }
+
+
+                    if (dvalue === value) {
+                        $.consoleDebug(key + ' [' + type + '] success');
+                    } else {
+                        $.consoleDebug(key + ' [' + type + '] fail ' + value + ' vs ' + dvalue);
+                        pass = false;
+                    }
+                } catch (e) {
+                    $.consoleDebug(key + ' [' + type + ']  exception ' + e);
+                    pass = false;
+                }
+            }
+
+            $.consoleDebug('OVERALL RESULT ' + (pass ? 'PASS' : 'FAIL'));
+            $.say('DB Test ' + (pass ? 'PASS' : 'FAIL') + '. See console for details');
+        }
     });
 
     $.bind('initReady', function () {
@@ -207,5 +309,6 @@
         $.registerChatCommand('./custom/test.js', 'testinterval', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testcleartimeout', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testclearinterval', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testdb', $.PERMISSION.Admin);
     });
 })();
