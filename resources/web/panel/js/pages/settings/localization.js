@@ -175,7 +175,7 @@ $(function () {
             if (e.length === 0 || e[0].errors === undefined) {
                 toastr.success('Successfully saved the lang!');
             } else {
-                toaster.error(e[0].errors[0].status + ' ' + e[0].errors[0].title + '<br>' + e[0].errors[0].detail, 'Failed to save the lang');
+                toastr.error(e[0].errors[0].status + ' ' + e[0].errors[0].title + '<br>' + e[0].errors[0].detail, 'Failed to save the lang');
             }
         });
     });
