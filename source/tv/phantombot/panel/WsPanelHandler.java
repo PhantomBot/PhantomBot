@@ -544,7 +544,7 @@ public class WsPanelHandler implements WsFrameHandler {
                 return;
             }
             jsonObject.key("results").array();
-            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
+            if (!ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() || ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 LangFileUpdater.updateCustomLang(jso.getJSONObject("params").getString("content"), jso.getJSONObject("params").getString("lang-path"), jsonObject);
             } else {
                 jsonObject.object().key("errors").array().object()
