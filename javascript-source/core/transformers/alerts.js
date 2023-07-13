@@ -24,8 +24,10 @@
      * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, and the provided CSS applied to the GIF/video
      * @formula (alert fileName:str, durationSeconds:int, volume:float, css:text, message:text) sends a GIF/video alert to the alerts overlay, fading out after durationSeconds, with audio volume set on a scale of 0.0-1.0, a message under the GIF/video, and the provided CSS applied to the GIF/video and message
      * @labels twitch discord noevent alerts
+     * @notes this tag uses the _config/gif-alerts_ folder
      * @notes if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume
      * @example Caster: !addcom !banana (alert banana.gif)
+     * @example Caster: !addcom !bananatext (alert banana.gif, 5, 0.6, font-size:42px;color:#FF00FF, Ring Ring Ring Ring...Banana Phone!)
      */
     function alert(args) {
         let match;
@@ -40,6 +42,7 @@
      * @formula (playsound hook:str) plays a sound hook on the alerts overlay
      * @formula (playsound hook:str|volume:float) plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
      * @labels twitch discord noevent alerts
+     * @notes this tag uses the _config/audio-hooks_ folder
      * @example Caster: !addcom !good Played sound goodgood (playsound goodgood)
      * @example Caster: !addcom !evil Played sound evil (playsound evillaugh|0.5)
      */
@@ -47,8 +50,13 @@
         let match;
         if ((match = args.args.match(/^([a-zA-Z0-9_\-\s\,\(\)\'\"\~]+)([|]([.0-9_]{0,5}))?$/))) {
             if (!$.audioHookExists(match[1])) {
-                $.log.error('Could not play audio hook: Audio hook does not exist.');
-                return {result: $.lang.get('customcommands.playsound.404', match[1])};
+                if (match[1].includes('.')) {
+                    match[1] = match[1].substring(0, match[1].lastIndexOf('.'));
+                }
+                if (!match[1].includes('.') || !$.audioHookExists(match[1])) {
+                    $.log.error('Could not play audio hook: Audio hook does not exist.');
+                    return {result: $.lang.get('customcommands.playsound.404', match[1])};
+                }
             }
             $.alertspollssocket.triggerAudioPanel(match[1], match[3] !== undefined ? match[3] : -1);
             return {result: '', cache: false};
