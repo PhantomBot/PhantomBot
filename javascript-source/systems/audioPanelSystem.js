@@ -71,7 +71,7 @@
             i;
 
         for (i in keys) {
-            if (keys[i].equalsIgnoreCase(hook)) {
+            if ($.equalsIgnoreCase(keys[i], hook)) {
                 return true;
             }
         }
