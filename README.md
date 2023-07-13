@@ -2,7 +2,6 @@
 # <img alt="PhantomBot" src="https://phantombot.dev/common/images/brand.png" width="600px"/>
 
 ![Java CI](https://github.com/PhantomBot/PhantomBot/workflows/Java%20CI/badge.svg)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/e78b35af8f2442d7a8c5040c41164739)](https://www.codacy.com/gh/PhantomBot/PhantomBot/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=PhantomBot/PhantomBot&amp;utm_campaign=Badge_Grade)
 [![GitHub license](https://img.shields.io/github/license/PhantomBot/PhantomBot)](https://github.com/PhantomBot/PhantomBot/blob/master/LICENSE)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/PhantomBot/PhantomBot?sort=semver)](https://github.com/PhantomBot/PhantomBot/releases/latest)
 [<img src="https://discordapp.com/api/guilds/107910097937682432/widget.png?style=shield">](https://discord.gg/YKvMd78)
