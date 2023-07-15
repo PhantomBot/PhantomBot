@@ -112,17 +112,17 @@
 
         let cost = $.inidb.OptInteger('pricecom', '', command + ' ' + subCommand + ' ' + subCommandAction);
         if (cost.isPresent()) {
-            return parseInt(cost.get());
+            return cost.get();
         }
 
         cost = $.inidb.OptInteger('pricecom', '', command + ' ' + subCommand);
         if (cost.isPresent()) {
-            return parseInt(cost.get());
+            return cost.get();
         }
 
         cost = $.inidb.OptInteger('pricecom', '', command);
         if (cost.isPresent()) {
-            return parseInt(cost.get());
+            return cost.get();
         }
         return 0;
     }
