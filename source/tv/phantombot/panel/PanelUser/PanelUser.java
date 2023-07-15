@@ -19,7 +19,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  * @author Sartharon
  */
 public final class PanelUser {
-    private static final PanelUser PROPUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
+    private static final PanelUser CONFIGUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
     private String username;
     private String password;
     private String token;
@@ -64,12 +64,12 @@ public final class PanelUser {
     }
 
     /**
-     * Constructor used for the user defined in botlogin.txt
+     * Constructor used for the user defined in botlogin.txt {@link CONFIGUSER}
      */
     private PanelUser(String username, String password) {
         this(username, PanelUserHandler.getFullAccessPermissions(), Type.CONFIG, true, true, true, true);
         this.password = password;
-        this.generateNewAuthToken();
+        this.token = CaselessProperties.instance().getProperty("webauth");
     }
 
     /**
@@ -117,18 +117,7 @@ public final class PanelUser {
      * @see WsPanelHandler#handleFrame() token usage
      */
     String getAuthToken() {
-        return this.getAuthToken(false);
-    }
-    /**
-     * The user's current websocket authentication token
-     * <br /><br />
-     * A new token will automatically be generated and the user saved if there is no current token
-     * @param blockRecursion prevents recursion if {@code true}
-     * @return The user's current websocket authentication token
-     * @see WsPanelHandler#handleFrame() token usage
-     */
-    String getAuthToken(boolean blockRecursion) {
-        if (!blockRecursion && (this.token == null || this.token.isEmpty())) {
+        if (this.token == null || this.token.isEmpty()) {
             generateNewAuthToken();
             if(this.userType == Type.DATABASE) {
                 this.save();
@@ -282,7 +271,7 @@ public final class PanelUser {
      */
     private void generateNewAuthToken() {
         String tempToken = PhantomBot.generateRandomString(30);
-        while (PanelUser.LookupByAuthToken(tempToken, true) != null) {
+        while (PanelUser.LookupByAuthToken(tempToken) != null) {
             tempToken = PhantomBot.generateRandomString(30);
         }
         this.token = tempToken;
@@ -441,13 +430,13 @@ public final class PanelUser {
      * @see DataStore#exists(String, String)
      */
     public static PanelUser LookupByUsername(String username) {
+        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
+            return CONFIGUSER;
+        }
         DataStore dataStore = PhantomBot.instance().getDataStore();
         if (dataStore.exists(PanelUserHandler.PANEL_USER_TABLE, username)) {
             String userJSONStr = dataStore.GetString(PanelUserHandler.PANEL_USER_TABLE , "", username);
             return new PanelUser(username, new JSONObject(userJSONStr));
-        }
-        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
-            return PROPUSER;
         }
         return null;
     }
@@ -459,22 +448,9 @@ public final class PanelUser {
      * @see PanelUser#LookupByUsername(String)
      */
     public static PanelUser LookupByAuthToken(String token) {
-        return LookupByAuthToken(token, false);
-    }
-
-    /**
-     * Looks up a panel user by their websocket token
-     * @param token the websocket token to lookup
-     * @param blockRecursion prevents recursion if {@code true}
-     * @return The user if a user with the queried token has been found; {@code null} otherwise
-     * @see PanelUser#LookupByUsername(String)
-     */
-    private static PanelUser LookupByAuthToken(String token, boolean blockRecursion) {
         String username = null;
         if (token.equals(CaselessProperties.instance().getProperty("webauth")) || token.equals(CaselessProperties.instance().getProperty("webauthro"))) {
-            username = CaselessProperties.instance().getProperty("paneluser", "panel");
-        } else if (PROPUSER != null && token.equals(PROPUSER.getAuthToken(blockRecursion))) {
-            return PROPUSER;
+            return CONFIGUSER;
         } else {
             DataStore dataStore = PhantomBot.instance().getDataStore();
             String res[] = dataStore.GetKeysByLikeValues(PanelUserHandler.PANEL_USER_TABLE, "", "\"token\":\"" + token + "\"");
