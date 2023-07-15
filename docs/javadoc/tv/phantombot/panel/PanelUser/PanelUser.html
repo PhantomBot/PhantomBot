@@ -126,10 +126,24 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Indicates if this user is allowed to manage other panel users</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(java.lang.String,java.util.Map,boolean)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#canRestartBot()" class="member-name-link">canRestartBot</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Indicates if this user is allowed to restart the bot</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(java.lang.String,java.util.Map,boolean)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
  boolean&nbsp;enabled)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Creates a new panel user and saves the user in the database</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#create(java.lang.String,java.util.Map,boolean,boolean,boolean)" class="member-name-link">create</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
+ boolean&nbsp;enabled,
+ boolean&nbsp;canManageUsers,
+ boolean&nbsp;canRestartBot)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates a new panel user and saves the user in the database</div>
 </div>
@@ -333,11 +347,41 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="canRestartBot()">
+<h3>canRestartBot</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">canRestartBot</span>()</div>
+<div class="block">Indicates if this user is allowed to restart the bot</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if allowed</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="create(java.lang.String,java.util.Map,boolean)">
 <h3>create</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
  boolean&nbsp;enabled)</span></div>
+<div class="block">Creates a new panel user and saves the user in the database</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>username</code> - The username of the new panel user</dd>
+<dd><code>permission</code> - The user's <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>; <code>null</code> to assign no permissions}</dd>
+<dd><code>enabled</code> - <code>true</code> to enable the user; <code>false</code> to disable the user</dd>
+<dt>Returns:</dt>
+<dd>The password generated for the new user</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="create(java.lang.String,java.util.Map,boolean,boolean,boolean)">
+<h3>create</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">create</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;&nbsp;permissions,
+ boolean&nbsp;enabled,
+ boolean&nbsp;canManageUsers,
+ boolean&nbsp;canRestartBot)</span></div>
 <div class="block">Creates a new panel user and saves the user in the database</div>
 <dl class="notes">
 <dt>Parameters:</dt>

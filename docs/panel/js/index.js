@@ -518,7 +518,7 @@ $(function () {
      * @param {Boolean}      enabled
      * @param {Function}     callback
      */
-    socket.addPanelUser = function (callback_id, username, permission, enabled, callback) {
+    socket.addPanelUser = function (callback_id, username, permission, enabled, canRestartBot, canManageUsers, callback) {
         // Genetate a callback.
         generateCallBack(callback_id, [], false, true, callback);
 
@@ -528,7 +528,9 @@ $(function () {
             add: {
                 username: String(username),
                 permission: String(permission),
-                enabled: enabled
+                enabled: enabled,
+                canRestartBot: canRestartBot,
+                canManageUsers: canManageUsers
             }
         });
     };
@@ -561,7 +563,7 @@ $(function () {
      * @param {Boolean}      enabled
      * @param {Function}     callback
      */
-    socket.editPanelUser = function (callback_id, currentUsername, newUsername, permission, enabled, callback) {
+    socket.editPanelUser = function (callback_id, currentUsername, newUsername, permission, enabled, canRestartBot, canManageUsers, callback) {
         // Genetate a callback.
         generateCallBack(callback_id, [], false, true, callback);
 
@@ -572,7 +574,9 @@ $(function () {
                 currentUsername: String(currentUsername),
                 newUsername: String(newUsername),
                 permission: String(permission),
-                enabled: enabled
+                enabled: enabled,
+                canRestartBot: canRestartBot,
+                canManageUsers: canManageUsers
             }
         });
     };
