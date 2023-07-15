@@ -17,6 +17,7 @@
 package tv.phantombot.panel;
 
 import com.gmt2001.Digest;
+import com.gmt2001.TestData;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
@@ -133,6 +134,8 @@ public class WsPanelHandler implements WsFrameHandler {
                 handleChannelPointsList(ctx, frame, jso);
             } else if (jso.has("panelUser")) {
                 handlePanelUser(ctx, frame, jso);
+            } else if (jso.has("channelpointslisttest")) {
+                handleChannelPointsListTest(ctx, frame, jso);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Exception processing /ws/panel frame: " + jso.toString(), !PhantomBot.getEnableDebugging());
@@ -389,6 +392,24 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.endObject().endObject();
             WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
         }).doOnError(com.gmt2001.Console.err::printStackTrace).subscribe();
+    }
+
+    private void handleChannelPointsListTest(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, (jso.has("section") ? jso.getString("section") : ""), false)) {
+            this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+        String uniqueID = jso.has("channelpointslisttest") ? jso.getString("channelpointslisttest") : "";
+
+        JSONStringer jsonObject = new JSONStringer();
+        jsonObject.object().key("query_id").value(uniqueID);
+        jsonObject.key("results").object();
+        jsonObject.key("data").array();
+        TestData.Redeemables().forEach(jsonObject::value);
+        jsonObject.endArray();
+        jsonObject.endObject().endObject();
+        WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
     }
 
     private void handlePanelUser(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
