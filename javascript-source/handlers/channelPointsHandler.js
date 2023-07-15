@@ -20,7 +20,7 @@
 (function () {
     let commands = JSON.parse($.getSetIniDbString('channelPointsSettings', 'commands', '[]')),
             commandConfig = $.getSetIniDbString('channelPointsSettings', 'commandConfig', ''),
-            lock = new Packages.java.util.concurrent.locks.ReentrantLock,
+            lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             managed = [];
 
     function subscribeEventSub() {
