@@ -23,7 +23,7 @@ import com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redempti
  *
  * @author gmt2001
  */
-public class EventSubChannelPointsCustomRewardRedemptionAddEvent  extends EventSubChannelPointsRedemptionEvent<ChannelPointsCustomRewardRedemptionAdd> {
+public class EventSubChannelPointsCustomRewardRedemptionAddEvent extends EventSubChannelPointsRedemptionEvent<ChannelPointsCustomRewardRedemptionAdd> {
     public EventSubChannelPointsCustomRewardRedemptionAddEvent(ChannelPointsCustomRewardRedemptionAdd event) {
         super(event);
     }

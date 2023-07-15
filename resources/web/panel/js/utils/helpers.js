@@ -1184,7 +1184,7 @@ $(function () {
     };
 
     /**
-     * Capitalizes the first letter of each word in a string 
+     * Capitalizes the first letter of each word in a string
      * @param {String} str The string to process
      * @returns The string with the first letter of each word being capitalized
      */
@@ -1603,6 +1603,14 @@ $(function () {
     helpers.isLocalPanel = function () {
         return helpers.getBotHost() === window.location.host;
     };
+
+    const ipRegex = /(?<ip>(?<ipv4>(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9])\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}|[1-9][0-9]|[0-9]))|(?<ipv6>(?:::)?(?:[0-9a-fA-F]{1,4}(?:::|:)){2,7}(?:[0-9a-fA-F]{1,4}|)|(?:::[0-9a-fA-F]{1,4})|(?:[0-9a-fA-F]{1,4}::(?:[0-9a-fA-F]{1,4})?)))/;
+
+    helpers.canEmbedTwitch = function() {
+        return location.protocol.toLowerCase().startsWith('https') && location.hostname.includes('.') && !ipRegex.test(location.hostname) && (location.port === '' || location.port === 443);
+    };
+
+    helpers.CANT_EMBED_TWITCH_TEXT = 'Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443 or setup a reverse proxy. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.';
 
     /** Takes an object {} and an array [] of keys.
     * Foreach key in keys:
