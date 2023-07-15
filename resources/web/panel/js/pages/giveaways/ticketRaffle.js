@@ -82,7 +82,7 @@ $(run = function () {
             });
         };
 
-        if (location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
+        if (helpers.canEmbedTwitch()) {
             // Add Twitch chat.
             $('#ticket-raffle-chat').html($('<iframe/>', {
                 'frameborder': '0',
@@ -91,7 +91,7 @@ $(run = function () {
                 'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
             }));
         } else {
-            $('#ticket-raffle-chat').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
+            $('#ticket-raffle-chat').html(helpers.CANT_EMBED_TWITCH_TEXT);
             $('#ticket-raffle-chat').addClass('box-body');
         }
 
