@@ -107,7 +107,9 @@ $(function () {
         }
     });
 
-    socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function (e) {});
+    if (!helpers.currentPanelUserData.canRestartBot) {
+        socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function (e) {});
+    }
 
     // the button that signs out.
     $('#sign-out-btn').on('click', function () {
@@ -185,8 +187,11 @@ $(function () {
         if (helpers.currentPanelUserData.userType === 'CONFIG') {
             $('[data-removeForConfigUser="true"]').remove();//Panel user is defined in the config
         } else {
-            $('[data-removeForCantRestart="true"]').remove();
             $('[data-removeForNonConfigUser="true"]').remove();
+        }
+
+        if (!helpers.currentPanelUserData.canRestartBot) {
+            $('[data-removeForCantRestart="true"]').remove();
         }
 
         if (!helpers.currentPanelUserData.canManageUsers) { //Remove panel user manager

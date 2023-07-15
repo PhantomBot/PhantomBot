@@ -313,7 +313,7 @@ public class WsPanelHandler implements WsFrameHandler {
         }
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
-        if (user != null && !PanelUserHandler.checkPanelUserScriptAccess(user, script, args, (jso.has("section") ? jso.getString("section") : ""))) {
+        if (user != null && !uniqueID.equalsIgnoreCase("restart-bot-check") && !PanelUserHandler.checkPanelUserScriptAccess(user, script, args, (jso.has("section") ? jso.getString("section") : ""))) {
             this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
             return;
         }
@@ -410,15 +410,19 @@ public class WsPanelHandler implements WsFrameHandler {
         } else if (jso.has("add")) {
             String username = jso.getJSONObject("add").getString("username");
             JSONArray permission = new JSONArray(jso.getJSONObject("add").getString("permission"));
-            Boolean enabled = jso.getJSONObject("add").getBoolean("enabled");
-            PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(username, permission, enabled);
+            boolean enabled = jso.getJSONObject("add").getBoolean("enabled");
+            boolean canManageUsers = jso.getJSONObject("edit").getBoolean("canManageUsers");
+            boolean canRestartBot = jso.getJSONObject("edit").getBoolean("canRestartBot");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(username, permission, enabled, canManageUsers, canRestartBot);
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         } else if (jso.has("edit")) {
             String currentUsername = jso.getJSONObject("edit").getString("currentUsername");
             String newUsername = jso.getJSONObject("edit").getString("newUsername");
             JSONArray permission = new JSONArray(jso.getJSONObject("edit").getString("permission"));
-            Boolean enabled = jso.getJSONObject("edit").getBoolean("enabled");
-            PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(currentUsername, newUsername, permission, enabled);
+            boolean enabled = jso.getJSONObject("edit").getBoolean("enabled");
+            boolean canManageUsers = jso.getJSONObject("edit").getBoolean("canManageUsers");
+            boolean canRestartBot = jso.getJSONObject("edit").getBoolean("canRestartBot");
+            PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(currentUsername, newUsername, permission, enabled, canManageUsers, canRestartBot);
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         } else if (jso.has("resetPassword")) {
             String username = jso.getString("resetPassword");
