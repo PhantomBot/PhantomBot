@@ -109,7 +109,7 @@
                 count = $.inidb.get('panelstats', 'gameCount');
                 played = played.get();
                 played += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '=');
-                $.inidb.set('streamInfo', 'gamesPlayed', gamesPlayed);
+                $.inidb.set('streamInfo', 'gamesPlayed', played);
             } else {
                 count = $.inidb.get('panelstats', 'gameCount');
                 $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));

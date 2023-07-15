@@ -25,7 +25,7 @@
             return;
         }
 
-        let gamesObj = $.inidb.GetString('pastgames', '', 'gamesList'),
+        let gamesObj = $.inidb.OptString('pastgames', '', 'gamesList'),
                 date = $.jsString($.logging.getLogDateString()).replace(/-/g, '.'),
                 game = $.jsString(event.getGameTitle()).replace(/\s/g, '-').toLowerCase();
 
@@ -44,7 +44,7 @@
      * @event twitchOnline
      */
     $.bind('twitchOnline', function(event) {
-        let gamesObj = $.inidb.GetString('pastgames', '', 'gamesList'),
+        let gamesObj = $.inidb.OptString('pastgames', '', 'gamesList'),
             date = $.jsString($.logging.getLogDateString()).replace(/-/g, '.'),
             game = $.jsString($.getGame($.channelName)).replace(/\s/g, '-').toLowerCase();
 
@@ -65,7 +65,7 @@
      * @param {String} gameName
      */
     function gameLookUp(gameName) {
-        let gamesObj = $.inidb.GetString('pastgames', '', 'gamesList'),
+        let gamesObj = $.inidb.OptString('pastgames', '', 'gamesList'),
             game = $.jsString(gameName).replace(/\s/g, '-').toLowerCase();
 
         gamesObj = gamesObj.isPresent() ? JSON.parse(gamesObj.get()) : {};

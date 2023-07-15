@@ -35,7 +35,7 @@
         }
 
         if (typeof defaultValue !== 'boolean') {
-            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1'); //Ensure compatibility
+            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1') || $.equalsIgnoreCase(defaultValue, 'yes'); //Ensure compatibility
         }
 
         return $.inidb.GetBoolean(fileName, '', key, defaultValue);
@@ -56,7 +56,7 @@
         }
 
         if (typeof defaultValue !== 'boolean') {
-            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1'); //Ensure compatibility
+            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1') || $.equalsIgnoreCase(defaultValue, 'yes'); //Ensure compatibility
         }
 
         $.inidb.SetBoolean(fileName, '', key, defaultValue);
@@ -127,9 +127,9 @@
      */
     function getIniDbNumber(fileName, key, defaultValue) {
         if (defaultValue === undefined || defaultValue === null) {
-            return parseInt($.inidb.GetInteger(fileName, '', key));
+            return $.inidb.GetInteger(fileName, '', key);
         }
-        return parseInt($.inidb.GetInteger(fileName, '', key, defaultValue));
+        return $.inidb.GetInteger(fileName, '', key, defaultValue);
     }
 
     /**
@@ -142,7 +142,7 @@
     function getSetIniDbNumber(fileName, key, defaultValue) {
         let res = $.inidb.OptInteger(fileName, '', key);
         if (res.isPresent()) {
-            return parseInt(res.get());
+            return res.get();
         }
 
         $.inidb.SetInteger(fileName, '', key, defaultValue);
@@ -169,10 +169,10 @@
      */
     function getIniDbFloat(fileName, key, defaultValue) {
         if (defaultValue === undefined || defaultValue === null) {
-            return parseFloat($.inidb.GetDouble(fileName, '', key));
+            return $.inidb.GetFloat(fileName, '', key);
         }
 
-        return parseFloat($.inidb.GetDouble(fileName, '', key, defaultValue));
+        return $.inidb.GetFloat(fileName, '', key, defaultValue);
     }
 
     /**
@@ -183,12 +183,12 @@
      * @param {number}
      */
     function getSetIniDbFloat(fileName, key, defaultValue) {
-        let res = $.inidb.OptDouble(fileName, '', key);
+        let res = $.inidb.GetFloat(fileName, '', key);
         if (res.isPresent()) {
-            return parseFloat(res.get());
+            return res.get();
         }
 
-        $.inidb.SetDouble(fileName, '', key, defaultValue);
+        $.inidb.SetFloat(fileName, '', key, defaultValue);
         return defaultValue;
     }
 
@@ -200,7 +200,7 @@
      * @param {number}
      */
     function setIniDbFloat(fileName, key, value) {
-        $.inidb.SetDouble(fileName, '', key, value);
+        $.inidb.SetFloat(fileName, '', key, value);
     }
 
     /**

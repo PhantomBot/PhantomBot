@@ -309,8 +309,7 @@
      * @returns {number}
      */
     function getUserTime(username) {
-        let time = $.inidb.OptInteger('time', '', username.toLowerCase());
-        return (time ? parseInt(time.get()) : 0);
+        return $.inidb.GetInteger('time', '', username.toLowerCase(), 0);
     }
 
     /**

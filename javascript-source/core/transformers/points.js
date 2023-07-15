@@ -79,7 +79,7 @@
         }
 
         return {
-            result: $.getPoints($.inidb.GetInteger('paycom', '', cmd, 0)),
+            result: $.getPointsString($.inidb.GetInteger('paycom', '', cmd, 0)),
             cache: true
         };
     }

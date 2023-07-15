@@ -54,12 +54,12 @@
 
         let cost = $.inidb.GetInteger('pricecom', '', command, 0);
 
-        if (cost.get() <= 0) {
+        if (cost <= 0) {
             return;
         }
 
         if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
-            $.inidb.incr('points', sender, cost.get());
+            $.inidb.incr('points', sender, cost);
         }
     }
 

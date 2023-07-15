@@ -135,7 +135,7 @@
             return;
         }
 
-        let tempBet = $.inidb.get('bettingState', 'bets'),
+        let tempBet = $.inidb.get('bettingState', 'bet'),
                 tempBets = $.inidb.get('bettingState', 'bets');
 
         if (tempBet === null || tempBets === null) {

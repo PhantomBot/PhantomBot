@@ -265,9 +265,9 @@
 
             commands[command] = {
                 permission: getJSONCommandPermission(command, permission),
-                cost: $.inidb.GetInteger('discordPricecom', command, 0),
-                alias: $.inidb.GetString('discordAliascom', command, ''),
-                channels: $.inidb.GetString('discordChannelcom', command, ''),
+                cost: $.inidb.GetInteger('discordPricecom', '', command, 0),
+                alias: $.inidb.GetString('discordAliascom', '', command, ''),
+                channels: $.inidb.GetString('discordChannelcom', '', command, ''),
                 scriptFile: scriptFile,
                 subCommand: {}
             };
