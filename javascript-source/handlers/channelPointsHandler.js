@@ -275,15 +275,15 @@
         if (jso.getInt('_http') === 200 && jso.has('data')) {
             let jsa = jso.getJSONArray('data');
 
+            let newManaged = [];
+
+            for (let i = 0; i < jsa.length(); i++) {
+                newManaged.push(jsa.getJSONObject(i).getString('id'));
+            }
+
             lock.lock();
             try {
-                if (jsa.length() === 0) {
-                    managed = [];
-                } else {
-                    for (let i = 0; i < jsa.length(); i++) {
-                        managed.push(jsa.getJSONObject(i).getString('id'));
-                    }
-                }
+                managed = newManaged;
             } finally {
                 lock.unlock();
             }
