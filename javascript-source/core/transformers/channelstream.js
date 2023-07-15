@@ -254,17 +254,10 @@
      * @cached
      */
     function lasttip() {
-        if ($.inidb.exists('donations', 'last_donation_message')) {
-            return {
-                result: $.inidb.get('donations', 'last_donation_message'),
-                cache: true
-            };
-        } else {
-            return {
-                result: $.lang.get('customcommands.lasttip.404'),
-                cache: true
-            };
-        }
+        return {
+            result: $.inidb.GetString('donations', '', 'last_donation_message', $.lang.get('customcommands.lasttip.404')),
+            cache: true
+        };
     }
 
     /*

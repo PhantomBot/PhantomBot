@@ -32,7 +32,7 @@
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        return ($.inidb.exists('discordToTwitch', userId) ? $.inidb.get('discordToTwitch', userId) : null);
+        return $.inidb.GetString('discordToTwitch', '', userId);
     }
 
     /**
@@ -52,11 +52,11 @@
          */
         if (command.equalsIgnoreCase('account')) {
             var userId = event.getSenderId(),
-                    islinked = $.inidb.exists('discordToTwitch', userId);
+                    name = $.inidb.OptString('discordToTwitch', '', userId);
 
             if (action === undefined) {
-                if (islinked) {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.link', $.inidb.get('discordToTwitch', userId)));
+                if (name.isPresent()) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.link', name.get()));
                 } else {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
                 }

@@ -30,11 +30,15 @@
      * @returns {boolean}
      */
     function getIniDbBoolean(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
+        if (defaultValue === undefined || defaultValue === null) {
             return $.inidb.GetBoolean(fileName, '', key);
-        } else {
-            return (defaultValue);
         }
+
+        if (typeof defaultValue !== 'boolean') {
+            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1') || $.equalsIgnoreCase(defaultValue, 'yes'); //Ensure compatibility
+        }
+
+        return $.inidb.GetBoolean(fileName, '', key, defaultValue);
     }
 
     /**
@@ -46,12 +50,17 @@
      * @returns {boolean}
      */
     function getSetIniDbBoolean(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return $.inidb.GetBoolean(fileName, '', key);
-        } else {
-            $.inidb.set(fileName, key, defaultValue.toString());
-            return (defaultValue);
+        let res = $.inidb.OptBoolean(fileName, '', key);
+        if (res.isPresent()) {
+            return res.get().booleanValue();
         }
+
+        if (typeof defaultValue !== 'boolean') {
+            defaultValue = defaultValue === true || defaultValue === 1 || $.equalsIgnoreCase(defaultValue, 'true') || $.equalsIgnoreCase(defaultValue, '1') || $.equalsIgnoreCase(defaultValue, 'yes'); //Ensure compatibility
+        }
+
+        $.inidb.SetBoolean(fileName, '', key, defaultValue);
+        return defaultValue;
     }
 
 
@@ -63,7 +72,7 @@
      * @param {boolean} state
      */
     function setIniDbBoolean(fileName, key, state) {
-        $.inidb.set(fileName, key, state.toString());
+        $.inidb.SetBoolean(fileName, '', key, state);
     }
 
     /**
@@ -74,11 +83,11 @@
      * @param {string}
      */
     function getIniDbString(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return ($.inidb.get(fileName, key) + '');
-        } else {
-            return (defaultValue);
+        if (defaultValue === undefined) { //Null could be a valid defaultValue
+            return $.jsString($.inidb.GetString(fileName, '', key));
         }
+
+        return $.jsString($.inidb.GetString(fileName, '', key, defaultValue));
     }
 
     /**
@@ -89,12 +98,13 @@
      * @param {string}
      */
     function getSetIniDbString(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return ($.inidb.get(fileName, key) + '');
-        } else {
-            $.inidb.set(fileName, key, defaultValue);
-            return (defaultValue);
+        let res = $.inidb.OptString(fileName, '', key);
+        if (res.isPresent()) {
+            return $.jsString(res.get());
         }
+
+        $.inidb.SetString(fileName, '', key, defaultValue);
+        return defaultValue;
     }
 
     /**
@@ -105,7 +115,7 @@
      * @param {string}
      */
     function setIniDbString(fileName, key, value) {
-        $.inidb.set(fileName, key, value);
+        $.inidb.SetString(fileName, '', key, value);
     }
 
     /**
@@ -116,11 +126,10 @@
      * @param {number}
      */
     function getIniDbNumber(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return parseInt($.inidb.get(fileName, key));
-        } else {
-            return defaultValue;
+        if (defaultValue === undefined || defaultValue === null) {
+            return $.inidb.GetInteger(fileName, '', key);
         }
+        return $.inidb.GetInteger(fileName, '', key, defaultValue);
     }
 
     /**
@@ -131,12 +140,13 @@
      * @param {number}
      */
     function getSetIniDbNumber(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return parseInt($.inidb.get(fileName, key));
-        } else {
-            $.inidb.set(fileName, key, defaultValue.toString());
-            return defaultValue;
+        let res = $.inidb.OptInteger(fileName, '', key);
+        if (res.isPresent()) {
+            return res.get();
         }
+
+        $.inidb.SetInteger(fileName, '', key, defaultValue);
+        return defaultValue;
     }
 
     /**
@@ -147,7 +157,7 @@
      * @param {number}
      */
     function setIniDbNumber(fileName, key, value) {
-        $.inidb.set(fileName, key, value.toString());
+        $.inidb.SetInteger(fileName, '', key, value);
     }
 
     /**
@@ -158,11 +168,11 @@
      * @param {number}
      */
     function getIniDbFloat(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return parseFloat($.inidb.get(fileName, key));
-        } else {
-            return defaultValue;
+        if (defaultValue === undefined || defaultValue === null) {
+            return $.inidb.GetFloat(fileName, '', key);
         }
+
+        return $.inidb.GetFloat(fileName, '', key, defaultValue);
     }
 
     /**
@@ -173,12 +183,13 @@
      * @param {number}
      */
     function getSetIniDbFloat(fileName, key, defaultValue) {
-        if ($.inidb.exists(fileName, key) === true) {
-            return parseFloat($.inidb.get(fileName, key));
-        } else {
-            $.inidb.set(fileName, key, defaultValue.toString());
-            return defaultValue;
+        let res = $.inidb.GetFloat(fileName, '', key);
+        if (res.isPresent()) {
+            return res.get();
         }
+
+        $.inidb.SetFloat(fileName, '', key, defaultValue);
+        return defaultValue;
     }
 
     /**
@@ -189,7 +200,34 @@
      * @param {number}
      */
     function setIniDbFloat(fileName, key, value) {
-        $.inidb.set(fileName, key, value.toString());
+        $.inidb.SetFloat(fileName, '', key, value);
+    }
+
+    /**
+     * @function getIniDbArray
+     * @export $
+     * @param {string} fileName
+     * @param {string} key
+     * @param {[*]}
+     * @returns empty array if non is present
+     */
+    function getIniDbArray(fileName, key, defaultValue) {
+        let res = $.inidb.OptString(fileName, '', key);
+        if (res.isPresent()) {
+            return JSON.parse(res.get());
+        }
+        return defaultValue;
+    }
+
+    /**
+     * @function setIniDbArray
+     * @export $
+     * @param {string} fileName
+     * @param {string} key
+     * @param {[*]} value
+     */
+    function setIniDbArray(fileName, key, value) {
+        $.inidb.SetString(fileName, '', key, JSON.stringify(value));
     }
 
     /**
@@ -263,5 +301,7 @@
     $.setIniDbString = setIniDbString;
     $.setIniDbNumber = setIniDbNumber;
     $.setIniDbFloat = setIniDbFloat;
+    $.getIniDbArray = getIniDbArray;
+    $.setIniDbArray = setIniDbArray;
     $.sql = sql;
 })();

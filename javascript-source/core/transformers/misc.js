@@ -92,8 +92,9 @@
                 keywordInfo;
         if (args.args) {
             keyword = args.args;
-            if ($.inidb.exists('keywords', keyword)) {
-                keywordInfo = JSON.parse($.inidb.get('keywords', keyword));
+            keywordInfo = $.inidb.OptString('keywords', '', keyword);
+            if (keywordInfo.isPresent()) {
+                keywordInfo = JSON.parse(keywordInfo.get());
                 if ('count' in keywordInfo) {
                     ++keywordInfo["count"];
                 } else {
@@ -157,18 +158,10 @@
      * @cached
      */
     function token(args) {
-        let cmd = args.event.getCommand();
-        if ($.inidb.HasKey('commandtoken', '', cmd)) {
-            return {
-                result: $.inidb.GetString('commandtoken', '', cmd),
-                cache: true
-            };
-        } else {
-            return {
-                result: 'NOT_SET',
-                cache: true
-            };
-        }
+        return {
+            result: $.inidb.GetString('commandtoken', '', args.event.getCommand(), 'NOT_SET'),
+            cache: true
+        };
     }
 
     /*

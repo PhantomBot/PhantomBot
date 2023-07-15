@@ -203,12 +203,12 @@
      * @return {Array}
      */
     function getRanksAndPermissions(username) {
-        var roles = [],
-            role;
+        let roles = [];
 
         if (autoSetPermissions === true) {
-            if ($.inidb.exists('group', username) && !$.inidb.exists('blacklistedDiscordRoles', $.getIniDbString('group', username).toLowerCase())) {
-                roles.push($.getIniDbString('groups', $.getIniDbString('group', username)));
+            let group = $.inidb.OptString('group', '', username);
+            if (group.isPresent() && !$.inidb.exists('blacklistedDiscordRoles', group.get().toLowerCase())) {
+                roles.push($.getIniDbString('groups', group.get()));
             }
         }
 

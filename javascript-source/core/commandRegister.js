@@ -56,12 +56,8 @@
 
         // This is for the panel commands.
         if (groupId === $.PERMISSION.Panel) {
-            if ($.inidb.exists('permcom', command)) {
-                $.inidb.del('permcom', command);
-            }
-            if ($.inidb.exists('commandRestrictions', command)) {
-                $.inidb.del('commandRestrictions', command);
-            }
+            $.inidb.del('permcom', command);
+            $.inidb.del('commandRestrictions', command);
 
             _commandsLock.lock();
             try {
@@ -684,8 +680,9 @@
                 command = args[1] + '',
                 commandLower = command.toLowerCase() + '';
             if (eventName === 'enable') {
-                if ($.inidb.exists('tempDisabledCommandScript', commandLower)) {
-                    $.registerChatCommand($.inidb.get('tempDisabledCommandScript', commandLower), commandLower);
+                let tempDisabled = $.inidb.OptString('tempDisabledCommandScript', '', commandLower);
+                if (tempDisabled.isPresent()) {
+                    $.registerChatCommand(tempDisabled.get(), commandLower);
                 }
             } else if (eventName === 'disable') {
                 if (commandExists(commandLower)) {

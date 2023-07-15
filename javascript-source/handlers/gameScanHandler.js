@@ -25,9 +25,11 @@
             return;
         }
 
-        var gamesObj = ($.inidb.exists('pastgames', 'gamesList') ? JSON.parse($.getIniDbString('pastgames', 'gamesList')) : {}),
-            date = $.jsString($.logging.getLogDateString()).replace(/-/g, '.'),
-            game = $.jsString(event.getGameTitle()).replace(/\s/g, '-').toLowerCase();
+        let gamesObj = $.inidb.OptString('pastgames', '', 'gamesList'),
+                date = $.jsString($.logging.getLogDateString()).replace(/-/g, '.'),
+                game = $.jsString(event.getGameTitle()).replace(/\s/g, '-').toLowerCase();
+
+        gamesObj = gamesObj.isPresent() ? JSON.parse(gamesObj.get()) : {};
 
         if (gamesObj[game] !== undefined) {
             gamesObj[game].push(date);
@@ -42,9 +44,11 @@
      * @event twitchOnline
      */
     $.bind('twitchOnline', function(event) {
-        var gamesObj = ($.inidb.exists('pastgames', 'gamesList') ? JSON.parse($.getIniDbString('pastgames', 'gamesList')) : {}),
+        let gamesObj = $.inidb.OptString('pastgames', '', 'gamesList'),
             date = $.jsString($.logging.getLogDateString()).replace(/-/g, '.'),
             game = $.jsString($.getGame($.channelName)).replace(/\s/g, '-').toLowerCase();
+
+        gamesObj = gamesObj.isPresent() ? JSON.parse(gamesObj.get()) : {};
 
         if (gamesObj[game] !== undefined) {
             gamesObj[game].push(date);
@@ -61,8 +65,10 @@
      * @param {String} gameName
      */
     function gameLookUp(gameName) {
-        var gamesObj = ($.inidb.exists('pastgames', 'gamesList') ? JSON.parse($.getIniDbString('pastgames', 'gamesList')) : {}),
+        let gamesObj = $.inidb.OptString('pastgames', '', 'gamesList'),
             game = $.jsString(gameName).replace(/\s/g, '-').toLowerCase();
+
+        gamesObj = gamesObj.isPresent() ? JSON.parse(gamesObj.get()) : {};
 
         if (gamesObj[game] === undefined) {
             $.say($.lang.get('gamescanhandler.gamescan.notplayed', $.viewer.getByLogin($.channelName).name(), gameName));

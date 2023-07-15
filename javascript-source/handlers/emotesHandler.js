@@ -171,12 +171,13 @@
      * @function loadEmoteCache
      */
     function loadEmoteCache() {
-        if (!$.inidb.exists('emotecache', 'regexp_cache')) {
+        let regExpList = $.inidb.GetString('emotecache', '', 'regexp_cache');
+        if (!regExpList.isPresent()) {
             return;
         }
 
-        var regExpList = $.inidb.get('emotecache', 'regexp_cache').split(','),
-            newEmotesRegExpList = [];
+        let newEmotesRegExpList = [];
+        regExpList = regExpList.get().split(',');
 
         for (var i = 0; i < regExpList.length; i++) {
             newEmotesRegExpList.push(regExpList[i]);

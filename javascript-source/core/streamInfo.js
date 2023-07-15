@@ -103,12 +103,13 @@
 
         if ($.isOnline($.channelName)) {
             $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
-            if ($.inidb.exists('streamInfo', 'gamesPlayed')) {
+            let played = $.inidb.OptString('streamInfo', '', 'gamesPlayed');
+            if (played.isPresent()) {
                 $.inidb.incr('panelstats', 'gameCount', 1);
                 count = $.inidb.get('panelstats', 'gameCount');
-                gamesPlayed = $.inidb.get('streamInfo', 'gamesPlayed');
-                gamesPlayed += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '=');
-                $.inidb.set('streamInfo', 'gamesPlayed', gamesPlayed);
+                played = played.get();
+                played += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '=');
+                $.inidb.set('streamInfo', 'gamesPlayed', played);
             } else {
                 count = $.inidb.get('panelstats', 'gameCount');
                 $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
@@ -122,13 +123,7 @@
      * @return string
      */
     function getGamesPlayed() {
-        if ($.inidb.exists('streamInfo', 'gamesPlayed')) {
-            let games = $.inidb.get('streamInfo', 'gamesPlayed'),
-                    string = games.split('=').join(', ');
-
-            return string;
-        }
-        return '';
+        return $.inidb.GetString('streamInfo', '', 'gamesPlayed', '').split('=').join(', ');
     }
 
     /**

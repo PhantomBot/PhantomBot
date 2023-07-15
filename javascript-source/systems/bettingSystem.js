@@ -131,12 +131,19 @@
     }
 
     function reopen() {
-        if (!$.inidb.FileExists('bettingState') || !$.inidb.HasKey('bettingState', '', 'bets') || !$.inidb.HasKey('bettingState', '', 'bet')) {
+        if (!$.inidb.FileExists('bettingState')) {
             return;
         }
 
-        bets = JSON.parse($.inidb.get('bettingState', 'bets'));
-        bet = JSON.parse($.inidb.get('bettingState', 'bet'));
+        let tempBet = $.inidb.get('bettingState', 'bet'),
+                tempBets = $.inidb.get('bettingState', 'bets');
+
+        if (tempBet === null || tempBets === null) {
+            return;
+        }
+
+        bets = JSON.parse(tempBets);
+        bet = JSON.parse(tempBet);
 
         if (bet.status === true) {
             if (bet.timer > 0) {
@@ -472,8 +479,9 @@
                     return;
                 }
                 if (saveBets) {
-                    if ($.inidb.exists('bettingResults', subAction)) {
-                        $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.lookup.show', subAction, $.inidb.get('bettingResults', subAction)));
+                    let res = $.inidb.OptString('bettingResults', '', subAction);
+                    if (res.isPresent()) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.lookup.show', subAction, res.get()));
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.lookup.null'));
                     }

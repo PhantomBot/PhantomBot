@@ -32,7 +32,7 @@
     function addObjectToArray(table, key, type, object) {
         _dataLock.lock();
         try {
-            var array = ($.inidb.exists(table, key) ? JSON.parse($.inidb.get(table, key)) : []);
+            let array = JSON.parse($.inidb.GetString(table, '', key, '[]'));
 
             // Make sure it is an array.
             if (object.type === undefined) {

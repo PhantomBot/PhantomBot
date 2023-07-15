@@ -445,9 +445,12 @@
         $.registerChatSubcommand(bot, 'togglecustomcommandat', $.PERMISSION.Admin);
 
         // Say the connected message.
-        if (!sentReady && $.inidb.exists('settings', 'connectedMsg')) {
-            sentReady = true;
-            $.say($.inidb.get('settings', 'connectedMsg'));
+        if (!sentReady) {
+            let connectedMsg = $.inidb.OptString('settings', '', 'connectedMsg');
+            if (connectedMsg.isPresent()) {
+                $.say(connectedMsg.get());
+                sentReady = true;
+            }
         }
     });
 })();

@@ -88,7 +88,7 @@
      * @returns {*}
      */
     function getUserPoints(username) {
-        return ($.inidb.exists('points', username.toLowerCase()) ? parseInt($.inidb.get('points', username.toLowerCase())) : 0);
+        return $.inidb.GetInteger('points', '', username.toLowerCase(), 0);
     }
 
     /**
@@ -106,35 +106,22 @@
 
     function calcPointsGained(username, group, isOnline) {
         let table = 'grouppoints' + (isOnline ? '' : 'offline'),
-                defaultGain = isOnline ? Math.max(onlineGain, 0) : Math.max(offlineGain, 0),
-                amount = -1,
-                candidateAmount,
-                candidateAmount2;
+                defaultGain = isOnline ? Math.max(onlineGain, 0) : Math.max(offlineGain, 0);
 
         username = $.jsString(username);
         group = $.jsString(group);
 
-        if ($.inidb.exists(table, group)) {
-            candidateAmount = $.inidb.get(table, group);
-        }
+        let amount = $.inidb.GetInteger(table, '', group, -1);
 
-        if (group === 'Subscriber' && $.inidb.exists('subplan', username)) {
-            if ($.inidb.exists(table, 'Subscriber' + $.inidb.get('subplan', username))) {
-                candidateAmount2 = $.inidb.get(table, 'Subscriber' + $.inidb.get('subplan', username));
+        if (group === 'Subscriber') {
+            let plan = $.inidb.OptString('subplan', '', username);
+            if (plan.isPresent()) {
+                amount = $.inidb.GetInteger(table, '', ('Subscriber' + plan.get()), amount);
             }
         }
 
-        if (!isNaN(candidateAmount)) {
-            amount = parseInt(candidateAmount);
-        }
-
-        if (!isNaN(candidateAmount2)) {
-            let temp = parseInt(candidateAmount);
-            amount = temp > amount ? temp : amount;
-        }
-
         if (amount < 0) {
-            amount = defaultGain;
+            return defaultGain;
         }
 
         return amount;

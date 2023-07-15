@@ -125,8 +125,9 @@
         }
 
         if (donationGroup) {
-            $.inidb.incr('donations', donationUsername.toLowerCase(), parseInt(donationAmount.toFixed(2)));
-            if ($.inidb.exists('donations', donationUsername.toLowerCase()) && $.inidb.get('donations', donationUsername.toLowerCase()) >= donationGroupMin) {
+            $.inidb.incr('donations', donationUsername.toLowerCase(), donationAmount.toFixed(2));
+            let donationsAmount = $.inidb.GetDouble('donations', '', donationUsername.toLowerCase());
+            if (donationsAmount >= donationGroupMin) {
                 if ($.getUserGroupId(donationUsername.toLowerCase()) > $.PERMISSION.Donator) {
                     $.setUserGroupById(donationUsername.toLowerCase(), $.PERMISSION.Donator);
                 }

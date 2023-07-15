@@ -154,7 +154,7 @@
         if (group === true) {
             donationUsername = donationUsername.toLowerCase();
             $.inidb.incr('donations', donationUsername, donationAmount);
-            if ($.inidb.exists('donations', donationUsername) && $.inidb.get('donations', donationUsername) >= groupMin) {
+            if ($.inidb.GetDouble('donations', '', donationUsername) >= groupMin) {
                 if ($.getUserGroupId(donationUsername) > $.PERMISSION.Donator) {
                     $.setUserGroupById(donationUsername, $.PERMISSION.Donator);
                 }
