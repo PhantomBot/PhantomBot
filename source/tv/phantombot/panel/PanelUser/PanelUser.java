@@ -19,7 +19,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  * @author Sartharon
  */
 public final class PanelUser {
-    private static final PanelUser PROPUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
+    private static final PanelUser CONFIGUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
     private String username;
     private String password;
     private String token;
@@ -59,28 +59,30 @@ public final class PanelUser {
     /**
      * Constructor used for new user creations
      */
-    private PanelUser(String username, Map<String, Permission> permissions, boolean enabled) {
-        this(username, permissions, Type.NEW, enabled, false);
+    private PanelUser(String username, Map<String, Permission> permissions, boolean enabled, boolean canManageUsers, boolean canRestartBot) {
+        this(username, permissions, Type.NEW, enabled, false, canManageUsers, canRestartBot);
     }
 
     /**
-     * Constructor used for the user defined in botlogin.txt
+     * Constructor used for the user defined in botlogin.txt {@link CONFIGUSER}
      */
     private PanelUser(String username, String password) {
-        this(username, PanelUserHandler.getFullAccessPermissions(), Type.CONFIG, true, true);
+        this(username, PanelUserHandler.getFullAccessPermissions(), Type.CONFIG, true, true, true, true);
         this.password = password;
-        this.generateNewAuthToken();
+        this.token = CaselessProperties.instance().getProperty("webauth");
     }
 
     /**
      * Internal constructor
      */
-    private PanelUser(String username, Map<String, Permission> permissions, Type userType, boolean enabled, boolean hasSetPassword) {
+    private PanelUser(String username, Map<String, Permission> permissions, Type userType, boolean enabled, boolean hasSetPassword, boolean canManageUsers, boolean canRestartBot) {
         this.username = username;
         this.setPermission(permissions);
         this.userType = userType;
         this.enabled = enabled;
         this.hasSetPassword = hasSetPassword;
+        this.setManageUserPermission(canManageUsers);
+        this.setRestartPermission(canRestartBot);
     }
 
     /**
@@ -115,18 +117,7 @@ public final class PanelUser {
      * @see WsPanelHandler#handleFrame() token usage
      */
     String getAuthToken() {
-        return this.getAuthToken(false);
-    }
-    /**
-     * The user's current websocket authentication token
-     * <br /><br />
-     * A new token will automatically be generated and the user saved if there is no current token
-     * @param recurse prevents recursion if {@code true}
-     * @return The user's current websocket authentication token
-     * @see WsPanelHandler#handleFrame() token usage
-     */
-    String getAuthToken(boolean recurse) {
-        if (!recurse && (this.token == null || this.token.isEmpty())) {
+        if (this.token == null || this.token.isEmpty()) {
             generateNewAuthToken();
             if(this.userType == Type.DATABASE) {
                 this.save();
@@ -201,7 +192,38 @@ public final class PanelUser {
      * @return {@code true} if allowed
      */
     public boolean canManageUsers() {
-        return this.isConfigUser();
+        return this.isConfigUser() || (permissions.containsKey("canManageUsers") && permissions.get("canManageUsers").equals(Permission.READ_WRITE));
+    }
+
+    /**
+     * Allows or disallows the user to mange other user
+     * @param permission {@code true} allows the user to manage users; {@code false} prohibits it
+     */
+    void setManageUserPermission(boolean permission) {
+        this.permissions.put("canManageUsers", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
+        if (permission && !this.permissions.containsKey("settings")) {
+            this.permissions.put("settings", Permission.READ_ONLY);
+        }
+    }
+
+    /**
+     * Indicates if this user is allowed to restart the bot
+     *
+     * @return {@code true} if allowed
+     */
+    public boolean canRestartBot() {
+        return this.isConfigUser() || (permissions.containsKey("canRestartBot") && permissions.get("canRestartBot").equals(Permission.READ_WRITE));
+    }
+
+    /**
+     * Allows or disallows the user to restart the bot
+     * @param permission {@code true} allows the user to restart the bot; {@code false} prohibits it
+     */
+    void setRestartPermission(boolean permission) {
+        this.permissions.put("canRestartBot", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
+        if (permission && !this.permissions.containsKey("settings")) {
+            this.permissions.put("settings", Permission.READ_ONLY);
+        }
     }
 
     private void setCreationDateNOW(){
@@ -230,7 +252,7 @@ public final class PanelUser {
      */
     void setPermission(Map<String, Permission> permissions) {
         if (!permissions.containsKey("dashboard")) {
-            permissions.put("dashboard", PanelUserHandler.Permission.READ_ONLY);
+            permissions.put("dashboard", Permission.READ_ONLY);
         }
         this.permissions = permissions;
     }
@@ -249,7 +271,7 @@ public final class PanelUser {
      */
     private void generateNewAuthToken() {
         String tempToken = PhantomBot.generateRandomString(30);
-        while (PanelUser.LookupByAuthToken(tempToken, true) != null) {
+        while (PanelUser.LookupByAuthToken(tempToken) != null) {
             tempToken = PhantomBot.generateRandomString(30);
         }
         this.token = tempToken;
@@ -280,7 +302,7 @@ public final class PanelUser {
         JSONObject userJO = new JSONObject();
         userJO.put("pass", this.password);
         userJO.put("token", this.token);
-        userJO.put("permissions", this.getPermissionsToJSON(false));
+        userJO.put("permissions", this.getPermissionsToJSON(false, true));
         userJO.put("enabled", this.enabled);
         userJO.put("hasSetPassword", this.hasSetPassword);
         userJO.put("lastLogin", this.lastLogin);
@@ -294,9 +316,22 @@ public final class PanelUser {
      * @return A {@link JSONArray} with the users permissions
      */
     JSONArray getPermissionsToJSON(boolean asDisplayName) {
+        return getPermissionsToJSON(asDisplayName, false);
+    }
+
+    /**
+     * Gets the users {@link PanelUserHandler.Permission permissions} as a {@link JSONArray}
+     * @param asDisplayName Indicates if the {@link PanelUserHandler.Permission permissions} should be included with their display name
+     * @param isSave Indicates if the {@link JSONArray} will be used to save the user; If {@code true}, special permissions will be included as well
+     * @return A {@link JSONArray} with the users permissions
+     */
+    private JSONArray getPermissionsToJSON(boolean asDisplayName, boolean isSave) {
         JSONArray permissionsJSON = new JSONArray();
         int counter = 0;
         for (Map.Entry<String, Permission> entry : this.permissions.entrySet()) {
+            if (!isSave && (entry.getKey().equalsIgnoreCase("canRestartBot") || entry.getKey().equalsIgnoreCase("canManageUsers"))) {
+                continue;
+            }
             JSONObject permissionJSON = new JSONObject();
             permissionJSON.put("section", entry.getKey());
             permissionJSON.put("permission", (asDisplayName ? entry.getValue().getDisplayName() : entry.getValue().getValue()));
@@ -365,11 +400,22 @@ public final class PanelUser {
      * @return The password generated for the new user
      */
     public static String create(String username, Map<String, Permission> permissions, boolean enabled) {
+        return create(username, permissions, enabled, false, false);
+    }
+
+    /**
+     * Creates a new panel user and saves the user in the database
+     * @param username The username of the new panel user
+     * @param permission The user's {@link PanelUserHandler.Permission permissions}; {@code null} to assign no permissions}
+     * @param enabled {@code true} to enable the user; {@code false} to disable the user
+     * @return The password generated for the new user
+     */
+    public static String create(String username, Map<String, Permission> permissions, boolean enabled, boolean canManageUsers, boolean canRestartBot) {
         if (permissions == null) {
             permissions = new HashMap<>();
         }
 
-        PanelUser user = new PanelUser(username, permissions, enabled);
+        PanelUser user = new PanelUser(username, permissions, enabled, canManageUsers, canRestartBot);
         user.setCreationDateNOW();
         user.generateNewAuthToken();
         String password = user.generateNewPassword();
@@ -384,13 +430,13 @@ public final class PanelUser {
      * @see DataStore#exists(String, String)
      */
     public static PanelUser LookupByUsername(String username) {
+        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
+            return CONFIGUSER;
+        }
         DataStore dataStore = PhantomBot.instance().getDataStore();
         if (dataStore.exists(PanelUserHandler.PANEL_USER_TABLE, username)) {
             String userJSONStr = dataStore.GetString(PanelUserHandler.PANEL_USER_TABLE , "", username);
             return new PanelUser(username, new JSONObject(userJSONStr));
-        }
-        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
-            return PROPUSER;
         }
         return null;
     }
@@ -402,15 +448,9 @@ public final class PanelUser {
      * @see PanelUser#LookupByUsername(String)
      */
     public static PanelUser LookupByAuthToken(String token) {
-        return LookupByAuthToken(token, false);
-    }
-
-    private static PanelUser LookupByAuthToken(String token, boolean recurse) {
         String username = null;
         if (token.equals(CaselessProperties.instance().getProperty("webauth")) || token.equals(CaselessProperties.instance().getProperty("webauthro"))) {
-            username = CaselessProperties.instance().getProperty("paneluser", "panel");
-        } else if (PROPUSER != null && token.equals(PROPUSER.getAuthToken(recurse))) {
-            return PROPUSER;
+            return CONFIGUSER;
         } else {
             DataStore dataStore = PhantomBot.instance().getDataStore();
             String res[] = dataStore.GetKeysByLikeValues(PanelUserHandler.PANEL_USER_TABLE, "", "\"token\":\"" + token + "\"");

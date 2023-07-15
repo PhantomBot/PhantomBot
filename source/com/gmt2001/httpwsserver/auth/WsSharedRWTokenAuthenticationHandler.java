@@ -171,7 +171,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         astr = jso.getString("readauth");
                     }
 
-                    if (ctx.channel().attr(ATTR_AUTH_USER).get() != null) {
+                    if (this.allowPaneluser && ctx.channel().attr(ATTR_AUTH_USER).get() != null) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
@@ -186,7 +186,9 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         com.gmt2001.Console.debug.println("ROToken");
-                    } else {
+                    }
+
+                    if (this.allowPaneluser && ctx.channel().attr(ATTR_AUTH_USER).get() == null) {
                         PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(astr);
                         com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                         if (user != null) {
@@ -249,7 +251,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
             if (user != null) {
                 ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                 ctx.channel().attr(ATTR_AUTH_USER).set(user);
-                //return true;
+                return true;
             }
         }
 
