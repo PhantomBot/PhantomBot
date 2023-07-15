@@ -107,7 +107,7 @@ $(function () {
         }
     });
 
-    if (!helpers.currentPanelUserData.canRestartBot) {
+    if (helpers.currentPanelUserData.canRestartBot) {
         socket.wsEvent('restart-bot-check', 'RestartRunner', '', [], function (e) {});
     }
 
