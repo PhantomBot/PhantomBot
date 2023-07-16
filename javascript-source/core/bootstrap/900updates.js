@@ -32,65 +32,32 @@
         $.consoleLn('Initializing PhantomBot version ' + $.version + ' for the first time...');
 
         let modules = [
-            './commands/topCommand.js',
-            './commands/highlightCommand.js',
-            './commands/deathctrCommand.js',
             './commands/dualstreamCommand.js',
-            './games/8ball.js',
-            './games/adventureSystem.js',
-            './games/killCommand.js',
-            './games/random.js',
-            './games/roll.js',
-            './games/roulette.js',
-            './games/slotMachine.js',
-            './games/gambling.js',
-            './handlers/followHandler.js',
-            './handlers/subscribeHandler.js',
-            './handlers/donationHandler.js',
-            './handlers/wordCounter.js',
-            './handlers/gameWispHandler.js',
-            './handlers/keywordHandler.js',
-            './handlers/tipeeeStreamHandler.js',
-            './systems/cleanupSystem.js',
-            './systems/greetingSystem.js',
-            './systems/pointSystem.js',
-            './systems/noticeSystem.js',
-            './systems/pollSystem.js',
-            './systems/quoteSystem.js',
-            './systems/raffleSystem.js',
-            './systems/ticketraffleSystem.js',
-            './systems/raidSystem.js',
-            './systems/youtubePlayer.js',
-            './systems/ranksSystem.js',
-            './systems/auctionSystem.js',
-            './systems/audioPanelSystem.js',
-            './systems/queueSystem.js',
-            './systems/bettingSystem.js',
-            './commands/nameConverter.js',
-            './handlers/clipHandler.js',
-            './handlers/dataServiceHandler.js',
-            './handlers/gameScanHandler.js',
-            './discord/handlers/bitsHandler.js',
-            './discord/handlers/followHandler.js',
-            './discord/handlers/subscribeHandler.js',
-            './discord/handlers/tipeeeStreamHandler.js',
-            './discord/handlers/streamlabsHandler.js',
-            './discord/handlers/keywordHandler.js',
-            './discord/handlers/streamHandler.js',
-            './discord/systems/greetingsSystem.js',
-            './systems/welcomeSystem.js',
-            './discord/commands/customCommands.js',
+            './commands/highlightCommand.js',
             './discord/games/8ball.js',
+            './discord/games/gambling.js',
             './discord/games/kill.js',
             './discord/games/random.js',
-            './discord/games/roulette.js',
-            './discord/games/gambling.js',
             './discord/games/roll.js',
+            './discord/games/roulette.js',
             './discord/games/slotMachine.js',
-            './discord/systems/pointSystem.js'
+            './discord/handlers/streamElementsHandler.js',
+            './discord/handlers/streamlabsHandler.js',
+            './discord/handlers/tipeeeStreamHandler.js',
+            './discord/systems/greetingsSystem.js',
+            './discord/systems/pointSystem.js',
+            './handlers/donationHandler.js',
+            './handlers/streamElementsHandler.js',
+            './handlers/tipeeeStreamHandler.js',
+            './handlers/wordCounter.js',
+            './systems/cleanupSystem.js',
+            './systems/greetingSystem.js',
+            './systems/queueSystem.js',
+            './systems/welcomeSystem.js',
+            './systems/youtubePlayer.js'
         ];
 
-        $.consoleLn('Disabling default modules...');
+        $.consoleLn('Settings initial disabled modules...');
         for (let i in modules) {
             $.inidb.set('modules', modules[i], 'false');
         }
@@ -103,13 +70,13 @@
         $.inidb.set('command', 'game', '(pointtouser) (gameinfo)');
         $.inidb.set('command', 'age', '(age)');
 
+        $.consoleLn('Fast-forwarding updates...');
         for (let x in updates) {
             $.inidb.SetBoolean('updates', '', updates[x].variable, true);
         }
 
-        $.changed = false;
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
-        $.consoleLn('Initializing complete!');
+        $.consoleLn('Initialization complete!');
         $.consoleLn('');
     }
 
@@ -766,8 +733,12 @@
     });
 
     // ------ Add updates above this line in execution order ------
+    if ($.inidb.FileExists('updates') && $.inidb.GetBoolean('updates', '', updates[0].variable)) {
+        $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
+    }
 
-    if ($.changed !== undefined && $.changed !== null && $.changed === true && !$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
+
+    if (!$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
         newSetup();
     } else {
         for (let x in updates) {

@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
@@ -39,6 +40,7 @@ import org.jooq.DSLContext;
 import org.jooq.DataType;
 import org.jooq.ExecutorProvider;
 import org.jooq.SQLDialect;
+import org.jooq.Table;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
@@ -49,6 +51,7 @@ import com.gmt2001.datastore.DataStore;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager.TimeoutException;
+import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
@@ -61,6 +64,10 @@ import tv.phantombot.PhantomBot;
  */
 public abstract class Datastore2 {
     /**
+     * Table name prefix for all tables created as POJOs instead of using {@link DataStore}
+     */
+    public static final String PREFIX = "phantombot2_";
+    /**
      * Active instance of {@link Datastore2}
      */
     private static Datastore2 INSTANCE = null;
@@ -72,6 +79,10 @@ public abstract class Datastore2 {
      * Instance of {@link DSLContext} for generating and executing SQL statements
      */
     private DSLContext dslContext;
+    /**
+     * Mono that caches the table list
+     */
+    private Mono<List<Table<?>>> tableMono = null;
     /**
      * Internal dispose sync
      */
@@ -371,6 +382,85 @@ public abstract class Datastore2 {
      */
     public DSLContext dslContext() {
         return this.dslContext;
+    }
+
+    /**
+     * Instantiates {@link #tableMono} with the latest list of available tables in the database
+     */
+    private void tableMono() {
+        this.tableMono = Mono.<List<Table<?>>>create(emitter -> emitter.success(this.dslContext().meta().getTables())).cache();
+    }
+
+    /**
+     * Invalidates the cache of known tables
+     * <p>
+     * This should be called every time a table is created, renamed, or deleted
+     */
+    public void invalidateTableCache() {
+        if (this.tableMono != null) {
+            synchronized(this) {
+                this.tableMono = null;
+            }
+        }
+    }
+
+    /**
+     * Returns a list of cached known tables in a {@link Mono}
+     * <p>
+     * If the cache has not been invalidated, returns a {@link Mono} which returns the previous cached result
+     * <p>
+     * If the cache has been invalidated with {@link #invalidateTableCache()}, refreshes the cache
+     *
+     * @return a {@link Mono} which will provive a list of {@link Table}
+     */
+    public Mono<List<Table<?>>> tablesAsync() {
+        synchronized(this) {
+            if (this.tableMono == null) {
+                this.tableMono();
+            }
+        }
+
+        return this.tableMono;
+    }
+
+    /**
+     * Returns a list of cached known tables, blocking until available
+     * <p>
+     * If the cache has not been invalidated, returns the previous cached result
+     * <p>
+     * If the cache has been invalidated with {@link #invalidateTableCache()}, refreshes the cache
+     *
+     * @return a list of {@link Table}
+     */
+    public List<Table<?>> tables() {
+        return this.tablesAsync().block();
+    }
+
+    /**
+     * Attempts to find the named table
+     *
+     * @param tableName the table name
+     * @return an {@link Optional} which contains the matching {@link Table}, if found
+     */
+    public Optional<Table<?>> findTable(String tableName) {
+        return this.tables().stream().filter(t -> t.getName().equals(tableName)).findFirst();
+    }
+
+    /**
+     * Attempts to find the named table
+     *
+     * @param tableName the table name
+     * @return the matching {@link Table}
+     * @throws TableDoesNotExistException if the table can not be found or the cache is stale
+     */
+    public Table<?> findTableRequired(String tableName) throws TableDoesNotExistException {
+        Optional<Table<?>> table = this.findTable(tableName);
+
+        if (!table.isPresent()) {
+            throw new TableDoesNotExistException(tableName);
+        }
+
+        return table.get();
     }
 
     /**

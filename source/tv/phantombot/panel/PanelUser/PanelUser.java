@@ -1,14 +1,23 @@
 package tv.phantombot.panel.PanelUser;
 
-import com.gmt2001.Digest;
-import com.gmt2001.datastore.DataStore;
-import tv.phantombot.CaselessProperties;
-
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.jooq.Nullability;
+import org.jooq.Table;
+import org.jooq.UpdatableRecord;
+import org.jooq.impl.SQLDataType;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.gmt2001.Digest;
+import com.gmt2001.datastore.DataStore;
+import com.gmt2001.datastore2.Datastore2;
+
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
@@ -19,11 +28,12 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  * @author Sartharon
  */
 public final class PanelUser {
+    private static final String TABLENAME = Datastore2.PREFIX + "PanelUser";
     private static final PanelUser CONFIGUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
     private String username;
     private String password;
     private String token;
-    private Map<String, Permission> permissions;
+    private final Map<String, Permission> permissions = new HashMap<>();
     private boolean enabled;
     private Type userType;
     private long creationDate;
@@ -46,6 +56,18 @@ public final class PanelUser {
          */
         NEW;
     };
+
+    static {
+        checkAndCreateTable();
+        upgrade();
+    }
+
+    /**
+     * Default constructor. Used by JOOQ when fetching from the database
+     */
+    private PanelUser() {
+        this.userType = Type.DATABASE;
+    }
 
     /**
      * Constructor used when loading a database user
@@ -86,6 +108,26 @@ public final class PanelUser {
     }
 
     /**
+     * Used by JOOQ to stringify {@link #permissions} for storage in the database
+     *
+     * @return {@link #permissions} as a stringified JSON array
+     */
+    @SuppressWarnings({"unused"})
+    private String permissions() {
+        return this.getPermissionsToJSON(false, true).toString();
+    }
+
+    /**
+     * Used by JOOQ to restore {@link #permissions} from the database
+     *
+     * @param data a stringified JSON array of permissions
+     */
+    @SuppressWarnings({"unused"})
+    private void permissions(String data) {
+        this.permissionsFromJSON(new JSONArray(data));
+    }
+
+    /**
      * The panel user's name
      * @return The panel user's current name
      */
@@ -120,7 +162,7 @@ public final class PanelUser {
         if (this.token == null || this.token.isEmpty()) {
             generateNewAuthToken();
             if(this.userType == Type.DATABASE) {
-                this.save();
+                this.update();
             }
         }
         return this.token;
@@ -131,7 +173,7 @@ public final class PanelUser {
      * @return The user's {@link PanelUserHandler.Permission permissions}
      */
     public Map<String, Permission> getPermission() {
-        return this.permissions;
+        return Collections.unmodifiableMap(this.permissions);
     }
 
     /**
@@ -254,7 +296,8 @@ public final class PanelUser {
         if (!permissions.containsKey("dashboard")) {
             permissions.put("dashboard", Permission.READ_ONLY);
         }
-        this.permissions = permissions;
+        this.permissions.clear();
+        this.permissions.putAll(permissions);
     }
 
     /**
@@ -271,9 +314,12 @@ public final class PanelUser {
      */
     private void generateNewAuthToken() {
         String tempToken = PhantomBot.generateRandomString(30);
-        while (PanelUser.LookupByAuthToken(tempToken) != null) {
+        Table<?> table = Datastore2.instance().findTableRequired(TABLENAME);
+
+        while (Datastore2.instance().dslContext().select().from(table).where(table.field("token", String.class).eq(tempToken)).execute() > 0) {
             tempToken = PhantomBot.generateRandomString(30);
         }
+
         this.token = tempToken;
     }
 
@@ -293,21 +339,15 @@ public final class PanelUser {
      * Changes the user's username
      */
     void changeUsername(String newUsername) {
-        DataStore dataStore = PhantomBot.instance().getDataStore();
-        dataStore.del(PanelUserHandler.PANEL_USER_TABLE, this.username);
-        this.username = newUsername;
-    }
-
-    private JSONObject toJSON() {
-        JSONObject userJO = new JSONObject();
-        userJO.put("pass", this.password);
-        userJO.put("token", this.token);
-        userJO.put("permissions", this.getPermissionsToJSON(false, true));
-        userJO.put("enabled", this.enabled);
-        userJO.put("hasSetPassword", this.hasSetPassword);
-        userJO.put("lastLogin", this.lastLogin);
-        userJO.put("creationDate", this.creationDate);
-        return userJO;
+        try {
+            boolean oldEnabled = this.enabled;
+            this.delete();
+            this.enabled = oldEnabled;
+            this.username = newUsername;
+            this.insert();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     /**
@@ -352,7 +392,7 @@ public final class PanelUser {
     }
 
     private void permissionsFromJSON(JSONArray permissionsJSON) {
-        permissions = new HashMap<>();
+        permissions.clear();
         for (int i = 0; i < permissionsJSON.length(); i++) {
             JSONObject permissionObj = permissionsJSON.getJSONObject(i);
             String key = permissionObj.getString("section");
@@ -362,34 +402,48 @@ public final class PanelUser {
     }
 
     /**
-     * Deletes the panel user from the database
-     * @return {@code false} if the user is not a database user ({@link Type#DATABASE}); {@code true} otherwise
-     * @see DataStore#del(String, String)
+     * Preps this {@link PanelUser} into an {@link UpdatableRecord} for JOOQ
+     *
+     * @return the current state of this {@link PanelUser} as an {@link UpdatableRecord}
      */
-    boolean delete() {
-        if (this.userType != Type.DATABASE) {
-            return false;
-        }
-        DataStore dataStore = PhantomBot.instance().getDataStore();
-        dataStore.del(PanelUserHandler.PANEL_USER_TABLE, this.username);
-        this.enabled = false;
-        return true;
+    private UpdatableRecord<?> toRecord() {
+        Table<?> table = Datastore2.instance().findTableRequired(TABLENAME);
+
+        return (UpdatableRecord<?>) Datastore2.instance().dslContext().newRecord(table, this);
     }
 
     /**
-     * Saves the panel user to the database
-     * @return {@code false} if the user originated from the values defined in botlogin.txt; {@code true} otherwise
-     * @see DataStore#set(String, String, String)
+     * Inserts the user into the database as a new row
      */
-    boolean save() {
+    void insert() {
         if (this.userType == Type.CONFIG) {
-            return false;
+            return;
         }
 
+        this.toRecord().insert();
         this.userType = Type.DATABASE;
-        DataStore dataStore = PhantomBot.instance().getDataStore();
-        dataStore.set(PanelUserHandler.PANEL_USER_TABLE, this.username, this.toJSON().toString());
-        return true;
+    }
+
+    /**
+     * Updates the existing user row in the database
+     */
+    void update() {
+        if (this.userType != Type.DATABASE) {
+            return;
+        }
+
+        this.toRecord().update();
+    }
+
+    /**
+     * Deletes the user row from the database
+     */
+    void delete() {
+        if (this.userType != Type.DATABASE) {
+            return;
+        }
+
+        this.toRecord().delete();
     }
 
     /**
@@ -419,46 +473,112 @@ public final class PanelUser {
         user.setCreationDateNOW();
         user.generateNewAuthToken();
         String password = user.generateNewPassword();
-        user.save();
+        user.insert();
         return password;
     }
 
     /**
      * Looks up a panel user by their username
      * @param username the username to lookup
-     * @return The user if the username has been found; {@code null} otherwise
+     * @return the {@link PanelUser}; {@code null} if not found
      * @see DataStore#exists(String, String)
      */
     public static PanelUser LookupByUsername(String username) {
         if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
             return CONFIGUSER;
         }
-        DataStore dataStore = PhantomBot.instance().getDataStore();
-        if (dataStore.exists(PanelUserHandler.PANEL_USER_TABLE, username)) {
-            String userJSONStr = dataStore.GetString(PanelUserHandler.PANEL_USER_TABLE , "", username);
-            return new PanelUser(username, new JSONObject(userJSONStr));
-        }
-        return null;
+
+        Table<?> table = Datastore2.instance().findTableRequired(TABLENAME);
+
+        return Datastore2.instance().dslContext().select().from(table).where(table.field("username", String.class).eq(username)).fetchOptionalInto(PanelUser.class).orElse(null);
     }
 
     /**
      * Looks up a panel user by their websocket token
      * @param token the websocket token to lookup
-     * @return The user if a user with the queried token has been found; {@code null} otherwise
+     * @return the {@link PanelUser}; {@code null} if not found
      * @see PanelUser#LookupByUsername(String)
      */
     public static PanelUser LookupByAuthToken(String token) {
-        String username = null;
         if (token.equals(CaselessProperties.instance().getProperty("webauth")) || token.equals(CaselessProperties.instance().getProperty("webauthro"))) {
             return CONFIGUSER;
-        } else {
-            DataStore dataStore = PhantomBot.instance().getDataStore();
-            String res[] = dataStore.GetKeysByLikeValues(PanelUserHandler.PANEL_USER_TABLE, "", "\"token\":\"" + token + "\"");
+        }
 
-            if (res.length == 1) {
-                username = res[0];
+        Table<?> table = Datastore2.instance().findTableRequired(TABLENAME);
+
+        return Datastore2.instance().dslContext().select().from(table).where(table.field("token", String.class).eq(token)).fetchOptionalInto(PanelUser.class).orElse(null);
+    }
+
+    /**
+     * Gets a list of all users, except for the config user
+     *
+     * @return a list of users
+     */
+    public static List<PanelUser> GetAll() {
+        Table<?> table = Datastore2.instance().findTableRequired(TABLENAME);
+
+        return Datastore2.instance().dslContext().select().from(table).fetchInto(PanelUser.class);
+    }
+
+    /**
+     * Indicates if the user with the specified username exists
+     *
+     * @param username the username to check
+     * @return {@code true} if the username already exists in the database or is the config user
+     */
+    public static boolean UserExists(String username) {
+        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
+            return true;
+        }
+
+        Table<?> table = Datastore2.instance().findTableRequired(TABLENAME);
+
+        return Datastore2.instance().dslContext().select().from(table).where(table.field("username", String.class).eq(username)).execute() > 0;
+    }
+
+    /**
+     * Checks if the database table for {@link PanelUser} exists, and creates it if it is missing
+     */
+    private static void checkAndCreateTable() {
+        Optional<Table<?>> table = Datastore2.instance().findTable(TABLENAME);
+
+        if (!table.isPresent()) {
+            try {
+                Datastore2.instance().dslContext().createTableIfNotExists(TABLENAME)
+                    .column("username", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
+                    .column("password", SQLDataType.VARCHAR(64).nullability(Nullability.NOT_NULL))
+                    .column("token", SQLDataType.VARCHAR(30).nullability(Nullability.NULL))
+                    .column("permissions", Datastore2.instance().longTextDataType())
+                    .column("enabled", SQLDataType.BOOLEAN)
+                    .column("creationDate", SQLDataType.BIGINT.nullability(Nullability.NOT_NULL))
+                    .column("lastLogin", SQLDataType.BIGINT.nullability(Nullability.NOT_NULL))
+                    .column("hasSetPassword", SQLDataType.BOOLEAN)
+                    .primaryKey("username").unique("token").execute();
+
+                Datastore2.instance().invalidateTableCache();
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
             }
         }
-        return username == null ? null : LookupByUsername(username);
+    }
+
+    /**
+     * Upgrades the user database from DataStore to POJO
+     */
+    private static void upgrade() {
+        if (DataStore.instance().FileExists("panelUsers") && !DataStore.instance().GetBoolean("updates", "", "installedv3.10.0.0-PanelUser")) {
+            DataStore datastore = PhantomBot.instance().getDataStore();
+            String[] keys = datastore.GetKeyList("panelUsers", "");
+            for (String key : keys) {
+                try {
+                    new PanelUser(key, new JSONObject(datastore.GetString("panelUsers", "", key))).insert();
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.println("Failed to convert user " + key);
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+            DataStore.instance().RemoveFile("panelUsers");
+            DataStore.instance().SetBoolean("updates", "", "installedv3.10.0.0-PanelUser", true);
+        }
     }
 }
