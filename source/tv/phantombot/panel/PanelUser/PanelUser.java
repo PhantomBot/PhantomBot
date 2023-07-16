@@ -1,5 +1,6 @@
 package tv.phantombot.panel.PanelUser;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public final class PanelUser {
     private String username;
     private String password;
     private String token;
-    private Map<String, Permission> permissions;
+    private final Map<String, Permission> permissions = new HashMap<>();
     private boolean enabled;
     private Type userType;
     private long creationDate;
@@ -172,7 +173,7 @@ public final class PanelUser {
      * @return The user's {@link PanelUserHandler.Permission permissions}
      */
     public Map<String, Permission> getPermission() {
-        return this.permissions;
+        return Collections.unmodifiableMap(this.permissions);
     }
 
     /**
@@ -295,7 +296,8 @@ public final class PanelUser {
         if (!permissions.containsKey("dashboard")) {
             permissions.put("dashboard", Permission.READ_ONLY);
         }
-        this.permissions = permissions;
+        this.permissions.clear();
+        this.permissions.putAll(permissions);
     }
 
     /**
@@ -390,7 +392,7 @@ public final class PanelUser {
     }
 
     private void permissionsFromJSON(JSONArray permissionsJSON) {
-        permissions = new HashMap<>();
+        permissions.clear();
         for (int i = 0; i < permissionsJSON.length(); i++) {
             JSONObject permissionObj = permissionsJSON.getJSONObject(i);
             String key = permissionObj.getString("section");
