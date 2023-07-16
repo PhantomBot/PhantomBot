@@ -1,16 +1,17 @@
 package tv.phantombot.panel.PanelUser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONStringer;
-import com.gmt2001.datastore.DataStore;
+
 import tv.phantombot.PhantomBot;
+import tv.phantombot.panel.WsPanelHandler;
 
 /**
  * {@link PanelUser Panel user} management for the web panel and websocket
@@ -31,7 +32,7 @@ public final class PanelUserHandler {
                                                     "audio", "stream overlay", "settings", "youtube player"};
 
     /**
-     * Database tables that are generally called on the panel and are allowed with {@link Permission.READ_ONLY read only permission}
+     * Database tables that are generally called on the panel and are allowed with {@link Permission#READ_ONLY read only permission}
      */
     private static final List<String> READ_ONLY_TABLES = List.of("paneluser", "settings", "groups", "panelsettings", "paneldata", "modules", "command");
     /**
@@ -50,7 +51,7 @@ public final class PanelUserHandler {
                                                                                     "loyalty", List.of("./handlers/channelpointshandler.js"),
                                                                                     "settings", List.of("./core/corecommands.js", "./discord/core/commandcooldown.js", "./core/commandcooldown.js"));
     /**
-     * Allowed commands with {@link Permission.READ_ONLY read only permission}
+     * Allowed commands with {@link Permission#READ_ONLY read only permission}
      */
     private static final List<String> READ_ONLY_COMMANDS = List.of("synconline silent", "reloadaudiopanelhooks");
     /**
@@ -552,18 +553,7 @@ public final class PanelUserHandler {
     }
 
     private static List<PanelUser> getAllUsers() {
-        DataStore datastore = PhantomBot.instance().getDataStore();
-        List<PanelUser> users = new ArrayList<>();
-        if (!datastore.FileExists(PANEL_USER_TABLE)) {
-            return users;
-        }
-
-        String[] keys = datastore.GetKeyList(PANEL_USER_TABLE, "");
-        for (String key : keys) {
-            users.add(PanelUser.LookupByUsername(key));
-        }
-
-        return users;
+        return PanelUser.GetAll();
     }
 
     /**

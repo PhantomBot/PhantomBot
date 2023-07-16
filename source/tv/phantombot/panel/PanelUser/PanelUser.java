@@ -5,6 +5,7 @@ import com.gmt2001.datastore.DataStore;
 import tv.phantombot.CaselessProperties;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -48,6 +49,13 @@ public final class PanelUser {
     };
 
     /**
+     * Default constructor. Used by JOOQ when fetching from the database
+     */
+    private PanelUser() {
+        this.userType = Type.DATABASE;
+    }
+
+    /**
      * Constructor used when loading a database user
      */
     private PanelUser(String username, JSONObject userJO) {
@@ -83,6 +91,26 @@ public final class PanelUser {
         this.hasSetPassword = hasSetPassword;
         this.setManageUserPermission(canManageUsers);
         this.setRestartPermission(canRestartBot);
+    }
+
+    /**
+     * Used by JOOQ to stringify {@link #permissions} for storage in the database
+     *
+     * @return {@link #permissions} as a stringified JSON array
+     */
+    @SuppressWarnings({"unused"})
+    private String permissions() {
+        return this.getPermissionsToJSON(false, true).toString();
+    }
+
+    /**
+     * Used by JOOQ to restore {@link #permissions} from the database
+     *
+     * @param data a stringified JSON array of permissions
+     */
+    @SuppressWarnings({"unused"})
+    private void permissions(String data) {
+        this.permissionsFromJSON(new JSONArray(data));
     }
 
     /**
@@ -460,5 +488,9 @@ public final class PanelUser {
             }
         }
         return username == null ? null : LookupByUsername(username);
+    }
+
+    public static List<PanelUser> GetAll() {
+
     }
 }
