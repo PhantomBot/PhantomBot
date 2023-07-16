@@ -113,27 +113,7 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 Data Type: _String_
 
-the type of db to use. valid values: `sqlitestore2`, `mysqlstore2`, `mariadbstore2`, `h2store2`, a custom type as specified in the javadoc for datastore2#init(). default `h2store2`
-
-_NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
-#### h2dbfile
-
-Data Type: _String_
-
-the name of the h2 database file. default `phantombot.h2`
-
-_NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
-#### sqlitedbfile
-
-Data Type: _String_
-
-the name of the h2 database file. default `phantombot.db`
+the type of db to use. valid values: `sqlite3store`, `mysqlstore`, `mariadbstore`, `h2store`. default `h2store`
 
 _NOTE: A restart is required for this property to take effect_
 
@@ -230,6 +210,16 @@ the number of days before a db backup is deleted. default `5`
 Data Type: _Int_
 
 the number of hours between db backups, if enabled. default `24`
+
+_NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
+#### datastoreconfig
+
+Data Type: _String_
+
+if set, h2store: overrides the db file name; sqlitestore: links to a file containing config overrides
 
 _NOTE: A restart is required for this property to take effect_
 
@@ -608,14 +598,6 @@ _NOTE: A restart is required for this property to take effect_
 #### commandprefix
 
 Data Type: _Char_
-
-No definition
-
-&nbsp;
-
-#### datastoreconfig
-
-Data Type: _String_
 
 No definition
 

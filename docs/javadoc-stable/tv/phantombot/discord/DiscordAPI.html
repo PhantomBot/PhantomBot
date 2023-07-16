@@ -1,334 +1,551 @@
 <!DOCTYPE HTML>
+<!-- NewPage -->
 <html lang="en">
 <head>
 <title>DiscordAPI (PhantomBot JavaDoc)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="description" content="declaration: package: tv.phantombot.discord, class: DiscordAPI">
-<meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
-<link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../jquery/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../script.js"></script>
-<script type="text/javascript" src="../../../script-dir/jquery-3.6.1.min.js"></script>
-<script type="text/javascript" src="../../../script-dir/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jszip/dist/jszip.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
+<!--[if IE]>
+<script type="text/javascript" src="../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="../../../jquery/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../jquery/jquery-ui.min.js"></script>
 </head>
-<body class="class-declaration-page">
-<script type="text/javascript">var evenRowColor = "even-row-color";
-var oddRowColor = "odd-row-color";
-var tableTab = "table-tab";
-var activeTableTab = "active-table-tab";
+<body>
+<script type="text/javascript"><!--
+    try {
+        if (location.href.indexOf('is-external=true') == -1) {
+            parent.document.title="DiscordAPI (PhantomBot JavaDoc)";
+        }
+    }
+    catch(err) {
+    }
+//-->
+var data = {"i0":10,"i1":10,"i2":10,"i3":9,"i4":10,"i5":9,"i6":9,"i7":9,"i8":9,"i9":10,"i10":10,"i11":10,"i12":10,"i13":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var altColor = "altColor";
+var rowColor = "rowColor";
+var tableTab = "tableTab";
+var activeTableTab = "activeTableTab";
 var pathtoroot = "../../../";
+var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
 </noscript>
-<div class="flex-box">
-<header role="banner" class="flex-header">
+<header role="banner">
 <nav role="navigation">
+<div class="fixedNav">
 <!-- ========= START OF TOP NAVBAR ======= -->
-<div class="top-nav" id="navbar-top">
-<div class="skip-nav"><a href="#skip-navbar-top" title="Skip navigation links">Skip navigation links</a></div>
-<div class="about-language"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
-<ul id="navbar-top-firstrow" class="nav-list" title="Navigation">
+<div class="topNav"><a id="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
 <li><a href="../../../index.html">Overview</a></li>
 <li><a href="package-summary.html">Package</a></li>
-<li class="nav-bar-cell1-rev">Class</li>
+<li class="navBarCell1Rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../index-all.html">Index</a></li>
-<li><a href="../../../help-doc.html#class">Help</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
 </ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
 </div>
-<div class="sub-nav">
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<ul class="navListSearch">
+<li><label for="search">SEARCH:</label>
+<input type="text" id="search" value="search" disabled="disabled">
+<input type="reset" id="reset" value="reset" disabled="disabled">
+</li>
+</ul>
 <div>
-<ul class="sub-nav-list">
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li><a href="#nested-class-summary">Nested</a>&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method-summary">Method</a></li>
+<li><a href="#method.summary">Method</a></li>
 </ul>
-<ul class="sub-nav-list">
+<ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method-detail">Method</a></li>
+<li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
-<div class="nav-list-search"><label for="search-input">SEARCH:</label>
-<input type="text" id="search-input" value="search" disabled="disabled">
-<input type="reset" id="reset-button" value="reset" disabled="disabled">
-</div>
-</div>
+<a id="skip.navbar.top">
+<!--   -->
+</a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<span class="skip-nav" id="skip-navbar-top"></span></nav>
+</div>
+<div class="navPadding">&nbsp;</div>
+<script type="text/javascript"><!--
+$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
+//-->
+</script>
+</nav>
 </header>
-<div class="flex-content">
-<main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
+<main role="main">
 <div class="header">
-<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.discord</a></div>
-<h1 title="Class DiscordAPI" class="title">Class DiscordAPI</h1>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.discord</a></div>
+<h2 title="Class DiscordAPI" class="title">Class DiscordAPI</h2>
 </div>
-<div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance"><a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">tv.phantombot.discord.util.DiscordUtil</a>
-<div class="inheritance">tv.phantombot.discord.DiscordAPI</div>
-</div>
-</div>
-<section class="class-description" id="class-description">
+<div class="contentContainer">
+<ul class="inheritance">
+<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">java.lang.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">tv.phantombot.discord.util.DiscordUtil</a></li>
+<li>
+<ul class="inheritance">
+<li>tv.phantombot.discord.DiscordAPI</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">DiscordAPI</span>
-<span class="extends-implements">extends <a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></span></div>
+<pre>public class <span class="typeNameLabel">DiscordAPI</span>
+extends <a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></pre>
 <div class="block">Communicates with the Discord API.</div>
-<dl class="notes">
-<dt>Author:</dt>
+<dl>
+<dt><span class="simpleTagLabel">Author:</span></dt>
 <dd>IllusionaryOne, ScaniaTV</dd>
 </dl>
-</section>
-<section class="summary">
-<ul class="summary-list">
-<!-- ======== NESTED CLASS SUMMARY ======== -->
-<li>
-<section class="nested-class-summary" id="nested-class-summary">
-<h2>Nested Class Summary</h2>
-<div class="caption"><span>Nested Classes</span></div>
-<div class="summary-table three-column-summary">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Class</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color"><code>static enum&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="DiscordAPI.ConnectionState.html" class="type-name-link" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Enum list of our connection states.</div>
-</div>
-<div class="col-first odd-row-color"><code>final class&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="DiscordAPI.DiscordGatewayOptions.html" class="type-name-link" title="class in tv.phantombot.discord">DiscordAPI.DiscordGatewayOptions</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
-</div>
-<div class="inherited-list">
-<h2 id="nested-classes-inherited-from-class-tv.phantombot.discord.util.DiscordUtil">Nested classes/interfaces inherited from class&nbsp;tv.phantombot.discord.util.<a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></h2>
-<code><a href="util/DiscordUtil.MessageCreateFile.html" title="class in tv.phantombot.discord.util">DiscordUtil.MessageCreateFile</a></code></div>
-</section>
 </li>
-<!-- ========== METHOD SUMMARY =========== -->
-<li>
-<section class="method-summary" id="method-summary">
-<h2>Method Summary</h2>
-<div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
-<div id="method-summary-table.tabpanel" role="tabpanel">
-<div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
-<div class="table-header col-first">Modifier and Type</div>
-<div class="table-header col-second">Method</div>
-<div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#checkConnectionStatus()" class="member-name-link">checkConnectionStatus</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method that checks if we are still connected to Discord and reconnects if we are not.</div>
+</ul>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect()" class="member-name-link">connect</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect(java.lang.String)" class="member-name-link">connect</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method to connect to Discord.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/DiscordClient.html" title="class or interface in discord4j.core" class="external-link">DiscordClient</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getClient()" class="member-name-link">getClient</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Method that will return the current client</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="DiscordAPI.ConnectionState.html" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConnectionState()" class="member-name-link">getConnectionState</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/GatewayDiscordClient.html" title="class or interface in discord4j.core" class="external-link">GatewayDiscordClient</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getGateway()" class="member-name-link">getGateway</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Method that will return the current gateway</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Guild.html" title="class or interface in discord4j.core.object.entity" class="external-link">Guild</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getGuild()" class="member-name-link">getGuild</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Method that will return the current guild.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html" title="class or interface in discord4j.common.util" class="external-link">Snowflake</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getGuildId()" class="member-name-link">getGuildId</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Method to return this class object.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isLoggedIn()" class="member-name-link">isLoggedIn</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method that checks if we are logged in to Discord.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isReady()" class="member-name-link">isReady</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method that checks if Discord is ready and has sent all Guilds.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reconnect()" class="member-name-link">reconnect</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method to reconnect to Discord.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#testJoin()" class="member-name-link">testJoin</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#updateGuildId()" class="member-name-link">updateGuildId</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-</div>
-</div>
-</div>
-<div class="inherited-list">
-<h3 id="methods-inherited-from-class-tv.phantombot.discord.util.DiscordUtil">Methods inherited from class&nbsp;tv.phantombot.discord.util.<a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></h3>
-<code><a href="util/DiscordUtil.html#addReaction(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji)">addReaction</a>, <a href="util/DiscordUtil.html#addReaction(discord4j.core.object.entity.Message,java.lang.String)">addReaction</a>, <a href="util/DiscordUtil.html#addReactions(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji...)">addReactions</a>, <a href="util/DiscordUtil.html#addReactions(discord4j.core.object.entity.Message,java.lang.String...)">addReactions</a>, <a href="util/DiscordUtil.html#addRole(discord4j.core.object.entity.Role,discord4j.core.object.entity.User)">addRole</a>, <a href="util/DiscordUtil.html#addRole(java.lang.String,discord4j.core.object.entity.User)">addRole</a>, <a href="util/DiscordUtil.html#addRole(java.lang.String,java.lang.String)">addRole</a>, <a href="util/DiscordUtil.html#bulkDelete(discord4j.core.object.entity.channel.GuildMessageChannel,int)">bulkDelete</a>, <a href="util/DiscordUtil.html#bulkDelete(java.lang.String,int)">bulkDelete</a>, <a href="util/DiscordUtil.html#bulkDeleteMessages(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.object.entity.Message...)">bulkDeleteMessages</a>, <a href="util/DiscordUtil.html#bulkDeleteMessages(java.lang.String,discord4j.core.object.entity.Message...)">bulkDeleteMessages</a>, <a href="util/DiscordUtil.html#canChannelPublish(discord4j.core.object.entity.channel.GuildMessageChannel)">canChannelPublish</a>, <a href="util/DiscordUtil.html#canChannelPublish(java.lang.String)">canChannelPublish</a>, <a href="util/DiscordUtil.html#channelId(discord4j.core.object.entity.channel.Channel)">channelId</a>, <a href="util/DiscordUtil.html#channelIdAsString(discord4j.core.object.entity.channel.Channel)">channelIdAsString</a>, <a href="util/DiscordUtil.html#channelName(discord4j.core.object.entity.channel.Channel)">channelName</a>, <a href="util/DiscordUtil.html#createRole(java.lang.String)">createRole</a>, <a href="util/DiscordUtil.html#deleteMessage(discord4j.core.object.entity.Message)">deleteMessage</a>, <a href="util/DiscordUtil.html#deleteRole(discord4j.core.object.entity.Role)">deleteRole</a>, <a href="util/DiscordUtil.html#deleteRole(java.lang.String)">deleteRole</a>, <a href="util/DiscordUtil.html#editMessageContent(discord4j.core.object.entity.Message,java.lang.String)">editMessageContent</a>, <a href="util/DiscordUtil.html#editMessageEmbed(discord4j.core.object.entity.Message,discord4j.core.spec.EmbedCreateSpec)">editMessageEmbed</a>, <a href="util/DiscordUtil.html#editUserRoles(discord4j.core.object.entity.User,discord4j.core.object.entity.Role...)">editUserRoles</a>, <a href="util/DiscordUtil.html#editUserRoles(java.lang.String,discord4j.core.object.entity.Role...)">editUserRoles</a>, <a href="util/DiscordUtil.html#getAllChannelInfo()">getAllChannelInfo</a>, <a href="util/DiscordUtil.html#getAllChannelInfoAsync(java.util.Map)">getAllChannelInfoAsync</a>, <a href="util/DiscordUtil.html#getChannel(java.lang.String)">getChannel</a>, <a href="util/DiscordUtil.html#getChannelAsync(java.lang.String)">getChannelAsync</a>, <a href="util/DiscordUtil.html#getChannelByID(java.lang.String)">getChannelByID</a>, <a href="util/DiscordUtil.html#getChannelByIDAsync(java.lang.String)">getChannelByIDAsync</a>, <a href="util/DiscordUtil.html#getColor(java.lang.String)">getColor</a>, <a href="util/DiscordUtil.html#getGuildRoles()">getGuildRoles</a>, <a href="util/DiscordUtil.html#getGuildRolesAsync()">getGuildRolesAsync</a>, <a href="util/DiscordUtil.html#getLastMessage(java.lang.String)">getLastMessage</a>, <a href="util/DiscordUtil.html#getMessageById(java.lang.String,java.lang.String)">getMessageById</a>, <a href="util/DiscordUtil.html#getMessagesBefore(java.lang.String,java.lang.String)">getMessagesBefore</a>, <a href="util/DiscordUtil.html#getRole(java.lang.String)">getRole</a>, <a href="util/DiscordUtil.html#getRoleAsync(java.lang.String)">getRoleAsync</a>, <a href="util/DiscordUtil.html#getRoleByID(java.lang.String)">getRoleByID</a>, <a href="util/DiscordUtil.html#getRoleByIDAsync(java.lang.String)">getRoleByIDAsync</a>, <a href="util/DiscordUtil.html#getRoleObjects(java.lang.String...)">getRoleObjects</a>, <a href="util/DiscordUtil.html#getRoleObjectsAsync(java.lang.String...)">getRoleObjectsAsync</a>, <a href="util/DiscordUtil.html#getUser(java.lang.String)">getUser</a>, <a href="util/DiscordUtil.html#getUserAsync(java.lang.String)">getUserAsync</a>, <a href="util/DiscordUtil.html#getUserById(long)">getUserById</a>, <a href="util/DiscordUtil.html#getUserByIdAsync(long)">getUserByIdAsync</a>, <a href="util/DiscordUtil.html#getUserRoles(discord4j.core.object.entity.User)">getUserRoles</a>, <a href="util/DiscordUtil.html#getUserRoles(java.lang.String)">getUserRoles</a>, <a href="util/DiscordUtil.html#getUserRolesAsync(discord4j.core.object.entity.User)">getUserRolesAsync</a>, <a href="util/DiscordUtil.html#getUserRolesAsync(java.lang.String)">getUserRolesAsync</a>, <a href="util/DiscordUtil.html#getUsers()">getUsers</a>, <a href="util/DiscordUtil.html#getUsersAsync()">getUsersAsync</a>, <a href="util/DiscordUtil.html#getUserWithDiscriminator(java.lang.String,java.lang.String)">getUserWithDiscriminator</a>, <a href="util/DiscordUtil.html#getUserWithDiscriminatorAsync(java.lang.String,java.lang.String)">getUserWithDiscriminatorAsync</a>, <a href="util/DiscordUtil.html#isAdministrator(discord4j.core.object.entity.User)">isAdministrator</a>, <a href="util/DiscordUtil.html#isAdministrator(java.lang.String)">isAdministrator</a>, <a href="util/DiscordUtil.html#isAdministratorAsync(discord4j.core.object.entity.User)">isAdministratorAsync</a>, <a href="util/DiscordUtil.html#isAdministratorAsync(java.lang.String)">isAdministratorAsync</a>, <a href="util/DiscordUtil.html#isValidFilePath(java.lang.String)">isValidFilePath</a>, <a href="util/DiscordUtil.html#removeGame()">removeGame</a>, <a href="util/DiscordUtil.html#removeRole(discord4j.core.object.entity.Role,discord4j.core.object.entity.User)">removeRole</a>, <a href="util/DiscordUtil.html#removeRole(java.lang.String,java.lang.String)">removeRole</a>, <a href="util/DiscordUtil.html#resetPresence()">resetPresence</a>, <a href="util/DiscordUtil.html#sanitizeChannelName(java.lang.String)">sanitizeChannelName</a>, <a href="util/DiscordUtil.html#sendFile(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFile(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFile(java.lang.String,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFile(java.lang.String,java.lang.String,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFileAsync(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendFileAsync</a>, <a href="util/DiscordUtil.html#sendFileAsync(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,tv.phantombot.discord.util.DiscordUtil.MessageCreateFile)">sendFileAsync</a>, <a href="util/DiscordUtil.html#sendFileAsync(java.lang.String,java.lang.String,java.lang.String)">sendFileAsync</a>, <a href="util/DiscordUtil.html#sendMessage(discord4j.core.object.entity.channel.MessageChannel,java.lang.String)">sendMessage</a>, <a href="util/DiscordUtil.html#sendMessage(java.lang.String,java.lang.String)">sendMessage</a>, <a href="util/DiscordUtil.html#sendMessageAsync(discord4j.core.object.entity.channel.MessageChannel,java.lang.String)">sendMessageAsync</a>, <a href="util/DiscordUtil.html#sendMessageAsync(java.lang.String,java.lang.String)">sendMessageAsync</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(java.lang.String,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(java.lang.String,java.lang.String,java.lang.String)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbedAsync(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbedAsync</a>, <a href="util/DiscordUtil.html#sendMessageEmbedAsync(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendMessageEmbedAsync</a>, <a href="util/DiscordUtil.html#sendMessageEmbedAsync(java.lang.String,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbedAsync</a>, <a href="util/DiscordUtil.html#sendPrivateMessage(discord4j.core.object.entity.channel.PrivateChannel,java.lang.String)">sendPrivateMessage</a>, <a href="util/DiscordUtil.html#sendPrivateMessage(discord4j.core.object.entity.User,java.lang.String)">sendPrivateMessage</a>, <a href="util/DiscordUtil.html#sendPrivateMessage(java.lang.String,java.lang.String)">sendPrivateMessage</a>, <a href="util/DiscordUtil.html#setCompeting(java.lang.String)">setCompeting</a>, <a href="util/DiscordUtil.html#setGame(java.lang.String)">setGame</a>, <a href="util/DiscordUtil.html#setListening(java.lang.String)">setListening</a>, <a href="util/DiscordUtil.html#setPlaying(java.lang.String)">setPlaying</a>, <a href="util/DiscordUtil.html#setStream(java.lang.String,java.lang.String)">setStream</a>, <a href="util/DiscordUtil.html#setStreaming(java.lang.String,java.lang.String)">setStreaming</a>, <a href="util/DiscordUtil.html#setWatching(java.lang.String)">setWatching</a></code></div>
-<div class="inherited-list">
-<h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
-<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
-</section>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="memberSummary">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Class</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="DiscordAPI.ConnectionState.html" title="enum in tv.phantombot.discord">DiscordAPI.ConnectionState</a></span></code></th>
+<td class="colLast">
+<div class="block">Enum list of our connection states.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="DiscordAPI.DiscordGatewayOptions.html" title="class in tv.phantombot.discord">DiscordAPI.DiscordGatewayOptions</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a id="nested.classes.inherited.from.class.tv.phantombot.discord.util.DiscordUtil">
+<!--   -->
+</a>
+<h3>Nested classes/interfaces inherited from class&nbsp;tv.phantombot.discord.util.<a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></h3>
+<code><a href="util/DiscordUtil.MessageCreateFile.html" title="class in tv.phantombot.discord.util">DiscordUtil.MessageCreateFile</a></code></li>
+</ul>
 </li>
 </ul>
 </section>
-<section class="details">
-<ul class="details-list">
-<!-- ============ METHOD DETAIL ========== -->
-<li>
-<section class="method-details" id="method-detail">
-<h2>Method Details</h2>
-<ul class="member-list">
-<li>
-<section class="detail" id="instance()">
-<h3>instance</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></span>&nbsp;<span class="element-name">instance</span>()</div>
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="memberSummary">
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr id="i0" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#checkConnectionStatus()">checkConnectionStatus</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method that checks if we are still connected to Discord and reconnects if we are not.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connect()">connect</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connect(java.lang.String)">connect</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;token)</code></th>
+<td class="colLast">
+<div class="block">Method to connect to Discord.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/DiscordClient.html?is-external=true" title="class or interface in discord4j.core" class="externalLink">DiscordClient</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getClient()">getClient</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method that will return the current client</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="DiscordAPI.ConnectionState.html" title="enum in tv.phantombot.discord">DiscordAPI.ConnectionState</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConnectionState()">getConnectionState</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/GatewayDiscordClient.html?is-external=true" title="class or interface in discord4j.core" class="externalLink">GatewayDiscordClient</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGateway()">getGateway</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method that will return the current gateway</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Guild.html?is-external=true" title="class or interface in discord4j.core.object.entity" class="externalLink">Guild</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGuild()">getGuild</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method that will return the current guild.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static <a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html?is-external=true" title="class or interface in discord4j.common.util" class="externalLink">Snowflake</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getGuildId()">getGuildId</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>static <a href="DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instance()">instance</a></span>()</code></th>
+<td class="colLast">
 <div class="block">Method to return this class object.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-</dl>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isLoggedIn()">isLoggedIn</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method that checks if we are logged in to Discord.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isReady()">isReady</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method that checks if Discord is ready and has sent all Guilds.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reconnect()">reconnect</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Method to reconnect to Discord.</div>
+</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#testJoin()">testJoin</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
+<td class="colFirst"><code>static void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#updateGuildId()">updateGuildId</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.tv.phantombot.discord.util.DiscordUtil">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;tv.phantombot.discord.util.<a href="util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></h3>
+<code><a href="util/DiscordUtil.html#addReaction(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji)">addReaction</a>, <a href="util/DiscordUtil.html#addReaction(discord4j.core.object.entity.Message,java.lang.String)">addReaction</a>, <a href="util/DiscordUtil.html#addReactions(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji...)">addReactions</a>, <a href="util/DiscordUtil.html#addReactions(discord4j.core.object.entity.Message,java.lang.String...)">addReactions</a>, <a href="util/DiscordUtil.html#addRole(discord4j.core.object.entity.Role,discord4j.core.object.entity.User)">addRole</a>, <a href="util/DiscordUtil.html#addRole(java.lang.String,discord4j.core.object.entity.User)">addRole</a>, <a href="util/DiscordUtil.html#addRole(java.lang.String,java.lang.String)">addRole</a>, <a href="util/DiscordUtil.html#bulkDelete(discord4j.core.object.entity.channel.GuildMessageChannel,int)">bulkDelete</a>, <a href="util/DiscordUtil.html#bulkDelete(java.lang.String,int)">bulkDelete</a>, <a href="util/DiscordUtil.html#bulkDeleteMessages(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.object.entity.Message...)">bulkDeleteMessages</a>, <a href="util/DiscordUtil.html#bulkDeleteMessages(java.lang.String,discord4j.core.object.entity.Message...)">bulkDeleteMessages</a>, <a href="util/DiscordUtil.html#canChannelPublish(discord4j.core.object.entity.channel.GuildMessageChannel)">canChannelPublish</a>, <a href="util/DiscordUtil.html#canChannelPublish(java.lang.String)">canChannelPublish</a>, <a href="util/DiscordUtil.html#channelId(discord4j.core.object.entity.channel.Channel)">channelId</a>, <a href="util/DiscordUtil.html#channelIdAsString(discord4j.core.object.entity.channel.Channel)">channelIdAsString</a>, <a href="util/DiscordUtil.html#channelName(discord4j.core.object.entity.channel.Channel)">channelName</a>, <a href="util/DiscordUtil.html#createRole(java.lang.String)">createRole</a>, <a href="util/DiscordUtil.html#deleteMessage(discord4j.core.object.entity.Message)">deleteMessage</a>, <a href="util/DiscordUtil.html#deleteRole(discord4j.core.object.entity.Role)">deleteRole</a>, <a href="util/DiscordUtil.html#deleteRole(java.lang.String)">deleteRole</a>, <a href="util/DiscordUtil.html#editMessageContent(discord4j.core.object.entity.Message,java.lang.String)">editMessageContent</a>, <a href="util/DiscordUtil.html#editMessageEmbed(discord4j.core.object.entity.Message,discord4j.core.spec.EmbedCreateSpec)">editMessageEmbed</a>, <a href="util/DiscordUtil.html#editUserRoles(discord4j.core.object.entity.User,discord4j.core.object.entity.Role...)">editUserRoles</a>, <a href="util/DiscordUtil.html#editUserRoles(java.lang.String,discord4j.core.object.entity.Role...)">editUserRoles</a>, <a href="util/DiscordUtil.html#getAllChannelInfo()">getAllChannelInfo</a>, <a href="util/DiscordUtil.html#getAllChannelInfoAsync(java.util.Map)">getAllChannelInfoAsync</a>, <a href="util/DiscordUtil.html#getChannel(java.lang.String)">getChannel</a>, <a href="util/DiscordUtil.html#getChannelAsync(java.lang.String)">getChannelAsync</a>, <a href="util/DiscordUtil.html#getChannelByID(java.lang.String)">getChannelByID</a>, <a href="util/DiscordUtil.html#getChannelByIDAsync(java.lang.String)">getChannelByIDAsync</a>, <a href="util/DiscordUtil.html#getColor(java.lang.String)">getColor</a>, <a href="util/DiscordUtil.html#getGuildRoles()">getGuildRoles</a>, <a href="util/DiscordUtil.html#getGuildRolesAsync()">getGuildRolesAsync</a>, <a href="util/DiscordUtil.html#getLastMessage(java.lang.String)">getLastMessage</a>, <a href="util/DiscordUtil.html#getMessageById(java.lang.String,java.lang.String)">getMessageById</a>, <a href="util/DiscordUtil.html#getMessagesBefore(java.lang.String,java.lang.String)">getMessagesBefore</a>, <a href="util/DiscordUtil.html#getRole(java.lang.String)">getRole</a>, <a href="util/DiscordUtil.html#getRoleAsync(java.lang.String)">getRoleAsync</a>, <a href="util/DiscordUtil.html#getRoleByID(java.lang.String)">getRoleByID</a>, <a href="util/DiscordUtil.html#getRoleByIDAsync(java.lang.String)">getRoleByIDAsync</a>, <a href="util/DiscordUtil.html#getRoleObjects(java.lang.String...)">getRoleObjects</a>, <a href="util/DiscordUtil.html#getRoleObjectsAsync(java.lang.String...)">getRoleObjectsAsync</a>, <a href="util/DiscordUtil.html#getUser(java.lang.String)">getUser</a>, <a href="util/DiscordUtil.html#getUserAsync(java.lang.String)">getUserAsync</a>, <a href="util/DiscordUtil.html#getUserById(long)">getUserById</a>, <a href="util/DiscordUtil.html#getUserByIdAsync(long)">getUserByIdAsync</a>, <a href="util/DiscordUtil.html#getUserRoles(discord4j.core.object.entity.User)">getUserRoles</a>, <a href="util/DiscordUtil.html#getUserRoles(java.lang.String)">getUserRoles</a>, <a href="util/DiscordUtil.html#getUserRolesAsync(discord4j.core.object.entity.User)">getUserRolesAsync</a>, <a href="util/DiscordUtil.html#getUserRolesAsync(java.lang.String)">getUserRolesAsync</a>, <a href="util/DiscordUtil.html#getUsers()">getUsers</a>, <a href="util/DiscordUtil.html#getUsersAsync()">getUsersAsync</a>, <a href="util/DiscordUtil.html#getUserWithDiscriminator(java.lang.String,java.lang.String)">getUserWithDiscriminator</a>, <a href="util/DiscordUtil.html#getUserWithDiscriminatorAsync(java.lang.String,java.lang.String)">getUserWithDiscriminatorAsync</a>, <a href="util/DiscordUtil.html#isAdministrator(discord4j.core.object.entity.User)">isAdministrator</a>, <a href="util/DiscordUtil.html#isAdministrator(java.lang.String)">isAdministrator</a>, <a href="util/DiscordUtil.html#isAdministratorAsync(discord4j.core.object.entity.User)">isAdministratorAsync</a>, <a href="util/DiscordUtil.html#isAdministratorAsync(java.lang.String)">isAdministratorAsync</a>, <a href="util/DiscordUtil.html#isValidFilePath(java.lang.String)">isValidFilePath</a>, <a href="util/DiscordUtil.html#removeGame()">removeGame</a>, <a href="util/DiscordUtil.html#removeRole(discord4j.core.object.entity.Role,discord4j.core.object.entity.User)">removeRole</a>, <a href="util/DiscordUtil.html#removeRole(java.lang.String,java.lang.String)">removeRole</a>, <a href="util/DiscordUtil.html#resetPresence()">resetPresence</a>, <a href="util/DiscordUtil.html#sanitizeChannelName(java.lang.String)">sanitizeChannelName</a>, <a href="util/DiscordUtil.html#sendFile(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFile(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFile(java.lang.String,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFile(java.lang.String,java.lang.String,java.lang.String)">sendFile</a>, <a href="util/DiscordUtil.html#sendFileAsync(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendFileAsync</a>, <a href="util/DiscordUtil.html#sendFileAsync(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,tv.phantombot.discord.util.DiscordUtil.MessageCreateFile)">sendFileAsync</a>, <a href="util/DiscordUtil.html#sendFileAsync(java.lang.String,java.lang.String,java.lang.String)">sendFileAsync</a>, <a href="util/DiscordUtil.html#sendMessage(discord4j.core.object.entity.channel.MessageChannel,java.lang.String)">sendMessage</a>, <a href="util/DiscordUtil.html#sendMessage(java.lang.String,java.lang.String)">sendMessage</a>, <a href="util/DiscordUtil.html#sendMessageAsync(discord4j.core.object.entity.channel.MessageChannel,java.lang.String)">sendMessageAsync</a>, <a href="util/DiscordUtil.html#sendMessageAsync(java.lang.String,java.lang.String)">sendMessageAsync</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(java.lang.String,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbed(java.lang.String,java.lang.String,java.lang.String)">sendMessageEmbed</a>, <a href="util/DiscordUtil.html#sendMessageEmbedAsync(discord4j.core.object.entity.channel.GuildMessageChannel,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbedAsync</a>, <a href="util/DiscordUtil.html#sendMessageEmbedAsync(discord4j.core.object.entity.channel.GuildMessageChannel,java.lang.String,java.lang.String)">sendMessageEmbedAsync</a>, <a href="util/DiscordUtil.html#sendMessageEmbedAsync(java.lang.String,discord4j.core.spec.EmbedCreateSpec)">sendMessageEmbedAsync</a>, <a href="util/DiscordUtil.html#sendPrivateMessage(discord4j.core.object.entity.channel.PrivateChannel,java.lang.String)">sendPrivateMessage</a>, <a href="util/DiscordUtil.html#sendPrivateMessage(discord4j.core.object.entity.User,java.lang.String)">sendPrivateMessage</a>, <a href="util/DiscordUtil.html#sendPrivateMessage(java.lang.String,java.lang.String)">sendPrivateMessage</a>, <a href="util/DiscordUtil.html#setCompeting(java.lang.String)">setCompeting</a>, <a href="util/DiscordUtil.html#setGame(java.lang.String)">setGame</a>, <a href="util/DiscordUtil.html#setListening(java.lang.String)">setListening</a>, <a href="util/DiscordUtil.html#setPlaying(java.lang.String)">setPlaying</a>, <a href="util/DiscordUtil.html#setStream(java.lang.String,java.lang.String)">setStream</a>, <a href="util/DiscordUtil.html#setStreaming(java.lang.String,java.lang.String)">setStreaming</a>, <a href="util/DiscordUtil.html#setWatching(java.lang.String)">setWatching</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
+<!--   -->
+</a>
+<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang" class="externalLink">clone</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang" class="externalLink">equals</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang" class="externalLink">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang" class="externalLink">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang" class="externalLink">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang" class="externalLink">notify</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang" class="externalLink">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang" class="externalLink">toString</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long,int)" title="class or interface in java.lang" class="externalLink">wait</a></code></li>
+</ul>
+</li>
+</ul>
 </section>
 </li>
-<li>
-<section class="detail" id="connect(java.lang.String)">
-<h3>connect</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">connect</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;token)</span></div>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ============ METHOD DETAIL ========== -->
+<section>
+<ul class="blockList">
+<li class="blockList"><a id="method.detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a id="instance()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>instance</h4>
+<pre class="methodSignature">public static&nbsp;<a href="DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a>&nbsp;instance()</pre>
+<div class="block">Method to return this class object.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+</dl>
+</li>
+</ul>
+<a id="connect(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>connect</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;connect&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;token)</pre>
 <div class="block">Method to connect to Discord.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>token</code> - </dd>
 </dl>
-</section>
 </li>
-<li>
-<section class="detail" id="connect()">
-<h3>connect</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">connect</span>()</div>
-</section>
+</ul>
+<a id="connect()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>connect</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;connect()</pre>
 </li>
-<li>
-<section class="detail" id="reconnect()">
-<h3>reconnect</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">reconnect</span>()</div>
+</ul>
+<a id="reconnect()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>reconnect</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;reconnect()</pre>
 <div class="block">Method to reconnect to Discord.</div>
-</section>
 </li>
-<li>
-<section class="detail" id="isLoggedIn()">
-<h3>isLoggedIn</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isLoggedIn</span>()</div>
+</ul>
+<a id="isLoggedIn()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isLoggedIn</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isLoggedIn()</pre>
 <div class="block">Method that checks if we are logged in to Discord.</div>
-<dl class="notes">
-<dt>Returns:</dt>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
-</section>
 </li>
-<li>
-<section class="detail" id="isReady()">
-<h3>isReady</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isReady</span>()</div>
+</ul>
+<a id="isReady()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isReady</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isReady()</pre>
 <div class="block">Method that checks if Discord is ready and has sent all Guilds.</div>
-<dl class="notes">
-<dt>Returns:</dt>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
-</section>
 </li>
-<li>
-<section class="detail" id="getConnectionState()">
-<h3>getConnectionState</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="DiscordAPI.ConnectionState.html" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></span>&nbsp;<span class="element-name">getConnectionState</span>()</div>
-</section>
+</ul>
+<a id="getConnectionState()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getConnectionState</h4>
+<pre class="methodSignature">public&nbsp;<a href="DiscordAPI.ConnectionState.html" title="enum in tv.phantombot.discord">DiscordAPI.ConnectionState</a>&nbsp;getConnectionState()</pre>
 </li>
-<li>
-<section class="detail" id="testJoin()">
-<h3>testJoin</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">testJoin</span>()</div>
-</section>
+</ul>
+<a id="testJoin()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>testJoin</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;testJoin()</pre>
 </li>
-<li>
-<section class="detail" id="checkConnectionStatus()">
-<h3>checkConnectionStatus</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">checkConnectionStatus</span>()</div>
+</ul>
+<a id="checkConnectionStatus()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>checkConnectionStatus</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;checkConnectionStatus()</pre>
 <div class="block">Method that checks if we are still connected to Discord and reconnects if we are not.</div>
-</section>
 </li>
-<li>
-<section class="detail" id="getGuild()">
-<h3>getGuild</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Guild.html" title="class or interface in discord4j.core.object.entity" class="external-link">Guild</a></span>&nbsp;<span class="element-name">getGuild</span>()</div>
+</ul>
+<a id="getGuild()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getGuild</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Guild.html?is-external=true" title="class or interface in discord4j.core.object.entity" class="externalLink">Guild</a>&nbsp;getGuild()</pre>
 <div class="block">Method that will return the current guild.</div>
-<dl class="notes">
-<dt>Returns:</dt>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
-</section>
 </li>
-<li>
-<section class="detail" id="updateGuildId()">
-<h3>updateGuildId</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateGuildId</span>()</div>
-</section>
+</ul>
+<a id="updateGuildId()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>updateGuildId</h4>
+<pre class="methodSignature">public static&nbsp;void&nbsp;updateGuildId()</pre>
 </li>
-<li>
-<section class="detail" id="getGuildId()">
-<h3>getGuildId</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html" title="class or interface in discord4j.common.util" class="external-link">Snowflake</a></span>&nbsp;<span class="element-name">getGuildId</span>()</div>
-</section>
+</ul>
+<a id="getGuildId()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getGuildId</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://javadoc.io/doc/com.discord4j/discord4j-common/latest/discord4j/common/util/Snowflake.html?is-external=true" title="class or interface in discord4j.common.util" class="externalLink">Snowflake</a>&nbsp;getGuildId()</pre>
 </li>
-<li>
-<section class="detail" id="getClient()">
-<h3>getClient</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/DiscordClient.html" title="class or interface in discord4j.core" class="external-link">DiscordClient</a></span>&nbsp;<span class="element-name">getClient</span>()</div>
+</ul>
+<a id="getClient()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getClient</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/DiscordClient.html?is-external=true" title="class or interface in discord4j.core" class="externalLink">DiscordClient</a>&nbsp;getClient()</pre>
 <div class="block">Method that will return the current client</div>
-<dl class="notes">
-<dt>Returns:</dt>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
-</section>
 </li>
-<li>
-<section class="detail" id="getGateway()">
-<h3>getGateway</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/GatewayDiscordClient.html" title="class or interface in discord4j.core" class="external-link">GatewayDiscordClient</a></span>&nbsp;<span class="element-name">getGateway</span>()</div>
+</ul>
+<a id="getGateway()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getGateway</h4>
+<pre class="methodSignature">public static&nbsp;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/GatewayDiscordClient.html?is-external=true" title="class or interface in discord4j.core" class="externalLink">GatewayDiscordClient</a>&nbsp;getGateway()</pre>
 <div class="block">Method that will return the current gateway</div>
-<dl class="notes">
-<dt>Returns:</dt>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
 </dl>
-</section>
+</li>
+</ul>
 </li>
 </ul>
 </section>
 </li>
 </ul>
-</section>
-<!-- ========= END OF CLASS DATA ========= -->
+</div>
+</div>
 </main>
+<!-- ========= END OF CLASS DATA ========= -->
 <footer role="contentinfo">
-<hr>
-<p class="legal-copy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+<nav role="navigation">
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a id="navbar.bottom">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
+<a id="navbar.bottom.firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../../../index.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../deprecated-list.html">Deprecated</a></li>
+<li><a href="../../../index-all.html">Index</a></li>
+<li><a href="../../../help-doc.html">Help</a></li>
+</ul>
+<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../../../allclasses.html">All&nbsp;Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method.detail">Method</a></li>
+</ul>
+</div>
+<a id="skip.navbar.bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</nav>
+<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
 </footer>
-</div>
-</div>
 </body>
 </html>

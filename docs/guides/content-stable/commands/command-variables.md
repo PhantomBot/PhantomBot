@@ -34,19 +34,12 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 **Labels:** twitch discord noevent alerts
 
 
-_NOTE: this tag uses the _config/gif-alerts_ folder_
-
 _NOTE: if an audio file exists next to the GIF/video file with the same fileName but an audio extension (eg. banana.gif and banana.mp3), then the audio file will automatically load and play at the provided volume_
 
 
 **Example:**
 ```text
 Caster: !addcom !banana (alert banana.gif)
-```
-
-**Example:**
-```text
-Caster: !addcom !bananatext (alert banana.gif, 5, 0.6, font-size:42px;color:#FF00FF, Ring Ring Ring Ring...Banana Phone!)
 ```
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
@@ -65,9 +58,6 @@ Defined in script: _./javascript-source/core/transformers/alerts.js_
 - `(playsound hook:str|volume:float)` - plays a sound hook on the alerts overlay, with audio volume set on a scale of 0.0-1.0
 
 **Labels:** twitch discord noevent alerts
-
-
-_NOTE: this tag uses the _config/audio-hooks_ folder_
 
 
 **Example:**
