@@ -41,8 +41,6 @@ import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.datastore2.Datastore2;
 
-import reactor.core.publisher.Mono;
-
 /**
  * Provides access to the database in a key-value store style
  *
@@ -52,11 +50,6 @@ import reactor.core.publisher.Mono;
 @SuppressWarnings({"removal"})
 public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteStore {
     private static final DataStore INSTANCE = new DataStore(null);
-    /**
-     * Mono that caches the table list
-     */
-    private Mono<List<Table<?>>> tableMono = null;
-
     /**
      * Provides an instance of {@link DataStore}
      *
@@ -93,13 +86,6 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     }
 
     /**
-     * Instantiates {@link #tableMono}
-     */
-    private void tableMono() {
-        this.tableMono = Mono.<List<Table<?>>>create(emitter -> emitter.success(dsl().meta().getTables())).cache();
-    }
-
-    /**
      * Attempts to find the named table case-insensitively
      * <p>
      * The {@code phantombot_} prefix is automatically prefixed to the table name
@@ -108,12 +94,11 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} which contains the matching {@link Table}, if found
      */
     public Optional<Table<?>> findTable(String fName) {
-        synchronized(this) {
-            if (this.tableMono == null) {
-                this.tableMono();
-            }
-        }
-        return this.tableMono.block().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
+        return Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
+    }
+
+    private void invalidateTableCache() {
+        Datastore2.instance().invalidateTableCache();
     }
 
     /**
@@ -1042,7 +1027,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
         return this.OptFloat(fName, section, key).orElse(0.0f);
     }
 
-    
+
     /**
      * Returns the value of the {@code value} column for the given table, section, and key as a float
      *
@@ -1245,11 +1230,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
         .column("value", Datastore2.instance().longTextDataType())
         .unique("section", "variable").execute();
 
-        if (this.tableMono != null) {
-            synchronized(this) {
-                this.tableMono = null;
-            }
-        }
+        this.invalidateTableCache();
     }
 
     /**
@@ -1264,11 +1245,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             dsl().dropTable(otbl.get()).execute();
         }
 
-        if (this.tableMono != null) {
-            synchronized(this) {
-                this.tableMono = null;
-            }
-        }
+        this.invalidateTableCache();
     }
 
     /**
@@ -1284,11 +1261,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             dsl().alterTable(otbl.get()).renameTo("phantombot_" + fNameDest).execute();
          }
 
-        if (this.tableMono != null) {
-            synchronized(this) {
-                this.tableMono = null;
-            }
-        }
+        this.invalidateTableCache();
     }
 
     /**
