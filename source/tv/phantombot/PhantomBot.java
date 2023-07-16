@@ -423,7 +423,7 @@ public final class PhantomBot implements Listener {
                 DataStoreConverter.convertDataStore(H2Store.instance(), SqliteStore.instance());
             }
         } else if (CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("sqlite3store")
-            || CaselessProperties.instance().getProperty("datastore", "h2store").isBlank()) {
+            || CaselessProperties.instance().getProperty("datastore", "h2store").isBlank() || CaselessProperties.instance().getProperty("datastore", "h2store").equalsIgnoreCase("sqlitestore2")) {
             this.dataStore = SqliteStore.instance(CaselessProperties.instance().getProperty("datastoreconfig", ""));
 
             /* Handle index operations. */
