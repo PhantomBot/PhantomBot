@@ -393,6 +393,8 @@ public abstract class Datastore2 {
 
     /**
      * Invalidates the cache of known tables
+     * <p>
+     * This should be called every time a table is created, renamed, or deleted
      */
     public void invalidateTableCache() {
         if (this.tableMono != null) {
@@ -442,6 +444,23 @@ public abstract class Datastore2 {
      */
     public Optional<Table<?>> findTable(String tableName) {
         return this.tables().stream().filter(t -> t.getName().equals(tableName)).findFirst();
+    }
+
+    /**
+     * Attempts to find the named table
+     *
+     * @param tableName the table name
+     * @return the matching {@link Table}
+     * @throws TableDoesNotExistException if the table can not be found or the cache is stale
+     */
+    public Table<?> findTableRequired(String tableName) throws TableDoesNotExistException {
+        Optional<Table<?>> table = this.findTable(tableName);
+
+        if (!table.isPresent()) {
+            throw new TableDoesNotExistException(tableName);
+        }
+
+        return table.get();
     }
 
     /**
