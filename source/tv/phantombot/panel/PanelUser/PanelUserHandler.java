@@ -20,11 +20,6 @@ import tv.phantombot.panel.WsPanelHandler;
  */
 public final class PanelUserHandler {
     /**
-     * Database table suffix for the {@link PanelUser panel users}
-     */
-    public static final String PANEL_USER_TABLE = "panelUsers";
-
-    /**
      * Sections on the panel to which a user can be granted permissions to
      */
     private static final String[] PANEL_SECTIONS = {"dashboard", "commands", "moderation", "permissions", "timers", "alerts", "loyalty", "ranking",
@@ -228,6 +223,7 @@ public final class PanelUserHandler {
         if (base64Token == null || base64Token.isEmpty()) {
             return null;
         }
+
         String userpass = new String(Base64.getDecoder().decode(base64Token));
         int colon = userpass.indexOf(':');
         if (colon < 0) {
@@ -235,6 +231,7 @@ public final class PanelUserHandler {
         }
         String username = userpass.substring(0, colon);
         String password = userpass.substring(colon + 1);
+
         return checkLoginAndGetUser(username, password, requestUri);
     }
 
@@ -286,6 +283,7 @@ public final class PanelUserHandler {
         if (user == null || !user.isEnabled()) {
             return null;
         }
+
         if (requestUri != null) {
             if ((requestUri.contains("/setup/") || requestUri.contains("/oauth/")) && !user.isConfigUser()){
                 return null;
@@ -294,11 +292,19 @@ public final class PanelUserHandler {
                 return null;
             }
         }
+
         if (password.equals(user.getPassword())) {
             user.setLastLoginNOW();
-            user.save();
+
+            try {
+            user.update();
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+
             return user;
         }
+
         return null;
     }
 
@@ -314,6 +320,7 @@ public final class PanelUserHandler {
         if (user != null && user.isEnabled()) {
             return user;
         }
+
         return null;
     }
 
@@ -331,9 +338,11 @@ public final class PanelUserHandler {
         if (user == null) {
             return null;
         }
+
         if (!user.isEnabled()) {
             return null;
         }
+
         return user.getAuthToken();
     }
 
@@ -352,17 +361,24 @@ public final class PanelUserHandler {
         if (user == null) {
             return PanelMessage.UserNotFound;
         }
+
         if (!user.canBeEdited()){
             return PanelMessage.UserIsConfig;
         }
+
         if (!currentPassword.equals(user.getPassword())) {
             return PanelMessage.Error.setResponse("Invalid password!");
         }
 
         user.setPassword(newPassword);
-        if (!user.save()) {
+
+        try {
+            user.update();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
         }
+
         return PanelMessage.Success.setResponse("Password changed successfully");
     }
 
@@ -405,11 +421,18 @@ public final class PanelUserHandler {
      * @see PanelUser#LookupByUsername(String) exists
      */
     public static PanelMessage createNewUser(String username, Map<String, Permission> permissions, boolean enabled, boolean canManageUsers, boolean canRestartBot) {
-        PanelUser user = PanelUser.LookupByUsername(username);
-        if (user != null) {
+        if (PanelUser.UserExists(username)) {
             return PanelMessage.UserAlreadyExists;
         }
-        String password = PanelUser.create(username, permissions, enabled, canManageUsers, canRestartBot);
+
+        String password;
+        try {
+            password = PanelUser.create(username, permissions, enabled, canManageUsers, canRestartBot);
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            return PanelMessage.SaveError;
+        }
+
         return PanelMessage.Success.setResponse(password);
     }
 
@@ -427,12 +450,18 @@ public final class PanelUserHandler {
         if (user == null) {
             return PanelMessage.UserNotFound;
         }
+
         if (!user.canBeEdited()){
             return PanelMessage.UserIsConfig;
         }
-        if(!user.delete()) {
+
+        try {
+            user.delete();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
         }
+
         return PanelMessage.Success.setResponse("User successfully deleted");
     }
 
@@ -441,12 +470,14 @@ public final class PanelUserHandler {
         if (jsoPermissions == null) {
             return permissions;
         }
+
         for (int i = 0; i < jsoPermissions.length(); i++) {
             JSONObject permissionObj = jsoPermissions.getJSONObject(i);
             String section = permissionObj.getString("section");
             Permission permission = Permission.getByName(permissionObj.getString("permission"));
             permissions.put(section, permission);
         }
+
         return permissions;
     }
 
@@ -485,9 +516,11 @@ public final class PanelUserHandler {
         if (user == null) {
             return PanelMessage.UserNotFound;
         }
+
         if (!user.canBeEdited()){
             return PanelMessage.UserIsConfig;
         }
+
         if(newUsername != null && !currentUsername.equals(newUsername)){
             if (PanelUser.LookupByUsername(newUsername) != null) {
                 return PanelMessage.UserAlreadyExists;
@@ -500,15 +533,22 @@ public final class PanelUserHandler {
         if (permissions != null && !permissions.isEmpty()) {
             user.setPermission(permissions);
         }
+
         if (canManageUsers != null) {
             user.setManageUserPermission(canManageUsers.booleanValue());
         }
+
         if (canRestartBot != null) {
             user.setRestartPermission(canRestartBot.booleanValue());
         }
-        if (!user.save()) {
+
+        try {
+            user.update();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
         }
+
         return PanelMessage.Success.setResponse("User successfully edited");
     }
 
@@ -541,14 +581,20 @@ public final class PanelUserHandler {
         if (user == null) {
             return PanelMessage.UserNotFound;
         }
+
         if (!user.canBeEdited()){
             return PanelMessage.UserIsConfig;
         }
 
         String password = user.generateNewPassword();
-        if (!user.save()) {
+
+        try {
+            user.update();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
             return PanelMessage.SaveError;
         }
+
         return PanelMessage.Success.setResponse(password);
     }
 
@@ -611,6 +657,7 @@ public final class PanelUserHandler {
         if (user == null) {
             jsonObject.object().key(PanelMessage.UserNotFound.getJSONkey()).value(PanelMessage.UserNotFound.getMessage()).endObject();
         }
+
         jsonObject.object().key("username").value(user.getUsername())
                             .key("isEnabled").value(user.isEnabled())
                             .key("canManageUsers").value(user.canManageUsers())
