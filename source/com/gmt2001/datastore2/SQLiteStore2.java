@@ -49,13 +49,13 @@ import tv.phantombot.CaselessProperties;
  */
 public final class SQLiteStore2 extends Datastore2 {
     /**
-     * Maximum allowed WAL size before an early full {@code VACUUM} occurs
+     * Maximum allowed WAL size before an forced WAL truncate occurs
      */
     private static final long MAXWALSIZE = 104857600L;
     /**
-     * Instant when the next periodic full {@code VACUUM} will occur
+     * Instant when the next forced WAL restart will occur
      */
-    private Instant nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
+    private Instant nextCheckpoint = Instant.now().plus(1, ChronoUnit.DAYS);
     /**
      * SQLite {@code LONGTEXT} type
      */
@@ -118,11 +118,6 @@ public final class SQLiteStore2 extends Datastore2 {
                 }
             }
 
-            com.gmt2001.Console.debug.println("STARTUP VACUUM");
-            try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                vacuumStatement.execute();
-            }
-
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -181,27 +176,27 @@ public final class SQLiteStore2 extends Datastore2 {
     public void doMaintenance() {
         try {
             try ( Connection connection = this.getConnection()) {
-                boolean vacuumed = false;
+                boolean checkpointed = false;
                 try {
                     Path walPath = PathValidator.getRealPath(Paths.get(getDbFile() + "-wal"));
                     if (Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
-                        vacuumed = true;
-                        com.gmt2001.Console.debug.println("MAXWALSIZE VACUUM");
-                        try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                            vacuumStatement.execute();
-                            this.nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
+                        checkpointed = true;
+                        com.gmt2001.Console.debug.println("MAXWALSIZE CHECKPOINT");
+                        try ( PreparedStatement checkpointStatement = connection.prepareStatement("PRAGMA wal_checkpoint(TRUNCATE);")) {
+                            checkpointStatement.execute();
+                            this.nextCheckpoint = Instant.now().plus(1, ChronoUnit.DAYS);
                         }
                     }
                 } catch (IOException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
 
-                if (!vacuumed) {
-                    if (this.nextVacuum.isBefore(Instant.now())) {
-                        com.gmt2001.Console.debug.println("DAILY VACUUM");
-                        try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                if (!checkpointed) {
+                    if (this.nextCheckpoint.isBefore(Instant.now())) {
+                        com.gmt2001.Console.debug.println("DAILY CHECKPOINT");
+                        try ( PreparedStatement vacuumStatement = connection.prepareStatement("PRAGMA wal_checkpoint(RESTART);")) {
                             vacuumStatement.execute();
-                            this.nextVacuum = Instant.now().plus(1, ChronoUnit.DAYS);
+                            this.nextCheckpoint = Instant.now().plus(1, ChronoUnit.DAYS);
                         }
                     } else {
                         com.gmt2001.Console.debug.println("PRAGMA incremental_vacuum(2048)");
