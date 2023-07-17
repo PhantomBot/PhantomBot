@@ -119,6 +119,11 @@ public final class SQLiteStore2 extends Datastore2 {
                 }
             }
 
+            com.gmt2001.Console.debug.println("Startup checkpoint");
+            try ( PreparedStatement vacuumStatement = connection.prepareStatement("PRAGMA wal_checkpoint(RESTART);")) {
+                vacuumStatement.execute();
+            }
+
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
