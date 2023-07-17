@@ -41,6 +41,7 @@ import com.gmt2001.ExecutorService;
 import com.gmt2001.PathValidator;
 
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.cache.TwitchCache;
 
 /**
  * Provides a {@link Datastore2} driver for SQLite database v3.x
@@ -179,7 +180,7 @@ public final class SQLiteStore2 extends Datastore2 {
                 boolean checkpointed = false;
                 try {
                     Path walPath = PathValidator.getRealPath(Paths.get(getDbFile() + "-wal"));
-                    if (Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
+                    if (!TwitchCache.instance().isStreamOnline() && Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
                         checkpointed = true;
                         com.gmt2001.Console.debug.println("MAXWALSIZE CHECKPOINT");
                         try ( PreparedStatement checkpointStatement = connection.prepareStatement("PRAGMA wal_checkpoint(TRUNCATE);")) {
