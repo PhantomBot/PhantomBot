@@ -168,11 +168,11 @@ public final class ViewerCache implements Listener {
     }
 
     /**
-     * Sends IrcChannelUsersUpdateEvent if a change has ocurred
+     * Sends IrcChannelUsersUpdateEvent if a change has occurred
      */
     private void sendUpdate() {
         if (this.chattersUpdated(false)) {
-            EventBus.instance().postAsync(new IrcChannelUsersUpdateEvent(this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).map(kv -> kv.getValue().login()).collect(Collectors.toList())));
+            EventBus.instance().postAsync(new IrcChannelUsersUpdateEvent(this.viewers.entrySet().stream().filter(kv -> kv.getValue().inChat()).map(kv -> kv.getValue()).collect(Collectors.toList())));
         }
     }
 
