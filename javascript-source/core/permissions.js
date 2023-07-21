@@ -950,20 +950,16 @@
                 values = [];
 
         // Process new users list
-        for (let i = 0; i < chatters.size(); i++) {
+        for (let i = 0; i < newUsers.length; i++) {
             let username = $.jsString(chatters.get(i).login().toLowerCase());
             if (isTwitchBot(username)) {
                 continue;
             }
 
-            if (!isOwner(username)) { //Ignore bots and users that are constantly in chat anyway
-                if (chatters.get(i).lastSeen() === Packages.java.time.Instant.MIN) {
-                    keys.push(username);
-                    values.push('true');
-                    restoreSubscriberStatus(username);
-                } else if (chatters.get(i).lastSeen().minusMillis($.systemTime()).toEpochMilli() <= 86.4 * 1e6) { //Only try to restore status if the user has not been seen in a day
-                    restoreSubscriberStatus(username);
-                }
+            if (!isOwner(username) && !$.users.includes(username)) { //Ignore already known users and bots as well as the streamer
+                keys.push(username);
+                values.push('true');
+                restoreSubscriberStatus(username);
             }
 
             newUsers.push(username);
