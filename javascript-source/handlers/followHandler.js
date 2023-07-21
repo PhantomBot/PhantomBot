@@ -36,9 +36,8 @@
             followMessage = $.getSetIniDbString('settings', 'followMessage', $.lang.get('followhandler.follow.message')),
             followDelay = $.getSetIniDbNumber('settings', 'followDelay', 5) * 1e3,
             followQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
-            lastFollow = $.systemTime(),
             announceFollows = false,
-            timeout;
+            timeout = null;
 
     $.bind('eventSubChannelFollow', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
@@ -153,7 +152,6 @@
             $.alertspollssocket.triggerAudioPanel(s.audioHook);
         }
 
-        lastFollow = $.systemTime();
         timeout = setInterval(runFollows, followDelay * 1e3, 'scripts::handlers::followHandler.js');
     }
 
