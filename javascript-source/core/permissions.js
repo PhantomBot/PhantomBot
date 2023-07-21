@@ -936,35 +936,45 @@
      * @event ircChannelJoinUpdate
      */
     $.bind('ircChannelUsersUpdate', function (event) {
-        setTimeout(function () {
-            // Don't allow other events to add or remove users.
-            isUpdatingUsers = true;
 
-            let chatters = event.chatters(),
-                    newUsers = [],
-                    keys = [],
-                    values = [];
+        if (isUpdatingUsers) {
+            return; //Skip this update run
+        }
 
-            // Handle joins.
-            for (let i = 0; i < chatters.size(); i++) {
-                let username = $.jsString(chatters.get(i).toLowerCase());
-                $.restoreSubscriberStatus(username);
-                keys.push(username);
-                values.push('true');
+        // Don't allow other events to add or remove users.
+        isUpdatingUsers = true;
 
-                if (isTwitchBot(username)) {
-                    continue;
-                }
+        let chatters = event.chatters(),
+                newUsers = [],
+                keys = [],
+                values = [];
 
-                newUsers.push(username);
+        // Process new users list
+        for (let i = 0; i < chatters.size(); i++) {
+            let username = $.jsString(chatters.get(i).login().toLowerCase());
+            if (isTwitchBot(username)) {
+                continue;
             }
 
-            $.users = newUsers;
+            if (!isOwner(username)) { //Ignore bots and users that are constantly in chat anyway
+                if (chatters.get(i).lastSeen() === Packages.java.time.Instant.MIN) {
+                    keys.push(username);
+                    values.push('true');
+                    restoreSubscriberStatus(username);
+                } else if (chatters.get(i).lastSeen().minusMillis($.systemTime()).toEpochMilli() <= 86.4 * 1e6) { //Only try to restore status if the user has not been seen in a day
+                    restoreSubscriberStatus(username);
+                }
+            }
 
+            newUsers.push(username);
+        }
+
+        $.users = newUsers;
+        isUpdatingUsers = false;
+
+        if (keys.length !== 0) {
             $.inidb.SetBatchString('visited', '', keys, values);
-
-            isUpdatingUsers = false;
-        }, 0, 'core::permissions.js::ircChannelUsersUpdate');
+        }
     });
 
     /**
