@@ -247,7 +247,8 @@
                     if ($.inidb.exists('modules', scriptName) === true) {
                         enabled = $.inidb.GetBoolean('modules', '', scriptName);
                     } else {
-                        $.inidb.set('modules', scriptName, true.toString());
+                        $.inidb.set('modules', script
+                                    Name, true.toString());
                         enabled = true;
                     }
 
@@ -647,7 +648,7 @@
 
                     // Check if the command exists or if the module is disabled or if the command is restricted.
                     if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command)) || !$.commandRestrictionMet(command, subCommand)) {
-                        $.log.error("Command doesn't exist or is disabled: " + command);
+                        $.log.error("Command doesn't exist or is disabled/restricted: " + command);
                         return;
                     }
 
