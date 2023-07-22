@@ -145,13 +145,24 @@ $(function () {
                 return;
             }
 
-            availableSections.push(section);
-            if (availableSections.length > 0) {
-                $('#userPermissionAdd-button').attr('disabled', false);
+            if (!availableSections.includes(section)) {
+                availableSections.push(section);
+                if (availableSections.length > 0) {
+                    $('#userPermissionAdd-button').attr('disabled', false);
+                }
             }
 
             permissions.splice(idx, 1);
             userPermissionTable.DataTable().row($(this).parents('tr')).remove().draw();
+            if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
+                userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
+            }
+
+            if ($('#user-canManageUsers').is(':checked')) {
+                if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
+                    userPermissionTable.DataTable().row.add(getPermissionTableRow('settings', 'Read Only')).draw();
+                }
+            }
         });
 
         //Add permission
@@ -169,7 +180,7 @@ $(function () {
 
                 if (allSections) { //Add all available sections
                     for (let section in availableSections) {
-                        let idx = findSectionIndex(permissions, section);
+                        let idx = findSectionIndex(permissions, availableSections[section]);
                         if (idx >= 0) {
                             permissions[idx].permission = selectedPerm;
                             $('button[data-section="' + availableSections[section] + '"]').parents('td').siblings('.section-permission').text(selectedPerm);
@@ -194,8 +205,9 @@ $(function () {
                             permission: selectedPerm
                         });
                         userPermissionTable.DataTable().row.add(getPermissionTableRow(selectedSection, selectedPerm));
-                        availableSections.splice(availableSections.indexOf(selectedSection), 1);
                     }
+
+                    availableSections.splice(availableSections.indexOf(selectedSection), 1);
                 }
 
                 if (availableSections.length === 0) {
