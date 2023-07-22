@@ -119,7 +119,7 @@ $(function () {
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': true, 'targets': [0, 1]},
                     {'width': '40%', 'targets': 0},
-                    {'width': '20%', 'targets': 1},
+                    {'className': 'section-permission', 'width': '20%', 'targets': 1},
                     {'className': 'text-center', 'width': '10%', 'targets': 2, 'orderable': false}
                 ],
                 'columns': [
@@ -169,22 +169,33 @@ $(function () {
 
                 if (allSections) { //Add all available sections
                     for (let section in availableSections) {
-                        permissions.push({
-                            section: availableSections[section],
-                            permission: selectedPerm
-                        });
-
-                        userPermissionTable.DataTable().row.add(getPermissionTableRow(availableSections[section], selectedPerm));
+                        let idx = findSectionIndex(permissions, section);
+                        if (idx >= 0) {
+                            permissions[idx].permission = selectedPerm;
+                            $('button[data-section="' + availableSections[section] + '"]').parents('td').siblings('.section-permission').text(selectedPerm);
+                        } else {
+                            permissions.push({
+                                section: availableSections[section],
+                                permission: selectedPerm
+                            });
+                            userPermissionTable.DataTable().row.add(getPermissionTableRow(availableSections[section], selectedPerm));
+                        }
                     }
 
                     availableSections = [];
                 } else { //Add single section
-                    permissions.push({
-                        section: selectedSection,
-                        permission: selectedPerm
-                    });
-                    userPermissionTable.DataTable().row.add(getPermissionTableRow(selectedSection, selectedPerm));
-                    availableSections.splice(availableSections.indexOf(selectedSection), 1);
+                    let idx = findSectionIndex(permissions, selectedSection);
+                    if (idx >= 0) { //Handle present required permissions (only Read-Only)
+                        permissions[idx].permission = selectedPerm;
+                        $('button[data-section="' + selectedSection + '"]').parents('td').siblings('.section-permission').text(selectedPerm);
+                    } else {
+                        permissions.push({
+                            section: selectedSection,
+                            permission: selectedPerm
+                        });
+                        userPermissionTable.DataTable().row.add(getPermissionTableRow(selectedSection, selectedPerm));
+                        availableSections.splice(availableSections.indexOf(selectedSection), 1);
+                    }
                 }
 
                 if (availableSections.length === 0) {
@@ -421,7 +432,11 @@ $(function () {
                         let userPermissionTable = $('#user-permissions-table'),
                                 canManageUsersCheckBox = $('#user-canManageUsers');
 
-                        addRequiredPermissions(permissions, 'dashboard', 'Read Only');
+                        getPermissionTable(userPermissionTable, permissions);
+                        if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
+                            userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
+                        }
+
                         canManageUsersCheckBox.on('change', function (e) {
                             if (e.target.checked) {
                                 if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
@@ -429,7 +444,6 @@ $(function () {
                                 }
                             }
                         });
-                        getPermissionTable(userPermissionTable, permissions);
                     }).modal('toggle');
                 });
             });
@@ -483,7 +497,11 @@ $(function () {
             let userPermissionTable = $('#user-permissions-table'),
                     canManageUsersCheckBox = $('#user-canManageUsers');
 
-            addRequiredPermissions(permissions, 'dashboard', 'Read Only');
+            getPermissionTable(userPermissionTable, permissions);
+            if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
+                userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
+            }
+
             canManageUsersCheckBox.on('change', function (e) {
                 if (e.target.checked) {
                     if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
@@ -491,7 +509,6 @@ $(function () {
                     }
                 }
             });
-            getPermissionTable(userPermissionTable, permissions);
         }).modal('toggle');
     });
 });
