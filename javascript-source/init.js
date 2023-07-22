@@ -247,8 +247,7 @@
                     if ($.inidb.exists('modules', scriptName) === true) {
                         enabled = $.inidb.GetBoolean('modules', '', scriptName);
                     } else {
-                        $.inidb.set('modules', script
-                                    Name, true.toString());
+                        $.inidb.set('modules', scriptName, true.toString());
                         enabled = true;
                     }
 
