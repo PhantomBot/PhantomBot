@@ -183,7 +183,7 @@
      * @param {number}
      */
     function getSetIniDbFloat(fileName, key, defaultValue) {
-        let res = $.inidb.GetFloat(fileName, '', key);
+        let res = $.inidb.OptFloat(fileName, '', key);
         if (res.isPresent()) {
             return res.get();
         }

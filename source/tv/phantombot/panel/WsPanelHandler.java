@@ -432,8 +432,8 @@ public class WsPanelHandler implements WsFrameHandler {
             String username = jso.getJSONObject("add").getString("username");
             JSONArray permission = new JSONArray(jso.getJSONObject("add").getString("permission"));
             boolean enabled = jso.getJSONObject("add").getBoolean("enabled");
-            boolean canManageUsers = jso.getJSONObject("edit").getBoolean("canManageUsers");
-            boolean canRestartBot = jso.getJSONObject("edit").getBoolean("canRestartBot");
+            boolean canManageUsers = jso.getJSONObject("add").getBoolean("canManageUsers");
+            boolean canRestartBot = jso.getJSONObject("add").getBoolean("canRestartBot");
             PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(username, permission, enabled, canManageUsers, canRestartBot);
             jsonObject.object().key(response.getJSONkey()).value(response.getMessage()).endObject();
         } else if (jso.has("edit")) {

@@ -19,6 +19,7 @@ package tv.phantombot.event.irc.channel;
 import java.util.Collections;
 import java.util.List;
 
+import com.gmt2001.twitch.cache.Viewer;
 import tv.phantombot.twitch.irc.TwitchSession;
 
 /**
@@ -26,14 +27,14 @@ import tv.phantombot.twitch.irc.TwitchSession;
  * @author gmt2001
  */
 public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
-    private final List<String> chatters;
+    private final List<Viewer> chatters;
 
     /**
      * Constructor
      *
      * @param chatters A list of login names for users who are currently in chat
      */
-    public IrcChannelUsersUpdateEvent(List<String> chatters) {
+    public IrcChannelUsersUpdateEvent(List<Viewer> chatters) {
         super(null);
         this.chatters = Collections.unmodifiableList(chatters);
     }
@@ -92,7 +93,7 @@ public class IrcChannelUsersUpdateEvent extends IrcChannelEvent {
      *
      * @return A list of login names for users who are currently in chat
      */
-    public List<String> chatters() {
+    public List<Viewer> chatters() {
         return this.chatters;
     }
 }
