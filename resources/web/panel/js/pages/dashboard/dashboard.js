@@ -141,7 +141,7 @@ $(function () {
                 // Set stream title.
                 $('#stream-title').val(e.title);
                 // Set stream game.
-                if ($('#stream-game').find("option[value='" + e.game + "']").length) {
+                if ($('#stream-game').find('option[value="' + e.game.replaceAll('"', '\\"') + '"]').length) {
                     $('#stream-game').val(e.game).trigger('change');
                 } else {
                     // Create a DOM Option and pre-select by default
