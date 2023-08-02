@@ -28,14 +28,14 @@
      */
     function startCommercialTimer() {
         lastCommercial = $.systemTime();
-        
+
         interval = setInterval(function() {
             if (commercialTimer && $.bot.isModuleEnabled('./systems/commercialSystem.js')) {
                 if ((lastCommercial + (commercialInterval * 6e4)) <= $.systemTime()) {
                     if ($.isOnline($.channelName)) {
                         var result = $.twitch.RunCommercial($.channelName, commercialLength);
                         lastCommercial = $.systemTime();
-                        
+
                         if (commercialMessage.length > 0 && result.getInt("_http") != 422) {
                             $.say(commercialMessage);
                         }
@@ -109,7 +109,7 @@
                     */
                     } else {
                         var valid_lengths = ["30", "60", "90", "120", "150", "180"];
-                        if (args.length < 3 || isNaN(args[1]) || isNaN(args[2]) || args[1] < 8 || !valid_lengths.includes(args[2])) {
+                        if (args.length < 3 || isNaN(args[1]) || isNaN(args[2]) || args[1] < 8 || !valid_lengths.includes($.jsString(args[2]))) {
                             $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.bad-parm'));
                             return;
                         }
@@ -124,14 +124,14 @@
                         $.inidb.set('commercialSettings', 'interval', args[1]);
                         $.inidb.set('commercialSettings', 'message', argsString);
                         $.inidb.set('commercialSettings', 'commercialtimer', true.toString());
-                        
+
                         commercialLength = parseInt(args[2]);
                         commercialInterval = parseInt(args[1]);
                         commercialMessage = argsString;
                         commercialTimer = true;
-                        
+
                         startCommercialTimer();
-                        
+
                         $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.status-on', commercialLength, commercialInterval));
                         if (commercialMessage.length() > 0) {
                             $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.status-on-msg', commercialMessage));
@@ -148,12 +148,12 @@
              */
             if (args.length >= 1 && !isNaN(args[0])) {
                 var result = $.twitch.RunCommercial($.channelName, args[0]);
-                
+
                 if (result.getInt("_http") === 422) {
                     $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.422'));
                 } else {
                     lastCommercial = $.systemTime();
-                    
+
                     if (args.length < 2 || !args[1].equalsIgnoreCase("silent")) {
                         $.say($.lang.get('commercialsystem.run', args[0]));
                     }
