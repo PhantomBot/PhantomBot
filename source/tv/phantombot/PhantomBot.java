@@ -1042,6 +1042,7 @@ public final class PhantomBot implements Listener {
     @Handler
     public void command(CommandEvent event) {
         if (event.getCommand().equals("pbinternalping")) {
+            event.handeled();
             this.tmi.sendPing();
         }
     }
