@@ -468,7 +468,7 @@ public abstract class Datastore2 {
      *
      * @return the DataType
      */
-    public abstract DataType<?> longTextDataType();
+    public abstract DataType<String> longTextDataType();
 
     /**
      * Indicates if this driver supports making backups without an external tool
