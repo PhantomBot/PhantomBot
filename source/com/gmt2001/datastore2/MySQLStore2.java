@@ -110,7 +110,7 @@ public final class MySQLStore2 extends Datastore2 {
     }
 
     @Override
-    public DataType<?> longTextDataType() {
+    public DataType<String> longTextDataType() {
         return LONGTEXT;
     }
 }

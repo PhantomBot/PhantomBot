@@ -58,6 +58,10 @@ public final class SQLiteStore2 extends Datastore2 {
      */
     private Instant nextCheckpoint = Instant.now().plus(1, ChronoUnit.DAYS);
     /**
+     * Instant when the next {@code VACUUM} will occur
+     */
+    private Instant nextVacuum = Instant.now().plus(3, ChronoUnit.DAYS);
+    /**
      * SQLite {@code LONGTEXT} type
      */
     private static final DataType<String> LONGTEXT = new DefaultDataType<>(SQLDialect.SQLITE, SQLDataType.CLOB, "text");
@@ -124,6 +128,20 @@ public final class SQLiteStore2 extends Datastore2 {
                 vacuumStatement.execute();
             }
 
+            try (ResultSet rs = connection.getMetaData().getTables(null, null, "phantombot2_sqlite_pragma", null)) {
+                if (!rs.first()) {
+                    try ( PreparedStatement createPragmaStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS phantombot2_sqlite_pragma (variable string PRIMARY KEY, value string);") ) {
+                        createPragmaStatement.execute();
+                    }
+                }
+            }
+            try ( PreparedStatement nextVacuumStatement = connection.prepareStatement("SELECT value FROM phantombot2_sqlite_pragma WHERE variable='nextVacuum';") ) {
+                try ( ResultSet rs = nextVacuumStatement.executeQuery() ) {
+                    if (rs.first()) {
+                        this.nextVacuum = Instant.parse(rs.getString("value"));
+                    }
+                }
+            }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -132,7 +150,7 @@ public final class SQLiteStore2 extends Datastore2 {
     }
 
     @Override
-    public DataType<?> longTextDataType() {
+    public DataType<String> longTextDataType() {
         return LONGTEXT;
     }
 
@@ -183,9 +201,24 @@ public final class SQLiteStore2 extends Datastore2 {
         try {
             try ( Connection connection = this.getConnection()) {
                 boolean checkpointed = false;
+
+                if (!TwitchCache.instance().isStreamOnline() && this.nextVacuum.isBefore(Instant.now())) {
+                    checkpointed = true;
+                    com.gmt2001.Console.debug.println("3 day VACUUM");
+                    try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
+                        vacuumStatement.execute();
+                    }
+
+                    try ( PreparedStatement pragmaTableStatement = connection.prepareStatement("INSERT OR REPLACE INTO phantombot2_sqlite_pragma (variable, value) VALUES ('nextVacuum', ?);")) {
+                        this.nextVacuum = Instant.now().plus(3, ChronoUnit.DAYS);
+                        pragmaTableStatement.setString(1, this.nextVacuum.toString());
+                        pragmaTableStatement.execute();
+                    }
+                }
+
                 try {
                     Path walPath = PathValidator.getRealPath(Paths.get(getDbFile() + "-wal"));
-                    if (!TwitchCache.instance().isStreamOnline() && Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
+                    if (!checkpointed && !TwitchCache.instance().isStreamOnline() && Files.exists(walPath) && Files.size(walPath) > MAXWALSIZE) {
                         checkpointed = true;
                         com.gmt2001.Console.debug.println("MAXWALSIZE CHECKPOINT");
                         try ( PreparedStatement checkpointStatement = connection.prepareStatement("PRAGMA wal_checkpoint(TRUNCATE);")) {
@@ -210,21 +243,6 @@ public final class SQLiteStore2 extends Datastore2 {
                             vacuumStatement.execute();
                         }
                     }
-                }
-            }
-        } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-    }
-
-    @Override
-    protected void driverDispose() {
-        try {
-            com.gmt2001.Console.debug.println("VACUUM on dispose");
-
-            try ( Connection connection = this.getConnection()) {
-                try ( PreparedStatement vacuumStatement = connection.prepareStatement("VACUUM;")) {
-                    vacuumStatement.execute();
                 }
             }
         } catch (SQLException ex) {

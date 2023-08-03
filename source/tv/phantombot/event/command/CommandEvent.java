@@ -31,6 +31,7 @@ public class CommandEvent extends Event {
     private final String arguments;
     private final Map<String, String> tags;
     private final String[] args;
+    private boolean handeled = false;
 
     /**
      * Class constructor for this event without tags. Always send tags if you can.
@@ -146,6 +147,22 @@ public class CommandEvent extends Event {
         }
 
         return null;
+    }
+
+    /**
+     * Marks this command as handeled
+     */
+    public synchronized void handeled() {
+        this.handeled = true;
+    }
+
+    /**
+     * Indicates if this command has been handeled
+     *
+     * @return {@code true} if handeled
+     */
+    public boolean isHandeled() {
+        return this.handeled;
     }
 
     /**
