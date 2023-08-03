@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
  *
  * @author gmt2001
  */
-public class TableVersionRecord extends UpdatableRecordImpl<TableVersionRecord> implements Record2<String, Long> {
+public final class TableVersionRecord extends UpdatableRecordImpl<TableVersionRecord> implements Record2<String, Long> {
     /**
      * Version of this record implementation
      */

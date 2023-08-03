@@ -28,8 +28,6 @@ import org.jooq.impl.TableImpl;
 
 import com.gmt2001.datastore2.Datastore2;
 
-import tv.phantombot.panel.PanelUser.PanelUser;
-
 /**
  * Stores the DDL version of managed Datastore2 tables
  *
@@ -92,11 +90,11 @@ public final class TableVersion extends TableImpl<TableVersionRecord> {
      */
     @Override
     public UniqueKey<TableVersionRecord> getPrimaryKey() {
-        return Internal.createUniqueKey(TableVersion.instance(), DSL.name("PB2_META_TBLVER_PK"), TableVersion.instance().TABLE);
+        return Internal.createUniqueKey(this, DSL.name(TABLENAME + "_PK"), this.TABLE);
     }
 
     /**
-     * Checks if the database table for {@link PanelUser} exists, and creates it if it is missing
+     * Checks if the database table for {@link TableVersion} exists, and creates it if it is missing
      */
     private static void checkAndCreateTable() {
         Optional<Table<?>> table = Datastore2.instance().findTable(TABLENAME);
