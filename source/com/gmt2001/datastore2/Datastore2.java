@@ -64,6 +64,10 @@ import tv.phantombot.PhantomBot;
  */
 public abstract class Datastore2 {
     /**
+     * Paths to exclude when calling {@link Reflect#loadPackageRecursive(String, List)}
+     */
+    private static final List<String> REFLECT_EXCLUDE = List.of("/meta/", "/records/");
+    /**
      * Table name prefix for all tables created as POJOs instead of using {@link DataStore}
      */
     public static final String PREFIX = "phantombot2_";
@@ -170,7 +174,7 @@ public abstract class Datastore2 {
             // Resolve builtin classes case-insensitively
             final String fdataStoreType = dataStoreType;
             final String fdataStoreType2 = DataStore.resolveClassname(className);
-            Reflect.instance().loadPackageRecursive(Datastore2.class.getName().substring(0, Datastore2.class.getName().lastIndexOf('.')));
+            Reflect.instance().loadPackageRecursive(Datastore2.class.getName().substring(0, Datastore2.class.getName().lastIndexOf('.')), REFLECT_EXCLUDE);
             Optional<String> tempdataStoreType = Reflect.instance().getSubTypesOf(Datastore2.class).stream().filter((c) -> {
                 return c.getSimpleName().equalsIgnoreCase(fdataStoreType) || c.getSimpleName().equalsIgnoreCase(fdataStoreType2);
             }).map(c -> c.getName()).findFirst();

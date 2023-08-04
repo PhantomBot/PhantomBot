@@ -386,7 +386,7 @@ public final class PanelUserHandler {
             return PanelMessage.Error.setResponse("Invalid password!");
         }
 
-        user.setPassword(newPassword);
+        user.changePassword(newPassword);
 
         try {
             user.doupdate();
@@ -538,7 +538,7 @@ public final class PanelUserHandler {
         }
 
         if(newUsername != null && !currentUsername.equals(newUsername)){
-            if (PanelUser.LookupByUsername(newUsername) != null) {
+            if (PanelUser.UserExists(newUsername)) {
                 return PanelMessage.UserAlreadyExists;
             }
             user.changeUsername(newUsername);

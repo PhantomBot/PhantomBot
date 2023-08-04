@@ -64,6 +64,18 @@ public final class Reflect {
      * @param pkg the package or package prefix to load
      */
     public void loadPackageRecursive(String pkg) {
+        this.loadPackageRecursive(pkg, Collections.emptyList());
+    }
+
+    /**
+     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the classloaders cache
+     * <p>
+     * If any paths return {@code true} on a {@link String#contains(CharSequence)} of any entry in {@code exclude}, the class will be excluded from loading
+     *
+     * @param pkg the package or package prefix to load
+     * @param exclude a list of partial path names to exclude
+     */
+    public void loadPackageRecursive(String pkg, List<String> exclude) {
         pkg = pkg.replace('.', '/');
         ClassLoader classLoader = Reflect.class.getClassLoader();
         URL u = Reflect.class.getProtectionDomain().getCodeSource().getLocation();
@@ -76,10 +88,21 @@ public final class Reflect {
                     String name = e.getName();
 
                     if (name.startsWith(pkg) && name.endsWith(".class")) {
-                        try {
-                            Class.forName(name.replace('/', '.').replace(".class", ""), true, classLoader);
-                        } catch (ClassNotFoundException ex) {
-                            com.gmt2001.Console.debug.printStackTrace(ex);
+                        boolean excluded = false;
+
+                        for (String s: exclude) {
+                            if (name.contains(s)) {
+                                excluded = true;
+                                break;
+                            }
+                        }
+
+                        if (!excluded) {
+                            try {
+                                Class.forName(name.replace('/', '.').replace(".class", ""), true, classLoader);
+                            } catch (ClassNotFoundException ex) {
+                                com.gmt2001.Console.debug.printStackTrace(ex);
+                            }
                         }
                     }
                 }

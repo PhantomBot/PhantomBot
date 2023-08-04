@@ -1572,7 +1572,7 @@ $(function () {
                 minutes = (date.getMinutes() < 10) ? "0" + date.getMinutes() : date.getMinutes(),
                 seconds = (date.getSeconds() < 10) ? "0" + date.getSeconds() : date.getSeconds();
 
-        return hours +  ":" + minutes + ":" + seconds + " " + date.getDate() + " " + months[date.getMonth()] + " "+ date.getFullYear();
+        return date.getFullYear() + " " + months[date.getMonth()] + " " + date.getDate() + " " + hours +  ":" + minutes + ":" + seconds;
     };
 
     //https://stackoverflow.com/a/57380742
