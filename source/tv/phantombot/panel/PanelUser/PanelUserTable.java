@@ -99,7 +99,7 @@ public final class PanelUserTable extends TableImpl<PanelUser> {
     /**
      * Timestamp of last login
      */
-    public final TableField<PanelUser, Long> LASTLOGIN = createField(DSL.name("lastLogin"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<PanelUser, Long> LASTLOGIN = createField(DSL.name("lastLogin"), SQLDataType.BIGINT.nullable(false).defaultValue(-1L), this, "");
     /**
      * If {@code false}, {@link #PASSWORD} is only a temporary password and must be changed at next login
      */
@@ -152,7 +152,7 @@ public final class PanelUserTable extends TableImpl<PanelUser> {
             }
 
             try {
-                TableVersionRecord record = TableVersion.instance().newRecord();
+                TableVersionRecord record = new TableVersionRecord();
                 record.values(PanelUserTable.instance(), PanelUser.serialVersionUID);
                 record.store();
             } catch (Exception ex) {

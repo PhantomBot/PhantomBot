@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.Record1;
-import org.jooq.impl.UpdatableRecordImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.gmt2001.Digest;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.records.Record8;
 
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
@@ -24,21 +23,14 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  *
  * @author Sartharon
  */
-public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
+public final class PanelUser extends Record8<PanelUser, String, String, String, String, Boolean, Long, Long, Boolean> {
     /**
      * Version of this record implementation
      */
     public static final long serialVersionUID = 1L;
     private static final PanelUser CONFIGUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
-    private String username;
-    private String password;
-    private String token;
     private final Map<String, Permission> permissions = new HashMap<>();
-    private boolean enabled;
     private Type userType;
-    private long creationDate;
-    private long lastLogin = -1;
-    private boolean hasSetPassword = false;
     /**
      * User types
      */
@@ -61,18 +53,22 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * Default constructor. Used by JOOQ
      */
     PanelUser() {
-        super(PanelUserTable.instance());
+        super(PanelUserTable.instance(), () -> PanelUserTable.instance().USERNAME, () -> PanelUserTable.instance().PASSWORD,
+            () -> PanelUserTable.instance().TOKEN, () -> PanelUserTable.instance().PERMISSIONS,
+            () -> PanelUserTable.instance().ENABLED, () -> PanelUserTable.instance().CREATIONDATE,
+            () -> PanelUserTable.instance().LASTLOGIN, () -> PanelUserTable.instance().HASSETPASSWORD);
         this.userType = Type.DATABASE;
+        this.attach(Datastore2.instance().dslContext().configuration());
     }
 
     /**
      * Constructor used when loading a database user
      */
     PanelUser(String username, JSONObject userJO) {
-        super(PanelUserTable.instance());
-        this.username = username;
+        this();
+        this.setUsername(username);
         this.userType = Type.DATABASE;
-        fromJSON(userJO);
+        this.fromJSON(userJO);
     }
 
     /**
@@ -87,58 +83,142 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      */
     PanelUser(String username, String password) {
         this(username, PanelUserHandler.getFullAccessPermissions(), Type.CONFIG, true, true, true, true);
-        this.password = password;
-        this.token = CaselessProperties.instance().getProperty("webauth");
+        this.changePassword(password);
+        this.setToken(CaselessProperties.instance().getProperty("webauth"));
     }
 
     /**
      * Internal constructor
      */
     PanelUser(String username, Map<String, Permission> permissions, Type userType, boolean enabled, boolean hasSetPassword, boolean canManageUsers, boolean canRestartBot) {
-        super(PanelUserTable.instance());
-        this.username = username;
+        this();
+        this.values(username, "", null, "", enabled, 0L, 0L, hasSetPassword);
         this.setPermission(permissions);
         this.userType = userType;
-        this.enabled = enabled;
-        this.hasSetPassword = hasSetPassword;
         this.setManageUserPermission(canManageUsers);
         this.setRestartPermission(canRestartBot);
     }
 
     /**
-     * Used by JOOQ to stringify {@link #permissions} for storage in the database
-     *
-     * @return {@link #permissions} as a stringified JSON array
-     */
-    @SuppressWarnings({"unused"})
-    private String permissions() {
-        return this.getPermissionsToJSON(false, true).toString();
-    }
-
-    /**
-     * Used by JOOQ to restore {@link #permissions} from the database
-     *
-     * @param data a stringified JSON array of permissions
-     */
-    @SuppressWarnings({"unused"})
-    private void permissions(String data) {
-        this.permissionsFromJSON(new JSONArray(data));
-    }
-
-    /**
      * The panel user's name
+     *
      * @return The panel user's current name
      */
     public String getUsername() {
-        return this.username;
+        return this.value1();
+    }
+
+    /**
+     * Sets the username
+     *
+     * @param value the username
+     */
+    public void setUsername(String value) {
+        this.value1(value);
     }
 
     /**
      * The panel user's password
+     *
      * @return The panel user's current password
      */
     public String getPassword() {
-        return this.password;
+        return this.value2();
+    }
+
+    /**
+     * Sets the password
+     *
+     * @param value the password
+     */
+    public void setPassword(String value) {
+        this.value2(value);
+    }
+
+    /**
+     *
+     * The user's token
+     *
+     * @return the user's token
+     */
+    public String getToken() {
+        return this.value3();
+    }
+
+    /**
+     * Sets the token
+     *
+     * @param value the token
+     */
+    public void setToken(String value) {
+        this.value3(value);
+    }
+
+    /**
+     * The user's permissions
+     *
+     * @return the permissions
+     */
+    public Map<String, Permission> getPermissions() {
+        if (this.permissions.isEmpty()) {
+            this.permissionsFromJSON(new JSONArray(this.value4()));
+        }
+
+        return this.permissions;
+    }
+
+    /**
+     * Sets the permissions on the record and clears the permissions map
+     *
+     * @param value the new permissions
+     */
+    public void setPermissions(Map<String, Permission> value) {
+        this.value4(this.permissionsToJSON(value, false, true).toString());
+        this.permissions.clear();
+    }
+
+    /**
+     * Sets the permissions on the record and clears the permissions map
+     *
+     * @param value the new permissions
+     */
+    public void setPermissions(JSONArray value) {
+        this.value4(value.toString());
+        this.permissions.clear();
+    }
+
+    /**
+     * Indicates if the user is enabled
+     * @return {@code true} if the user is enabled
+     */
+    public boolean isEnabled() {
+        return this.value5();
+    }
+
+    /**
+     * Sets if the account is enabled
+     *
+     * @param value {@code true} for enabled
+     */
+    public void setEnabled(Boolean value) {
+        this.value5(value);
+    }
+
+    /**
+     * The time at which this user was created
+     * @return The time at which this user was created as Unix-Time
+     */
+    public long getCreationDate() {
+        return this.value6();
+    }
+
+    /**
+     * Sets the account creation timestamp, in millis
+     *
+     * @param value the timestamp
+     */
+    public void setCreationDate(Long value) {
+        this.value6(value);
     }
 
     /**
@@ -146,24 +226,50 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @return The last time this user logged in to the panel as Unix-Time; {@code -1} if the user has never logged in
      */
     public long getLastLogin() {
-        return this.lastLogin;
+        return this.value7();
+    }
+
+    /**
+     * Sets the last login timestamp, in millis
+     *
+     * @param value the timestamp
+     */
+    public void setLastLogin(Long value) {
+        this.value7(value);
+    }
+
+    /**
+     * Indicates if the user has set their password or if it was generated automatically
+     * @return {@code true} if the user's current password has been generated automatically
+     */
+    public boolean hasSetPassword() {
+        return this.value8();
+    }
+
+    /**
+     * Sets if the current account password is a temporary password that must be changed on next login
+     *
+     * @param value {@code false} if a temporary password
+     */
+    public void setHasSetPassword(Boolean value) {
+        this.value8(value);
     }
 
     /**
      * The user's current websocket authentication token
-     * <br /><br />
+     * <p>
      * A new token will automatically be generated and the user saved if there is no current token
      * @return The user's current websocket authentication token
      * @see WsPanelHandler#handleFrame() token usage
      */
     String getAuthToken() {
-        if (this.token == null || this.token.isEmpty()) {
+        if (this.getToken() == null || this.getToken().isEmpty()) {
             generateNewAuthToken();
             if(this.userType == Type.DATABASE) {
                 this.doupdate();
             }
         }
-        return this.token;
+        return this.getToken();
     }
 
     /**
@@ -171,12 +277,12 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @return The user's {@link PanelUserHandler.Permission permissions}
      */
     public Map<String, Permission> getPermission() {
-        return Collections.unmodifiableMap(this.permissions);
+        return Collections.unmodifiableMap(this.getPermissions());
     }
 
     /**
      * The {@link Type user's type}
-     * <br /><br />
+     * <p>
      * Used for user management
      * @return The {@link Type user type}
      */
@@ -186,36 +292,12 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
 
     /**
      * Indicates if the panel user's properties (username, password, {@link PanelUserHandler.Permission permissions}, ...) can be changed
-     * <br /><br />
+     * <p>
      * The user defined in the botlogin.txt cannot
      * @return {@code true} if the user's properties can be changed; {@code false} otherwise
      */
     public boolean canBeEdited() {
         return this.userType != Type.CONFIG;
-    }
-
-    /**
-     * The time at which this user was created
-     * @return The time at which this user was created as Unix-Time
-     */
-    public long getCreationDate() {
-        return this.creationDate;
-    }
-
-    /**
-     * Indicates if the user has set their password or if it was generated automatically
-     * @return {@code true} if the user's current password has been generated automatically
-     */
-    public boolean hasSetPassword() {
-        return this.hasSetPassword;
-    }
-
-    /**
-     * Indicates if the user is enabled
-     * @return {@code true} if the user is enabled
-     */
-    public boolean isEnabled() {
-        return this.enabled;
     }
 
     /**
@@ -240,10 +322,13 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @param permission {@code true} allows the user to manage users; {@code false} prohibits it
      */
     void setManageUserPermission(boolean permission) {
-        this.permissions.put("canManageUsers", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
-        if (permission && !this.permissions.containsKey("settings")) {
-            this.permissions.put("settings", Permission.READ_ONLY);
+        Map<String, Permission> permissions = this.getPermissions();
+        permissions.put("canManageUsers", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
+        if (permission && !permissions.containsKey("settings")) {
+            permissions.put("settings", Permission.READ_ONLY);
         }
+
+        this.setPermissions(permissions);
     }
 
     /**
@@ -260,30 +345,32 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @param permission {@code true} allows the user to restart the bot; {@code false} prohibits it
      */
     void setRestartPermission(boolean permission) {
-        this.permissions.put("canRestartBot", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
-        if (permission && !this.permissions.containsKey("settings")) {
-            this.permissions.put("settings", Permission.READ_ONLY);
+        Map<String, Permission> permissions = this.getPermissions();
+        permissions.put("canRestartBot", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
+        if (permission && !permissions.containsKey("settings")) {
+            permissions.put("settings", Permission.READ_ONLY);
         }
+        this.setPermissions(permissions);
     }
 
     private void setCreationDateNOW(){
-        this.creationDate = System.currentTimeMillis();
+        this.setCreationDate(System.currentTimeMillis());
     }
 
     /**
      * Updates the last time the user has logged in on the panel
      */
     void setLastLoginNOW() {
-        this.lastLogin = System.currentTimeMillis();
+        this.setLastLogin(System.currentTimeMillis());
     }
 
     /**
      * Changes the user's password and marks that the password has been manually set by the user
      * @param password The new password
      */
-    void setPassword(String password) {
-        this.password = password;
-        this.hasSetPassword = true;
+    void changePassword(String password) {
+        this.setPassword(password);
+        this.setHasSetPassword(true);
     }
 
     /**
@@ -294,8 +381,8 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
         if (!permissions.containsKey("dashboard")) {
             permissions.put("dashboard", Permission.READ_ONLY);
         }
-        this.permissions.clear();
-        this.permissions.putAll(permissions);
+
+        this.setPermissions(permissions);
     }
 
     /**
@@ -303,7 +390,7 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @param enabled {@code true} enables the user; {@code false} disabled the user
      */
     void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        this.setEnabled(enabled);
     }
 
     /**
@@ -317,7 +404,7 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
             tempToken = PhantomBot.generateRandomString(30);
         }
 
-        this.token = tempToken;
+        this.setToken(tempToken);
     }
 
     /**
@@ -327,8 +414,8 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      */
     String generateNewPassword() {
         String temp = PhantomBot.generateRandomString(10);
-        this.password = Digest.sha256(temp);
-        this.hasSetPassword = false;
+        this.setPassword(Digest.sha256(temp));
+        this.setHasSetPassword(false);
         return temp;
     }
 
@@ -337,11 +424,8 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      */
     void changeUsername(String newUsername) {
         try {
-            boolean oldEnabled = this.enabled;
-            this.dodelete();
-            this.enabled = oldEnabled;
-            this.username = newUsername;
-            this.doinsert();
+            this.setUsername(newUsername);
+            this.doupdate();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
@@ -353,7 +437,7 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @return A {@link JSONArray} with the users permissions
      */
     JSONArray getPermissionsToJSON(boolean asDisplayName) {
-        return getPermissionsToJSON(asDisplayName, false);
+        return permissionsToJSON(this.getPermissions(), asDisplayName, false);
     }
 
     /**
@@ -362,10 +446,10 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @param isSave Indicates if the {@link JSONArray} will be used to save the user; If {@code true}, special permissions will be included as well
      * @return A {@link JSONArray} with the users permissions
      */
-    private JSONArray getPermissionsToJSON(boolean asDisplayName, boolean isSave) {
+    private JSONArray permissionsToJSON(Map<String, Permission> permissions, boolean asDisplayName, boolean isSave) {
         JSONArray permissionsJSON = new JSONArray();
         int counter = 0;
-        for (Map.Entry<String, Permission> entry : this.permissions.entrySet()) {
+        for (Map.Entry<String, Permission> entry : permissions.entrySet()) {
             if (!isSave && (entry.getKey().equalsIgnoreCase("canRestartBot") || entry.getKey().equalsIgnoreCase("canManageUsers"))) {
                 continue;
             }
@@ -379,13 +463,13 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
     }
 
     private void fromJSON(JSONObject userJO) {
-        this.password = userJO.getString("pass");
-        this.token = userJO.getString("token");
-        this.hasSetPassword = userJO.getBoolean("hasSetPassword");
-        this.enabled = userJO.getBoolean("enabled");
-        this.lastLogin = userJO.getLong("lastLogin");
-        this.creationDate = userJO.getLong("creationDate");
-        permissionsFromJSON(userJO.getJSONArray("permissions"));
+        this.setPassword(userJO.getString("pass"));
+        this.setToken(userJO.getString("token"));
+        this.setHasSetPassword(userJO.getBoolean("hasSetPassword"));
+        this.setEnabled(userJO.getBoolean("enabled"));
+        this.setLastLogin(userJO.getLong("lastLogin"));
+        this.setCreationDate(userJO.getLong("creationDate"));
+        this.setPermissions(userJO.getJSONArray("permissions"));
     }
 
     private void permissionsFromJSON(JSONArray permissionsJSON) {
@@ -451,10 +535,6 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
      * @return The password generated for the new user
      */
     public static String create(String username, Map<String, Permission> permissions, boolean enabled, boolean canManageUsers, boolean canRestartBot) {
-        if (permissions == null) {
-            permissions = new HashMap<>();
-        }
-
         PanelUser user = new PanelUser(username, permissions, enabled, canManageUsers, canRestartBot);
         user.setCreationDateNOW();
         user.generateNewAuthToken();
@@ -512,16 +592,5 @@ public final class PanelUser extends UpdatableRecordImpl<PanelUser> {
         }
 
         return Datastore2.instance().dslContext().fetchExists(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.eq(username));
-    }
-
-    /**
-     * The primary key for this record, which is {@link #getUsername()}
-     *
-     * @return the primary key
-     */
-    @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public Record1<String> key() {
-        return (Record1) super.key();
     }
 }
