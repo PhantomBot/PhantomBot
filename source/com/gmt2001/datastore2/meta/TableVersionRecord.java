@@ -23,6 +23,8 @@ import org.jooq.Row2;
 import org.jooq.Table;
 import org.jooq.impl.UpdatableRecordImpl;
 
+import com.gmt2001.datastore2.Datastore2;
+
 /**
  * A record in {@link TableVersion} denoting the DDL version of a managed Datastore2 table
  *
@@ -39,6 +41,7 @@ public final class TableVersionRecord extends UpdatableRecordImpl<TableVersionRe
      */
     public TableVersionRecord() {
         super(TableVersion.instance());
+        this.attach(Datastore2.instance().dslContext().configuration());
     }
 
     /**
