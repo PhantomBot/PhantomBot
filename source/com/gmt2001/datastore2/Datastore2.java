@@ -66,7 +66,7 @@ public abstract class Datastore2 {
     /**
      * Paths to exclude when calling {@link Reflect#loadPackageRecursive(String, List)}
      */
-    private static final List<String> REFLECT_EXCLUDE = List.of("/meta/");
+    private static final List<String> REFLECT_EXCLUDE = List.of("/meta/", "/records/");
     /**
      * Table name prefix for all tables created as POJOs instead of using {@link DataStore}
      */
