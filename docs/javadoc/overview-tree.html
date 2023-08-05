@@ -57,7 +57,7 @@ loadScripts(document, 'script');</script>
 <li><a href="com/gmt2001/datastore/package-tree.html">com.gmt2001.datastore</a>, </li>
 <li><a href="com/gmt2001/datastore2/package-tree.html">com.gmt2001.datastore2</a>, </li>
 <li><a href="com/gmt2001/datastore2/meta/package-tree.html">com.gmt2001.datastore2.meta</a>, </li>
-<li><a href="com/gmt2001/datastore2/records/package-tree.html">com.gmt2001.datastore2.records</a>, </li>
+<li><a href="com/gmt2001/datastore2/record/package-tree.html">com.gmt2001.datastore2.record</a>, </li>
 <li><a href="com/gmt2001/dns/package-tree.html">com.gmt2001.dns</a>, </li>
 <li><a href="com/gmt2001/httpclient/package-tree.html">com.gmt2001.httpclient</a>, </li>
 <li><a href="com/gmt2001/httpwsserver/package-tree.html">com.gmt2001.httpwsserver</a>, </li>
@@ -147,6 +147,15 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" class="type-name-link external-link" title="class or interface in java.lang">Object</a>
 <ul>
+<li class="circle">java.util.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/AbstractMap.html" class="type-name-link external-link" title="class or interface in java.util">AbstractMap</a>&lt;K,<wbr>V&gt; (implements java.util.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;K,<wbr>V&gt;)
+<ul>
+<li class="circle">java.util.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html" class="type-name-link external-link" title="class or interface in java.util">HashMap</a>&lt;K,<wbr>V&gt; (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Cloneable.html" title="class or interface in java.lang" class="external-link">Cloneable</a>, java.util.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;K,<wbr>V&gt;, java.io.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/Serializable.html" title="class or interface in java.io" class="external-link">Serializable</a>)
+<ul>
+<li class="circle">tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PermissionMap.html" class="type-name-link" title="class in tv.phantombot.panel.PanelUser">PermissionMap</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="circle">tv.phantombot.twitch.pubsub.processors.<a href="tv/phantombot/twitch/pubsub/processors/AbstractPubSubProcessor.html" class="type-name-link" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a> (implements java.util.concurrent.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Flow.Subscriber.html" title="class or interface in java.util.concurrent" class="external-link">Flow.Subscriber</a>&lt;T&gt;)
 <ul>
 <li class="circle">tv.phantombot.twitch.pubsub.processors.<a href="tv/phantombot/twitch/pubsub/processors/PubSubChannelPointsProcessor.html" class="type-name-link" title="class in tv.phantombot.twitch.pubsub.processors">PubSubChannelPointsProcessor</a></li>
@@ -573,6 +582,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" class="type-name-link" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></li>
 <li class="circle">com.gmt2001.<a href="com/gmt2001/PathValidator.html" class="type-name-link" title="class in com.gmt2001">PathValidator</a></li>
 <li class="circle">com.gmt2001.<a href="com/gmt2001/PatternDetector.html" class="type-name-link" title="class in com.gmt2001">PatternDetector</a></li>
+<li class="circle">tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PermissionConverter.html" class="type-name-link" title="class in tv.phantombot.panel.PanelUser">PermissionConverter</a> (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Converter.html" title="class or interface in org.jooq" class="external-link">Converter</a>&lt;T,<wbr>U&gt;)</li>
 <li class="circle">tv.phantombot.<a href="tv/phantombot/PhantomBot.html" class="type-name-link" title="class in tv.phantombot">PhantomBot</a> (implements tv.phantombot.event.<a href="tv/phantombot/event/Listener.html" title="interface in tv.phantombot.event">Listener</a>)</li>
 <li class="circle">com.gmt2001.twitch.eventsub.subscriptions.channel.prediction.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/prediction/PredictionOutcome.html" class="type-name-link" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionOutcome</a></li>
 <li class="circle">tv.phantombot.twitch.pubsub.<a href="tv/phantombot/twitch/pubsub/PubSubMessage.html" class="type-name-link" title="class in tv.phantombot.twitch.pubsub">PubSubMessage</a></li>
@@ -624,12 +634,22 @@ loadScripts(document, 'script');</script>
 <ul>
 <li class="circle">org.jooq.impl.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/impl/UpdatableRecordImpl.html" class="type-name-link external-link" title="class or interface in org.jooq.impl">UpdatableRecordImpl</a>&lt;R&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link">UpdatableRecord</a>&lt;R&gt;)
 <ul>
-<li class="circle">com.gmt2001.datastore2.records.<a href="com/gmt2001/datastore2/records/Record8.html" class="type-name-link" title="class in com.gmt2001.datastore2.records">Record8</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G,<wbr>H&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record8.html" title="class or interface in org.jooq" class="external-link">Record8</a>&lt;T1,<wbr>T2,<wbr>T3,<wbr>T4,<wbr>T5,<wbr>T6,<wbr>T7,<wbr>T8&gt;)
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record1.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record1</a>&lt;RR,<wbr>A&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record1.html" title="class or interface in org.jooq" class="external-link">Record1</a>&lt;T1&gt;)</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record2.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record2</a>&lt;RR,<wbr>A,<wbr>B&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record2.html" title="class or interface in org.jooq" class="external-link">Record2</a>&lt;T1,<wbr>T2&gt;)
+<ul>
+<li class="circle">com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersionRecord.html" class="type-name-link" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a></li>
+</ul>
+</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record3.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record3</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record3.html" title="class or interface in org.jooq" class="external-link">Record3</a>&lt;T1,<wbr>T2,<wbr>T3&gt;)</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record4.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record4</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record4.html" title="class or interface in org.jooq" class="external-link">Record4</a>&lt;T1,<wbr>T2,<wbr>T3,<wbr>T4&gt;)</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record5.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record5</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record5.html" title="class or interface in org.jooq" class="external-link">Record5</a>&lt;T1,<wbr>T2,<wbr>T3,<wbr>T4,<wbr>T5&gt;)</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record6.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record6</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record6.html" title="class or interface in org.jooq" class="external-link">Record6</a>&lt;T1,<wbr>T2,<wbr>T3,<wbr>T4,<wbr>T5,<wbr>T6&gt;)</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record7.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record7</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record7.html" title="class or interface in org.jooq" class="external-link">Record7</a>&lt;T1,<wbr>T2,<wbr>T3,<wbr>T4,<wbr>T5,<wbr>T6,<wbr>T7&gt;)</li>
+<li class="circle">com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record8.html" class="type-name-link" title="class in com.gmt2001.datastore2.record">Record8</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G,<wbr>H&gt; (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record8.html" title="class or interface in org.jooq" class="external-link">Record8</a>&lt;T1,<wbr>T2,<wbr>T3,<wbr>T4,<wbr>T5,<wbr>T6,<wbr>T7,<wbr>T8&gt;)
 <ul>
 <li class="circle">tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" class="type-name-link" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></li>
 </ul>
 </li>
-<li class="circle">com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersionRecord.html" class="type-name-link" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a> (implements org.jooq.<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record2.html" title="class or interface in org.jooq" class="external-link">Record2</a>&lt;T1,<wbr>T2&gt;)</li>
 </ul>
 </li>
 </ul>
