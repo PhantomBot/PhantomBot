@@ -19,7 +19,7 @@ package com.gmt2001.datastore2.meta;
 import org.jooq.Table;
 
 import com.gmt2001.datastore2.Datastore2;
-import com.gmt2001.datastore2.records.Record2;
+import com.gmt2001.datastore2.record.Record2;
 
 /**
  * A record in {@link TableVersion} denoting the DDL version of a managed Datastore2 table

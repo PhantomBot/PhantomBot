@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.datastore2.records;
+package com.gmt2001.datastore2.record;
 
 import java.util.function.Supplier;
 
@@ -26,17 +26,51 @@ import org.jooq.impl.UpdatableRecordImpl;
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record8} on an {@link UpdateableRecordImpl}
  *
+ * @param <RR> self-reference to the implementing class
+ * @param <A> the Java data type of field 1, which is also the primary key
+ * @param <B> the Java data type of field 2
+ * @param <C> the Java data type of field 3
+ * @param <D> the Java data type of field 4
+ * @param <E> the Java data type of field 5
+ * @param <F> the Java data type of field 6
+ * @param <G> the Java data type of field 7
+ * @param <H> the Java data type of field 8
+ *
  * @author gmt2001
  */
 public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A, B, C, D, E, F, G, H>
     extends UpdatableRecordImpl<RR> implements org.jooq.Record8<A, B, C, D, E, F, G, H> {
+    /**
+     * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
+     */
     private final Supplier<Field<A>> field1Supplier;
+    /**
+     * The {@link Supplier} for the {@code B} {@link Field}
+     */
     private final Supplier<Field<B>> field2Supplier;
+    /**
+     * The {@link Supplier} for the {@code C} {@link Field}
+     */
     private final Supplier<Field<C>> field3Supplier;
+    /**
+     * The {@link Supplier} for the {@code D} {@link Field}
+     */
     private final Supplier<Field<D>> field4Supplier;
+    /**
+     * The {@link Supplier} for the {@code E} {@link Field}
+     */
     private final Supplier<Field<E>> field5Supplier;
+    /**
+     * The {@link Supplier} for the {@code F} {@link Field}
+     */
     private final Supplier<Field<F>> field6Supplier;
+    /**
+     * The {@link Supplier} for the {@code G} {@link Field}
+     */
     private final Supplier<Field<G>> field7Supplier;
+    /**
+     * The {@link Supplier} for the {@code H} {@link Field}
+     */
     private final Supplier<Field<H>> field8Supplier;
 
     /**

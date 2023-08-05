@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.datastore2.records;
+package com.gmt2001.datastore2.record;
 
 import java.util.function.Supplier;
 
@@ -26,11 +26,21 @@ import org.jooq.impl.UpdatableRecordImpl;
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record2} on an {@link UpdateableRecordImpl}
  *
+ * @param <RR> self-reference to the implementing class
+ * @param <A> the Java data type of field 1, which is also the primary key
+ * @param <B> the Java data type of field 2
+ *
  * @author gmt2001
  */
 public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
     extends UpdatableRecordImpl<RR> implements org.jooq.Record2<A, B> {
+    /**
+     * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
+     */
     private final Supplier<Field<A>> field1Supplier;
+    /**
+     * The {@link Supplier} for the {@code B} {@link Field}
+     */
     private final Supplier<Field<B>> field2Supplier;
 
     /**

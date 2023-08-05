@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import com.gmt2001.Digest;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore2.Datastore2;
-import com.gmt2001.datastore2.records.Record8;
+import com.gmt2001.datastore2.record.Record8;
 
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
