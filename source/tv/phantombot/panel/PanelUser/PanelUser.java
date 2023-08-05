@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jooq.conf.Settings;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -58,7 +59,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
             () -> PanelUserTable.instance().ENABLED, () -> PanelUserTable.instance().CREATIONDATE,
             () -> PanelUserTable.instance().LASTLOGIN, () -> PanelUserTable.instance().HASSETPASSWORD);
         this.userType = Type.DATABASE;
-        this.attach(Datastore2.instance().dslContext().configuration());
+        this.attach(Datastore2.instance().dslContext().configuration().derive(new Settings().withUpdatablePrimaryKeys(true)));
     }
 
     /**
