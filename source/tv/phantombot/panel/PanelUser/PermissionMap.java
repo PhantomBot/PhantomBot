@@ -23,6 +23,8 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.gmt2001.datastore2.AbstractDatabaseMap;
+
 import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
 
 /**
@@ -32,7 +34,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  *
  * @author gmt2001
  */
-public final class PermissionMap extends HashMap<String, Permission> {
+public final class PermissionMap extends AbstractDatabaseMap<String, Permission> {
     /**
      * Special permissions which are only included in {@link #toJSON(boolean, boolean)} if the {@code isSave} parameter is set to {@code true}
      */
