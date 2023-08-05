@@ -87,7 +87,7 @@ public final class PanelUserTable extends TableImpl<PanelUser> {
     /**
      * Permissions in JSON format
      */
-    public final TableField<PanelUser, String> PERMISSIONS = createField(DSL.name("permissions"), Datastore2.instance().longTextDataType().nullable(false), this, "");
+    public final TableField<PanelUser, PermissionMap> PERMISSIONS = createField(DSL.name("permissions"), PermissionConverter.PERMISSIONMAP.nullable(false), this, "");
     /**
      * If the account is enabled
      */

@@ -1,7 +1,6 @@
 package tv.phantombot.panel.PanelUser;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +23,12 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  *
  * @author Sartharon
  */
-public final class PanelUser extends Record8<PanelUser, String, String, String, String, Boolean, Long, Long, Boolean> {
+public final class PanelUser extends Record8<PanelUser, String, String, String, PermissionMap, Boolean, Long, Long, Boolean> {
     /**
      * Version of this record implementation
      */
     public static final long serialVersionUID = 1L;
     private static final PanelUser CONFIGUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
-    private final Map<String, Permission> permissions = new HashMap<>();
     private Type userType;
     /**
      * User types
@@ -51,7 +49,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
     };
 
     /**
-     * Default constructor. Used by JOOQ
+     * Default constructor
      */
     PanelUser() {
         super(PanelUserTable.instance(), () -> PanelUserTable.instance().USERNAME, () -> PanelUserTable.instance().PASSWORD,
@@ -93,8 +91,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      */
     PanelUser(String username, Map<String, Permission> permissions, Type userType, boolean enabled, boolean hasSetPassword, boolean canManageUsers, boolean canRestartBot) {
         this();
-        this.values(username, "", null, "", enabled, 0L, 0L, hasSetPassword);
-        this.setPermission(permissions);
+        this.values(username, "", null, PermissionMap.fromMap(permissions), enabled, 0L, 0L, hasSetPassword);
         this.userType = userType;
         this.setManageUserPermission(canManageUsers);
         this.setRestartPermission(canRestartBot);
@@ -160,12 +157,8 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      *
      * @return the permissions
      */
-    public Map<String, Permission> getPermissions() {
-        if (this.permissions.isEmpty()) {
-            this.permissionsFromJSON(new JSONArray(this.value4()));
-        }
-
-        return this.permissions;
+    public PermissionMap getPermissions() {
+        return this.value4();
     }
 
     /**
@@ -173,9 +166,8 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      *
      * @param value the new permissions
      */
-    public void setPermissions(Map<String, Permission> value) {
-        this.value4(this.permissionsToJSON(value, false, true).toString());
-        this.permissions.clear();
+    public void setPermissions(PermissionMap value) {
+        this.value4(value);
     }
 
     /**
@@ -184,8 +176,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @param value the new permissions
      */
     public void setPermissions(JSONArray value) {
-        this.value4(value.toString());
-        this.permissions.clear();
+        this.value4(PermissionMap.fromJSON(value));
     }
 
     /**
@@ -315,7 +306,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @return {@code true} if allowed
      */
     public boolean canManageUsers() {
-        return this.isConfigUser() || (permissions.containsKey("canManageUsers") && permissions.get("canManageUsers").equals(Permission.READ_WRITE));
+        return this.isConfigUser() || (this.getPermissions().containsKey("canManageUsers") && this.getPermissions().get("canManageUsers").equals(Permission.READ_WRITE));
     }
 
     /**
@@ -323,7 +314,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @param permission {@code true} allows the user to manage users; {@code false} prohibits it
      */
     void setManageUserPermission(boolean permission) {
-        Map<String, Permission> permissions = this.getPermissions();
+        PermissionMap permissions = this.getPermissions();
         permissions.put("canManageUsers", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
         if (permission && !permissions.containsKey("settings")) {
             permissions.put("settings", Permission.READ_ONLY);
@@ -338,7 +329,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @return {@code true} if allowed
      */
     public boolean canRestartBot() {
-        return this.isConfigUser() || (permissions.containsKey("canRestartBot") && permissions.get("canRestartBot").equals(Permission.READ_WRITE));
+        return this.isConfigUser() || (this.getPermissions().containsKey("canRestartBot") && this.getPermissions().get("canRestartBot").equals(Permission.READ_WRITE));
     }
 
     /**
@@ -346,7 +337,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @param permission {@code true} allows the user to restart the bot; {@code false} prohibits it
      */
     void setRestartPermission(boolean permission) {
-        Map<String, Permission> permissions = this.getPermissions();
+        PermissionMap permissions = this.getPermissions();
         permissions.put("canRestartBot", permission ? Permission.READ_WRITE : Permission.READ_ONLY);
         if (permission && !permissions.containsKey("settings")) {
             permissions.put("settings", Permission.READ_ONLY);
@@ -379,6 +370,14 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @param permission The new {@link PanelUserHandler.Permission permissions}
      */
     void setPermission(Map<String, Permission> permissions) {
+        this.setPermission(PermissionMap.fromMap(permissions));
+    }
+
+    /**
+     * Changes the user's {@link PanelUserHandler.Permission permissions}
+     * @param permission The new {@link PanelUserHandler.Permission permissions}
+     */
+    void setPermission(PermissionMap permissions) {
         if (!permissions.containsKey("dashboard")) {
             permissions.put("dashboard", Permission.READ_ONLY);
         }
@@ -438,29 +437,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @return A {@link JSONArray} with the users permissions
      */
     JSONArray getPermissionsToJSON(boolean asDisplayName) {
-        return permissionsToJSON(this.getPermissions(), asDisplayName, false);
-    }
-
-    /**
-     * Gets the users {@link PanelUserHandler.Permission permissions} as a {@link JSONArray}
-     * @param asDisplayName Indicates if the {@link PanelUserHandler.Permission permissions} should be included with their display name
-     * @param isSave Indicates if the {@link JSONArray} will be used to save the user; If {@code true}, special permissions will be included as well
-     * @return A {@link JSONArray} with the users permissions
-     */
-    private JSONArray permissionsToJSON(Map<String, Permission> permissions, boolean asDisplayName, boolean isSave) {
-        JSONArray permissionsJSON = new JSONArray();
-        int counter = 0;
-        for (Map.Entry<String, Permission> entry : permissions.entrySet()) {
-            if (!isSave && (entry.getKey().equalsIgnoreCase("canRestartBot") || entry.getKey().equalsIgnoreCase("canManageUsers"))) {
-                continue;
-            }
-            JSONObject permissionJSON = new JSONObject();
-            permissionJSON.put("section", entry.getKey());
-            permissionJSON.put("permission", (asDisplayName ? entry.getValue().getDisplayName() : entry.getValue().getValue()));
-            permissionsJSON.put(counter, permissionJSON);
-            counter++;
-        }
-        return permissionsJSON;
+        return this.getPermissions().toJSON(asDisplayName, false);
     }
 
     private void fromJSON(JSONObject userJO) {
@@ -471,16 +448,6 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
         this.setLastLogin(userJO.getLong("lastLogin"));
         this.setCreationDate(userJO.getLong("creationDate"));
         this.setPermissions(userJO.getJSONArray("permissions"));
-    }
-
-    private void permissionsFromJSON(JSONArray permissionsJSON) {
-        permissions.clear();
-        for (int i = 0; i < permissionsJSON.length(); i++) {
-            JSONObject permissionObj = permissionsJSON.getJSONObject(i);
-            String key = permissionObj.getString("section");
-            Permission permission = Permission.getByValue(permissionObj.getInt("permission"));
-            permissions.put(key, permission);
-        }
     }
 
     /**
