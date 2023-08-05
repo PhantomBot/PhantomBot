@@ -18,10 +18,14 @@ package com.gmt2001.datastore2.record;
 
 import java.util.function.Supplier;
 
+import org.jooq.Configuration;
 import org.jooq.Field;
 import org.jooq.Row2;
 import org.jooq.Table;
+import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.gmt2001.datastore2.Datastore2;
 
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record2} on an {@link UpdateableRecordImpl}
@@ -51,9 +55,29 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
      * @param field2Supplier the {@link Supplier} for the {@code B} {@link Field}
      */
     protected Record2(Table<RR> table, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier) {
+        this(table, false, field1Supplier, field2Supplier);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param table the {@link Table} which stores this record
+     * @param allowUpdatingPrimaryKeys {@code true} to allow an {@code UPDATE} to change the value of field {@code A} in a record
+     * @param field1Supplier the {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
+     * @param field2Supplier the {@link Supplier} for the {@code B} {@link Field}
+     */
+    protected Record2(Table<RR> table, boolean allowUpdatingPrimaryKeys, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier) {
         super(table);
         this.field1Supplier = field1Supplier;
         this.field2Supplier = field2Supplier;
+
+        Configuration c = Datastore2.instance().dslContext().configuration();
+
+        if (allowUpdatingPrimaryKeys) {
+            c = c.derive(new Settings().withUpdatablePrimaryKeys(allowUpdatingPrimaryKeys));
+        }
+
+        this.attach(c);
     }
 
     @Override

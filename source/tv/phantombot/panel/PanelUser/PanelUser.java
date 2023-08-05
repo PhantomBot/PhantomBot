@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jooq.conf.Settings;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,12 +51,11 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * Default constructor
      */
     PanelUser() {
-        super(PanelUserTable.instance(), () -> PanelUserTable.instance().USERNAME, () -> PanelUserTable.instance().PASSWORD,
+        super(PanelUserTable.instance(), true, () -> PanelUserTable.instance().USERNAME, () -> PanelUserTable.instance().PASSWORD,
             () -> PanelUserTable.instance().TOKEN, () -> PanelUserTable.instance().PERMISSIONS,
             () -> PanelUserTable.instance().ENABLED, () -> PanelUserTable.instance().CREATIONDATE,
             () -> PanelUserTable.instance().LASTLOGIN, () -> PanelUserTable.instance().HASSETPASSWORD);
         this.userType = Type.DATABASE;
-        this.attach(Datastore2.instance().dslContext().configuration().derive(new Settings().withUpdatablePrimaryKeys(true)));
     }
 
     /**

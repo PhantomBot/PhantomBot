@@ -18,10 +18,14 @@ package com.gmt2001.datastore2.record;
 
 import java.util.function.Supplier;
 
+import org.jooq.Configuration;
 import org.jooq.Field;
 import org.jooq.Row8;
 import org.jooq.Table;
+import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.gmt2001.datastore2.Datastore2;
 
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record8} on an {@link UpdateableRecordImpl}
@@ -89,6 +93,27 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
     protected Record8(Table<RR> table, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
         Supplier<Field<C>> field3Supplier, Supplier<Field<D>> field4Supplier, Supplier<Field<E>> field5Supplier,
         Supplier<Field<F>> field6Supplier, Supplier<Field<G>> field7Supplier, Supplier<Field<H>> field8Supplier) {
+        this(table, false, field1Supplier, field2Supplier, field3Supplier, field4Supplier, field5Supplier, field6Supplier,
+            field7Supplier, field8Supplier);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param table the {@link Table} which stores this record
+     * @param allowUpdatingPrimaryKeys {@code true} to allow an {@code UPDATE} to change the value of field {@code A} in a record
+     * @param field1Supplier the {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
+     * @param field2Supplier the {@link Supplier} for the {@code B} {@link Field}
+     * @param field3Supplier the {@link Supplier} for the {@code C} {@link Field}
+     * @param field4Supplier the {@link Supplier} for the {@code D} {@link Field}
+     * @param field5Supplier the {@link Supplier} for the {@code E} {@link Field}
+     * @param field6Supplier the {@link Supplier} for the {@code F} {@link Field}
+     * @param field7Supplier the {@link Supplier} for the {@code G} {@link Field}
+     * @param field8Supplier the {@link Supplier} for the {@code H} {@link Field}
+     */
+    protected Record8(Table<RR> table, boolean allowUpdatingPrimaryKeys, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
+        Supplier<Field<C>> field3Supplier, Supplier<Field<D>> field4Supplier, Supplier<Field<E>> field5Supplier,
+        Supplier<Field<F>> field6Supplier, Supplier<Field<G>> field7Supplier, Supplier<Field<H>> field8Supplier) {
         super(table);
         this.field1Supplier = field1Supplier;
         this.field2Supplier = field2Supplier;
@@ -98,6 +123,14 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
         this.field6Supplier = field6Supplier;
         this.field7Supplier = field7Supplier;
         this.field8Supplier = field8Supplier;
+
+        Configuration c = Datastore2.instance().dslContext().configuration();
+
+        if (allowUpdatingPrimaryKeys) {
+            c = c.derive(new Settings().withUpdatablePrimaryKeys(allowUpdatingPrimaryKeys));
+        }
+
+        this.attach(c);
     }
 
     @Override

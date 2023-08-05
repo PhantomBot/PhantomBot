@@ -18,7 +18,6 @@ package com.gmt2001.datastore2.meta;
 
 import org.jooq.Table;
 
-import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.datastore2.record.Record2;
 
 /**
@@ -38,7 +37,6 @@ public final class TableVersionRecord extends Record2<TableVersionRecord, String
     public TableVersionRecord() {
         super(TableVersion.instance(), () -> TableVersion.instance().TABLE,
             () -> TableVersion.instance().VERSION);
-        this.attach(Datastore2.instance().dslContext().configuration());
     }
 
     /**
