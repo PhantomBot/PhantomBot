@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 import org.jooq.Configuration;
 import org.jooq.Field;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Table;
 import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -28,16 +28,17 @@ import org.jooq.impl.UpdatableRecordImpl;
 import com.gmt2001.datastore2.Datastore2;
 
 /**
- * Abstract class which simplifies setup and usage of {@link org.jooq.Record2} on an {@link UpdateableRecordImpl}
+ * Abstract class which simplifies setup and usage of {@link org.jooq.Record3} on an {@link UpdateableRecordImpl}
  *
  * @param <RR> self-reference to the implementing class
  * @param <A> the Java data type of field 1, which is also the primary key
  * @param <B> the Java data type of field 2
+ * @param <C> the Java data type of field 3
  *
  * @author gmt2001
  */
-public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
-    extends UpdatableRecordImpl<RR> implements org.jooq.Record2<A, B> {
+public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
+    extends UpdatableRecordImpl<RR> implements org.jooq.Record3<A, B, C> {
     /**
      * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      */
@@ -46,6 +47,10 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
      * The {@link Supplier} for the {@code B} {@link Field}
      */
     private final Supplier<Field<B>> field2Supplier;
+    /**
+     * The {@link Supplier} for the {@code C} {@link Field}
+     */
+    private final Supplier<Field<C>> field3Supplier;
 
     /**
      * Constructor
@@ -55,9 +60,11 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
      * @param table the {@link Table} which stores this record
      * @param field1Supplier the {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      * @param field2Supplier the {@link Supplier} for the {@code B} {@link Field}
+     * @param field3Supplier the {@link Supplier} for the {@code C} {@link Field}
      */
-    protected Record2(Table<RR> table, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier) {
-        this(table, false, field1Supplier, field2Supplier);
+    protected Record3(Table<RR> table, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
+        Supplier<Field<C>> field3Supplier) {
+        this(table, false, field1Supplier, field2Supplier, field3Supplier);
     }
 
     /**
@@ -67,11 +74,14 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
      * @param allowUpdatingPrimaryKeys {@code true} to allow an {@code UPDATE} to change the value of field {@code A} in a record
      * @param field1Supplier the {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      * @param field2Supplier the {@link Supplier} for the {@code B} {@link Field}
+     * @param field3Supplier the {@link Supplier} for the {@code C} {@link Field}
      */
-    protected Record2(Table<RR> table, boolean allowUpdatingPrimaryKeys, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier) {
+    protected Record3(Table<RR> table, boolean allowUpdatingPrimaryKeys, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
+        Supplier<Field<C>> field3Supplier) {
         super(table);
         this.field1Supplier = field1Supplier;
         this.field2Supplier = field2Supplier;
+        this.field3Supplier = field3Supplier;
 
         Configuration c = Datastore2.instance().dslContext().configuration();
 
@@ -90,14 +100,14 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Row2<A, B> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<A, B, C> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Row2<A, B> valuesRow() {
-        return (Row2) super.valuesRow();
+    public Row3<A, B, C> valuesRow() {
+        return (Row3) super.valuesRow();
     }
 
     @Override
@@ -108,6 +118,11 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
     @Override
     public Field<B> field2() {
         return field2Supplier.get();
+    }
+
+    @Override
+    public Field<C> field3() {
+        return field3Supplier.get();
     }
 
     @Override
@@ -123,20 +138,32 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
     }
 
     @Override
-    public org.jooq.Record2<A, B> value1(A value) {
+    @SuppressWarnings({"unchecked"})
+    public C value3() {
+        return (C) this.get(2);
+    }
+
+    @Override
+    public org.jooq.Record3<A, B, C> value1(A value) {
         this.set(0, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record2<A, B> value2(B value) {
+    public org.jooq.Record3<A, B, C> value2(B value) {
         this.set(1, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record2<A, B> values(A t1, B t2) {
-        return this.value1(t1).value2(t2);
+    public org.jooq.Record3<A, B, C> value3(C value) {
+        this.set(2, value);
+        return this;
+    }
+
+    @Override
+    public org.jooq.Record3<A, B, C> values(A t1, B t2, C t3) {
+        return this.value1(t1).value2(t2).value3(t3);
     }
 
     @Override
@@ -147,5 +174,10 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
     @Override
     public B component2() {
         return this.value2();
+    }
+
+    @Override
+    public C component3() {
+        return this.value3();
     }
 }

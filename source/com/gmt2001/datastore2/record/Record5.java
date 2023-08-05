@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 import org.jooq.Configuration;
 import org.jooq.Field;
-import org.jooq.Row8;
+import org.jooq.Row5;
 import org.jooq.Table;
 import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 import com.gmt2001.datastore2.Datastore2;
 
 /**
- * Abstract class which simplifies setup and usage of {@link org.jooq.Record8} on an {@link UpdateableRecordImpl}
+ * Abstract class which simplifies setup and usage of {@link org.jooq.Record5} on an {@link UpdateableRecordImpl}
  *
  * @param <RR> self-reference to the implementing class
  * @param <A> the Java data type of field 1, which is also the primary key
@@ -36,14 +36,11 @@ import com.gmt2001.datastore2.Datastore2;
  * @param <C> the Java data type of field 3
  * @param <D> the Java data type of field 4
  * @param <E> the Java data type of field 5
- * @param <F> the Java data type of field 6
- * @param <G> the Java data type of field 7
- * @param <H> the Java data type of field 8
  *
  * @author gmt2001
  */
-public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A, B, C, D, E, F, G, H>
-    extends UpdatableRecordImpl<RR> implements org.jooq.Record8<A, B, C, D, E, F, G, H> {
+public abstract class Record5 <RR extends Record5<RR, A, B, C, D, E>, A, B, C, D, E>
+    extends UpdatableRecordImpl<RR> implements org.jooq.Record5<A, B, C, D, E> {
     /**
      * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      */
@@ -64,18 +61,6 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
      * The {@link Supplier} for the {@code E} {@link Field}
      */
     private final Supplier<Field<E>> field5Supplier;
-    /**
-     * The {@link Supplier} for the {@code F} {@link Field}
-     */
-    private final Supplier<Field<F>> field6Supplier;
-    /**
-     * The {@link Supplier} for the {@code G} {@link Field}
-     */
-    private final Supplier<Field<G>> field7Supplier;
-    /**
-     * The {@link Supplier} for the {@code H} {@link Field}
-     */
-    private final Supplier<Field<H>> field8Supplier;
 
     /**
      * Constructor
@@ -88,15 +73,10 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
      * @param field3Supplier the {@link Supplier} for the {@code C} {@link Field}
      * @param field4Supplier the {@link Supplier} for the {@code D} {@link Field}
      * @param field5Supplier the {@link Supplier} for the {@code E} {@link Field}
-     * @param field6Supplier the {@link Supplier} for the {@code F} {@link Field}
-     * @param field7Supplier the {@link Supplier} for the {@code G} {@link Field}
-     * @param field8Supplier the {@link Supplier} for the {@code H} {@link Field}
      */
-    protected Record8(Table<RR> table, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
-        Supplier<Field<C>> field3Supplier, Supplier<Field<D>> field4Supplier, Supplier<Field<E>> field5Supplier,
-        Supplier<Field<F>> field6Supplier, Supplier<Field<G>> field7Supplier, Supplier<Field<H>> field8Supplier) {
-        this(table, false, field1Supplier, field2Supplier, field3Supplier, field4Supplier, field5Supplier,
-            field6Supplier, field7Supplier, field8Supplier);
+    protected Record5(Table<RR> table, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
+        Supplier<Field<C>> field3Supplier, Supplier<Field<D>> field4Supplier, Supplier<Field<E>> field5Supplier) {
+        this(table, false, field1Supplier, field2Supplier, field3Supplier, field4Supplier, field5Supplier);
     }
 
     /**
@@ -109,22 +89,15 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
      * @param field3Supplier the {@link Supplier} for the {@code C} {@link Field}
      * @param field4Supplier the {@link Supplier} for the {@code D} {@link Field}
      * @param field5Supplier the {@link Supplier} for the {@code E} {@link Field}
-     * @param field6Supplier the {@link Supplier} for the {@code F} {@link Field}
-     * @param field7Supplier the {@link Supplier} for the {@code G} {@link Field}
-     * @param field8Supplier the {@link Supplier} for the {@code H} {@link Field}
      */
-    protected Record8(Table<RR> table, boolean allowUpdatingPrimaryKeys, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
-        Supplier<Field<C>> field3Supplier, Supplier<Field<D>> field4Supplier, Supplier<Field<E>> field5Supplier,
-        Supplier<Field<F>> field6Supplier, Supplier<Field<G>> field7Supplier, Supplier<Field<H>> field8Supplier) {
+    protected Record5(Table<RR> table, boolean allowUpdatingPrimaryKeys, Supplier<Field<A>> field1Supplier, Supplier<Field<B>> field2Supplier,
+        Supplier<Field<C>> field3Supplier, Supplier<Field<D>> field4Supplier, Supplier<Field<E>> field5Supplier) {
         super(table);
         this.field1Supplier = field1Supplier;
         this.field2Supplier = field2Supplier;
         this.field3Supplier = field3Supplier;
         this.field4Supplier = field4Supplier;
         this.field5Supplier = field5Supplier;
-        this.field6Supplier = field6Supplier;
-        this.field7Supplier = field7Supplier;
-        this.field8Supplier = field8Supplier;
 
         Configuration c = Datastore2.instance().dslContext().configuration();
 
@@ -143,14 +116,14 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Row8<A, B, C, D, E, F, G, H> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row5<A, B, C, D, E> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Row8<A, B, C, D, E, F, G, H> valuesRow() {
-        return (Row8) super.valuesRow();
+    public Row5<A, B, C, D, E> valuesRow() {
+        return (Row5) super.valuesRow();
     }
 
     @Override
@@ -176,21 +149,6 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
     @Override
     public Field<E> field5() {
         return field5Supplier.get();
-    }
-
-    @Override
-    public Field<F> field6() {
-        return field6Supplier.get();
-    }
-
-    @Override
-    public Field<G> field7() {
-        return field7Supplier.get();
-    }
-
-    @Override
-    public Field<H> field8() {
-        return field8Supplier.get();
     }
 
     @Override
@@ -224,75 +182,38 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
     }
 
     @Override
-    @SuppressWarnings({"unchecked"})
-    public F value6() {
-        return (F) this.get(5);
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public G value7() {
-        return (G) this.get(6);
-    }
-
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public H value8() {
-        return (H) this.get(7);
-    }
-
-    @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value1(A value) {
+    public org.jooq.Record5<A, B, C, D, E> value1(A value) {
         this.set(0, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value2(B value) {
+    public org.jooq.Record5<A, B, C, D, E> value2(B value) {
         this.set(1, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value3(C value) {
+    public org.jooq.Record5<A, B, C, D, E> value3(C value) {
         this.set(2, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value4(D value) {
+    public org.jooq.Record5<A, B, C, D, E> value4(D value) {
         this.set(3, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value5(E value) {
+    public org.jooq.Record5<A, B, C, D, E> value5(E value) {
         this.set(4, value);
         return this;
     }
 
     @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value6(F value) {
-        this.set(5, value);
-        return this;
-    }
-
-    @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value7(G value) {
-        this.set(6, value);
-        return this;
-    }
-
-    @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> value8(H value) {
-        this.set(7, value);
-        return this;
-    }
-
-    @Override
-    public org.jooq.Record8<A, B, C, D, E, F, G, H> values(A t1, B t2, C t3, D t4, E t5, F t6, G t7, H t8) {
-        return this.value1(t1).value2(t2).value3(t3).value4(t4).value5(t5).value6(t6)
-            .value7(t7).value8(t8);
+    public org.jooq.Record5<A, B, C, D, E> values(A t1, B t2, C t3, D t4, E t5) {
+        return this.value1(t1).value2(t2).value3(t3).value4(t4).value5(t5);
     }
 
     @Override
@@ -318,20 +239,5 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
     @Override
     public E component5() {
         return this.value5();
-    }
-
-    @Override
-    public F component6() {
-        return this.value6();
-    }
-
-    @Override
-    public G component7() {
-        return this.value7();
-    }
-
-    @Override
-    public H component8() {
-        return this.value8();
     }
 }
