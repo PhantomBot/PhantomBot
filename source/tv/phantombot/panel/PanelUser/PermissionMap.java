@@ -19,7 +19,10 @@ package tv.phantombot.panel.PanelUser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
+import org.jooq.UpdatableRecord;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,6 +40,14 @@ public final class PermissionMap extends HashMap<String, Permission> {
      * Special permissions which are only included in {@link #toJSON(boolean, boolean)} if the {@code isSave} parameter is set to {@code true}
      */
     public static final List<String> SPECIALPERMISSIONS = List.of("canRestartBot", "canManageUsers");
+    /**
+     * The linked record
+     */
+    private UpdatableRecord<?> record;
+    /**
+     * The field number
+     */
+    private int fieldNumber = -1;
 
     /**
      * Converts a plain {@link Map} of {@code <String, Permission>} into a {@link PermissionMap}
@@ -112,5 +123,126 @@ public final class PermissionMap extends HashMap<String, Permission> {
         }
 
         return permissionsJSON;
+    }
+
+    /**
+     * Attaches this {@link PermissionMap} to a record and field to mark when changed
+     *
+     * @param record the record whichis storing this map
+     * @param fieldNumber the 1-based field number where this map is located in the record
+     */
+    public void attach(UpdatableRecord<?> record, int fieldNumber) {
+        this.record = record;
+        this.fieldNumber = fieldNumber - 1;
+    }
+
+    @Override
+    public void clear() {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        super.clear();
+    }
+
+    @Override
+    public Permission put(String key, Permission value) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.put(key, value);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Permission> m) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        super.putAll(m);
+    }
+
+    @Override
+    public Permission putIfAbsent(String key, Permission value) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.putIfAbsent(key, value);
+    }
+
+    @Override
+    public Permission remove(Object key) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.remove(key);
+    }
+
+    @Override
+    public Permission replace(String key, Permission value) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.replace(key, value);
+    }
+
+    @Override
+    public Permission compute(String key,
+            BiFunction<? super String, ? super Permission, ? extends Permission> remappingFunction) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.compute(key, remappingFunction);
+    }
+
+    @Override
+    public Permission computeIfAbsent(String key, Function<? super String, ? extends Permission> mappingFunction) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.computeIfAbsent(key, mappingFunction);
+    }
+
+    @Override
+    public Permission merge(String key, Permission value,
+            BiFunction<? super Permission, ? super Permission, ? extends Permission> remappingFunction) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.merge(key, value, remappingFunction);
+    }
+
+    @Override
+    public boolean remove(Object key, Object value) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.remove(key, value);
+    }
+
+    @Override
+    public boolean replace(String key, Permission oldValue, Permission newValue) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        return super.replace(key, oldValue, newValue);
+    }
+
+    @Override
+    public void replaceAll(BiFunction<? super String, ? super Permission, ? extends Permission> function) {
+        if (fieldNumber >= 0) {
+            record.changed(fieldNumber, true);
+        }
+
+        super.replaceAll(function);
     }
 }
