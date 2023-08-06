@@ -16,6 +16,7 @@
  */
 package com.gmt2001.datastore2.record;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.jooq.Configuration;
@@ -41,7 +42,7 @@ import com.gmt2001.datastore2.datatype.AttachableDataType;
  * @author gmt2001
  */
 public abstract class Record5 <RR extends Record5<RR, A, B, C, D, E>, A, B, C, D, E>
-    extends UpdatableRecordImpl<RR> implements org.jooq.Record5<A, B, C, D, E> {
+    extends UpdatableRecordImpl<RR> implements org.jooq.Record5<A, B, C, D, E>, AttachableRecord {
     /**
      * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      */
@@ -255,5 +256,16 @@ public abstract class Record5 <RR extends Record5<RR, A, B, C, D, E>, A, B, C, D
     @Override
     public E component5() {
         return this.value5();
+    }
+
+    @Override
+    public void doAttachments() {
+        List<Object> values = this.intoList();
+
+        for (int i = 0; i < values.size(); i++) {
+            if (AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
+                ((AttachableDataType) values.get(i)).attach(this, i);
+            }
+        }
     }
 }
