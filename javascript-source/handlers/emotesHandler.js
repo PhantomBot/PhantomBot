@@ -39,112 +39,29 @@
      * @event emotesGet
      */
     $.bind('emotesGet', function(event) {
-        buildEmotesDB(event.getBttvEmotes(), event.getBttvLocalEmotes(), event.getFfzEmotes(), event.getFfzLocalEmotes());
+        buildEmotesCache(event.getEmotesSet());
     });
 
     /**
-     * @function buildEmotesDB
-     */
-    function buildEmotesDB(bttvEmotes, bttvLocalEmotes, ffzEmotes, ffzLocalEmotes) {
-        var defaultSets = [],
-            jsonArray = [],
-            currentSet,
-            emote,
-            i, j,
-            emoteRegExp,
-            newEmotesRegExpList = [];
-        var bttvEmotesCache = { global: [], local: [], shared: [] };
-        var ffzEmotesCache = { global: [], local: [], shared: [] };
-
-        jsonArray = bttvEmotes.getJSONArray('data');
-        for (i = 0; i < jsonArray.length(); i++) {
-            var emoteObject = jsonArray.getJSONObject(i);
-            emote = emoteObject.getString('code');
-
-            // Check for emote at the beginning, middle and end of a string.
-            emoteRegExp = '\\b' + emote + '\\b';
-            newEmotesRegExpList.push(emoteRegExp);
-            // Grab a copy of the raw emote data for other purposes
-            bttvEmotesCache.global.push({
-                id: String(emoteObject.getString('id')),
-                code: String(emote),
-                imageType: String(emoteObject.getString('imageType'))
+     * @function buildEmotesCache
+     **/
+    function buildEmotesCache(emoteSets) {
+        // emotesSet: List<EmotesCache.EmotesSet>
+        let newEmotesRegExpList = [];
+        let providerEmoteMap = {};
+        $.consoleDebug("Building Emote cache");
+        for (let i = 0; i < emoteSets.size(); i++){
+            let currentSet = emoteSets.get(i); // EmotesSet
+            let providerEmotes = {
+                local: convertEmoteEntryList(currentSet.getLocalEmotes()),
+                shared: convertEmoteEntryList(currentSet.getSharedEmotes()),
+                global:  convertEmoteEntryList(currentSet.getGlobalEmotes())
+            };
+            providerEmotes.local.concat(providerEmotes.shared, providerEmotes.global).forEach(emote => {
+                newEmotesRegExpList.push('\\b' + emote.code + '\\b');
             });
-        }
-
-        if (bttvLocalEmotes.has('channelEmotes')) {
-            jsonArray = bttvLocalEmotes.getJSONArray('channelEmotes');
-            for (i = 0; i < jsonArray.length(); i++) {
-                var emoteObject = jsonArray.getJSONObject(i);
-                emote = emoteObject.getString('code');
-
-                // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '\\b' + emote + '\\b';
-                newEmotesRegExpList.push(emoteRegExp);
-                // Grab a copy of the raw emote data for other purposes
-                bttvEmotesCache.local.push({
-                    id: String(emoteObject.getString('id')),
-                    code: String(emote),
-                    imageType: String(emoteObject.getString('imageType'))
-                });
-            }
-        }
-
-        if (bttvLocalEmotes.has('sharedEmotes')) {
-            jsonArray = bttvLocalEmotes.getJSONArray('sharedEmotes');
-            for (i = 0; i < jsonArray.length(); i++) {
-                var emoteObject = jsonArray.getJSONObject(i);
-                emote = emoteObject.getString('code');
-
-                // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '\\b' + emote + '\\b';
-                newEmotesRegExpList.push(emoteRegExp);
-                // Grab a copy of the raw emote data for other purposes
-                bttvEmotesCache.shared.push({
-                    id: String(emoteObject.getString('id')),
-                    code: String(emote),
-                    imageType: String(emoteObject.getString('imageType'))
-                });
-            }
-        }
-
-        defaultSets = ffzEmotes.getJSONArray('default_sets');
-        for (i = 0; i < defaultSets.length(); i++) {
-            currentSet = String(defaultSets.getInt(i));
-            jsonArray = ffzEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
-            for (j = 0; j < jsonArray.length(); j++) {
-                var emoteObject = jsonArray.getJSONObject(j);
-                emote = $.replace($.replace($.replace($.replace($.replace(emoteObject.getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
-
-                // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '\\b' + emote + '\\b';
-                newEmotesRegExpList.push(emoteRegExp);
-
-                // Grab a copy of the raw emote data for other purposes
-                ffzEmotesCache.global.push({
-                    id: Number(emoteObject.getInt('id')),
-                    code: String(emoteObject.getString('name'))
-                });
-            }
-        }
-
-        if (ffzLocalEmotes.has('room')) {
-            currentSet = String(ffzLocalEmotes.getJSONObject('room').getInt('set'));
-            jsonArray = ffzLocalEmotes.getJSONObject('sets').getJSONObject(currentSet).getJSONArray('emoticons');
-            for (i = 0; i < jsonArray.length(); i++) {
-                var emoteObject = jsonArray.getJSONObject(i);
-                emote = $.replace($.replace($.replace($.replace($.replace(emoteObject.getString('name'), '(', '\\('), ')', '\\)'), '\'', '\\\''), '[', '\\['), ']', '\\]');
-
-                // Check for emote at the beginning, middle and end of a string.
-                emoteRegExp = '\\b' + emote + '\\b';
-                newEmotesRegExpList.push(emoteRegExp);
-
-                // Grab a copy of the raw emote data for other purposes
-                ffzEmotesCache.global.push({
-                    id: Number(emoteObject.getInt('id')),
-                    code: String(emoteObject.getString('name'))
-                });
-            }
+            providerEmoteMap[String(currentSet.getProvider())] = providerEmotes;
+            $.consoleDebug("Loaded Emotes from " + currentSet.getProvider() + ": " + providerEmotes.global.length + " global, " + providerEmotes.shared.length + " shared, " + providerEmotes.local.length + " local");
         }
 
         _lock.lock();
@@ -153,18 +70,31 @@
         } finally {
             _lock.unlock();
         }
+
         $.inidb.set('emotecache', 'regexp_cache', newEmotesRegExpList.join(','));
-        $.inidb.set('emotecache', 'bttvEmotes', JSON.stringify(bttvEmotesCache));
-        $.inidb.set('emotecache', 'ffzEmotes', JSON.stringify(ffzEmotesCache));
+        for (let providerKey in providerEmoteMap){
+            $.inidb.set('emotecache', providerKey + 'Emotes', JSON.stringify(providerEmoteMap[providerKey]));
+        }
 
         loaded = true;
-        $.consoleDebug("Built " + newEmotesRegExpList.length + " regular expressions for emote handling.");
-        $.consoleDebug("Loaded Emotes from BetterTwitchTV: " + bttvEmotesCache.global.length + " global, " + bttvEmotesCache.shared.length + " shared, " + bttvEmotesCache.local.length + " local");
-        $.consoleDebug("Loaded Emotes from FrankerFacez: " + ffzEmotesCache.global.length + " global, " + ffzEmotesCache.shared.length + " shared, " + ffzEmotesCache.local.length + " local");
 
         var EventBus = Packages.tv.phantombot.event.EventBus;
         var EmotesCacheUpdatedEvent = Packages.tv.phantombot.event.emotes.EmotesCacheUpdatedEvent;
-        EventBus.instance().post(new EmotesCacheUpdatedEvent(bttvEmotesCache, ffzEmotesCache));
+        EventBus.instance().post(new EmotesCacheUpdatedEvent(providerEmoteMap));
+    }
+
+    function convertEmoteEntryList(list) {
+        let result = [];
+        if (list != null){
+            for (let i = 0; i < list.size(); i++) {
+                let emote = list.get(i);
+                result.push({
+                    id: String(emote.getId()),
+                    code: String(emote.getCode())
+                });
+            }
+        }
+        return result;
     }
 
     /**
