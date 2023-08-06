@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-<title>com.gmt2001.datastore2.meta (PhantomBot JavaDoc)</title>
+<title>com.gmt2001.datastore2.datatype (PhantomBot JavaDoc)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="description" content="declaration: package: com.gmt2001.datastore2.meta">
+<meta name="description" content="declaration: package: com.gmt2001.datastore2.datatype">
 <meta name="generator" content="javadoc/PackageWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
@@ -14,7 +14,11 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="package-declaration-page">
-<script type="text/javascript">var pathtoroot = "../../../../";
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../../";
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -56,10 +60,10 @@ loadScripts(document, 'script');</script>
 <div class="flex-content">
 <main role="main">
 <div class="header">
-<h1 title="Package com.gmt2001.datastore2.meta" class="title">Package com.gmt2001.datastore2.meta</h1>
+<h1 title="Package com.gmt2001.datastore2.datatype" class="title">Package com.gmt2001.datastore2.datatype</h1>
 </div>
 <hr>
-<div class="package-signature">package <span class="element-name">com.gmt2001.datastore2.meta</span></div>
+<div class="package-signature">package <span class="element-name">com.gmt2001.datastore2.datatype</span></div>
 <section class="summary">
 <ul class="summary-list">
 <li>
@@ -70,7 +74,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="../package-summary.html">com.gmt2001.datastore2</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="../datatype/package-summary.html">com.gmt2001.datastore2.datatype</a></div>
+<div class="col-first odd-row-color"><a href="../meta/package-summary.html">com.gmt2001.datastore2.meta</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><a href="../record/package-summary.html">com.gmt2001.datastore2.record</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
@@ -79,17 +83,19 @@ loadScripts(document, 'script');</script>
 </li>
 <li>
 <div id="class-summary">
-<div class="caption"><span>Classes</span></div>
-<div class="summary-table two-column-summary">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="class-summary-tab0" role="tab" aria-selected="true" aria-controls="class-summary.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="class-summary-tab1" role="tab" aria-selected="false" aria-controls="class-summary.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary-tab1', 2)" class="table-tab">Interfaces</button><button id="class-summary-tab2" role="tab" aria-selected="false" aria-controls="class-summary.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary-tab2', 2)" class="table-tab">Classes</button></div>
+<div id="class-summary.tabpanel" role="tabpanel">
+<div class="summary-table two-column-summary" aria-labelledby="class-summary-tab0">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="AbstractDatabaseMap.html" title="class in com.gmt2001.datastore2.datatype">AbstractDatabaseMap</a>&lt;K,<wbr>V&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">Stores the DDL version of managed Datastore2 tables</div>
+<div class="block">Class to allow a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html" title="class or interface in java.util" class="external-link"><code>HashMap</code></a> to be used in a custom <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Converter.html" title="class or interface in org.jooq" class="external-link"><code>Converter</code></a> on an <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link"><code>UpdatableRecord</code></a></div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="TableVersionRecord.html" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">A record in <a href="TableVersion.html" title="class in com.gmt2001.datastore2.meta"><code>TableVersion</code></a> denoting the DDL version of a managed Datastore2 table</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AttachableDataType.html" title="interface in com.gmt2001.datastore2.datatype">AttachableDataType</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">Allows a custom <code>DataType</code> to attach a reference to a <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link"><code>UpdatableRecord</code></a></div>
+</div>
 </div>
 </div>
 </div>

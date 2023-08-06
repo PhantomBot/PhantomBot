@@ -14,7 +14,11 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="package-declaration-page">
-<script type="text/javascript">var pathtoroot = "../../../../";
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
+var pathtoroot = "../../../../";
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
@@ -70,48 +74,57 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><a href="../package-summary.html">com.gmt2001.datastore2</a></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><a href="../meta/package-summary.html">com.gmt2001.datastore2.meta</a></div>
+<div class="col-first odd-row-color"><a href="../datatype/package-summary.html">com.gmt2001.datastore2.datatype</a></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><a href="../meta/package-summary.html">com.gmt2001.datastore2.meta</a></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </div>
 </li>
 <li>
 <div id="class-summary">
-<div class="caption"><span>Classes</span></div>
-<div class="summary-table two-column-summary">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="class-summary-tab0" role="tab" aria-selected="true" aria-controls="class-summary.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="class-summary-tab1" role="tab" aria-selected="false" aria-controls="class-summary.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary-tab1', 2)" class="table-tab">Interfaces</button><button id="class-summary-tab2" role="tab" aria-selected="false" aria-controls="class-summary.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary-tab2', 2)" class="table-tab">Classes</button></div>
+<div id="class-summary.tabpanel" role="tabpanel">
+<div class="summary-table two-column-summary" aria-labelledby="class-summary-tab0">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record1.html" title="class in com.gmt2001.datastore2.record">Record1</a>&lt;RR extends <a href="Record1.html" title="class in com.gmt2001.datastore2.record">Record1</a>&lt;RR,<wbr>A&gt;,<wbr>A&gt;</div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AttachableRecord.html" title="interface in com.gmt2001.datastore2.record">AttachableRecord</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Allows <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/RecordListener.html#loadEnd(org.jooq.RecordContext)" title="class or interface in org.jooq" class="external-link"><code>RecordListener.loadEnd(org.jooq.RecordContext)</code></a> to detect an <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/UpdatableRecord.html" title="class or interface in org.jooq" class="external-link"><code>UpdatableRecord</code></a> which needs to call
+ <a href="../datatype/AttachableDataType.html#attach(org.jooq.UpdatableRecord,int)"><code>AttachableDataType.attach(org.jooq.UpdatableRecord, int)</code></a> on some of it's values</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record1.html" title="class in com.gmt2001.datastore2.record">Record1</a>&lt;RR extends <a href="Record1.html" title="class in com.gmt2001.datastore2.record">Record1</a>&lt;RR,<wbr>A&gt;,<wbr>A&gt;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record1.html" title="class or interface in org.jooq" class="external-link"><code>Record1</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record2.html" title="class in com.gmt2001.datastore2.record">Record2</a>&lt;RR extends <a href="Record2.html" title="class in com.gmt2001.datastore2.record">Record2</a>&lt;RR,<wbr>A,<wbr>B&gt;,<wbr>A,<wbr>B&gt;</div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record2.html" title="class in com.gmt2001.datastore2.record">Record2</a>&lt;RR extends <a href="Record2.html" title="class in com.gmt2001.datastore2.record">Record2</a>&lt;RR,<wbr>A,<wbr>B&gt;,<wbr>A,<wbr>B&gt;</div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record2.html" title="class or interface in org.jooq" class="external-link"><code>Record2</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record3.html" title="class in com.gmt2001.datastore2.record">Record3</a>&lt;RR extends <a href="Record3.html" title="class in com.gmt2001.datastore2.record">Record3</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C&gt;,<wbr>A,<wbr>B,<wbr>C&gt;</div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record3.html" title="class in com.gmt2001.datastore2.record">Record3</a>&lt;RR extends <a href="Record3.html" title="class in com.gmt2001.datastore2.record">Record3</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C&gt;,<wbr>A,<wbr>B,<wbr>C&gt;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record3.html" title="class or interface in org.jooq" class="external-link"><code>Record3</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record4.html" title="class in com.gmt2001.datastore2.record">Record4</a>&lt;RR extends <a href="Record4.html" title="class in com.gmt2001.datastore2.record">Record4</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D&gt;</div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record4.html" title="class in com.gmt2001.datastore2.record">Record4</a>&lt;RR extends <a href="Record4.html" title="class in com.gmt2001.datastore2.record">Record4</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D&gt;</div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record4.html" title="class or interface in org.jooq" class="external-link"><code>Record4</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record5.html" title="class in com.gmt2001.datastore2.record">Record5</a>&lt;RR extends <a href="Record5.html" title="class in com.gmt2001.datastore2.record">Record5</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E&gt;</div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record5.html" title="class in com.gmt2001.datastore2.record">Record5</a>&lt;RR extends <a href="Record5.html" title="class in com.gmt2001.datastore2.record">Record5</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E&gt;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record5.html" title="class or interface in org.jooq" class="external-link"><code>Record5</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record6.html" title="class in com.gmt2001.datastore2.record">Record6</a>&lt;RR extends <a href="Record6.html" title="class in com.gmt2001.datastore2.record">Record6</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F&gt;</div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record6.html" title="class in com.gmt2001.datastore2.record">Record6</a>&lt;RR extends <a href="Record6.html" title="class in com.gmt2001.datastore2.record">Record6</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F&gt;</div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record6.html" title="class or interface in org.jooq" class="external-link"><code>Record6</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record7.html" title="class in com.gmt2001.datastore2.record">Record7</a>&lt;RR extends <a href="Record7.html" title="class in com.gmt2001.datastore2.record">Record7</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G&gt;</div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record7.html" title="class in com.gmt2001.datastore2.record">Record7</a>&lt;RR extends <a href="Record7.html" title="class in com.gmt2001.datastore2.record">Record7</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G&gt;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record7.html" title="class or interface in org.jooq" class="external-link"><code>Record7</code></a> on an <code>UpdateableRecordImpl</code></div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Record8.html" title="class in com.gmt2001.datastore2.record">Record8</a>&lt;RR extends <a href="Record8.html" title="class in com.gmt2001.datastore2.record">Record8</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G,<wbr>H&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G,<wbr>H&gt;</div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Record8.html" title="class in com.gmt2001.datastore2.record">Record8</a>&lt;RR extends <a href="Record8.html" title="class in com.gmt2001.datastore2.record">Record8</a>&lt;RR,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G,<wbr>H&gt;,<wbr>A,<wbr>B,<wbr>C,<wbr>D,<wbr>E,<wbr>F,<wbr>G,<wbr>H&gt;</div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Abstract class which simplifies setup and usage of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Record8.html" title="class or interface in org.jooq" class="external-link"><code>Record8</code></a> on an <code>UpdateableRecordImpl</code></div>
+</div>
 </div>
 </div>
 </div>
