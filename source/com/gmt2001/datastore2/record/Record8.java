@@ -26,6 +26,7 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.datatype.AttachableDataType;
 
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record8} on an {@link UpdateableRecordImpl}
@@ -244,48 +245,72 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value1(A value) {
         this.set(0, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 0);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value2(B value) {
         this.set(1, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 1);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value3(C value) {
         this.set(2, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 2);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value4(D value) {
         this.set(3, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 3);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value5(E value) {
         this.set(4, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 4);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value6(F value) {
         this.set(5, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 5);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value7(G value) {
         this.set(6, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 6);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record8<A, B, C, D, E, F, G, H> value8(H value) {
         this.set(7, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 7);
+        }
         return this;
     }
 

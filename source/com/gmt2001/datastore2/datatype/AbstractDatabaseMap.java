@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001.datastore2;
+package com.gmt2001.datastore2.datatype;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,31 +29,26 @@ import org.jooq.UpdatableRecord;
  *
  * @author gmt2001
  */
-public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
+public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> implements AttachableDataType {
     /**
      * The linked record
      */
     private UpdatableRecord<?> record;
     /**
-     * The field number
+     * The field index
      */
-    private int fieldNumber = -1;
+    private int fieldIndex = -1;
 
-    /**
-     * Attaches this {@link AbstractDatabaseMap} to a record and field to mark when changed
-     *
-     * @param record the record whichis storing this map
-     * @param fieldNumber the 1-based field number where this map is located in the record
-     */
-    public void attach(UpdatableRecord<?> record, int fieldNumber) {
+    @Override
+    public void attach(UpdatableRecord<?> record, int fieldIndex) {
         this.record = record;
-        this.fieldNumber = fieldNumber - 1;
+        this.fieldIndex = fieldIndex;
     }
 
     @Override
     public void clear() {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         super.clear();
@@ -61,8 +56,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public V put(K key, V value) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.put(key, value);
@@ -70,8 +65,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         super.putAll(m);
@@ -79,8 +74,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public V putIfAbsent(K key, V value) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.putIfAbsent(key, value);
@@ -88,8 +83,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public V remove(Object key) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.remove(key);
@@ -97,8 +92,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public V replace(K key, V value) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.replace(key, value);
@@ -107,8 +102,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
     @Override
     public V compute(K key,
             BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.compute(key, remappingFunction);
@@ -116,8 +111,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.computeIfAbsent(key, mappingFunction);
@@ -126,8 +121,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
     @Override
     public V merge(K key, V value,
             BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.merge(key, value, remappingFunction);
@@ -135,8 +130,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public boolean remove(Object key, Object value) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.remove(key, value);
@@ -144,8 +139,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public boolean replace(K key, V oldValue, V newValue) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         return super.replace(key, oldValue, newValue);
@@ -153,8 +148,8 @@ public abstract class AbstractDatabaseMap<K,V> extends HashMap<K, V> {
 
     @Override
     public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
-        if (fieldNumber >= 0) {
-            record.changed(fieldNumber, true);
+        if (fieldIndex >= 0) {
+            record.changed(fieldIndex, true);
         }
 
         super.replaceAll(function);

@@ -26,6 +26,7 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.datatype.AttachableDataType;
 
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record2} on an {@link UpdateableRecordImpl}
@@ -125,12 +126,18 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
     @Override
     public org.jooq.Record2<A, B> value1(A value) {
         this.set(0, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 0);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record2<A, B> value2(B value) {
         this.set(1, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 1);
+        }
         return this;
     }
 

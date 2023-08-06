@@ -23,7 +23,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.gmt2001.datastore2.AbstractDatabaseMap;
+import com.gmt2001.datastore2.datatype.AbstractDatabaseMap;
 
 import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
 
