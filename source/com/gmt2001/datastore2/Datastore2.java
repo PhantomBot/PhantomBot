@@ -39,6 +39,7 @@ import org.jooq.ConnectionProvider;
 import org.jooq.DSLContext;
 import org.jooq.DataType;
 import org.jooq.ExecutorProvider;
+import org.jooq.RecordListener;
 import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.exception.DataAccessException;
@@ -48,6 +49,7 @@ import org.jooq.impl.DefaultConfiguration;
 import com.gmt2001.ExecutorService;
 import com.gmt2001.Reflect;
 import com.gmt2001.datastore.DataStore;
+import com.gmt2001.datastore2.record.AttachableRecord;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager.TimeoutException;
@@ -290,7 +292,11 @@ public abstract class Datastore2 {
                 return ExecutorService.executorService();
             }
 
-        });
+        }).set(RecordListener.onLoadEnd(ctx -> {
+            if (AttachableRecord.class.isAssignableFrom(ctx.record().getClass())) {
+                ((AttachableRecord) ctx.record()).doAttachments();
+            }
+        }));
         this.dslContext = DSL.using(configuration);
     }
 

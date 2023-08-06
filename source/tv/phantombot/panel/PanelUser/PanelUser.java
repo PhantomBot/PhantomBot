@@ -72,7 +72,6 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
             () -> PanelUserTable.instance().ENABLED, () -> PanelUserTable.instance().CREATIONDATE,
             () -> PanelUserTable.instance().LASTLOGIN, () -> PanelUserTable.instance().HASSETPASSWORD);
         this.userType = Type.DATABASE;
-        this.value4().attach(this, 4);
     }
 
     /**
@@ -110,7 +109,6 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
         this.userType = userType;
         this.setManageUserPermission(canManageUsers);
         this.setRestartPermission(canRestartBot);
-        this.value4().attach(this, 4);
     }
 
     /**
@@ -184,7 +182,6 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      */
     public void setPermissions(PermissionMap value) {
         this.value4(value);
-        this.value4().attach(this, 4);
     }
 
     /**
@@ -194,7 +191,6 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      */
     public void setPermissions(JSONArray value) {
         this.value4(PermissionMap.fromJSON(value));
-        this.value4().attach(this, 4);
     }
 
     /**

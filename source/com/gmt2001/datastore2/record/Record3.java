@@ -16,6 +16,7 @@
  */
 package com.gmt2001.datastore2.record;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.jooq.Configuration;
@@ -26,6 +27,7 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.datatype.AttachableDataType;
 
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record3} on an {@link UpdateableRecordImpl}
@@ -38,7 +40,7 @@ import com.gmt2001.datastore2.Datastore2;
  * @author gmt2001
  */
 public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
-    extends UpdatableRecordImpl<RR> implements org.jooq.Record3<A, B, C> {
+    extends UpdatableRecordImpl<RR> implements org.jooq.Record3<A, B, C>, AttachableRecord {
     /**
      * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      */
@@ -146,18 +148,27 @@ public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
     @Override
     public org.jooq.Record3<A, B, C> value1(A value) {
         this.set(0, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 0);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record3<A, B, C> value2(B value) {
         this.set(1, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 1);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record3<A, B, C> value3(C value) {
         this.set(2, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 2);
+        }
         return this;
     }
 
@@ -179,5 +190,16 @@ public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
     @Override
     public C component3() {
         return this.value3();
+    }
+
+    @Override
+    public void doAttachments() {
+        List<Object> values = this.intoList();
+
+        for (int i = 0; i < values.size(); i++) {
+            if (AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
+                ((AttachableDataType) values.get(i)).attach(this, i);
+            }
+        }
     }
 }

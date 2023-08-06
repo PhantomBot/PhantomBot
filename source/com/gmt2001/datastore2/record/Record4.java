@@ -16,6 +16,7 @@
  */
 package com.gmt2001.datastore2.record;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.jooq.Configuration;
@@ -26,6 +27,7 @@ import org.jooq.conf.Settings;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.datatype.AttachableDataType;
 
 /**
  * Abstract class which simplifies setup and usage of {@link org.jooq.Record4} on an {@link UpdateableRecordImpl}
@@ -39,7 +41,7 @@ import com.gmt2001.datastore2.Datastore2;
  * @author gmt2001
  */
 public abstract class Record4 <RR extends Record4<RR, A, B, C, D>, A, B, C, D>
-    extends UpdatableRecordImpl<RR> implements org.jooq.Record4<A, B, C, D> {
+    extends UpdatableRecordImpl<RR> implements org.jooq.Record4<A, B, C, D>, AttachableRecord {
     /**
      * The {@link Supplier} for the {@code A} {@link Field}, which is also the primary key
      */
@@ -165,24 +167,36 @@ public abstract class Record4 <RR extends Record4<RR, A, B, C, D>, A, B, C, D>
     @Override
     public org.jooq.Record4<A, B, C, D> value1(A value) {
         this.set(0, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 0);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record4<A, B, C, D> value2(B value) {
         this.set(1, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 1);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record4<A, B, C, D> value3(C value) {
         this.set(2, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 2);
+        }
         return this;
     }
 
     @Override
     public org.jooq.Record4<A, B, C, D> value4(D value) {
         this.set(3, value);
+        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+            ((AttachableDataType) value).attach(this, 3);
+        }
         return this;
     }
 
@@ -209,5 +223,16 @@ public abstract class Record4 <RR extends Record4<RR, A, B, C, D>, A, B, C, D>
     @Override
     public D component4() {
         return this.value4();
+    }
+
+    @Override
+    public void doAttachments() {
+        List<Object> values = this.intoList();
+
+        for (int i = 0; i < values.size(); i++) {
+            if (AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
+                ((AttachableDataType) values.get(i)).attach(this, i);
+            }
+        }
     }
 }
