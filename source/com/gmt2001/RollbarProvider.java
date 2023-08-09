@@ -103,7 +103,7 @@ public final class RollbarProvider implements AutoCloseable {
                     })
                     .custom(() -> {
                         Map<String, Object> metadata = new HashMap<>();
-                        metadata.put("phantombot.datastore", CaselessProperties.instance().getProperty("datastore", "sqlite3store"));
+                        metadata.put("phantombot.datastore", CaselessProperties.instance().getProperty("datastore", "h2store"));
                         metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                         metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                         metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
