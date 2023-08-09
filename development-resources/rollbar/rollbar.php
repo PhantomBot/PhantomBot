@@ -65,7 +65,7 @@ if (!in_array($item['data']['environment'], $allowed_environments)) {
 if (file_exists('rollbar-allowed-versions.json')) {
     $allowed_versions = json_decode(file_get_contents('rollbar-allowed-versions.json'), true);
     if (!in_array($item['data']['code_version'], $allowed_versions[$item['data']['environment']])) {
-        doexit(409, 'version not allowed', 'ver');
+        doexit(409, 'version not allowed', 'ver'.$item['data']['code_version'].$item['data']['environment']);
     }
 }
 
@@ -132,18 +132,22 @@ foreach ($filters as $i => $filter) {
 
 $ctx = hash_init('sha1');
 
-hash_update($ctx, $item['data']['code_version']);
-hash_update($ctx, $item['data']['environment']);
-hash_update($ctx, $item['data']['level']);
+function check_key($arr, $key, $def = '') {
+    return array_key_exists($key, $array) ? $array[$key] : $def;
+}
+
+hash_update($ctx, check_key($item['data'], 'code_version'));
+hash_update($ctx, check_key($item['data'], 'environment'));
+hash_update($ctx, check_key($item['data'], 'level', 'error'));
 if (array_key_exists('title', $item['data'])) {
     hash_update($ctx, $item['data']['title']);
 }
 
 if (array_key_exists('trace_chain', $item['data']['body'])) {
     foreach($item['data']['body']['trace_chain'] as $v) {
-        hash_update($ctx, $v['exception']['class']);
-        hash_update($ctx, $v['exception']['description']);
-        hash_update($ctx, $v['exception']['message']);
+        hash_update($ctx, check_key($v['exception'], 'class'));
+        hash_update($ctx, check_key($v['exception'], 'description'));
+        hash_update($ctx, check_key($v['exception'], 'message'));
 
         $last = -1;
         foreach($v['frames'] as $k => $f) {
@@ -166,9 +170,9 @@ if (array_key_exists('trace_chain', $item['data']['body'])) {
         }
     }
 } else {
-    hash_update($ctx, $item['data']['body']['trace']['exception']['class']);
-    hash_update($ctx, $item['data']['body']['trace']['exception']['description']);
-    hash_update($ctx, $item['data']['body']['trace']['exception']['message']);
+    hash_update($ctx, check_key($item['data']['body']['trace']['exception'], 'class'));
+    hash_update($ctx, check_key($item['data']['body']['trace']['exception'], 'description'));
+    hash_update($ctx, check_key($item['data']['body']['trace']['exception'], 'message'));
 
     $last = -1;
     foreach($item['data']['body']['trace']['frames'] as $k => $f) {
@@ -211,3 +215,4 @@ apache_note('RBResp', 'rb');
 
 curl_close($c);
 ?>
+
