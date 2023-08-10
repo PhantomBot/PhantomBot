@@ -16,9 +16,10 @@
  */
 package tv.phantombot.discord.util;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.PathValidator;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.util.concurrent.ExecutorService;
+
 import discord4j.common.util.Snowflake;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.GuildEmoji;
@@ -1004,8 +1005,8 @@ public class DiscordUtil {
      * @param userName
      */
     public void removeRole(String roleName, String userName) {
-        this.getRoleAsync(roleName).subscribe(role -> 
-            this.getUserAsync(userName).subscribe(user -> 
+        this.getRoleAsync(roleName).subscribe(role ->
+            this.getUserAsync(userName).subscribe(user ->
                 this.removeRole(role, user))
         );
     }

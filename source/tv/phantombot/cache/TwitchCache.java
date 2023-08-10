@@ -22,11 +22,11 @@
  */
 package tv.phantombot.cache;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.twitch.cache.ViewerCache;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 import net.engio.mbassy.listener.Handler;
 import reactor.core.publisher.Mono;

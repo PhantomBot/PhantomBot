@@ -14,11 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.util;
 
-import com.gmt2001.httpclient.HttpClient;
-import com.gmt2001.httpclient.HttpClientResponse;
-import com.gmt2001.httpclient.URIUtil;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,8 +24,13 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.gmt2001.httpclient.HttpClient;
+import com.gmt2001.httpclient.HttpClientResponse;
+import com.gmt2001.httpclient.URIUtil;
 
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;

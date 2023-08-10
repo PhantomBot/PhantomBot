@@ -22,25 +22,50 @@ import org.json.JSONObject;
 
 import com.gmt2001.twitch.cache.ViewerCache;
 
+/**
+ * Provides testing data
+ *
+ * @author gmt2001
+ */
 public final class TestData {
     private TestData(){}
 
+    /**
+     * A list of redeemable IDs from {@link #RedeemableIds()} and {@link #AddedRedeemableId()}
+     *
+     * @return the list
+     */
     public static List<String> AllRedeemableIds() {
         List<String> ids = RedeemableIds();
         ids.add(AddedRedeemableId());
         return ids;
     }
 
+    /**
+     * A list of redeemable objects from {@link #Redeemables()} and {@link #AddedRedeemable()}
+     *
+     * @return the list
+     */
     public static List<JSONObject> AllRedeemables() {
         List<JSONObject> objs = Redeemables();
         objs.add(AddedRedeemable());
         return objs;
     }
 
+    /**
+     * A list of redeemable IDs
+     *
+     * @return the list
+     */
     public static List<String> RedeemableIds() {
         return List.of("92af127c-7326-4483-a52b-b0da0be61c01", "92af127c-7326-4483-a52b-b0da0be69204");
     }
 
+    /**
+     * A list of redeemable objects
+     *
+     * @return the list
+     */
     public static List<JSONObject> Redeemables() {
         return List.of(new JSONObject("{\r\n" + //
                 "      \"broadcaster_name\": \"CoolDude\",\r\n" + //
@@ -114,10 +139,20 @@ public final class TestData {
                         "    }"));
     }
 
+    /**
+     * An additional redeemable ID not included in {@link #RedeemableIds()}
+     *
+     * @return the ID
+     */
     public static String AddedRedeemableId() {
         return "92af127c-7326-4483-a52b-b0da0be61664";
     }
 
+    /**
+     * An additional redeemable object not included in {@link #Redeemables()}
+     *
+     * @return the object
+     */
     public static JSONObject AddedRedeemable() {
         return new JSONObject("{\r\n" + //
                 "      \"broadcaster_name\": \"CoolDude\",\r\n" + //

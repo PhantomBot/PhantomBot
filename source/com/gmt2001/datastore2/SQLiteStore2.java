@@ -37,8 +37,8 @@ import org.jooq.impl.SQLDataType;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.PathValidator;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.cache.TwitchCache;

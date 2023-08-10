@@ -16,8 +16,9 @@
  */
 package tv.phantombot.twitch.irc;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.util.concurrent.ExecutorService;
+
 import java.nio.channels.NotYetConnectedException;
 import java.time.Duration;
 import java.time.Instant;

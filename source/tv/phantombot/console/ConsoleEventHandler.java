@@ -27,11 +27,11 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.gmt2001.GamesListUpdater;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
-import com.gmt2001.Reflect;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
+import com.gmt2001.util.GamesListUpdater;
+import com.gmt2001.util.Reflect;
 
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;

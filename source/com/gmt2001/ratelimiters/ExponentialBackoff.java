@@ -16,10 +16,11 @@
  */
 package com.gmt2001.ratelimiters;
 
-import com.gmt2001.ExecutorService;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+
+import com.gmt2001.util.concurrent.ExecutorService;
 
 /**
  * Handles backoff timing using an exponentially increasing duration strategy.

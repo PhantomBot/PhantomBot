@@ -42,7 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.HttpRequest;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
@@ -50,6 +49,7 @@ import com.gmt2001.httpclient.NotJSONException;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;

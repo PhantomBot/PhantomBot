@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.gmt2001.ExecutorService;
+import com.gmt2001.util.concurrent.ExecutorService;
 import com.scaniatv.TipeeeStreamAPIv1;
 
 import tv.phantombot.PhantomBot;

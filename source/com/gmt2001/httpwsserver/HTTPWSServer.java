@@ -17,10 +17,11 @@
 package com.gmt2001.httpwsserver;
 
 import com.gmt2001.Console.err;
-import com.gmt2001.ExecutorService;
 import com.gmt2001.PathValidator;
 import com.gmt2001.dns.EventLoopDetector;
 import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
+import com.gmt2001.util.concurrent.ExecutorService;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;

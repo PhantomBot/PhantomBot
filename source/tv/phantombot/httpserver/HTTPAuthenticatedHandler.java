@@ -17,11 +17,11 @@
 package tv.phantombot.httpserver;
 
 import com.gmt2001.PathValidator;
-import com.gmt2001.Reflect;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpSharedTokenOrPasswordAuthenticationHandler;
+import com.gmt2001.util.Reflect;
 import com.scaniatv.LangFileUpdater;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;

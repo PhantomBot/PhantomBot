@@ -21,10 +21,10 @@
  */
 package tv.phantombot.twitch.pubsub;
 
-import com.gmt2001.ExecutorService;
-import com.gmt2001.Reflect;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.util.Reflect;
+import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
