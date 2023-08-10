@@ -80,9 +80,10 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.UncaughtExceptionHandler.html" title="class or interface in java.lang" class="external-link">Thread.UncaughtExceptionHandler</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">UncaughtExceptionHandler</span>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">UncaughtExceptionHandler</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.UncaughtExceptionHandler.html" title="class or interface in java.lang" class="external-link">Thread.UncaughtExceptionHandler</a></span></div>
+<div class="block">Catches exceptions which hve not been caught elsewhere</div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>gmt2001</dd>
@@ -116,11 +117,15 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="UncaughtExceptionHandler.html" title="class in com.gmt2001">UncaughtExceptionHandler</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Instance</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#uncaughtException(java.lang.Thread,java.lang.Throwable)" class="member-name-link">uncaughtException</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.html" title="class or interface in java.lang" class="external-link">Thread</a>&nbsp;t,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;e)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Handles uncaught exceptions</div>
+</div>
 </div>
 </div>
 </div>
@@ -156,6 +161,11 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <section class="detail" id="instance()">
 <h3>instance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="UncaughtExceptionHandler.html" title="class in com.gmt2001">UncaughtExceptionHandler</a></span>&nbsp;<span class="element-name">instance</span>()</div>
+<div class="block">Instance</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>an instance</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -163,9 +173,18 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h3>uncaughtException</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">uncaughtException</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.html" title="class or interface in java.lang" class="external-link">Thread</a>&nbsp;t,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&nbsp;e)</span></div>
+<div class="block">Handles uncaught exceptions
+ <p>
+ In addition to sending to the regular error handler (Console, <code>core-error</code> log, Rollbar),
+ the exception is logged in the <code>stacktraces</code> folder
+ <p>
+ If the exeption is an <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/OutOfMemoryError.html" title="class or interface in java.lang" class="external-link"><code>OutOfMemoryError</code></a>, then a heap dump is additionally created</div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.UncaughtExceptionHandler.html#uncaughtException(java.lang.Thread,java.lang.Throwable)" title="class or interface in java.lang" class="external-link">uncaughtException</a></code>&nbsp;in interface&nbsp;<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Thread.UncaughtExceptionHandler.html" title="class or interface in java.lang" class="external-link">Thread.UncaughtExceptionHandler</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>t</code> - the thread on which the exception was thrown</dd>
+<dd><code>e</code> - the exception that was thrown</dd>
 </dl>
 </section>
 </li>
