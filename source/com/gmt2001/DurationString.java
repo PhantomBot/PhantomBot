@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  *
  * @author gmt2001
  */
-public class DurationString {
+public final class DurationString {
 
     private DurationString() {
     }
