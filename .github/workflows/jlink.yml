@@ -15,23 +15,42 @@ jobs:
             folder: java-runtime-linux
             java-distribution: 'temurin'
             java-version: 17
+            qemu: false
+          - os: ubuntu-latest
+            osname: arm64
+            script: jlink-jdk-docker.sh
+            folder: java-runtime-arm64
+            java-distribution: 'temurin'
+            java-version: 17
+            qemu: true
+            platform: linux/arm64
+            image: eclipse-temurin:17-jdk
+            jdk: /opt/java/openjdk
           - os: windows-latest
             osname: Windows
             script: jlink-jdk.bat
             folder: java-runtime
             java-distribution: 'temurin'
             java-version: 17
+            qemu: false
           - os: macos-latest
             osname: macOS
             script: jlink-jdk-macos.sh
             folder: java-runtime-macos
             java-distribution: 'temurin'
             java-version: 17
+            qemu: false
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
+    - name: Set up QEMU
+      if: matrix.qemu
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: ${{ matrix.platform }}
     - name: Set up JDK
+      if: !matrix.qemu
       id: setup-java
       uses: actions/setup-java@v3
       with:
@@ -51,11 +70,26 @@ jobs:
         cd development-resources
         cmd /C $env:SCRIPT
     - name: Run JLink (Non-Windows)
-      if: matrix.os != 'windows-latest'
+      if: matrix.os != 'windows-latest' && !matrix.qemu
       env:
         FOLDER: ${{ matrix.folder }}
         SCRIPT: ${{ matrix.script }}
         JDK: ${{ steps.setup-java.outputs.path }}
+      run: |
+        cd resources
+        rm -rfv $FOLDER
+        cd ..
+        cd development-resources
+        chmod +x $SCRIPT
+        /bin/bash $SCRIPT
+    - name: Run JLink (Docker)
+      if: matrix.qemu
+      env:
+        FOLDER: ${{ matrix.folder }}
+        SCRIPT: ${{ matrix.script }}
+        JDK: ${{ matrix.jdk }}
+        PLATFORM: ${{ matrix.platform }}
+        IMAGE: ${{ matrix.image }}
       run: |
         cd resources
         rm -rfv $FOLDER
