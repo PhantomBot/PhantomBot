@@ -25,13 +25,13 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Provides an interface to a shared {@link ScheduledExecutorService}.
- *
+ * Provides an interface to a shared {@link ScheduledExecutorService}
+ * <p>
  * Documentation copied from official OpenJDK 7
  *
  * @author gmt2001
  */
-public class ExecutorService {
+public final class ExecutorService {
 
     private static final ScheduledExecutorService SCHEDULEDEXECUTOR = Executors.newScheduledThreadPool(4);
     private static boolean shutdown = false;
