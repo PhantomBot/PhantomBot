@@ -16,19 +16,7 @@
  */
 package com.gmt2001;
 
-import com.rollbar.api.payload.data.Data;
-import com.rollbar.api.payload.data.Level;
-import com.rollbar.api.payload.data.Person;
-import com.rollbar.api.payload.data.Server;
-import com.rollbar.api.payload.data.body.BodyContent;
-import com.rollbar.api.payload.data.body.Frame;
-import com.rollbar.api.payload.data.body.Trace;
-import com.rollbar.api.payload.data.body.TraceChain;
-import com.rollbar.notifier.Rollbar;
-import com.rollbar.notifier.config.ConfigBuilder;
-import com.rollbar.notifier.filter.Filter;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -41,8 +29,22 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.SystemUtils;
+
+import com.rollbar.api.payload.data.Data;
+import com.rollbar.api.payload.data.Level;
+import com.rollbar.api.payload.data.Person;
+import com.rollbar.api.payload.data.Server;
+import com.rollbar.api.payload.data.body.BodyContent;
+import com.rollbar.api.payload.data.body.Frame;
+import com.rollbar.api.payload.data.body.Trace;
+import com.rollbar.api.payload.data.body.TraceChain;
+import com.rollbar.notifier.Rollbar;
+import com.rollbar.notifier.config.ConfigBuilder;
+import com.rollbar.notifier.filter.Filter;
+
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
@@ -146,20 +148,8 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(discord4j.rest.http.client.ClientException.class) && error.getMessage().contains("401")
-                                        && error.getMessage().contains("Unauthorized")) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException.class)) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(java.sql.SQLNonTransientConnectionException.class)) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(org.h2.jdbc.JdbcSQLNonTransientConnectionException.class)) {
+                                if (error.getClass().equals(discord4j.rest.http.client.ClientException.class)
+                                    && error.getMessage().matches("(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found)")) {
                                     return true;
                                 }
 
@@ -183,39 +173,11 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().startsWith("[SQLITE_BUSY]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_CORRUPT]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_READONLY]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_CANTOPEN]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_PROTOCOL]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_IOERROR]")) {
+                                if (error.getMessage().matches("SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB|FULL)")) {
                                     return true;
                                 }
 
                                 if (error.getMessage().startsWith("opening db")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().equals("")) {
                                     return true;
                                 }
 
@@ -303,7 +265,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.lang.NoSuchFieldException.class)) {
+                                if (error.getMessage().contains("Address already in use")) {
                                     return true;
                                 }
 
@@ -364,10 +326,6 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getClass().equals(java.util.NoSuchElementException.class) && error.getMessage().equals("Source was empty")) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(org.h2.jdbc.JdbcSQLNonTransientException.class) && error.getMessage().contains("90031")) {
                                     return true;
                                 }
                             }
