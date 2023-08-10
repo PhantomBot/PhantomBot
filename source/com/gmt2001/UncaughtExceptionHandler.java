@@ -16,6 +16,7 @@
  */
 package com.gmt2001;
 
+import com.gmt2001.util.Reflect;
 import com.illusionaryone.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,17 +30,34 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
+ * Catches exceptions which hve not been caught elsewhere
  *
  * @author gmt2001
  */
-public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+public final class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
 
+    /**
+     * Instance
+     *
+     * @return an instance
+     */
     public static UncaughtExceptionHandler instance() {
         return instance;
     }
 
+    /**
+     * Handles uncaught exceptions
+     * <p>
+     * In addition to sending to the regular error handler (Console, {@code core-error} log, Rollbar),
+     * the exception is logged in the {@code stacktraces} folder
+     * <p>
+     * If the exeption is an {@link java.lang.OutOfMemoryError}, then a heap dump is additionally created
+     *
+     * @param t the thread on which the exception was thrown
+     * @param e the exception that was thrown
+     */
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         try ( Writer trace = new StringWriter()) {
