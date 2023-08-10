@@ -16,13 +16,13 @@
  */
 package tv.phantombot.panel;
 
-import com.gmt2001.Digest;
 import com.gmt2001.TestData;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
+import com.gmt2001.security.Digest;
 import com.scaniatv.LangFileUpdater;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

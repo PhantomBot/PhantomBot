@@ -16,8 +16,9 @@
  */
 package tv.phantombot.discord;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.dns.CompositeAddressResolverGroup;
+import com.gmt2001.util.concurrent.ExecutorService;
+
 import discord4j.common.ReactorResources;
 import discord4j.common.sinks.EmissionStrategy;
 import discord4j.common.util.Snowflake;

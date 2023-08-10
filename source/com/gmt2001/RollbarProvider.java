@@ -16,6 +16,23 @@
  */
 package com.gmt2001;
 
+import java.security.MessageDigest;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.SystemUtils;
+
+import com.gmt2001.util.concurrent.ExecutorService;
 import com.rollbar.api.payload.data.Data;
 import com.rollbar.api.payload.data.Level;
 import com.rollbar.api.payload.data.Person;
@@ -27,22 +44,7 @@ import com.rollbar.api.payload.data.body.TraceChain;
 import com.rollbar.notifier.Rollbar;
 import com.rollbar.notifier.config.ConfigBuilder;
 import com.rollbar.notifier.filter.Filter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.SystemUtils;
+
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.CaselessProperties.Transaction;
@@ -51,34 +53,61 @@ import tv.phantombot.RepoVersion;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
+ * Provides Rollbar exception reporting
+ * <p>
+ * Currently set to only transmit errors at {@link Level#ERROR} and {@link Level#CRITICAL}
  *
  * @author gmt2001
  */
 public final class RollbarProvider implements AutoCloseable {
-
     private static final RollbarProvider INSTANCE = new RollbarProvider();
     private static final String ACCESS_TOKEN = "@access.token@";
     private static final String ENDPOINT = "@endpoint@";
-    private static final int REPEAT_INTERVAL_MINUTES = 180;
-    private static final long REPEAT_CHECK_INTERVAL = 1800000L;
+    /**
+     * Timeout before the same exception can be reported again
+     */
+    private static final int REPEAT_INTERVAL_HOURS = 3;
+    /**
+     * Interval for cleaning up {@link #reportsPassedFilters}
+     */
+    private static final int REPEAT_CHECK_MINUTES = 5;
+    /**
+     * Namespaces owned by the PhantomBot project. Used for calculating the hash for {@link #reportsPassedFilters}
+     */
     private static final List<String> APP_PACKAGES = Collections.unmodifiableList(Arrays.asList("tv.phantombot", "com.gmt2001", "com.illusionaryone", "com.scaniatv"));
+    /**
+     * Filename regexes that should be used for calculating the hash for {@link #reportsPassedFilters}
+     */
     private static final List<String> FINGERPRINT_FILE_REGEX = Collections.unmodifiableList(Arrays.asList("(.*).js"));
+    /**
+     * List of botlogin.txt values where the actual value will be sent in the report
+     */
     private static final List<String> SEND_VALUES = Collections.unmodifiableList(Arrays.asList("allownonascii", "baseport", "channel", "datastore", "debugon", "debuglog",
-            "helixdebug", "ircdebug", "logtimezone", "msglimit30", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
+            "helixdebug", "ircdebug", "logtimezone", "musicenable", "owner", "proxybypasshttps", "reactordebug", "reloadscripts", "rhinodebugger",
             "rollbarid", "twitch_tcp_nodelay", "usehttps", "useeventsub", "userollbar", "webenable", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
-    private MessageDigest md;
+    /**
+     * Tracks timeouts before the same report can be sent again. Key is SHA-1 of selected report data. Value is expiration
+     */
     private final ConcurrentHashMap<String, Instant> reportsPassedFilters = new ConcurrentHashMap<>();
-    private final Timer t = new Timer();
 
+    /**
+     * Constructor. See inner comments
+     */
     private RollbarProvider() {
+        /**
+         * Only constructs if an endpoint and access token were injected at build time
+         */
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
                 && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
             this.rollbar = Rollbar.init(ConfigBuilder.withAccessToken(ACCESS_TOKEN).endpoint(ENDPOINT)
                     .codeVersion(RepoVersion.getBuildType().equals("stable") ? RepoVersion.getPhantomBotVersion() : RepoVersion.getRepoVersion())
                     .environment(RepoVersion.getBuildTypeWithDocker()).platform(RollbarProvider.determinePlatform())
                     .server(() -> {
+                        /**
+                         * Compiles data on the OS and JVM to be included with all reports
+                         */
                         Map<String, Object> metadata = new HashMap<>();
                         metadata.put("cpu", System.getProperty("os.arch", "unknown"));
                         metadata.put("java.home", System.getProperty("java.home", "unknown"));
@@ -93,6 +122,9 @@ public final class RollbarProvider implements AutoCloseable {
                         return new Server.Builder().root("/").metadata(metadata).build();
                     })
                     .person(() -> {
+                        /**
+                         * Compiles data on the Twitch accounts to be included with all reports
+                         */
                         Map<String, Object> metadata = new HashMap<>();
                         String botName = TwitchValidate.instance().getChatLogin();
                         metadata.put("user", botName);
@@ -102,8 +134,14 @@ public final class RollbarProvider implements AutoCloseable {
                         return new Person.Builder().id(RollbarProvider.getId()).username(CaselessProperties.instance().getProperty("owner", botName)).metadata(metadata).build();
                     })
                     .custom(() -> {
+                        /**
+                         * Compiles selected config values to be included with all reports.
+                         * Properties from botlogin.txt in {@link #SEND_VALUES} will have their actual values sent.
+                         * Other properties from botlogin.txt will only have the word {@code set} sent if a value is present, but
+                         * the actual value will not be sent
+                         */
                         Map<String, Object> metadata = new HashMap<>();
-                        metadata.put("phantombot.datastore", CaselessProperties.instance().getProperty("datastore", "sqlite3store"));
+                        metadata.put("phantombot.datastore", CaselessProperties.instance().getProperty("datastore", "h2store"));
                         metadata.put("phantombot.debugon", PhantomBot.getEnableDebugging() ? "true" : "false");
                         metadata.put("phantombot.debuglog", PhantomBot.getEnableDebuggingLogOnly() ? "true" : "false");
                         metadata.put("phantombot.rhinodebugger", PhantomBot.getEnableRhinoDebugger() ? "true" : "false");
@@ -120,6 +158,12 @@ public final class RollbarProvider implements AutoCloseable {
                         return metadata;
                     })
                     .filter(new Filter() {
+                        /**
+                         * Blocks reports that are not {@link Level#ERROR} or {@link Level#CRITICAL}
+                         * <p>
+                         * Also blocks reports with common errors that are either nuisance errors or user errors
+                         * @return {@code true} to block the exception report
+                         */
                         @Override
                         public boolean preProcess(Level level, @Nullable Throwable error, @Nullable Map<String, Object> custom, @Nullable String description) {
                             if (!level.equals(Level.ERROR) && !level.equals(Level.CRITICAL)) {
@@ -127,6 +171,9 @@ public final class RollbarProvider implements AutoCloseable {
                             }
 
                             if (error != null) {
+                                /**
+                                 * Nuisance exception when Netty closes a connection after an HTTP request
+                                 */
                                 if (error.getClass().equals(java.lang.Exception.class)
                                         && error.getStackTrace()[0].getClassName().equals(reactor.netty.channel.ChannelOperations.class.getName())
                                         && error.getStackTrace()[0].getMethodName().equals("terminate")) {
@@ -147,20 +194,8 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(discord4j.rest.http.client.ClientException.class) && error.getMessage().contains("401")
-                                        && error.getMessage().contains("Unauthorized")) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException.class)) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(java.sql.SQLNonTransientConnectionException.class)) {
-                                    return true;
-                                }
-
-                                if (error.getClass().equals(org.h2.jdbc.JdbcSQLNonTransientConnectionException.class)) {
+                                if (error.getClass().equals(discord4j.rest.http.client.ClientException.class)
+                                    && error.getMessage().matches("(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found)")) {
                                     return true;
                                 }
 
@@ -184,39 +219,11 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().startsWith("[SQLITE_BUSY]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_CORRUPT]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_READONLY]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_CONSTRAINT]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_CANTOPEN]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_PROTOCOL]")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().startsWith("[SQLITE_IOERROR]")) {
+                                if (error.getMessage().matches("SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB|FULL)")) {
                                     return true;
                                 }
 
                                 if (error.getMessage().startsWith("opening db")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().equals("")) {
                                     return true;
                                 }
 
@@ -304,7 +311,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.lang.NoSuchFieldException.class)) {
+                                if (error.getMessage().contains("Address already in use")) {
                                     return true;
                                 }
 
@@ -367,10 +374,6 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getClass().equals(java.util.NoSuchElementException.class) && error.getMessage().equals("Source was empty")) {
                                     return true;
                                 }
-
-                                if (error.getClass().equals(org.h2.jdbc.JdbcSQLNonTransientException.class) && error.getMessage().contains("90031")) {
-                                    return true;
-                                }
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (boolean) custom.getOrDefault("isUncaught", false)
@@ -379,49 +382,26 @@ public final class RollbarProvider implements AutoCloseable {
                             return false;
                         }
 
+                        /**
+                         * Calculates a SHA-1 of selected data points in the exception report
+                         * <p>
+                         * Blocks duplicate reports if {@link #REPET_INTERVAL_HOURS} has not passed
+                         * @return {@code true} to block the exception report
+                         */
                         @Override
                         public boolean postProcess(Data data) {
-                            if (md != null) {
-                                try {
-                                    md.reset();
+                            try {
+                                MessageDigest md = MessageDigest.getInstance("SHA-1");
 
-                                    md.update(Optional.ofNullable(data.getCodeVersion()).orElse("").getBytes());
-                                    md.update(Optional.ofNullable(data.getEnvironment()).orElse("").getBytes());
-                                    md.update(Optional.ofNullable(data.getLevel()).orElse(Level.ERROR).name().getBytes());
-                                    md.update(Optional.ofNullable(data.getTitle()).orElse("").getBytes());
+                                md.update(Optional.ofNullable(data.getCodeVersion()).orElse("").getBytes());
+                                md.update(Optional.ofNullable(data.getEnvironment()).orElse("").getBytes());
+                                md.update(Optional.ofNullable(data.getLevel()).orElse(Level.ERROR).name().getBytes());
+                                md.update(Optional.ofNullable(data.getTitle()).orElse("").getBytes());
 
-                                    BodyContent bc = data.getBody().getContents();
+                                BodyContent bc = data.getBody().getContents();
 
-                                    if (bc instanceof TraceChain tc) {
-                                        tc.getTraces().stream().forEachOrdered(t -> {
-                                            md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
-                                            md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
-                                            md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
-                                            int last = -1;
-                                            for (int i = 0; i < t.getFrames().size(); i++) {
-                                                Frame f = t.getFrames().get(i);
-                                                for (String p : APP_PACKAGES) {
-                                                    if (f.getClassName() != null && f.getClassName().contains(p)) {
-                                                        last = i;
-                                                    }
-                                                }
-                                                for (String p : FINGERPRINT_FILE_REGEX) {
-                                                    if (f.getFilename() != null && f.getFilename().matches(p)) {
-                                                        last = i;
-                                                    }
-                                                }
-                                            }
-
-                                            if (last >= 0) {
-                                                Frame f = t.getFrames().get(last);
-                                                md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
-                                                md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
-                                                md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
-                                                md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
-                                            }
-                                        });
-                                    } else if (bc instanceof Trace) {
-                                        Trace t = (Trace) bc;
+                                if (bc instanceof TraceChain tc) {
+                                    tc.getTraces().stream().forEachOrdered(t -> {
                                         md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
                                         md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
                                         md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
@@ -447,32 +427,63 @@ public final class RollbarProvider implements AutoCloseable {
                                             md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
                                             md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
                                         }
+                                    });
+                                } else if (bc instanceof Trace) {
+                                    Trace t = (Trace) bc;
+                                    md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
+                                    md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
+                                    md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
+                                    int last = -1;
+                                    for (int i = 0; i < t.getFrames().size(); i++) {
+                                        Frame f = t.getFrames().get(i);
+                                        for (String p : APP_PACKAGES) {
+                                            if (f.getClassName() != null && f.getClassName().contains(p)) {
+                                                last = i;
+                                            }
+                                        }
+                                        for (String p : FINGERPRINT_FILE_REGEX) {
+                                            if (f.getFilename() != null && f.getFilename().matches(p)) {
+                                                last = i;
+                                            }
+                                        }
                                     }
 
-                                    String digest = Hex.encodeHexString(md.digest());
-
-                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now()) ? "t" : "f"));
-
-                                    if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now())) {
-                                        com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
-                                        return true;
-                                    } else {
-                                        reportsPassedFilters.put(digest, Instant.now().plus(REPEAT_INTERVAL_MINUTES, ChronoUnit.MINUTES));
+                                    if (last >= 0) {
+                                        Frame f = t.getFrames().get(last);
+                                        md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
+                                        md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
+                                        md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
+                                        md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
                                     }
-                                } catch (Exception e) {
-                                    com.gmt2001.Console.debug.printOrLogStackTrace(e);
                                 }
+
+                                String digest = Hex.encodeHexString(md.digest());
+
+                                com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now()) ? "t" : "f"));
+
+                                if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now())) {
+                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
+                                    return true;
+                                } else {
+                                    reportsPassedFilters.put(digest, Instant.now().plus(REPEAT_INTERVAL_HOURS, ChronoUnit.HOURS));
+                                }
+                            } catch (Exception e) {
+                                com.gmt2001.Console.debug.printOrLogStackTrace(e);
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-POST] not filtered");
 
                             return false;
                         }
+                    /**
+                     * Disabling uncaught exception reporting here because it is done by our own handler
+                     */
                     }).appPackages(RollbarProvider.APP_PACKAGES).handleUncaughtErrors(false).build());
 
-            t.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
+            /**
+             * Cleans up {@link #reportsPassedFilters}
+             */
+            ExecutorService.scheduleAtFixedRate(() -> {
                     Instant now = Instant.now();
 
                     reportsPassedFilters.forEach((digest, date) -> {
@@ -480,23 +491,28 @@ public final class RollbarProvider implements AutoCloseable {
                             reportsPassedFilters.remove(digest);
                         }
                     });
-                }
-            }, REPEAT_CHECK_INTERVAL, REPEAT_CHECK_INTERVAL);
+                }, REPEAT_CHECK_MINUTES, REPEAT_CHECK_MINUTES, TimeUnit.MINUTES);
         } else {
             this.rollbar = null;
         }
-
-        try {
-            md = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
     }
 
+    /**
+     * Instance
+     *
+     * @return an instance of {@link RollbarProvider}
+     */
     public static RollbarProvider instance() {
         return RollbarProvider.INSTANCE;
     }
 
+    /**
+     * Creates a new {@code custom} map and adds the provided local variables to a sub-object
+     *
+     * @param names a list of variable names
+     * @param values a list of varible values
+     * @return a new {@link Map} with the varibles/values added as a sub-map
+     */
     public static Map<String, Object> localsToCustom(String[] names, Object[] values) {
         Map<String, Object> custom = new HashMap<>();
         Map<String, Object> locals = new HashMap<>();
@@ -510,14 +526,29 @@ public final class RollbarProvider implements AutoCloseable {
         return custom;
     }
 
+    /**
+     * Returns the underlying {@link Rollbar} object
+     *
+     * @return the {@link Rollbar} object
+     */
     public Rollbar getRollbar() {
         return this.rollbar;
     }
 
+    /**
+     * Indicates if sending exceptions is enabled
+     * <p>
+     * NOTE: Only affects methods provided by {@link RollbarProvider}, not methods in the underlying {@link Rollbar} object
+     *
+     * @return {@code true} if enabled
+     */
     public boolean isEnabled() {
         return this.enabled;
     }
 
+    /**
+     * Enables sending Rollbar exception reports and prints the disable/GDPR info to the console
+     */
     public void enable() {
         if (RollbarProvider.ENDPOINT.length() > 0 && !RollbarProvider.ENDPOINT.equals("@endpoint@")
                 && RollbarProvider.ACCESS_TOKEN.length() > 0 && !RollbarProvider.ACCESS_TOKEN.equals("@access.token@")) {
@@ -530,30 +561,73 @@ public final class RollbarProvider implements AutoCloseable {
         }
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param error the error
+     */
     public void critical(Throwable error) {
         this.critical(error, null, null);
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param error the error
+     * @param description a description of the error
+     */
     public void critical(Throwable error, String description) {
         this.critical(error, null, description);
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void critical(Throwable error, Map<String, Object> custom) {
         this.critical(error, custom, null);
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param message the error message
+     */
     public void critical(String message) {
         this.critical(null, null, message);
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param message the error message
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void critical(String message, Map<String, Object> custom) {
         this.critical(null, custom, message);
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     */
     public void critical(Throwable error, Map<String, Object> custom, String description) {
         this.critical(error, custom, description, false);
     }
 
+    /**
+     * Sends a {@link Level#CRITICAL} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     * @param isUncaught {@code true} if this error should be reported as an uncaught exception
+     */
     public void critical(Throwable error, Map<String, Object> custom, String description, boolean isUncaught) {
         if (this.enabled) {
             if (isUncaught) {
@@ -567,30 +641,73 @@ public final class RollbarProvider implements AutoCloseable {
         }
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param error the error
+     */
     public void error(Throwable error) {
         this.error(error, null, null);
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param error the error
+     * @param description a description of the error
+     */
     public void error(Throwable error, String description) {
         this.error(error, null, description);
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void error(Throwable error, Map<String, Object> custom) {
         this.error(error, custom, null);
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param message the error message
+     */
     public void error(String message) {
         this.error(null, null, message);
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param message the error message
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void error(String message, Map<String, Object> custom) {
         this.error(null, custom, message);
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     */
     public void error(Throwable error, Map<String, Object> custom, String description) {
         this.error(error, custom, description, false);
     }
 
+    /**
+     * Sends a {@link Level#ERROR} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     * @param isUncaught {@code true} if this error should be reported as an uncaught exception
+     */
     public void error(Throwable error, Map<String, Object> custom, String description, boolean isUncaught) {
         if (this.enabled) {
             if (isUncaught) {
@@ -605,84 +722,194 @@ public final class RollbarProvider implements AutoCloseable {
         }
     }
 
+    /**
+     * Sends a {@link Level#WARNING} error
+     *
+     * @param error the error
+     */
     public void warning(Throwable error) {
         this.warning(error, null, null);
     }
 
+    /**
+     * Sends a {@link Level#WARNING} error
+     *
+     * @param error the error
+     * @param description a description of the error
+     */
     public void warning(Throwable error, String description) {
         this.warning(error, null, description);
     }
 
+    /**
+     * Sends a {@link Level#WARNING} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void warning(Throwable error, Map<String, Object> custom) {
         this.warning(error, custom, null);
     }
 
+    /**
+     * Sends a {@link Level#WARNING} error
+     *
+     * @param message the error message
+     */
     public void warning(String message) {
         this.warning(null, null, message);
     }
 
+    /**
+     * Sends a {@link Level#WARNING} error
+     *
+     * @param message the error message
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void warning(String message, Map<String, Object> custom) {
         this.warning(null, custom, message);
     }
 
+    /**
+     * Sends a {@link Level#WARNING} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     */
     public void warning(Throwable error, Map<String, Object> custom, String description) {
         if (this.enabled) {
             this.rollbar.warning(error, custom, description);
         }
     }
 
+    /**
+     * Sends a {@link Level#INFO} error
+     *
+     * @param error the error
+     */
     public void info(Throwable error) {
         this.info(error, null, null);
     }
 
+    /**
+     * Sends a {@link Level#INFO} error
+     *
+     * @param error the error
+     * @param description a description of the error
+     */
     public void info(Throwable error, String description) {
         this.info(error, null, description);
     }
 
+    /**
+     * Sends a {@link Level#INFO} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void info(Throwable error, Map<String, Object> custom) {
         this.info(error, custom, null);
     }
 
+    /**
+     * Sends a {@link Level#INFO} error
+     *
+     * @param message the error message
+     */
     public void info(String message) {
         this.info(null, null, message);
     }
 
+    /**
+     * Sends a {@link Level#INFO} error
+     *
+     * @param message the error message
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void info(String message, Map<String, Object> custom) {
         this.info(null, custom, message);
     }
 
+    /**
+     * Sends a {@link Level#INFO} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     */
     public void info(Throwable error, Map<String, Object> custom, String description) {
         if (this.enabled) {
             this.rollbar.info(error, custom, description);
         }
     }
 
+    /**
+     * Sends a {@link Level#DEBUG} error
+     *
+     * @param error the error
+     */
     public void debug(Throwable error) {
         this.debug(error, null, null);
     }
 
+    /**
+     * Sends a {@link Level#DEBUG} error
+     *
+     * @param error the error
+     * @param description a description of the error
+     */
     public void debug(Throwable error, String description) {
         this.debug(error, null, description);
     }
 
+    /**
+     * Sends a {@link Level#DEBUG} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void debug(Throwable error, Map<String, Object> custom) {
         this.debug(error, custom, null);
     }
 
+    /**
+     * Sends a {@link Level#DEBUG} error
+     *
+     * @param message the error message
+     */
     public void debug(String message) {
         this.debug(null, null, message);
     }
 
+    /**
+     * Sends a {@link Level#DEBUG} error
+     *
+     * @param message the error message
+     * @param custom a {@link Map} of custom data to include with the report
+     */
     public void debug(String message, Map<String, Object> custom) {
         this.debug(null, custom, message);
     }
 
+    /**
+     * Sends a {@link Level#DEBUG} error
+     *
+     * @param error the error
+     * @param custom a {@link Map} of custom data to include with the report
+     * @param description a description of the error
+     */
     public void debug(Throwable error, Map<String, Object> custom, String description) {
         if (this.enabled) {
             this.rollbar.debug(error, custom, description);
         }
     }
 
+    /**
+     * Determines which OS family is in use
+     *
+     * @return an OS family; {@code unknown} if not recognized
+     */
     private static String determinePlatform() {
         if (SystemUtils.IS_OS_WINDOWS) {
             return "windows";
@@ -699,6 +926,11 @@ public final class RollbarProvider implements AutoCloseable {
         return "unknown";
     }
 
+    /**
+     * Gets a UUID which uniquely identifies this installation of PhantomBot
+     *
+     * @return the UUID
+     */
     private static String getId() {
         String id = CaselessProperties.instance().getProperty("rollbarid");
 
@@ -712,10 +944,18 @@ public final class RollbarProvider implements AutoCloseable {
         return id;
     }
 
+    /**
+     * Generates a new UUID
+     *
+     * @return the UUID
+     */
     private static String generateId() {
         return UUID.randomUUID().toString();
     }
 
+    /**
+     * Closes out {@link Rollbar}
+     */
     @Override
     public void close() {
         try {

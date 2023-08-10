@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.util;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  *
  * @author gmt2001
  */
-public class DurationString {
+public final class DurationString {
 
     private DurationString() {
     }

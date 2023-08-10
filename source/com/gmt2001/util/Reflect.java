@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.util;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -36,6 +36,7 @@ import java.util.jar.JarInputStream;
 
 import javax.management.MBeanServer;
 
+import com.gmt2001.PathValidator;
 import com.illusionaryone.Logger;
 import com.sun.management.HotSpotDiagnosticMXBean;
 

@@ -16,11 +16,11 @@
  */
 package com.gmt2001.twitch.tmi;
 
-import com.gmt2001.ExecutorService;
-import com.gmt2001.Reflect;
 import com.gmt2001.ratelimiters.WindowedSwitchingRateLimiter;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
 import com.gmt2001.twitch.tmi.processors.AbstractTMIProcessor;
+import com.gmt2001.util.Reflect;
+import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import com.gmt2001.wspinger.WSPinger;

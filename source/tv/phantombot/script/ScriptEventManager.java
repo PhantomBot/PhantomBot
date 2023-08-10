@@ -16,7 +16,6 @@
  */
 package tv.phantombot.script;
 
-import com.gmt2001.Reflect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -25,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.engio.mbassy.listener.Handler;
 import org.apache.commons.text.WordUtils;
+
+import com.gmt2001.util.Reflect;
+
 import tv.phantombot.event.Event;
 import tv.phantombot.event.Listener;
 

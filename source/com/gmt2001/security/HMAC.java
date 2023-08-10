@@ -14,17 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.security;
 
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * https://sorenpoulsen.com/calculate-hmac-sha256-with-java
+ * Provides an easy interface to calculating an HMAC-SHA256
+ *
+ * @see https://sorenpoulsen.com/calculate-hmac-sha256-with-java
  *
  * @author Søren Poulsen and gmt2001
  */
@@ -37,8 +40,8 @@ public final class HMAC {
      * Calculates an HMAC-SHA256
      *
      * @param secretKey The secret key
-     * @param message The message to calculate the mac on
-     * @return
+     * @param message The message to calculate the MAC on
+     * @return the MAC
      */
     public static byte[] calcHmacSha256(byte[] secretKey, byte[] message) {
         byte[] hmacSha256 = null;
@@ -59,8 +62,8 @@ public final class HMAC {
      * Calculates an HMAC-SHA256 and returns the MAC as a hex-encoded string
      *
      * @param secretKey The secret key
-     * @param message The message to calculate the mac on
-     * @return
+     * @param message The message to calculate the MAC on
+     * @return the MAC as a hex-encoded string
      */
     public static String calcHmacSha256(String secretKey, String message) {
         return String.format("%064x", new BigInteger(1, calcHmacSha256(secretKey.getBytes(), message.getBytes())));
@@ -70,9 +73,9 @@ public final class HMAC {
      * Calculates an HMAC-SHA256 and compares it to an existing MAC
      *
      * @param secretKey The secret key
-     * @param message The message to calculate the mac on
+     * @param message The message to calculate the MAC on
      * @param mac The MAC to compare to
-     * @return true if the calculated mac matches the provided mac
+     * @return {@code true} if the calculated MAC matches the provided MAC
      */
     public static boolean compareHmacSha256(byte[] secretKey, byte[] message, byte[] mac) {
         return Arrays.equals(calcHmacSha256(secretKey, message), mac);
@@ -82,9 +85,9 @@ public final class HMAC {
      * Calculates an HMAC-SHA256 and compares it to an existing MAC
      *
      * @param secretKey The secret key
-     * @param message The message to calculate the mac on
+     * @param message The message to calculate the MAC on
      * @param mac The MAC to compare to
-     * @return true if the calculated mac matches the provided mac
+     * @return {@code true} if the calculated MAC matches the provided MAC
      */
     public static boolean compareHmacSha256(String secretKey, String message, String mac) {
         return compareHmacSha256(secretKey.getBytes(), message.getBytes(), mac.getBytes());

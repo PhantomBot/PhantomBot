@@ -34,7 +34,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
-import com.gmt2001.ExecutorService;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 /**
  * Provides an implementation of {@link Properties} where the {@code key} is case-insensitive and thread-safe

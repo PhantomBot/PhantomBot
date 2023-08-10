@@ -16,12 +16,12 @@
  */
 package com.gmt2001.ratelimiters;
 
-import com.gmt2001.ExecutorService;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
+
+import com.gmt2001.util.concurrent.ExecutorService;
 
 /**
  * Handles rate limiting using a window which resets a period of time after the first token is used

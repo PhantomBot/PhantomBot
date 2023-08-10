@@ -16,7 +16,7 @@
  */
 package com.gmt2001.wspinger;
 
-import com.gmt2001.ExecutorService;
+import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import io.netty.channel.ChannelHandlerContext;

@@ -79,12 +79,12 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'class' => 'com.mysql.cj.jdbc.exceptions.MySQLQueryInterruptedException'
+            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLQueryInterruptedException'
         )
     ),
     array(
         'exception' => array(
-            'class' => 'java.sql.SQLNonTransientConnectionException'
+            'class' => 'com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException'
         )
     ),
     array(
@@ -109,7 +109,7 @@ $filters = array(
     ),
     array(
         'exception' => array(
-            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB)/'
+            'message' => 'regex:/SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB|FULL)/'
         )
     ),
     array(
@@ -332,10 +332,79 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'com.gmt2001.httpclient.NotJSONException'
+        )
+    ),
+    array(
+        'exception' => array(
+            'class' => 'java.net.BindException'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*Read-only file system*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*Stale file handle*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*"status":40*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*"status":50*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*text is empty (possibly HTTP/0.9)*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*invalid version format*'
+        )
+    ),
+    array(
+        'exception' => array(
             'message' => '*java.base does not export sun.security.x509*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*Communications link failure*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => 'No space left on device'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*Database may be already in use*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*recv failed*'
+        )
+    ),
+    array(
+        'exception' => array(
+             'message' => '*session_id*'
         )
     )
 );
+
+if (file_exists('rollbar-filters.json')) {
+    $filters = array_merge($filters, json_decode(file_get_contents('rollbar-allowed-versions.json'), true));
+}
 
 // Only environment values below will be allowed
 $allowed_environments = array(
@@ -363,3 +432,4 @@ $files = array(
 @include_once('rollbar-settings-extra.php');
 
 ?>
+

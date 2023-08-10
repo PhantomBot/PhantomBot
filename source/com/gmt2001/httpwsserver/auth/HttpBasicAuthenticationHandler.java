@@ -21,8 +21,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
 
-import com.gmt2001.Digest;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
+import com.gmt2001.security.Digest;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;

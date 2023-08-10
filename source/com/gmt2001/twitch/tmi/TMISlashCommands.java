@@ -18,8 +18,8 @@ package com.gmt2001.twitch.tmi;
 
 import java.time.Duration;
 
-import com.gmt2001.DurationString;
 import com.gmt2001.twitch.cache.ViewerCache;
+import com.gmt2001.util.DurationString;
 
 import tv.phantombot.PhantomBot;
 import tv.phantombot.twitch.api.Helix;

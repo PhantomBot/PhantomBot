@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.gmt2001.ExecutorService;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;

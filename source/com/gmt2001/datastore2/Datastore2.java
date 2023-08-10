@@ -46,10 +46,10 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
 
-import com.gmt2001.ExecutorService;
-import com.gmt2001.Reflect;
 import com.gmt2001.datastore.DataStore;
 import com.gmt2001.datastore2.record.AttachableRecord;
+import com.gmt2001.util.Reflect;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager;
 import biz.source_code.miniConnectionPoolManager.MiniConnectionPoolManager.TimeoutException;

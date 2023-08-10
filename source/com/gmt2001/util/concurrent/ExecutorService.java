@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.gmt2001;
+package com.gmt2001.util.concurrent;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -25,13 +25,13 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Provides an interface to a shared {@link ScheduledExecutorService}.
- *
+ * Provides an interface to a shared {@link ScheduledExecutorService}
+ * <p>
  * Documentation copied from official OpenJDK 7
  *
  * @author gmt2001
  */
-public class ExecutorService {
+public final class ExecutorService {
 
     private static final ScheduledExecutorService SCHEDULEDEXECUTOR = Executors.newScheduledThreadPool(4);
     private static boolean shutdown = false;
