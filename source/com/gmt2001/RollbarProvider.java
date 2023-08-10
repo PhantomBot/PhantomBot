@@ -68,7 +68,6 @@ public final class RollbarProvider implements AutoCloseable {
             "rollbarid", "twitch_tcp_nodelay", "usehttps", "useeventsub", "userollbar", "webenable", "wsdebug"));
     private final Rollbar rollbar;
     private boolean enabled = false;
-    private MessageDigest md;
     private final ConcurrentHashMap<String, Instant> reportsPassedFilters = new ConcurrentHashMap<>();
     private final Timer t = new Timer();
 
@@ -381,47 +380,18 @@ public final class RollbarProvider implements AutoCloseable {
 
                         @Override
                         public boolean postProcess(Data data) {
-                            if (md != null) {
-                                try {
-                                    md.reset();
+                            try {
+                                MessageDigest md = MessageDigest.getInstance("SHA-1");
 
-                                    md.update(Optional.ofNullable(data.getCodeVersion()).orElse("").getBytes());
-                                    md.update(Optional.ofNullable(data.getEnvironment()).orElse("").getBytes());
-                                    md.update(Optional.ofNullable(data.getLevel()).orElse(Level.ERROR).name().getBytes());
-                                    md.update(Optional.ofNullable(data.getTitle()).orElse("").getBytes());
+                                md.update(Optional.ofNullable(data.getCodeVersion()).orElse("").getBytes());
+                                md.update(Optional.ofNullable(data.getEnvironment()).orElse("").getBytes());
+                                md.update(Optional.ofNullable(data.getLevel()).orElse(Level.ERROR).name().getBytes());
+                                md.update(Optional.ofNullable(data.getTitle()).orElse("").getBytes());
 
-                                    BodyContent bc = data.getBody().getContents();
+                                BodyContent bc = data.getBody().getContents();
 
-                                    if (bc instanceof TraceChain tc) {
-                                        tc.getTraces().stream().forEachOrdered(t -> {
-                                            md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
-                                            md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
-                                            md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
-                                            int last = -1;
-                                            for (int i = 0; i < t.getFrames().size(); i++) {
-                                                Frame f = t.getFrames().get(i);
-                                                for (String p : APP_PACKAGES) {
-                                                    if (f.getClassName() != null && f.getClassName().contains(p)) {
-                                                        last = i;
-                                                    }
-                                                }
-                                                for (String p : FINGERPRINT_FILE_REGEX) {
-                                                    if (f.getFilename() != null && f.getFilename().matches(p)) {
-                                                        last = i;
-                                                    }
-                                                }
-                                            }
-
-                                            if (last >= 0) {
-                                                Frame f = t.getFrames().get(last);
-                                                md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
-                                                md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
-                                                md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
-                                                md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
-                                            }
-                                        });
-                                    } else if (bc instanceof Trace) {
-                                        Trace t = (Trace) bc;
+                                if (bc instanceof TraceChain tc) {
+                                    tc.getTraces().stream().forEachOrdered(t -> {
                                         md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
                                         md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
                                         md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
@@ -447,21 +417,48 @@ public final class RollbarProvider implements AutoCloseable {
                                             md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
                                             md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
                                         }
+                                    });
+                                } else if (bc instanceof Trace) {
+                                    Trace t = (Trace) bc;
+                                    md.update(Optional.ofNullable(t.getException().getClassName()).orElse("").getBytes());
+                                    md.update(Optional.ofNullable(t.getException().getDescription()).orElse("").getBytes());
+                                    md.update(Optional.ofNullable(t.getException().getMessage()).orElse("").getBytes());
+                                    int last = -1;
+                                    for (int i = 0; i < t.getFrames().size(); i++) {
+                                        Frame f = t.getFrames().get(i);
+                                        for (String p : APP_PACKAGES) {
+                                            if (f.getClassName() != null && f.getClassName().contains(p)) {
+                                                last = i;
+                                            }
+                                        }
+                                        for (String p : FINGERPRINT_FILE_REGEX) {
+                                            if (f.getFilename() != null && f.getFilename().matches(p)) {
+                                                last = i;
+                                            }
+                                        }
                                     }
 
-                                    String digest = Hex.encodeHexString(md.digest());
-
-                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now()) ? "t" : "f"));
-
-                                    if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now())) {
-                                        com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
-                                        return true;
-                                    } else {
-                                        reportsPassedFilters.put(digest, Instant.now().plus(REPEAT_INTERVAL_MINUTES, ChronoUnit.MINUTES));
+                                    if (last >= 0) {
+                                        Frame f = t.getFrames().get(last);
+                                        md.update(Optional.ofNullable(f.getClassName()).orElse("").getBytes());
+                                        md.update(Optional.ofNullable(f.getFilename()).orElse("").getBytes());
+                                        md.update(Optional.ofNullable(f.getLineNumber()).orElse(0).toString().getBytes());
+                                        md.update(Optional.ofNullable(f.getMethod()).orElse("").getBytes());
                                     }
-                                } catch (Exception e) {
-                                    com.gmt2001.Console.debug.printOrLogStackTrace(e);
                                 }
+
+                                String digest = Hex.encodeHexString(md.digest());
+
+                                com.gmt2001.Console.debug.println("[ROLLBAR-POST] " + digest + " " + (reportsPassedFilters.containsKey(digest) ? "t" : "f") + (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now()) ? "t" : "f"));
+
+                                if (reportsPassedFilters.containsKey(digest) && reportsPassedFilters.get(digest).isAfter(Instant.now())) {
+                                    com.gmt2001.Console.debug.println("[ROLLBAR-POST] filtered");
+                                    return true;
+                                } else {
+                                    reportsPassedFilters.put(digest, Instant.now().plus(REPEAT_INTERVAL_MINUTES, ChronoUnit.MINUTES));
+                                }
+                            } catch (Exception e) {
+                                com.gmt2001.Console.debug.printOrLogStackTrace(e);
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-POST] not filtered");
@@ -484,12 +481,6 @@ public final class RollbarProvider implements AutoCloseable {
             }, REPEAT_CHECK_INTERVAL, REPEAT_CHECK_INTERVAL);
         } else {
             this.rollbar = null;
-        }
-
-        try {
-            md = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
