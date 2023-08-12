@@ -45,12 +45,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
     - name: Set up QEMU
-      if: matrix.qemu
+      if: matrix.qemu == true
       uses: docker/setup-qemu-action@v2
       with:
         platforms: ${{ matrix.platform }}
     - name: Set up JDK
-      if: !matrix.qemu
+      if: matrix.qemu == false
       id: setup-java
       uses: actions/setup-java@v3
       with:
@@ -83,7 +83,7 @@ jobs:
         chmod +x $SCRIPT
         /bin/bash $SCRIPT
     - name: Run JLink (Docker)
-      if: matrix.qemu
+      if: matrix.qemu == true
       env:
         FOLDER: ${{ matrix.folder }}
         SCRIPT: ${{ matrix.script }}
