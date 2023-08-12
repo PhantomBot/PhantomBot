@@ -374,6 +374,7 @@ java/nio/DirectLongBufferU
 java/util/zip/ZipConstants
 java/util/zip/ZipFile
 java/util/jar/JarFile
+sun/security/action/GetBooleanAction
 jdk/internal/access/JavaUtilZipFileAccess
 java/util/zip/ZipFile$1
 jdk/internal/access/JavaUtilJarAccess
@@ -521,7 +522,6 @@ jdk/internal/access/JavaLangInvokeAccess
 java/lang/invoke/MethodHandleImpl$1
 java/lang/invoke/AbstractValidatingLambdaMetafactory
 java/lang/invoke/InnerClassLambdaMetafactory
-sun/security/action/GetBooleanAction
 jdk/internal/org/objectweb/asm/Handle
 jdk/internal/org/objectweb/asm/ConstantDynamic
 java/lang/invoke/MethodHandleInfo
@@ -704,8 +704,12 @@ java/util/zip/ZipFile$ZipFileInflaterInputStream
 java/util/zip/Inflater
 java/util/zip/Inflater$InflaterZStreamRef
 java/util/zip/ZipFile$InflaterCleanupAction
-java/util/jar/JarVerifier
+sun/security/util/SignatureFileVerifier
 sun/security/util/Debug
+java/util/Locale
+sun/util/locale/LocaleUtils
+sun/security/action/GetIntegerAction
+java/util/jar/JarVerifier
 java/security/CodeSigner
 java/io/ByteArrayOutputStream
 java/util/jar/Attributes
@@ -813,8 +817,6 @@ java/lang/invoke/StringConcatFactory$2
 java/lang/invoke/StringConcatFactory$3
 sun/launcher/LauncherHelper
 sun/net/util/URLUtil
-java/util/Locale
-sun/util/locale/LocaleUtils
 java/security/PrivilegedExceptionAction
 jdk/internal/loader/URLClassPath$3
 jdk/internal/loader/URLClassPath$Loader
@@ -945,6 +947,7 @@ java/nio/DirectIntBufferRU
 jdk/internal/jimage/ImageStrings
 jdk/internal/jimage/ImageStringsReader
 jdk/internal/jimage/decompressor/Decompressor
+jdk/internal/jimage/ImageLocation
 java/util/Collections$EmptyIterator
 java/util/Collections$EmptyEnumeration
 jdk/internal/loader/BuiltinClassLoader$1
