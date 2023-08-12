@@ -27,7 +27,9 @@ jobs:
 
       - name: Run DevSkim scanner
         uses: microsoft/DevSkim-Action@v1
-        
+        with:
+          ignore-globs: "dist/**,resources/java-runtime*/**,resources/web/common/js/jquery-ui/**,resources/web/panel/vendors/**,docs/common/**,docs/panel/**,docs/panel-stable/**,docs/javadoc/**,docs/javadoc-stable/**"
+
       - name: Upload DevSkim scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
