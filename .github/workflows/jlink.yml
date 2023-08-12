@@ -64,9 +64,6 @@ jobs:
         SCRIPT: ${{ matrix.script }}
         JDK: ${{ steps.setup-java.outputs.path }}
       run: |
-        cd resources
-        Remove-Item -Force -Recurse $env:FOLDER
-        cd ..
         cd development-resources
         cmd /C $env:SCRIPT
     - name: Run JLink (Non-Windows)
@@ -76,9 +73,6 @@ jobs:
         SCRIPT: ${{ matrix.script }}
         JDK: ${{ steps.setup-java.outputs.path }}
       run: |
-        cd resources
-        rm -rfv $FOLDER
-        cd ..
         cd development-resources
         chmod +x $SCRIPT
         /bin/bash $SCRIPT
@@ -91,9 +85,6 @@ jobs:
         PLATFORM: ${{ matrix.platform }}
         IMAGE: ${{ matrix.image }}
       run: |
-        cd resources
-        rm -rfv $FOLDER
-        cd ..
         cd development-resources
         chmod +x $SCRIPT
         /bin/bash $SCRIPT

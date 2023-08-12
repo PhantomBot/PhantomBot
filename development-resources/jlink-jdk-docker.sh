@@ -26,5 +26,6 @@
 
 # QEMU must already be setup and registered with Docker for the same platform identifier that is passed in as PLATFORM
 
+rm -rfv ../resources/$FOLDER
 mkdir -p ../resources
 docker run --rm --platform ${PLATFORM} --privileged --mount type=bind,source="$(pwd)"/../resources,target=/opt/phantombot ${IMAGE} ${JDK}/bin/jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument,jdk.unsupported,jdk.zipfs --output /opt/phantombot/${FOLDER}
