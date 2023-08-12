@@ -946,7 +946,7 @@
                 values = [];
 
         // Process new users list
-        for (let i = 0; i < newUsers.length; i++) {
+        for (let i = 0; i < chatters.length; i++) {
             let username = $.jsString(chatters.get(i).login().toLowerCase());
             if (isTwitchBot(username)) {
                 continue;
