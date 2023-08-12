@@ -24,10 +24,10 @@ Additional functionality is enabled through the use of third-party modules.
 
 PhantomBot requires the following software to be installed:
 
-ARM (Raspberry Pi) or x86 (32-bit) architectures
-* [Adoptium Temurin 17](https://adoptium.net/) or [OpenJDK 17](https://openjdk.java.net/)
+armv7 (Raspberry Pi without 64-bit) or x86 (32-bit) architectures
+* [Eclipse Temurin 17](https://adoptium.net/)
 
-x86_64 (64-bit) architectures
+x86_64, arm64, aarch64, and Apple Silicon (64-bit) architectures
 * No pre-requisites
 
 ## Installation

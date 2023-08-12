@@ -20,13 +20,13 @@
 # PhantomBot Service Restart - Linux
 #
 # Please run the following to prep this script:
-# % sudo chown 0 restartbot.sh
-# % sudo chmod +x restartbot.sh
-# % sudo chmod ug+s restartbot.sh
+# % sudo chown 0 restartbot-systemctl.sh
+# % sudo chmod +x restartbot-systemctl.sh
+# % sudo chmod ug+s restartbot-systemctl.sh
 #
 # To enable this script:
 # % Stop the bot
-# % Add the following line to botlogin.txt: restartcmd=/path/to/restartbot.sh
+# % Add the following line to botlogin.txt: restartcmd=/path/to/restartbot-systemctl.sh
 # % Replace the path as appropriate, the full path must be used
 # % Start the bot
 #
