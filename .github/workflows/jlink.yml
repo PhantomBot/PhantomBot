@@ -9,37 +9,37 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
-            osname: Linux
-            script: jlink-jdk-linux.sh
+          - osname: Linux (GCC, x86_64)
+            java-version: 17
+            java-distribution: 'temurin'
             folder: java-runtime-linux
-            java-distribution: 'temurin'
-            java-version: 17
             qemu: false
-          - os: ubuntu-latest
-            osname: arm64
-            script: jlink-jdk-docker.sh
-            folder: java-runtime-arm64
-            java-distribution: 'temurin'
+            os: ubuntu-latest
+            script: jlink-jdk-linux.sh
+          - osname: arm64
             java-version: 17
+            java-distribution: 'temurin'
+            folder: java-runtime-arm64
             qemu: true
             platform: linux/arm64
             image: eclipse-temurin:17-jdk
+            os: ubuntu-latest
+            script: jlink-jdk-docker.sh
             jdk: /opt/java/openjdk
-          - os: windows-latest
-            osname: Windows
-            script: jlink-jdk.bat
+          - osname: Windows
+            java-version: 17
+            os: windows-latest
+            java-distribution: 'temurin'
             folder: java-runtime
-            java-distribution: 'temurin'
-            java-version: 17
             qemu: false
-          - os: macos-latest
-            osname: macOS
-            script: jlink-jdk-macos.sh
+            script: jlink-jdk.bat
+          - osname: macOS
+            java-version: 17
+            java-distribution: 'temurin'
             folder: java-runtime-macos
-            java-distribution: 'temurin'
-            java-version: 17
             qemu: false
+            os: macos-latest
+            script: jlink-jdk-macos.sh
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout Repository
