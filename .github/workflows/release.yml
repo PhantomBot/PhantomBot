@@ -284,45 +284,58 @@ jobs:
         FOLDERMAC: ${{ format('PhantomBot-{0}-mac', needs.workflowvars.outputs.version) }}
         FOLDERARMBSDOTHER: ${{ format('PhantomBot-{0}-arm-bsd-other', needs.workflowvars.outputs.version) }}
       run: |
+        echo ::group::rsync $FOLDERLIN
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-docker.sh
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERWIN
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.sh --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh  --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERMAC
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-bsd.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERARMBSDOTHER
         mkdir dist/$FOLDERARMBSDOTHER
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-docker.sh
+        echo ::endgroup::
         cd dist
-        echo Zip Full
+        echo ::group::zip $FOLDERFULL
         zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
-        echo Zip Lin
+        echo ::endgroup::
+        echo ::group::zip $FOLDERLIN
         mv -v $FOLDERLIN $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERLIN.zip ./$FOLDERLIN.zip
         rm -rf $FOLDERFULL
-        echo Zip Win
+        echo ::endgroup::
+        echo ::group::zip $FOLDERWIN
         mv -v $FOLDERWIN $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERWIN.zip ./$FOLDERWIN.zip
         rm -rf $FOLDERFULL
-        echo Zip Mac
+        echo ::endgroup::
+        echo ::group::zip $FOLDERMAC
         mv -v $FOLDERMAC $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
         rm -rf $FOLDERFULL
-        echo Zip Arm/BSD/Other
+        echo ::endgroup::
+        echo ::group::zip $FOLDERARMBSDOTHER
         mv -v $FOLDERARMBSDOTHER $FOLDERFULL
         cd $FOLDERFULL
         zip -m -9 -X -r $FOLDERARMBSDOTHER.zip $FOLDERFULL
         cd ..
         mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
         rm -rf $FOLDERFULL
+        echo ::endgroup::
     - name: Upload Assets
       uses: softprops/action-gh-release@v1
       with:
