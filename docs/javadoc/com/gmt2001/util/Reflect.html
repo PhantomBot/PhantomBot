@@ -108,10 +108,20 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Dumps the Java heap to an hprof file</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#dumpThreads()" class="member-name-link">dumpThreads</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Dumps all threads to a file</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#dumpThreads(java.lang.String)" class="member-name-link">dumpThreads</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePath)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Dumps all threads to a file</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getClasses()" class="member-name-link">getClasses</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the cache of the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a></div>
+<div class="block">Gets a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the local cache as a result of calls to <a href="#loadPackageRecursive(java.lang.String,java.util.List)"><code>loadPackageRecursive(String, List)</code></a></div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#GetExecutionPath()" class="member-name-link">GetExecutionPath</a>()</code></div>
@@ -131,25 +141,34 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends T&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSubTypesOf(java.lang.Class)" class="member-name-link">getSubTypesOf</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;type)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets a list of non-abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the cache of the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which are assignable from the specified type</div>
+<div class="block">Gets a list of non-abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the local cache as a result of calls to <a href="#loadPackageRecursive(java.lang.String,java.util.List)"><code>loadPackageRecursive(String, List)</code></a> which are assignable from the specified type</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns an instance of <a href="Reflect.html" title="class in com.gmt2001.util"><code>Reflect</code></a></div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadPackageRecursive(java.lang.String)" class="member-name-link">loadPackageRecursive</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the classloaders cache</div>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the local cache</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadPackageRecursive(java.lang.String,java.util.List)" class="member-name-link">loadPackageRecursive</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;exclude)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the classloaders cache</div>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the local cache</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static long</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pid()" class="member-name-link">pid</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#loadPackageRecursive(java.net.URL,java.lang.String,java.util.List)" class="member-name-link">loadPackageRecursive</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;jarFile,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;exclude)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> in the specified jar file which have the specified package prefix into the local cache</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static long</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#pid()" class="member-name-link">pid</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Attempts to retrieve the PID of the running process from the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.management/java/lang/management/RuntimeMXBean.html" title="class or interface in java.lang.management" class="external-link"><code>RuntimeMXBean</code></a> of the JVM process</div>
 </div>
 </div>
@@ -173,31 +192,75 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="instance()">
 <h3>instance</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></span>&nbsp;<span class="element-name">instance</span>()</div>
+<div class="block">Returns an instance of <a href="Reflect.html" title="class in com.gmt2001.util"><code>Reflect</code></a></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>an instance of <a href="Reflect.html" title="class in com.gmt2001.util"><code>Reflect</code></a></dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="loadPackageRecursive(java.lang.String)">
 <h3>loadPackageRecursive</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">loadPackageRecursive</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg)</span></div>
-<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the classloaders cache</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></span>&nbsp;<span class="element-name">loadPackageRecursive</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg)</span></div>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the local cache
+ <p>
+ This process also triggers static initializers in matching classes
+ <p>
+ <code>pkg</code> is matched using <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#startsWith(java.lang.String)" title="class or interface in java.lang" class="external-link"><code>String.startsWith(String)</code></a>
+ <p>
+ The classes are enumerated from the main jar file</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>pkg</code> - the package or package prefix to load</dd>
+<dt>Returns:</dt>
+<dd><code>this</code></dd>
 </dl>
 </section>
 </li>
 <li>
 <section class="detail" id="loadPackageRecursive(java.lang.String,java.util.List)">
 <h3>loadPackageRecursive</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">loadPackageRecursive</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></span>&nbsp;<span class="element-name">loadPackageRecursive</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;exclude)</span></div>
-<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the classloaders cache
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the local cache
  <p>
- If any paths return <code>true</code> on a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#contains(java.lang.CharSequence)" title="class or interface in java.lang" class="external-link"><code>String.contains(CharSequence)</code></a> of any entry in <code>exclude</code>, the class will be excluded from loading</div>
+ If any paths return <code>true</code> on a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#contains(java.lang.CharSequence)" title="class or interface in java.lang" class="external-link"><code>String.contains(CharSequence)</code></a> of any entry in <code>exclude</code>, the class will be excluded from loading
+ <p>
+ This process also triggers static initializers in matching classes
+ <p>
+ <code>pkg</code> is matched using <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#startsWith(java.lang.String)" title="class or interface in java.lang" class="external-link"><code>String.startsWith(String)</code></a>. <code>exclude</code> is matched using <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#contains(java.lang.CharSequence)" title="class or interface in java.lang" class="external-link"><code>String.contains(CharSequence)</code></a>
+ <p>
+ The classes are enumerated from the main jar file</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>pkg</code> - the package or package prefix to load</dd>
 <dd><code>exclude</code> - a list of partial path names to exclude</dd>
+<dt>Returns:</dt>
+<dd><code>this</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="loadPackageRecursive(java.net.URL,java.lang.String,java.util.List)">
+<h3>loadPackageRecursive</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Reflect.html" title="class in com.gmt2001.util">Reflect</a></span>&nbsp;<span class="element-name">loadPackageRecursive</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link">URL</a>&nbsp;jarFile,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pkg,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;exclude)</span></div>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> in the specified jar file which have the specified package prefix into the local cache
+ <p>
+ If any paths return <code>true</code> on a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#contains(java.lang.CharSequence)" title="class or interface in java.lang" class="external-link"><code>String.contains(CharSequence)</code></a> of any entry in <code>exclude</code>, the class will be excluded from loading
+ <p>
+ This process also triggers static initializers in matching classes
+ <p>
+ <code>pkg</code> is matched using <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#startsWith(java.lang.String)" title="class or interface in java.lang" class="external-link"><code>String.startsWith(String)</code></a>. <code>exclude</code> is matched using <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html#contains(java.lang.CharSequence)" title="class or interface in java.lang" class="external-link"><code>String.contains(CharSequence)</code></a></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>jarFile</code> - the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URL.html" title="class or interface in java.net" class="external-link"><code>URL</code></a> representing the path to the jar file which will be searched; <code>null</code> to search the main jar file</dd>
+<dd><code>pkg</code> - the package or package prefix to load; <code>""</code> (empty string) to load the entire jar file</dd>
+<dd><code>exclude</code> - a list of partial path names to exclude</dd>
+<dt>Returns:</dt>
+<dd><code>this</code></dd>
 </dl>
 </section>
 </li>
@@ -205,7 +268,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getClasses()">
 <h3>getClasses</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&gt;</span>&nbsp;<span class="element-name">getClasses</span>()</div>
-<div class="block">Gets a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the cache of the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a></div>
+<div class="block">Gets a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the local cache as a result of calls to <a href="#loadPackageRecursive(java.lang.String,java.util.List)"><code>loadPackageRecursive(String, List)</code></a></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a></dd>
@@ -216,7 +279,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getSubTypesOf(java.lang.Class)">
 <h3>getSubTypesOf</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends T&gt;&gt;</span>&nbsp;<span class="element-name">getSubTypesOf</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;type)</span></div>
-<div class="block">Gets a list of non-abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the cache of the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which are assignable from the specified type</div>
+<div class="block">Gets a list of non-abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the local cache as a result of calls to <a href="#loadPackageRecursive(java.lang.String,java.util.List)"><code>loadPackageRecursive(String, List)</code></a> which are assignable from the specified type</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the parent class or interface</dd>
@@ -252,8 +315,32 @@ loadScripts(document, 'script');</script>
 <dd><code>filePath</code> - the path to where the heap dump should be written</dd>
 <dd><code>live</code> - <code>true</code> to only dump <i>live</i> objects (objects which are referenced by others)</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if the <code>outputFile</code> already exists, cannot be created, opened, or written to</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if <code>filePath</code> already exists, cannot be created, opened, or written to</dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if <code>filePath</code> does not end with the <code>.hprof</code> extension</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="dumpThreads()">
+<h3>dumpThreads</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">dumpThreads</span>()</div>
+<div class="block">Dumps all threads to a file
+ <p>
+ This method tries to generate a filename of <code>java_pid##.TIMESTAMP.threads.txt</code> where <code>##</code> is
+ the PID of the running process and <code>TIMESTAMP</code> is the timestamp when the method was called in <code>yyyy-MM-dd_HH-mm-ss</code> format</div>
+</section>
+</li>
+<li>
+<section class="detail" id="dumpThreads(java.lang.String)">
+<h3>dumpThreads</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">dumpThreads</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filePath)</span>
+                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Dumps all threads to a file</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>filePath</code> - the path to where the thread dump should be written</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - if <code>filePath</code> already exists, cannot be created, opened, or written to</dd>
 </dl>
 </section>
 </li>

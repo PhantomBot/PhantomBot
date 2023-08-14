@@ -2193,6 +2193,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Dumps the Java heap to an hprof file</div>
 </dd>
+<dt><a href="com/gmt2001/util/Reflect.html#dumpThreads()" class="member-name-link">dumpThreads()</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
+<dd>
+<div class="block">Dumps all threads to a file</div>
+</dd>
+<dt><a href="com/gmt2001/util/Reflect.html#dumpThreads(java.lang.String)" class="member-name-link">dumpThreads(String)</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
+<dd>
+<div class="block">Dumps all threads to a file</div>
+</dd>
 <dt><a href="com/gmt2001/util/DurationString.html" class="type-name-link" title="class in com.gmt2001.util">DurationString</a> - Class in <a href="com/gmt2001/util/package-summary.html">com.gmt2001.util</a></dt>
 <dd>
 <div class="block">Converts duration strings into a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/time/Duration.html" title="class or interface in java.time" class="external-link"><code>Duration</code></a></div>
@@ -3545,7 +3553,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/util/Reflect.html#getClasses()" class="member-name-link">getClasses()</a> - Method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
 <dd>
-<div class="block">Gets a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the cache of the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a></div>
+<div class="block">Gets a list of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the local cache as a result of calls to <a href="com/gmt2001/util/Reflect.html#loadPackageRecursive(java.lang.String,java.util.List)"><code>Reflect.loadPackageRecursive(String, List)</code></a></div>
 </dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#getClient()" class="member-name-link">getClient()</a> - Static method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
 <dd>
@@ -4721,7 +4729,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/util/Reflect.html#getSubTypesOf(java.lang.Class)" class="member-name-link">getSubTypesOf(Class&lt;T&gt;)</a> - Method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
 <dd>
-<div class="block">Gets a list of non-abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the cache of the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which are assignable from the specified type</div>
+<div class="block">Gets a list of non-abstract <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that are in the local cache as a result of calls to <a href="com/gmt2001/util/Reflect.html#loadPackageRecursive(java.lang.String,java.util.List)"><code>Reflect.loadPackageRecursive(String, List)</code></a> which are assignable from the specified type</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/TableDoesNotExistException.html#getTableName()" class="member-name-link">getTableName()</a> - Method in exception com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/TableDoesNotExistException.html" title="class in com.gmt2001.datastore2">TableDoesNotExistException</a></dt>
 <dd>
@@ -5701,7 +5709,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Instance</div>
 </dd>
 <dt><a href="com/gmt2001/util/Reflect.html#instance()" class="member-name-link">instance()</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns an instance of <a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util"><code>Reflect</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/util/RestartRunner.html#instance()" class="member-name-link">instance()</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/RestartRunner.html" title="class in com.gmt2001.util">RestartRunner</a></dt>
 <dd>
 <div class="block">Gets an instance</div>
@@ -6562,11 +6572,15 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/util/Reflect.html#loadPackageRecursive(java.lang.String)" class="member-name-link">loadPackageRecursive(String)</a> - Method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
 <dd>
-<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the classloaders cache</div>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the local cache</div>
 </dd>
 <dt><a href="com/gmt2001/util/Reflect.html#loadPackageRecursive(java.lang.String,java.util.List)" class="member-name-link">loadPackageRecursive(String, List&lt;String&gt;)</a> - Method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
 <dd>
-<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the classloaders cache</div>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> which have the specified package prefix into the local cache</div>
+</dd>
+<dt><a href="com/gmt2001/util/Reflect.html#loadPackageRecursive(java.net.URL,java.lang.String,java.util.List)" class="member-name-link">loadPackageRecursive(URL, String, List&lt;String&gt;)</a> - Method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
+<dd>
+<div class="block">Loads all classes visible to the default <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/ClassLoader.html" title="class or interface in java.lang" class="external-link"><code>ClassLoader</code></a> in the specified jar file which have the specified package prefix into the local cache</div>
 </dd>
 <dt><a href="tv/phantombot/script/ScriptManager.html#loadScript(java.io.File,java.lang.String)" class="member-name-link">loadScript(File, String)</a> - Static method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptManager.html" title="class in tv.phantombot.script">ScriptManager</a></dt>
 <dd>&nbsp;</dd>
