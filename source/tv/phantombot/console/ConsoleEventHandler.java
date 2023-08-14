@@ -775,6 +775,14 @@ public final class ConsoleEventHandler implements Listener {
             com.gmt2001.Console.out.println("Heap Dump Completed");
         }
 
+        /**
+         * @consolecommand dumpthreads - Creates a thread dump
+         */
+        if (message.equalsIgnoreCase("dumpthreads")) {
+            Reflect.dumpThreads();
+            com.gmt2001.Console.out.println("Thread Dump Completed");
+        }
+
         if(message.equalsIgnoreCase("paneluser")) {
             if (argument != null && argument.length > 1 && !argument[0].isBlank() && !argument[1].isBlank()) {
                 /**
