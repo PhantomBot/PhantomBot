@@ -224,6 +224,7 @@
             file="source/com/gmt2001/RollbarProvider.java"
             match="ENDPOINT = &quot;(.*)&quot;;"
             replace="ENDPOINT = &quot;${rollbar_endpoint}&quot;;" />
+            <sleep seconds="2"/>
     </target>
 
     <target depends="pre.compile" name="compile.src">
@@ -282,6 +283,7 @@
             file="source/com/gmt2001/RollbarProvider.java"
             match="ENDPOINT = &quot;(.*)&quot;;"
             replace="ENDPOINT = &quot;@endpoint@&quot;;" />
+            <sleep seconds="2"/>
     </target>
 
     <target name="copy-javascript" depends="prepare-javascript-true, prepare-javascript-false">
