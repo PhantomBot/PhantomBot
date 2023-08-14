@@ -90,8 +90,11 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
 
         ExecutorService.schedule(() -> {
             com.gmt2001.Console.debug.println("Loading processors via reflection");
-            Reflect.instance().loadPackageRecursive(AbstractTMIProcessor.class.getName().substring(0, AbstractTMIProcessor.class.getName().lastIndexOf('.')));
-            Reflect.instance().getSubTypesOf(AbstractTMIProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractTMIProcessor.class.getName()))).forEachOrdered((c) -> {
+            Reflect.instance().loadPackageRecursive(AbstractTMIProcessor.class.getName()
+                .substring(0, AbstractTMIProcessor.class.getName().lastIndexOf('.')))
+            .getSubTypesOf(AbstractTMIProcessor.class).stream()
+            .filter((c) -> (!c.getName().equals(AbstractTMIProcessor.class.getName())))
+            .forEachOrdered((c) -> {
                 for (Constructor<?> constructor : c.getConstructors()) {
                     if (constructor.getParameterCount() == 0) {
                         try {

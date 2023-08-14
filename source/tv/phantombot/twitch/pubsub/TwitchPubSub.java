@@ -73,18 +73,22 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
         this.oAuth = oAuth;
 
         ExecutorService.schedule(() -> {
-            Reflect.instance().loadPackageRecursive(AbstractPubSubProcessor.class.getName().substring(0, AbstractPubSubProcessor.class.getName().lastIndexOf('.')));
-            Reflect.instance().getSubTypesOf(AbstractPubSubProcessor.class).stream().filter((c) -> (!c.getName().equals(AbstractPubSubProcessor.class.getName()))).forEachOrdered((c) -> {
-                for (Constructor<?> constructor : c.getConstructors()) {
-                    if (constructor.getParameterCount() == 0) {
-                        try {
-                            constructor.newInstance();
-                        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                            com.gmt2001.Console.err.printStackTrace(ex);
+            Reflect.instance()
+                .loadPackageRecursive(AbstractPubSubProcessor.class.getName()
+                    .substring(0, AbstractPubSubProcessor.class.getName().lastIndexOf('.')))
+                .getSubTypesOf(AbstractPubSubProcessor.class).stream()
+                .filter((c) -> (!c.getName().equals(AbstractPubSubProcessor.class.getName())))
+                .forEachOrdered((c) -> {
+                    for (Constructor<?> constructor : c.getConstructors()) {
+                        if (constructor.getParameterCount() == 0) {
+                            try {
+                                constructor.newInstance();
+                            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                                com.gmt2001.Console.err.printStackTrace(ex);
+                            }
                         }
                     }
-                }
-            });
+                });
 
             this.connect();
         }, 100, TimeUnit.MILLISECONDS);

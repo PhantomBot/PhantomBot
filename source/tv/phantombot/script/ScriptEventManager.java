@@ -56,8 +56,13 @@ public final class ScriptEventManager implements Listener {
     }
 
     private void registerClasses() {
-        Reflect.instance().loadPackageRecursive(Event.class.getName().substring(0, Event.class.getName().lastIndexOf('.')));
-        Reflect.instance().getSubTypesOf(Event.class).stream().filter((c) -> (!this.classes.contains(c.getName().substring(0, c.getName().lastIndexOf('.'))))).forEachOrdered((c) -> {
+        Reflect.instance()
+        .loadPackageRecursive(Event.class.getName()
+            .substring(0, Event.class.getName().lastIndexOf('.')))
+        .getSubTypesOf(Event.class).stream()
+        .filter((c) -> (!this.classes.contains(c.getName()
+            .substring(0, c.getName().lastIndexOf('.')))))
+        .forEachOrdered((c) -> {
             this.classes.add(c.getName().substring(0, c.getName().lastIndexOf('.')));
             com.gmt2001.Console.debug.println("Registered event package " + c.getName().substring(0, c.getName().lastIndexOf('.')));
         });
@@ -112,8 +117,11 @@ public final class ScriptEventManager implements Listener {
     }
 
     protected List<String> getEventNames() {
-        Reflect.instance().loadPackageRecursive(Event.class.getName().substring(0, Event.class.getName().lastIndexOf('.')));
-        return Reflect.instance().getSubTypesOf(Event.class).stream().map((c) -> this.formatEventName(c.getName().substring(c.getName().lastIndexOf('.') + 1))).collect(Collectors.toList());
+        return Reflect.instance().loadPackageRecursive(Event.class.getName()
+            .substring(0, Event.class.getName().lastIndexOf('.')))
+        .getSubTypesOf(Event.class).stream()
+        .map((c) -> this.formatEventName(c.getName()
+            .substring(c.getName().lastIndexOf('.') + 1))).collect(Collectors.toList());
     }
 
     private void register(String eventName, ScriptEventHandler handler, boolean recurse) {

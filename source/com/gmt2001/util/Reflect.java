@@ -20,21 +20,22 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.lang.management.RuntimeMXBean;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-
-import javax.management.MBeanServer;
 
 import com.gmt2001.PathValidator;
 import com.illusionaryone.Logger;
@@ -49,38 +50,101 @@ import tv.phantombot.RepoVersion;
  * @author gmt2001
  */
 public final class Reflect {
+    /**
+     * Instance
+     */
+    private static final Reflect INSTANCE = new Reflect();
+    /**
+     * Cache of loaded packages to prevent scanning multiple times
+     */
+    private final List<String> loadedPackages = new CopyOnWriteArrayList<>();
+    /**
+     * Cache of loaded classes
+     */
+    private final List<Class<?>> classes = new CopyOnWriteArrayList<>();
 
-    private static final Reflect instance = new Reflect();
-
+    /**
+     * Returns an instance of {@link Reflect}
+     *
+     * @return an instance of {@link Reflect}
+     */
     public static Reflect instance() {
-        return instance;
+        return INSTANCE;
     }
 
     private Reflect() {
     }
 
     /**
-     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the classloaders cache
+     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the local cache
+     * <p>
+     * This process also triggers static initializers in matching classes
+     * <p>
+     * {@code pkg} is matched using {@link String#startsWith(String)}
+     * <p>
+     * The classes are enumerated from the main jar file
      *
      * @param pkg the package or package prefix to load
+     * @return {@code this}
      */
-    public void loadPackageRecursive(String pkg) {
-        this.loadPackageRecursive(pkg, Collections.emptyList());
+    public Reflect loadPackageRecursive(String pkg) {
+        return this.loadPackageRecursive(pkg, Collections.emptyList());
     }
 
     /**
-     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the classloaders cache
+     * Loads all classes visible to the default {@link ClassLoader} which have the specified package prefix into the local cache
      * <p>
      * If any paths return {@code true} on a {@link String#contains(CharSequence)} of any entry in {@code exclude}, the class will be excluded from loading
+     * <p>
+     * This process also triggers static initializers in matching classes
+     * <p>
+     * {@code pkg} is matched using {@link String#startsWith(String)}. {@code exclude} is matched using {@link String#contains(CharSequence)}
+     * <p>
+     * The classes are enumerated from the main jar file
      *
      * @param pkg the package or package prefix to load
      * @param exclude a list of partial path names to exclude
+     * @return {@code this}
      */
-    public void loadPackageRecursive(String pkg, List<String> exclude) {
+    public Reflect loadPackageRecursive(String pkg, List<String> exclude) {
+        return this.loadPackageRecursive(null, pkg, exclude);
+    }
+
+    /**
+     * Loads all classes visible to the default {@link ClassLoader} in the specified jar file which have the specified package prefix into the local cache
+     * <p>
+     * If any paths return {@code true} on a {@link String#contains(CharSequence)} of any entry in {@code exclude}, the class will be excluded from loading
+     * <p>
+     * This process also triggers static initializers in matching classes
+     * <p>
+     * {@code pkg} is matched using {@link String#startsWith(String)}. {@code exclude} is matched using {@link String#contains(CharSequence)}
+     *
+     * @param jarFile the {@link URL} representing the path to the jar file which will be searched; {@code null} to search the main jar file
+     * @param pkg the package or package prefix to load; {@code ""} (empty string) to load the entire jar file
+     * @param exclude a list of partial path names to exclude
+     * @return {@code this}
+     */
+    public Reflect loadPackageRecursive(URL jarFile, String pkg, List<String> exclude) {
+        ClassLoader classLoader = null;
+
+        if (jarFile == null) {
+            jarFile = Reflect.class.getProtectionDomain().getCodeSource().getLocation();
+            classLoader = Reflect.class.getClassLoader();
+        }
+
+        if (this.loadedPackages.contains(jarFile.toString() + "#" + pkg)) {
+            return this;
+        }
+
+        this.loadedPackages.add(jarFile.toString() + "#" +pkg);
+
+        if (classLoader == null) {
+            classLoader = new URLClassLoader(new URL[] { jarFile }, Reflect.class.getClassLoader());
+        }
+
         pkg = pkg.replace('.', '/');
-        ClassLoader classLoader = Reflect.class.getClassLoader();
-        URL u = Reflect.class.getProtectionDomain().getCodeSource().getLocation();
-        try ( JarInputStream jar = new JarInputStream(u.openStream())) {
+
+        try ( JarInputStream jar = new JarInputStream(jarFile.openStream())) {
             JarEntry e;
             do {
                 e = jar.getNextJarEntry();
@@ -100,7 +164,10 @@ public final class Reflect {
 
                         if (!excluded) {
                             try {
-                                Class.forName(name.replace('/', '.').replace(".class", ""), true, classLoader);
+                                Class<?> c = Class.forName(name.replace('/', '.').replace(".class", ""), true, classLoader);
+                                if (!this.classes.contains(c)) {
+                                    this.classes.add(c);
+                                }
                             } catch (ClassNotFoundException ex) {
                                 com.gmt2001.Console.debug.printStackTrace(ex);
                             }
@@ -111,58 +178,21 @@ public final class Reflect {
         } catch (IOException ex) {
             com.gmt2001.Console.debug.printStackTrace(ex);
         }
+
+        return this;
     }
 
     /**
-     * Workaround to get the {@link ClassLoader#classes} field in JDK 12+
-     *
-     * @return the field
-     * @throws NoSuchMethodException if unable to load {@link Class#getDeclaredFields0()} or unable to find the field
-     * @throws IllegalAccessException if Java language access control blocks invocation
-     * @throws InvocationTargetException if an exception is thrown by the method being invoked
-     */
-    private Field getClassesField() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Method getDeclaredFields0 = Class.class.getDeclaredMethod("getDeclaredFields0", boolean.class);
-        getDeclaredFields0.setAccessible(true);
-        Field[] fields = (Field[]) getDeclaredFields0.invoke(ClassLoader.class, false);
-        Field modifiers = null;
-        for (Field each : fields) {
-            if ("classes".equals(each.getName())) {
-                return each;
-            }
-        }
-
-        throw new NoSuchMethodException("Could not find field 'classes'");
-    }
-
-    /**
-     * Gets a list of {@link Class} that are in the cache of the default {@link ClassLoader}
+     * Gets a list of {@link Class} that are in the local cache as a result of calls to {@link #loadPackageRecursive(String, List)}
      *
      * @return a list of {@link Class}
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public List<Class<?>> getClasses() {
-        List<Class<?>> cl = new ArrayList<>();
-
-        try {
-            Field f = this.getClassesField();
-            f.setAccessible(true);
-            ClassLoader classLoader = Reflect.class.getClassLoader();
-            @SuppressWarnings("UseOfObsoleteCollectionType")
-            List<Class> classes = (List<Class>) f.get(classLoader);
-            final int size = classes.size();
-            for (int i = 0; i < size; i++) {
-                cl.add(classes.get(i));
-            }
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-
-        return Collections.unmodifiableList(cl);
+        return Collections.unmodifiableList(this.classes);
     }
 
     /**
-     * Gets a list of non-abstract {@link Class} that are in the cache of the default {@link ClassLoader} which are assignable from the specified type
+     * Gets a list of non-abstract {@link Class} that are in the local cache as a result of calls to {@link #loadPackageRecursive(String, List)} which are assignable from the specified type
      *
      * @param <T> the parent class or interface
      * @param type the parent class or interface
@@ -217,27 +247,75 @@ public final class Reflect {
         }
     }
 
-    /**
-     * Dumps the Java Heap to a file
-     *
-     * @param filePath the path to the file where the heap should be written
-     * @param live {@code true} to only dump <i>live</i> objects
-     * @throws IOException if the file already exists, cannot be created, opened, or written to
-     */
     // https://www.baeldung.com/java-heap-dump-capture
     /**
      * Dumps the Java heap to an hprof file
      *
      * @param filePath the path to where the heap dump should be written
      * @param live {@code true} to only dump <i>live</i> objects (objects which are referenced by others)
-     * @throws IOException if the {@code outputFile} already exists, cannot be created, opened, or written to
+     * @throws IOException if {@code filePath} already exists, cannot be created, opened, or written to
      * @throws IllegalArgumentException if {@code filePath} does not end with the {@code .hprof} extension
      */
     public static void dumpHeap(String filePath, boolean live) throws IOException, IllegalArgumentException {
-        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        HotSpotDiagnosticMXBean mxBean = ManagementFactory.newPlatformMXBeanProxy(
-                server, "com.sun.management:type=HotSpotDiagnostic", HotSpotDiagnosticMXBean.class);
-        mxBean.dumpHeap(filePath, live);
+        ManagementFactory.newPlatformMXBeanProxy(
+                ManagementFactory.getPlatformMBeanServer(),
+                "com.sun.management:type=HotSpotDiagnostic",
+                HotSpotDiagnosticMXBean.class)
+                .dumpHeap(filePath, live);
+    }
+
+    /**
+     * Dumps all threads to a file
+     * <p>
+     * This method tries to generate a filename of {@code java_pid##.TIMESTAMP.threads.txt} where {@code ##} is
+     * the PID of the running process and {@code TIMESTAMP} is the timestamp when the method was called in {@code yyyy-MM-dd_HH-mm-ss} format
+     */
+    public static void dumpThreads() {
+        String timestamp;
+        try {
+            timestamp = Logger.instance().logFileDTTimestamp();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            try {
+                timestamp = Logger.instance().logFileDTTimestamp(ZoneId.of("Z")) + "Z";
+            } catch (Exception ex2) {
+                com.gmt2001.Console.err.printStackTrace(ex2);
+                timestamp = "UNK";
+            }
+        }
+
+        try {
+            String fName = "java_pid" + Long.toString(pid()) + "." + timestamp + ".threads.txt";
+            String fPath;
+
+            if (RepoVersion.isDocker()) {
+                fPath = Paths.get(PathValidator.getDockerPath(), fName).toString();
+            } else {
+                fPath = Paths.get(GetExecutionPath(), fName).toString();
+            }
+
+            dumpHeap(fPath, true);
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex, false, true);
+        }
+    }
+
+    /**
+     * Dumps all threads to a file
+     *
+     * @param filePath the path to where the thread dump should be written
+     * @throws IOException if {@code filePath} already exists, cannot be created, opened, or written to
+     */
+    public static void dumpThreads(String filePath) throws IOException {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        ThreadInfo[] threads = bean.dumpAllThreads(bean.isObjectMonitorUsageSupported(), bean.isSynchronizerUsageSupported());
+
+        StringBuilder sb = new StringBuilder();
+        for (ThreadInfo thread: threads) {
+            sb.append(thread.toString());
+        }
+
+        Files.writeString(Paths.get(filePath), sb, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
     }
 
     /**
