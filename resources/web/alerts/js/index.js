@@ -47,6 +47,7 @@ $(function () {
     const PROVIDER_MAXCDN = 'maxcdn';
     const PROVIDER_FFZ = 'ffz';
     const PROVIDER_BTTV = 'bttv';
+    const PROVIDER_SEVENTV = 'sevenTv';
 
     //Copied from https://davidwalsh.name/detect-supported-audio-formats-javascript
     function populateSupportedAudioTypes() {
@@ -455,6 +456,9 @@ $(function () {
                 break;
             case PROVIDER_FFZ:
                 emoteUrl = `https://cdn.frankerfacez.com/emoticon/${emoteId}/4`;
+                break;
+            case PROVIDER_SEVENTV:
+                emoteUrl =  `https://cdn.7tv.app/emote/${emoteId}/4x.avif`;
                 break;
             default:
                 printDebug(`Could not find local emote '${emoteId}'`);
