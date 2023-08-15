@@ -152,7 +152,7 @@ if (( success == 0 )); then
         echo
         echo "Instructions to install Temurin are at: https://adoptium.net/installation/macOS/"
         echo
-        echo "NOTE: For Apple Silicon (M1 or M2) computers, download the aarch64 version"
+        echo "NOTE: For Apple Silicon \(M1 or M2\) computers, download the aarch64 version"
     else
         # Linux instructions
         osdist=$(awk '/^ID(_LIKE)?=/' /etc/os-release | sed 's/"//g' | sort --field-separator== --key=1,1 --dictionary-order --reverse | cut -d = -f 2 | awk 'FNR == 1')
