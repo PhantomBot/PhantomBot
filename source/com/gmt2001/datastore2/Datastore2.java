@@ -174,7 +174,7 @@ public abstract class Datastore2 {
         if (packageName.startsWith("com.gmt2001.datastore2.")) {
             com.gmt2001.Console.debug.println("Checking for a built-in driver");
             // Resolve builtin classes case-insensitively
-            final String fdataStoreType = dataStoreType;
+            final String fdataStoreType = className;
             final String fdataStoreType2 = DataStore.resolveClassname(className);
             Optional<String> tempdataStoreType = Reflect.instance()
                 .loadPackageRecursive(Datastore2.class.getName()
