@@ -192,7 +192,7 @@ public abstract class Datastore2 {
         }
 
         if (loader == null) {
-            com.gmt2001.Console.debug.println("Preping to load a custom driver");
+            com.gmt2001.Console.debug.println("Preparing to load a custom driver");
             // Set loader to retrieve custom classes from jar files
             try {
                 loader = new URLClassLoader(new URL[] { new URL("file://./datastores/" + className + ".jar") },
