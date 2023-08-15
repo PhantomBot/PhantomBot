@@ -198,7 +198,7 @@ public abstract class Datastore2 {
                 loader = new URLClassLoader(new URL[] { new URL("file://./datastores/" + className + ".jar") },
                         Datastore2.class.getClassLoader());
             } catch (MalformedURLException ex) {
-                com.gmt2001.Console.debug.println("Failed to prep a URLClassLoader");
+                com.gmt2001.Console.debug.println("Failed to prepare a URLClassLoader");
                 com.gmt2001.Console.err.logStackTrace(ex);
                 loader = Datastore2.class.getClassLoader();
             }
