@@ -28,6 +28,7 @@ import tv.phantombot.twitch.emotes.EmoteApiRequestFailedException;
 import tv.phantombot.twitch.emotes.EmoteEntry;
 import tv.phantombot.twitch.emotes.EmoteProvider;
 import tv.phantombot.twitch.emotes.FrankerFacezApiV1;
+import tv.phantombot.twitch.emotes.SevenTVAPIv3;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -67,7 +68,8 @@ public class EmotesCache implements Runnable {
 
         this.emoteProviders = List.of(
                 BttvApiV3.instance(),
-                FrankerFacezApiV1.instance()
+                FrankerFacezApiV1.instance(),
+                SevenTVAPIv3.instance()
         );
 
         this.channel = channel;
