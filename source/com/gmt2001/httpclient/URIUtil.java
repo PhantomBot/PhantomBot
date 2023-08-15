@@ -26,7 +26,7 @@ import java.net.URLEncoder;
  *
  * @author gmt2001
  */
-public class URIUtil {
+public final class URIUtil {
 
     private URIUtil() {
     }
