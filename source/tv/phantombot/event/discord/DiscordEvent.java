@@ -176,7 +176,7 @@ public abstract class DiscordEvent extends Event {
      * Method that returns the user's discriminator.
      *
      * @return {@code 0}
-     * @deprecated Discriminators have been removed.
+     * @deprecated Discriminators have been removed from Discord
      */
     @Deprecated(since = "3.10.0.0", forRemoval = true)
     public String getDiscriminator() {

@@ -70,6 +70,7 @@ import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.discord.DiscordAPI;
+import tv.phantombot.discord.util.DiscordUtil.MessageCreateFile;
 
 /**
  * Has all of the methods to work with Discord4J.
@@ -283,14 +284,11 @@ public class DiscordUtil {
 
         User user = channel.getRecipients().stream().findFirst().orElse(null);
         String uname;
-        String udisc;
 
         if (user != null) {
             uname = user.getUsername().toLowerCase();
-            udisc = user.getDiscriminator();
         } else {
             uname = "";
-            udisc = "";
         }
 
         channel.createMessage(message).doOnError(e -> {
@@ -299,7 +297,7 @@ public class DiscordUtil {
             if (isRetry) {
                 this.sendBackoff.Reset();
             }
-            com.gmt2001.Console.out.println("[DISCORD] [@" + uname + "#" + udisc + "] [DM] " + message);
+            com.gmt2001.Console.out.println("[DISCORD] [@" + uname +"] [DM] " + message);
         }).doOnError(e -> this.sendPrivateMessage(channel, message, true, e)).subscribe();
     }
 
@@ -778,6 +776,10 @@ public class DiscordUtil {
         }
     }
 
+    /**
+     * @deprecated Discriminators have been removed from Discord
+     */
+    @Deprecated(since = "3.10.0.0", forRemoval = true)
     public User getUserWithDiscriminator(String userName, String discriminator) {
         return this.getUserWithDiscriminatorAsync(userName, discriminator).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
@@ -788,7 +790,9 @@ public class DiscordUtil {
      * @param userName
      * @param discriminator
      * @return
+     * @deprecated Discriminators have been removed from Discord
      */
+    @Deprecated(since = "3.10.0.0", forRemoval = true)
     public Mono<User> getUserWithDiscriminatorAsync(String userName, String discriminator) {
         try {
             return DiscordAPI.getGuild().getMembers().filter(user -> user.getDisplayName().equalsIgnoreCase(userName)
