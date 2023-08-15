@@ -326,6 +326,12 @@ $filters = array(
     ),
     array(
         'exception' => array(
+            'class' => 'java.io.IOException',
+            'message' => 'There is not enough space on the disk'
+        )
+    ),
+    array(
+        'exception' => array(
             'class' => 'java.lang.IllegalArgumentException',
             'message' => 'Invalid token*'
         )

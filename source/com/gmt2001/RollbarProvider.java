@@ -374,6 +374,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getClass().equals(java.util.NoSuchElementException.class) && error.getMessage().equals("Source was empty")) {
                                     return true;
                                 }
+
+                                if (error.getClass().equals(java.io.IOException.class) && error.getMessage().equals("There is not enough space on the disk")) {
+                                    return true;
+                                }
                             }
 
                             com.gmt2001.Console.debug.println("[ROLLBAR-PRE] " + level.name() + (custom != null && (boolean) custom.getOrDefault("isUncaught", false)
