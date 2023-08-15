@@ -70,7 +70,7 @@ public abstract class Datastore2 {
      */
     private static final List<String> REFLECT_EXCLUDE = List.of("/meta/", "/records/");
     /**
-     * Table name prefix for all tables created as POJOs instead of using {@link DataStore}
+     * Table name prefix for all tables created as POJOs
      */
     public static final String PREFIX = "phantombot2_";
     /**
