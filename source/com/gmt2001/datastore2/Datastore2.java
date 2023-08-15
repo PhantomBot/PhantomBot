@@ -110,7 +110,7 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Returns a timestamp sutible for database backup names in the format {@code yyyy-MM-dd.hh-mm-ss}
+     * Returns a timestamp suitable for database backup names in the format {@code yyyy-MM-dd.hh-mm-ss}
      *
      * @return the timestamp
      */
