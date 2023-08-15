@@ -31,11 +31,9 @@ public abstract class DiscordEvent extends Event {
     private final Message message;
     private final String username;
     private final String channelName;
-    private final String sender;
     private final String mention;
     private final String senderId;
     private final String channelId;
-    private final String discrim;
 
     /**
      * Class constructor for this event.
@@ -86,15 +84,11 @@ public abstract class DiscordEvent extends Event {
 
         if (user != null) {
             this.username = user.getUsername();
-            this.discrim = user.getDiscriminator();
             this.senderId = user.getId().asString();
-            this.sender = (username + "#" + discrim);
             this.mention = user.getMention();
         } else {
             this.username = null;
-            this.discrim = null;
             this.senderId = null;
-            this.sender = null;
             this.mention = null;
         }
     }
@@ -115,30 +109,26 @@ public abstract class DiscordEvent extends Event {
 
         if (user != null) {
             this.username = user.getUsername();
-            this.discrim = user.getDiscriminator();
             this.senderId = user.getId().asString();
-            this.sender = (username + "#" + discrim);
             this.mention = user.getMention();
         } else {
             this.username = null;
-            this.discrim = null;
             this.senderId = null;
-            this.sender = null;
             this.mention = null;
         }
     }
 
     /**
-     * Method that returns the sender of the event with their discrim.
+     * Method that returns the sender of the event.
      *
-     * @return
+     * @return {@link #getUsername()} converted to lowercase
      */
     public String getSender() {
-        return this.sender.toLowerCase();
+        return this.getUsername().toLowerCase();
     }
 
     /**
-     * Method that returns just the username of the event.
+     * Method that returns the username of the event.
      *
      * @return
      */
@@ -185,10 +175,12 @@ public abstract class DiscordEvent extends Event {
     /**
      * Method that returns the user's discriminator.
      *
-     * @return
+     * @return {@code 0}
+     * @deprecated Discriminators have been removed.
      */
+    @Deprecated(since = "3.10.0.0", forRemoval = true)
     public String getDiscriminator() {
-        return this.discrim;
+        return "0";
     }
 
     /**
