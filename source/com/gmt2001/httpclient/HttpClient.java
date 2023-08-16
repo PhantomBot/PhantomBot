@@ -49,20 +49,18 @@ public final class HttpClient {
     private static final String DEFAULT_USER_AGENT = "PhantomBot/2022";
     private static final int TIMEOUT_TIME = 10;
 
-    /**
-     * Hide the Constructor
-     */
     private HttpClient() {
     }
 
     /**
      * Performs an HTTP request
      *
-     * @param method The HTTP method
-     * @param url The URL to request
-     * @param requestHeaders The request headers to send
-     * @param requestBody The request body to send for POST/PUT/PATCH
-     * @return A {@link HttpClientResponse} with the results
+     * @param method the HTTP method
+     * @param url the URL to request
+     * @param requestHeaders the request headers to send
+     * @param requestBody the request body to send if method is {@link HttpMethod#POST}, {@link HttpMethod#PUT},
+     * or {@link HttpMethod#PATCH}; {@code null} for other methods
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, String requestBody) {
         reactor.netty.http.client.HttpClient client = reactor.netty.http.client.HttpClient.create();
@@ -119,10 +117,10 @@ public final class HttpClient {
     }
 
     /**
-     * Shortcut to perform a HEAD with the default headers
+     * Shortcut to perform a {@link HttpMethod#HEAD} request with the default headers
      *
-     * @param url The URL to request
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse head(URI url) {
         return head(url, createHeaders());
@@ -131,258 +129,258 @@ public final class HttpClient {
     /**
      * Shortcut to perform a HEAD with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse head(URI url, HttpHeaders requestHeaders) {
         return request(HttpMethod.HEAD, url, requestHeaders, null);
     }
 
     /**
-     * Shortcut to perform a GET with the default headers
+     * Shortcut to perform a {@link HttpMethod#GET} request with the default headers
      *
-     * @param url The URL to request
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse get(URI url) {
         return get(url, createHeaders());
     }
 
     /**
-     * Shortcut to perform a GET with the specified headers
+     * Shortcut to perform a {@link HttpMethod#GET} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse get(URI url, HttpHeaders requestHeaders) {
         return request(HttpMethod.GET, url, requestHeaders, null);
     }
 
     /**
-     * Shortcut to perform a form-urlencoded POST with the default headers
+     * Shortcut to perform a form-urlencoded {@link HttpMethod#POST} request with the default headers
      *
-     * @param url The URL to request
-     * @param requestBody The request body
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestBody the request body
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse post(URI url, String requestBody) {
         return post(url, createHeaders(true, false), requestBody);
     }
 
     /**
-     * Shortcut to perform a POST with the specified headers
+     * Shortcut to perform a {@link HttpMethod#POST} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @param requestBody The request body
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @param requestBody the request body
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse post(URI url, HttpHeaders requestHeaders, String requestBody) {
         return request(HttpMethod.POST, url, requestHeaders, requestBody);
     }
 
     /**
-     * Shortcut to URL-encode a map of post data then submit it as a form-urlencoded POST with the default headers
+     * Shortcut to URL-encode a map of post data then submit it as a form-urlencoded {@link HttpMethod#POST} request with the default headers
      *
-     * @param url The URL to request
-     * @param postData A map of post data
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param postData a map of post data
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse post(URI url, Map<String, String> postData) {
         return post(url, urlencodePost(postData));
     }
 
     /**
-     * Shortcut to URL-encode a map of post data then submit it as a POST with the specified headers
+     * Shortcut to URL-encode a map of post data then submit it as a {@link HttpMethod#POST} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @param postData A map of post data
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @param postData a map of post data
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse post(URI url, HttpHeaders requestHeaders, Map<String, String> postData) {
         return post(url, requestHeaders, urlencodePost(postData));
     }
 
     /**
-     * Shortcut to stringify a {@link JSONObject} and submit it as a POST with the default headers
+     * Shortcut to stringify a {@link JSONObject} and submit it as a {@link HttpMethod#POST} request with the default headers
      *
-     * @param url The URL to send
-     * @param json The JSON object to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param json the JSON object to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse post(URI url, JSONObject json) {
         return post(url, createHeaders(true, true), json);
     }
 
     /**
-     * Shortcut to stringify a {@link JSONObject} and submit it as a POST with the specified headers
+     * Shortcut to stringify a {@link JSONObject} and submit it as a {@link HttpMethod#POST} request with the specified headers
      *
-     * @param url The URL to send
-     * @param requestHeaders The headers to send
-     * @param json The JSON object to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param requestHeaders the headers to send
+     * @param json the JSON object to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse post(URI url, HttpHeaders requestHeaders, JSONObject json) {
         return post(url, requestHeaders, json.toString());
     }
 
     /**
-     * Shortcut to perform a form-urlencoded PUT with the default headers
+     * Shortcut to perform a form-urlencoded {@link HttpMethod#PUT} request with the default headers
      *
-     * @param url The URL to send
-     * @param requestBody The request body
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param requestBody the request body
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse put(URI url, String requestBody) {
         return put(url, createHeaders(true, false), requestBody);
     }
 
     /**
-     * Shortcut to perform a PUT with the specified headers
+     * Shortcut to perform a {@link HttpMethod#PUT} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @param requestBody The request body
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @param requestBody the request body
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse put(URI url, HttpHeaders requestHeaders, String requestBody) {
         return request(HttpMethod.PUT, url, requestHeaders, requestBody);
     }
 
     /**
-     * Shortcut to URL-encode a map of put data then submit it as a form-urlencoded PUT with the default headers
+     * Shortcut to URL-encode a map of put data then submit it as a form-urlencoded {@link HttpMethod#PUT} request with the default headers
      *
-     * @param url The URL to request
-     * @param putData A map of put data
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param putData a map of put data
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse put(URI url, Map<String, String> putData) {
         return put(url, urlencodePost(putData));
     }
 
     /**
-     * Shortcut to URL-encode a map of put data then submit it as a PUT with the specified headers
+     * Shortcut to URL-encode a map of put data then submit it as a {@link HttpMethod#PUT} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @param putData A map of put data
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @param putData a map of put data
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse put(URI url, HttpHeaders requestHeaders, Map<String, String> putData) {
         return put(url, requestHeaders, urlencodePost(putData));
     }
 
     /**
-     * Shortcut to stringify a {@link JSONObject} and submit it as a PUT with the default headers
+     * Shortcut to stringify a {@link JSONObject} and submit it as a {@link HttpMethod#PUT} request with the default headers
      *
-     * @param url The URL to send
-     * @param json The JSON object to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param json the JSON object to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse put(URI url, JSONObject json) {
         return put(url, createHeaders(true, true), json);
     }
 
     /**
-     * Shortcut to stringify a {@link JSONObject} and submit it as a PUT with the specified headers
+     * Shortcut to stringify a {@link JSONObject} and submit it as a {@link HttpMethod#PUT} request with the specified headers
      *
-     * @param url The URL to send
-     * @param requestHeaders The headers to send
-     * @param json The JSON object to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param requestHeaders the headers to send
+     * @param json the JSON object to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse put(URI url, HttpHeaders requestHeaders, JSONObject json) {
         return put(url, requestHeaders, json.toString());
     }
 
     /**
-     * Shortcut to perform a form-urlencoded PATCH with the default headers
+     * Shortcut to perform a form-urlencoded {@link HttpMethod#PATCH} request with the default headers
      *
-     * @param url The URL to send
-     * @param requestBody The request body
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param requestBody the request body
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse patch(URI url, String requestBody) {
         return patch(url, createHeaders(true, false), requestBody);
     }
 
     /**
-     * Shortcut to perform a PATCH with the specified headers
+     * Shortcut to perform a {@link HttpMethod#PATCH} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @param requestBody The request body
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @param requestBody the request body
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse patch(URI url, HttpHeaders requestHeaders, String requestBody) {
         return request(HttpMethod.PATCH, url, requestHeaders, requestBody);
     }
 
     /**
-     * Shortcut to URL-encode a map of put data then submit it as a form-urlencoded PATCH with the default headers
+     * Shortcut to URL-encode a map of put data then submit it as a form-urlencoded {@link HttpMethod#PATCH} request with the default headers
      *
-     * @param url The URL to request
-     * @param patchData A map of patch data
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param patchData a map of patch data
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse patch(URI url, Map<String, String> patchData) {
         return patch(url, urlencodePost(patchData));
     }
 
     /**
-     * Shortcut to URL-encode a map of patch data then submit it as a PATCH with the specified headers
+     * Shortcut to URL-encode a map of patch data then submit it as a {@link HttpMethod#PATCH} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @param patchData A map of patch data
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @param patchData a map of patch data
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse patch(URI url, HttpHeaders requestHeaders, Map<String, String> patchData) {
         return patch(url, requestHeaders, urlencodePost(patchData));
     }
 
     /**
-     * Shortcut to stringify a {@link JSONObject} and submit it as a PATCH with the default headers
+     * Shortcut to stringify a {@link JSONObject} and submit it as a {@link HttpMethod#PATCH} request with the default headers
      *
-     * @param url The URL to send
-     * @param json The JSON object to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param json the JSON object to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse patch(URI url, JSONObject json) {
         return patch(url, createHeaders(true, true), json);
     }
 
     /**
-     * Shortcut to stringify a {@link JSONObject} and submit it as a PATCH with the specified headers
+     * Shortcut to stringify a {@link JSONObject} and submit it as a {@link HttpMethod#PATCH} request with the specified headers
      *
-     * @param url The URL to send
-     * @param requestHeaders The headers to send
-     * @param json The JSON object to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to send
+     * @param requestHeaders the headers to send
+     * @param json the JSON object to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse patch(URI url, HttpHeaders requestHeaders, JSONObject json) {
         return patch(url, requestHeaders, json.toString());
     }
 
     /**
-     * Shortcut to perform a DELETE with the default headers
+     * Shortcut to perform a {@link HttpMethod#DELETE} request with the default headers
      *
-     * @param url The URL to request
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse delete(URI url) {
         return delete(url, createHeaders());
     }
 
     /**
-     * Shortcut to perform a DELETE with the specified headers
+     * Shortcut to perform a {@link HttpMethod#DELETE} request with the specified headers
      *
-     * @param url The URL to request
-     * @param requestHeaders The headers to send
-     * @return A {@link HttpClientResponse} with the results
+     * @param url the URL to request
+     * @param requestHeaders the headers to send
+     * @return a {@link HttpClientResponse} with the results
      */
     public static HttpClientResponse delete(URI url, HttpHeaders requestHeaders) {
         return request(HttpMethod.DELETE, url, requestHeaders, null);
@@ -393,8 +391,8 @@ public final class HttpClient {
      * <p>
      * To put only a name without the {@code =value}, set the value to {@code null}
      *
-     * @param postData A map of post data
-     * @return A URL encoded string
+     * @param postData a map of post data
+     * @return a URL encoded string
      */
     public static String urlencodePost(Map<String, String> postData) {
         StringBuilder sb = new StringBuilder();
@@ -418,7 +416,7 @@ public final class HttpClient {
     /**
      * Creates a new, empty {@link HttpHeaders}
      *
-     * @return An empty {@link HttpHeaders}
+     * @return an empty {@link HttpHeaders}
      */
     public static HttpHeaders createHeaders() {
         return createHeaders(false, false);
@@ -427,9 +425,9 @@ public final class HttpClient {
     /**
      * Creates a new {@link HttpHeaders} with some default headers filled in
      *
-     * @param method The method that is going to be requested. If it is a mutator method that can provide a body, the content type may be set
-     * @param isJson If true, sets the accept to application/json. If isMutator is true, sets the content type as well
-     * @return A {@link HttpHeaders} with some default headers, if the parameters require them
+     * @param method the method that is going to be requested. If it is a mutator method that can provide a body, the content type may be set
+     * @param isJson if {@code true}, sets the accept to {@code application/json}
+     * @return a {@link HttpHeaders} with some default headers, if the parameters require them
      */
     public static HttpHeaders createHeaders(HttpMethod method, boolean isJson) {
         return createHeaders(isMutatorWithBody(method), isJson);
@@ -438,9 +436,9 @@ public final class HttpClient {
     /**
      * Creates a new {@link HttpHeaders} with some default headers filled in
      *
-     * @param isMutatorWithBody If true, sets the content type. If isJson is false, sets to application/x-www-form-urlencoded
-     * @param isJson If true, sets the accept to application/json. If isMutator is true, sets the content type as well
-     * @return A {@link HttpHeaders} with some default headers, if the parameters require them
+     * @param isMutatorWithBody if {@code true}, sets the content type. If isJson is {@code false}, sets to {@code application/x-www-form-urlencoded}
+     * @param isJson if {@code true}, sets the accept to {@code application/json}. If isMutator is {@code true}, sets the content type as well
+     * @return a {@link HttpHeaders} with some default headers, if the parameters require them
      */
     public static HttpHeaders createHeaders(boolean isMutatorWithBody, boolean isJson) {
         HttpHeaders h = new DefaultHttpHeaders();
@@ -463,7 +461,7 @@ public final class HttpClient {
     /**
      * Indicates if the provided method is a mutator that can provide a request body
      *
-     * @param method The method to test
+     * @param method the method to test
      * @return {@code true} if the {@link HttpMethod} specified is a mutator type
      */
     public static boolean isMutatorWithBody(HttpMethod method) {
@@ -475,8 +473,8 @@ public final class HttpClient {
      * <p>
      * To put only a name without the {@code =value}, set the value to {@code null}
      *
-     * @param query The query params
-     * @return A URL encoded string, including the {@code ?} prefix
+     * @param query the query params
+     * @return a URL encoded string, including the {@code ?} prefix
      */
     public static String createQuery(Map<String, String> query) {
         return "?" + urlencodePost(query);

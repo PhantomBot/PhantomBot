@@ -70,7 +70,7 @@ public abstract class Datastore2 {
      */
     private static final List<String> REFLECT_EXCLUDE = List.of("/meta/", "/records/");
     /**
-     * Table name prefix for all tables created as POJOs instead of using {@link DataStore}
+     * Table name prefix for all tables created as POJOs
      */
     public static final String PREFIX = "phantombot2_";
     /**
@@ -110,7 +110,7 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Returns a timestamp sutible for database backup names in the format {@code yyyy-MM-dd.hh-mm-ss}
+     * Returns a timestamp suitable for database backup names in the format {@code yyyy-MM-dd.hh-mm-ss}
      *
      * @return the timestamp
      */
@@ -174,7 +174,7 @@ public abstract class Datastore2 {
         if (packageName.startsWith("com.gmt2001.datastore2.")) {
             com.gmt2001.Console.debug.println("Checking for a built-in driver");
             // Resolve builtin classes case-insensitively
-            final String fdataStoreType = dataStoreType;
+            final String fdataStoreType = className;
             final String fdataStoreType2 = DataStore.resolveClassname(className);
             Optional<String> tempdataStoreType = Reflect.instance()
                 .loadPackageRecursive(Datastore2.class.getName()
@@ -192,13 +192,13 @@ public abstract class Datastore2 {
         }
 
         if (loader == null) {
-            com.gmt2001.Console.debug.println("Preping to load a custom driver");
+            com.gmt2001.Console.debug.println("Preparing to load a custom driver");
             // Set loader to retrieve custom classes from jar files
             try {
                 loader = new URLClassLoader(new URL[] { new URL("file://./datastores/" + className + ".jar") },
                         Datastore2.class.getClassLoader());
             } catch (MalformedURLException ex) {
-                com.gmt2001.Console.debug.println("Failed to prep a URLClassLoader");
+                com.gmt2001.Console.debug.println("Failed to prepare a URLClassLoader");
                 com.gmt2001.Console.err.logStackTrace(ex);
                 loader = Datastore2.class.getClassLoader();
             }

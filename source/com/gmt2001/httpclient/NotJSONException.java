@@ -19,12 +19,12 @@ package com.gmt2001.httpclient;
 import org.json.JSONException;
 
 /**
- * An extension of JSONException to explicitly indicate that HttpClientResponse identified the response body as not JSON, due to the first character
- * not being a '{'
+ * An extension of {@link JSONException} to explicitly indicate that {@link HttpClientResponse} identified the response
+ * body as not JSON, due to the first character not being a {@code &#123;}
  *
  * @author gmt2001
  */
-public class NotJSONException extends JSONException {
+public final class NotJSONException extends JSONException {
 
     /**
      * Constructor

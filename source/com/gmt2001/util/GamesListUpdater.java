@@ -41,7 +41,9 @@ import tv.phantombot.PhantomBot;
  * The list is stored at {@code web/panel/js/utils/gamesList.txt}
  *
  * @author gmt2001
+ * @deprecated To be replaced
  */
+@Deprecated(since = "3.10.0.0", forRemoval = true)
 public final class GamesListUpdater {
 
     private static final int UPDATE_INTERVAL_DAYS = 7;

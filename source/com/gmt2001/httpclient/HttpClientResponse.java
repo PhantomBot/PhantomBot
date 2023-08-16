@@ -21,12 +21,14 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
 /**
- * The request parameters and response data from a HttpClient request
+ * The request parameters and response data from a {@link HttpClient} request
  *
  * @author gmt2001
  */
@@ -48,11 +50,11 @@ public final class HttpClientResponse {
     /**
      * Constructor
      *
-     * @param exception Any exception that may have been raised
-     * @param requestBody The request body for POST/PUT/PATCH
-     * @param responseBody The response body
-     * @param url The URL requested
-     * @param response The response metadata object
+     * @param exception any exception that may have been raised
+     * @param requestBody the request body for POST/PUT/PATCH
+     * @param responseBody the response body
+     * @param url the URL requested
+     * @param response the response metadata object
      */
     @SuppressWarnings("UseSpecificCatch")
     protected HttpClientResponse(Exception exception, String requestBody, byte[] responseBody, URI url,
@@ -88,15 +90,15 @@ public final class HttpClientResponse {
     /**
      * Constructor
      *
-     * @param exception Any exception that may have been raised
-     * @param isSuccess Whether the request is considered a complete success
-     * @param method The HTTP method used for the request
-     * @param requestBody The request body for POST/PUT/PATCH
-     * @param responseBody The response body
-     * @param requestHeaders The headers sent with the request
-     * @param responseHeaders The headers returned in the response
-     * @param responseCode The response status code
-     * @param url The URL requested
+     * @param exception any exception that may have been raised
+     * @param isSuccess whether the request is considered a complete success
+     * @param method the HTTP method used for the request
+     * @param requestBody the request body for POST/PUT/PATCH
+     * @param responseBody the response body
+     * @param requestHeaders the headers sent with the request
+     * @param responseHeaders the headers returned in the response
+     * @param responseCode the response status code
+     * @param url the URL requested
      */
     @SuppressWarnings("UseSpecificCatch")
     protected HttpClientResponse(Exception exception, boolean isSuccess, HttpMethod method, String requestBody, byte[] responseBody,
@@ -180,25 +182,25 @@ public final class HttpClientResponse {
     /**
      * Returns any exception that may have been thrown during the request
      *
-     * @return
+     * @return the {@link Exception} if one was thrown; {@code null} if there was none
      */
     public Exception exception() {
         return this.exception;
     }
 
     /**
-     * Returns true if there was an exception not related to JSON decoding
+     * Indicates if there was an exception not related to JSON decoding
      *
-     * @return
+     * @return {@code true} if there is an exception, which can be retrieved using {@link #exception()}
      */
     public boolean hasException() {
         return this.exception != null;
     }
 
     /**
-     * Returns true if the request is an overall success (no exceptions and status code < 400)
+     * Indicates if the request is an overall success (no exceptions and status code < 400)
      *
-     * @return
+     * @return {@code true} if {@link #hasException()} is {@code false} and {@link #responseCode()} is < 400
      */
     public boolean isSuccess() {
         return this.isSuccess;
@@ -207,45 +209,54 @@ public final class HttpClientResponse {
     /**
      * Returns the response body as a JSONObject, if it was a valid stringified JSON object
      *
-     * @return
+     * @return the {@link JSONObject} returned by the response, if the response was JSON
      */
     public JSONObject json() {
         return this.json;
     }
 
     /**
-     * Returns the response body as a JSONObject, if it was a valid stringified JSON object; if the response body looked like JSON but failed
-     * validation, throws the JSONException (or, rarely, a non-JSONException); if an exception was caught during the request, it is thrown; otherwise,
-     * if the response body did not start with '{', throws NotJSONException
+     * Returns the response body as a {@link JSONObject}, if it was a valid stringified JSON object
+     * <p>
+     * If the response body looked like JSON but failed decoding, throws a {@link JSONException}
+     * <p>
+     * If a {@link JSONException} was not caught but another exception was, it is thrown
+     * <p>
+     * If the response was a success but the body did not start with {@code &#123;}, throws {@link NotJSONException}
      *
-     * @return
-     * @throws java.lang.Exception
+     * @return the {@link JSONObject} if a valid JSON object was decoded from the response body
+     * @throws JSONException if the response body appears to be JSON, but failed to be decoded into a {@link JSONObject}
+     * @throws java.lang.Exception if any other exception ocurred during the request, it is thrown
+     * @throws NotJSONException if the response was a success but the body did not contain valid JSON
      */
     public JSONObject jsonOrThrow() throws Exception {
-        if (this.hasJson()) {
-            return this.json;
-        } else if (this.hasJsonException()) {
+        if (this.hasJsonException()) {
             throw this.jsonException;
         } else if (this.hasException()) {
             throw this.exception;
+        } else if (this.hasJson()) {
+            return this.json;
         } else {
             throw new NotJSONException();
         }
     }
 
     /**
-     * Returns true if the response was JSON, no JSONExceptions were thrown during parsing, and no exceptions were thrown during the request
+     * Indicates if the response was JSON, no {@link JSONException} was thrown during parsing, and no other exceptions were thrown during the request
      *
-     * @return
+     * @return {@code true} if a valid {@link JSONObject} can be successfully retrieved from {@link #json()} or {@link #jsonOrThrow()}
      */
     public boolean hasJson() {
         return this.json != null && !this.hasJsonException() && !this.hasException();
     }
 
     /**
-     * Returns true if the response was not JSON or failed JSON parsing
+     * Indicates if the response was not JSON or failed JSON parsing
+     * <p>
+     * {@code true} could indicate any state that would make {@link #hasJson()} return {@code false}, such as the response not being JSON,
+     * throwing a {@link JSONException} during parsing, or another exception being thrown during the request
      *
-     * @return
+     * @return the negated value of {@link #hasJson()}
      */
     public boolean isNotJson() {
         return !this.hasJson();
@@ -253,17 +264,19 @@ public final class HttpClientResponse {
 
     /**
      * Returns the exception raised if JSON parsing of the response body failed
+     * <p>
+     * This is normally a {@link JSONException}, but could rarely be some other exception
      *
-     * @return
+     * @return the exception
      */
     public Exception jsonException() {
         return this.jsonException;
     }
 
     /**
-     * Returns true if a JSONException was thrown during JSON parsing
+     * Indicates if an exception was thrown during JSON parsing
      *
-     * @return
+     * @return {@code true} if an exception is available from {@link #jsonException()}
      */
     public boolean hasJsonException() {
         return this.jsonException != null;
@@ -272,7 +285,7 @@ public final class HttpClientResponse {
     /**
      * Returns the HTTP request method
      *
-     * @return
+     * @return the request method
      */
     public HttpMethod method() {
         return this.method;
@@ -281,7 +294,7 @@ public final class HttpClientResponse {
     /**
      * Returns the request body, if the method was POST/PUT/PATCH
      *
-     * @return
+     * @return the request body; {@code null} if there was no body
      */
     public String requestBody() {
         return this.requestBody;
@@ -290,7 +303,7 @@ public final class HttpClientResponse {
     /**
      * Returns the response body as a string
      *
-     * @return
+     * @return the response body as a UTF-8 encoded string
      */
     public String responseBody() {
         return new String(this.responseBody, StandardCharsets.UTF_8);
@@ -299,7 +312,7 @@ public final class HttpClientResponse {
     /**
      * Returns the response body
      *
-     * @return
+     * @return the raw bytes of the response body
      */
     public byte[] rawResponseBody() {
         return this.responseBody.clone();
@@ -308,7 +321,7 @@ public final class HttpClientResponse {
     /**
      * Returns the request headers
      *
-     * @return
+     * @return the request headers
      */
     public HttpHeaders requestHeaders() {
         return this.requestHeaders;
@@ -317,7 +330,7 @@ public final class HttpClientResponse {
     /**
      * Returns the response headers
      *
-     * @return
+     * @return the reponse headers
      */
     public HttpHeaders responseHeaders() {
         return this.responseHeaders;
@@ -326,7 +339,7 @@ public final class HttpClientResponse {
     /**
      * Returns the HTTP response status code
      *
-     * @return
+     * @return the status code
      */
     public HttpResponseStatus responseCode() {
         return this.responseCode;
@@ -335,7 +348,7 @@ public final class HttpClientResponse {
     /**
      * Returns the URL requested
      *
-     * @return
+     * @return the {@link URI} requested
      */
     public URI url() {
         return this.url;
@@ -344,7 +357,7 @@ public final class HttpClientResponse {
     /**
      * Returns the actual URL that was returned, after following any redirects
      *
-     * @return
+     * @return the real {@link URI} that was returned after redirects were followed
      */
     public URI resourceUrl() {
         return this.resourceUrl;

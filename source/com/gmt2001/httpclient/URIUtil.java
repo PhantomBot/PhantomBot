@@ -22,20 +22,22 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 
 /**
+ * Assists with creating a {@link URI} by automatically encoding characters that {@link URI} finds unacceptable
  *
  * @author gmt2001
  */
-public class URIUtil {
+public final class URIUtil {
 
     private URIUtil() {
     }
 
     /**
      * Creates a {@link URI} by parsing the given spec as described in RFC 2396 "Uniform Resource Identifiers: Generic * Syntax" and encoding any
-     * illegal characters according to the MIME format {@code application/x-www-form-urlencoded}
+     * illegal characters according to the MIME format {@code application/x-www-form-urlencoded} using {@link URLEncoder#encode(String, java.nio.charset.Charset)}
      *
-     * @param uri The string to parse
-     * @return The URI
+     * @param uri the string to parse
+     * @return the {@link URI}; {@code null} if unable to encode some or all of the URI successfully
+     * @see https://www.ietf.org/rfc/rfc2396.txt
      */
     public static URI create(String uri) {
         try {
@@ -47,6 +49,16 @@ public class URIUtil {
         return null;
     }
 
+    /**
+     * Recursively parses the input string URI into a {@link URI}, encoding illegal characters
+     * <p>
+     * If a {@link URISyntaxException} is thrown in the same location on 2 attempts in a row, then encoding stops and it is thrown up the stack
+     *
+     * @param uri the current URI string, after any modifications made in the previous attempt
+     * @param lastidx the last index where a {@link URISyntaxException} ocurred
+     * @return the {@link URI}
+     * @throws URISyntaxException if the input string could not be parsed into a {@link URI} despite attempting to encode all illegal characters
+     */
     private static URI create(String uri, int lastidx) throws URISyntaxException {
         try {
             return new URI(uri);

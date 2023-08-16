@@ -31,15 +31,8 @@
  */
 package com.gmt2001.dns;
 
-import io.netty.resolver.AddressResolver;
-import io.netty.resolver.InetNameResolver;
-import io.netty.resolver.NameResolver;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.FutureListener;
-import io.netty.util.concurrent.Promise;
-import io.netty.util.internal.ObjectUtil;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
+
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.Instant;
@@ -48,16 +41,26 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.netty.resolver.AddressResolver;
+import io.netty.resolver.InetNameResolver;
+import io.netty.resolver.NameResolver;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.Promise;
+import io.netty.util.internal.ObjectUtil;
 import reactor.core.publisher.Mono;
 import tv.phantombot.CaselessProperties;
 
 /**
- * A composite {@link AddressResolver} that resolves a host name against a sequence of {@link AddressResolver}s.
- *
- * In case of a failure, only the last one will be reported.
- *
- * Has a 2 second timeout before greedily starting the next available resolver. Starts at the first resolver to return success from the last query
- * within 120 minutes.
+ * A composite {@link AddressResolver} that resolves a host name against a sequence of {@link AddressResolver}s
+ * <p>
+ * In case of a failure, only the last one will be reported
+ * <p>
+ * Has a 2 second timeout before greedily starting the next available resolver
+ * <p>
+ * Starts at the first resolver to return success from the last query within 120 minutes
  *
  * @author The Netty Team
  * @author gmt2001
@@ -72,8 +75,10 @@ public final class CompositeInetNameResolver extends InetNameResolver {
     private Instant lastTimeout = Instant.MIN;
 
     /**
-     * @param executor the {@link EventExecutor} which is used to notify the listeners of the {@link Future} returned by {@link #resolve(String)}
+     * @param executor the {@link EventExecutor} which is used to notify the listeners of the {@link Future}
+     * returned by {@link #resolve(String)}
      * @param resolvers the {@link NameResolver}s to be tried sequentially
+     * @throws IllegalArgumentException if less than 2 resolvers are provided
      */
     public CompositeInetNameResolver(EventExecutor executor, InetNameResolver... resolvers) {
         super(executor);
