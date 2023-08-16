@@ -36,8 +36,8 @@ public final class DurationString {
     /**
      * Converts the given input string into a {@link Duration}
      *
-     * @param input A string to parse in the format {@code nWnDnHnMnS}
-     * @return A {@link Duration} representing the amount of time in the string; if a {@link NumberFormatException} occurs, {@link Duration.ZERO}
+     * @param input a string to parse in the format {@code nWnDnHnMnS}
+     * @return a {@link Duration} representing the amount of time in the string; if a {@link NumberFormatException} occurs, {@link Duration.ZERO}
      */
     public static Duration from(String input) {
         Matcher m = DURATIONPATTERN.matcher(input);
