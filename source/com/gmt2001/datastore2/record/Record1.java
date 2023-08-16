@@ -90,7 +90,7 @@ public abstract class Record1 <RR extends Record1<RR, A>, A>
     @Override
     public org.jooq.Record1<A> value1(A value) {
         this.set(0, value);
-        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+        if (value != null && AttachableDataType.class.isAssignableFrom(value.getClass())) {
             ((AttachableDataType) value).attach(this, 0);
         }
         return this;

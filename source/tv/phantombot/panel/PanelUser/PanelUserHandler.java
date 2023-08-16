@@ -763,7 +763,7 @@ public final class PanelUserHandler {
         }
         boolean isWriteAction = true;
         if (PANEL_SECTION_SCRIPTS.get("loyalty").contains(script) && args.length > 0 &&
-            args[0].equalsIgnoreCase("redeemable-get-managed") || args[0].equalsIgnoreCase("redeemable-reload-managed")) {
+            (args[0].equalsIgnoreCase("redeemable-get-managed") || args[0].equalsIgnoreCase("redeemable-reload-managed"))) {
             isWriteAction = false;
         }
         boolean res = PANEL_SECTION_SCRIPTS.containsKey(section) && PANEL_SECTION_SCRIPTS.get(section).contains(script) && checkPanelUserSectionAccess(user, section, isWriteAction);
