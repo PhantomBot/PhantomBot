@@ -148,7 +148,7 @@ public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
     @Override
     public org.jooq.Record3<A, B, C> value1(A value) {
         this.set(0, value);
-        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+        if (value != null && AttachableDataType.class.isAssignableFrom(value.getClass())) {
             ((AttachableDataType) value).attach(this, 0);
         }
         return this;
@@ -157,7 +157,7 @@ public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
     @Override
     public org.jooq.Record3<A, B, C> value2(B value) {
         this.set(1, value);
-        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+        if (value != null && AttachableDataType.class.isAssignableFrom(value.getClass())) {
             ((AttachableDataType) value).attach(this, 1);
         }
         return this;
@@ -166,7 +166,7 @@ public abstract class Record3 <RR extends Record3<RR, A, B, C>, A, B, C>
     @Override
     public org.jooq.Record3<A, B, C> value3(C value) {
         this.set(2, value);
-        if (AttachableDataType.class.isAssignableFrom(value.getClass())) {
+        if (value != null && AttachableDataType.class.isAssignableFrom(value.getClass())) {
             ((AttachableDataType) value).attach(this, 2);
         }
         return this;
