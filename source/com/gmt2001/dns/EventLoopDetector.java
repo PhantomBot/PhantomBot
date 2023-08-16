@@ -32,6 +32,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
+ * Detects if an operating system specific {@link EventLoopGroup} is available
  *
  * @author gmt2001
  */
@@ -41,6 +42,9 @@ public final class EventLoopDetector {
     }
 
     // https://github.com/reactor/reactor-netty/blob/main/reactor-netty-core/src/main/java/reactor/netty/resources/DefaultLoopEpoll.java
+    /**
+     * Indicates if {@link Epoll}, the Linux {@link EventLoopGroup}, is available
+     */
     public static final boolean ISEPOLLAVAILABLE;
 
     static {
@@ -57,6 +61,9 @@ public final class EventLoopDetector {
     }
 
     // https://github.com/reactor/reactor-netty/blob/main/reactor-netty-core/src/main/java/reactor/netty/resources/DefaultLoopKQueue.java
+    /**
+     * Indicates if {@link KQueue}, the macOS {@link EventLoopGroup}, is available
+     */
     public static final boolean ISKQUEUEAVAILABLE;
 
     static {
@@ -72,6 +79,13 @@ public final class EventLoopDetector {
         ISKQUEUEAVAILABLE = kqueueCheck;
     }
 
+    /**
+     * If an operating system specific {@link EventLoopGroup} is available, returns a new instance of it
+     * <p>
+     * Otherwise, returns an instance of {@link NioEventLoopGroup}
+     *
+     * @return the {@link EventLoopGroup}
+     */
     public static EventLoopGroup createEventLoopGroup() {
         if (ISEPOLLAVAILABLE) {
             return new EpollEventLoopGroup();
@@ -82,6 +96,11 @@ public final class EventLoopDetector {
         return new NioEventLoopGroup();
     }
 
+    /**
+     * Returns the class which should be used for {@link ServerChannel}, associated with the {@link EventLoopGroup}
+     *
+     * @return the server channel class
+     */
     public static Class<? extends ServerChannel> getServerChannelClass() {
         if (ISEPOLLAVAILABLE) {
             return EpollServerSocketChannel.class;
@@ -92,6 +111,11 @@ public final class EventLoopDetector {
         return NioServerSocketChannel.class;
     }
 
+    /**
+     * Returns the class which should be used for {@link Channel}, associated with the {@link EventLoopGroup}
+     *
+     * @return the channel class
+     */
     public static Class<? extends Channel> getChannelClass() {
         if (ISEPOLLAVAILABLE) {
             return EpollSocketChannel.class;

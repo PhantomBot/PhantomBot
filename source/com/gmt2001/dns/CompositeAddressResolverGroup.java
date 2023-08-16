@@ -16,6 +16,8 @@
  */
 package com.gmt2001.dns;
 
+import java.net.InetSocketAddress;
+
 import io.netty.channel.EventLoop;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -27,19 +29,28 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.resolver.AddressResolver;
 import io.netty.resolver.AddressResolverGroup;
 import io.netty.resolver.DefaultNameResolver;
+import io.netty.resolver.dns.DnsNameResolver;
 import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.DnsServerAddressStreamProviders;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.StringUtil;
-import java.net.InetSocketAddress;
 
 /**
  * An {@link AddressResolverGroup} that uses a {@link CompositeInetNameResolver} to service DNS queries
+ * <p>
+ * The current resolver set used (in preference order) is
+ * <ol>
+ * <li>{@link DnsNameResolver}, which provides a UDP name resolver implemented within netty</li>
+ * <li>{@link DefaultNameResolver}, which uses the operating system's built-in name resolver</li>
+ * </ol>
  *
  * @author gmt2001
  */
 public final class CompositeAddressResolverGroup extends AddressResolverGroup<InetSocketAddress> {
 
+    /**
+     * Instance
+     */
     public static final CompositeAddressResolverGroup INSTANCE = new CompositeAddressResolverGroup();
     private final DnsNameResolverBuilder dnsResolverBuilder;
 
