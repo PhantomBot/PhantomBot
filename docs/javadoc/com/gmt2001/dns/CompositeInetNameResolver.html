@@ -86,12 +86,13 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">CompositeInetNameResolver</span>
 <span class="extends-implements">extends <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html" title="class or interface in io.netty.resolver" class="external-link">InetNameResolver</a></span></div>
-<div class="block">A composite <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a> that resolves a host name against a sequence of <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a>s.
-
- In case of a failure, only the last one will be reported.
-
- Has a 2 second timeout before greedily starting the next available resolver. Starts at the first resolver to return success from the last query
- within 120 minutes.</div>
+<div class="block">A composite <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a> that resolves a host name against a sequence of <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a>s
+ <p>
+ In case of a failure, only the last one will be reported
+ <p>
+ Has a 2 second timeout before greedily starting the next available resolver
+ <p>
+ Starts at the first resolver to return success from the last query within 120 minutes</div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>The Netty Team, gmt2001</dd>
@@ -162,8 +163,11 @@ loadScripts(document, 'script');</script>
  <a href="https://netty.io/4.1/api/io/netty/resolver/InetNameResolver.html" title="class or interface in io.netty.resolver" class="external-link">InetNameResolver</a>...&nbsp;resolvers)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>executor</code> - the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html" title="class or interface in io.netty.util.concurrent" class="external-link"><code>EventExecutor</code></a> which is used to notify the listeners of the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Future.html" title="class or interface in io.netty.util.concurrent" class="external-link"><code>Future</code></a> returned by <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html#resolve-java.lang.String-" title="class or interface in io.netty.resolver" class="external-link"><code>SimpleNameResolver.resolve(String)</code></a></dd>
+<dd><code>executor</code> - the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/EventExecutor.html" title="class or interface in io.netty.util.concurrent" class="external-link"><code>EventExecutor</code></a> which is used to notify the listeners of the <a href="https://netty.io/4.1/api/io/netty/util/concurrent/Future.html" title="class or interface in io.netty.util.concurrent" class="external-link"><code>Future</code></a>
+ returned by <a href="https://netty.io/4.1/api/io/netty/resolver/SimpleNameResolver.html#resolve-java.lang.String-" title="class or interface in io.netty.resolver" class="external-link"><code>SimpleNameResolver.resolve(String)</code></a></dd>
 <dd><code>resolvers</code> - the <a href="https://netty.io/4.1/api/io/netty/resolver/NameResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>NameResolver</code></a>s to be tried sequentially</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if less than 2 resolvers are provided</dd>
 </dl>
 </section>
 </li>

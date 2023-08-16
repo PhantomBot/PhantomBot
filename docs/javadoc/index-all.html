@@ -1328,7 +1328,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/dns/CompositeInetNameResolver.html" class="type-name-link" title="class in com.gmt2001.dns">CompositeInetNameResolver</a> - Class in <a href="com/gmt2001/dns/package-summary.html">com.gmt2001.dns</a></dt>
 <dd>
-<div class="block">A composite <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a> that resolves a host name against a sequence of <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a>s.</div>
+<div class="block">A composite <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a> that resolves a host name against a sequence of <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolver</code></a>s</div>
 </dd>
 <dt><a href="com/gmt2001/dns/CompositeInetNameResolver.html#%3Cinit%3E(io.netty.util.concurrent.EventExecutor,io.netty.resolver.InetNameResolver...)" class="member-name-link">CompositeInetNameResolver(EventExecutor, InetNameResolver...)</a> - Constructor for class com.gmt2001.dns.<a href="com/gmt2001/dns/CompositeInetNameResolver.html" title="class in com.gmt2001.dns">CompositeInetNameResolver</a></dt>
 <dd>&nbsp;</dd>
@@ -1442,7 +1442,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/httpclient/URIUtil.html#create(java.lang.String)" class="member-name-link">create(String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/URIUtil.html" title="class in com.gmt2001.httpclient">URIUtil</a></dt>
 <dd>
 <div class="block">Creates a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a> by parsing the given spec as described in RFC 2396 "Uniform Resource Identifiers: Generic * Syntax" and encoding any
- illegal characters according to the MIME format <code>application/x-www-form-urlencoded</code></div>
+ illegal characters according to the MIME format <code>application/x-www-form-urlencoded</code> using <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URLEncoder.html#encode(java.lang.String,java.nio.charset.Charset)" title="class or interface in java.net" class="external-link"><code>URLEncoder.encode(String, java.nio.charset.Charset)</code></a></div>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#create(java.lang.String,java.util.Map,boolean)" class="member-name-link">create(String, Map&lt;String, PanelUserHandler.Permission&gt;, boolean)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>
@@ -1473,7 +1473,9 @@ loadScripts(document, 'script');</script>
 <div class="block">The time the subscription was created.</div>
 </dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html#createEventLoopGroup()" class="member-name-link">createEventLoopGroup()</a> - Static method in class com.gmt2001.dns.<a href="com/gmt2001/dns/EventLoopDetector.html" title="class in com.gmt2001.dns">EventLoopDetector</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">If an operating system specific <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a> is available, returns a new instance of it</div>
+</dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.html#createEventSubSubscriptionAsync(java.lang.String)" class="member-name-link">createEventSubSubscriptionAsync(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.html" title="class in tv.phantombot.twitch.api">Helix</a></dt>
 <dd>
 <div class="block">Creates an EventSub subscription.</div>
@@ -1821,11 +1823,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#delete(java.net.URI)" class="member-name-link">delete(URI)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a DELETE with the default headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#DELETE" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.DELETE</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#delete(java.net.URI,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">delete(URI, HttpHeaders)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a DELETE with the specified headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#DELETE" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.DELETE</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationActions.Actions.html#Delete" class="member-name-link">Delete</a> - Enum constant in enum class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationActions.Actions.html" title="enum class in tv.phantombot.event.irc.message">IrcModerationEvent.ModerationActions.Actions</a></dt>
 <dd>
@@ -2369,7 +2371,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Sends events to downstream subscribers</div>
 </dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html" class="type-name-link" title="class in com.gmt2001.dns">EventLoopDetector</a> - Class in <a href="com/gmt2001/dns/package-summary.html">com.gmt2001.dns</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Detects if an operating system specific <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a> is available</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSub.html" class="type-name-link" title="class in com.gmt2001.twitch.eventsub">EventSub</a> - Class in <a href="com/gmt2001/twitch/eventsub/package-summary.html">com.gmt2001.twitch.eventsub</a></dt>
 <dd>
 <div class="block">Manages EventSub subscriptions</div>
@@ -3112,7 +3116,9 @@ loadScripts(document, 'script');</script>
 <dl class="index">
 <dt><a href="com/gmt2001/util/GamesListUpdater.html" class="type-name-link" title="class in com.gmt2001.util">GamesListUpdater</a> - Class in <a href="com/gmt2001/util/package-summary.html">com.gmt2001.util</a></dt>
 <dd>
-<div class="block">Updates the game list used for auto-complete when changing the game from the panel</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">To be replaced</div>
+</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/x509/SelfSignedX509CertificateGenerator.html#generateCertificate(java.lang.String,java.security.KeyPair,int,java.lang.String)" class="member-name-link">generateCertificate(String, KeyPair, int, String)</a> - Static method in class com.gmt2001.httpwsserver.x509.<a href="com/gmt2001/httpwsserver/x509/SelfSignedX509CertificateGenerator.html" title="class in com.gmt2001.httpwsserver.x509">SelfSignedX509CertificateGenerator</a></dt>
 <dd>
@@ -3171,11 +3177,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#get(java.net.URI)" class="member-name-link">get(URI)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a GET with the default headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#GET" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.GET</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#get(java.net.URI,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">get(URI, HttpHeaders)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a GET with the specified headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#GET" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.GET</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersionRecord.html#get(org.jooq.Field,java.lang.Class)" class="member-name-link">get(Field&lt;?&gt;, Class&lt;? extends U&gt;)</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersionRecord.html" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a></dt>
 <dd>&nbsp;</dd>
@@ -3420,7 +3426,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#getChannelByIDAsync(java.lang.String)" class="member-name-link">getChannelByIDAsync(String)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html#getChannelClass()" class="member-name-link">getChannelClass()</a> - Static method in class com.gmt2001.dns.<a href="com/gmt2001/dns/EventLoopDetector.html" title="class in com.gmt2001.dns">EventLoopDetector</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the class which should be used for <a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link"><code>Channel</code></a>, associated with the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/TwitchAPIv5.html#getChannelCreatedDate(java.lang.String)" class="member-name-link">getChannelCreatedDate(String)</a> - Method in class com.gmt2001.<a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -3717,7 +3725,9 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/event/discord/DiscordEvent.html#getDiscriminator()" class="member-name-link">getDiscriminator()</a> - Method in class tv.phantombot.event.discord.<a href="tv/phantombot/event/discord/DiscordEvent.html" title="class in tv.phantombot.event.discord">DiscordEvent</a></dt>
 <dd>
-<div class="block">Method that returns the user's discriminator.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Discriminators have been removed from Discord</div>
+</div>
 </dd>
 <dt><a href="tv/phantombot/event/pubsub/following/PubSubFollowingEvent.html#getDisplayname()" class="member-name-link">getDisplayname()</a> - Method in class tv.phantombot.event.pubsub.following.<a href="tv/phantombot/event/pubsub/following/PubSubFollowingEvent.html" title="class in tv.phantombot.event.pubsub.following">PubSubFollowingEvent</a></dt>
 <dd>
@@ -4624,7 +4634,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/event/discord/DiscordEvent.html#getSender()" class="member-name-link">getSender()</a> - Method in class tv.phantombot.event.discord.<a href="tv/phantombot/event/discord/DiscordEvent.html" title="class in tv.phantombot.event.discord">DiscordEvent</a></dt>
 <dd>
-<div class="block">Method that returns the sender of the event with their discrim.</div>
+<div class="block">Method that returns the sender of the event.</div>
 </dd>
 <dt><a href="tv/phantombot/event/irc/message/IrcMessageEvent.html#getSender()" class="member-name-link">getSender()</a> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcMessageEvent.html" title="class in tv.phantombot.event.irc.message">IrcMessageEvent</a></dt>
 <dd>
@@ -4635,7 +4645,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that returns the user's ID.</div>
 </dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html#getServerChannelClass()" class="member-name-link">getServerChannelClass()</a> - Static method in class com.gmt2001.dns.<a href="com/gmt2001/dns/EventLoopDetector.html" title="class in com.gmt2001.dns">EventLoopDetector</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Returns the class which should be used for <a href="https://netty.io/4.1/api/io/netty/channel/ServerChannel.html" title="class or interface in io.netty.channel" class="external-link"><code>ServerChannel</code></a>, associated with the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></div>
+</dd>
 <dt><a href="tv/phantombot/event/pubsub/videoplayback/PubSubVideoPlaybackEvent.html#getServerTime()" class="member-name-link">getServerTime()</a> - Method in class tv.phantombot.event.pubsub.videoplayback.<a href="tv/phantombot/event/pubsub/videoplayback/PubSubVideoPlaybackEvent.html" title="class in tv.phantombot.event.pubsub.videoplayback">PubSubVideoPlaybackEvent</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -4878,7 +4890,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/event/discord/DiscordEvent.html#getUsername()" class="member-name-link">getUsername()</a> - Method in class tv.phantombot.event.discord.<a href="tv/phantombot/event/discord/DiscordEvent.html" title="class in tv.phantombot.event.discord">DiscordEvent</a></dt>
 <dd>
-<div class="block">Method that returns just the username of the event.</div>
+<div class="block">Method that returns the username of the event.</div>
 </dd>
 <dt><a href="tv/phantombot/event/irc/clearchat/IrcClearchatEvent.html#getUsername()" class="member-name-link">getUsername()</a> - Method in class tv.phantombot.event.irc.clearchat.<a href="tv/phantombot/event/irc/clearchat/IrcClearchatEvent.html" title="class in tv.phantombot.event.irc.clearchat">IrcClearchatEvent</a></dt>
 <dd>
@@ -4966,10 +4978,16 @@ loadScripts(document, 'script');</script>
 <div class="block">The <a href="tv/phantombot/panel/PanelUser/PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>user's type</code></a></div>
 </dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminator(java.lang.String,java.lang.String)" class="member-name-link">getUserWithDiscriminator(String, String)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Discriminators have been removed from Discord</div>
+</div>
+</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#getUserWithDiscriminatorAsync(java.lang.String,java.lang.String)" class="member-name-link">getUserWithDiscriminatorAsync(String, String)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>
-<div class="block">Method to return a user object by its name and its discriminator.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Discriminators have been removed from Discord</div>
+</div>
 </dd>
 <dt><a href="biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html#getValidConnection()" class="member-name-link">getValidConnection()</a> - Method in class biz.source_code.miniConnectionPoolManager.<a href="biz/source_code/miniConnectionPoolManager/MiniConnectionPoolManager.html" title="class in biz.source_code.miniConnectionPoolManager">MiniConnectionPoolManager</a></dt>
 <dd>
@@ -5231,7 +5249,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#hasException()" class="member-name-link">hasException()</a> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
-<div class="block">Returns true if there was an exception not related to JSON decoding</div>
+<div class="block">Indicates if there was an exception not related to JSON decoding</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersion.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></dt>
 <dd>&nbsp;</dd>
@@ -5243,11 +5261,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#hasJson()" class="member-name-link">hasJson()</a> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
-<div class="block">Returns true if the response was JSON, no JSONExceptions were thrown during parsing, and no exceptions were thrown during the request</div>
+<div class="block">Indicates if the response was JSON, no <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a> was thrown during parsing, and no other exceptions were thrown during the request</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#hasJsonException()" class="member-name-link">hasJsonException()</a> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
-<div class="block">Returns true if a JSONException was thrown during JSON parsing</div>
+<div class="block">Indicates if an exception was thrown during JSON parsing</div>
 </dd>
 <dt><a href="com/scaniatv/StreamElementsAPIv2.html#hasJWT()" class="member-name-link">hasJWT()</a> - Static method in class com.scaniatv.<a href="com/scaniatv/StreamElementsAPIv2.html" title="class in com.scaniatv">StreamElementsAPIv2</a></dt>
 <dd>&nbsp;</dd>
@@ -5312,7 +5330,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#head(java.net.URI)" class="member-name-link">head(URI)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a HEAD with the default headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#HEAD" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.HEAD</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#head(java.net.URI,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">head(URI, HttpHeaders)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
@@ -5375,7 +5393,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html" class="type-name-link" title="class in com.gmt2001.httpclient">HttpClientResponse</a> - Class in <a href="com/gmt2001/httpclient/package-summary.html">com.gmt2001.httpclient</a></dt>
 <dd>
-<div class="block">The request parameters and response data from a HttpClient request</div>
+<div class="block">The request parameters and response data from a <a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> request</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#%3Cinit%3E(java.lang.Exception,boolean,io.netty.handler.codec.http.HttpMethod,java.lang.String,byte%5B%5D,io.netty.handler.codec.http.HttpHeaders,io.netty.handler.codec.http.HttpHeaders,io.netty.handler.codec.http.HttpResponseStatus,java.net.URI)" class="member-name-link">HttpClientResponse(Exception, boolean, HttpMethod, String, byte[], HttpHeaders, HttpHeaders, HttpResponseStatus, URI)</a> - Constructor for class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
@@ -5818,7 +5836,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Method to get this instance.</div>
 </dd>
 <dt><a href="com/gmt2001/dns/CompositeAddressResolverGroup.html#INSTANCE" class="member-name-link">INSTANCE</a> - Static variable in class com.gmt2001.dns.<a href="com/gmt2001/dns/CompositeAddressResolverGroup.html" title="class in com.gmt2001.dns">CompositeAddressResolverGroup</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Instance</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html#InsufficientPermissions" class="member-name-link">InsufficientPermissions</a> - Enum constant in enum class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></dt>
 <dd>
 <div class="block"><a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>Panel user</code></a> is not allowed to manage other panel users</div>
@@ -6226,7 +6246,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Indicates if the user is enabled</div>
 </dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html#ISEPOLLAVAILABLE" class="member-name-link">ISEPOLLAVAILABLE</a> - Static variable in class com.gmt2001.dns.<a href="com/gmt2001/dns/EventLoopDetector.html" title="class in com.gmt2001.dns">EventLoopDetector</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Indicates if <a href="https://netty.io/4.1/api/io/netty/channel/epoll/Epoll.html" title="class or interface in io.netty.channel.epoll" class="external-link"><code>Epoll</code></a>, the Linux <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a>, is available</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html#isError()" class="member-name-link">isError()</a> - Method in enum class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></dt>
 <dd>
 <div class="block">Indicates if the message is an error or success message</div>
@@ -6244,7 +6266,9 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/script/Script.html#isKilled()" class="member-name-link">isKilled()</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/Script.html" title="class in tv.phantombot.script">Script</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/dns/EventLoopDetector.html#ISKQUEUEAVAILABLE" class="member-name-link">ISKQUEUEAVAILABLE</a> - Static variable in class com.gmt2001.dns.<a href="com/gmt2001/dns/EventLoopDetector.html" title="class in com.gmt2001.dns">EventLoopDetector</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Indicates if <a href="https://netty.io/4.1/api/io/netty/channel/kqueue/KQueue.html" title="class or interface in io.netty.channel.kqueue" class="external-link"><code>KQueue</code></a>, the macOS <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a>, is available</div>
+</dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.html#isLoggedIn()" class="member-name-link">isLoggedIn()</a> - Method in class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.html" title="class in tv.phantombot.discord">DiscordAPI</a></dt>
 <dd>
 <div class="block">Method that checks if we are logged in to Discord.</div>
@@ -6293,7 +6317,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#isNotJson()" class="member-name-link">isNotJson()</a> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
-<div class="block">Returns true if the response was not JSON or failed JSON parsing</div>
+<div class="block">Indicates if the response was not JSON or failed JSON parsing</div>
 </dd>
 <dt><a href="tv/phantombot/cache/TwitchCache.html#isPartner()" class="member-name-link">isPartner()</a> - Method in class tv.phantombot.cache.<a href="tv/phantombot/cache/TwitchCache.html" title="class in tv.phantombot.cache">TwitchCache</a></dt>
 <dd>
@@ -6351,7 +6375,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#isSuccess()" class="member-name-link">isSuccess()</a> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
-<div class="block">Returns true if the request is an overall success (no exceptions and status code &lt; 400)</div>
+<div class="block">Indicates if the request is an overall success (no exceptions and status code &lt; 400)</div>
 </dd>
 <dt><a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html#isTokenAvailable()" class="member-name-link">isTokenAvailable()</a> - Method in class com.gmt2001.ratelimiters.<a href="com/gmt2001/ratelimiters/WindowedRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedRateLimiter</a></dt>
 <dd>&nbsp;</dd>
@@ -6408,9 +6432,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClientResponse.html#jsonOrThrow()" class="member-name-link">jsonOrThrow()</a> - Method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient">HttpClientResponse</a></dt>
 <dd>
-<div class="block">Returns the response body as a JSONObject, if it was a valid stringified JSON object; if the response body looked like JSON but failed
- validation, throws the JSONException (or, rarely, a non-JSONException); if an exception was caught during the request, it is thrown; otherwise,
- if the response body did not start with '{', throws NotJSONException</div>
+<div class="block">Returns the response body as a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a>, if it was a valid stringified JSON object</div>
 </dd>
 <dt><a href="com/gmt2001/JSTimers.html" class="type-name-link" title="class in com.gmt2001">JSTimers</a> - Class in <a href="com/gmt2001/package-summary.html">com.gmt2001</a></dt>
 <dd>&nbsp;</dd>
@@ -7001,8 +7023,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/NotJSONException.html" class="type-name-link" title="class in com.gmt2001.httpclient">NotJSONException</a> - Exception in <a href="com/gmt2001/httpclient/package-summary.html">com.gmt2001.httpclient</a></dt>
 <dd>
-<div class="block">An extension of JSONException to explicitly indicate that HttpClientResponse identified the response body as not JSON, due to the first character
- not being a '{'</div>
+<div class="block">An extension of <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a> to explicitly indicate that <a href="com/gmt2001/httpclient/HttpClientResponse.html" title="class in com.gmt2001.httpclient"><code>HttpClientResponse</code></a> identified the response
+ body as not JSON, due to the first character not being a <code>&amp;#123;</code></div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/NotJSONException.html#%3Cinit%3E()" class="member-name-link">NotJSONException()</a> - Constructor for exception com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/NotJSONException.html" title="class in com.gmt2001.httpclient">NotJSONException</a></dt>
 <dd>
@@ -7500,27 +7522,27 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">patch(URI, HttpHeaders, String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a PATCH with the specified headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.util.Map)" class="member-name-link">patch(URI, HttpHeaders, Map&lt;String, String&gt;)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to URL-encode a map of patch data then submit it as a PATCH with the specified headers</div>
+<div class="block">Shortcut to URL-encode a map of patch data then submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)" class="member-name-link">patch(URI, HttpHeaders, JSONObject)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a PATCH with the specified headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,java.lang.String)" class="member-name-link">patch(URI, String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a form-urlencoded PATCH with the default headers</div>
+<div class="block">Shortcut to perform a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,java.util.Map)" class="member-name-link">patch(URI, Map&lt;String, String&gt;)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to URL-encode a map of put data then submit it as a form-urlencoded PATCH with the default headers</div>
+<div class="block">Shortcut to URL-encode a map of put data then submit it as a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#patch(java.net.URI,org.json.JSONObject)" class="member-name-link">patch(URI, JSONObject)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a PATCH with the default headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PATCH" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PATCH</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/HttpRequest.RequestType.html#PATCH" class="member-name-link">PATCH</a> - Enum constant in enum class com.gmt2001.<a href="com/gmt2001/HttpRequest.RequestType.html" title="enum class in com.gmt2001">HttpRequest.RequestType</a></dt>
 <dd>
@@ -7604,27 +7626,27 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">post(URI, HttpHeaders, String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a POST with the specified headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.util.Map)" class="member-name-link">post(URI, HttpHeaders, Map&lt;String, String&gt;)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to URL-encode a map of post data then submit it as a POST with the specified headers</div>
+<div class="block">Shortcut to URL-encode a map of post data then submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)" class="member-name-link">post(URI, HttpHeaders, JSONObject)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a POST with the specified headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,java.lang.String)" class="member-name-link">post(URI, String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a form-urlencoded POST with the default headers</div>
+<div class="block">Shortcut to perform a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,java.util.Map)" class="member-name-link">post(URI, Map&lt;String, String&gt;)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to URL-encode a map of post data then submit it as a form-urlencoded POST with the default headers</div>
+<div class="block">Shortcut to URL-encode a map of post data then submit it as a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#post(java.net.URI,org.json.JSONObject)" class="member-name-link">post(URI, JSONObject)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a POST with the default headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a> request with the default headers</div>
 </dd>
 <dt><a href="tv/phantombot/event/EventBus.html#post(tv.phantombot.event.Event)" class="member-name-link">post(Event)</a> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/EventBus.html" title="class in tv.phantombot.event">EventBus</a></dt>
 <dd>
@@ -7720,7 +7742,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/datastore2/Datastore2.html#PREFIX" class="member-name-link">PREFIX</a> - Static variable in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
 <dd>
-<div class="block">Table name prefix for all tables created as POJOs instead of using <a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore"><code>DataStore</code></a></div>
+<div class="block">Table name prefix for all tables created as POJOs</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/stream/StreamOnline.Type.html#PREMIERE" class="member-name-link">PREMIERE</a> - Enum constant in enum class com.gmt2001.twitch.eventsub.subscriptions.stream.<a href="com/gmt2001/twitch/eventsub/subscriptions/stream/StreamOnline.Type.html" title="enum class in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOnline.Type</a></dt>
 <dd>
@@ -8192,27 +8214,27 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">put(URI, HttpHeaders, String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a PUT with the specified headers</div>
+<div class="block">Shortcut to perform a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,java.util.Map)" class="member-name-link">put(URI, HttpHeaders, Map&lt;String, String&gt;)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to URL-encode a map of put data then submit it as a PUT with the specified headers</div>
+<div class="block">Shortcut to URL-encode a map of put data then submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,io.netty.handler.codec.http.HttpHeaders,org.json.JSONObject)" class="member-name-link">put(URI, HttpHeaders, JSONObject)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a PUT with the specified headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,java.lang.String)" class="member-name-link">put(URI, String)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to perform a form-urlencoded PUT with the default headers</div>
+<div class="block">Shortcut to perform a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,java.util.Map)" class="member-name-link">put(URI, Map&lt;String, String&gt;)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to URL-encode a map of put data then submit it as a form-urlencoded PUT with the default headers</div>
+<div class="block">Shortcut to URL-encode a map of put data then submit it as a form-urlencoded <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/HttpClient.html#put(java.net.URI,org.json.JSONObject)" class="member-name-link">put(URI, JSONObject)</a> - Static method in class com.gmt2001.httpclient.<a href="com/gmt2001/httpclient/HttpClient.html" title="class in com.gmt2001.httpclient">HttpClient</a></dt>
 <dd>
-<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a PUT with the default headers</div>
+<div class="block">Shortcut to stringify a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> and submit it as a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#PUT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.PUT</code></a> request with the default headers</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/datatype/AbstractDatabaseMap.html#put(K,V)" class="member-name-link">put(K, V)</a> - Method in class com.gmt2001.datastore2.datatype.<a href="com/gmt2001/datastore2/datatype/AbstractDatabaseMap.html" title="class in com.gmt2001.datastore2.datatype">AbstractDatabaseMap</a></dt>
 <dd>&nbsp;</dd>
@@ -9850,7 +9872,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/Datastore2.html#timestamp()" class="member-name-link">timestamp()</a> - Static method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
 <dd>
-<div class="block">Returns a timestamp sutible for database backup names in the format <code>yyyy-MM-dd.hh-mm-ss</code></div>
+<div class="block">Returns a timestamp suitable for database backup names in the format <code>yyyy-MM-dd.hh-mm-ss</code></div>
 </dd>
 <dt><a href="com/scaniatv/TipeeeStreamAPIv1.html" class="type-name-link" title="class in com.scaniatv">TipeeeStreamAPIv1</a> - Class in <a href="com/scaniatv/package-summary.html">com.scaniatv</a></dt>
 <dd>&nbsp;</dd>
@@ -10502,10 +10524,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/util/GamesListUpdater.html#update()" class="member-name-link">update()</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/GamesListUpdater.html" title="class in com.gmt2001.util">GamesListUpdater</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Updates the games list using smart update mode</div>
 </dd>
 <dt><a href="com/gmt2001/util/GamesListUpdater.html#update(boolean)" class="member-name-link">update(boolean)</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/GamesListUpdater.html" title="class in com.gmt2001.util">GamesListUpdater</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Updates the games list</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/TwitchValidate.html#updateAPIToken(java.lang.String)" class="member-name-link">updateAPIToken(String)</a> - Method in class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/TwitchValidate.html" title="class in tv.phantombot.twitch.api">TwitchValidate</a></dt>
@@ -10601,7 +10625,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Updates the viewer count</div>
 </dd>
 <dt><a href="com/gmt2001/httpclient/URIUtil.html" class="type-name-link" title="class in com.gmt2001.httpclient">URIUtil</a> - Class in <a href="com/gmt2001/httpclient/package-summary.html">com.gmt2001.httpclient</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Assists with creating a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a> by automatically encoding characters that <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a> finds unacceptable</div>
+</dd>
 <dt><a href="com/gmt2001/HttpResponse.html#url" class="member-name-link">url</a> - Variable in class com.gmt2001.<a href="com/gmt2001/HttpResponse.html" title="class in com.gmt2001">HttpResponse</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>

@@ -78,6 +78,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">EventLoopDetector</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">Detects if an operating system specific <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a> is available</div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>gmt2001</dd>
@@ -96,10 +97,14 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static final boolean</code></div>
 <div class="col-second even-row-color"><code><a href="#ISEPOLLAVAILABLE" class="member-name-link">ISEPOLLAVAILABLE</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Indicates if <a href="https://netty.io/4.1/api/io/netty/channel/epoll/Epoll.html" title="class or interface in io.netty.channel.epoll" class="external-link"><code>Epoll</code></a>, the Linux <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a>, is available</div>
+</div>
 <div class="col-first odd-row-color"><code>static final boolean</code></div>
 <div class="col-second odd-row-color"><code><a href="#ISKQUEUEAVAILABLE" class="member-name-link">ISKQUEUEAVAILABLE</a></code></div>
-<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-last odd-row-color">
+<div class="block">Indicates if <a href="https://netty.io/4.1/api/io/netty/channel/kqueue/KQueue.html" title="class or interface in io.netty.channel.kqueue" class="external-link"><code>KQueue</code></a>, the macOS <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a>, is available</div>
+</div>
 </div>
 </section>
 </li>
@@ -116,13 +121,19 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link">EventLoopGroup</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#createEventLoopGroup()" class="member-name-link">createEventLoopGroup</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">If an operating system specific <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a> is available, returns a new instance of it</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getChannelClass()" class="member-name-link">getChannelClass</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns the class which should be used for <a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link"><code>Channel</code></a>, associated with the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://netty.io/4.1/api/io/netty/channel/ServerChannel.html" title="class or interface in io.netty.channel" class="external-link">ServerChannel</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getServerChannelClass()" class="member-name-link">getServerChannelClass</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns the class which should be used for <a href="https://netty.io/4.1/api/io/netty/channel/ServerChannel.html" title="class or interface in io.netty.channel" class="external-link"><code>ServerChannel</code></a>, associated with the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></div>
+</div>
 </div>
 </div>
 </div>
@@ -144,12 +155,14 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="ISEPOLLAVAILABLE">
 <h3>ISEPOLLAVAILABLE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">ISEPOLLAVAILABLE</span></div>
+<div class="block">Indicates if <a href="https://netty.io/4.1/api/io/netty/channel/epoll/Epoll.html" title="class or interface in io.netty.channel.epoll" class="external-link"><code>Epoll</code></a>, the Linux <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a>, is available</div>
 </section>
 </li>
 <li>
 <section class="detail" id="ISKQUEUEAVAILABLE">
 <h3>ISKQUEUEAVAILABLE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">ISKQUEUEAVAILABLE</span></div>
+<div class="block">Indicates if <a href="https://netty.io/4.1/api/io/netty/channel/kqueue/KQueue.html" title="class or interface in io.netty.channel.kqueue" class="external-link"><code>KQueue</code></a>, the macOS <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a>, is available</div>
 </section>
 </li>
 </ul>
@@ -164,18 +177,35 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="createEventLoopGroup()">
 <h3>createEventLoopGroup</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link">EventLoopGroup</a></span>&nbsp;<span class="element-name">createEventLoopGroup</span>()</div>
+<div class="block">If an operating system specific <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a> is available, returns a new instance of it
+ <p>
+ Otherwise, returns an instance of <a href="https://netty.io/4.1/api/io/netty/channel/nio/NioEventLoopGroup.html" title="class or interface in io.netty.channel.nio" class="external-link"><code>NioEventLoopGroup</code></a></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getServerChannelClass()">
 <h3>getServerChannelClass</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://netty.io/4.1/api/io/netty/channel/ServerChannel.html" title="class or interface in io.netty.channel" class="external-link">ServerChannel</a>&gt;</span>&nbsp;<span class="element-name">getServerChannelClass</span>()</div>
+<div class="block">Returns the class which should be used for <a href="https://netty.io/4.1/api/io/netty/channel/ServerChannel.html" title="class or interface in io.netty.channel" class="external-link"><code>ServerChannel</code></a>, associated with the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the server channel class</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="getChannelClass()">
 <h3>getChannelClass</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&gt;</span>&nbsp;<span class="element-name">getChannelClass</span>()</div>
+<div class="block">Returns the class which should be used for <a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link"><code>Channel</code></a>, associated with the <a href="https://netty.io/4.1/api/io/netty/channel/EventLoopGroup.html" title="class or interface in io.netty.channel" class="external-link"><code>EventLoopGroup</code></a></div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the channel class</dd>
+</dl>
 </section>
 </li>
 </ul>

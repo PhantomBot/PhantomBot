@@ -84,7 +84,13 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">CompositeAddressResolverGroup</span>
 <span class="extends-implements">extends <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolverGroup.html" title="class or interface in io.netty.resolver" class="external-link">AddressResolverGroup</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/InetSocketAddress.html" title="class or interface in java.net" class="external-link">InetSocketAddress</a>&gt;</span></div>
-<div class="block">An <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolverGroup.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolverGroup</code></a> that uses a <a href="CompositeInetNameResolver.html" title="class in com.gmt2001.dns"><code>CompositeInetNameResolver</code></a> to service DNS queries</div>
+<div class="block">An <a href="https://netty.io/4.1/api/io/netty/resolver/AddressResolverGroup.html" title="class or interface in io.netty.resolver" class="external-link"><code>AddressResolverGroup</code></a> that uses a <a href="CompositeInetNameResolver.html" title="class in com.gmt2001.dns"><code>CompositeInetNameResolver</code></a> to service DNS queries
+ <p>
+ The current resolver set used (in preference order) is
+ <ol>
+ <li><a href="https://netty.io/4.1/api/io/netty/resolver/dns/DnsNameResolver.html" title="class or interface in io.netty.resolver.dns" class="external-link"><code>DnsNameResolver</code></a>, which provides a UDP name resolver implemented within netty</li>
+ <li><a href="https://netty.io/4.1/api/io/netty/resolver/DefaultNameResolver.html" title="class or interface in io.netty.resolver" class="external-link"><code>DefaultNameResolver</code></a>, which uses the operating system's built-in name resolver</li>
+ </ol></div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>gmt2001</dd>
@@ -103,7 +109,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static final <a href="CompositeAddressResolverGroup.html" title="class in com.gmt2001.dns">CompositeAddressResolverGroup</a></code></div>
 <div class="col-second even-row-color"><code><a href="#INSTANCE" class="member-name-link">INSTANCE</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Instance</div>
+</div>
 </div>
 </section>
 </li>
@@ -145,6 +153,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="INSTANCE">
 <h3>INSTANCE</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="CompositeAddressResolverGroup.html" title="class in com.gmt2001.dns">CompositeAddressResolverGroup</a></span>&nbsp;<span class="element-name">INSTANCE</span></div>
+<div class="block">Instance</div>
 </section>
 </li>
 </ul>

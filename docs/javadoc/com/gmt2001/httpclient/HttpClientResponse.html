@@ -78,7 +78,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">HttpClientResponse</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">The request parameters and response data from a HttpClient request</div>
+<div class="block">The request parameters and response data from a <a href="HttpClient.html" title="class in com.gmt2001.httpclient"><code>HttpClient</code></a> request</div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>gmt2001</dd>
@@ -139,27 +139,27 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasException()" class="member-name-link">hasException</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns true if there was an exception not related to JSON decoding</div>
+<div class="block">Indicates if there was an exception not related to JSON decoding</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasJson()" class="member-name-link">hasJson</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns true if the response was JSON, no JSONExceptions were thrown during parsing, and no exceptions were thrown during the request</div>
+<div class="block">Indicates if the response was JSON, no <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a> was thrown during parsing, and no other exceptions were thrown during the request</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasJsonException()" class="member-name-link">hasJsonException</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns true if a JSONException was thrown during JSON parsing</div>
+<div class="block">Indicates if an exception was thrown during JSON parsing</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isNotJson()" class="member-name-link">isNotJson</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns true if the response was not JSON or failed JSON parsing</div>
+<div class="block">Indicates if the response was not JSON or failed JSON parsing</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSuccess()" class="member-name-link">isSuccess</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns true if the request is an overall success (no exceptions and status code &lt; 400)</div>
+<div class="block">Indicates if the request is an overall success (no exceptions and status code &lt; 400)</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#json()" class="member-name-link">json</a>()</code></div>
@@ -174,9 +174,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#jsonOrThrow()" class="member-name-link">jsonOrThrow</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the response body as a JSONObject, if it was a valid stringified JSON object; if the response body looked like JSON but failed
- validation, throws the JSONException (or, rarely, a non-JSONException); if an exception was caught during the request, it is thrown; otherwise,
- if the response body did not start with '{', throws NotJSONException</div>
+<div class="block">Returns the response body as a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a>, if it was a valid stringified JSON object</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html" title="class or interface in io.netty.handler.codec.http" class="external-link">HttpMethod</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#method()" class="member-name-link">method</a>()</code></div>
@@ -251,11 +249,11 @@ loadScripts(document, 'script');</script>
 <div class="block">Constructor</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>exception</code> - Any exception that may have been raised</dd>
-<dd><code>requestBody</code> - The request body for POST/PUT/PATCH</dd>
-<dd><code>responseBody</code> - The response body</dd>
-<dd><code>url</code> - The URL requested</dd>
-<dd><code>response</code> - The response metadata object</dd>
+<dd><code>exception</code> - any exception that may have been raised</dd>
+<dd><code>requestBody</code> - the request body for POST/PUT/PATCH</dd>
+<dd><code>responseBody</code> - the response body</dd>
+<dd><code>url</code> - the URL requested</dd>
+<dd><code>response</code> - the response metadata object</dd>
 </dl>
 </section>
 </li>
@@ -274,15 +272,15 @@ loadScripts(document, 'script');</script>
 <div class="block">Constructor</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>exception</code> - Any exception that may have been raised</dd>
-<dd><code>isSuccess</code> - Whether the request is considered a complete success</dd>
-<dd><code>method</code> - The HTTP method used for the request</dd>
-<dd><code>requestBody</code> - The request body for POST/PUT/PATCH</dd>
-<dd><code>responseBody</code> - The response body</dd>
-<dd><code>requestHeaders</code> - The headers sent with the request</dd>
-<dd><code>responseHeaders</code> - The headers returned in the response</dd>
-<dd><code>responseCode</code> - The response status code</dd>
-<dd><code>url</code> - The URL requested</dd>
+<dd><code>exception</code> - any exception that may have been raised</dd>
+<dd><code>isSuccess</code> - whether the request is considered a complete success</dd>
+<dd><code>method</code> - the HTTP method used for the request</dd>
+<dd><code>requestBody</code> - the request body for POST/PUT/PATCH</dd>
+<dd><code>responseBody</code> - the response body</dd>
+<dd><code>requestHeaders</code> - the headers sent with the request</dd>
+<dd><code>responseHeaders</code> - the headers returned in the response</dd>
+<dd><code>responseCode</code> - the response status code</dd>
+<dd><code>url</code> - the URL requested</dd>
 </dl>
 </section>
 </li>
@@ -301,6 +299,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns any exception that may have been thrown during the request</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link"><code>Exception</code></a> if one was thrown; <code>null</code> if there was none</dd>
 </dl>
 </section>
 </li>
@@ -308,9 +307,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="hasException()">
 <h3>hasException</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasException</span>()</div>
-<div class="block">Returns true if there was an exception not related to JSON decoding</div>
+<div class="block">Indicates if there was an exception not related to JSON decoding</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd><code>true</code> if there is an exception, which can be retrieved using <a href="#exception()"><code>exception()</code></a></dd>
 </dl>
 </section>
 </li>
@@ -318,9 +318,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="isSuccess()">
 <h3>isSuccess</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isSuccess</span>()</div>
-<div class="block">Returns true if the request is an overall success (no exceptions and status code &lt; 400)</div>
+<div class="block">Indicates if the request is an overall success (no exceptions and status code &lt; 400)</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd><code>true</code> if <a href="#hasException()"><code>hasException()</code></a> is <code>false</code> and <a href="#responseCode()"><code>responseCode()</code></a> is &lt; 400</dd>
 </dl>
 </section>
 </li>
@@ -331,6 +332,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the response body as a JSONObject, if it was a valid stringified JSON object</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> returned by the response, if the response was JSON</dd>
 </dl>
 </section>
 </li>
@@ -339,13 +341,20 @@ loadScripts(document, 'script');</script>
 <h3>jsonOrThrow</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">jsonOrThrow</span>()
                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span></div>
-<div class="block">Returns the response body as a JSONObject, if it was a valid stringified JSON object; if the response body looked like JSON but failed
- validation, throws the JSONException (or, rarely, a non-JSONException); if an exception was caught during the request, it is thrown; otherwise,
- if the response body did not start with '{', throws NotJSONException</div>
+<div class="block">Returns the response body as a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a>, if it was a valid stringified JSON object
+ <p>
+ If the response body looked like JSON but failed decoding, throws a <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a>
+ <p>
+ If a <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a> was not caught but another exception was, it is thrown
+ <p>
+ If the response was a success but the body did not start with <code>&amp;#123;</code>, throws <a href="NotJSONException.html" title="class in com.gmt2001.httpclient"><code>NotJSONException</code></a></div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> if a valid JSON object was decoded from the response body</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></code></dd>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - if the response body appears to be JSON, but failed to be decoded into a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></code> - if any other exception ocurred during the request, it is thrown</dd>
+<dd><code><a href="NotJSONException.html" title="class in com.gmt2001.httpclient">NotJSONException</a></code> - if the response was a success but the body did not contain valid JSON</dd>
 </dl>
 </section>
 </li>
@@ -353,9 +362,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="hasJson()">
 <h3>hasJson</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasJson</span>()</div>
-<div class="block">Returns true if the response was JSON, no JSONExceptions were thrown during parsing, and no exceptions were thrown during the request</div>
+<div class="block">Indicates if the response was JSON, no <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a> was thrown during parsing, and no other exceptions were thrown during the request</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd><code>true</code> if a valid <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> can be successfully retrieved from <a href="#json()"><code>json()</code></a> or <a href="#jsonOrThrow()"><code>jsonOrThrow()</code></a></dd>
 </dl>
 </section>
 </li>
@@ -363,9 +373,13 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="isNotJson()">
 <h3>isNotJson</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isNotJson</span>()</div>
-<div class="block">Returns true if the response was not JSON or failed JSON parsing</div>
+<div class="block">Indicates if the response was not JSON or failed JSON parsing
+ <p>
+ <code>true</code> could indicate any state that would make <a href="#hasJson()"><code>hasJson()</code></a> return <code>false</code>, such as the response not being JSON,
+ throwing a <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a> during parsing, or another exception being thrown during the request</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the negated value of <a href="#hasJson()"><code>hasJson()</code></a></dd>
 </dl>
 </section>
 </li>
@@ -373,9 +387,12 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="jsonException()">
 <h3>jsonException</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span>&nbsp;<span class="element-name">jsonException</span>()</div>
-<div class="block">Returns the exception raised if JSON parsing of the response body failed</div>
+<div class="block">Returns the exception raised if JSON parsing of the response body failed
+ <p>
+ This is normally a <a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link"><code>JSONException</code></a>, but could rarely be some other exception</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the exception</dd>
 </dl>
 </section>
 </li>
@@ -383,9 +400,10 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="hasJsonException()">
 <h3>hasJsonException</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">hasJsonException</span>()</div>
-<div class="block">Returns true if a JSONException was thrown during JSON parsing</div>
+<div class="block">Indicates if an exception was thrown during JSON parsing</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd><code>true</code> if an exception is available from <a href="#jsonException()"><code>jsonException()</code></a></dd>
 </dl>
 </section>
 </li>
@@ -396,6 +414,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the HTTP request method</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the request method</dd>
 </dl>
 </section>
 </li>
@@ -406,6 +425,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the request body, if the method was POST/PUT/PATCH</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the request body; <code>null</code> if there was no body</dd>
 </dl>
 </section>
 </li>
@@ -416,6 +436,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the response body as a string</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the response body as a UTF-8 encoded string</dd>
 </dl>
 </section>
 </li>
@@ -426,6 +447,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the response body</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the raw bytes of the response body</dd>
 </dl>
 </section>
 </li>
@@ -436,6 +458,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the request headers</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the request headers</dd>
 </dl>
 </section>
 </li>
@@ -446,6 +469,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the response headers</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the reponse headers</dd>
 </dl>
 </section>
 </li>
@@ -456,6 +480,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the HTTP response status code</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the status code</dd>
 </dl>
 </section>
 </li>
@@ -466,6 +491,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the URL requested</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a> requested</dd>
 </dl>
 </section>
 </li>
@@ -476,6 +502,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the actual URL that was returned, after following any redirects</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>the real <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link"><code>URI</code></a> that was returned after redirects were followed</dd>
 </dl>
 </section>
 </li>
