@@ -115,6 +115,7 @@ $(function () {
                 'autoWidth': false,
                 'lengthChange': false,
                 'bPaginate': true,
+                'pageLength': 6,
                 'data': [],
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': true, 'targets': [0, 1]},
@@ -154,15 +155,6 @@ $(function () {
 
             permissions.splice(idx, 1);
             userPermissionTable.DataTable().row($(this).parents('tr')).remove().draw();
-            if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
-                userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
-            }
-
-            if ($('#user-canManageUsers').is(':checked')) {
-                if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
-                    userPermissionTable.DataTable().row.add(getPermissionTableRow('settings', 'Read Only')).draw();
-                }
-            }
         });
 
         //Add permission
