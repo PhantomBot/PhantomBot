@@ -504,7 +504,12 @@
     // Set an interval for increasing all current users logged time
     setInterval(function () {
         if ($.isOnline($.channelName) || keepTimeWhenOffline) {
-            $.inidb.IncreaseBatchString('time', '', $.users, '60');
+            let chatList = $.viewer.chatters();
+            let users = [];
+            for (let i = 0; i < chatList.size(); i++) {
+                users.push($.jsString(chatList.get(i).login().toLowerCase()));
+            }
+            $.inidb.IncreaseBatchString('time', '', users, '60');
         }
     }, 6e4, 'scripts::systems::timeSystem.js#1');
 
