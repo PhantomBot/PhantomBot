@@ -206,7 +206,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      *
      * @param value {@code true} for enabled
      */
-    public void setEnabled(Boolean value) {
+    public void setIsEnabled(Boolean value) {
         this.value5(value);
     }
 
@@ -404,7 +404,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @param enabled {@code true} enables the user; {@code false} disabled the user
      */
     void setEnabled(boolean enabled) {
-        this.setEnabled(enabled);
+        this.setIsEnabled(enabled);
     }
 
     /**

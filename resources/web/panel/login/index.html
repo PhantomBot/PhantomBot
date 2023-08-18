@@ -460,6 +460,11 @@
                         $('#alert-br').removeClass('hide');
                         $('#error-box').html('Your session has expired, please login again');
                     }
+                    if (!navigator.cookieEnabled) {
+                        $('#error-box').removeClass('hide');
+                        $('#alert-br').removeClass('hide');
+                        $('#error-box').html($('#error-box').html() + '<p>Warning: Cookies are disabled or blocked. Login may fail</p>');
+                    }
                 });
             });
         </script>
