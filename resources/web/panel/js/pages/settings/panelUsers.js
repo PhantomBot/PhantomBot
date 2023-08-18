@@ -118,6 +118,7 @@ $(function () {
                 'autoWidth': false,
                 'lengthChange': false,
                 'bPaginate': true,
+                'pageLength': 6,
                 'data': [],
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': true, 'targets': [0, 1]},
