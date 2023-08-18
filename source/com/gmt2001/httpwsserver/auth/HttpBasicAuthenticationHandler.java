@@ -109,12 +109,13 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         HttpHeaders headers = req.headers();
 
-        String auth = headers.get("Authorization");
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         if (this.isAuthorized(ctx, req)) {
             return true;
         }
+
+        String auth = getAuthorizationString(req.headers());
 
         if (this.loginUri == null || this.loginUri.isBlank()) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);

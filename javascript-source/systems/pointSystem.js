@@ -133,6 +133,7 @@
     function runPointsPayout() {
         if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
             payoutInterval = clearInterval(payoutInterval);
+            currentPayoutIntervalTime = -1;
             return;
         }
 
