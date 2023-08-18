@@ -99,9 +99,12 @@ $(function () {
 
         for (let i in permissions) {
             userPermissionTable.DataTable().row.add(getPermissionTableRow(permissions[i].section, permissions[i].permission));
-            let index = availableSections.indexOf(permissions[i].section.toLowerCase());
-            if (index >= 0) {
-                availableSections.splice(index, 1);
+            if (!(permissions[i].section === 'dashboard' && permissions[i].permission === 'Read Only') //Do not remove the dashboard from the available sections if the default ("Read Only") is currently assinged
+                && !($('#user-canManageUsers').is(':checked') && permissions[i].section === 'settings' && permissions[i].permission === 'Read Only')) { //Do not remove settings from the available sections if it's set to "Read Only" and the user should manage panel users
+                let index = availableSections.indexOf(permissions[i].section.toLowerCase());
+                if (index >= 0) {
+                    availableSections.splice(index, 1);
+                }
             }
         }
 
