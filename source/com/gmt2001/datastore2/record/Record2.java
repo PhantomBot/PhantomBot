@@ -162,7 +162,7 @@ public abstract class Record2 <RR extends Record2<RR, A, B>, A, B>
         List<Object> values = this.intoList();
 
         for (int i = 0; i < values.size(); i++) {
-            if (AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
+            if (values.get(i) != null && AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
                 ((AttachableDataType) values.get(i)).attach(this, i);
             }
         }

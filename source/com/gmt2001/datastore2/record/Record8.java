@@ -366,7 +366,7 @@ public abstract class Record8 <RR extends Record8<RR, A, B, C, D, E, F, G, H>, A
         List<Object> values = this.intoList();
 
         for (int i = 0; i < values.size(); i++) {
-            if (AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
+            if (values.get(i) != null && AttachableDataType.class.isAssignableFrom(values.get(i).getClass())) {
                 ((AttachableDataType) values.get(i)).attach(this, i);
             }
         }
