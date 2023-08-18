@@ -165,10 +165,9 @@
         for (let i = 0; i < activeList.size(); i++) {
             active.push($.jsString(activeList.get(i).login()));
         }
-
-        for (let i in $.users) {
-            if ($.users[i] !== null) {
-                username = $.users[i].toLowerCase();
+        let users = $.viewer.chatters();
+        for (let i = 0; i < users.size(); i++) {
+            username = $.jsString(users.get(i).login().toLowerCase());
                 if (isOnline) {
                     if ($.checkUserPermission(username, undefined, $.PERMISSION.Mod) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub) || $.checkUserPermission(username, undefined, $.PERMISSION.Admin) && $.checkUserPermission(username, undefined, $.PERMISSION.Sub)) {
                         amount = calcPointsGained(username, 'Subscriber', onlineGain, true);
@@ -207,9 +206,7 @@
                         $.inidb.incr('points', username, amount);
                     }
                 }
-            }
         }
-
 
         // Update points for all users with the same amount of online/offline gain.
         $.inidb.IncreaseBatchString('points', '', normalPayoutUsers, (isOnline ? onlineGain : offlineGain));
