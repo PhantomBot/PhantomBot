@@ -129,7 +129,7 @@ public final class SQLiteStore2 extends Datastore2 {
             }
 
             try (ResultSet rs = connection.getMetaData().getTables(null, null, "phantombot2_sqlite_pragma", null)) {
-                if (!rs.first()) {
+                if (!rs.next()) {
                     try ( PreparedStatement createPragmaStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS phantombot2_sqlite_pragma (variable string PRIMARY KEY, value string);") ) {
                         createPragmaStatement.execute();
                     }
@@ -137,7 +137,7 @@ public final class SQLiteStore2 extends Datastore2 {
             }
             try ( PreparedStatement nextVacuumStatement = connection.prepareStatement("SELECT value FROM phantombot2_sqlite_pragma WHERE variable='nextVacuum';") ) {
                 try ( ResultSet rs = nextVacuumStatement.executeQuery() ) {
-                    if (rs.first()) {
+                    if (rs.next()) {
                         this.nextVacuum = Instant.parse(rs.getString("value"));
                     }
                 }
