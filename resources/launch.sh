@@ -143,7 +143,7 @@ if (( success == 0 )); then
     echo "PhantomBot requires Java ${javarequired} to run"
     echo
     echo "Eclipse Temurin by Adoptium is the officially supported JVM of PhantomBot"
-    echo "Information about Adoptium is available at: https://adoptium.net
+    echo "Information about Adoptium is available at: https://adoptium.net"
     echo
 
     # macOS link to instructions
