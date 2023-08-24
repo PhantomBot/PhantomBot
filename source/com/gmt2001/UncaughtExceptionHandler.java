@@ -16,8 +16,6 @@
  */
 package com.gmt2001;
 
-import com.gmt2001.util.Reflect;
-import com.illusionaryone.Logger;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,14 +27,17 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+import com.gmt2001.util.Reflect;
+import com.illusionaryone.Logger;
+
 /**
- * Catches exceptions which hve not been caught elsewhere
+ * Catches exceptions which have not been caught elsewhere
  *
  * @author gmt2001
  */
 public final class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
-    private static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
+    private static final UncaughtExceptionHandler INSTANCE = new UncaughtExceptionHandler();
 
     /**
      * Instance
@@ -44,7 +45,7 @@ public final class UncaughtExceptionHandler implements Thread.UncaughtExceptionH
      * @return an instance
      */
     public static UncaughtExceptionHandler instance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -65,7 +66,7 @@ public final class UncaughtExceptionHandler implements Thread.UncaughtExceptionH
 
                 e.printStackTrace(ptrace);
 
-                if (e.getClass().getSimpleName().equals("OutOfMemoryError")) {
+                if (e.getClass().equals(java.lang.OutOfMemoryError.class)) {
                     Reflect.dumpHeap();
                     com.gmt2001.Console.err.println("OutOfMemoryError: Heap Dump Created");
                 }
