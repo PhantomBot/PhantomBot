@@ -112,7 +112,7 @@ public final class TableVersion extends TableImpl<TableVersionRecord> {
             }
 
             try {
-                TableVersionRecord record = TableVersion.instance().newRecord();
+                TableVersionRecord record = new TableVersionRecord();
                 record.values(TableVersion.instance(), TableVersionRecord.serialVersionUID);
                 record.store();
             } catch (Exception ex) {

@@ -26,8 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Provides an interface to a shared {@link ScheduledExecutorService}
- * <p>
- * Documentation copied from official OpenJDK 7
  *
  * @author gmt2001
  */
@@ -49,15 +47,15 @@ public final class ExecutorService {
     }
 
     /**
-     * Creates and executes a ScheduledFuture that becomes enabled after the given delay.
+     * Creates and executes a {@link ScheduledFuture} that becomes enabled after the given delay
      *
      * @param <V> the return type of the callable
      * @param callable the function to execute
      * @param delay the time from now to delay execution
      * @param unit the time unit of the delay parameter
-     * @return a ScheduledFuture that can be used to extract result or cancel
+     * @return a {@link ScheduledFuture} that can be used to extract result or cancel
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if callable is null
+     * @throws NullPointerException if callable is {@code null}
      */
     public static <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
         if (shutdown) {
@@ -68,14 +66,14 @@ public final class ExecutorService {
     }
 
     /**
-     * Creates and executes a one-shot action that becomes enabled after the given delay.
+     * Creates and executes a one-shot action that becomes enabled after the given delay
      *
      * @param command the task to execute
      * @param delay the time from now to delay execution
      * @param unit the time unit of the delay parameter
-     * @return a ScheduledFuture representing pending completion of the task and whose {@code get()} method will return {@code null} upon completion
+     * @return a {@link ScheduledFuture} representing pending completion of the task and whose {@link ScheduledFuture#get()} method will return {@code null} upon completion
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if command is null
+     * @throws NullPointerException if command is {@code null}
      */
     public static ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
         if (shutdown) {
@@ -87,18 +85,18 @@ public final class ExecutorService {
 
     /**
      * Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given period; that
-     * is executions will commence after {@code initialDelay} then {@code initialDelay+period}, then {@code initialDelay + 2 * period}, and so on. If
+     * is executions will commence after {@code initialDelay} then {@code initialDelay + period}, then {@code initialDelay + 2 * period}, and so on. If
      * any execution of the task encounters an exception, subsequent executions are suppressed. Otherwise, the task will only terminate via
      * cancellation or termination of the executor. If any execution of this task takes longer than its period, then subsequent executions may start
-     * late, but will not concurrently execute.
+     * late, but will not concurrently execute
      *
      * @param command the task to execute
      * @param initialDelay the time to delay first execution
      * @param period the period between successive executions
      * @param unit the time unit of the initialDelay and period parameters
-     * @return a ScheduledFuture representing pending completion of the task, and whose {@code get()} method will throw an exception upon cancellation
+     * @return a {@link ScheduledFuture} representing pending completion of the task, and whose {@link ScheduledFuture#get()} method will throw an exception upon cancellation
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if command is null
+     * @throws NullPointerException if command is {@code null}
      * @throws IllegalArgumentException if period less than or equal to zero
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
@@ -112,15 +110,15 @@ public final class ExecutorService {
     /**
      * Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given delay between
      * the termination of one execution and the commencement of the next. If any execution of the task encounters an exception, subsequent executions
-     * are suppressed. Otherwise, the task will only terminate via cancellation or termination of the executor.
+     * are suppressed. Otherwise, the task will only terminate via cancellation or termination of the executor
      *
      * @param command the task to execute
      * @param initialDelay the time to delay first execution
      * @param delay the delay between the termination of one execution and the commencement of the next
      * @param unit the time unit of the initialDelay and delay parameters
-     * @return a ScheduledFuture representing pending completion of the task, and whose {@code get()} method will throw an exception upon cancellation
+     * @return a {@link ScheduledFuture} representing pending completion of the task, and whose {@link ScheduledFuture#get()} method will throw an exception upon cancellation
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if command is null
+     * @throws NullPointerException if command is {@code null}
      * @throws IllegalArgumentException if delay less than or equal to zero
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
@@ -133,11 +131,11 @@ public final class ExecutorService {
 
     /**
      * Executes the given command at some time in the future. The command may execute in a new thread, in a pooled thread, or in the calling thread,
-     * at the discretion of the {@code Executor} implementation.
+     * at the discretion of the {@code Executor} implementation
      *
      * @param command the runnable task
-     * @throws RejectedExecutionException if this task cannot be accepted for execution.
-     * @throws NullPointerException if command is null
+     * @throws RejectedExecutionException if this task cannot be accepted for execution
+     * @throws NullPointerException if command is {@code null}
      */
     public static void execute(Runnable command) {
         if (shutdown) {
@@ -148,13 +146,13 @@ public final class ExecutorService {
     }
 
     /**
-     * Submits a Runnable task for execution and returns a Future representing that task. The Future's {@code get} method will return {@code null}
-     * upon <em>successful</em> completion.
+     * Submits a Runnable task for execution and returns a {@link Future} representing that task, whose {@link Future#get()} method will return {@code null}
+     * upon successful completion
      *
      * @param task the task to submit
-     * @return a Future representing pending completion of the task
+     * @return a {@link Future} representing pending completion of the task
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if the task is null
+     * @throws NullPointerException if the task is {@code null}
      */
     public static Future<?> submit(Runnable task) {
         if (shutdown) {
@@ -165,15 +163,15 @@ public final class ExecutorService {
     }
 
     /**
-     * Submits a Runnable task for execution and returns a Future representing that task.The Future's {@code get} method will return the given result
-     * upon successful completion.
+     * Submits a Runnable task for execution and returns a {@link Future} representing that task, whose {@link Future#get()} method will return the given result
+     * upon successful completion
      *
      * @param <T> the return type of result
      * @param task the task to submit
      * @param result the result to return
-     * @return a Future representing pending completion of the task
+     * @return a {@link Future} representing pending completion of the task
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if the task is null
+     * @throws NullPointerException if the task is {@code null}
      */
     public static <T> Future<T> submit(Runnable task, T result) {
         if (shutdown) {
@@ -184,19 +182,19 @@ public final class ExecutorService {
     }
 
     /**
-     * Submits a value-returning task for execution and returns a Future representing the pending results of the task.The Future's {@code get} method
-     * will return the task's result upon successful completion.<p>
+     * Submits a value-returning task for execution and returns a {@link Future} representing the pending results of the task, whose {@link Future#get()} method
+     * will return the task's result upon successful completion
+     * <p>
      * If you would like to immediately block waiting for a task, you can use constructions of the form {@code result = exec.submit(aCallable).get();}
-     *
      * <p>
      * Note: The {@link Executors} class includes a set of methods that can convert some other common closure-like objects, for example,
-     * {@link java.security.PrivilegedAction} to {@link Callable} form so they can be submitted.
+     * {@link java.security.PrivilegedAction} to {@link Callable} form so they can be submitted
      *
      * @param <T> the return type of the callable
      * @param task the task to submit
-     * @return a Future representing pending completion of the task
+     * @return a {@link Future} representing pending completion of the task
      * @throws RejectedExecutionException if the task cannot be scheduled for execution
-     * @throws NullPointerException if the task is null
+     * @throws NullPointerException if the task is {@code null}
      */
     public static <T> Future<T> submit(Callable<T> task) {
         if (shutdown) {
@@ -208,10 +206,7 @@ public final class ExecutorService {
 
     /**
      * Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted. Invocation has no additional
-     * effect if already shut down.
-     *
-     * <p>
-     * This method does not wait for previously submitted tasks to complete execution. Use {@link #awaitTermination awaitTermination} to do that.
+     * effect if already shut down
      *
      * @throws SecurityException if a security manager exists and shutting down this ExecutorService may manipulate threads that the caller is not
      * permitted to modify because it does not hold {@link
@@ -225,7 +220,7 @@ public final class ExecutorService {
     /**
      * Indicates if this ExecutorService is shutdown or in the process of shutting down
      *
-     * @return
+     * @return {@code true} if shutdown
      */
     public static boolean isShutdown() {
         return shutdown;

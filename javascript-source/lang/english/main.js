@@ -92,6 +92,7 @@ $.lang.register('init.toggle.customCommandAt.on', 'Enabled targeting no-tag cust
 $.lang.register('init.toggle.customCommandAt.off', 'Disabled targeting no-tag custom commands using !mycommand @user');
 $.lang.register('init.cooldown.msg.global', 'command !$1 is still on a global cooldown. ($2 seconds left)');
 $.lang.register('init.cooldown.msg.user', 'command !$1 is still on cooldown for you. ($2 seconds left)');
+$.lang.register('init.toggle.botname', 'The !$1 command has been $2. !pbcore can always be used to access these commands.');
 $.lang.register('whisper.whispers.disabled', '[Whisper Mode] has been disabled.');
 $.lang.register('whisper.whispers.enabled', '[Whisper Mode] has been enabled.');
 $.lang.register('common.hours', ' hours, ');
