@@ -18,7 +18,7 @@
 /* global Packages */
 
 (function() {
-    let bot = $.botName.toLowerCase();
+    let useBotName = $.getSetIniDbBoolean('settings', 'initCommands.useBotName', true);
     let sentReady = false;
 
     /*
@@ -32,10 +32,26 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase(bot)) {
+        if (command.equalsIgnoreCase('pbcore')) {
             if (action === undefined) {
-                $.say($.whisperPrefix(sender) + $.lang.get('init.usage', bot));
+                $.say($.whisperPrefix(sender) + $.lang.get('init.usage', command));
                 return;
+            }
+
+            /*
+             * @commandpath botName usebotname - Toggles using the bot name for initCommands commands.
+             */
+            if (action.equalsIgnoreCase('usebotname')) {
+                useBotName = !useBotName;
+                $.setIniDbBoolean('settings', 'initCommands.useBotName', useBotName);
+
+                if (useBotName) {
+                    $.registerChatAlias($.botName.toLowerCase(), 'pbcore', './core/initCommands.js');
+                } else {
+                    $.unregisterChatAlias($.botName.toLowerCase());
+                }
+
+                $.say($.whisperPrefix(sender) + $.lang.get('init.toggle.botname', $.botName.toLowerCase(), (useBotName ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
             }
 
             /*
@@ -430,19 +446,23 @@
         $.registerChatCommand('./core/initCommands.js', 'echo', $.PERMISSION.Admin);
         $.registerChatCommand('./core/initCommands.js', 'reconnect', $.PERMISSION.Admin);
         $.registerChatCommand('./core/initCommands.js', 'disconnect', $.PERMISSION.Admin);
-        $.registerChatCommand('./core/initCommands.js', bot, $.PERMISSION.Mod);
-        $.registerChatSubcommand(bot, 'disconnect', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'reconnect', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'moderate', $.PERMISSION.Mod);
-        $.registerChatSubcommand(bot, 'forceonline', $.PERMISSION.Mod);
-        $.registerChatSubcommand(bot, 'forceoffline', $.PERMISSION.Mod);
-        $.registerChatSubcommand(bot, 'setconnectmessage', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'removeconnectmessage', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'togglepricecommods', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'togglepermcommessage', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'togglepricecommessage', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'togglecooldownmessage', $.PERMISSION.Admin);
-        $.registerChatSubcommand(bot, 'togglecustomcommandat', $.PERMISSION.Admin);
+        $.registerChatCommand('./core/initCommands.js', 'pbcore', $.PERMISSION.Mod);
+        $.registerChatSubcommand('pbcore', 'disconnect', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'reconnect', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'moderate', $.PERMISSION.Mod);
+        $.registerChatSubcommand('pbcore', 'forceonline', $.PERMISSION.Mod);
+        $.registerChatSubcommand('pbcore', 'forceoffline', $.PERMISSION.Mod);
+        $.registerChatSubcommand('pbcore', 'setconnectmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'removeconnectmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'togglepricecommods', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'togglepermcommessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'togglepricecommessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'togglecooldownmessage', $.PERMISSION.Admin);
+        $.registerChatSubcommand('pbcore', 'togglecustomcommandat', $.PERMISSION.Admin);
+
+        if (useBotName) {
+            $.registerChatAlias($.botName.toLowerCase(), 'pbcore', './core/initCommands.js');
+        }
 
         // Say the connected message.
         if (!sentReady) {
