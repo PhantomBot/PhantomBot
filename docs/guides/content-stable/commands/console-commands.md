@@ -294,6 +294,14 @@ dumpheap - Creates a heap dump
 
 &nbsp;
 
+### dumpthreads
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+dumpthreads - Creates a thread dump
+
+&nbsp;
+
 ### paneluser
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_

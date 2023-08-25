@@ -37,7 +37,7 @@
             followDelay = $.getSetIniDbNumber('settings', 'followDelay', 5) * 1e3,
             followQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
             announceFollows = false,
-            timeout = null;
+            timeout = -1;
 
     $.bind('eventSubChannelFollow', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
@@ -115,7 +115,7 @@
 
             followQueue.add(el);
 
-            if (timeout !== null) {
+            if (timeout === -1) {
                 timeout = runFollows();
             }
 
@@ -134,7 +134,7 @@
     function runFollows() {
         if (followQueue.isEmpty()) {
             clearTimeout(timeout);
-            timeout = null;
+            timeout = -1;
             return;
         }
 
@@ -152,7 +152,7 @@
             $.alertspollssocket.triggerAudioPanel(s.audioHook);
         }
 
-        timeout = setInterval(runFollows, followDelay * 1e3, 'scripts::handlers::followHandler.js');
+        timeout = setTimeout(runFollows, followDelay, 'scripts::handlers::followHandler.js');
     }
 
     /**

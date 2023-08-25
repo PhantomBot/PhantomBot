@@ -51,13 +51,15 @@ $(function () {
         });
     };
 
-    const addDashboarDefaultPermissions = function (permissions){
-        if (findSectionIndex(permissions, 'dashboard') === -1) {
+    const addRequiredPermissions = function (permissions, section, permission){
+        if (findSectionIndex(permissions, section) === -1) {
             permissions.push({
-                section: 'dashboard',
-                permission: 'Read Only'
+                section: section,
+                permission: permission
             });
+            return true;
         }
+        return false;
     };
 
     const getDisabledIconAttr = function (enabled) {
@@ -97,9 +99,12 @@ $(function () {
 
         for (let i in permissions) {
             userPermissionTable.DataTable().row.add(getPermissionTableRow(permissions[i].section, permissions[i].permission));
-            let index = availableSections.indexOf(permissions[i].section.toLowerCase());
-            if (index >= 0) {
-                availableSections.splice(index, 1);
+            if (!(permissions[i].section === 'dashboard' && permissions[i].permission === 'Read Only') //Do not remove the dashboard from the available sections if the default ("Read Only") is currently assinged
+                && !($('#user-canManageUsers').is(':checked') && permissions[i].section === 'settings' && permissions[i].permission === 'Read Only')) { //Do not remove settings from the available sections if it's set to "Read Only" and the user should manage panel users
+                let index = availableSections.indexOf(permissions[i].section.toLowerCase());
+                if (index >= 0) {
+                    availableSections.splice(index, 1);
+                }
             }
         }
 
@@ -113,11 +118,12 @@ $(function () {
                 'autoWidth': false,
                 'lengthChange': false,
                 'bPaginate': true,
+                'pageLength': 6,
                 'data': [],
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': true, 'targets': [0, 1]},
                     {'width': '40%', 'targets': 0},
-                    {'width': '20%', 'targets': 1},
+                    {'className': 'section-permission', 'width': '20%', 'targets': 1},
                     {'className': 'text-center', 'width': '10%', 'targets': 2, 'orderable': false}
                 ],
                 'columns': [
@@ -143,13 +149,24 @@ $(function () {
                 return;
             }
 
-            availableSections.push(section);
-            if (availableSections.length > 0) {
-                $('#userPermissionAdd-button').attr('disabled', false);
+            if (!availableSections.includes(section)) {
+                availableSections.push(section);
+                if (availableSections.length > 0) {
+                    $('#userPermissionAdd-button').attr('disabled', false);
+                }
             }
 
             permissions.splice(idx, 1);
             userPermissionTable.DataTable().row($(this).parents('tr')).remove().draw();
+            if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
+                userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
+            }
+
+            if ($('#user-canManageUsers').is(':checked')) {
+                if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
+                    userPermissionTable.DataTable().row.add(getPermissionTableRow('settings', 'Read Only')).draw();
+                }
+            }
         });
 
         //Add permission
@@ -158,7 +175,7 @@ $(function () {
                 'role': 'form'
             })
             .append(helpers.getDropdownGroup('perm-level', 'Access permission', permissionLevels[0].permission, permissionLevels.map(perm => perm.permission), 'Access permission for the panel user. "Full Access" allows modification and sending commands as well as messages. "Read Only" only allows to read settings'))
-            .append(helpers.getCheckBox('user-level-all', false, 'All Sections?', 'If checked, access permission will be set for all panel sections (except panel user management).'))
+            .append(helpers.getCheckBox('user-level-all', false, 'All Sections', 'If checked, access permission will be set for all panel sections (except panel user management).'))
             .append(helpers.getDropdownGroup('panel-section', 'Panel section', availableSections[0], availableSections, 'Panel section. Some features will not be available even with "Full Access" permissions including panel user management and restarting the bot')),
             function () {
                 let selectedPerm = $('#perm-level').find(':selected').text(),
@@ -167,21 +184,33 @@ $(function () {
 
                 if (allSections) { //Add all available sections
                     for (let section in availableSections) {
-                        permissions.push({
-                            section: availableSections[section],
-                            permission: selectedPerm
-                        });
-
-                        userPermissionTable.DataTable().row.add(getPermissionTableRow(availableSections[section], selectedPerm));
+                        let idx = findSectionIndex(permissions, availableSections[section]);
+                        if (idx >= 0) {
+                            permissions[idx].permission = selectedPerm;
+                            $('button[data-section="' + availableSections[section] + '"]').parents('td').siblings('.section-permission').text(selectedPerm);
+                        } else {
+                            permissions.push({
+                                section: availableSections[section],
+                                permission: selectedPerm
+                            });
+                            userPermissionTable.DataTable().row.add(getPermissionTableRow(availableSections[section], selectedPerm));
+                        }
                     }
 
                     availableSections = [];
                 } else { //Add single section
-                    permissions.push({
-                        section: selectedSection,
-                        permission: selectedPerm
-                    });
-                    userPermissionTable.DataTable().row.add(getPermissionTableRow(selectedSection, selectedPerm));
+                    let idx = findSectionIndex(permissions, selectedSection);
+                    if (idx >= 0) { //Handle present required permissions (only Read-Only)
+                        permissions[idx].permission = selectedPerm;
+                        $('button[data-section="' + selectedSection + '"]').parents('td').siblings('.section-permission').text(selectedPerm);
+                    } else {
+                        permissions.push({
+                            section: selectedSection,
+                            permission: selectedPerm
+                        });
+                        userPermissionTable.DataTable().row.add(getPermissionTableRow(selectedSection, selectedPerm));
+                    }
+
                     availableSections.splice(availableSections.indexOf(selectedSection), 1);
                 }
 
@@ -261,7 +290,9 @@ $(function () {
                 tableData.push([
                     user.username,
                     getPermissionShortString(user.permission),
+                    user.lastLogin,
                     lastLogon,
+                    user.creationDate,
                     helpers.getDateStringFromDate(new Date(parseInt(user.creationDate))),
                     $('<div/>')
                     .append($('<i/>',
@@ -309,17 +340,19 @@ $(function () {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    {'className': 'default-table', 'orderable': false, 'targets': [4, 5]},
+                    {'className': 'default-table', 'orderable': false, 'targets': [6, 7]},
                     {'width': '31%', 'targets': 0},
                     {'width': '15%', 'searchable': false, 'targets': 1},
-                    {'width': '18%', 'searchable': false, 'targets': [2, 3]},
-                    {'width': '125px', 'searchable': false, 'targets': [4, 5]}
+                    {'width': '18%', 'searchable': false, 'targets': [3, 5]},
+                    {'width': '125px', 'searchable': false, 'targets': [6, 7]}
                 ],
                 'columns': [
                     {'title': 'Username'},
                     {'title': 'Permissions'},
-                    {'title': 'Last login'},
-                    {'title': 'Creation date'},
+                    {'visible': false},
+                    {'title': 'Last login', 'orderData': 2},
+                    {'visible': false},
+                    {'title': 'Creation date', 'orderData': 4},
                     {'title': 'Status'},
                     {'title': 'Actions'}
                 ]
@@ -386,17 +419,25 @@ $(function () {
                     })
                     .append(helpers.getInputGroup('user-name', 'text', 'Username', '', res.username, 'Login name / username of the panel user.'))
                     .append(helpers.getCheckBox('user-enabled', res.isEnabled, 'Enabled', 'If unchecked, the user cannot log in.'))
+                    .append(helpers.getCheckBox('user-canRestartBot', res.canRestartBot, 'Can restart the bot', 'If checked, the user can restart the bot from the panel.'))
+                    .append(helpers.getCheckBox('user-canManageUsers', res.canManageUsers, 'Manages panel users', 'If checked, the user can edit other users. ("Settings"-section "Read Only"-permission will be added automatically if none are defined)'))
                     .append(getPermissionTableHTML()),
                     function () {
                         let user = $('#user-name'),
-                                enabled = $('#user-enabled').is(':checked');
+                                enabled = $('#user-enabled').is(':checked'),
+                                canRestartBot = $('#user-canRestartBot').is(':checked'),
+                                canManageUsers = $('#user-canManageUsers').is(':checked');
 
                         switch (false) {
                             case helpers.handleInputString(user):
                                 break;
                             default:
-                                addDashboarDefaultPermissions(permissions);
-                                socket.editPanelUser('edit_panel_user', username, user.val(), JSON.stringify(permissions), enabled, function (res2) {
+                                addRequiredPermissions(permissions, 'dashboard', 'Read Only');
+                                if (canManageUsers) {
+                                    addRequiredPermissions(permissions, 'settings', 'Read Only');
+                                }
+
+                                socket.editPanelUser('edit_panel_user', username, user.val(), JSON.stringify(permissions), enabled, canRestartBot, canManageUsers, function (res2) {
                                     if (res2.error !== undefined) {
                                         toastr.error(res2.error);
                                         return;
@@ -408,8 +449,21 @@ $(function () {
                                 });
                         }
                     }).on('shown.bs.modal', function () {
-                        let userPermissionTable = $('#user-permissions-table');
+                        let userPermissionTable = $('#user-permissions-table'),
+                                canManageUsersCheckBox = $('#user-canManageUsers');
+
                         getPermissionTable(userPermissionTable, permissions);
+                        if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
+                            userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
+                        }
+
+                        canManageUsersCheckBox.on('change', function (e) {
+                            if (e.target.checked) {
+                                if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
+                                    userPermissionTable.DataTable().row.add(getPermissionTableRow('settings', 'Read Only')).draw();
+                                }
+                            }
+                        });
                     }).modal('toggle');
                 });
             });
@@ -425,17 +479,25 @@ $(function () {
         })
         .append(helpers.getInputGroup('user-name', 'text', 'Username', 'Phantom', '', 'Login name / username of the panel user.'))
         .append(helpers.getCheckBox('user-enabled', true, 'Enabled', 'If unchecked, the user cannot log in.'))
+        .append(helpers.getCheckBox('user-canRestartBot', false, 'Can restart the bot', 'If checked, the user can restart the bot from the panel.'))
+        .append(helpers.getCheckBox('user-canManageUsers', false, 'Manages panel users', 'If checked, the user can edit other users. ("Settings"-section "Read Only"-permission will be added automatically if none are defined)'))
         .append(getPermissionTableHTML()),
         function () {
             let username = $('#user-name'),
-                    enabled = $('#user-enabled').is(':checked');
+                    enabled = $('#user-enabled').is(':checked'),
+                    canRestartBot = $('#user-canRestartBot').is(':checked'),
+                    canManageUsers = $('#user-canManageUsers').is(':checked');
 
             switch (false) {
                 case helpers.handleInputString(username):
                     break;
                 default:
-                    addDashboarDefaultPermissions(permissions);
-                    socket.addPanelUser('add_panel_user', username.val(), JSON.stringify(permissions), enabled, function (res) {
+                    addRequiredPermissions(permissions, 'dashboard', 'Read Only');
+                    if (canManageUsers) {
+                        addRequiredPermissions(permissions, 'settings', 'Read Only');
+                    }
+
+                    socket.addPanelUser('add_panel_user', username.val(), JSON.stringify(permissions), enabled, canRestartBot, canManageUsers, function (res) {
 
                         if (res.error !== undefined) {
                             toastr.error(res.error);
@@ -452,8 +514,21 @@ $(function () {
                     });
             }
         }).on('shown.bs.modal', function () {
-            let userPermissionTable = $('#user-permissions-table');
+            let userPermissionTable = $('#user-permissions-table'),
+                    canManageUsersCheckBox = $('#user-canManageUsers');
+
             getPermissionTable(userPermissionTable, permissions);
+            if (addRequiredPermissions(permissions, 'dashboard', 'Read Only')) {
+                userPermissionTable.DataTable().row.add(getPermissionTableRow('dashboard', 'Read Only')).draw();
+            }
+
+            canManageUsersCheckBox.on('change', function (e) {
+                if (e.target.checked) {
+                    if (addRequiredPermissions(permissions, 'settings', 'Read Only')) {
+                        userPermissionTable.DataTable().row.add(getPermissionTableRow('settings', 'Read Only')).draw();
+                    }
+                }
+            });
         }).modal('toggle');
     });
 });

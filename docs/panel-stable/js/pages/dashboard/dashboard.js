@@ -177,85 +177,65 @@ $(function () {
                         placeholder: 'Select a Command to Run'
                     }).tooltip('disable');
 
-                    // Don't load chat or the player in debug mode.
-                    // Twitch prints a bunch of errors in the iframe, so it gets confusing.
-                    if (helpers.DEBUG_STATE === helpers.DEBUG_STATES.DEBUG) {
+                    socket.getDBValues('dashboard_get_panel_toggles', {
+                        tables: ['panelData', 'panelData'],
+                        keys: ['hasChat', 'hasPlayer']
+                    }, true, function (e) {
+                        e.hasChat = (e.hasChat === 'true' || e.hasChat === null);
+                        e.hasPlayer = (e.hasPlayer === 'true' || e.hasPlayer === null);
+
+                        // Handle adding the chat.
+                        if (e.hasChat && helpers.canEmbedTwitch()) {
+                            $('#twitch-chat-iframe').html($('<iframe/>', {
+                                'frameborder': '0',
+                                'scrolling': 'no',
+                                'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
+                                'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
+                            }));
+                        } else if (e.hasChat && helpers.currentPanelUserData.userType === 'CONFIG') {
+                            $('#twitch-chat-iframe').html(helpers.CANT_EMBED_TWITCH_TEXT);
+                            $('#twitch-chat-iframe').addClass('box-body');
+                        } else {
+                            $('#twitch-chat-box').addClass('off');
+                        }
+
+                        // Handle adding the player.
+                        if (e.hasPlayer && helpers.canEmbedTwitch()) {
+                            // Add the player.
+                            $('#twitch-player-iframe').html($('<iframe/>', {
+                                'frameborder': '0',
+                                'scrolling': 'no',
+                                'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
+                                'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
+                            }));
+                        } else if (e.hasPlayer && helpers.currentPanelUserData.userType === 'CONFIG') {
+                            $('#twitch-player-iframe').html(helpers.CANT_EMBED_TWITCH_TEXT);
+                            $('#twitch-player-iframe').addClass('box-body');
+                        } else {
+                            $('#twitch-player-box').addClass('off');
+                        }
+
+                        // Handle box sizes.
+                        $('#twitch-chat-box').prop('class', (!e.hasPlayer ? 'col-md-12' : 'col-md-6'));
+                        $('#twitch-player-box').prop('class', (!e.hasChat ? 'col-md-12' : 'col-md-6'));
+
+                        // Handle toggles.
+                        $('#toggle-chat').prop('checked', e.hasChat);
+                        $('#toggle-player').prop('checked', e.hasPlayer);
+
                         // This will be called once the css and everything is loaded.
                         $(document).ready(function () {
                             // Done loading, show main page.
                             $.showPage();
                             // Scroll to bottom of event log.
                             $('.event-log').scrollTop((helpers.isReverseSortEvents ? ($('.event-log').scrollTop() - $('.recent-events').height()) : $('.recent-events').height()));
-                            // Disable chat and the player.
-                            $('#twitch-chat-box').addClass('off');
-                            $('#twitch-player-box').addClass('off');
                             // Set viewers.
                             helpers.handlePanelSetInfo($('#dashboard-viewers').data('number', helpers.parseNumber(tempData.viewers)), 'dashboard-viewers', helpers.fixNumber(tempData.viewers));
                             // Set followers.
                             helpers.handlePanelSetInfo($('#dashboard-followers').data('number', helpers.parseNumber(tempData.followers)), 'dashboard-followers', helpers.fixNumber(tempData.followers));
                             helpers.handlePanelSetInfo($('#dashboard-subs').data('number', helpers.parseNumber(tempData.subs)), 'dashboard-subs', helpers.fixNumber(tempData.subs));
                         });
-                    } else {
-                        socket.getDBValues('dashboard_get_panel_toggles', {
-                            tables: ['panelData', 'panelData'],
-                            keys: ['hasChat', 'hasPlayer']
-                        }, true, function (e) {
-                            e.hasChat = (e.hasChat === 'true' || e.hasChat === null);
-                            e.hasPlayer = (e.hasPlayer === 'true' || e.hasPlayer === null);
-
-                            // Handle adding the chat.
-                            if (e.hasChat && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
-                                $('#twitch-chat-iframe').html($('<iframe/>', {
-                                    'frameborder': '0',
-                                    'scrolling': 'no',
-                                    'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                                    'src': 'https://www.twitch.tv/embed/' + getChannelName() + '/chat' + (helpers.isDark ? '?darkpopout&' : '?') + 'parent=' + location.hostname
-                                }));
-                            } else if (e.hasChat && helpers.currentPanelUserData.userType === 'CONFIG') {
-                                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
-                                $('#twitch-chat-iframe').addClass('box-body');
-                            } else {
-                                $('#twitch-chat-box').addClass('off');
-                            }
-
-                            // Handle adding the player.
-                            if (e.hasPlayer && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
-                                // Add the player.
-                                $('#twitch-player-iframe').html($('<iframe/>', {
-                                    'frameborder': '0',
-                                    'scrolling': 'no',
-                                    'style': 'width: 100%; height: 450px; margin-bottom: -5px;',
-                                    'src': 'https://player.twitch.tv/?channel=' + getChannelName() + '&muted=true&autoplay=false' + '&parent=' + location.hostname
-                                }));
-                            } else if (e.hasPlayer && helpers.currentPanelUserData.userType === 'CONFIG') {
-                                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
-                                $('#twitch-player-iframe').addClass('box-body');
-                            } else {
-                                $('#twitch-player-box').addClass('off');
-                            }
-
-                            // Handle box sizes.
-                            $('#twitch-chat-box').prop('class', (!e.hasPlayer ? 'col-md-12' : 'col-md-6'));
-                            $('#twitch-player-box').prop('class', (!e.hasChat ? 'col-md-12' : 'col-md-6'));
-
-                            // Handle toggles.
-                            $('#toggle-chat').prop('checked', e.hasChat);
-                            $('#toggle-player').prop('checked', e.hasPlayer);
-
-                            // This will be called once the css and everything is loaded.
-                            $(document).ready(function () {
-                                // Done loading, show main page.
-                                $.showPage();
-                                // Scroll to bottom of event log.
-                                $('.event-log').scrollTop((helpers.isReverseSortEvents ? ($('.event-log').scrollTop() - $('.recent-events').height()) : $('.recent-events').height()));
-                                // Set viewers.
-                                helpers.handlePanelSetInfo($('#dashboard-viewers').data('number', helpers.parseNumber(tempData.viewers)), 'dashboard-viewers', helpers.fixNumber(tempData.viewers));
-                                // Set followers.
-                                helpers.handlePanelSetInfo($('#dashboard-followers').data('number', helpers.parseNumber(tempData.followers)), 'dashboard-followers', helpers.fixNumber(tempData.followers));
-                                helpers.handlePanelSetInfo($('#dashboard-subs').data('number', helpers.parseNumber(tempData.subs)), 'dashboard-subs', helpers.fixNumber(tempData.subs));
-                            });
-                        });
-                    }
+                    });
                 });
             });
         });
@@ -412,7 +392,7 @@ $(function () {
 
         // Update the toggle.
         socket.updateDBValue('panel_chat_toggle', 'panelData', 'hasPlayer', checked, function () {
-            if (checked && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
+            if (checked && helpers.canEmbedTwitch()) {
                 $('#twitch-player-iframe').html($('<iframe/>', {
                     'frameborder': '0',
                     'scrolling': 'no',
@@ -427,7 +407,7 @@ $(function () {
                     $('#twitch-player-box').prop('class', 'col-md-12');
                 }
             } else if (checked) {
-                $('#twitch-player-iframe').html('Due to changes by Twitch, the live feed panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
+                $('#twitch-player-iframe').html(helpers.CANT_EMBED_TWITCH_TEXT);
                 $('#twitch-player-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-chat-iframe').html().length > 0) {
@@ -450,7 +430,7 @@ $(function () {
 
         // Update the toggle.
         socket.updateDBValue('panel_chat_toggle', 'panelData', 'hasChat', checked, function () {
-            if (checked && location.protocol.toLowerCase().startsWith('https') && !(location.port > 0 && location.port !== 443)) {
+            if (checked && helpers.canEmbedTwitch()) {
                 $('#twitch-chat-iframe').html($('<iframe/>', {
                     'frameborder': '0',
                     'scrolling': 'no',
@@ -466,7 +446,7 @@ $(function () {
                     $('#twitch-chat-box').prop('class', 'col-md-12');
                 }
             } else if (checked) {
-                $('#twitch-chat-iframe').html('Due to changes by Twitch, the chat panel can no longer be displayed unless you enable SSL on the PhantomBot Panel and change the baseport to 443. This may not work without root privileges.<br /><br />Alternatively, you can login using the GitHub version of the panel at <a href="https://phantombot.dev/">PhantomBot</a> which gets around this issue.<br /><br />For help setting up SSL, please see <a href="https://phantombot.dev/guides/#guide=content/integrations/twitchembeds&channel=' + helpers.getBranch() + '">this guide</a>.');
+                $('#twitch-chat-iframe').html(helpers.CANT_EMBED_TWITCH_TEXT);
                 $('#twitch-chat-iframe').addClass('box-body');
                 // Handle the box size.
                 if ($('#twitch-player-iframe').html().length > 0) {

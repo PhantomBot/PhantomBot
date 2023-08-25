@@ -1,819 +1,568 @@
 <!DOCTYPE HTML>
-<!-- NewPage -->
 <html lang="en">
 <head>
 <title>TwitchMessageInterface (PhantomBot JavaDoc)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
+<meta name="description" content="declaration: package: com.gmt2001.twitch.tmi, class: TwitchMessageInterface">
+<meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
-<link rel="stylesheet" type="text/css" href="../../../../jquery/jquery-ui.min.css" title="Style">
+<link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../jquery-ui.overrides.css" title="Style">
 <script type="text/javascript" src="../../../../script.js"></script>
-<script type="text/javascript" src="../../../../jquery/jszip/dist/jszip.min.js"></script>
-<script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils.min.js"></script>
-<!--[if IE]>
-<script type="text/javascript" src="../../../../jquery/jszip-utils/dist/jszip-utils-ie.min.js"></script>
-<![endif]-->
-<script type="text/javascript" src="../../../../jquery/jquery-3.6.1.min.js"></script>
-<script type="text/javascript" src="../../../../jquery/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-3.6.1.min.js"></script>
+<script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
-<body>
-<script type="text/javascript"><!--
-    try {
-        if (location.href.indexOf('is-external=true') == -1) {
-            parent.document.title="TwitchMessageInterface (PhantomBot JavaDoc)";
-        }
-    }
-    catch(err) {
-    }
-//-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
+<body class="class-declaration-page">
+<script type="text/javascript">var evenRowColor = "even-row-color";
+var oddRowColor = "odd-row-color";
+var tableTab = "table-tab";
+var activeTableTab = "active-table-tab";
 var pathtoroot = "../../../../";
-var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
 <noscript>
 <div>JavaScript is disabled on your browser.</div>
 </noscript>
-<header role="banner">
+<div class="flex-box">
+<header role="banner" class="flex-header">
 <nav role="navigation">
-<div class="fixedNav">
 <!-- ========= START OF TOP NAVBAR ======= -->
-<div class="topNav"><a id="navbar.top">
-<!--   -->
-</a>
-<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
-<a id="navbar.top.firstrow">
-<!--   -->
-</a>
-<ul class="navList" title="Navigation">
+<div class="top-nav" id="navbar-top">
+<div class="skip-nav"><a href="#skip-navbar-top" title="Skip navigation links">Skip navigation links</a></div>
+<div class="about-language"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
+<ul id="navbar-top-firstrow" class="nav-list" title="Navigation">
 <li><a href="../../../../index.html">Overview</a></li>
 <li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
+<li class="nav-bar-cell1-rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../../index-all.html">Index</a></li>
-<li><a href="../../../../help-doc.html">Help</a></li>
+<li><a href="../../../../help-doc.html#class">Help</a></li>
 </ul>
-<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
 </div>
-<div class="subNav">
-<ul class="navList" id="allclasses_navbar_top">
-<li><a href="../../../../allclasses.html">All&nbsp;Classes</a></li>
-</ul>
-<ul class="navListSearch">
-<li><label for="search">SEARCH:</label>
-<input type="text" id="search" value="search" disabled="disabled">
-<input type="reset" id="reset" value="reset" disabled="disabled">
-</li>
-</ul>
+<div class="sub-nav">
 <div>
-<script type="text/javascript"><!--
-  allClassesLink = document.getElementById("allclasses_navbar_top");
-  if(window==top) {
-    allClassesLink.style.display = "block";
-  }
-  else {
-    allClassesLink.style.display = "none";
-  }
-  //-->
-</script>
-<noscript>
-<div>JavaScript is disabled on your browser.</div>
-</noscript>
-</div>
-<div>
-<ul class="subNavList">
+<ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
+<li><a href="#constructor-summary">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method-summary">Method</a></li>
 </ul>
-<ul class="subNavList">
+<ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
+<li><a href="#method-detail">Method</a></li>
 </ul>
 </div>
-<a id="skip.navbar.top">
-<!--   -->
-</a></div>
+<div class="nav-list-search"><label for="search-input">SEARCH:</label>
+<input type="text" id="search-input" value="search" disabled="disabled">
+<input type="reset" id="reset-button" value="reset" disabled="disabled">
+</div>
+</div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-</div>
-<div class="navPadding">&nbsp;</div>
-<script type="text/javascript"><!--
-$('.navPadding').css('padding-top', $('.fixedNav').css("height"));
-//-->
-</script>
-</nav>
+<span class="skip-nav" id="skip-navbar-top"></span></nav>
 </header>
-<!-- ======== START OF CLASS DATA ======== -->
+<div class="flex-content">
 <main role="main">
+<!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.twitch.tmi</a></div>
-<h2 title="Class TwitchMessageInterface" class="title">Class TwitchMessageInterface</h2>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.gmt2001.twitch.tmi</a></div>
+<h1 title="Class TwitchMessageInterface" class="title">Class TwitchMessageInterface</h1>
 </div>
-<div class="contentContainer">
-<ul class="inheritance">
-<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">java.lang.Object</a></li>
-<li>
-<ul class="inheritance">
-<li><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">java.util.concurrent.SubmissionPublisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</li>
-<li>
-<ul class="inheritance">
-<li>com.gmt2001.twitch.tmi.TwitchMessageInterface</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<div class="description">
-<ul class="blockList">
-<li class="blockList">
-<dl>
+<div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
+<div class="inheritance"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html" title="class or interface in java.util.concurrent" class="external-link">java.util.concurrent.SubmissionPublisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;
+<div class="inheritance">com.gmt2001.twitch.tmi.TwitchMessageInterface</div>
+</div>
+</div>
+<section class="class-description" id="class-description">
+<dl class="notes">
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/AutoCloseable.html?is-external=true" title="class or interface in java.lang" class="externalLink">AutoCloseable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/Flow.Publisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">Flow.Publisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</code></dd>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/AutoCloseable.html" title="class or interface in java.lang" class="external-link">AutoCloseable</a></code>, <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Flow.Publisher.html" title="class or interface in java.util.concurrent" class="external-link">Flow.Publisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;</code></dd>
 </dl>
 <hr>
-<pre>public final class <span class="typeNameLabel">TwitchMessageInterface</span>
-extends <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">SubmissionPublisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;
-implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></pre>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">TwitchMessageInterface</span>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html" title="class or interface in java.util.concurrent" class="external-link">SubmissionPublisher</a>&lt;<a href="TMIMessage.html" title="class in com.gmt2001.twitch.tmi">TMIMessage</a>&gt;
+implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></span></div>
 <div class="block">A client for the Twitch Message Interface</div>
-<dl>
-<dt><span class="simpleTagLabel">Author:</span></dt>
+<dl class="notes">
+<dt>Author:</dt>
 <dd>gmt2001</dd>
 </dl>
-</li>
-</ul>
-</div>
-<div class="summary">
-<ul class="blockList">
-<li class="blockList">
+</section>
+<section class="summary">
+<ul class="summary-list">
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="constructor.summary">
-<!--   -->
-</a>
-<h3>Constructor Summary</h3>
-<table class="memberSummary">
-<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Constructor</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">TwitchMessageInterface</a></span>()</code></th>
-<td class="colLast">
+<li>
+<section class="constructor-summary" id="constructor-summary">
+<h2>Constructor Summary</h2>
+<div class="caption"><span>Constructors</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Constructor</div>
+<div class="table-header col-last">Description</div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">TwitchMessageInterface</a>()</code></div>
+<div class="col-last even-row-color">
 <div class="block">Initializes the Twitch Message Interface.</div>
-</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
-<!-- ========== METHOD SUMMARY =========== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="method.summary">
-<!--   -->
-</a>
-<h3>Method Summary</h3>
-<table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close(int,java.lang.String)">close</a></span>&#8203;(int&nbsp;code,
-     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</code></th>
-<td class="colLast">
-<div class="block">Closes the socket</div>
-</td>
-</tr>
-<tr id="i1" class="rowColor">
-<td class="colFirst"><code>boolean</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#connected()">connected</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
-           <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketFrame</a>&nbsp;frame)</code></th>
-<td class="colLast">
-<div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></span>&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx)</code></th>
-<td class="colLast">
-<div class="block">Handles the handshake complete event</div>
-</td>
-</tr>
-<tr id="i4" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose()">onClose</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Handles the channel closing for any reason.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onClose(int,java.lang.String)">onClose</a></span>&#8203;(int&nbsp;code,
-       <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</code></th>
-<td class="colLast">
-<div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onMessages(java.lang.String)">onMessages</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;messages)</code></th>
-<td class="colLast">
-<div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
-</td>
-</tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#privMsgMaxLength(java.lang.String,boolean,java.lang.String)">privMsgMaxLength</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                boolean&nbsp;isAction,
-                <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</code></th>
-<td class="colLast">
-<div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
-<td class="colFirst"><code><a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rateLimiter()">rateLimiter</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div>
-</td>
-</tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reconnect()">reconnect</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendActionPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
-                     <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
-</td>
-</tr>
-<tr id="i12" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">sendChannelCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC command with channel and parameter components</div>
-</td>
-</tr>
-<tr id="i13" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC command with parameter component</div>
-</td>
-</tr>
-<tr id="i14" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendCommand(java.util.Map,java.lang.String,java.lang.String)">sendCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
-           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-           <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC command with tags and parameter component</div>
-</td>
-</tr>
-<tr id="i15" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">sendFullCommand</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC command with tags, channel, and parameter components</div>
-</td>
-</tr>
-<tr id="i16" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPing()">sendPing</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Forces a PING to be sent</div>
-</td>
-</tr>
-<tr id="i17" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC PRIVMSG command.</div>
-</td>
-</tr>
-<tr id="i18" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">sendPrivMessage</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
-               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</code></th>
-<td class="colLast">
-<div class="block">Sends an IRC PRIVMSG command as a reply to another message.</div>
-</td>
-</tr>
-<tr id="i19" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sendRaw(java.lang.String)">sendRaw</a></span>&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</code></th>
-<td class="colLast">
-<div class="block">Sends a raw IRC message</div>
-</td>
-</tr>
-<tr id="i20" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#shutdown()">shutdown</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Closes the connection normally.</div>
-</td>
-</tr>
-</table>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.java.util.concurrent.SubmissionPublisher">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;java.util.concurrent.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true" title="class or interface in java.util.concurrent" class="externalLink">SubmissionPublisher</a></h3>
-<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#close()" title="class or interface in java.util.concurrent" class="externalLink">close</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#closeExceptionally(java.lang.Throwable)" title="class or interface in java.util.concurrent" class="externalLink">closeExceptionally</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#consume(java.util.function.Consumer)" title="class or interface in java.util.concurrent" class="externalLink">consume</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#estimateMaximumLag()" title="class or interface in java.util.concurrent" class="externalLink">estimateMaximumLag</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#estimateMinimumDemand()" title="class or interface in java.util.concurrent" class="externalLink">estimateMinimumDemand</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getClosedException()" title="class or interface in java.util.concurrent" class="externalLink">getClosedException</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getExecutor()" title="class or interface in java.util.concurrent" class="externalLink">getExecutor</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getMaxBufferCapacity()" title="class or interface in java.util.concurrent" class="externalLink">getMaxBufferCapacity</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getNumberOfSubscribers()" title="class or interface in java.util.concurrent" class="externalLink">getNumberOfSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#getSubscribers()" title="class or interface in java.util.concurrent" class="externalLink">getSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#hasSubscribers()" title="class or interface in java.util.concurrent" class="externalLink">hasSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#isClosed()" title="class or interface in java.util.concurrent" class="externalLink">isClosed</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#isSubscribed(java.util.concurrent.Flow.Subscriber)" title="class or interface in java.util.concurrent" class="externalLink">isSubscribed</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#offer(T,long,java.util.concurrent.TimeUnit,java.util.function.BiPredicate)" title="class or interface in java.util.concurrent" class="externalLink">offer</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#offer(T,java.util.function.BiPredicate)" title="class or interface in java.util.concurrent" class="externalLink">offer</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#submit(T)" title="class or interface in java.util.concurrent" class="externalLink">submit</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html?is-external=true#subscribe(java.util.concurrent.Flow.Subscriber)" title="class or interface in java.util.concurrent" class="externalLink">subscribe</a></code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
-<!--   -->
-</a>
-<h3>Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true" title="class or interface in java.lang" class="externalLink">Object</a></h3>
-<code><a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#clone()" title="class or interface in java.lang" class="externalLink">clone</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#equals(java.lang.Object)" title="class or interface in java.lang" class="externalLink">equals</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#finalize()" title="class or interface in java.lang" class="externalLink">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#getClass()" title="class or interface in java.lang" class="externalLink">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#hashCode()" title="class or interface in java.lang" class="externalLink">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notify()" title="class or interface in java.lang" class="externalLink">notify</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#notifyAll()" title="class or interface in java.lang" class="externalLink">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#toString()" title="class or interface in java.lang" class="externalLink">toString</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait()" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long)" title="class or interface in java.lang" class="externalLink">wait</a>, <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html?is-external=true#wait(long,int)" title="class or interface in java.lang" class="externalLink">wait</a></code></li>
-</ul>
-</li>
-</ul>
-</section>
-</li>
-</ul>
 </div>
-<div class="details">
-<ul class="blockList">
-<li class="blockList">
-<!-- ========= CONSTRUCTOR DETAIL ======== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="constructor.detail">
-<!--   -->
-</a>
-<h3>Constructor Detail</h3>
-<a id="&lt;init&gt;()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>TwitchMessageInterface</h4>
-<pre>public&nbsp;TwitchMessageInterface()</pre>
-<div class="block">Initializes the Twitch Message Interface. Creates a new <a href="../../wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a>, then initializes all processors and starts connecting</div>
+</div>
+</section>
 </li>
-</ul>
+<!-- ========== METHOD SUMMARY =========== -->
+<li>
+<section class="method-summary" id="method-summary">
+<h2>Method Summary</h2>
+<div id="method-summary-table">
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel">
+<div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Method</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close(int,java.lang.String)" class="member-name-link">close</a><wbr>(int&nbsp;code,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Closes the socket</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connected()" class="member-name-link">connected</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handshakeComplete(io.netty.channel.ChannelHandlerContext)" class="member-name-link">handshakeComplete</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Handles the handshake complete event</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose()" class="member-name-link">onClose</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Handles the channel closing for any reason.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose(int,java.lang.String)" class="member-name-link">onClose</a><wbr>(int&nbsp;code,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onMessages(java.lang.String)" class="member-name-link">onMessages</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;messages)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#privMsgMaxLength(java.lang.String,boolean,java.lang.String)" class="member-name-link">privMsgMaxLength</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ boolean&nbsp;isAction,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;replyToId)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#rateLimiter()" class="member-name-link">rateLimiter</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#reconnect()" class="member-name-link">reconnect</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendActionPrivMessage(java.lang.String,java.lang.String)" class="member-name-link">sendActionPrivMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">sendActionPrivMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;replyToId)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">sendChannelCommand</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC command with channel and parameter components</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendCommand(java.lang.String,java.lang.String)" class="member-name-link">sendCommand</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC command with parameter component</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendCommand(java.util.Map,java.lang.String,java.lang.String)" class="member-name-link">sendCommand</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;tags,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC command with tags and parameter component</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">sendFullCommand</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;tags,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC command with tags, channel, and parameter components</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPing()" class="member-name-link">sendPing</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Forces a PING to be sent</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivMessage(java.lang.String,java.lang.String)" class="member-name-link">sendPrivMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC PRIVMSG command.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">sendPrivMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;replyToId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends an IRC PRIVMSG command as a reply to another message.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendRaw(java.lang.String)" class="member-name-link">sendRaw</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sends a raw IRC message</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#shutdown()" class="member-name-link">shutdown</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Closes the connection normally.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-java.util.concurrent.SubmissionPublisher">Methods inherited from class&nbsp;java.util.concurrent.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html" title="class or interface in java.util.concurrent" class="external-link">SubmissionPublisher</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#close()" title="class or interface in java.util.concurrent" class="external-link">close</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#closeExceptionally(java.lang.Throwable)" title="class or interface in java.util.concurrent" class="external-link">closeExceptionally</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#consume(java.util.function.Consumer)" title="class or interface in java.util.concurrent" class="external-link">consume</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#estimateMaximumLag()" title="class or interface in java.util.concurrent" class="external-link">estimateMaximumLag</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#estimateMinimumDemand()" title="class or interface in java.util.concurrent" class="external-link">estimateMinimumDemand</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#getClosedException()" title="class or interface in java.util.concurrent" class="external-link">getClosedException</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#getExecutor()" title="class or interface in java.util.concurrent" class="external-link">getExecutor</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#getMaxBufferCapacity()" title="class or interface in java.util.concurrent" class="external-link">getMaxBufferCapacity</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#getNumberOfSubscribers()" title="class or interface in java.util.concurrent" class="external-link">getNumberOfSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#getSubscribers()" title="class or interface in java.util.concurrent" class="external-link">getSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#hasSubscribers()" title="class or interface in java.util.concurrent" class="external-link">hasSubscribers</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#isClosed()" title="class or interface in java.util.concurrent" class="external-link">isClosed</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#isSubscribed(java.util.concurrent.Flow.Subscriber)" title="class or interface in java.util.concurrent" class="external-link">isSubscribed</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#offer(T,long,java.util.concurrent.TimeUnit,java.util.function.BiPredicate)" title="class or interface in java.util.concurrent" class="external-link">offer</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#offer(T,java.util.function.BiPredicate)" title="class or interface in java.util.concurrent" class="external-link">offer</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#submit(T)" title="class or interface in java.util.concurrent" class="external-link">submit</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/SubmissionPublisher.html#subscribe(java.util.concurrent.Flow.Subscriber)" title="class or interface in java.util.concurrent" class="external-link">subscribe</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
+<code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+</section>
 </li>
 </ul>
 </section>
+<section class="details">
+<ul class="details-list">
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<li>
+<section class="constructor-details" id="constructor-detail">
+<h2>Constructor Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="&lt;init&gt;()">
+<h3>TwitchMessageInterface</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">TwitchMessageInterface</span>()</div>
+<div class="block">Initializes the Twitch Message Interface. Creates a new <a href="../../wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a>, then initializes all processors and starts connecting</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ============ METHOD DETAIL ========== -->
-<section>
-<ul class="blockList">
-<li class="blockList"><a id="method.detail">
-<!--   -->
-</a>
-<h3>Method Detail</h3>
-<a id="privMsgMaxLength(java.lang.String,boolean,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>privMsgMaxLength</h4>
-<pre class="methodSignature">public&nbsp;int&nbsp;privMsgMaxLength&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                            boolean&nbsp;isAction,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</pre>
+<li>
+<section class="method-details" id="method-detail">
+<h2>Method Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="privMsgMaxLength(java.lang.String,boolean,java.lang.String)">
+<h3>privMsgMaxLength</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">int</span>&nbsp;<span class="element-name">privMsgMaxLength</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ boolean&nbsp;isAction,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;replyToId)</span></div>
 <div class="block">Calculates the maximum length for the message content of a PRIVMSG to avoid dropping</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>channel</code> - The channel name</dd>
 <dd><code>isAction</code> - If this is for a ACTION (/me) message</dd>
-<dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to; <code>null</code> if not used</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>replyToId</code> - The <code>id</code> tag from the <code>TMIMessage.tags</code> of the message that is being replied to; <code>null</code> if not used</dd>
+<dt>Returns:</dt>
 </dl>
+</section>
 </li>
-</ul>
-<a id="rateLimiter()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>rateLimiter</h4>
-<pre class="methodSignature">public&nbsp;<a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a>&nbsp;rateLimiter()</pre>
+<li>
+<section class="detail" id="rateLimiter()">
+<h3>rateLimiter</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters">WindowedSwitchingRateLimiter</a></span>&nbsp;<span class="element-name">rateLimiter</span>()</div>
 <div class="block">Returns the <a href="../../ratelimiters/WindowedSwitchingRateLimiter.html" title="class in com.gmt2001.ratelimiters"><code>WindowedSwitchingRateLimiter</code></a> used to prevent PRIVMSG spam</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
+<dl class="notes">
+<dt>Returns:</dt>
 <dd>The rate limiter</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendPing()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendPing</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendPing()</pre>
+<li>
+<section class="detail" id="sendPing()">
+<h3>sendPing</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendPing</span>()</div>
 <div class="block">Forces a PING to be sent</div>
+</section>
 </li>
-</ul>
-<a id="sendActionPrivMessage(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendActionPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
+<li>
+<section class="detail" id="sendActionPrivMessage(java.lang.String,java.lang.String)">
+<h3>sendActionPrivMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendActionPrivMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
 <div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.
 
- If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+ If there are no tokens left on <code>rateLimiter</code>, the message is silently dropped</div>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>channel</code> - The channel to send to</dd>
 <dd><code>message</code> - The chat message</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendPrivMessage(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
+<li>
+<section class="detail" id="sendPrivMessage(java.lang.String,java.lang.String)">
+<h3>sendPrivMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendPrivMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
 <div class="block">Sends an IRC PRIVMSG command. If the message starts with <code>/me</code>, then it is passed to
  <a href="#sendActionPrivMessage(java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String)</code></a> instead.
 
- If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+ If there are no tokens left on <code>rateLimiter</code>, the message is silently dropped</div>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>channel</code> - The channel to send to</dd>
 <dd><code>message</code> - The chat message</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendActionPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendActionPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
-                                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</pre>
+<li>
+<section class="detail" id="sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)">
+<h3>sendActionPrivMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendActionPrivMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;replyToId)</span></div>
 <div class="block">Sends an IRC PRIVMSG command with the <code>/me ACTION</code> specifier.
 
- If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+ If there are no tokens left on <code>rateLimiter</code>, the message is silently dropped</div>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>channel</code> - The channel to send to</dd>
 <dd><code>message</code> - The chat message</dd>
-<dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to</dd>
+<dd><code>replyToId</code> - The <code>id</code> tag from the <code>TMIMessage.tags</code> of the message that is being replied to</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendPrivMessage</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendPrivMessage&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;replyToId)</pre>
+<li>
+<section class="detail" id="sendPrivMessage(java.lang.String,java.lang.String,java.lang.String)">
+<h3>sendPrivMessage</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendPrivMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;replyToId)</span></div>
 <div class="block">Sends an IRC PRIVMSG command as a reply to another message. If the message starts with <code>/me</code>, then it is passed to
  <a href="#sendActionPrivMessage(java.lang.String,java.lang.String,java.lang.String)"><code>sendActionPrivMessage(java.lang.String, java.lang.String, java.lang.String)</code></a> instead.
 
- If there are no tokens left on <a href="#rateLimiter"><code>rateLimiter</code></a>, the message is silently dropped</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+ If there are no tokens left on <code>rateLimiter</code>, the message is silently dropped</div>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>channel</code> - The channel to send to</dd>
 <dd><code>message</code> - The chat message</dd>
-<dd><code>replyToId</code> - The <code>id</code> tag from the <a href="TMIMessage.html#tags"><code>TMIMessage.tags</code></a> of the message that is being replied to</dd>
+<dd><code>replyToId</code> - The <code>id</code> tag from the <code>TMIMessage.tags</code> of the message that is being replied to</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendCommand(java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
+<li>
+<section class="detail" id="sendCommand(java.lang.String,java.lang.String)">
+<h3>sendCommand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendCommand</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</span></div>
 <div class="block">Sends an IRC command with parameter component</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>command</code> - The IRC command</dd>
 <dd><code>parameter</code> - The IRC parameter</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendCommand(java.util.Map,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-                        <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
+<li>
+<section class="detail" id="sendCommand(java.util.Map,java.lang.String,java.lang.String)">
+<h3>sendCommand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendCommand</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;tags,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</span></div>
 <div class="block">Sends an IRC command with tags and parameter component</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>tags</code> - The IRCv3 tags</dd>
 <dd><code>command</code> - The IRC command</dd>
 <dd><code>parameter</code> - The IRC parameter</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendChannelCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendChannelCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                               <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
+<li>
+<section class="detail" id="sendChannelCommand(java.lang.String,java.lang.String,java.lang.String)">
+<h3>sendChannelCommand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendChannelCommand</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</span></div>
 <div class="block">Sends an IRC command with channel and parameter components</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>command</code> - The IRC command</dd>
 <dd><code>channel</code> - The channel to send to</dd>
 <dd><code>parameter</code> - The IRC parameter</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendFullCommand</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendFullCommand&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Map.html?is-external=true" title="class or interface in java.util" class="externalLink">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>,&#8203;<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&gt;&nbsp;tags,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;command,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;channel,
-                            <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;parameter)</pre>
+<li>
+<section class="detail" id="sendFullCommand(java.util.Map,java.lang.String,java.lang.String,java.lang.String)">
+<h3>sendFullCommand</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendFullCommand</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;tags,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;command,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;parameter)</span></div>
 <div class="block">Sends an IRC command with tags, channel, and parameter components</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>tags</code> - The IRCv3 tags. If <code>null</code> or empty, the tags component is not included</dd>
 <dd><code>command</code> - The IRC command</dd>
 <dd><code>channel</code> - The channel to send to. If <code>null</code>, empty, or blank, the channel component of the command is not included</dd>
 <dd><code>parameter</code> - The IRC parameters. If <code>null</code>, the parameter component is not included</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="sendRaw(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>sendRaw</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;sendRaw&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;message)</pre>
+<li>
+<section class="detail" id="sendRaw(java.lang.String)">
+<h3>sendRaw</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendRaw</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
 <div class="block">Sends a raw IRC message</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>message</code> - The message to send</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="reconnect()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>reconnect</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;reconnect()</pre>
+<li>
+<section class="detail" id="reconnect()">
+<h3>reconnect</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">reconnect</span>()</div>
 <div class="block">Closes the connection to TMI, then resets the outbound closing status and attempts to connect again after a 5 second delay</div>
+</section>
 </li>
-</ul>
-<a id="connected()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>connected</h4>
-<pre class="methodSignature">public&nbsp;boolean&nbsp;connected()</pre>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
+<li>
+<section class="detail" id="connected()">
+<h3>connected</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">connected</span>()</div>
+<dl class="notes">
+<dt>Returns:</dt>
 <dd><code>true</code> if the underlying socket is connected. Does not indicate anything about the state other than that the raw socket is
  connected</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="onMessages(java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>onMessages</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;onMessages&#8203;(<a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;messages)</pre>
+<li>
+<section class="detail" id="onMessages(java.lang.String)">
+<h3>onMessages</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onMessages</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;messages)</span></div>
 <div class="block">Splits a string containing one or more lines of RFC1459-formatted IRC messages and submits each one to subscribed processors</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>messages</code> - A string containing one or more RFC1459-formatted IRC messages</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="onClose(int,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>onClose</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;onClose&#8203;(int&nbsp;code,
-                    <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</pre>
+<li>
+<section class="detail" id="onClose(int,java.lang.String)">
+<h3>onClose</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span><wbr><span class="parameters">(int&nbsp;code,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</span></div>
 <div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>code</code> - The close code</dd>
 <dd><code>reason</code> - The textual close reason</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>handleFrame</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;handleFrame&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx,
-                        <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink">WebSocketFrame</a>&nbsp;frame)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">WsClientFrameHandler</a></code></span></div>
+<li>
+<section class="detail" id="handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">
+<h3>handleFrame</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">handleFrame</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">WsClientFrameHandler</a></code></span></div>
 <div class="block">Handles the WebSocket frame and sends a response back to the server, if necessary</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Specified by:</dt>
 <dd><code><a href="../../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
-<dd><code>frame</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html?is-external=true" title="class or interface in io.netty.handler.codec.http.websocketx" class="externalLink"><code>WebSocketFrame</code></a> to process</dd>
+<dt>Parameters:</dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> of the session</dd>
+<dd><code>frame</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to process</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="handshakeComplete(io.netty.channel.ChannelHandlerContext)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>handshakeComplete</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;handshakeComplete&#8203;(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink">ChannelHandlerContext</a>&nbsp;ctx)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">WsClientFrameHandler</a></code></span></div>
+<li>
+<section class="detail" id="handshakeComplete(io.netty.channel.ChannelHandlerContext)">
+<h3>handshakeComplete</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">handshakeComplete</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">WsClientFrameHandler</a></code></span></div>
 <div class="block">Handles the handshake complete event</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Specified by:</dt>
 <dd><code><a href="../../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html?is-external=true" title="class or interface in io.netty.channel" class="externalLink"><code>ChannelHandlerContext</code></a> of the session</dd>
+<dt>Parameters:</dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> of the session</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="onClose()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>onClose</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;onClose()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">WsClientFrameHandler</a></code></span></div>
+<li>
+<section class="detail" id="onClose()">
+<h3>onClose</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">WsClientFrameHandler</a></code></span></div>
 <div class="block">Handles the channel closing for any reason.</div>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dl class="notes">
+<dt>Specified by:</dt>
 <dd><code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">onClose</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="close(int,java.lang.String)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>close</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;close&#8203;(int&nbsp;code,
-                  <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>&nbsp;reason)</pre>
+<li>
+<section class="detail" id="close(int,java.lang.String)">
+<h3>close</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">close</span><wbr><span class="parameters">(int&nbsp;code,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</span></div>
 <div class="block">Closes the socket</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>code</code> - The close code</dd>
 <dd><code>reason</code> - The textual close reason</dd>
 </dl>
+</section>
 </li>
-</ul>
-<a id="shutdown()">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>shutdown</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;shutdown()</pre>
+<li>
+<section class="detail" id="shutdown()">
+<h3>shutdown</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">shutdown</span>()</div>
 <div class="block">Closes the connection normally. Exceptions are discarded</div>
-</li>
-</ul>
+</section>
 </li>
 </ul>
 </section>
 </li>
 </ul>
-</div>
-</div>
-</main>
+</section>
 <!-- ========= END OF CLASS DATA ========= -->
+</main>
 <footer role="contentinfo">
-<nav role="navigation">
-<!-- ======= START OF BOTTOM NAVBAR ====== -->
-<div class="bottomNav"><a id="navbar.bottom">
-<!--   -->
-</a>
-<div class="skipNav"><a href="#skip.navbar.bottom" title="Skip navigation links">Skip navigation links</a></div>
-<a id="navbar.bottom.firstrow">
-<!--   -->
-</a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../../index.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../../index-all.html">Index</a></li>
-<li><a href="../../../../help-doc.html">Help</a></li>
-</ul>
-<div class="aboutLanguage"><a id="javadoc-stable" href="/javadoc-stable/index.html">Stable</a>&nbsp;|&nbsp;<a id="javadoc-nightly" href="/javadoc/index.html">Nightly</a><script>document.getElementById('javadoc-' + (window.location.pathname.includes('javadoc-stable') ? 'stable' : 'nightly')).style.fontWeight = 'bold';</script></div>
-</div>
-<div class="subNav">
-<ul class="navList" id="allclasses_navbar_bottom">
-<li><a href="../../../../allclasses.html">All&nbsp;Classes</a></li>
-</ul>
-<div>
-<script type="text/javascript"><!--
-  allClassesLink = document.getElementById("allclasses_navbar_bottom");
-  if(window==top) {
-    allClassesLink.style.display = "block";
-  }
-  else {
-    allClassesLink.style.display = "none";
-  }
-  //-->
-</script>
-<noscript>
-<div>JavaScript is disabled on your browser.</div>
-</noscript>
-</div>
-<div>
-<ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
-</ul>
-</div>
-<a id="skip.navbar.bottom">
-<!--   -->
-</a></div>
-<!-- ======== END OF BOTTOM NAVBAR ======= -->
-</nav>
-<p class="legalCopy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+<hr>
+<p class="legal-copy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
 </footer>
+</div>
+</div>
 </body>
 </html>
