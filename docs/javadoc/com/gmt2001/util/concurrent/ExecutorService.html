@@ -78,9 +78,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">ExecutorService</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Provides an interface to a shared <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledExecutorService</code></a>
- <p>
- Documentation copied from official OpenJDK 7</div>
+<div class="block">Provides an interface to a shared <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledExecutorService.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledExecutorService</code></a></div>
 <dl class="notes">
 <dt>Author:</dt>
 <dd>gmt2001</dd>
@@ -119,14 +117,14 @@ loadScripts(document, 'script');</script>
  long&nbsp;delay,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Creates and executes a one-shot action that becomes enabled after the given delay.</div>
+<div class="block">Creates and executes a one-shot action that becomes enabled after the given delay</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;V&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledFuture</a>&lt;V&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#schedule(java.util.concurrent.Callable,long,java.util.concurrent.TimeUnit)" class="member-name-link">schedule</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Callable.html" title="class or interface in java.util.concurrent" class="external-link">Callable</a>&lt;V&gt;&nbsp;callable,
  long&nbsp;delay,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Creates and executes a ScheduledFuture that becomes enabled after the given delay.</div>
+<div class="block">Creates and executes a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> that becomes enabled after the given delay</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledFuture</a>&lt;?&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)" class="member-name-link">scheduleAtFixedRate</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;command,
@@ -135,7 +133,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given period; that
- is executions will commence after <code>initialDelay</code> then <code>initialDelay+period</code>, then <code>initialDelay + 2 * period</code>, and so on.</div>
+ is executions will commence after <code>initialDelay</code> then <code>initialDelay + period</code>, then <code>initialDelay + 2 * period</code>, and so on.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledFuture</a>&lt;?&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#scheduleWithFixedDelay(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)" class="member-name-link">scheduleWithFixedDelay</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;command,
@@ -154,20 +152,21 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link">Future</a>&lt;?&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#submit(java.lang.Runnable)" class="member-name-link">submit</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;task)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Submits a Runnable task for execution and returns a Future representing that task.</div>
+<div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return <code>null</code>
+ upon successful completion</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link">Future</a>&lt;T&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#submit(java.lang.Runnable,T)" class="member-name-link">submit</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;task,
  T&nbsp;result)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Submits a Runnable task for execution and returns a Future representing that task.The Future's <code>get</code> method will return the given result
- upon successful completion.</div>
+<div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return the given result
+ upon successful completion</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static &lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link">Future</a>&lt;T&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#submit(java.util.concurrent.Callable)" class="member-name-link">submit</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Callable.html" title="class or interface in java.util.concurrent" class="external-link">Callable</a>&lt;T&gt;&nbsp;task)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Submits a value-returning task for execution and returns a Future representing the pending results of the task.The Future's <code>get</code> method
- will return the task's result upon successful completion.</div>
+<div class="block">Submits a value-returning task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing the pending results of the task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method
+ will return the task's result upon successful completion</div>
 </div>
 </div>
 </div>
@@ -203,7 +202,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;V&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledFuture</a>&lt;V&gt;</span>&nbsp;<span class="element-name">schedule</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Callable.html" title="class or interface in java.util.concurrent" class="external-link">Callable</a>&lt;V&gt;&nbsp;callable,
  long&nbsp;delay,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</span></div>
-<div class="block">Creates and executes a ScheduledFuture that becomes enabled after the given delay.</div>
+<div class="block">Creates and executes a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> that becomes enabled after the given delay</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>V</code> - the return type of the callable</dd>
@@ -212,10 +211,10 @@ loadScripts(document, 'script');</script>
 <dd><code>delay</code> - the time from now to delay execution</dd>
 <dd><code>unit</code> - the time unit of the delay parameter</dd>
 <dt>Returns:</dt>
-<dd>a ScheduledFuture that can be used to extract result or cancel</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> that can be used to extract result or cancel</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if callable is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if callable is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -225,17 +224,17 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link">ScheduledFuture</a>&lt;?&gt;</span>&nbsp;<span class="element-name">schedule</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;command,
  long&nbsp;delay,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</span></div>
-<div class="block">Creates and executes a one-shot action that becomes enabled after the given delay.</div>
+<div class="block">Creates and executes a one-shot action that becomes enabled after the given delay</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>command</code> - the task to execute</dd>
 <dd><code>delay</code> - the time from now to delay execution</dd>
 <dd><code>unit</code> - the time unit of the delay parameter</dd>
 <dt>Returns:</dt>
-<dd>a ScheduledFuture representing pending completion of the task and whose <code>get()</code> method will return <code>null</code> upon completion</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> representing pending completion of the task and whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return <code>null</code> upon completion</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -247,10 +246,10 @@ loadScripts(document, 'script');</script>
  long&nbsp;period,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</span></div>
 <div class="block">Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given period; that
- is executions will commence after <code>initialDelay</code> then <code>initialDelay+period</code>, then <code>initialDelay + 2 * period</code>, and so on. If
+ is executions will commence after <code>initialDelay</code> then <code>initialDelay + period</code>, then <code>initialDelay + 2 * period</code>, and so on. If
  any execution of the task encounters an exception, subsequent executions are suppressed. Otherwise, the task will only terminate via
  cancellation or termination of the executor. If any execution of this task takes longer than its period, then subsequent executions may start
- late, but will not concurrently execute.</div>
+ late, but will not concurrently execute</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>command</code> - the task to execute</dd>
@@ -258,10 +257,10 @@ loadScripts(document, 'script');</script>
 <dd><code>period</code> - the period between successive executions</dd>
 <dd><code>unit</code> - the time unit of the initialDelay and period parameters</dd>
 <dt>Returns:</dt>
-<dd>a ScheduledFuture representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> representing pending completion of the task, and whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will throw an exception upon cancellation</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is <code>null</code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if period less than or equal to zero</dd>
 </dl>
 </section>
@@ -275,7 +274,7 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" title="class or interface in java.util.concurrent" class="external-link">TimeUnit</a>&nbsp;unit)</span></div>
 <div class="block">Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given delay between
  the termination of one execution and the commencement of the next. If any execution of the task encounters an exception, subsequent executions
- are suppressed. Otherwise, the task will only terminate via cancellation or termination of the executor.</div>
+ are suppressed. Otherwise, the task will only terminate via cancellation or termination of the executor</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>command</code> - the task to execute</dd>
@@ -283,10 +282,10 @@ loadScripts(document, 'script');</script>
 <dd><code>delay</code> - the delay between the termination of one execution and the commencement of the next</dd>
 <dd><code>unit</code> - the time unit of the initialDelay and delay parameters</dd>
 <dt>Returns:</dt>
-<dd>a ScheduledFuture representing pending completion of the task, and whose <code>get()</code> method will throw an exception upon cancellation</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> representing pending completion of the task, and whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will throw an exception upon cancellation</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is <code>null</code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - if delay less than or equal to zero</dd>
 </dl>
 </section>
@@ -296,13 +295,13 @@ loadScripts(document, 'script');</script>
 <h3>execute</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">execute</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;command)</span></div>
 <div class="block">Executes the given command at some time in the future. The command may execute in a new thread, in a pooled thread, or in the calling thread,
- at the discretion of the <code>Executor</code> implementation.</div>
+ at the discretion of the <code>Executor</code> implementation</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>command</code> - the runnable task</dd>
 <dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if this task cannot be accepted for execution.</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if this task cannot be accepted for execution</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if command is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -310,16 +309,16 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="submit(java.lang.Runnable)">
 <h3>submit</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link">Future</a>&lt;?&gt;</span>&nbsp;<span class="element-name">submit</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;task)</span></div>
-<div class="block">Submits a Runnable task for execution and returns a Future representing that task. The Future's <code>get</code> method will return <code>null</code>
- upon <em>successful</em> completion.</div>
+<div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return <code>null</code>
+ upon successful completion</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>task</code> - the task to submit</dd>
 <dt>Returns:</dt>
-<dd>a Future representing pending completion of the task</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing pending completion of the task</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the task is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the task is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -328,8 +327,8 @@ loadScripts(document, 'script');</script>
 <h3 id="submit(java.lang.Runnable,java.lang.Object)">submit</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link">Future</a>&lt;T&gt;</span>&nbsp;<span class="element-name">submit</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Runnable.html" title="class or interface in java.lang" class="external-link">Runnable</a>&nbsp;task,
  T&nbsp;result)</span></div>
-<div class="block">Submits a Runnable task for execution and returns a Future representing that task.The Future's <code>get</code> method will return the given result
- upon successful completion.</div>
+<div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return the given result
+ upon successful completion</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the return type of result</dd>
@@ -337,10 +336,10 @@ loadScripts(document, 'script');</script>
 <dd><code>task</code> - the task to submit</dd>
 <dd><code>result</code> - the result to return</dd>
 <dt>Returns:</dt>
-<dd>a Future representing pending completion of the task</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing pending completion of the task</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the task is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the task is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -348,23 +347,23 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="submit(java.util.concurrent.Callable)">
 <h3>submit</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link">Future</a>&lt;T&gt;</span>&nbsp;<span class="element-name">submit</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Callable.html" title="class or interface in java.util.concurrent" class="external-link">Callable</a>&lt;T&gt;&nbsp;task)</span></div>
-<div class="block">Submits a value-returning task for execution and returns a Future representing the pending results of the task.The Future's <code>get</code> method
- will return the task's result upon successful completion.<p>
+<div class="block">Submits a value-returning task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing the pending results of the task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method
+ will return the task's result upon successful completion
+ <p>
  If you would like to immediately block waiting for a task, you can use constructions of the form <code>result = exec.submit(aCallable).get();</code>
-
  <p>
  Note: The <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Executors.html" title="class or interface in java.util.concurrent" class="external-link"><code>Executors</code></a> class includes a set of methods that can convert some other common closure-like objects, for example,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/PrivilegedAction.html" title="class or interface in java.security" class="external-link"><code>PrivilegedAction</code></a> to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Callable.html" title="class or interface in java.util.concurrent" class="external-link"><code>Callable</code></a> form so they can be submitted.</div>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/security/PrivilegedAction.html" title="class or interface in java.security" class="external-link"><code>PrivilegedAction</code></a> to <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Callable.html" title="class or interface in java.util.concurrent" class="external-link"><code>Callable</code></a> form so they can be submitted</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the return type of the callable</dd>
 <dt>Parameters:</dt>
 <dd><code>task</code> - the task to submit</dd>
 <dt>Returns:</dt>
-<dd>a Future representing pending completion of the task</dd>
+<dd>a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing pending completion of the task</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/RejectedExecutionException.html" title="class or interface in java.util.concurrent" class="external-link">RejectedExecutionException</a></code> - if the task cannot be scheduled for execution</dd>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the task is null</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/NullPointerException.html" title="class or interface in java.lang" class="external-link">NullPointerException</a></code> - if the task is <code>null</code></dd>
 </dl>
 </section>
 </li>
@@ -373,10 +372,7 @@ loadScripts(document, 'script');</script>
 <h3>shutdown</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">shutdown</span>()</div>
 <div class="block">Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted. Invocation has no additional
- effect if already shut down.
-
- <p>
- This method does not wait for previously submitted tasks to complete execution. Use <code>awaitTermination</code> to do that.</div>
+ effect if already shut down</div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/SecurityException.html" title="class or interface in java.lang" class="external-link">SecurityException</a></code> - if a security manager exists and shutting down this ExecutorService may manipulate threads that the caller is not
@@ -391,6 +387,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Indicates if this ExecutorService is shutdown or in the process of shutting down</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd><code>true</code> if shutdown</dd>
 </dl>
 </section>
 </li>

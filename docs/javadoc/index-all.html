@@ -8864,16 +8864,16 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#schedule(java.lang.Runnable,long,java.util.concurrent.TimeUnit)" class="member-name-link">schedule(Runnable, long, TimeUnit)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
-<div class="block">Creates and executes a one-shot action that becomes enabled after the given delay.</div>
+<div class="block">Creates and executes a one-shot action that becomes enabled after the given delay</div>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#schedule(java.util.concurrent.Callable,long,java.util.concurrent.TimeUnit)" class="member-name-link">schedule(Callable&lt;V&gt;, long, TimeUnit)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
-<div class="block">Creates and executes a ScheduledFuture that becomes enabled after the given delay.</div>
+<div class="block">Creates and executes a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ScheduledFuture.html" title="class or interface in java.util.concurrent" class="external-link"><code>ScheduledFuture</code></a> that becomes enabled after the given delay</div>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#scheduleAtFixedRate(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)" class="member-name-link">scheduleAtFixedRate(Runnable, long, long, TimeUnit)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
 <div class="block">Creates and executes a periodic action that becomes enabled first after the given initial delay, and subsequently with the given period; that
- is executions will commence after <code>initialDelay</code> then <code>initialDelay+period</code>, then <code>initialDelay + 2 * period</code>, and so on.</div>
+ is executions will commence after <code>initialDelay</code> then <code>initialDelay + period</code>, then <code>initialDelay + 2 * period</code>, and so on.</div>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#scheduleWithFixedDelay(java.lang.Runnable,long,long,java.util.concurrent.TimeUnit)" class="member-name-link">scheduleWithFixedDelay(Runnable, long, long, TimeUnit)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
@@ -9646,17 +9646,18 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#submit(java.lang.Runnable)" class="member-name-link">submit(Runnable)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
-<div class="block">Submits a Runnable task for execution and returns a Future representing that task.</div>
+<div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return <code>null</code>
+ upon successful completion</div>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#submit(java.lang.Runnable,T)" class="member-name-link">submit(Runnable, T)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
-<div class="block">Submits a Runnable task for execution and returns a Future representing that task.The Future's <code>get</code> method will return the given result
- upon successful completion.</div>
+<div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return the given result
+ upon successful completion</div>
 </dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#submit(java.util.concurrent.Callable)" class="member-name-link">submit(Callable&lt;T&gt;)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
-<div class="block">Submits a value-returning task for execution and returns a Future representing the pending results of the task.The Future's <code>get</code> method
- will return the task's result upon successful completion.</div>
+<div class="block">Submits a value-returning task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing the pending results of the task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method
+ will return the task's result upon successful completion</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html#subscribe()" class="member-name-link">subscribe()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscriptionType</a></dt>
 <dd>&nbsp;</dd>
@@ -10486,7 +10487,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/UncaughtExceptionHandler.html" class="type-name-link" title="class in com.gmt2001">UncaughtExceptionHandler</a> - Class in <a href="com/gmt2001/package-summary.html">com.gmt2001</a></dt>
 <dd>
-<div class="block">Catches exceptions which hve not been caught elsewhere</div>
+<div class="block">Catches exceptions which have not been caught elsewhere</div>
 </dd>
 <dt><a href="com/gmt2001/UncaughtExceptionHandler.html#%3Cinit%3E()" class="member-name-link">UncaughtExceptionHandler()</a> - Constructor for class com.gmt2001.<a href="com/gmt2001/UncaughtExceptionHandler.html" title="class in com.gmt2001">UncaughtExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
