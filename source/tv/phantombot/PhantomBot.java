@@ -403,6 +403,7 @@ public final class PhantomBot implements Listener {
                 } else {
                     com.gmt2001.Console.warn.println();
                     com.gmt2001.Console.warn.println("Setup not completed yet. Please set the channel to join");
+                    com.gmt2001.Console.warn.println("Scroll up in the console to see instructions and logins");
                 }
             } else {
                 com.gmt2001.Console.warn.println();

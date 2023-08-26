@@ -262,7 +262,7 @@ public class Helix {
 
         try {
             if ((this.oAuthToken == null || this.oAuthToken.isBlank()) && (oauth == null || oauth.isBlank())) {
-                throw new IllegalArgumentException("apioauth is required");
+                throw new IllegalArgumentException("apioauth is required. Try re-authorizing the Broadcaster");
             }
 
             if (data == null) {
