@@ -52,10 +52,13 @@ services:
      # Defines the volume mount for data persistence inside the container, do not change
      # See the bottom of this file for the part you can change
       - PhantomBot_data:/opt/PhantomBot_data
-    environment:
-      # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix
-      # ------ Note that after first run, botlogin.txt takes priority
-      # ------ None of the variables are required
+    #
+    # ------ Set any botlogin.txt variable here, with the PHANTOMBOT_ prefix
+    # ------ Note that after first run, botlogin.txt takes priority
+    # ------ None of the variables are required
+    # ------ Uncomment the following line, then add your variables below it
+    # ------ Remember to indent 2 spaces
+    #environment:
       # If you uncomment this variable, your ENV variables will always override botlogin.txt
       # PHANTOMBOT_ENVOVERRIDE: true
   # Service name, used internally by Docker Compose. Can be changed but does not matter
