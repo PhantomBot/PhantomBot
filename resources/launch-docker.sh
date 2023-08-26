@@ -20,6 +20,9 @@
 # PhantomBot Launcher - Docker
 #
 
+# Required Java major version
+javarequired=17
+
 # https://unix.stackexchange.com/questions/146756/forward-sigterm-to-child-in-bash/444676#444676
 prep_term()
 {
@@ -53,8 +56,55 @@ prep_term
 unset DISPLAY
 
 tmp=""
+success=0
 
-JAVA=$(which java)
+if (( success == 0 )); then
+    JAVA="/opt/java/openjdk/bin/java"
+    jver=$($JAVA --version)
+    res=$?
+    jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    if (( res == 0 && jvermaj == javarequired )); then
+        success=1
+    fi
+fi
+
+if (( success == 0 )); then
+    JAVA="./java-runtime-linux/bin/java"
+    jver=$($JAVA --version)
+    res=$?
+    jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    if (( res == 0 && jvermaj == javarequired )); then
+        success=1
+    fi
+fi
+
+if (( success == 0 )); then
+    JAVA="./java-runtime-arm64/bin/java"
+    jver=$($JAVA --version)
+    res=$?
+    jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    if (( res == 0 && jvermaj == javarequired )); then
+        success=1
+    fi
+fi
+
+if (( success == 0 )); then
+    JAVA=$(which java)
+    res1=$?
+    jver=$($JAVA --version)
+    res2=$?
+    jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    if (( res1 == 0 && res2 == 0 && jvermaj == javarequired )); then
+        success=1
+    fi
+fi
+
+if (( success == 0 )); then
+    echo "PhantomBot requires Java ${javarequired} to run"
+    echo
+    echo "Is your Docker image base set to eclipse-temurin:${javarequired}-jre?"
+    exit 1
+fi
 
 if mount | grep '/tmp' | grep -q noexec; then
     mkdir -p $(dirname $(readlink -f $0))/tmp
