@@ -186,6 +186,9 @@
             <arg value="--short"/>
             <arg value="HEAD"/>
         </exec>
+    </target>
+
+    <target name="repository.version" depends="git.revision">
         <condition property="repository.version" value="${git.revision}" else="${fallback.revision}">
             <and>
                 <isset property="git.revision"/>
@@ -194,7 +197,7 @@
         </condition>
     </target>
 
-    <target depends="init,ivy-retrieve,classpaths,git.revision" name="pre.compile">
+    <target depends="init,ivy-retrieve,classpaths,repository.version" name="pre.compile">
         <echo>${ant.project.name} Version ${version} (${repository.version}) (${build_type})</echo>
         <replaceregexp
             file="source/tv/phantombot/RepoVersion.java"
@@ -305,17 +308,17 @@
     <target name="check-compiled">
         <available file="${version.folder}/PhantomBot.jar" property="compiled"/>
     </target>
-    <target depends="compile.src,post.compile,git.revision" name="jar-only">
+    <target depends="compile.src,post.compile,repository.version" name="jar-only">
         <jar destfile="${version.folder}/${ant.project.name}.jar">
             <fileset dir="${classes}" />
             <manifest>
                 <attribute name="Bundle-Name" value="${ant.project.name}" />
                 <attribute name="Bundle-Version" value="${version}" />
-                <attribute name="Bundle-Revision" value="${git.revision}" />
+                <attribute name="Bundle-Revision" value="${repository.version}" />
                 <attribute name="Bundle-Date" value="${NOW}" />
                 <attribute name="Implementation-Title" value="${ant.project.name}" />
                 <attribute name="Implementation-Version" value="${version}" />
-                <attribute name="Implementation-Revision" value="${git.revision}" />
+                <attribute name="Implementation-Revision" value="${repository.version}" />
                 <attribute name="Implementation-URL" value="https://phantombot.github.io/PhantomBot" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
                 <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
@@ -340,17 +343,17 @@
         </copy>
     </target>
 
-    <target depends="compile.src,post.compile,git.revision" name="jar">
+    <target depends="compile.src,post.compile,repository.version" name="jar">
         <jar destfile="${build.dir}/${ant.project.name}.jar">
             <fileset dir="${classes}" />
             <manifest>
                 <attribute name="Bundle-Name" value="${ant.project.name}" />
                 <attribute name="Bundle-Version" value="${version}" />
-                <attribute name="Bundle-Revision" value="${git.revision}" />
+                <attribute name="Bundle-Revision" value="${repository.version}" />
                 <attribute name="Bundle-Date" value="${NOW}" />
                 <attribute name="Implementation-Title" value="${ant.project.name}" />
                 <attribute name="Implementation-Version" value="${version}" />
-                <attribute name="Implementation-Revision" value="${git.revision}" />
+                <attribute name="Implementation-Revision" value="${repository.version}" />
                 <attribute name="Implementation-URL" value="https://phantombot.github.io/PhantomBot" />
                 <attribute name="Class-Path" value="${mf.classpath}" />
                 <attribute name="Main-Class" value="tv.phantombot.PhantomBot" />
@@ -408,7 +411,7 @@
         </zip>
     </target>
 
-    <target name="clean-no-post" depends="git.revision">
+    <target name="clean-no-post" depends="repository.version">
         <delete dir="${build}" />
     </target>
 
