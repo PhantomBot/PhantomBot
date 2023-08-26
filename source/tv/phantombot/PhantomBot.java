@@ -1327,7 +1327,7 @@ public final class PhantomBot implements Listener {
                             }
 
                             if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
-                                this.getDataStore().set("settings", "newrelease_info", "nightly-" + latestNightly + "|https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
+                                this.getDataStore().set("settings", "newrelease_info", "nightly-" + latestNightly + "|https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly-bot.zip");
                             }
                         }
                     } else {
