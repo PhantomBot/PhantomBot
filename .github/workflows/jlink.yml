@@ -16,12 +16,22 @@ jobs:
             qemu: false
             os: ubuntu-latest
             script: jlink-jdk-linux.sh
-          - osname: arm64
+          - osname: Linux (GCC, arm64)
             java-version: 17
             java-distribution: 'temurin'
             folder: java-runtime-arm64
             qemu: true
             platform: linux/arm64
+            image: eclipse-temurin:17-jdk
+            os: ubuntu-latest
+            script: jlink-jdk-docker.sh
+            jdk: /opt/java/openjdk
+          - osname: Linux (GCC, arm32)
+            java-version: 17
+            java-distribution: 'temurin'
+            folder: java-runtime-arm32
+            qemu: true
+            platform: linux/arm/v7
             image: eclipse-temurin:17-jdk
             os: ubuntu-latest
             script: jlink-jdk-docker.sh
