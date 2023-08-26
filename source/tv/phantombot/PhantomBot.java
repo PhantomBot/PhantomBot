@@ -1279,16 +1279,20 @@ public final class PhantomBot implements Listener {
 
         if (osname.contains("win")) {
             os = "-win";
+        } else if (osname.contains("bsd")) {
+            os = "-bot_only";
+        } else if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
+            os = "-arm" + (System.getProperty("os.arch").equalsIgnoreCase("arm64") ? "64" : "32");
+        } else if (System.getProperty("os.arch").equalsIgnoreCase("aarch64")) {
+            os = "-arm64";
         } else if (osname.contains("mac")) {
             os = "-mac";
-        } else if (osname.contains("bsd")) {
-            os = "-arm-bsd-other";
         } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
-            if (System.getProperty("os.arch").toLowerCase().contains("arm")) {
-                os = "-arm-bsd-other";
-            } else {
-                os = "-lin";
-            }
+            os = "-lin";
+        }
+
+        if (os.isEmpty()) {
+            os = "-bot_only";
         }
 
         return os;
@@ -1315,7 +1319,7 @@ public final class PhantomBot implements Listener {
                                 Thread.sleep(6000);
                                 this.print("");
                                 this.print("New PhantomBot Nightly Build Detected: " + latestNightly);
-                                this.print("Download Link: https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly" + PhantomBot.getOsSuffix() + ".zip");
+                                this.print("Download Link: https://github.com/PhantomBot/nightly-build/raw/master/PhantomBot-nightly-bot.zip");
                                 this.print("A reminder will be provided in 24 hours!");
                                 this.print("");
                             } catch (InterruptedException ex) {
