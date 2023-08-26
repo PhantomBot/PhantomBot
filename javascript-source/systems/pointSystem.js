@@ -423,6 +423,7 @@
                     $.inidb.incr('points', actionArg1, actionArg2);
                     $.say($.lang.get('pointsystem.add.success',
                             $.getPointsString(actionArg2), $.viewer.getByLogin(actionArg1).name(), getPointsString(getUserPoints(actionArg1))));
+                    return;
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.usage.invalid', '!' + command));
