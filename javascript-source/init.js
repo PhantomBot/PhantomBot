@@ -647,7 +647,7 @@
 
                     // Check if the command exists or if the module is disabled or if the command is restricted.
                     if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command)) || !$.commandRestrictionMet(command, subCommand)) {
-                        if (!event.isHandeled()) {
+                        if (!event.isHandeled() && !command.equalsIgnoreCase('pbinternalping')) {
                             $.log.error("Command doesn't exist or is disabled/restricted: " + command);
                         }
                         return;
