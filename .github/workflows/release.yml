@@ -278,73 +278,112 @@ jobs:
       run: ant -noinput -Dbuildtype=stable -Dversion=$VERSION -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml jar
     - name: Prep Assets
       env:
-        FOLDERFULL: ${{ format('PhantomBot-{0}', needs.workflowvars.outputs.version) }}
+        FOLDERBASE: ${{ format('PhantomBot-{0}', needs.workflowvars.outputs.version) }}
+        FOLDERFULL: ${{ format('PhantomBot-{0}-full', needs.workflowvars.outputs.version) }}
         FOLDERLIN: ${{ format('PhantomBot-{0}-lin', needs.workflowvars.outputs.version) }}
         FOLDERWIN: ${{ format('PhantomBot-{0}-win', needs.workflowvars.outputs.version) }}
         FOLDERMAC: ${{ format('PhantomBot-{0}-mac', needs.workflowvars.outputs.version) }}
-        FOLDERARMBSDOTHER: ${{ format('PhantomBot-{0}-arm-bsd-other', needs.workflowvars.outputs.version) }}
+        FOLDERARM64: ${{ format('PhantomBot-{0}-arm64-apple_silicon', needs.workflowvars.outputs.version) }}
+        FOLDERARM32: ${{ format('PhantomBot-{0}-arm32', needs.workflowvars.outputs.version) }}
+        FOLDERBOT: ${{ format('PhantomBot-{0}-bot_only', needs.workflowvars.outputs.version) }}
       run: |
+        echo ::group::rsync $FOLDERFULL
+        mkdir dist/$FOLDERFULL
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERFULL
+        echo ::endgroup::
         echo ::group::rsync $FOLDERLIN
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
         echo ::endgroup::
         echo ::group::rsync $FOLDERWIN
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh  --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh  --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         echo ::group::rsync $FOLDERMAC
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERMAC --exclude java-runtime-linux --exclude java-runtime --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERMAC --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-linux --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
         echo ::endgroup::
-        echo ::group::rsync $FOLDERARMBSDOTHER
-        mkdir dist/$FOLDERARMBSDOTHER
-        rsync -rav --progress dist/$FOLDERFULL dist/$FOLDERARMBSDOTHER --exclude java-runtime-linux --exclude java-runtime --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot.bat --exclude restartbot-docker.sh
+        echo ::group::rsync $FOLDERARM64
+        mkdir dist/$FOLDERARM64
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERARM64 --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm32 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERARM32
+        mkdir dist/$FOLDERARM32
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERARM32 --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
+        echo ::endgroup::
+        echo ::group::rsync $FOLDERBOT
+        mkdir dist/$FOLDERBOT
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERBOT --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm32 --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         cd dist
+        rm -rf $FOLDERBASE
         echo ::group::zip $FOLDERFULL
-        zip -m -9 -X -r $FOLDERFULL.zip $FOLDERFULL
+        mv -v $FOLDERFULL $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERFULL.zip $FOLDERBASE
+        cd ..
+        mv -v $FOLDERBASE/$FOLDERFULL.zip ./$FOLDERFULL.zip
+        rm -rf $FOLDERBASE
         echo ::endgroup::
         echo ::group::zip $FOLDERLIN
-        mv -v $FOLDERLIN $FOLDERFULL
-        cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERLIN.zip $FOLDERFULL
+        mv -v $FOLDERLIN $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERLIN.zip $FOLDERBASE
         cd ..
-        mv -v $FOLDERFULL/$FOLDERLIN.zip ./$FOLDERLIN.zip
-        rm -rf $FOLDERFULL
+        mv -v $FOLDERBASE/$FOLDERLIN.zip ./$FOLDERLIN.zip
+        rm -rf $FOLDERBASE
         echo ::endgroup::
         echo ::group::zip $FOLDERWIN
-        mv -v $FOLDERWIN $FOLDERFULL
-        cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERWIN.zip $FOLDERFULL
+        mv -v $FOLDERWIN $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERWIN.zip $FOLDERBASE
         cd ..
-        mv -v $FOLDERFULL/$FOLDERWIN.zip ./$FOLDERWIN.zip
-        rm -rf $FOLDERFULL
+        mv -v $FOLDERBASE/$FOLDERWIN.zip ./$FOLDERWIN.zip
+        rm -rf $FOLDERBASE
         echo ::endgroup::
         echo ::group::zip $FOLDERMAC
-        mv -v $FOLDERMAC $FOLDERFULL
-        cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERMAC.zip $FOLDERFULL
+        mv -v $FOLDERMAC $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERMAC.zip $FOLDERBASE
         cd ..
-        mv -v $FOLDERFULL/$FOLDERMAC.zip ./$FOLDERMAC.zip
-        rm -rf $FOLDERFULL
+        mv -v $FOLDERBASE/$FOLDERMAC.zip ./$FOLDERMAC.zip
+        rm -rf $FOLDERBASE
         echo ::endgroup::
-        echo ::group::zip $FOLDERARMBSDOTHER
-        mv -v $FOLDERARMBSDOTHER $FOLDERFULL
-        cd $FOLDERFULL
-        zip -m -9 -X -r $FOLDERARMBSDOTHER.zip $FOLDERFULL
+        echo ::group::zip $FOLDERARM64
+        mv -v $FOLDERARM64 $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERARM64.zip $FOLDERBASE
         cd ..
-        mv -v $FOLDERFULL/$FOLDERARMBSDOTHER.zip ./$FOLDERARMBSDOTHER.zip
-        rm -rf $FOLDERFULL
+        mv -v $FOLDERBASE/$FOLDERARM64.zip ./$FOLDERARM64.zip
+        rm -rf $FOLDERBASE
+        echo ::endgroup::
+        echo ::group::zip $FOLDERARM32
+        mv -v $FOLDERARM32 $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERARM32.zip $FOLDERBASE
+        cd ..
+        mv -v $FOLDERBASE/$FOLDERARM32.zip ./$FOLDERARM32.zip
+        rm -rf $FOLDERBASE
+        echo ::endgroup::
+        echo ::group::zip $FOLDERBOT
+        mv -v $FOLDERBOT $FOLDERBASE
+        cd $FOLDERBASE
+        zip -m -9 -X -r $FOLDERBOT.zip $FOLDERBASE
+        cd ..
+        mv -v $FOLDERBASE/$FOLDERBOT.zip ./$FOLDERBOT.zip
+        rm -rf $FOLDERBASE
         echo ::endgroup::
     - name: Upload Assets
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ${{ format('dist/PhantomBot-{0}.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-full.zip', needs.workflowvars.outputs.version) }}
           ${{ format('dist/PhantomBot-{0}-lin.zip', needs.workflowvars.outputs.version) }}
           ${{ format('dist/PhantomBot-{0}-win.zip', needs.workflowvars.outputs.version) }}
           ${{ format('dist/PhantomBot-{0}-mac.zip', needs.workflowvars.outputs.version) }}
-          ${{ format('dist/PhantomBot-{0}-arm-bsd-other.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-arm64-apple_silicon.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-arm32.zip', needs.workflowvars.outputs.version) }}
+          ${{ format('dist/PhantomBot-{0}-bot_only.zip', needs.workflowvars.outputs.version) }}
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
       uses: rollbar/github-deploy-action@2.1.2

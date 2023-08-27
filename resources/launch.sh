@@ -23,6 +23,10 @@
 # % chmod +x launch.sh
 # % ./launch.sh
 #
+# Optional command line parameters
+# --daemon - Enables daemon mode (No console input)
+# --java </path/to/jre/bin/java> - Overrides the first Java executable attempted
+#
 
 unset DISPLAY
 
@@ -49,11 +53,36 @@ fedoramin=37
 
 # Internal vars
 tmp=""
+interactive="-Dinteractive"
 pwd=""
 hwname="$( uname -m )"
 trylinux=0
 trymac=0
 tryarm64=0
+tryarm32=0
+daemon=0
+myjava=0
+JAVA=""
+
+isjava=0
+for arg do
+  shift
+  if [[ "$arg" = "--daemon" ]]; then
+    daemon=1
+    continue
+  fi
+  if (( isjava == 1 )); then
+    JAVA="$arg"
+    myjava=1
+    isjava=0
+    continue
+  fi
+  if [[ "$arg" = "--java" ]]; then
+    isjava=1
+    continue
+  fi
+  set -- "$@" "$arg"
+done
 
 # Get dir of this script
 # Special handling for macOS
@@ -73,6 +102,17 @@ fi
 # cd to script dir
 cd $pwd
 
+if (( daemon == 1 )); then
+    interactive=""
+    if [[ ! -O "PhantomBot.jar" ]]; then
+        echo "The directory is not chown by the service user"
+        echo "Please run the following command to fix this:"
+        echo "   sudo chown ${EUID} ${pwd}"
+
+        exit 1
+    fi
+fi
+
 # Determine which builtin runtimes to try
 if [[ "$OSTYPE" =~ "darwin" ]]; then
     trymac=1
@@ -81,14 +121,27 @@ if [[ "$OSTYPE" =~ "darwin" ]]; then
         tryarm64=1
     fi
 fi
-if [[ "$hwname" =~ "arm64" ]]; then
+if [[ "$hwname" =~ "arm64" || "$hwname" =~ "aarch64" ]]; then
     tryarm64=1
+elif [[ "$hwname" =~ "arm" ]]; then
+    tryarm32=1
 fi
 if [[ "$hwname" =~ "x86_64" || "$MACHTYPE" =~ "x86_64" ]]; then
     trylinux=1
 fi
 
 success=0
+
+# Try command line Java
+if (( success == 0 && myjava == 1 )); then
+    chm=$(chmod u+x $JAVA)
+    jver=$($JAVA --version)
+    res=$?
+    jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    if (( res == 0 && jvermaj == javarequired )); then
+        success=1
+    fi
+fi
 
 # Try java-runtime-linux
 if (( success == 0 && trylinux == 1 )); then
@@ -117,6 +170,18 @@ fi
 # Try java-runtime-arm64
 if (( success == 0 && tryarm64 == 1 )); then
     JAVA="./java-runtime-arm64/bin/java"
+    chm=$(chmod u+x $JAVA)
+    jver=$($JAVA --version)
+    res=$?
+    jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
+    if (( res == 0 && jvermaj == javarequired )); then
+        success=1
+    fi
+fi
+
+# Try java-runtime-arm32
+if (( success == 0 && tryarm32 == 1 )); then
+    JAVA="./java-runtime-arm32/bin/java"
     chm=$(chmod u+x $JAVA)
     jver=$($JAVA --version)
     res=$?
@@ -208,4 +273,4 @@ if mount | grep '/tmp' | grep -q noexec; then
     tmp="-Djava.io.tmpdir=${pwd}/tmp"
 fi
 
-${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms256m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar PhantomBot.jar "$@"
+${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security ${interactive} -Xms256m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar PhantomBot.jar "$@"

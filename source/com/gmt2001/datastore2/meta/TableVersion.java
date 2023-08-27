@@ -69,7 +69,7 @@ public final class TableVersion extends TableImpl<TableVersionRecord> {
     /**
      * The name of the managed table whose version is stored in the record
      */
-    public final TableField<TableVersionRecord, String> TABLE = createField(DSL.name("table"), SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<TableVersionRecord, String> TABLE = createField(DSL.name("table"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The version of the managed table
