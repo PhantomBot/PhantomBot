@@ -60,7 +60,7 @@ success=0
 
 if (( success == 0 )); then
     JAVA="/opt/java/openjdk/bin/java"
-    jver=$($JAVA --version)
+    jver=$($JAVA --version 2>/dev/null)
     res=$?
     jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
     if (( res == 0 && jvermaj == javarequired )); then
@@ -70,7 +70,8 @@ fi
 
 if (( success == 0 )); then
     JAVA="./java-runtime-linux/bin/java"
-    jver=$($JAVA --version)
+    chm=$(chmod u+x $JAVA 2>/dev/null)
+    jver=$($JAVA --version 2>/dev/null)
     res=$?
     jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
     if (( res == 0 && jvermaj == javarequired )); then
@@ -80,7 +81,8 @@ fi
 
 if (( success == 0 )); then
     JAVA="./java-runtime-arm64/bin/java"
-    jver=$($JAVA --version)
+    chm=$(chmod u+x $JAVA 2>/dev/null)
+    jver=$($JAVA --version 2>/dev/null)
     res=$?
     jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
     if (( res == 0 && jvermaj == javarequired )); then
@@ -91,7 +93,7 @@ fi
 if (( success == 0 )); then
     JAVA=$(which java)
     res1=$?
-    jver=$($JAVA --version)
+    jver=$($JAVA --version 2>/dev/null)
     res2=$?
     jvermaj=$(echo "$jver" | awk 'FNR == 1 { print $2 }' | cut -d . -f 1)
     if (( res1 == 0 && res2 == 0 && jvermaj == javarequired )); then

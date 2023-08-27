@@ -284,7 +284,6 @@ jobs:
         FOLDERWIN: ${{ format('PhantomBot-{0}-win', needs.workflowvars.outputs.version) }}
         FOLDERMAC: ${{ format('PhantomBot-{0}-mac', needs.workflowvars.outputs.version) }}
         FOLDERARM64: ${{ format('PhantomBot-{0}-arm64-apple_silicon', needs.workflowvars.outputs.version) }}
-        FOLDERARM32: ${{ format('PhantomBot-{0}-arm32', needs.workflowvars.outputs.version) }}
         FOLDERBOT: ${{ format('PhantomBot-{0}-bot_only', needs.workflowvars.outputs.version) }}
       run: |
         echo ::group::rsync $FOLDERFULL
@@ -293,27 +292,23 @@ jobs:
         echo ::endgroup::
         echo ::group::rsync $FOLDERLIN
         mkdir dist/$FOLDERLIN
-        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERLIN --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
         echo ::endgroup::
         echo ::group::rsync $FOLDERWIN
         mkdir dist/$FOLDERWIN
-        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh  --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERWIN --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.sh --exclude launch-service.sh --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh  --exclude restartbot-systemctl.sh --exclude restartbot-systemv.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         echo ::group::rsync $FOLDERMAC
         mkdir dist/$FOLDERMAC
-        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERMAC --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-arm32 --exclude java-runtime-linux --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERMAC --exclude java-runtime --exclude java-runtime-arm64 --exclude java-runtime-linux --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
         echo ::endgroup::
         echo ::group::rsync $FOLDERARM64
         mkdir dist/$FOLDERARM64
-        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERARM64 --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm32 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
-        echo ::endgroup::
-        echo ::group::rsync $FOLDERARM32
-        mkdir dist/$FOLDERARM32
-        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERARM32 --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERARM64 --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-macos --exclude launch.bat --exclude launch.ps1 --exclude launch-bsd.sh --exclude launch-bsd-service.sh --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-windows.bat --exclude restartbot-docker.sh
         echo ::endgroup::
         echo ::group::rsync $FOLDERBOT
         mkdir dist/$FOLDERBOT
-        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERBOT --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm32 --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
+        rsync -rav --progress dist/$FOLDERBASE dist/$FOLDERBOT --exclude java-runtime --exclude java-runtime-linux --exclude java-runtime-arm64 --exclude java-runtime-macos --exclude launch-docker.sh --exclude docker-entrypoint.sh --exclude restartbot-docker.sh
         echo ::endgroup::
         cd dist
         rm -rf $FOLDERBASE
@@ -357,14 +352,6 @@ jobs:
         mv -v $FOLDERBASE/$FOLDERARM64.zip ./$FOLDERARM64.zip
         rm -rf $FOLDERBASE
         echo ::endgroup::
-        echo ::group::zip $FOLDERARM32
-        mv -v $FOLDERARM32 $FOLDERBASE
-        cd $FOLDERBASE
-        zip -m -9 -X -r $FOLDERARM32.zip $FOLDERBASE
-        cd ..
-        mv -v $FOLDERBASE/$FOLDERARM32.zip ./$FOLDERARM32.zip
-        rm -rf $FOLDERBASE
-        echo ::endgroup::
         echo ::group::zip $FOLDERBOT
         mv -v $FOLDERBOT $FOLDERBASE
         cd $FOLDERBASE
@@ -382,7 +369,6 @@ jobs:
           ${{ format('dist/PhantomBot-{0}-win.zip', needs.workflowvars.outputs.version) }}
           ${{ format('dist/PhantomBot-{0}-mac.zip', needs.workflowvars.outputs.version) }}
           ${{ format('dist/PhantomBot-{0}-arm64-apple_silicon.zip', needs.workflowvars.outputs.version) }}
-          ${{ format('dist/PhantomBot-{0}-arm32.zip', needs.workflowvars.outputs.version) }}
           ${{ format('dist/PhantomBot-{0}-bot_only.zip', needs.workflowvars.outputs.version) }}
     - name: Notify Rollbar of Deploy Failure
       if: ${{ contains(needs.workflowvars.outputs.rollbarmissing, 'no') && (failure() || cancelled()) }}
