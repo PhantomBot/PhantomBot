@@ -26,6 +26,16 @@ jobs:
             os: ubuntu-latest
             script: jlink-jdk-docker.sh
             jdk: /opt/java/openjdk
+          - osname: Linux (GCC, arm32)
+            java-version: 17
+            java-distribution: 'temurin'
+            folder: java-runtime-arm32
+            qemu: true
+            platform: linux/arm/v7
+            image: eclipse-temurin:17-jdk
+            os: ubuntu-latest
+            script: jlink-jdk-docker.sh
+            jdk: /opt/java/openjdk
           - osname: Windows
             java-version: 17
             os: windows-latest

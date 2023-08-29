@@ -39,7 +39,7 @@
             }
 
             /*
-             * @commandpath botName usebotname - Toggles using the bot name for initCommands commands.
+             * @commandpath pbcore usebotname - Toggles using the bot name for initCommands commands.
              */
             if (action.equalsIgnoreCase('usebotname')) {
                 useBotName = !useBotName;
@@ -55,7 +55,7 @@
             }
 
             /*
-             * @commandpath botName disconnect - Removes the bot from your channel.
+             * @commandpath pbcore disconnect - Removes the bot from your channel.
              */
             if (action.equalsIgnoreCase('disconnect')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.disconnect'));
@@ -66,7 +66,7 @@
             }
 
             /*
-             * @commandpath botName reconnect - Reconnects the bot to TMI and PubSub.
+             * @commandpath pbcore reconnect - Reconnects the bot to TMI and PubSub.
              */
             if (action.equalsIgnoreCase('reconnect')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect'));
@@ -77,14 +77,14 @@
             }
 
             /*
-             * @commandpath botName moderate - Forces the bot to detect its moderator status.
+             * @commandpath pbcore moderate - Forces the bot to detect its moderator status.
              */
             if (action.equalsIgnoreCase('moderate')) {
                 Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
             }
 
             /*
-             * @commandpath botName forceonline - Forces the bot to mark the channel as online.
+             * @commandpath pbcore forceonline - Forces the bot to mark the channel as online.
              */
             if (action.equalsIgnoreCase('forceonline')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.forceonline'));
@@ -93,7 +93,7 @@
             }
 
             /*
-             * @commandpath botName forceoffline - Forces the bot to mark the channel as offline.
+             * @commandpath pbcore forceoffline - Forces the bot to mark the channel as offline.
              */
             if (action.equalsIgnoreCase('forceoffline')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.forceoffline'));
@@ -102,7 +102,7 @@
             }
 
             /*
-             * @commandpath botName setconnectmessage [message] - Sets a message that will be said once the bot joins the channel.
+             * @commandpath pbcore setconnectmessage [message] - Sets a message that will be said once the bot joins the channel.
              */
             if (action.equalsIgnoreCase('setconnectmessage')) {
                 if (subAction === undefined) {
@@ -117,7 +117,7 @@
             }
 
             /*
-             * @commandpath botName removeconnectmessage - Removes the message said when the bot joins the channel.
+             * @commandpath pbcore removeconnectmessage - Removes the message said when the bot joins the channel.
              */
             if (action.equalsIgnoreCase('removeconnectmessage')) {
                 $.inidb.del('settings', 'connectedMsg');
@@ -125,7 +125,7 @@
             }
 
             /*
-             * @commandpath botName togglepricecommods - Toggles if moderators and higher pay for commands.
+             * @commandpath pbcore togglepricecommods - Toggles if moderators and higher pay for commands.
              */
             if (action.equalsIgnoreCase('togglepricecommods')) {
                 let toggle = !$.getIniDbBoolean('settings', 'pricecomMods', false);
@@ -135,7 +135,7 @@
             }
 
             /*
-             * @commandpath botName togglepermcommessage - Toggles if the no permission message is said in the chat.
+             * @commandpath pbcore togglepermcommessage - Toggles if the no permission message is said in the chat.
              */
             if (action.equalsIgnoreCase('togglepermcommessage')) {
                 let toggle = !$.getIniDbBoolean('settings', 'permComMsgEnabled', false);
@@ -145,7 +145,7 @@
             }
 
             /*
-             * @commandpath botName togglepricecommessage - Toggles if the cost message is said in the chat.
+             * @commandpath pbcore togglepricecommessage - Toggles if the cost message is said in the chat.
              */
             if (action.equalsIgnoreCase('togglepricecommessage')) {
                 let toggle = !$.getIniDbBoolean('settings', 'priceComMsgEnabled', false);
@@ -155,7 +155,7 @@
             }
 
             /*
-             * @commandpath botName togglecooldownmessage - Toggles if the cooldown message is said in the chat.
+             * @commandpath pbcore togglecooldownmessage - Toggles if the cooldown message is said in the chat.
              */
             if (action.equalsIgnoreCase('togglecooldownmessage')) {
                 let toggle = !$.getIniDbBoolean('settings', 'coolDownMsgEnabled', false);
@@ -165,7 +165,7 @@
             }
 
             /*
-             * @commandpath botName togglecustomcommandat - Toggles if custom commands without command tags can be targeted by mods using !mycommand @user
+             * @commandpath pbcore togglecustomcommandat - Toggles if custom commands without command tags can be targeted by mods using !mycommand @user
              */
             if (action.equalsIgnoreCase('togglecustomcommandat')) {
                 let toggle = !$.getIniDbBoolean('settings', 'customCommandAtEnabled', true);

@@ -1283,6 +1283,8 @@ public final class PhantomBot implements Listener {
             os = "-bot_only";
         } else if (System.getProperty("os.arch").equalsIgnoreCase("arm64") || System.getProperty("os.arch").equalsIgnoreCase("aarch64")) {
             os = "-arm64";
+        } else if (System.getProperty("os.arch").toLowerCase().startsWith("arm")) {
+            os = "-arm32";
         } else if (osname.contains("mac")) {
             os = "-mac";
         } else if (osname.contains("nix") || osname.contains("nux") || osname.contains("aix")) {
