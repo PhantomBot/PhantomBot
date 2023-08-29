@@ -732,6 +732,26 @@
         }
     });
 
+    addUpdate('3.10.0.3', 'installedv3.10.0.3', function() {
+        let tables = ['points', 'deaths', 'time', 'adventurePayouts', 'donations', 'wordCounter', 'bettingVotes', 'pollVotes', 'commandCount', 'discordCommandCount'];
+
+        for (let x in tables) {
+            let keys = $.inidb.GetKeyList(tables[x], '');
+
+            for (let i = 0; i < keys.length; i++) {
+                $.inidb.SetInteger(tables[x], '', keys[i], parseInt($.inidb.get(tables[x], keys[i])));
+            }
+        }
+
+        $.inidb.SetInteger('panelstats', '', 'gameCount', parseInt($.inidb.get('panelstats', 'gameCount')));
+        if ($.inidb.exists('raffleresults', 'raffleEntries')) {
+            $.inidb.SetInteger('raffleresults', '', 'raffleEntries', parseInt($.inidb.get('raffleresults', 'raffleEntries')));
+        }
+        if ($.inidb.exists('traffleresults', 'ticketRaffleEntries')) {
+            $.inidb.SetInteger('traffleresults', '', 'ticketRaffleEntries', parseInt($.inidb.get('traffleresults', 'ticketRaffleEntries')));
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.inidb.GetBoolean('updates', '', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
