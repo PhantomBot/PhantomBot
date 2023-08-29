@@ -127,9 +127,9 @@
      */
     function getIniDbNumber(fileName, key, defaultValue) {
         if (defaultValue === undefined || defaultValue === null) {
-            return $.inidb.GetInteger(fileName, '', key);
+            return $.inidb.GetLong(fileName, '', key);
         }
-        return $.inidb.GetInteger(fileName, '', key, defaultValue);
+        return $.inidb.GetLong(fileName, '', key, defaultValue);
     }
 
     /**
@@ -140,12 +140,12 @@
      * @param {number}
      */
     function getSetIniDbNumber(fileName, key, defaultValue) {
-        let res = $.inidb.OptInteger(fileName, '', key);
+        let res = $.inidb.OptLong(fileName, '', key);
         if (res.isPresent()) {
             return res.get();
         }
 
-        $.inidb.SetInteger(fileName, '', key, defaultValue);
+        $.inidb.SetLong(fileName, '', key, defaultValue);
         return defaultValue;
     }
 
@@ -157,7 +157,7 @@
      * @param {number}
      */
     function setIniDbNumber(fileName, key, value) {
-        $.inidb.SetInteger(fileName, '', key, value);
+        $.inidb.SetLong(fileName, '', key, value);
     }
 
     /**
