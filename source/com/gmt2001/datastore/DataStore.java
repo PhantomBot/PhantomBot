@@ -1395,7 +1395,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to increase the value of the {@code value} column by
      */
-    public void incr(String fName, String section, String key, long amount) {
+    public void incrL(String fName, String section, String key, long amount) {
         if (amount == 0L) {
             return;
         }
@@ -1412,8 +1412,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to increase the value of the {@code value} column by
      */
-    public void incr(String fName, String key, long amount) {
-        incr(fName, "", key, amount);
+    public void incrL(String fName, String key, long amount) {
+        incrL(fName, "", key, amount);
     }
 
     /**
@@ -1424,7 +1424,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to increase the value of the {@code value} column by
      */
-    public void incr(String fName, String section, String key, double amount) {
+    public void incrD(String fName, String section, String key, double amount) {
         if (amount == 0.0d) {
             return;
         }
@@ -1441,8 +1441,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to increase the value of the {@code value} column by
      */
-    public void incr(String fName, String key, double amount) {
-        incr(fName, "", key, amount);
+    public void incrD(String fName, String key, double amount) {
+        incrD(fName, "", key, amount);
     }
 
     /**
@@ -1453,7 +1453,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to increase the value of the {@code value} column by
      */
-    public void incr(String fName, String section, String key, float amount) {
+    public void incrF(String fName, String section, String key, float amount) {
         if (amount == 0.0f) {
             return;
         }
@@ -1470,8 +1470,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to increase the value of the {@code value} column by
      */
-    public void incr(String fName, String key, float amount) {
-        incr(fName, "", key, amount);
+    public void incrF(String fName, String key, float amount) {
+        incrF(fName, "", key, amount);
     }
 
     /**
@@ -1504,8 +1504,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String key, long amount) {
-        decr(fName, "", key, amount);
+    public void decrL(String fName, String key, long amount) {
+        decrL(fName, "", key, amount);
     }
 
     /**
@@ -1516,8 +1516,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String section, String key, long amount) {
-        incr(fName, section, key, -amount);
+    public void decrL(String fName, String section, String key, long amount) {
+        incrL(fName, section, key, -amount);
     }
 
     /**
@@ -1527,8 +1527,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String key, double amount) {
-        decr(fName, "", key, amount);
+    public void decrD(String fName, String key, double amount) {
+        decrD(fName, "", key, amount);
     }
 
     /**
@@ -1539,8 +1539,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String section, String key, double amount) {
-        incr(fName, section, key, -amount);
+    public void decrD(String fName, String section, String key, double amount) {
+        incrD(fName, section, key, -amount);
     }
 
     /**
@@ -1550,8 +1550,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String key, float amount) {
-        decr(fName, "", key, amount);
+    public void decrF(String fName, String key, float amount) {
+        decrF(fName, "", key, amount);
     }
 
     /**
@@ -1562,8 +1562,8 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param key the value of the {@code variable} column
      * @param amount the amount to decrease the value of the {@code value} column by
      */
-    public void decr(String fName, String section, String key, float amount) {
-        incr(fName, section, key, (-amount));
+    public void decrF(String fName, String section, String key, float amount) {
+        incrF(fName, section, key, (-amount));
     }
 
     /**
