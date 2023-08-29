@@ -269,7 +269,7 @@
                 return;
             }
 
-            let commandAction = $.inidb.OptString('commamd', '', action);
+            let commandAction = $.inidb.OptString('command', '', action);
             if ($.commandExists(action) && !commandAction.isPresent()) {
                 let commandAlias = $.inidb.OptString('aliases', '', action);
                 if (commandAlias.isPresent()) {
