@@ -211,8 +211,8 @@ java/lang/System$2
 jdk/internal/util/SystemProps
 jdk/internal/util/SystemProps$Raw
 java/lang/StringConcatHelper
-jdk/internal/misc/VM
 java/lang/VersionProps
+jdk/internal/misc/VM
 java/util/Arrays
 java/lang/CharacterData
 java/lang/CharacterDataLatin1
@@ -342,7 +342,6 @@ java/nio/DirectLongBufferU
 java/util/zip/ZipConstants
 java/util/zip/ZipFile
 java/util/jar/JarFile
-sun/security/action/GetBooleanAction
 jdk/internal/access/JavaUtilZipFileAccess
 java/util/zip/ZipFile$1
 jdk/internal/access/JavaUtilJarAccess
@@ -510,6 +509,7 @@ jdk/internal/access/JavaLangInvokeAccess
 java/lang/invoke/MethodHandleImpl$1
 java/lang/invoke/AbstractValidatingLambdaMetafactory
 java/lang/invoke/InnerClassLambdaMetafactory
+sun/security/action/GetBooleanAction
 jdk/internal/org/objectweb/asm/Handle
 jdk/internal/org/objectweb/asm/ConstantDynamic
 java/lang/invoke/MethodHandleInfo
