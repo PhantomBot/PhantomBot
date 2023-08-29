@@ -87,6 +87,10 @@ public final class GamesListUpdater {
     public static void update(boolean force) {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
+        if (!Files.exists(Paths.get("./web/panel/js/utils/gamesList.txt"))) {
+            force = true;
+        }
+
         if (force) {
             com.gmt2001.Console.out.println("Starting GamesListUpdater");
         } else {
@@ -128,7 +132,7 @@ public final class GamesListUpdater {
         JSONObject jso = response.json();
         int myVersion = PhantomBot.instance().getDataStore().GetInteger("settings", "", "gamesList-version");
 
-        if (force || !Files.exists(Paths.get("./web/panel/js/utils/gamesList.txt"))) {
+        if (force) {
             myVersion = 0;
         }
 
