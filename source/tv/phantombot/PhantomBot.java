@@ -331,8 +331,8 @@ public final class PhantomBot implements Listener {
 
         /* Load the datastore */
         Datastore2.init();
-        String oldds = CaselessProperties.instance().getProperty("datastore", "h2store");
-        if (!oldds.toLowerCase().startsWith("sqlite")) {
+        String oldds = CaselessProperties.instance().getProperty("datastore", "h2store").toLowerCase();
+        if (!oldds.startsWith("sqlite")) {
             if (DataStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
                 && SqliteStore.instance().GetFileList().length > 0) {
