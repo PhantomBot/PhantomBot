@@ -358,7 +358,7 @@
     }
 
     function timeoutDeleteUser(username, time, reason, tags) {
-        if (time === 0) {
+        if (time < 1) {
             deleteMessage(tags);
         } else {
             timeoutUser(username, time, reason);
