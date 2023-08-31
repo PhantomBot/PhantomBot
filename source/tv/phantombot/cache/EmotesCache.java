@@ -124,7 +124,11 @@ public class EmotesCache implements Runnable {
             return;
         }
 
-        bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(ViewerCache.instance().getByLogin(this.channel).id());
+        if (ViewerCache.instance().broadcaster() == null) {
+            return;
+        }
+
+        bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(ViewerCache.instance().broadcaster().id());
         if (!checkJSONExceptions(bttvLocalJsonResult, true, "Local BTTV")) {
             com.gmt2001.Console.err.println("Failed to get BTTV Local Emotes");
             return;
