@@ -2844,6 +2844,10 @@ public class Helix {
             throws JSONException, IllegalArgumentException {
         first = Math.max(1, Math.min(100, first));
 
+        if (ViewerCache.instance().broadcaster() == null) {
+            return Mono.just(null);
+        }
+
         String endpoint = "/channels/followers?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
         + this.qspValid("&user_id", user_id) + this.qspValid("&first", first) + this.qspValid("&after", after);
 
