@@ -37,6 +37,7 @@ import org.jooq.SelectSeekStep1;
 import org.jooq.SelectWhereStep;
 import org.jooq.SortOrder;
 import org.jooq.Table;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.datastore2.Datastore2;
@@ -855,7 +856,13 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
                 updates = dsl().select(field("variable", tbl)).from(tbl).where(field("section", tbl).eq(section), field("variable", tbl).in(key)).fetch(field("variable", tbl));
             }
             dsl().batched(c -> {
-                c.dsl().startTransaction().execute();
+                try {
+                    c.dsl().startTransaction().execute();
+                } catch (DataAccessException ex) {
+                    if (!ex.getMessage().contains("cannot start a transaction within a transaction")) {
+                        throw ex;
+                    }
+                }
                 for (int i = 0; i < Math.min(key.length, value.length); i++) {
                     if (updates.contains(key[i])) {
                         this.SetString(c.dsl(), tbl, true, section, key[i], value[i]);

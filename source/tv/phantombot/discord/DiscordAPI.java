@@ -409,7 +409,9 @@ public class DiscordAPI extends DiscordUtil {
                     com.gmt2001.Console.err.println("More Information: https://discord.com/developers/docs/topics/gateway#privileged-intents");
                     com.gmt2001.Console.err.println("Discord Developer Portal: https://discord.com/developers/applications");
 
-                    DiscordAPI.gateway.logout();
+                    if (DiscordAPI.gateway != null) {
+                        DiscordAPI.gateway.logout();
+                    }
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.lastDisconnectReason = "IntentsRejected";
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
@@ -418,7 +420,9 @@ public class DiscordAPI extends DiscordUtil {
                     com.gmt2001.Console.err.println("Discord rejected bot token (" + event.getStatus().getCode() + (event.getStatus().getReason().isPresent() ? " " + event.getStatus().getReason().get() : "") + ")...");
                     com.gmt2001.Console.err.println("Discord connection is now being disabled. Please stop the bot, put a new Discord bot token into botlogin.txt, then start the bot again to use Discord features...");
                     com.gmt2001.Console.err.println("https://phantombot.dev/guides/#guide=content/integrations/discordintegrationsetup");
-                    DiscordAPI.gateway.logout();
+                    if (DiscordAPI.gateway != null) {
+                        DiscordAPI.gateway.logout();
+                    }
                     synchronized (DiscordAPI.instance().mutex) {
                         DiscordAPI.lastDisconnectReason = "TokenRejected";
                         DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;
