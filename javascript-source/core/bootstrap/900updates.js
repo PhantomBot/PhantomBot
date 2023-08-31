@@ -734,24 +734,34 @@
 
     addUpdate('3.10.0.3', 'installedv3.10.0.3', function() {
         let tables = ['points', 'deaths', 'time', 'adventurePayouts', 'wordCounter', 'bettingVotes', 'pollVotes', 'commandCount', 'discordCommandCount'];
+        let val;
 
         for (let x in tables) {
             let keys = $.inidb.GetKeyList(tables[x], '');
 
             for (let i = 0; i < keys.length; i++) {
-                let val = $.inidb.get(tables[x], keys[i]);
+                val = $.inidb.get(tables[x], keys[i]);
                 if (!isNaN(val)) {
                     $.inidb.SetInteger(tables[x], '', keys[i], parseInt(val));
                 }
             }
         }
 
-        $.inidb.SetInteger('panelstats', '', 'gameCount', parseInt($.inidb.get('panelstats', 'gameCount')));
+        val = $.inidb.get('panelstats', 'gameCount');
+        if (!isNaN(val)) {
+            $.inidb.SetInteger('panelstats', '', 'gameCount', parseInt(val));
+        }
         if ($.inidb.exists('raffleresults', 'raffleEntries')) {
-            $.inidb.SetInteger('raffleresults', '', 'raffleEntries', parseInt($.inidb.get('raffleresults', 'raffleEntries')));
+            val = $.inidb.get('raffleresults', 'raffleEntries');
+            if (!isNaN(val)) {
+                $.inidb.SetInteger('raffleresults', '', 'raffleEntries', parseInt(val));
+            }
         }
         if ($.inidb.exists('traffleresults', 'ticketRaffleEntries')) {
-            $.inidb.SetInteger('traffleresults', '', 'ticketRaffleEntries', parseInt($.inidb.get('traffleresults', 'ticketRaffleEntries')));
+            val = $.inidb.get('traffleresults', 'ticketRaffleEntries');
+            if (!isNaN(val)) {
+                $.inidb.SetInteger('traffleresults', '', 'ticketRaffleEntries', parseInt(val));
+            }
         }
     });
 
