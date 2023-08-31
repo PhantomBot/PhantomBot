@@ -333,7 +333,9 @@ public class TwitchValidate {
                         com.gmt2001.Console.debug.println(requestObj.toString(4));
                     } else {
                         lastFail = true;
-                        PhantomBot.instance().getAuthFlow().refresh(tokenType == 1, tokenType == 0);
+                        if (PhantomBot.instance() != null) {
+                            PhantomBot.instance().getAuthFlow().refresh(tokenType == 1, tokenType == 0);
+                        }
                     }
                     return;
                 }
