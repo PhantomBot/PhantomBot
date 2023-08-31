@@ -85,7 +85,9 @@ public class PubSubModerationProcessor extends AbstractPubSubProcessor {
 
     @Override
     protected void onClose() {
-        this.future.cancel(true);
+        if (this.future != null) {
+            this.future.cancel(true);
+        }
         this.timeoutCache.clear();
     }
 
