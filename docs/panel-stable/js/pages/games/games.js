@@ -69,13 +69,13 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle the entry messages.
-                    .append(helpers.getDropdownGroup('entry-messages', 'Enable Adventure Entry Messages', (e.enterMessage === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('entry-messages', 'Enable Adventure Entry Messages', (helpers.isTrue(e.enterMessage) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said when a user joins the adventure.'))
                     // Add the toggle the entry messages.
-                    .append(helpers.getDropdownGroup('user-messages', 'Enable Adventure Warning Messages', (e.warningMessage === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('user-messages', 'Enable Adventure Warning Messages', (helpers.isTrue(e.warningMessage) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message when a user already entered should be displayed in chat.'))
                     // Add the toggle the cooldown message.
-                    .append(helpers.getDropdownGroup('cooldown-message', 'Enable Adventure Off Cooldown Message', (e.coolDownAnnounce === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('cooldown-message', 'Enable Adventure Off Cooldown Message', (helpers.isTrue(e.coolDownAnnounce) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said when the adventure is no longer on cooldown.'))
                     // Add the box for the join time.
                     .append(helpers.getInputGroup('join-time', 'number', 'Adventure Join Time (Seconds)', '', e.joinTime, 'How long in seconds users have to join the adventure.'))
@@ -375,7 +375,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle the entry messages.
-                    .append(helpers.getDropdownGroup('pg-mode', 'Enable PG13 Mode', (e.randomSettings === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('pg-mode', 'Enable PG13 Mode', (helpers.isTrue(e.randomSettings) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If the random command should have PG13 phrases.')),
                     function () { // Callback once the user clicks save.
                         let toggle = $('#pg-mode').find(':selected').text() === 'Yes';

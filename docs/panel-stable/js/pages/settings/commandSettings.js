@@ -25,15 +25,15 @@ $(run = function () {
             'pricecomMods', 'modCooldown', 'defaultCooldownTime', 'hasDiscord']
     }, true, function (e) {
         // Set cost message.
-        $('#cmd-cost-messages').val((e.priceComMsgEnabled === 'true' ? 'Yes' : 'No'));
+        $('#cmd-cost-messages').val((helpers.isTrue(e.priceComMsgEnabled) ? 'Yes' : 'No'));
         // Set permission message.
-        $('#cmd-perm-messages').val((e.permComMsgEnabled === 'true' ? 'Yes' : 'No'));
+        $('#cmd-perm-messages').val((helpers.isTrue(e.permComMsgEnabled) ? 'Yes' : 'No'));
         // Set cooldown message.
-        $('#cmd-cooldown-messages').val((e.coolDownMsgEnabled === 'true' ? 'Yes' : 'No'));
+        $('#cmd-cooldown-messages').val((helpers.isTrue(e.coolDownMsgEnabled) ? 'Yes' : 'No'));
         // Set cost for mods.
-        $('#pricecom-mods').val((e.pricecomMods === 'true' ? 'No' : 'Yes'));
+        $('#pricecom-mods').val((helpers.isTrue(e.pricecomMods) ? 'No' : 'Yes'));
         // Set cooldown for mods.
-        $('#cooldown-mods').val((e.modCooldown === 'true' ? 'No' : 'Yes'));
+        $('#cooldown-mods').val((helpers.isTrue(e.modCooldown) ? 'No' : 'Yes'));
         // Set global cooldown.
         $('#global-cooldown').val(e.defaultCooldownTime);
         // Remove discord cooldown or get data.
@@ -45,7 +45,7 @@ $(run = function () {
                 tables: ['discordCooldownSettings', 'discordCooldownSettings'],
                 keys: ['defaultCooldownTime', 'coolDownMsgEnabled']
             }, true, function (e) {
-                $('#cmd-discord-cooldown-messages').val((e.coolDownMsgEnabled === 'true' ? 'Yes' : 'No'));
+                $('#cmd-discord-cooldown-messages').val((helpers.isTrue(e.coolDownMsgEnabled) ? 'Yes' : 'No'));
                 $('#global-discord-cooldown').val(e.defaultCooldownTime);
             });
         }

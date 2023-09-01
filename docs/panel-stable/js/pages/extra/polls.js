@@ -67,7 +67,7 @@ $(function () {
      */
     const updateChart = function () {
         socket.getDBValue('get_poll_active_update', 'pollPanel', 'isActive', function (e) {
-            if (e.pollPanel === 'false' || e.pollPanel === null) {
+            if (!helpers.isTrue(e.pollPanel) || e.pollPanel === null) {
                 isActive = false;
                 return;
             } else if (chartConfig.data.datasets[0].backgroundColor.length !== 0 && isActive === false) {

@@ -25,11 +25,11 @@ $(run = function () {
         // Set the bot timezone.
         $('#loyalty-timezone').val((e.timezone === null ? 'GMT' : e.timezone));
         // Auto add time when offline.
-        $('#time-offline').val((e.keepTimeWhenOffline === 'true' ? 'Yes' : 'No'));
+        $('#time-offline').val((helpers.isTrue(e.keepTimeWhenOffline) ? 'Yes' : 'No'));
         // Auto promote users.
-        $('#time-promote').val((e.timeLevel === 'true' ? 'Yes' : 'No'));
+        $('#time-promote').val((helpers.isTrue(e.timeLevel) ? 'Yes' : 'No'));
         // Auto promote chat notice
-        $('#time-promote-notice').val((e.timeLevelWarning === 'true' ? 'Yes' : 'No'));
+        $('#time-promote-notice').val((helpers.isTrue(e.timeLevelWarning) ? 'Yes' : 'No'));
         // Time to be promoted.
         $('#loyalty-promotion').val(e.timePromoteHours);
         // Top list amount.
