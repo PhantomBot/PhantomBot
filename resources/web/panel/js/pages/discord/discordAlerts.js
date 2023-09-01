@@ -145,7 +145,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for follow alerts.
-                    .append(helpers.getDropdownGroup('follow-toggle', 'Enable Follow Alerts', (e.followToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('follow-toggle', 'Enable Follow Alerts', (helpers.isTrue(e.followToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone follows.'))
                     // Add the the text area for the follow message.
                     .append(helpers.getTextAreaGroup('follow-message', 'text', 'Follow Message', '', e.followMessage,
@@ -207,7 +207,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for normal subscriptions.
-                                    .append(helpers.getDropdownGroup('sub-toggle', 'Enable Subscription Alerts', (e.subToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('sub-toggle', 'Enable Subscription Alerts', (helpers.isTrue(e.subToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in a channel when someone subscribes.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('sub-msg', 'text', 'Subscription Message', '', e.subMessage,
@@ -217,7 +217,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for prime subscriptions.
-                                    .append(helpers.getDropdownGroup('primesub-toggle', 'Enable Prime Subscription Alerts', (e.primeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('primesub-toggle', 'Enable Prime Subscription Alerts', (helpers.isTrue(e.primeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone subscribes with Twitch Prime.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('primesub-msg', 'text', 'Prime Subscription Message', '', e.primeMessage,
@@ -227,7 +227,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for resubscriptions.
-                                    .append(helpers.getDropdownGroup('resub-toggle', 'Enable Re-subscription Alerts', (e.resubToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('resub-toggle', 'Enable Re-subscription Alerts', (helpers.isTrue(e.resubToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone resubscribes.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('resub-msg', 'text', 'Re-subscription Message', '', e.resubMessage,
@@ -237,7 +237,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for gifted subscriptions.
-                                    .append(helpers.getDropdownGroup('gifsub-toggle', 'Enable Gifted Subscription Alerts', (e.giftsubToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('gifsub-toggle', 'Enable Gifted Subscription Alerts', (helpers.isTrue(e.giftsubToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone gifts a subscription. This also toggles the reward.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('gifsub-msg', 'text', 'Gifted Subscription Message', '', e.giftsubMessage,
@@ -302,7 +302,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for bits alerts.
-                    .append(helpers.getDropdownGroup('bits-toggle', 'Enable Bits Alerts', (e.bitsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('bits-toggle', 'Enable Bits Alerts', (helpers.isTrue(e.bitsToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone cheers.'))
                     // Add the the text area for the bits message.
                     .append(helpers.getTextAreaGroup('bits-message', 'text', 'Bits Message', '', e.bitsMessage,
@@ -353,7 +353,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for clip alerts.
-                    .append(helpers.getDropdownGroup('clip-toggle', 'Enable Clip Alerts', (e.clipsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('clip-toggle', 'Enable Clip Alerts', (helpers.isTrue(e.clipsToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone creates a clip.'))
                     // Add the text area for the clips message.
                     .append(helpers.getTextAreaGroup('clip-message', 'text', 'Clip Message', '', e.clipsMessage,
@@ -416,12 +416,12 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add the toggle for online alerts.
-                                    .append(helpers.getDropdownGroup('online-toggle', 'Enable Online Alerts', (e.onlineToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('online-toggle', 'Enable Online Alerts', (helpers.isTrue(e.onlineToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when you go live on Twitch.'))
-                                    .append(helpers.getDropdownGroup('online-publish', 'Publish Online Alerts', (e.onlinePublish === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('online-publish', 'Publish Online Alerts', (helpers.isTrue(e.onlinePublish) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If the message is posted to a Discord Announcement channel, attempts to publish it to subscribers.'))
                                     // Add the toggle for auto bot streaming status
-                                    .append(helpers.getDropdownGroup('online-status', 'Enable Bot Status', (e.botGameToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('online-status', 'Enable Bot Status', (helpers.isTrue(e.botGameToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'Show your bot as streaming when you go live.'))
                                     // Add the text area for the online message.
                                     .append(helpers.getTextAreaGroup('online-message', 'text', 'Online Message', '', e.onlineMessage,
@@ -431,9 +431,9 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add the toggle for offline alerts.
-                                    .append(helpers.getDropdownGroup('offline-toggle', 'Enable Offline Alerts', (e.offlineToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('offline-toggle', 'Enable Offline Alerts', (helpers.isTrue(e.offlineToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when you go offline on Twitch.'))
-                                    .append(helpers.getDropdownGroup('offline-publish', 'Publish Offline Alerts', (e.offlinePublish === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('offline-publish', 'Publish Offline Alerts', (helpers.isTrue(e.offlinePublish) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If the message is posted to a Discord Announcement channel, attempts to publish it to subscribers.'))
                                     // Add the text area for the offline message.
                                     .append(helpers.getTextAreaGroup('offline-message', 'text', 'Offline Message', '', e.offlineMessage,
@@ -443,9 +443,9 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add the toggle for offline alerts.
-                                    .append(helpers.getDropdownGroup('game-toggle', 'Enable Game Change Alerts', (e.gameToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('game-toggle', 'Enable Game Change Alerts', (helpers.isTrue(e.gameToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when you switch games on Twitch.'))
-                                    .append(helpers.getDropdownGroup('game-publish', 'Publish Game Change Alerts', (e.gamePublish === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('game-publish', 'Publish Game Change Alerts', (helpers.isTrue(e.gamePublish) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If the message is posted to a Discord Announcement channel, attempts to publish it to subscribers.'))
                                     // Add the text area for the offline message.
                                     .append(helpers.getTextAreaGroup('game-message', 'text', 'Game Change Message', '', e.gameMessage,
@@ -458,7 +458,7 @@ $(function () {
                                     .append(getChannelSelector('channel-alert', 'Alert Channel', '#alerts', e.onlineChannel,
                                             'Channel where all alerts should go to.', allowedChannelTypes))
                                     // Add the toggle for auto bot streaming status
-                                    .append(helpers.getDropdownGroup('delete-message', 'Delete alerts automatically', (e.deleteMessageToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('delete-message', 'Delete alerts automatically', (helpers.isTrue(e.deleteMessageToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'Automatically delete the online message after the stream ends and the offline message when a new stream starts.'))))),
                     function () {
                         let onlineToggle = $('#online-toggle').find(':selected').text() === 'Yes',
@@ -528,7 +528,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add the toggle for alert
-                                    .append(helpers.getDropdownGroup('join-toggle', 'Enable Join Messages', (e.joinToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('join-toggle', 'Enable Join Messages', (helpers.isTrue(e.joinToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone joins your Discord.'))
                                     // Add a box for the join role.
                                     .append(helpers.getInputGroup('join-role', 'text', 'Join Role', 'Newbie', e.greetingsDefaultGroup,
@@ -541,7 +541,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add the toggle for part alerts.
-                                    .append(helpers.getDropdownGroup('part-toggle', 'Enable Part Messages', (e.partToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('part-toggle', 'Enable Part Messages', (helpers.isTrue(e.partToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone leaves your Discord.'))
                                     // Add the text area for the part message.
                                     .append(helpers.getTextAreaGroup('part-message', 'text', 'Part Message', '', e.partMessage,
@@ -603,7 +603,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for follow alerts.
-                    .append(helpers.getDropdownGroup('streamlabs-toggle', 'Enable StreamLabs Alerts', (e.streamlabsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('streamlabs-toggle', 'Enable StreamLabs Alerts', (helpers.isTrue(e.streamlabsToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone tips.'))
                     // Add the the text area for the follow message.
                     .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Tip Message', '', e.streamlabsMessage,
@@ -656,7 +656,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for follow alerts.
-                    .append(helpers.getDropdownGroup('tipeeestream-toggle', 'Enable TipeeeStream Alerts', (e.tipeeestreamToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('tipeeestream-toggle', 'Enable TipeeeStream Alerts', (helpers.isTrue(e.tipeeestreamToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone tips.'))
                     // Add the the text area for the follow message.
                     .append(helpers.getTextAreaGroup('tipeeestream-message', 'text', 'Tip Message', '', e.tipeeestreamMessage,
@@ -709,7 +709,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for follow alerts.
-                    .append(helpers.getDropdownGroup('streamelements-toggle', 'Enable StreamElements Alerts', (e.streamelementsToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('streamelements-toggle', 'Enable StreamElements Alerts', (helpers.isTrue(e.streamelementsToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone tips.'))
                     // Add the the text area for the follow message.
                     .append(helpers.getTextAreaGroup('streamelements-message', 'text', 'Tip Message', '', e.streamelementsMessage,

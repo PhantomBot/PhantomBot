@@ -29,12 +29,12 @@ $(run = function () {
                 if (results[i].key.indexOf('./discord') !== -1) {
                     discordModules.push({
                         module: results[i].key,
-                        status: results[i].value === 'true'
+                        status: helpers.isTrue(results[i].value)
                     });
                 } else {
                     twitchModules.push({
                         module: results[i].key,
-                        status: results[i].value === 'true'
+                        status: helpers.isTrue(results[i].value)
                     });
                 }
             }
