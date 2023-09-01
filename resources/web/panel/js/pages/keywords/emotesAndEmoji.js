@@ -43,7 +43,7 @@ $(function () {
         Object.keys(checkBoxMap).forEach((modulePath, index) => {
             socket.getDBValue(this.moduleId + '_get_' + index, 'modules', modulePath, function (e) {
                 let checkbox = document.getElementById(checkBoxMap[modulePath]);
-                checkbox.checked = (e.modules === 'true' || false);
+                checkbox.checked = (helpers.isTrue(e.modules) || false);
                 checkbox.addEventListener('change', function (event) {
                     closure.onEnabledChanged(event, modulePath);
                 });

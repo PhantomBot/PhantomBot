@@ -332,7 +332,7 @@ $(function () {
         let item = localStorage.getItem('phantombot_' + id.substring(id.indexOf('-') + 1)),
                 isSmall = $('.small-box').width() < 230;
 
-        if (item === 'true' || item === null) {
+        if (helpers.isTrue(item) || item === null) {
             let numval = obj.data('number');
             if (numval === undefined || numval === null || numval.trim().length === 0) {
                 numval = '0';
@@ -687,11 +687,11 @@ $(function () {
                     o.attr('value', option.value);
                 }
 
-                if (option.selected !== undefined && (option.selected === true || option.selected === 'true')) {
+                if (option.selected !== undefined && (option.selected === true || helpers.isTrue(option.selected))) {
                     o.attr('selected', 'selected');
                 }
 
-                if (option.disabled !== undefined && (option.disabled === true || option.disabled === 'true')) {
+                if (option.disabled !== undefined && (option.disabled === true || helpers.isTrue(option.disabled))) {
                     o.attr('disabled', 'disabled');
                 }
             } else {
@@ -734,13 +734,13 @@ $(function () {
                     o.attr('value', roles[i].value);
                 }
 
-                if (roles[i].selected !== undefined && (roles[i].selected === true || roles[i].selected === 'true')) {
+                if (roles[i].selected !== undefined && (roles[i].selected === true || helpers.isTrue(roles[i].selected))) {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
                 }
 
-                if (roles[i].disabled !== undefined && (roles[i].disabled === true || roles[i].disabled === 'true')) {
+                if (roles[i].disabled !== undefined && (roles[i].disabled === true || helpers.isTrue(roles[i].disabled))) {
                     o.attr('disabled', 'disabled');
                 }
 
@@ -805,13 +805,13 @@ $(function () {
                     o.attr('value', roles[i].value);
                 }
 
-                if (roles[i].selected !== undefined && (roles[i].selected === true || roles[i].selected === 'true')) {
+                if (roles[i].selected !== undefined && (roles[i].selected === true || helpers.isTrue(roles[i].selected))) {
                     o.attr('selected', 'selected');
                 } else if (selected !== undefined && selected.indexOf(roles[i]._id) > -1) {
                     o.attr('selected', 'selected');
                 }
 
-                if (roles[i].disabled !== undefined && (roles[i].disabled === true || roles[i].disabled === 'true')) {
+                if (roles[i].disabled !== undefined && (roles[i].disabled === true || helpers.isTrue(roles[i].disabled))) {
                     o.attr('disabled', 'disabled');
                 }
 
@@ -863,11 +863,11 @@ $(function () {
                 o.attr('value', option.value);
             }
 
-            if (option.selected !== undefined && (option.selected === true || option.selected === 'true')) {
+            if (option.selected !== undefined && (option.selected === true || helpers.isTrue(option.selected))) {
                 o.attr('selected', 'selected');
             }
 
-            if (option.disabled !== undefined && (option.disabled === true || option.disabled === 'true')) {
+            if (option.disabled !== undefined && (option.disabled === true || helpers.isTrue(option.disabled))) {
                 o.attr('disabled', 'disabled');
             }
 
@@ -1048,6 +1048,16 @@ $(function () {
         }
     };
 
+    helpers.isTrue = function(val) {
+        if (val === undefined || val === null) {
+            return false;
+        }
+
+        val = val.trim().toLowerCase();
+
+        return val === true || val === 1 || val === 'true' || val === '1' || val === 'yes';
+    }
+
     /**
      * @function checked if a module is on.
      *
@@ -1057,7 +1067,7 @@ $(function () {
     helpers.getModuleStatus = function (id, toggle, swit) {
         if (typeof id === 'object') {
             for (let i = 0; i < id.length; i++) {
-                if (toggle === 'false') {
+                if (!helpers.isTrue(toggle)) {
                     //$('#' + id[i]).slideUp(helpers.DELAY_MS);
                     $('#' + id[i] + ' *').prop('disabled', true);
                 } else {
@@ -1066,9 +1076,9 @@ $(function () {
                 }
             }
             // Handle the switch toggle
-            $('#' + swit).prop('checked', toggle === 'true');
+            $('#' + swit).prop('checked', helpers.isTrue(toggle));
         } else {
-            if (toggle === 'false') {
+            if (!helpers.isTrue(toggle)) {
                 $('#' + id + 'Toggle').prop('checked', false);
                 //$('#' + id).slideUp(helpers.DELAY_MS);
                 $('#' + id + ' *').prop('disabled', true);
@@ -1078,7 +1088,7 @@ $(function () {
                 $('#' + id + ' *').prop('disabled', false);
             }
         }
-        return toggle === 'true';
+        return helpers.isTrue(toggle);
     };
 
     /**
@@ -1098,7 +1108,7 @@ $(function () {
 
     let checkSwappedSubscriberVIP = function () {
         socket.getDBValue('helpers_isSwappedSubscriberVIP', 'settings', 'isSwappedSubscriberVIP', function (e) {
-            _isSwappedSubscriberVIP = e.settings === '1' || e.settings === 'true';
+            _isSwappedSubscriberVIP = helpers.isTrue(e.settings);
         });
     };
 
@@ -1210,7 +1220,7 @@ $(function () {
         let perms = [];
 
         for (let i = 0; i < json.roles.length; i++) {
-            if (json.roles[i].selected === 'true')
+            if (helpers.isTrue(json.roles[i].selected))
                 roles.push(json.roles[i].name);
         }
 
@@ -1219,7 +1229,7 @@ $(function () {
         }
 
         for (let i = 0; i < json.permissions.length; i++) {
-            if (json.permissions[i].selected === 'true')
+            if (helpers.isTrue(json.permissions[i].selected))
                 perms.push(json.permissions[i].name);
         }
 

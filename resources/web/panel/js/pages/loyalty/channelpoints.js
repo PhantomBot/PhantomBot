@@ -87,7 +87,7 @@ $(function () {
     };
 
     const handleToggledInputNumber = function (enabled, obj, min, max) {
-        if (enabled === 'true') {
+        if (helpers.isTrue(enabled)) {
             return helpers.handleInputNumber(obj, min, max);
         }
 

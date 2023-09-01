@@ -36,7 +36,7 @@ $(function () {
                 i;
         for (i = 0; i < keys.length; i++) {
             // Handle the status of the buttons.
-            if (e[keys[i]] === 'false') {
+            if (!helpers.isTrue(e[keys[i]])) {
                 module = keys[i].substring(keys[i].lastIndexOf('/') + 1).replace('.js', '');
 
                 // Handle the switch.
@@ -76,7 +76,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for follow alerts.
-                    .append(helpers.getDropdownGroup('follow-toggle', 'Enable Follow Alerts', (e.followToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('follow-toggle', 'Enable Follow Alerts', (helpers.isTrue(e.followToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone follows. This also toggles the reward.'))
                     // Add the the text area for the follow message.
                     .append(helpers.getTextAreaGroup('follow-message', 'text', 'Follow Message', '', e.followMessage,
@@ -147,7 +147,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for normal subscriptions.
-                                    .append(helpers.getDropdownGroup('sub-toggle', 'Enable New Subscription Alerts', (e.subscriberWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('sub-toggle', 'Enable New Subscription Alerts', (helpers.isTrue(e.subscriberWelcomeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone new subscribes. This also toggles the reward.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('sub-msg-1000', 'text', 'New Subscription Message (Tier 1)', '', e.subscribeMessage['1000'],
@@ -173,7 +173,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for resubscriptions.
-                                    .append(helpers.getDropdownGroup('resub-toggle', 'Enable Re-subscription Alerts', (e.reSubscriberWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('resub-toggle', 'Enable Re-subscription Alerts', (helpers.isTrue(e.reSubscriberWelcomeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone re-subscribes. This also toggles the reward.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('resub-msg-1000', 'text', 'Re-subscription Message (Tier 1)', '', e.reSubscribeMessage['1000'],
@@ -199,7 +199,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for gifted subscriptions.
-                                    .append(helpers.getDropdownGroup('giftsub-toggle', 'Enable Gift Subscription Alerts', (e.giftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('giftsub-toggle', 'Enable Gift Subscription Alerts', (helpers.isTrue(e.giftSubWelcomeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone gifts a subscription. This also toggles the reward.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('giftsub-msg-1000', 'text', 'Gift Subscription Message (Tier 1)', '', e.giftSubMessage['1000'],
@@ -221,7 +221,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for gifted subscriptions.
-                                    .append(helpers.getDropdownGroup('anon-giftsub-toggle', 'Enable Anonymous Gift Subscription Alerts', (e.giftAnonSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('anon-giftsub-toggle', 'Enable Anonymous Gift Subscription Alerts', (helpers.isTrue(e.giftAnonSubWelcomeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone anonymously gifts a subscription.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('anon-giftsub-msg-1000', 'text', 'Anonymous Gift Subscription Message (Tier 1)', '', e.giftAnonSubMessage['1000'],
@@ -236,7 +236,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for gifted subscriptions.
-                                    .append(helpers.getDropdownGroup('mass-giftsub-toggle', 'Enable Mass/Mystery Gift Subscription Alerts', (e.massGiftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('mass-giftsub-toggle', 'Enable Mass/Mystery Gift Subscription Alerts', (helpers.isTrue(e.massGiftSubWelcomeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone mass gifts subscriptions. This also toggles the reward.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('mass-giftsub-msg-1000', 'text', 'Mass/Mystery Gift Subscription Message (Tier 1)', '', e.massGiftSubMessage['1000'],
@@ -258,7 +258,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add toggle for gifted subscriptions.
-                                    .append(helpers.getDropdownGroup('anon-mass-giftsub-toggle', 'Enable Anonymous Mass/Mystery Gift Subscription Alerts', (e.massAnonGiftSubWelcomeToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('anon-mass-giftsub-toggle', 'Enable Anonymous Mass/Mystery Gift Subscription Alerts', (helpers.isTrue(e.massAnonGiftSubWelcomeToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a message should be said in the channel when someone anonymously mass gifts subscriptions.'))
                                     // Append message box for the message
                                     .append(helpers.getTextAreaGroup('anon-mass-giftsub-msg-1000', 'text', 'Anonymous Mass/Mystery Gift Subscription Message (Tier 1)', '', e.massAnonGiftSubMessage['1000'],
@@ -423,7 +423,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for bits alerts.
-                    .append(helpers.getDropdownGroup('bits-toggle', 'Enable Bits Alerts', (e.toggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('bits-toggle', 'Enable Bits Alerts', (helpers.isTrue(e.toggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone cheers.'))
                     // Add the the text area for the bits message.
                     .append(helpers.getTextAreaGroup('bits-message', 'text', 'Bits Message', '', e.message,
@@ -469,7 +469,7 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for clip alerts.
-                    .append(helpers.getDropdownGroup('clip-toggle', 'Enable Clip Alerts', (e.toggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('clip-toggle', 'Enable Clip Alerts', (helpers.isTrue(e.toggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If a message should be said in the channel when someone creates a clip.'))
                     // Add the text area for the clips message.
                     .append(helpers.getTextAreaGroup('clip-message', 'text', 'Clip Message', '', e.message,
@@ -519,7 +519,7 @@ $(function () {
                                 'role': 'form'
                             })
                                     // Add the toggle for raid alerts.
-                                    .append(helpers.getDropdownGroup('raid-toggle', 'Enable Raid Alerts', (e.raidToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('raid-toggle', 'Enable Raid Alerts', (helpers.isTrue(e.raidToggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If people who raid your channel should be noticed by the bot with a message.'))
                                     // Add the text area for the new raid message.
                                     .append(helpers.getTextAreaGroup('new-raid-message', 'text', 'New Raider Message', '', e.newRaidIncMessage,
@@ -657,7 +657,7 @@ $(function () {
                     'role': 'form'
                 })
                         // Add the toggle for welcome alerts.
-                        .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (e.welcomeEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                        .append(helpers.getDropdownGroup('welcome-toggle', 'Enable Welcome Messages', (helpers.isTrue(e.welcomeEnabled) ? 'Yes' : 'No'), ['Yes', 'No'],
                                 'If users should be welcomed by the bot when the start chatting.'))
                         // Add the input for welcome message.
                         .append(helpers.getInputGroup('welcome-message', 'text', 'Welcome Message', '', e.welcomeMessage, 'Welcome message for new chatters. Leave blank to not greet returning chatters. Tags: (names), (1 text for one name), (2 for two), (3 for three or more names)'))
@@ -865,7 +865,7 @@ $(function () {
                 'role': 'form'
             })
                     /// Add the toggle for streamlabs alerts.
-                    .append(helpers.getDropdownGroup('streamlabs-toggle', 'Enable StreamLabs Alerts', (e.announce === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('streamlabs-toggle', 'Enable StreamLabs Alerts', (helpers.isTrue(e.announce) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If StreamLabs tips should be posted in the chat.'))
                     // Add the the text area for the tip message.
                     .append(helpers.getTextAreaGroup('streamlabs-message', 'text', 'Tip Message', '', e.message,
@@ -910,7 +910,7 @@ $(function () {
                 'role': 'form'
             })
                     /// Add the toggle for streamlabs alerts.
-                    .append(helpers.getDropdownGroup('tipeeestream-toggle', 'Enable TipeeeStream Alerts', (e.toggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('tipeeestream-toggle', 'Enable TipeeeStream Alerts', (helpers.isTrue(e.toggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If TipeeeStream tips should be posted in the chat.'))
                     // Add the the text area for the tip message.
                     .append(helpers.getTextAreaGroup('tipeeestream-message', 'text', 'Tip Message', '', e.message,
@@ -955,7 +955,7 @@ $(function () {
                 'role': 'form'
             })
                     /// Add the toggle for streamelements alerts.
-                    .append(helpers.getDropdownGroup('streamelements-toggle', 'Enable StreamElements Alerts', (e.toggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('streamelements-toggle', 'Enable StreamElements Alerts', (helpers.isTrue(e.toggle) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If StreamElements tips should be posted in the chat.'))
                     // Add the the text area for the tip message.
                     .append(helpers.getTextAreaGroup('streamelements-message', 'text', 'Tip Message', '', e.message,

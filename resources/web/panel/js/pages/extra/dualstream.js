@@ -90,7 +90,7 @@ $(function () {
             })
                     // Append a select option for the toggle.
                     .append(helpers.getDropdownGroup('multi-toggle', 'Enable Multi Timer',
-                            (e.timerToggle === 'true' ? 'Yes' : 'No'), ['Yes', 'No']))
+                            (helpers.isTrue(e.timerToggle) ? 'Yes' : 'No'), ['Yes', 'No']))
                     // Timer interval.
                     .append(helpers.getInputGroup('multi-interval', 'text', 'Timer Interval (Minutes)',
                             '', e.timerInterval, 'How often to post the multi link in the channel.'))
