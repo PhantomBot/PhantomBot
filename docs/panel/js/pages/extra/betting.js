@@ -70,7 +70,7 @@ $(function () {
      */
     const updateChart = function () {
         socket.getDBValue('get_betting_active_update', 'bettingPanel', 'isActive', function (e) {
-            if (e.bettingPanel === 'false' || e.bettingPanel === null) {
+            if (!helpers.isTrue(e.bettingPanel) || e.bettingPanel === null) {
                 isActive = false;
                 return;
             } else if (chartConfig.data.datasets[0].backgroundColor.length !== 0 && isActive === false) {
@@ -242,10 +242,10 @@ $(function () {
                 'role': 'form'
             })
                     // Append a select option for the save option
-                    .append(helpers.getDropdownGroup('save-bets', 'Save Bets', (e.save === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('save-bets', 'Save Bets', (helpers.isTrue(e.save) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If past bets should be saved.'))
                     // Append a select option for the warning messages
-                    .append(helpers.getDropdownGroup('warning-bets', 'Warning Messages', (e.warningMessages === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('warning-bets', 'Warning Messages', (helpers.isTrue(e.warningMessages) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If warning messages should be said in chat when users bet.'))
                     // Save format
                     .append(helpers.getInputGroup('bet-format', 'text', 'Save Format', '', e.format,

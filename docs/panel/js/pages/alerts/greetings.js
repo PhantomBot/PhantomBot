@@ -198,13 +198,13 @@ $(function () {
                 'role': 'form'
             })
                     // Add the toggle for greeting alerts.
-                    .append(helpers.getDropdownGroup('greeting-toggle', 'Enable Greeting Alerts', (e.autoGreetEnabled === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('greeting-toggle', 'Enable Greeting Alerts', (helpers.isTrue(e.autoGreetEnabled) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If users should be greeted.'))
                     // Add the toggle for greeting mode.
-                    .append(helpers.getDropdownGroup('on-Join', 'Greeting Mode', (e.onJoin === 'true' ? 'On joining' : 'On first message'), ['On joining', 'On first message'],
+                    .append(helpers.getDropdownGroup('on-Join', 'Greeting Mode', (helpers.isTrue(e.onJoin) ? 'On joining' : 'On first message'), ['On joining', 'On first message'],
                             'If the user greeting should be sent as soon as the user enters the chat or after they send their first message'))
                     // Add the toggle for user Self-Service.
-                    .append(helpers.getDropdownGroup('user-self-service', 'User Self-Service ', (e.userSelfService === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                    .append(helpers.getDropdownGroup('user-self-service', 'User Self-Service ', (helpers.isTrue(e.userSelfService) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If users should be allowed to set their own messages'))
                     // Add the input for the greeting reward.
                     .append(helpers.getInputGroup('greeting-cooldown', 'number', 'Greeting Cooldown (Hours)', '', (parseInt(e.cooldown) / 36e5),

@@ -23,23 +23,23 @@ $(function () {
         keys: ['linksToggle', 'capsToggle', 'spamToggle', 'symbolsToggle', 'emotesToggle', 'longMessageToggle', 'colorsToggle', 'spamTrackerToggle', 'fakePurgeToggle']
     }, true, function (e) {
         // Set the links filter toggle.
-        $('#filter-links').prop('checked', e.linksToggle === 'true');
+        $('#filter-links').prop('checked', helpers.isTrue(e.linksToggle));
         // Set the caps filter toggle.
-        $('#filter-caps').prop('checked', e.capsToggle === 'true');
+        $('#filter-caps').prop('checked', helpers.isTrue(e.capsToggle));
         // Set the spam filter toggle.
-        $('#filter-spam').prop('checked', e.spamToggle === 'true');
+        $('#filter-spam').prop('checked', helpers.isTrue(e.spamToggle));
         // Set the symbols filter toggle.
-        $('#filter-symbols').prop('checked', e.symbolsToggle === 'true');
+        $('#filter-symbols').prop('checked', helpers.isTrue(e.symbolsToggle));
         // Set the emotes filter toggle.
-        $('#filter-emotes').prop('checked', e.emotesToggle === 'true');
+        $('#filter-emotes').prop('checked', helpers.isTrue(e.emotesToggle));
         // Set the long messages filter toggle.
-        $('#filter-messages').prop('checked', e.longMessageToggle === 'true');
+        $('#filter-messages').prop('checked', helpers.isTrue(e.longMessageToggle));
         // Set the colors filter toggle.
-        $('#filter-me').prop('checked', e.colorsToggle === 'true');
+        $('#filter-me').prop('checked', helpers.isTrue(e.colorsToggle));
         // Set the spam tracker filter toggle.
-        $('#filter-tracker').prop('checked', e.spamTrackerToggle === 'true');
+        $('#filter-tracker').prop('checked', helpers.isTrue(e.spamTrackerToggle));
         // Set the fake purges filter toggle.
-        $('#filter-purges').prop('checked', e.fakePurgeToggle === 'true');
+        $('#filter-purges').prop('checked', helpers.isTrue(e.fakePurgeToggle));
     });
 });
 
@@ -124,7 +124,7 @@ $(function () {
                     // Append input box for the command name. This one is disabled.
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.linksMessage, 'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutLinks === 'true', 'Silent', 'If the warning message should be said or not.')))
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutLinks), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLinks,
                             'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
@@ -217,7 +217,7 @@ $(function () {
                     // Append input box for the command name. This one is disabled.
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.capsMessage, 'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutCaps === 'true', 'Silent', 'If the warning message should be said or not.')))
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutCaps), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeCaps,
                             'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
@@ -316,7 +316,7 @@ $(function () {
                     // Append input box for the command name. This one is disabled.
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.symbolsMessage, 'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSymbols === 'true', 'Silent', 'If the warning message should be said or not.')))
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutSymbols), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSymbols,
                             'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
@@ -421,7 +421,7 @@ $(function () {
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.spamMessage,
                             'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSpam === 'true', 'Silent',
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutSpam), 'Silent',
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpam,
@@ -517,7 +517,7 @@ $(function () {
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.emotesMessage,
                             'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutEmotes === 'true', 'Silent',
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutEmotes), 'Silent',
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeEmotes,
@@ -613,7 +613,7 @@ $(function () {
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.colorsMessage,
                             'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutColors === 'true', 'Silent',
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutColors), 'Silent',
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeColors,
@@ -703,7 +703,7 @@ $(function () {
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.longMessageMessage,
                             'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutLongMsg === 'true', 'Silent',
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutLongMsg), 'Silent',
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLongMsg,
@@ -797,7 +797,7 @@ $(function () {
                     // Append input box for the command name. This one is disabled.
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.fakePurgeMessage, 'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutFakePurge === 'true', 'Silent', 'If the warning message should be said or not.')))
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutFakePurge), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeFakePurge,
                             'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
@@ -886,7 +886,7 @@ $(function () {
                     .append(helpers.getInputGroup('timeout-message', 'text', 'Warning Message', '', e.spamTrackerMessage,
                             'Message said in chat when a user gets timed-out.')
                             // Append checkbox for if this message should be enabled.
-                            .append(helpers.getCheckBox('timeout-message-toggle', e.silentTimeoutSpamTracker === 'true', 'Silent',
+                            .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutSpamTracker), 'Silent',
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpamTracker,
