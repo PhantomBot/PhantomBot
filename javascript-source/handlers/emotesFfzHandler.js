@@ -28,17 +28,37 @@
         }
     }
 
+    /**
+     * @function isFullWord
+     * Checks if the given emoteCode at the index is a full word in message considering beginning and end of the string,
+     * line breaks and spaces.
+     *
+     * @param {int} index           the start index of the found emote
+     * @param {string} emoteCode    the code of the found emote used to retrieve the length of it
+     * @param {message} message     the message to check if the emote is a full word or not
+     * @return {bool}               true if the emote is a full word (can also return true if message doesn't fit the
+     *                              other parameters because accessing an array out of bounds returns undefined which is
+     *                              used as check if the emoteCode is at the beginning or end of message
+     */
+    function isFullWord(index, emoteCode, message){
+        const wordBoundary = [undefined, ' ', '\n'];
+        return wordBoundary.includes(message[index - 1]) && wordBoundary.includes(message[index + emoteCode.length]);
+    }
+
     $.bind('ircChannelMessage', function (event) {
         var message = String(event.getMessage());
         _lock.lock();
-            try {
+        try {
             emotes.forEach((emote) => {
                 var count = 0;
                 var lastPosition = message.indexOf(emote.code);
                 while (lastPosition !== -1) {
-                    count++;
+                    if(isFullWord(lastPosition, emote.code, message)){
+                        count++;
+                    }
                     lastPosition = message.indexOf(emote.code, lastPosition + 1);
                 }
+
                 if (count > 0) {
                     $.alertspollssocket.triggerEmote(emote.id, count, emoteProvider);
                 }
