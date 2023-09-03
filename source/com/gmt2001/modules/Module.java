@@ -94,15 +94,25 @@ public abstract class Module {
 
     /**
      * Receives {@link CommandEvent}
+     * <p>
+     * If {@code false} is returned, command cost/reward are undone
      *
      * @param event the event data
+     * @return {@code true} if the command was handled successfully
      */
-    public void onCommandEvent(CommandEvent event) {}
+    public boolean onCommandEvent(CommandEvent event) {
+        return false;
+    }
 
     /**
      * Receives {@link DiscordChannelCommandEvent}
+     * <p>
+     * If {@code false} is returned, command cost/reward are undone
      *
      * @param event the event data
+     * @return {@code true} if the command was handled successfully
      */
-    public void onDiscordChannelCommandEvent(DiscordChannelCommandEvent event) {}
+    public boolean onDiscordChannelCommandEvent(DiscordChannelCommandEvent event) {
+        return false;
+    }
 }
