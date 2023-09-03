@@ -20,27 +20,25 @@ package com.gmt2001.modules;
  * A bot module which is a core module
  * <p>
  * A CoreModule will always load before other {@link Module}
- * <p>
- * A CoreModule <b>MUST</b> also implement {@link Module}
  *
  * @author gmt2001
  */
-public interface CoreModule {
+public abstract class CoreModule extends Module {
     /**
      * Executes after all CoreModule have loaded, but before other {@link Module} start loading
      */
-    default void afterCoreLoad() {}
+    public void afterCoreLoad() {}
 
     /**
-     * Indicates the order in which {@link #afterCoreLoad()} should be called
+     * Indicates the sort order in which {@link #afterCoreLoad()} should be called
      * <p>
      * Modules which return lower numbers get called first
      * <p>
-     * Call order when multiple modules have the same order is not guarenteed
+     * Call order when multiple modules have the same order is not guaranteed
      *
      * @return the sort order
      */
-    default int afterCoreLoadOrder() {
-        return 100;
+    public int afterCoreLoadOrder() {
+        return Integer.MAX_VALUE;
     }
 }

@@ -26,24 +26,38 @@ import tv.phantombot.event.irc.message.IrcModerationEvent;
  *
  * @author gmt2001
  */
-public interface Module {
+public abstract class Module {
+    /**
+     * Current enabled state
+     */
+    private boolean isEnabled = false;
+
     /**
      * Executes immediately after loading this module
      */
-    default void onLoad() {}
+    public void onLoad() {}
 
     /**
      * Executes after all models have been loaded
      */
-    default void afterLoad() {}
+    public void afterLoad() {}
 
     /**
      * Indicates the default enabled state of the module on a new installation
      *
      * @return {@code true} if the module should be enabled
      */
-    default boolean defaultEnabledState() {
+    public boolean defaultEnabledState() {
         return false;
+    }
+
+    /**
+     * Indicates if this module is currently enabled
+     *
+     * @return {@code true} if enabled
+     */
+    public final boolean isEnabled() {
+        return this.isEnabled;
     }
 
     /**
@@ -51,40 +65,44 @@ public interface Module {
      * <p>
      * Also executes after {@link #afterLoad()} if the initialization state of the module is enabled
      */
-    default void onEnable() {}
+    public void onEnable() {
+        this.isEnabled = true;
+    }
 
     /**
      * Executes when the module state changes to disabled
      * <p>
      * Also executes after {@link #afterLoad()} if the initialization state of the module is disabled
      */
-    default void onDisable() {}
+    public void onDisable() {
+        this.isEnabled = false;
+    }
 
     /**
      * Receives all events except for {@link IrcModerationEvent}, {@link CommandEvent}, and {@link DiscordChannelCommandEvent}
      *
      * @param event the event data
      */
-    default void onEvent(Event event) {}
+    public void onEvent(Event event) {}
 
     /**
      * Receives {@link IrcModerationEvent}
      *
      * @param event the event data
      */
-    default void onIRCModerationEvent(IrcModerationEvent event) {}
+    public void onIRCModerationEvent(IrcModerationEvent event) {}
 
     /**
      * Receives {@link CommandEvent}
      *
      * @param event the event data
      */
-    default void onCommandEvent(CommandEvent event) {}
+    public void onCommandEvent(CommandEvent event) {}
 
     /**
      * Receives {@link DiscordChannelCommandEvent}
      *
      * @param event the event data
      */
-    default void onDiscordChannelCommandEvent(DiscordChannelCommandEvent event) {}
+    public void onDiscordChannelCommandEvent(DiscordChannelCommandEvent event) {}
 }
