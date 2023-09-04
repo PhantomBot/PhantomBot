@@ -21,28 +21,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.gmt2001.PathValidator;
-import com.illusionaryone.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
 import io.netty.util.IllegalReferenceCountException;
+import tv.phantombot.PhantomBot;
 
 /**
  * Provides a method to log a request stream
  *
  * @author gmt2001
  */
-public final class RequestLogger extends ByteToMessageDecoder {
+public final class RequestLogger extends ChannelInboundHandlerAdapter {
     private static final AttributeKey<ByteBuf> ATTR_BB = AttributeKey.valueOf("BB");
+    private static final DateTimeFormatter dtfmt = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss_n");
 
     @Override
-    protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        ctx.channel().attr(ATTR_BB).set(in.retainedDuplicate());
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof ByteBuf b) {
+            ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
+        }
+
+        super.channelRead(ctx, msg);
     }
 
     @Override
@@ -69,7 +75,8 @@ public final class RequestLogger extends ByteToMessageDecoder {
      * <p>
      * Requests are logged to the <i>./logs/request/</i> folder in a file with the timestamp of the request
      * <p>
-     * If an exception is thrown, this method fails silently
+     * This method attempts to redact the {@code Host}, {@code Cookie}, {@code Authorization}, {@code Referrer},
+     * and any {@code Proxy} or {@code X-Proxy} headers for privacy
      *
      * @param ctx the context to log
      */
@@ -77,11 +84,48 @@ public final class RequestLogger extends ByteToMessageDecoder {
         try {
             ByteBuf b = ctx.channel().attr(ATTR_BB).get();
             if (b != null && b.isReadable()) {
-                Path p = PathValidator.getRealPath(Paths.get("./logs/request", Logger.instance().logFileDTTimestamp() + ".txt"));
-                Files.writeString(p, b.readCharSequence(b.readableBytes(), StandardCharsets.UTF_8), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                Path p = PathValidator.getRealPath(Paths.get("./logs/request", LocalDateTime.now(PhantomBot.getTimeZoneId()).format(dtfmt) + ".txt"));
+                Files.createDirectories(p.getParent());
+
+                StringBuilder data = new StringBuilder(b.readCharSequence(b.readableBytes(), StandardCharsets.UTF_8));
+                int idx;
+                int idx2;
+                idx = data.indexOf("Host:");
+                if (idx >= 0) {
+                    idx2 = data.indexOf(Character.toString('\n'), idx);
+                    data.replace(idx, idx2 - 1, "Host: <redacted>");
+                }
+                idx = data.indexOf("Cookie:");
+                if (idx >= 0) {
+                    idx2 = data.indexOf(Character.toString('\n'), idx);
+                    data.replace(idx, idx2 - 1, "Cookie: <redacted>");
+                }
+                idx = data.indexOf("Referer:");
+                if (idx >= 0) {
+                    idx2 = data.indexOf(Character.toString('\n'), idx);
+                    data.replace(idx, idx2 - 1, "Referer: <redacted>");
+                }
+                idx = data.indexOf("Prox");
+                if (idx >= 0) {
+                    idx2 = data.indexOf(Character.toString('\n'), idx);
+                    data.replace(idx, idx2 - 1, "Proxy: <redacted>");
+                }
+                idx = data.indexOf("X-Prox");
+                if (idx >= 0) {
+                    idx2 = data.indexOf(Character.toString('\n'), idx);
+                    data.replace(idx, idx2 - 1, "X-Proxy: <redacted>");
+                }
+                idx = data.indexOf("Authorization:");
+                if (idx >= 0) {
+                    idx2 = data.indexOf(Character.toString('\n'), idx);
+                    data.replace(idx, idx2 - 1, "Authorization: <redacted>");
+                }
+
+                Files.writeString(p, data, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
                 com.gmt2001.Console.out.println("Logged request to " + p.toString());
             }
         } catch (Exception e) {
+            com.gmt2001.Console.debug.printStackTrace(e);
         }
     }
 }
