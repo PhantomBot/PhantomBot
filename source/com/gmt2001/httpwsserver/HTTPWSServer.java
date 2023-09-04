@@ -16,19 +16,6 @@
  */
 package com.gmt2001.httpwsserver;
 
-import com.gmt2001.Console.err;
-import com.gmt2001.PathValidator;
-import com.gmt2001.dns.EventLoopDetector;
-import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
-import com.gmt2001.util.concurrent.ExecutorService;
-
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.EventLoopGroup;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.util.IllegalReferenceCountException;
-import io.netty.util.ReferenceCounted;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -52,10 +39,24 @@ import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
+
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+
+import com.gmt2001.PathValidator;
+import com.gmt2001.Console.err;
+import com.gmt2001.dns.EventLoopDetector;
+import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
+import com.gmt2001.util.concurrent.ExecutorService;
+
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.EventLoopGroup;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ReferenceCounted;
 import tv.phantombot.CaselessProperties;
-import tv.phantombot.CaselessProperties.Transaction;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -109,7 +110,6 @@ public final class HTTPWSServer {
     private static final String AUTOSSLKEYALIAS = "phantombot";
     private static final String AUTOSSLFILE = "./config/selfkey.jks";
     private static final String AUTOSSLPASSWORD = "pbselfsign";
-    private static final int FINDPORTLIMIT = 20;
     private boolean regeneratingFailedAutoSsl = false;
 
     /**
@@ -156,33 +156,23 @@ public final class HTTPWSServer {
          * @botpropertyrestart httpsPassword
          */
         String ipOrHostname = CaselessProperties.instance().getProperty("bindIP", "");
-        int initialPort = CaselessProperties.instance().getPropertyAsInt("baseport", 25000);
+        int port = CaselessProperties.instance().getPropertyAsInt("baseport", 25000);
         boolean useHttps = CaselessProperties.instance().getPropertyAsBoolean("usehttps", true);
         String sslFile = CaselessProperties.instance().getProperty("httpsFileName", "");
         String botName = PhantomBot.instance().getBotName();
 
-        int port = findAvailablePort(ipOrHostname, initialPort, initialPort);
+        boolean portAvailable = checkPortAvailable(ipOrHostname, port);
 
-        if (port == -1) {
+        if (!portAvailable) {
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println();
-            com.gmt2001.Console.err.println("Port is already in use: " + initialPort);
+            com.gmt2001.Console.err.println("Port is already in use: " + port);
             com.gmt2001.Console.err.println("Ensure that another copy of PhantomBot is not running.");
             com.gmt2001.Console.err.println("If another copy is not running, try to change baseport in ./config/botlogin.txt");
             com.gmt2001.Console.err.println("PhantomBot will now exit.");
             com.gmt2001.Console.err.println();
             com.gmt2001.Console.err.println();
             PhantomBot.exitError();
-        } else if (port != initialPort) {
-            com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println("Port is already in use: " + initialPort);
-            com.gmt2001.Console.warn.println("Switching to an alternate port: " + port);
-            com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println();
-            Transaction t = CaselessProperties.instance().startTransaction();
-            t.setProperty("baseport", port);
-            t.commit();
         }
 
         try {
@@ -234,20 +224,15 @@ public final class HTTPWSServer {
         }
     }
 
-    private static int findAvailablePort(String bindIp, int initialPort, int port) {
+    private static boolean checkPortAvailable(String bindIp, int port) {
         try ( ServerSocket serverSocket = bindIp.isEmpty() ? new ServerSocket(port) : new ServerSocket(port, 1, java.net.InetAddress.getByName(bindIp))) {
             serverSocket.setReuseAddress(true);
             com.gmt2001.Console.debug.println("Port available " + port);
-            return port;
+            return true;
         } catch (IOException ex) {
-            if (port - initialPort >= FINDPORTLIMIT || port >= 65535) {
-                com.gmt2001.Console.debug.println("Port limit reached " + initialPort + " " + port);
-                com.gmt2001.Console.debug.printStackTrace(ex);
-                return -1;
-            } else {
-                com.gmt2001.Console.debug.println("Port not available " + port);
-                return findAvailablePort(bindIp, initialPort, port + 1);
-            }
+            com.gmt2001.Console.debug.println("Port not available " + port);
+            com.gmt2001.Console.debug.printStackTrace(ex);
+            return false;
         }
     }
 
