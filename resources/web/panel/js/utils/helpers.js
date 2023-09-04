@@ -1053,7 +1053,11 @@ $(function () {
             return false;
         }
 
-        val = val.trim().toLowerCase();
+        try {
+            if (typeof val === 'string') {
+                val = val.trim().toLowerCase();
+            }
+        } catch (e) {}
 
         return val === true || val === 1 || val === 'true' || val === '1' || val === 'yes';
     }
