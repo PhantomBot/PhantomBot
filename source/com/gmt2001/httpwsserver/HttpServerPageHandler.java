@@ -81,6 +81,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             com.gmt2001.Console.debug.println("400 DECODER");
             com.gmt2001.Console.err.printStackTrace(req.decoderResult().cause());
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
+            RequestLogger.log(ctx);
             return;
         }
 
