@@ -742,25 +742,33 @@
             for (let i = 0; i < keys.length; i++) {
                 val = $.inidb.get(tables[x], keys[i]);
                 if (!isNaN(val)) {
-                    $.inidb.SetInteger(tables[x], '', keys[i], parseInt(val));
+                    try {
+                        $.inidb.SetInteger(tables[x], '', keys[i], parseInt(val));
+                    } catch(e) {}
                 }
             }
         }
 
         val = $.inidb.get('panelstats', 'gameCount');
         if (!isNaN(val)) {
-            $.inidb.SetInteger('panelstats', '', 'gameCount', parseInt(val));
+            try {
+                $.inidb.SetInteger('panelstats', '', 'gameCount', parseInt(val));
+            } catch(e) {}
         }
         if ($.inidb.exists('raffleresults', 'raffleEntries')) {
             val = $.inidb.get('raffleresults', 'raffleEntries');
             if (!isNaN(val)) {
-                $.inidb.SetInteger('raffleresults', '', 'raffleEntries', parseInt(val));
+                try {
+                    $.inidb.SetInteger('raffleresults', '', 'raffleEntries', parseInt(val));
+                } catch(e) {}
             }
         }
         if ($.inidb.exists('traffleresults', 'ticketRaffleEntries')) {
             val = $.inidb.get('traffleresults', 'ticketRaffleEntries');
             if (!isNaN(val)) {
-                $.inidb.SetInteger('traffleresults', '', 'ticketRaffleEntries', parseInt(val));
+                try {
+                    $.inidb.SetInteger('traffleresults', '', 'ticketRaffleEntries', parseInt(val));
+                } catch(e) {}
             }
         }
     });
