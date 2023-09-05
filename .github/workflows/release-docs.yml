@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Copy Files
       run: |
         mkdir -p docs/panel-stable/
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Copy Files
       run: |
         mkdir -p docs/guides/content-stable/
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Copy Files
       run: |
         mkdir -p docs/javadoc-stable/
@@ -103,7 +103,7 @@ jobs:
     needs: [updateremotepanel, updateguides, javadoc]
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         token: ${{ secrets.GH_TOKEN }}
         ref: 'master'
