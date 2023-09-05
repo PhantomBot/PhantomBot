@@ -233,7 +233,7 @@
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
             type1 = Type.Global;
             secsG = ParseInt(type1);
-        } else if ($.equalsIgnoreCase(!type1, Type.Global) && $.equalsIgnoreCase(!type1, Type.User) || isNaN(parseInt(action1[1]))) {
+        } else if (!$.equalsIgnoreCase(type1, Type.Global) && !$.equalsIgnoreCase(type1, Type.User) || isNaN(parseInt(action1[1]))) {
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
             return;
         } else {
@@ -245,7 +245,7 @@
             var action2 = second.split("="),
                 type2   = action2[0];
 
-            if ($.equalsIgnoreCase(!type2, Type.Global) && $.equalsIgnoreCase(!type2, Type.User) || isNaN(parseInt(action2[1])) || $.equalsIgnoreCase(type2, type1)) {
+            if (!$.equalsIgnoreCase(type2, Type.Global) && !$.equalsIgnoreCase(type2, Type.User) || isNaN(parseInt(action2[1])) || $.equalsIgnoreCase(type2, type1)) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
                 return;
             } else {

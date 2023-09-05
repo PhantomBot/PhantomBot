@@ -218,7 +218,7 @@
                 return;
             }
 
-            if (sub$.equalsIgnoreCase(command, 'play')) {
+            if ($.equalsIgnoreCase(subCommand, 'play')) {
                 if (audioHook === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.play.usage'));
                     $.returnCommandCost(sender, command, isMod);
@@ -248,7 +248,7 @@
                 $.alertspollssocket.triggerAudioPanel(audioHook);
             }
 
-            if (sub$.equalsIgnoreCase(command, 'togglemessages')) {
+            if ($.equalsIgnoreCase(subCommand, 'togglemessages')) {
                 if (messageToggle) {
                     messageToggle = false;
                     $.inidb.set('settings', 'audiohookmessages', messageToggle);
@@ -260,7 +260,7 @@
                 return;
             }
 
-            if (sub$.equalsIgnoreCase(command, 'list')) {
+            if ($.equalsIgnoreCase(subCommand, 'list')) {
                 if (args[1] === undefined) {
                     var totalPages = $.paginateArray(hookKeys, 'audiohook.list', ', ', true, sender, 1);
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.list.total', totalPages));
@@ -273,7 +273,7 @@
                 return;
             }
 
-            if (sub$.equalsIgnoreCase(command, 'customcommand')) {
+            if ($.equalsIgnoreCase(subCommand, 'customcommand')) {
                 if (action === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('audiohook.customcommand.usage'));
                     return;
