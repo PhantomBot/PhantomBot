@@ -1187,7 +1187,7 @@
         }
 
         if (stealRefund && retval != -2 && refundUser.length > 1) {
-            if (!$.isBot(refundUser) && $.equalsIgnoreCase(!playlistDJname, refundUser)) {
+            if (!$.isBot(refundUser) && !$.equalsIgnoreCase(playlistDJname, refundUser)) {
                 if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
                     var isMod = $.checkUserPermission(refundUser, event.getTags(), $.PERMISSION.Mod);
                     if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(refundUser)) || !isMod))) {
@@ -1866,7 +1866,7 @@
             }
 
             if (stealRefund) {
-                if (!$.isBot(refundUser) && $.equalsIgnoreCase(!playlistDJname, refundUser)) {
+                if (!$.isBot(refundUser) && !$.equalsIgnoreCase(playlistDJname, refundUser)) {
                     if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
                         var isMod = $.checkUserPermission(refundUser, event.getTags(), $.PERMISSION.Mod);
                         if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {

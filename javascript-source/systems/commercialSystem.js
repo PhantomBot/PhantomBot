@@ -154,7 +154,7 @@
                 } else {
                     lastCommercial = $.systemTime();
 
-                    if (args.length < 2 || $.equalsIgnoreCase(!args[1], "silent")) {
+                    if (args.length < 2 || !$.equalsIgnoreCase(args[1], "silent")) {
                         $.say($.lang.get('commercialsystem.run', args[0]));
                     }
                 }
