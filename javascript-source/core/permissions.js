@@ -1283,7 +1283,7 @@
             }
 
             channelStatus = args[1];
-            if ($.equalsIgnoreCase(!channelStatus, 'online') && $.equalsIgnoreCase(!channelStatus, 'offline')) {
+            if (!$.equalsIgnoreCase(channelStatus, 'online') && !$.equalsIgnoreCase(channelStatus, 'offline')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
                 return;
             }
