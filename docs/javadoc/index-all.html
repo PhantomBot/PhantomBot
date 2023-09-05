@@ -232,6 +232,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Updates the Twitch admin status of the viewer</div>
 </dd>
+<dt><a href="com/gmt2001/module/CoreModule.html#afterCoreLoad()" class="member-name-link">afterCoreLoad()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/CoreModule.html" title="class in com.gmt2001.module">CoreModule</a></dt>
+<dd>
+<div class="block">Executes after all CoreModule have loaded, but before other <a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module"><code>Module</code></a> start loading</div>
+</dd>
+<dt><a href="com/gmt2001/module/CoreModule.html#afterCoreLoadOrder()" class="member-name-link">afterCoreLoadOrder()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/CoreModule.html" title="class in com.gmt2001.module">CoreModule</a></dt>
+<dd>
+<div class="block">Indicates the sort order in which <a href="com/gmt2001/module/CoreModule.html#afterCoreLoad()"><code>CoreModule.afterCoreLoad()</code></a> should be called</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#afterLoad()" class="member-name-link">afterLoad()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Executes after all models have been loaded</div>
+</dd>
 <dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#alertImage(java.lang.String)" class="member-name-link">alertImage(String)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#alertImage(java.lang.String,boolean)" class="member-name-link">alertImage(String, boolean)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
@@ -893,6 +905,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The number of Channel Points won.</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/RequestLogger.html#channelRead(io.netty.channel.ChannelHandlerContext,java.lang.Object)" class="member-name-link">channelRead(ChannelHandlerContext, Object)</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/RequestLogger.html" title="class in com.gmt2001.httpwsserver">RequestLogger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">channelRead0(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
 <div class="block">Handles incoming HTTP requests and passes valid ones to the appropriate <a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver"><code>HttpRequestHandler</code></a>
@@ -911,6 +925,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Handles incoming WebSocket frames and passes them to the appropriate <a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a></div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/RequestLogger.html#channelReadComplete(io.netty.channel.ChannelHandlerContext)" class="member-name-link">channelReadComplete(ChannelHandlerContext)</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/RequestLogger.html" title="class in com.gmt2001.httpwsserver">RequestLogger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/ChannelUpdate.html" class="type-name-link" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelUpdate</a> - Class in <a href="com/gmt2001/twitch/eventsub/subscriptions/channel/package-summary.html">com.gmt2001.twitch.eventsub.subscriptions.channel</a></dt>
 <dd>
 <div class="block">A broadcaster updates their channel properties e.g., category, title, mature flag, broadcast, or language.</div>
@@ -1162,6 +1178,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/x509/package-summary.html">com.gmt2001.httpwsserver.x509</a> - package com.gmt2001.httpwsserver.x509</dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/module/package-summary.html">com.gmt2001.module</a> - package com.gmt2001.module</dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/ratelimiters/package-summary.html">com.gmt2001.ratelimiters</a> - package com.gmt2001.ratelimiters</dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/security/package-summary.html">com.gmt2001.security</a> - package com.gmt2001.security</dt>
@@ -1406,6 +1424,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersion.html#convertTo(java.lang.Class,java.util.function.Function)" class="member-name-link">convertTo(Class&lt;U&gt;, Function&lt;? super U, ? extends TableVersionRecord&gt;)</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersion.html#convertTo(java.util.function.Function)" class="member-name-link">convertTo(Function&lt;? super U, ? extends TableVersionRecord&gt;)</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/module/CoreModule.html" class="type-name-link" title="class in com.gmt2001.module">CoreModule</a> - Class in <a href="com/gmt2001/module/package-summary.html">com.gmt2001.module</a></dt>
+<dd>
+<div class="block">A bot module which is a core module</div>
+</dd>
+<dt><a href="com/gmt2001/module/CoreModule.html#%3Cinit%3E()" class="member-name-link">CoreModule()</a> - Constructor for class com.gmt2001.module.<a href="com/gmt2001/module/CoreModule.html" title="class in com.gmt2001.module">CoreModule</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html#cost()" class="member-name-link">cost()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscription</a></dt>
 <dd>
@@ -1810,6 +1834,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/datastore/DataStore.html#decrL(java.lang.String,java.lang.String,java.lang.String,long)" class="member-name-link">decrL(String, String, String, long)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
 <div class="block">Decreases the value of the <code>value</code> column as a long in the given table, section, and key</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#defaultEnabledState()" class="member-name-link">defaultEnabledState()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Indicates the default enabled state of the module on a new installation</div>
 </dd>
 <dt><a href="com/gmt2001/datastore/DataStore.html#del(java.lang.String,java.lang.String)" class="member-name-link">del(String, String)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
@@ -4450,6 +4478,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The primary key constraint</div>
 </dd>
+<dt><a href="com/gmt2001/module/ModuleVersionTable.html#getPrimaryKey()" class="member-name-link">getPrimaryKey()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module">ModuleVersionTable</a></dt>
+<dd>
+<div class="block">The primary key constraint</div>
+</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserTable.html#getPrimaryKey()" class="member-name-link">getPrimaryKey()</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserTable.html" title="class in tv.phantombot.panel.PanelUser">PanelUserTable</a></dt>
 <dd>
 <div class="block">The primary key constraint</div>
@@ -4545,6 +4577,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersion.html#getRecordTimestamp()" class="member-name-link">getRecordTimestamp()</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersion.html#getRecordType()" class="member-name-link">getRecordType()</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></dt>
+<dd>
+<div class="block">The class holding records for this table</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionTable.html#getRecordType()" class="member-name-link">getRecordType()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module">ModuleVersionTable</a></dt>
 <dd>
 <div class="block">The class holding records for this table</div>
 </dd>
@@ -5706,6 +5742,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/JSTimers.html#instance()" class="member-name-link">instance()</a> - Static method in class com.gmt2001.<a href="com/gmt2001/JSTimers.html" title="class in com.gmt2001">JSTimers</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionTable.html#instance()" class="member-name-link">instance()</a> - Static method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module">ModuleVersionTable</a></dt>
+<dd>
+<div class="block">Provides an instance of <a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module"><code>ModuleVersionTable</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/RollbarProvider.html#instance()" class="member-name-link">instance()</a> - Static method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>
 <div class="block">Instance</div>
@@ -6233,6 +6273,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Indicates if this is an edge build</div>
 </dd>
+<dt><a href="com/gmt2001/module/Module.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Indicates if this module is currently enabled</div>
+</dd>
 <dt><a href="com/gmt2001/RollbarProvider.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>
 <div class="block">Indicates if sending exceptions is enabled</div>
@@ -6650,6 +6694,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/Logger.html#log(com.illusionaryone.Logger.LogType,java.util.List)" class="member-name-link">log(Logger.LogType, List&lt;String&gt;)</a> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/RequestLogger.html#log(io.netty.channel.ChannelHandlerContext)" class="member-name-link">log(ChannelHandlerContext)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/RequestLogger.html" title="class in com.gmt2001.httpwsserver">RequestLogger</a></dt>
+<dd>
+<div class="block">Logs the request stream of the provided context and prints the file path to the console</div>
+</dd>
 <dt><a href="com/illusionaryone/Logger.html#logFileDTTimestamp()" class="member-name-link">logFileDTTimestamp()</a> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/Logger.html#logFileDTTimestamp(java.time.ZoneId)" class="member-name-link">logFileDTTimestamp(ZoneId)</a> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
@@ -6878,6 +6926,48 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The moderator that authorized the subscription is no longer one of the broadcaster's moderators.</div>
 </dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#module()" class="member-name-link">module()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">The name of the module whose version is stored in this record</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#module(com.gmt2001.module.Module)" class="member-name-link">module(Module)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Sets the name of the module whose version is stored in this record</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#module(java.lang.String)" class="member-name-link">module(String)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Sets the name of the module whose version is stored in this record</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html" class="type-name-link" title="class in com.gmt2001.module">Module</a> - Class in <a href="com/gmt2001/module/package-summary.html">com.gmt2001.module</a></dt>
+<dd>
+<div class="block">A bot module written in Java</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#%3Cinit%3E()" class="member-name-link">Module()</a> - Constructor for class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionTable.html#MODULE" class="member-name-link">MODULE</a> - Variable in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module">ModuleVersionTable</a></dt>
+<dd>
+<div class="block">The name of the module whose version is stored in the record</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html" class="type-name-link" title="class in com.gmt2001.module">ModuleVersionRecord</a> - Class in <a href="com/gmt2001/module/package-summary.html">com.gmt2001.module</a></dt>
+<dd>
+<div class="block">A record in <a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module"><code>ModuleVersionTable</code></a> denoting the version of a <a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module"><code>Module</code></a> for version tracking</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#%3Cinit%3E()" class="member-name-link">ModuleVersionRecord()</a> - Constructor for class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#%3Cinit%3E(com.gmt2001.module.Module,java.lang.Long)" class="member-name-link">ModuleVersionRecord(Module, Long)</a> - Constructor for class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#%3Cinit%3E(java.lang.String,java.lang.Long)" class="member-name-link">ModuleVersionRecord(String, Long)</a> - Constructor for class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionTable.html" class="type-name-link" title="class in com.gmt2001.module">ModuleVersionTable</a> - Class in <a href="com/gmt2001/module/package-summary.html">com.gmt2001.module</a></dt>
+<dd>
+<div class="block">Stores the current version of <a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module"><code>Module</code></a>s for upgrade tracking</div>
+</dd>
 <dt><a href="tv/phantombot/event/irc/message/IrcModerationEvent.html#mono()" class="member-name-link">mono()</a> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a></dt>
 <dd>
 <div class="block">Returns a <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link"><code>Mono</code></a> which emits <code>true</code> if a moderation was performed and further processing of this message should be stopped</div>
@@ -7087,6 +7177,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
 </dd>
+<dt><a href="com/gmt2001/module/Module.html#onCommandEvent(tv.phantombot.event.command.CommandEvent)" class="member-name-link">onCommandEvent(CommandEvent)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Receives <a href="tv/phantombot/event/command/CommandEvent.html" title="class in tv.phantombot.event.command"><code>CommandEvent</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html#onComplete()" class="member-name-link">onComplete()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscriptionType</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#onComplete()" class="member-name-link">onComplete()</a> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
@@ -7104,6 +7198,18 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/console/ConsoleEventHandler.html#onConsoleInput(tv.phantombot.event.console.ConsoleInputEvent)" class="member-name-link">onConsoleInput(ConsoleInputEvent)</a> - Method in class tv.phantombot.console.<a href="tv/phantombot/console/ConsoleEventHandler.html" title="class in tv.phantombot.console">ConsoleEventHandler</a></dt>
 <dd>
 <div class="block">Method that is triggered when the console event fires.</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#onDisable()" class="member-name-link">onDisable()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Executes when the module state changes to disabled</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#onDiscordChannelCommandEvent(tv.phantombot.event.discord.channel.DiscordChannelCommandEvent)" class="member-name-link">onDiscordChannelCommandEvent(DiscordChannelCommandEvent)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Receives <a href="tv/phantombot/event/discord/channel/DiscordChannelCommandEvent.html" title="class in tv.phantombot.event.discord.channel"><code>DiscordChannelCommandEvent</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#onEnable()" class="member-name-link">onEnable()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Executes when the module state changes to enabled</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html#onError(java.lang.Throwable)" class="member-name-link">onError(Throwable)</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscriptionType.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscriptionType</a></dt>
 <dd>&nbsp;</dd>
@@ -7137,6 +7243,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><a href="com/gmt2001/module/Module.html#onEvent(tv.phantombot.event.Event)" class="member-name-link">onEvent(Event)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Receives all events except for <a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message"><code>IrcModerationEvent</code></a>, <a href="tv/phantombot/event/command/CommandEvent.html" title="class in tv.phantombot.event.command"><code>CommandEvent</code></a>, and <a href="tv/phantombot/event/discord/channel/DiscordChannelCommandEvent.html" title="class in tv.phantombot.event.discord.channel"><code>DiscordChannelCommandEvent</code></a></div>
+</dd>
 <dt><a href="tv/phantombot/script/ScriptEventManager.html#onEvent(tv.phantombot.event.Event)" class="member-name-link">onEvent(Event)</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptEventManager.html" title="class in tv.phantombot.script">ScriptEventManager</a></dt>
 <dd>
 <div class="block">Method that handles events.</div>
@@ -7208,6 +7318,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/cache/ViewerCache.html#onIrcModerationEvent(tv.phantombot.event.irc.message.IrcModerationEvent)" class="member-name-link">onIrcModerationEvent(IrcModerationEvent)</a> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/ViewerCache.html" title="class in com.gmt2001.twitch.cache">ViewerCache</a></dt>
 <dd>
 <div class="block">Updates the cache when a TMI message is recieved</div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#onIRCModerationEvent(tv.phantombot.event.irc.message.IrcModerationEvent)" class="member-name-link">onIRCModerationEvent(IrcModerationEvent)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Receives <a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message"><code>IrcModerationEvent</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/module/Module.html#onLoad()" class="member-name-link">onLoad()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
+<dd>
+<div class="block">Executes immediately after loading this module</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#onMessage(com.gmt2001.twitch.tmi.TMIMessage)" class="member-name-link">onMessage(TMIMessage)</a> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
 <dd>
@@ -8668,6 +8786,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the request headers</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/RequestLogger.html" class="type-name-link" title="class in com.gmt2001.httpwsserver">RequestLogger</a> - Class in <a href="com/gmt2001/httpwsserver/package-summary.html">com.gmt2001.httpwsserver</a></dt>
+<dd>
+<div class="block">Provides a method to log a request stream</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/RequestLogger.html#%3Cinit%3E()" class="member-name-link">RequestLogger()</a> - Constructor for class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/RequestLogger.html" title="class in com.gmt2001.httpwsserver">RequestLogger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/webpanel/websocket/WebPanelSocketUpdateEvent.html#requiresReply()" class="member-name-link">requiresReply()</a> - Method in class tv.phantombot.event.webpanel.websocket.<a href="tv/phantombot/event/webpanel/websocket/WebPanelSocketUpdateEvent.html" title="class in tv.phantombot.event.webpanel.websocket">WebPanelSocketUpdateEvent</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/stream/StreamOnline.Type.html#RERUN" class="member-name-link">RERUN</a> - Enum constant in enum class com.gmt2001.twitch.eventsub.subscriptions.stream.<a href="com/gmt2001/twitch/eventsub/subscriptions/stream/StreamOnline.Type.html" title="enum class in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOnline.Type</a></dt>
@@ -9131,6 +9255,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> back to the client</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersionRecord.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersionRecord.html" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a></dt>
+<dd>
+<div class="block">Version of this record implementation</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#serialVersionUID" class="member-name-link">serialVersionUID</a> - Static variable in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
 <dd>
 <div class="block">Version of this record implementation</div>
 </dd>
@@ -11131,6 +11259,10 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/record/Record8.html#values(A,B,C,D,E,F,G,H)" class="member-name-link">values(A, B, C, D, E, F, G, H)</a> - Method in class com.gmt2001.datastore2.record.<a href="com/gmt2001/datastore2/record/Record8.html" title="class in com.gmt2001.datastore2.record">Record8</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#values(com.gmt2001.module.Module,java.lang.Long)" class="member-name-link">values(Module, Long)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Sets the name and version of the module whose version is stored in this record</div>
+</dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersionRecord.html#values(org.jooq.Table,java.lang.Long)" class="member-name-link">values(Table&lt;?&gt;, Long)</a> - Method in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersionRecord.html" title="class in com.gmt2001.datastore2.meta">TableVersionRecord</a></dt>
 <dd>
 <div class="block">Sets the name and version of the managed table whose version is stored in this record</div>
@@ -11155,6 +11287,10 @@ the order they are declared.</div>
 <dd>
 <div class="block">The version of the managed table</div>
 </dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#version()" class="member-name-link">version()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">The version of the module</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html#version()" class="member-name-link">version()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscription.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscription</a></dt>
 <dd>
 <div class="block">The version of the subscription.</div>
@@ -11163,9 +11299,17 @@ the order they are declared.</div>
 <dd>
 <div class="block">Sets the version of the managed table</div>
 </dd>
+<dt><a href="com/gmt2001/module/ModuleVersionRecord.html#version(java.lang.Long)" class="member-name-link">version(Long)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionRecord.html" title="class in com.gmt2001.module">ModuleVersionRecord</a></dt>
+<dd>
+<div class="block">Sets the version of the module</div>
+</dd>
 <dt><a href="com/gmt2001/datastore2/meta/TableVersion.html#VERSION" class="member-name-link">VERSION</a> - Variable in class com.gmt2001.datastore2.meta.<a href="com/gmt2001/datastore2/meta/TableVersion.html" title="class in com.gmt2001.datastore2.meta">TableVersion</a></dt>
 <dd>
 <div class="block">The version of the managed table</div>
+</dd>
+<dt><a href="com/gmt2001/module/ModuleVersionTable.html#VERSION" class="member-name-link">VERSION</a> - Variable in class com.gmt2001.module.<a href="com/gmt2001/module/ModuleVersionTable.html" title="class in com.gmt2001.module">ModuleVersionTable</a></dt>
+<dd>
+<div class="block">The version of the module</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/channel_points/redemption/ChannelPointsCustomRewardRedemptionAdd.html#VERSION" class="member-name-link">VERSION</a> - Static variable in class com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/channel_points/redemption/ChannelPointsCustomRewardRedemptionAdd.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption">ChannelPointsCustomRewardRedemptionAdd</a></dt>
 <dd>&nbsp;</dd>
