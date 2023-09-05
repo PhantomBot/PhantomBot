@@ -55,13 +55,13 @@
 
         if (subIndex > -1) {
             for (i in list) {
-                if (list[i][subIndex].equalsIgnoreCase(value)) {
+                if ($.equalsIgnoreCase(list[i][subIndex], value)) {
                     return true;
                 }
             }
         } else {
             for (i in list) {
-                if (list[i].equalsIgnoreCase(value)) {
+                if ($.equalsIgnoreCase(list[i], value)) {
                     return true;
                 }
             }
@@ -155,8 +155,8 @@
             return;
         }
 
-        let tempPoll = $.inidb.get('pollState', 'poll'),
-                tempObjOBs = $.inidb.get('pollState', 'objOBS');
+        let tempPoll = $.getIniDbString('pollState', 'poll'),
+                tempObjOBs = $.getIniDbString('pollState', 'objOBS');
 
         if (tempPoll === null || tempObjOBs === null) {
             return;
@@ -317,7 +317,7 @@
                 args = event.getArgs(),
                 action = args[0];
 
-        if (command.equalsIgnoreCase('vote') && action !== undefined) {
+        if ($.equalsIgnoreCase(command, 'vote') && action !== undefined) {
             if (poll.pollRunning) {
                 vote(sender, action);
             }
@@ -326,7 +326,7 @@
         /**
          * @commandpath poll - Announce information about a poll, if one is running.
          */
-        if (command.equalsIgnoreCase('poll')) {
+        if ($.equalsIgnoreCase(command, 'poll')) {
             if (!action) {
                 if (poll.pollRunning) {
                     var optionsStr = "";
@@ -343,7 +343,7 @@
             /**
              * @commandpath poll results - Announce result information about the last run poll (Poll information is retained until shutdown)
              */
-            if (action.equalsIgnoreCase('results')) {
+            if ($.equalsIgnoreCase(action, 'results')) {
                 if (poll.pollRunning) {
                     $.say($.lang.get('pollsystem.results.running'));
                 } else if (poll.result != '') {
@@ -360,7 +360,7 @@
             /**
              * @commandpath poll open ["poll question"] ["option1, option2, ..."] [seconds] [min votes] - Starts a poll with question and options. Optionally provide seconds and min votes.
              */
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 var time = 0,
                         question = '',
                         options = [],
@@ -404,7 +404,7 @@
             /**
              * @commandpath poll close - Close the current poll and tally the votes
              */
-            if (action.equalsIgnoreCase('close')) {
+            if ($.equalsIgnoreCase(action, 'close')) {
                 if (!poll.pollRunning) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pollsystem.close.nopoll'));
                     return;
@@ -415,7 +415,7 @@
     });
 
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./systems/pollSystem.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './systems/pollSystem.js')) {
             if (poll.pollRunning) {
                 var msg = JSON.stringify({
                     'start_poll': 'true',

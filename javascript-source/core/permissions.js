@@ -238,7 +238,7 @@
     function isMod(username, tags) {
         $.consoleDebug('');
         if (checkTags(tags)) {
-            if (tags.getOrDefault('user-type', '').length() > 0 || tags.getOrDefault('mod', '0').equals('1')) {
+            if ($.strlen(tags.getOrDefault('user-type', '')) > 0 || tags.getOrDefault('mod', '0').equals('1')) {
                 return true;
             }
         }
@@ -484,7 +484,7 @@
      * @returns {Number}
      */
     function queryDBPermission(username) {
-        return $.inidb.GetInteger('group', '', username.toLowerCase(), PERMISSION.None);
+        return $.getIniDbNumber('group', username.toLowerCase(), PERMISSION.None);
     }
 
     /**
@@ -528,7 +528,7 @@
         try {
             for (let i = 0; i < userGroups.length; i++) {
                 userGroupName = $.javaString(userGroups[i]);
-                if ($.equalsIgnoreCase(userGroupName, groupName.toLowerCase()) || $.equalsIgnoreCase(userGroupName.substring(0, userGroupName.length() - 1), groupName.toLowerCase())) {
+                if ($.equalsIgnoreCase(userGroupName, groupName) || $.equalsIgnoreCase(userGroupName.substring(0, $.strlen(userGroupName) - 1), groupName)) {
                     return i;
                 }
             }
@@ -847,11 +847,11 @@
         _usersGroupsLock.lock();
         try {
             let oldSubL = userGroups[PERMISSION.Sub],
-                oldSubD = $.inidb.get('groups', PERMISSION.Sub.toString()),
+                oldSubD = $.getIniDbString('groups', PERMISSION.Sub.toString()),
                 oldSubU = $.inidb.GetKeysByLikeValues('group', '', PERMISSION.Sub.toString()),
                 newSubU = [],
                 oldVIPL = userGroups[PERMISSION.VIP],
-                oldVIPD = $.inidb.get('groups', PERMISSION.VIP.toString()),
+                oldVIPD = $.getIniDbString('groups', PERMISSION.VIP.toString()),
                 oldVIPU = $.inidb.GetKeysByLikeValues('group', '', PERMISSION.VIP.toString()),
                 newVIPU = [],
                 temp = PERMISSION.VIP,
@@ -1036,7 +1036,7 @@
     $.bind('ircChannelUserMode', function (event) {
         let username = event.getUser().toLowerCase();
 
-        if (event.getMode().equalsIgnoreCase('o')) {
+        if ($.equalsIgnoreCase(event.getMode(), 'o')) {
             if (event.getAdd().toString().equals('true')) {
                 if (!hasModeO(username)) {
                     addModeratorToCache(username.toLowerCase());
@@ -1062,7 +1062,7 @@
                     setUserGroupById(username, PERMISSION.Viewer);
                 }
             }
-        } else if (event.getMode().equalsIgnoreCase('vip')) {
+        } else if ($.equalsIgnoreCase(event.getMode(), 'vip')) {
             if (event.getAdd().toString().equals('true')) { // Add to VIP
                 addVIPUsersList(username);
                 if (isSub(username)) { // Subscriber and VIP - Assign the highest permission
@@ -1092,10 +1092,10 @@
                 spl,
                 i;
 
-        if (sender.equalsIgnoreCase('jtv')) {
+        if ($.equalsIgnoreCase(sender, 'jtv')) {
             if (message.indexOf('specialuser') > -1) {
                 spl = message.split(' ');
-                if (spl[2].equalsIgnoreCase('subscriber')) {
+                if ($.equalsIgnoreCase(spl[2], 'subscriber')) {
                     if (addSubUsersList(spl[1])) {
 
                         restoreSubscriberStatus(spl[1].toLowerCase());
@@ -1122,7 +1122,7 @@
         /*
          * @commandpath reloadbots - Reload the list of bots and users to ignore. They will not gain points or time.
          */
-        if (command.equalsIgnoreCase('reloadbots')) {
+        if ($.equalsIgnoreCase(command, 'reloadbots')) {
             botList.clear();
             cleanTwitchBots();
             loadTwitchBots();
@@ -1132,7 +1132,7 @@
         /**
          * @commandpath users - List users currently in the channel
          */
-        if (command.equalsIgnoreCase('users')) {
+        if ($.equalsIgnoreCase(command, 'users')) {
             if ($.users.length > 20) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', len));
             } else {
@@ -1143,7 +1143,7 @@
         /**
          * @commandpath mods - List mods currently in the channel
          */
-        if (command.equalsIgnoreCase('mods')) {
+        if ($.equalsIgnoreCase(command, 'mods')) {
             let tmp = getUsernamesArrayByGroupId(PERMISSION.Mod);
             if (tmp.length > 20) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.current.listtoolong', tmp.length));
@@ -1155,7 +1155,7 @@
         /**
          * @commandpath ignorelist - List the bots from the ignorebots.txt
          */
-        if (command.equalsIgnoreCase('ignorelist')) {
+        if ($.equalsIgnoreCase(command, 'ignorelist')) {
             if (botList.size() > 20) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ignorelist.listtoolong', botList.size()));
             } else {
@@ -1166,7 +1166,7 @@
         /**
          * @commandpath ignoreadd [username] - Add a bot to the ignorebots.txt
          */
-        if (command.equalsIgnoreCase('ignoreadd')) {
+        if ($.equalsIgnoreCase(command, 'ignoreadd')) {
             if (!actionValue) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ignoreadd.usage'));
             } else {
@@ -1185,7 +1185,7 @@
         /**
          * @commandpath ignoreremove [username] - Remove a bot from the ignorebots.txt
          */
-        if (command.equalsIgnoreCase('ignoreremove')) {
+        if ($.equalsIgnoreCase(command, 'ignoreremove')) {
             if (!actionValue) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ignoreremove.usage'));
             } else {
@@ -1204,7 +1204,7 @@
         /**
          * @commandpath permission [username] [groupId] - Get your current permission or optionally get/set the user permission for a user.
          */
-        if (command.equalsIgnoreCase('permission')) {
+        if ($.equalsIgnoreCase(command, 'permission')) {
             if (args[0] === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.group.self.current', $.getUserGroupName(sender)));
                 return;
@@ -1254,7 +1254,7 @@
         /**
          * @commandpath permissionpoints [permissionID] [online / offline] [points] - Show/set the points gained for each permissions. -1 defaults to the global configuration.
          */
-        if (command.equalsIgnoreCase('permissionpoints')) {
+        if ($.equalsIgnoreCase(command, 'permissionpoints')) {
             let groupId,
                     channelStatus,
                     points;
@@ -1270,8 +1270,8 @@
                 return;
             }
 
-            let onlinePoints = $.inidb.OptInteger('grouppoints', '', getGroupNameById(groupId)),
-                    offlinePoints = $.inidb.OptInteger('grouppointsoffline', '', getGroupNameById(groupId));
+            let onlinePoints = $.optIniDbNumber('grouppoints', getGroupNameById(groupId)),
+                    offlinePoints = $.optIniDbNumber('grouppointsoffline', getGroupNameById(groupId));
             if (!args[1]) {
 
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup', getGroupNameById(groupId),
@@ -1283,17 +1283,17 @@
             }
 
             channelStatus = args[1];
-            if (!channelStatus.equalsIgnoreCase('online') && !channelStatus.equalsIgnoreCase('offline')) {
+            if ($.equalsIgnoreCase(!channelStatus, 'online') && $.equalsIgnoreCase(!channelStatus, 'offline')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.usage'));
                 return;
             }
 
             if (!args[2]) {
-                if (channelStatus.equalsIgnoreCase('online')) {
+                if ($.equalsIgnoreCase(channelStatus, 'online')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.online', getGroupNameById(groupId),
                             (onlinePoints.isPresent() ? onlinePoints.get() : '(undefined)'),
                             $.pointNameMultiple));
-                } else if (channelStatus.equalsIgnoreCase('offline')) {
+                } else if ($.equalsIgnoreCase(channelStatus, 'offline')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.showgroup.offline', getGroupNameById(groupId),
                             (offlinePoints.isPresent() ? offlinePoints.get() : '(undefined)'),
                             $.pointNameMultiple));
@@ -1311,10 +1311,10 @@
                 points = -1;
             }
 
-            if (channelStatus.equalsIgnoreCase('online')) {
+            if ($.equalsIgnoreCase(channelStatus, 'online')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.online', getGroupNameById(groupId), points, $.pointNameMultiple));
                 $.inidb.set('grouppoints', getGroupNameById(groupId), points);
-            } else if (channelStatus.equalsIgnoreCase('offline')) {
+            } else if ($.equalsIgnoreCase(channelStatus, 'offline')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.grouppoints.set.offline', getGroupNameById(groupId), points, $.pointNameMultiple));
                 $.inidb.set('grouppointsoffline', getGroupNameById(groupId), points);
             }
@@ -1323,7 +1323,7 @@
         /**
          * @commandpath swapsubscribervip - Swaps the Subscriber and VIP usergroups for the purposes of permcom
          */
-        if (command.equalsIgnoreCase('swapsubscribervip')) {
+        if ($.equalsIgnoreCase(command, 'swapsubscribervip')) {
             swapSubscriberVIP();
             if (_isSwappedSubscriberVIP) {
                 $.say($.whisperPrefix(sender) + $.lang.get('permissions.swapsubscribervip.swapped'));
@@ -1336,7 +1336,7 @@
          * @commandpath permissions - Give's you all the permissions with there id's
          * @commandpath permissionslist - Give's you all the permissions with there id's
          */
-        if (command.equalsIgnoreCase('permissions') || command.equalsIgnoreCase('permissionslist')) {
+        if ($.equalsIgnoreCase(command, 'permissions') || $.equalsIgnoreCase(command, 'permissionslist')) {
             $.say(getGroupList());
         }
     });

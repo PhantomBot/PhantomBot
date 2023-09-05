@@ -27,7 +27,7 @@
         /**
          * @commandpath namechange [oldname] [newname] - Convert someones old Twitch username to his/her new Twitch name. The user will be able to keep their points, time, quotes, and more.
          */
-        if (command.equalsIgnoreCase('namechange')) {
+        if ($.equalsIgnoreCase(command, 'namechange')) {
             if (action === undefined || subAction === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('namechange.default'));
                 return;
@@ -41,7 +41,7 @@
 
             // Update the default tables with that users new name if it's currently in any tables.
             for (i in tables) {
-                let entry = $.inidb.OptString(tables[i], '', action.toLowerCase());
+                let entry = $.optIniDbString(tables[i], action.toLowerCase());
                 if (entry.isPresent()) {
                     $.inidb.set(tables[i], subAction.toLowerCase(), entry.get());
                     $.inidb.del(tables[i], action.toLowerCase());
@@ -54,8 +54,8 @@
                 jsonArr;
 
             for (i in keys) {
-                if ($.inidb.get('quotes', keys[i]).toLowerCase().indexOf(action.toLowerCase()) > -1) {
-                    jsonArr = JSON.parse($.inidb.get('quotes', keys[i]));
+                if ($.getIniDbString('quotes', keys[i]).toLowerCase().indexOf(action.toLowerCase()) > -1) {
+                    jsonArr = JSON.parse($.getIniDbString('quotes', keys[i]));
                     $.inidb.set('quotes', keys[i], JSON.stringify([String(subAction), String(jsonArr[1]), String(jsonArr[2]), String(jsonArr[3])]));
                 }
             }

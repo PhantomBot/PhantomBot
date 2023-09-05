@@ -40,13 +40,13 @@
         /*
          * @commandpath highlight [description] - Marks a highlight using the given description and with the current date stamp
          */
-        if (command.equalsIgnoreCase('highlight')) {
+        if ($.equalsIgnoreCase(command, 'highlight')) {
             if (!$.isOnline($.channelName)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.offline'));
                 return;
             }
             if (args.length === 0) {
-                $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.inidb.GetString('settings', '', 'timezone', 'GMT')));
+                $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.highlight.usage', $.getIniDbString('settings', 'timezone', 'GMT')));
                 return;
             }
 
@@ -75,7 +75,7 @@
         /*
          * @commandpath showhighlights - Get a list of current highlights
          */
-        if (command.equalsIgnoreCase('gethighlights') || command.equalsIgnoreCase('showhighlights')) {
+        if ($.equalsIgnoreCase(command, 'gethighlights') || $.equalsIgnoreCase(command, 'showhighlights')) {
             if (!$.inidb.FileExists('highlights')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.gethighlights.no-highlights'));
                 return;
@@ -85,7 +85,7 @@
                 temp = [];
 
             for (var i in keys) {
-                temp.push('[' + keys[i] + ': ' + $.inidb.get('highlights', keys[i]) + '] ');
+                temp.push('[' + keys[i] + ': ' + $.getIniDbString('highlights', keys[i]) + '] ');
             }
 
             $.paginateArray(temp, 'highlightcommand.highlights', ' ', true, sender);
@@ -95,7 +95,7 @@
         /*
          * @commandpath clearhighlights - Clear the current highlights
          */
-        if (command.equalsIgnoreCase('clearhighlights')) {
+        if ($.equalsIgnoreCase(command, 'clearhighlights')) {
             $.say($.whisperPrefix(sender) + $.lang.get('highlightcommand.clearhighlights.success'));
             $.inidb.RemoveFile('highlights');
             return;

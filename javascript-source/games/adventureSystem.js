@@ -125,13 +125,13 @@
         }
 
         for (let i in payoutsKeys) {
-            if (payoutsKeys[i].equalsIgnoreCase($.ownerName) || payoutsKeys[i].equalsIgnoreCase($.botName)) {
+            if ($.equalsIgnoreCase(payoutsKeys[i], $.ownerName) || $.equalsIgnoreCase(payoutsKeys[i], $.botName)) {
                 continue;
             }
 
             temp.push({
                 username: payoutsKeys[i],
-                amount: parseInt($.inidb.get('adventurePayouts', payoutsKeys[i]))
+                amount: parseInt($.getIniDbString('adventurePayouts', payoutsKeys[i]))
             });
         }
 
@@ -322,7 +322,7 @@
 
         for (let i in stories) {
             if (stories[i].game !== null) {
-                if (game.equalsIgnoreCase(stories[i].game)) {
+                if ($.equalsIgnoreCase(game, stories[i].game)) {
                     temp.push({
                         title: stories[i].title,
                         lines: stories[i].lines
@@ -396,7 +396,7 @@
             for (let i in currentAdventure.survivors) {
                 let username = currentAdventure.survivors[i].username;
                 maxlength += username.length;
-                temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.inidb.get('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
+                temp.push($.viewer.getByLogin(username).name() + ' (+' + $.getPointsString($.getIniDbString('adventurePayoutsTEMP', currentAdventure.survivors[i].username)) + ')');
             }
 
             if (temp.length === 0) {
@@ -455,7 +455,7 @@
          * @commandpath adventure - Adventure command for starting, checking or setting options
          * @commandpath adventure [amount] - Start/join an adventure
          */
-        if (command.equalsIgnoreCase('adventure')) {
+        if ($.equalsIgnoreCase(command, 'adventure')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.adventure.usage', $.pointNameMultiple));
                 return;
@@ -469,7 +469,7 @@
             /**
              * @commandpath adventure top5 - Announce the top 5 adventurers in the chat (most points gained)
              */
-            if (action.equalsIgnoreCase('top5')) {
+            if ($.equalsIgnoreCase(action, 'top5')) {
                 top5();
                 return;
             }
@@ -477,7 +477,7 @@
             /**
              * @commandpath adventure set - Base command for controlling the adventure settings
              */
-            if (action.equalsIgnoreCase('set')) {
+            if ($.equalsIgnoreCase(action, 'set')) {
                 if (actionArg1 === undefined || actionArg2 === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                     return;
@@ -486,7 +486,7 @@
                 /**
                  * @commandpath adventure set jointime [seconds] - Set the join time
                  */
-                if (actionArg1.equalsIgnoreCase('joinTime')) {
+                if ($.equalsIgnoreCase(actionArg1, 'joinTime')) {
                     if (isNaN(parseInt(actionArg2))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                         return;
@@ -499,7 +499,7 @@
                 /**
                  * @commandpath adventure set cooldown [seconds] - Set cooldown time
                  */
-                if (actionArg1.equalsIgnoreCase('coolDown')) {
+                if ($.equalsIgnoreCase(actionArg1, 'coolDown')) {
                     if (isNaN(parseInt(actionArg2))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                         return;
@@ -512,7 +512,7 @@
                 /**
                  * @commandpath adventure set gainpercent [value] - Set the gain percent value
                  */
-                if (actionArg1.equalsIgnoreCase('gainPercent')) {
+                if ($.equalsIgnoreCase(actionArg1, 'gainPercent')) {
                     if (isNaN(parseInt(actionArg2))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                         return;
@@ -525,7 +525,7 @@
                 /**
                  * @commandpath adventure set minbet [value] - Set the minimum bet
                  */
-                if (actionArg1.equalsIgnoreCase('minBet')) {
+                if ($.equalsIgnoreCase(actionArg1, 'minBet')) {
                     if (isNaN(parseInt(actionArg2))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                         return;
@@ -538,7 +538,7 @@
                 /**
                  * @commandpath adventure set maxbet [value] - Set the maximum bet
                  */
-                if (actionArg1.equalsIgnoreCase('maxBet')) {
+                if ($.equalsIgnoreCase(actionArg1, 'maxBet')) {
                     if (isNaN(parseInt(actionArg2))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
                         return;
@@ -551,11 +551,11 @@
                 /**
                  * @commandpath adventure set warningmessages [true / false] - Sets the per-user warning messages
                  */
-                if (actionArg1.equalsIgnoreCase('warningmessages')) {
-                    if (args[2].equalsIgnoreCase('true')) {
+                if ($.equalsIgnoreCase(actionArg1, 'warningmessages')) {
+                    if ($.equalsIgnoreCase(args[2], 'true')) {
                         warningMessage = true;
                         actionArg2 = $.lang.get('common.enabled');
-                    } else if (args[2].equalsIgnoreCase('false')) {
+                    } else if ($.equalsIgnoreCase(args[2], 'false')) {
                         warningMessage = false;
                         actionArg2 = $.lang.get('common.disabled');
                     }
@@ -566,11 +566,11 @@
                 /**
                  * @commandpath adventure set entrymessages [true / false] - Sets the per-user entry messages
                  */
-                if (actionArg1.equalsIgnoreCase('entrymessages')) {
-                    if (args[2].equalsIgnoreCase('true')) {
+                if ($.equalsIgnoreCase(actionArg1, 'entrymessages')) {
+                    if ($.equalsIgnoreCase(args[2], 'true')) {
                         enterMessage = true;
                         actionArg2 = $.lang.get('common.enabled');
-                    } else if (args[2].equalsIgnoreCase('false')) {
+                    } else if ($.equalsIgnoreCase(args[2], 'false')) {
                         enterMessage = false;
                         actionArg2 = $.lang.get('common.disabled');
                     }
@@ -581,11 +581,11 @@
                 /**
                  * @commandpath adventure set cooldownannounce [true / false] - Sets the cooldown announcement
                  */
-                if (actionArg1.equalsIgnoreCase('cooldownannounce')) {
-                    if (args[2].equalsIgnoreCase('true')) {
+                if ($.equalsIgnoreCase(actionArg1, 'cooldownannounce')) {
+                    if ($.equalsIgnoreCase(args[2], 'true')) {
                         coolDownAnnounce = true;
                         actionArg2 = $.lang.get('common.enabled');
-                    } else if (args[2].equalsIgnoreCase('false')) {
+                    } else if ($.equalsIgnoreCase(args[2], 'false')) {
                         coolDownAnnounce = false;
                         actionArg2 = $.lang.get('common.disabled');
                     }

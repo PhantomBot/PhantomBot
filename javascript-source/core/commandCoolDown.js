@@ -88,7 +88,7 @@
         _cooldownsLock.lock();
         try {
             for (let i in commands) {
-                let json = JSON.parse($.inidb.get('cooldown', commands[i]));
+                let json = JSON.parse($.getIniDbString('cooldown', commands[i]));
                 cooldowns[$.jsString(commands[i]).toLowerCase()] = new Cooldown(json.command.toLowerCase(), json.globalSec, json.userSec, json.modsSkip, json.clearOnOnline);
             }
         } finally {
@@ -484,23 +484,23 @@
             subAction = args[1];
 
         /**
-         * @commandpath coolcom [command] [user=seconds] [global=seconds] [modsskip=false] [clearOnOnline=false] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown. Specifying the 'modsskip' parameter with a value of 'true' enables moderators to ignore cooldowns for this command. Specifying the 'clearOnOnline' parameter with a value of 'true' clear the commands cooldowns when going online/live. 
+         * @commandpath coolcom [command] [user=seconds] [global=seconds] [modsskip=false] [clearOnOnline=false] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown. Specifying the 'modsskip' parameter with a value of 'true' enables moderators to ignore cooldowns for this command. Specifying the 'clearOnOnline' parameter with a value of 'true' clear the commands cooldowns when going online/live.
          * @commandpath coolcom [command] remove - Removes any command-specific cooldown that was set on the specified command.
          * @commandpath coolcom [command] clear - Clears all active cooldowns for the specified command.
          */
-        if (command.equalsIgnoreCase('coolcom')) {
+        if ($.equalsIgnoreCase(command, 'coolcom')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.usage'));
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.extras.usage'));
                 return;
             }
 
-            if (subAction.equalsIgnoreCase('remove') || subAction.equalsIgnoreCase('clear')) {
+            if ($.equalsIgnoreCase(subAction, 'remove') || $.equalsIgnoreCase(subAction, 'clear')) {
                 if (!exists(action)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.command.err', action));
                     return;
                 }
-                if (subAction.equalsIgnoreCase('remove')) {
+                if ($.equalsIgnoreCase(subAction, 'remove')) {
                     remove(action);
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.remove', action));
                 } else {
@@ -514,7 +514,7 @@
             return;
         }
 
-        if (command.equalsIgnoreCase('cooldown')) {
+        if ($.equalsIgnoreCase(command, 'cooldown')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.cooldown.usage'));
                 return;
@@ -523,7 +523,7 @@
             /**
              * @commandpath cooldown togglemoderators - Toggles if moderators ignore command cooldowns.
              */
-            if (action.equalsIgnoreCase('togglemoderators')) {
+            if ($.equalsIgnoreCase(action, 'togglemoderators')) {
                 modCooldown = !modCooldown;
                 $.setIniDbBoolean('cooldownSettings', 'modCooldown', modCooldown);
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.set.togglemodcooldown', (modCooldown ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -533,7 +533,7 @@
             /**
              * @commandpath cooldown setdefault [seconds] - Sets a default global cooldown for commands without a cooldown.
              */
-            if (action.equalsIgnoreCase('setdefault')) {
+            if ($.equalsIgnoreCase(action, 'setdefault')) {
                 if (isNaN(parseInt(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('cooldown.default.usage', defaultCooldownTime));
                     return;
@@ -553,7 +553,7 @@
             /**
              * @commandpath cooldown clearall - Clears all active cooldowns
              */
-            if (action.equalsIgnoreCase('clearall')) {
+            if ($.equalsIgnoreCase(action, 'clearall')) {
                 clearAll();
                 $.say($.whisperPrefix(sender) + $.lang.get('cooldown.coolcom.clear.all'));
                 return;
@@ -577,8 +577,8 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./core/commandCoolDown.js')) {
-            if (event.getArgs()[0].equalsIgnoreCase('add')) {
+        if ($.equalsIgnoreCase(event.getScript(), './core/commandCoolDown.js')) {
+            if ($.equalsIgnoreCase(event.getArgs()[0], 'add')) {
                 add(event.getArgs()[1], parseInt(event.getArgs()[2]), parseInt(event.getArgs()[3]), $.jsString(event.getArgs()[4]) === '1', $.jsString(event.getArgs()[5]) === '1');
                 let command = $.jsString(event.getArgs()[1]).trim(),
                     subCommand = null;
@@ -587,7 +587,7 @@
                     command = command.split(' ')[0];
                 }
                 $.setCommandRestriction(command, subCommand, $.getCommandRestrictionByName($.jsString(event.getArgs()[6])));
-            } else if (event.getArgs()[0].equalsIgnoreCase('update')) {
+            } else if ($.equalsIgnoreCase(event.getArgs()[0], 'update')) {
                 defaultCooldownTime = $.getIniDbNumber('cooldownSettings', 'defaultCooldownTime', 5);
                 modCooldown = $.getIniDbBoolean('cooldownSettings', 'modCooldown', false);
             } else {

@@ -62,7 +62,7 @@
 
         if (s.match(/\(message\)/g)) {
             s = $.replace(s, '(message)', ircMessage);
-            if (emoteRegexStr.length() > 0) {
+            if ($.strlen(emoteRegexStr) > 0) {
                 emoteRegex = new RegExp(emoteRegexStr, 'gi');
                 s = String(s).valueOf();
                 s = s.replace(emoteRegex, '');
@@ -111,7 +111,7 @@
         /*
          * @commandpath bitstoggle - Toggles the bits announcements.
          */
-        if (command.equalsIgnoreCase('bitstoggle')) {
+        if ($.equalsIgnoreCase(command, 'bitstoggle')) {
             toggle = !toggle;
             $.setIniDbBoolean('bitsSettings', 'toggle', toggle);
             $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('bitshandler.toggle.on') : $.lang.get('bitshandler.toggle.off')))
@@ -121,7 +121,7 @@
         /*
          * @commandpath bitsmessage - Sets a message for when someone cheers bits.
          */
-        if (command.equalsIgnoreCase('bitsmessage')) {
+        if ($.equalsIgnoreCase(command, 'bitsmessage')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('bitshandler.message.usage'));
                 return;
@@ -135,7 +135,7 @@
         /*
          * @commandpath bitsminimum - Set how many bits someone needs to cheer before announcing it.
          */
-        if (command.equalsIgnoreCase('bitsminimum')) {
+        if ($.equalsIgnoreCase(command, 'bitsminimum')) {
             if (isNaN(parseInt(action))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('bitshandler.minimum.usage'));
                 return;

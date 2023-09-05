@@ -52,7 +52,7 @@
 
                 let noticeGroup = null;
                 try {
-                    noticeGroup = JSON.parse($.inidb.get('notices', keys[i]));
+                    noticeGroup = JSON.parse($.getIniDbString('notices', keys[i]));
                 } catch (e){}
 
                 if (noticeGroup === undefined || noticeGroup === null) {
@@ -276,7 +276,7 @@
 
         if (notice && notice.match(/\(gameonly=.*\)/g)) {
             var game = notice.match(/\(gameonly=(.*)\)/)[1];
-            if ($.getGame($.channelName).equalsIgnoreCase(game)) {
+            if ($.equalsIgnoreCase($.getGame($.channelName), game)) {
                 return $.replace(notice, notice.match(/(\(gameonly=.*\))/)[1], '');
             }
 
@@ -364,7 +364,7 @@
     function reloadNoticeTimer(idx) {
         try {
             noticeLock.lock();
-            noticeGroups[idx] = JSON.parse($.inidb.get('notices', idx));
+            noticeGroups[idx] = JSON.parse($.getIniDbString('notices', idx));
             lastNoticesSent[idx] = -1;
             startNoticeTimer(idx);
         } finally {
@@ -393,7 +393,7 @@
     function reloadNoticeTimerSettings(idx) {
         try {
             noticeLock.lock();
-            noticeGroups[idx] = JSON.parse($.inidb.get('notices', idx));
+            noticeGroups[idx] = JSON.parse($.getIniDbString('notices', idx));
             startNoticeTimer(idx);
         } finally {
             noticeLock.unlock();
@@ -482,7 +482,7 @@
         /**
          * @commandpath notice - Base command for managing notices
          */
-        if (command.equalsIgnoreCase('notice')) {
+        if ($.equalsIgnoreCase(command, 'notice')) {
             if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-usage'));
                 return;
@@ -491,7 +491,7 @@
             /**
              * @commandpath notice list - Lists the beginning of all notices in the currently selected group
              */
-            if (action.equalsIgnoreCase('list')) {
+            if ($.equalsIgnoreCase(action, 'list')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -534,7 +534,7 @@
             /**
              * @commandpath notice get [id] - Gets the notice related to the ID in the currently selected group
              */
-            if (action.equalsIgnoreCase('get')) {
+            if ($.equalsIgnoreCase(action, 'get')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -562,7 +562,7 @@
             /**
              * @commandpath notice edit [id] [new message] - Replace the notice at the given ID in the currently selected group
              */
-            if (action.equalsIgnoreCase('edit')) {
+            if ($.equalsIgnoreCase(action, 'edit')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -588,7 +588,7 @@
             /**
              * @commandpath notice toggleid [id] - Toggles on/off the notice at the given ID
              */
-            if (action.equalsIgnoreCase('toggleid')) {
+            if ($.equalsIgnoreCase(action, 'toggleid')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -621,7 +621,7 @@
             /**
              * @commandpath notice remove [id] - Removes the notice related to the given ID in the currently selected group
              */
-            if (action.equalsIgnoreCase('remove')) {
+            if ($.equalsIgnoreCase(action, 'remove')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -652,7 +652,7 @@
             /**
              * @commandpath notice add [message or command] - Adds a notice, with a custom message or a command ex: !notice add command:COMMANDS_NAME to the currently selected group
              */
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -678,7 +678,7 @@
             /**
              * @commandpath notice insert [id] [message or command] - Inserts a notice at place [id], with a custom message or a command ex: !notice add command:COMMANDS_NAME to the currently selected group
              */
-            if (action.equalsIgnoreCase('insert')) {
+            if ($.equalsIgnoreCase(action, 'insert')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -716,7 +716,7 @@
             /**
              * @commandpath notice interval [min minutes] [max minutes] | [fixed minutes] - Sets the notice interval in minutes
              */
-            if (action.equalsIgnoreCase('interval')) {
+            if ($.equalsIgnoreCase(action, 'interval')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -762,7 +762,7 @@
             /**
              * @commandpath notice req [message count] - Set the number of messages needed to trigger a notice in current group
              */
-            if (action.equalsIgnoreCase('req')) {
+            if ($.equalsIgnoreCase(action, 'req')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-req-usage'));
                     return;
@@ -787,7 +787,7 @@
             /**
              * @commandpath notice status - Shows notice configuration for currently selected group
              */
-            if (action.equalsIgnoreCase('status')) {
+            if ($.equalsIgnoreCase(action, 'status')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -808,7 +808,7 @@
             /**
              * @commandpath notice selectgroup [id] - Change the group currently selected for inspection and editing
              */
-            if (action.equalsIgnoreCase('selectgroup')) {
+            if ($.equalsIgnoreCase(action, 'selectgroup')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -836,7 +836,7 @@
             /**
              * @commandpath notice addgroup [name] - Add a group of notices with their own timer and settings
              */
-            if (action.equalsIgnoreCase('addgroup')) {
+            if ($.equalsIgnoreCase(action, 'addgroup')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('noticesystem.notice-addgroup-usage'));
                     return;
@@ -873,7 +873,7 @@
             /**
              * @commandpath notice removegroup [id] - Remove a group of notices
              */
-            if (action.equalsIgnoreCase('removegroup')) {
+            if ($.equalsIgnoreCase(action, 'removegroup')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -901,7 +901,7 @@
                     lastTimeNoticesSent.splice(idx, 1);
 
                     for (i = idx; i < noticeGroups.length; i++) {
-                        $.inidb.set('notices', i, $.inidb.get('notices', i + 1));
+                        $.inidb.set('notices', i, $.getIniDbString('notices', i + 1));
                     }
 
                     $.inidb.del('notices', noticeGroups.length);
@@ -929,7 +929,7 @@
             /**
              * @commandpath notice renamegroup [id] [name] - Rename a group of notices
              */
-            if (action.equalsIgnoreCase('renamegroup')) {
+            if ($.equalsIgnoreCase(action, 'renamegroup')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -962,7 +962,7 @@
             /**
              * @commandpath notice toggle - Toggles the currently selected notice group on and off
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -987,7 +987,7 @@
             /**
              * @commandpath notice toggleoffline - Toggles on and off if notices of the currently selected group will be sent in chat if the channel is offline
              */
-            if (action.equalsIgnoreCase('toggleoffline')) {
+            if ($.equalsIgnoreCase(action, 'toggleoffline')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -1012,7 +1012,7 @@
             /**
              * @commandpath notice toggleshuffle - Toggles on and off if notices of the currently selected group will be sent in random order
              */
-            if (action.equalsIgnoreCase('toggleshuffle')) {
+            if ($.equalsIgnoreCase(action, 'toggleshuffle')) {
                 if (!checkForNoticesGroups(sender)) {
                     return;
                 }
@@ -1049,7 +1049,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./systems/noticeSystem.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './systems/noticeSystem.js')) {
             var args = event.getArgs(),
                     eventName = args[0] + '',
                     groupIdx = parseInt(args[1]),
@@ -1105,7 +1105,7 @@
                     lastTimeNoticesSent.splice(groupIdx, 1);
 
                     for (var i = groupIdx; i < noticeGroups.length; i++) {
-                        $.inidb.set('notices', i, $.inidb.get('notices', i + 1));
+                        $.inidb.set('notices', i, $.getIniDbString('notices', i + 1));
                     }
 
                     $.inidb.del('notices', noticeGroups.length);
@@ -1127,7 +1127,7 @@
                         return;
                     }
 
-                    tmp = JSON.parse($.inidb.get('notices', groupIdx));
+                    tmp = JSON.parse($.getIniDbString('notices', groupIdx));
                     noticeGroups[groupIdx].messages = tmp.messages;
                     noticeGroups[groupIdx].disabled = tmp.disabled;
 

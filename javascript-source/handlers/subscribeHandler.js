@@ -562,7 +562,7 @@
         /*
          * @commandpath subwelcometoggle - Enable or disable subscription alerts.
          */
-        if (command.equalsIgnoreCase('subwelcometoggle')) {
+        if ($.equalsIgnoreCase(command, 'subwelcometoggle')) {
             subWelcomeToggle = !subWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'subscriberWelcomeToggle', subWelcomeToggle);
             $.say($.whisperPrefix(sender) + (subWelcomeToggle ? $.lang.get('subscribehandler.new.sub.toggle.on') : $.lang.get('subscribehandler.new.sub.toggle.off')));
@@ -571,7 +571,7 @@
         /*
          * @commandpath resubwelcometoggle - Enable or disable resubsciption alerts.
          */
-        if (command.equalsIgnoreCase('resubwelcometoggle')) {
+        if ($.equalsIgnoreCase(command, 'resubwelcometoggle')) {
             reSubWelcomeToggle = !reSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'reSubscriberWelcomeToggle', reSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (reSubWelcomeToggle ? $.lang.get('subscribehandler.resub.toggle.on') : $.lang.get('subscribehandler.resub.toggle.off')));
@@ -580,7 +580,7 @@
         /*
          * @commandpath giftsubwelcometoggle - Enable or disable subgifting alerts.
          */
-        if (command.equalsIgnoreCase('giftsubwelcometoggle')) {
+        if ($.equalsIgnoreCase(command, 'giftsubwelcometoggle')) {
             giftSubWelcomeToggle = !giftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'giftSubWelcomeToggle', giftSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (giftSubWelcomeToggle ? $.lang.get('subscribehandler.giftsub.toggle.on') : $.lang.get('subscribehandler.giftsub.toggle.off')));
@@ -589,7 +589,7 @@
         /*
          * @commandpath giftanonsubwelcometoggle - Enable or disable anonymous subgifting alerts.
          */
-        if (command.equalsIgnoreCase('giftanonsubwelcometoggle')) {
+        if ($.equalsIgnoreCase(command, 'giftanonsubwelcometoggle')) {
             giftAnonSubWelcomeToggle = !giftAnonSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'giftAnonSubWelcomeToggle', giftAnonSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (giftAnonSubWelcomeToggle ? $.lang.get('subscribehandler.anongiftsub.toggle.on') : $.lang.get('subscribehandler.anongiftsub.toggle.off')));
@@ -598,7 +598,7 @@
         /*
          * @commandpath massgiftsubwelcometoggle - Enable or disable subgifting alerts.
          */
-        if (command.equalsIgnoreCase('massgiftsubwelcometoggle')) {
+        if ($.equalsIgnoreCase(command, 'massgiftsubwelcometoggle')) {
             massGiftSubWelcomeToggle = !massGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massGiftSubWelcomeToggle', massGiftSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (massGiftSubWelcomeToggle ? $.lang.get('subscribehandler.massgiftsub.toggle.on') : $.lang.get('subscribehandler.massgiftsub.toggle.off')));
@@ -607,7 +607,7 @@
         /*
          * @commandpath massanongiftsubwelcometoggle - Enable or disable mass anonymous subgifting alerts.
          */
-        if (command.equalsIgnoreCase('massanongiftsubwelcometoggle')) {
+        if ($.equalsIgnoreCase(command, 'massanongiftsubwelcometoggle')) {
             massAnonGiftSubWelcomeToggle = !massAnonGiftSubWelcomeToggle;
             $.setIniDbBoolean('subscribeHandler', 'massAnonGiftSubWelcomeToggle', massAnonGiftSubWelcomeToggle);
             $.say($.whisperPrefix(sender) + (massAnonGiftSubWelcomeToggle ? $.lang.get('subscribehandler.anonmassgiftsub.toggle.on') : $.lang.get('subscribehandler.anonmassgiftsub.toggle.off')));
@@ -616,7 +616,7 @@
         /*
          * @commandpath submessage [1|2|3|prime|all] [message] - Set a welcome message for new subscribers.
          */
-        if (command.equalsIgnoreCase('submessage')) {
+        if ($.equalsIgnoreCase(command, 'submessage')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.msg.usage'));
                 return;
@@ -636,7 +636,7 @@
         /*
          * @commandpath resubmessage [1|2|3|prime|all] [message] - Set a message for resubscribers.
          */
-        if (command.equalsIgnoreCase('resubmessage')) {
+        if ($.equalsIgnoreCase(command, 'resubmessage')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.msg.usage'));
                 return;
@@ -656,7 +656,7 @@
         /*
          * @commandpath giftsubmessage [1|2|3|all] [message] - Set a message for resubscribers.
          */
-        if (command.equalsIgnoreCase('giftsubmessage')) {
+        if ($.equalsIgnoreCase(command, 'giftsubmessage')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.msg.usage'));
                 return;
@@ -676,7 +676,7 @@
         /*
          * @commandpath giftanonsubmessage [1|2|3|all] [message] - Set a message for anonymous gifting alerts.
          */
-        if (command.equalsIgnoreCase('giftanonsubmessage')) {
+        if ($.equalsIgnoreCase(command, 'giftanonsubmessage')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftanonsub.msg.usage'));
                 return;
@@ -696,7 +696,7 @@
         /*
          * @commandpath massgiftsubmessage [1|2|3|all] [message] - Set a message for gifting alerts.
          */
-        if (command.equalsIgnoreCase('massgiftsubmessage')) {
+        if ($.equalsIgnoreCase(command, 'massgiftsubmessage')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.msg.usage'));
                 return;
@@ -716,7 +716,7 @@
         /*
          * @commandpath massanongiftsubmessage [1|2|3|all] [message] - Set a message for mass anonymous gifting alerts.
          */
-        if (command.equalsIgnoreCase('massanongiftsubmessage')) {
+        if ($.equalsIgnoreCase(command, 'massanongiftsubmessage')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.anonmassgiftsub.msg.usage'));
                 return;
@@ -736,7 +736,7 @@
         /**
          * @commandpath subscribereward [1|2|3|prime|all] [points] - Set an award for subscribers.
          */
-        if (command.equalsIgnoreCase('subscribereward')) {
+        if ($.equalsIgnoreCase(command, 'subscribereward')) {
             if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.sub.reward.usage'));
                 return;
@@ -756,7 +756,7 @@
         /**
          * @commandpath resubscribereward [1|2|3|prime|all] [points] - Set an award for resubscribers.
          */
-        if (command.equalsIgnoreCase('resubscribereward')) {
+        if ($.equalsIgnoreCase(command, 'resubscribereward')) {
             if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resub.reward.usage'));
                 return;
@@ -776,7 +776,7 @@
         /**
          * @commandpath giftsubreward [1|2|3|all] [points] - Set an award for gifted subs.
          */
-        if (command.equalsIgnoreCase('giftsubreward')) {
+        if ($.equalsIgnoreCase(command, 'giftsubreward')) {
             if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.giftsub.reward.usage'));
                 return;
@@ -796,7 +796,7 @@
         /**
          * @commandpath massgiftsubreward [1|2|3|all] [points] - Set an award for mass subs. This is multiplied by the number of subs gifted.
          */
-        if (command.equalsIgnoreCase('massgiftsubreward')) {
+        if ($.equalsIgnoreCase(command, 'massgiftsubreward')) {
             if (args.length < 2 || isNaN(parseInt(args[1]))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.massgiftsub.reward.usage'));
                 return;
@@ -816,7 +816,7 @@
         /*
          * @commandpath subemote [1|2|3|prime|all] [emote] - The (customemote) tag will be replace with these emotes.  The emotes will be added the amount of months the user subscribed for.
          */
-        if (command.equalsIgnoreCase('subemote') || command.equalsIgnoreCase('resubemote')) {
+        if ($.equalsIgnoreCase(command, 'subemote') || $.equalsIgnoreCase(command, 'resubemote')) {
             if (args.length < 2) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.resubemote.usage'));
                 return;
@@ -836,7 +836,7 @@
         /*
          * @commandpath namesubplan [1|2|3|prime] [name of plan] - Name a subscription plan for the (plan) tag, Twitch provides three tiers plus prime.
          */
-        if (command.equalsIgnoreCase('namesubplan')) {
+        if ($.equalsIgnoreCase(command, 'namesubplan')) {
             planId = tierToPlan(args[0]);
             if (planId === null) {
                 $.say($.whisperPrefix(sender) + $.lang.get('subscribehandler.namesubplan.usage'));

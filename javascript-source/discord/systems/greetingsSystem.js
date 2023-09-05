@@ -27,7 +27,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/systems/greetingsSystem.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/systems/greetingsSystem.js')) {
             joinToggle = $.getIniDbBoolean('discordSettings', 'joinToggle', false);
             partToggle = $.getIniDbBoolean('discordSettings', 'partToggle', false);
             joinMessage = $.getIniDbString('discordSettings', 'joinMessage', '(name) just joined the server!');
@@ -105,7 +105,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('greetingssystem')) {
+        if ($.equalsIgnoreCase(command, 'greetingssystem')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.usage'));
                 return;
@@ -114,7 +114,7 @@
             /**
              * @discordcommandpath greetingssystem jointoggle - Toggles the announcement for when someone joins the server.
              */
-            if (action.equalsIgnoreCase('jointoggle')) {
+            if ($.equalsIgnoreCase(action, 'jointoggle')) {
                 joinToggle = !joinToggle;
                 $.setIniDbBoolean('discordSettings', 'joinToggle', joinToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.join.toggle', (joinToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -123,7 +123,7 @@
             /**
              * @discordcommandpath greetingssystem parttoggle - Toggles the announcement for when someone leaves the server.
              */
-            if (action.equalsIgnoreCase('parttoggle')) {
+            if ($.equalsIgnoreCase(action, 'parttoggle')) {
                 partToggle = !partToggle;
                 $.setIniDbBoolean('discordSettings', 'partToggle', partToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.part.toggle', (partToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -132,7 +132,7 @@
             /**
              * @discordcommandpath greetingssystem joinmessage [message] - Sets the message for when a user joins your server.
              */
-            if (action.equalsIgnoreCase('joinmessage')) {
+            if ($.equalsIgnoreCase(action, 'joinmessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.join.message.usage'));
                     return;
@@ -146,7 +146,7 @@
             /**
              * @discordcommandpath greetingssystem partmessage [message] - Sets the message for when a user leaves your server.
              */
-            if (action.equalsIgnoreCase('partmessage')) {
+            if ($.equalsIgnoreCase(action, 'partmessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.part.message.usage'));
                     return;
@@ -160,7 +160,7 @@
             /**
              * @discordcommandpath greetingssystem channel [channel] - Sets the channel messages from this modules will be made in.
              */
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.channel.usage'));
                     return;
@@ -174,7 +174,7 @@
             /**
              * @discordcommandpath greetingssystem joinrole [role name] - Sets the default role users will get when joining.
              */
-            if (action.equalsIgnoreCase('joinrole')) {
+            if ($.equalsIgnoreCase(action, 'joinrole')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.greetingssystem.joinrole.usage'));
                     return;

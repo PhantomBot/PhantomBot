@@ -100,7 +100,7 @@
             };
         } else {
             return {
-                result: $.inidb.get('timevars', args.args),
+                result: $.getIniDbString('timevars', args.args),
                 cache: true
             };
         }

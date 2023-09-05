@@ -70,7 +70,7 @@
             i;
 
         for (i in commands) {
-            json = JSON.parse($.inidb.get('discordCooldown', commands[i]));
+            json = JSON.parse($.getIniDbString('discordCooldown', commands[i]));
 
             cooldowns[commands[i]] = new Cooldown(json.command, json.globalSec, json.userSec);
         }
@@ -224,7 +224,7 @@
             secsG   = Operation.UnChanged,
             secsU   = Operation.UnChanged;
 
-        if (type1.equalsIgnoreCase('remove')) {
+        if ($.equalsIgnoreCase(type1, 'remove')) {
             remove(command);
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.remove', command));
             return;
@@ -233,24 +233,24 @@
         if(!isNaN(parseInt(type1)) && second === undefined) { //Only assume this is global if no secondary action is present
             type1 = Type.Global;
             secsG = ParseInt(type1);
-        } else if (!type1.equalsIgnoreCase(Type.Global) && !type1.equalsIgnoreCase(Type.User) || isNaN(parseInt(action1[1]))) {
+        } else if ($.equalsIgnoreCase(!type1, Type.Global) && $.equalsIgnoreCase(!type1, Type.User) || isNaN(parseInt(action1[1]))) {
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
             return;
         } else {
-            secsG = type1.equalsIgnoreCase(Type.Global) ? parseInt(action1[1]) : secsG;
-            secsU = type1.equalsIgnoreCase(Type.User) ? parseInt(action1[1]) : secsU;
+            secsG = $.equalsIgnoreCase(type1, Type.Global) ? parseInt(action1[1]) : secsG;
+            secsU = $.equalsIgnoreCase(type1, Type.User) ? parseInt(action1[1]) : secsU;
         }
 
         if (second !== undefined){
             var action2 = second.split("="),
                 type2   = action2[0];
 
-            if (!type2.equalsIgnoreCase(Type.Global) && !type2.equalsIgnoreCase(Type.User) || isNaN(parseInt(action2[1])) || type2.equalsIgnoreCase(type1)) {
+            if ($.equalsIgnoreCase(!type2, Type.Global) && $.equalsIgnoreCase(!type2, Type.User) || isNaN(parseInt(action2[1])) || $.equalsIgnoreCase(type2, type1)) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
                 return;
             } else {
-                secsG = type2.equalsIgnoreCase(Type.Global) ? parseInt(action2[1]) : secsG;
-                secsU = type2.equalsIgnoreCase(Type.User) ? parseInt(action2[1]) : secsU;
+                secsG = $.equalsIgnoreCase(type2, Type.Global) ? parseInt(action2[1]) : secsG;
+                secsU = $.equalsIgnoreCase(type2, Type.User) ? parseInt(action2[1]) : secsU;
             }
         }
 
@@ -266,7 +266,7 @@
         if(action2 !== undefined) {
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.setCombo', command, secsG, secsU));
         } else {
-            messageType = type1.equalsIgnoreCase(Type.Global) ? "discord.cooldown.coolcom.setGlobal" : "discord.cooldown.coolcom.setUser";
+            messageType = $.equalsIgnoreCase(type1, Type.Global) ? "discord.cooldown.coolcom.setGlobal" : "discord.cooldown.coolcom.setUser";
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get(messageType, command, (secsG === Operation.UnChanged ? secsU : secsG)));
         }
     }
@@ -288,7 +288,7 @@
          * @discordcommandpath coolcom [command] [user=seconds] [global=seconds] - Sets a cooldown for a command, default is global if no type and no secondary type is given. Using -1 for the seconds removes the cooldown.
          * @discordcommandpath coolcom [command] remove
          */
-        if (command.equalsIgnoreCase('coolcom')) {
+        if ($.equalsIgnoreCase(command, 'coolcom')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.coolcom.usage'));
                 return;
@@ -298,7 +298,7 @@
             return;
         }
 
-        if (command.equalsIgnoreCase('cooldown')) {
+        if ($.equalsIgnoreCase(command, 'cooldown')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.cooldown.usage'));
                 return;
@@ -307,7 +307,7 @@
             /*
              * @discordcommandpath cooldown setdefault [seconds] - Sets a default global cooldown for commands without a cooldown.
              */
-            if (action.equalsIgnoreCase('setdefault')) {
+            if ($.equalsIgnoreCase(action, 'setdefault')) {
                 if (isNaN(parseInt(subAction))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cooldown.default.usage'));
                     return;
@@ -335,7 +335,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/core/commandCoolDown.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/core/commandCoolDown.js')) {
             if (event.getArgs()[0] === 'add') {
                 add(event.getArgs()[1], event.getArgs()[2], event.getArgs()[3]);
             } else if (event.getArgs()[0] === 'update') {

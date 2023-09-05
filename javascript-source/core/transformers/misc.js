@@ -92,7 +92,7 @@
                 keywordInfo;
         if (args.args) {
             keyword = args.args;
-            keywordInfo = $.inidb.OptString('keywords', '', keyword);
+            keywordInfo = $.optIniDbString('keywords', keyword);
             if (keywordInfo.isPresent()) {
                 keywordInfo = JSON.parse(keywordInfo.get());
                 if ('count' in keywordInfo) {
@@ -159,7 +159,7 @@
      */
     function token(args) {
         return {
-            result: $.inidb.GetString('commandtoken', '', args.event.getCommand(), 'NOT_SET'),
+            result: $.getIniDbString('commandtoken', args.event.getCommand(), 'NOT_SET'),
             cache: true
         };
     }

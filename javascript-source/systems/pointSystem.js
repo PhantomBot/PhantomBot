@@ -88,7 +88,7 @@
      * @returns {*}
      */
     function getUserPoints(username) {
-        return $.inidb.GetInteger('points', '', username.toLowerCase(), 0);
+        return $.getIniDbNumber('points', username.toLowerCase(), 0);
     }
 
     /**
@@ -111,12 +111,12 @@
         username = $.jsString(username);
         group = $.jsString(group);
 
-        let amount = $.inidb.GetInteger(table, '', group, -1);
+        let amount = $.getIniDbNumber(table, group, -1);
 
         if (group === 'Subscriber') {
-            let plan = $.inidb.OptString('subplan', '', username);
+            let plan = $.optIniDbString('subplan', username);
             if (plan.isPresent()) {
-                amount = $.inidb.GetInteger(table, '', ('Subscriber' + plan.get()), amount);
+                amount = $.getIniDbNumber(table, ('Subscriber' + plan.get()), amount);
             }
         }
 
@@ -377,7 +377,7 @@
         /**
          * @commandpath points - Announce points in chat when no parameters are given.
          */
-        if (command.equalsIgnoreCase('points') || command.equalsIgnoreCase('point') || command.equalsIgnoreCase(pointNameMultiple) || command.equalsIgnoreCase(pointNameSingle)) {
+        if ($.equalsIgnoreCase(command, 'points') || $.equalsIgnoreCase(command, 'point') || $.equalsIgnoreCase(command, pointNameMultiple) || $.equalsIgnoreCase(command, pointNameSingle)) {
             if (!action) {
                 $.say(getPointsMessage(sender, username));
                 return;
@@ -393,7 +393,7 @@
             /**
              * @commandpath points add [username] [amount] - Add an amount of points to a user's balance
              */
-            if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('give')) {
+            if ($.equalsIgnoreCase(action, 'add') || $.equalsIgnoreCase(action, 'give')) {
                 actionArg1 = (actionArg1 + '').toLowerCase();
                 actionArg2 = parseInt(actionArg2);
                 if (isNaN(actionArg2) || !actionArg1) {
@@ -401,7 +401,7 @@
                     return;
                 }
 
-                if (actionArg1.equalsIgnoreCase('all')) {
+                if ($.equalsIgnoreCase(actionArg1, 'all')) {
                     giveAll(actionArg2, sender);
                     return;
                 }
@@ -433,7 +433,7 @@
             /**
              * @commandpath points take [username] [amount] - Take an amount of points from the user's balance
              */
-            if (action.equalsIgnoreCase('take') || action.equalsIgnoreCase('remove')) {
+            if ($.equalsIgnoreCase(action, 'take') || $.equalsIgnoreCase(action, 'remove')) {
                 actionArg1 = (actionArg1 + '').toLowerCase();
                 actionArg2 = parseInt(actionArg2);
                 if (isNaN(actionArg2) || !actionArg1) {
@@ -441,7 +441,7 @@
                     return;
                 }
 
-                if (actionArg1.equalsIgnoreCase('all')) {
+                if ($.equalsIgnoreCase(actionArg1, 'all')) {
                     takeAll(actionArg2, sender);
                     return;
                 }
@@ -468,7 +468,7 @@
             /**
              * @commandpath points set [username] [amount] - Set the user's points balance to an amount
              */
-            if (action.equalsIgnoreCase('set')) {
+            if ($.equalsIgnoreCase(action, 'set')) {
                 actionArg1 = (actionArg1 + '').toLowerCase();
                 actionArg2 = parseInt(actionArg2);
                 if (isNaN(actionArg2) || !actionArg1) {
@@ -498,7 +498,7 @@
             /**
              * @commandpath points all [amount] - Send an amount of points to all users in the chat
              */
-            if (action.equalsIgnoreCase('all')) {
+            if ($.equalsIgnoreCase(action, 'all')) {
                 if (!parseInt(actionArg1)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.add.all.usage'));
                     return;
@@ -511,7 +511,7 @@
             /**
              * @commandpath points takeall [amount] - Remove an amount of points to all users in the chat
              */
-            if (action.equalsIgnoreCase('takeall')) {
+            if ($.equalsIgnoreCase(action, 'takeall')) {
                 if (!parseInt(actionArg1)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.take.all.usage'));
                     return;
@@ -526,13 +526,13 @@
              * @commandpath points setname multiple [name] - Set the points name for plural points
              * @commandpath points setname delete - Deletes single and multiple custom names
              */
-            if (action.equalsIgnoreCase('setname')) {
+            if ($.equalsIgnoreCase(action, 'setname')) {
                 if (actionArg1 === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.usage'));
                     return;
                 }
-                if (actionArg1.equalsIgnoreCase('single') && actionArg2) {
-                    if (actionArg2.equalsIgnoreCase($.inidb.get('pointSettings', 'pointNameSingle'))) {
+                if ($.equalsIgnoreCase(actionArg1, 'single') && actionArg2) {
+                    if ($.equalsIgnoreCase(actionArg2, $.getIniDbString('pointSettings', 'pointNameSingle'))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.duplicate'));
                         return;
                     }
@@ -543,8 +543,8 @@
                     updateSettings();
                     return;
                 }
-                if (actionArg1.equalsIgnoreCase('multiple') && actionArg2) {
-                    if (actionArg2.equalsIgnoreCase($.inidb.get('pointSettings', 'pointNameMultiple'))) {
+                if ($.equalsIgnoreCase(actionArg1, 'multiple') && actionArg2) {
+                    if ($.equalsIgnoreCase(actionArg2, $.getIniDbString('pointSettings', 'pointNameMultiple'))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.duplicate'));
                         return;
                     }
@@ -555,7 +555,7 @@
                     updateSettings();
                     return;
                 }
-                if (actionArg1.equalsIgnoreCase('delete')) {
+                if ($.equalsIgnoreCase(actionArg1, 'delete')) {
                     $.inidb.set('pointSettings', 'pointNameSingle', 'point');
                     $.inidb.set('pointSettings', 'pointNameMultiple', 'points');
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.name.delete'));
@@ -570,7 +570,7 @@
             /**
              * @commandpath points setgain [amount] - Set the amount of points gained per payout interval while the channel is online, can be overriden by group settings
              */
-            if (action.equalsIgnoreCase('setgain')) {
+            if ($.equalsIgnoreCase(action, 'setgain')) {
                 actionArg1 = parseInt(actionArg1);
                 if (isNaN(actionArg1)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.usage'));
@@ -591,7 +591,7 @@
             /**
              * @commandpath points setofflinegain [amount] - Set the amount of points gained per interval while the channel is offline, can be overridden by group settings
              */
-            if (action.equalsIgnoreCase('setofflinegain')) {
+            if ($.equalsIgnoreCase(action, 'setofflinegain')) {
                 actionArg1 = parseInt(actionArg1);
                 if (isNaN(actionArg1)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.gain.offline.usage'));
@@ -613,7 +613,7 @@
             /**
              * @commandpath points setinterval [minutes] - Set the points payout interval for when the channel is online
              */
-            if (action.equalsIgnoreCase('setinterval')) {
+            if ($.equalsIgnoreCase(action, 'setinterval')) {
                 actionArg1 = parseInt(actionArg1);
                 if (isNaN(actionArg1)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.interval.usage'));
@@ -635,7 +635,7 @@
             /**
              * @commandpath points setofflineinterval [minutes] - Set the points payout interval for when the channel is offline
              */
-            if (action.equalsIgnoreCase('setofflineinterval')) {
+            if ($.equalsIgnoreCase(action, 'setofflineinterval')) {
                 actionArg1 = parseInt(actionArg1);
                 if (isNaN(actionArg1)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.set.interval.offline.usage'));
@@ -657,7 +657,7 @@
             /**
              * @commandpath points setmessage [message] - Set the points message for when someone uses the points command. - Tags: (userprefix), (user), (points), (pointsname), (pointsstring), (time), and (rank)
              */
-            if (action.equalsIgnoreCase('setmessage')) {
+            if ($.equalsIgnoreCase(action, 'setmessage')) {
                 if (!actionArg1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.message.usage'));
                     return;
@@ -672,7 +672,7 @@
             /**
              * @commandpath points bonus [amount] [time in minutes] - Gives a bonus amount of points at each payouts
              */
-            if (action.equalsIgnoreCase('bonus')) {
+            if ($.equalsIgnoreCase(action, 'bonus')) {
                 if (!actionArg1 || !actionArg2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.bonus.usage'));
                     return;
@@ -685,7 +685,7 @@
             /**
              * @commandpath points resetall - Deletes everyones points
              */
-            if (action.equalsIgnoreCase('resetall')) {
+            if ($.equalsIgnoreCase(action, 'resetall')) {
                 $.inidb.RemoveFile('points');
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.reset.all'));
                 return;
@@ -694,7 +694,7 @@
             /**
              * @commandpath points setactivebonus [points] - Sets a bonus amount of points user get if they are active between the last payout.
              */
-            if (action.equalsIgnoreCase('setactivebonus')) {
+            if ($.equalsIgnoreCase(action, 'setactivebonus')) {
                 if (actionArg1 === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.active.bonus.usage'));
                     return;
@@ -711,7 +711,7 @@
         /**
          * @commandpath makeitrain [amount] - Send a random amount of points to each user in the channel
          */
-        if (command.equalsIgnoreCase('makeitrain')) {
+        if ($.equalsIgnoreCase(command, 'makeitrain')) {
             let lastAmount = 0,
                     amount = 0,
                     totalAmount = 0;
@@ -743,8 +743,8 @@
         /**
          * @commandpath gift [user] [amount] - Give points to a friend.
          */
-        if (command.equalsIgnoreCase('gift')) {
-            if (!action || isNaN(parseInt(actionArg1)) || action.equalsIgnoreCase(sender)) {
+        if ($.equalsIgnoreCase(command, 'gift')) {
+            if (!action || isNaN(parseInt(actionArg1)) || $.equalsIgnoreCase(action, sender)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.gift.usage'));
                 return;
             }
@@ -775,13 +775,13 @@
         /**
          * @commandpath penalty [user] [time] - Stop a user from gaining points for X amount of minutes.
          */
-        if (command.equalsIgnoreCase('penalty')) {
+        if ($.equalsIgnoreCase(command, 'penalty')) {
             if (action === undefined || isNaN(actionArg1)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.err.penalty'));
                 return;
             }
 
-            if (sender.equalsIgnoreCase($.botName)) { // Used for the panel.
+            if ($.equalsIgnoreCase(sender, $.botName)) { // Used for the panel.
                 setPenalty(sender, action.toLowerCase(), parseInt(actionArg1), true);
                 return;
             }

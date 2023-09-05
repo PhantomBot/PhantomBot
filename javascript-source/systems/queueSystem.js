@@ -176,7 +176,7 @@
      * @return {String}
      */
     function date(time, simple) {
-        var zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
+        var zone = $.getIniDbString('settings', 'timezone', 'GMT');
         var ldate = Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(time), Packages.java.time.ZoneId.of(zone));
         var datevar = ldate.format(Packages.java.time.format.DateTimeFormatter.ofPattern('HH:mm:ss z'));
         var string = $.getTimeString(Packages.java.time.Duration.between(ldate, Packages.java.time.ZonedDateTime.now()).toSeconds());
@@ -290,7 +290,7 @@
 
             for (i in keys) {
                 queue[keys[i]].position = t;
-                var temp = JSON.parse($.inidb.get('queue', keys[i]));
+                var temp = JSON.parse($.getIniDbString('queue', keys[i]));
                 temp.position = t;
                 $.inidb.set('queue', keys[i], JSON.stringify(temp));
                 t++;
@@ -351,7 +351,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('queue')) {
+        if ($.equalsIgnoreCase(command, 'queue')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('queuesystem.usage'));
                 return;
@@ -360,7 +360,7 @@
             /*
              * @commandpath queue open [max size] [title] - Opens a new queue. Max size is optional.
              */
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 open(sender, (isNaN(parseInt(subAction)) ? 0 : subAction), (isNaN(parseInt(subAction)) ? args.slice(1).join(' ') : args.slice(2).join(' ')));
                 return;
             }
@@ -368,7 +368,7 @@
             /*
              * @commandpath queue close - Closes the current queue that is opened.
              */
-            if (action.equalsIgnoreCase('close')) {
+            if ($.equalsIgnoreCase(action, 'close')) {
                 close(sender);
                 return;
             }
@@ -376,7 +376,7 @@
             /*
              * @commandpath queue clear - Closes and resets the current queue.
              */
-            if (action.equalsIgnoreCase('clear')) {
+            if ($.equalsIgnoreCase(action, 'clear')) {
                 clear(sender);
                 return;
             }
@@ -384,7 +384,7 @@
             /*
              * @commandpath queue remove [username] - Removes that username from the queue.
              */
-            if (action.equalsIgnoreCase('remove')) {
+            if ($.equalsIgnoreCase(action, 'remove')) {
                 remove(sender, subAction);
                 return;
             }
@@ -392,7 +392,7 @@
             /*
              * @commandpath queue list - Gives you the current queue list. Note that if the queue list is very long it will only show the first 5 users in the queue.
              */
-            if (action.equalsIgnoreCase('list')) {
+            if ($.equalsIgnoreCase(action, 'list')) {
                 list(sender);
                 return;
             }
@@ -400,7 +400,7 @@
             /*
              * @commandpath queue next [amount] - Shows the players that are to be picked next. Note if the amount is not specified it will only show one.
              */
-            if (action.equalsIgnoreCase('next')) {
+            if ($.equalsIgnoreCase(action, 'next')) {
                 next(sender, subAction);
                 return;
             }
@@ -408,7 +408,7 @@
             /*
              * @commandpath queue pick [amount] - Picks the players next in line from the queue. Note if the amount is not specified it will only pick one.
              */
-            if (action.equalsIgnoreCase('pick')) {
+            if ($.equalsIgnoreCase(action, 'pick')) {
                 pick(sender, subAction, false);
                 return;
             }
@@ -416,7 +416,7 @@
             /*
              * @commandpath queue random [amount] - Picks random players from the queue. Note if the amount is not specified it will only pick one.
              */
-            if (action.equalsIgnoreCase('random')) {
+            if ($.equalsIgnoreCase(action, 'random')) {
                 pick(sender, subAction, true);
                 return;
             }
@@ -424,7 +424,7 @@
             /*
              * @commandpath queue position [username] - Tells what position that user is in the queue and at what time he joined.
              */
-            if (action.equalsIgnoreCase('position')) {
+            if ($.equalsIgnoreCase(action, 'position')) {
                 position(sender, subAction);
                 return;
             }
@@ -432,7 +432,7 @@
             /*
              * @commandpath queue info - Gives you the current information about the queue that is opened
              */
-            if (action.equalsIgnoreCase('info')) {
+            if ($.equalsIgnoreCase(action, 'info')) {
                 stats(sender);
                 return;
             }
@@ -441,7 +441,7 @@
         /*
          * @commandpath joinqueue [gamertag] - Adds you to the current queue. Note that the gamertag part is optional.
          */
-        if (command.equalsIgnoreCase('joinqueue')) {
+        if ($.equalsIgnoreCase(command, 'joinqueue')) {
             join(sender, args.join(' '), command);
         }
     });
@@ -468,24 +468,24 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./systems/queueSystem.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './systems/queueSystem.js')) {
             var action = event.getArgs()[0];
 
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 open($.channelName, event.getArgs()[1], event.getArgs().slice(2).join(' '));
-            } else if (action.equalsIgnoreCase('close')) {
+            } else if ($.equalsIgnoreCase(action, 'close')) {
                 close($.channelName);
-            } else if (action.equalsIgnoreCase('pick')) {
+            } else if ($.equalsIgnoreCase(action, 'pick')) {
                 pick($.channelName, event.getArgs()[1], false);
-            } else if (action.equalsIgnoreCase('random')) {
+            } else if ($.equalsIgnoreCase(action, 'random')) {
                 pick($.channelName, event.getArgs()[1], true);
-            } else if (action.equalsIgnoreCase('remove')) {
+            } else if ($.equalsIgnoreCase(action, 'remove')) {
                 if (event.getArgs()[1] !== undefined && queue[event.getArgs()[1]] !== undefined) {
                     delete queue[event.getArgs()[1].toLowerCase()];
                     $.inidb.del('queue', event.getArgs()[1].toLowerCase());
                     resetPosition(-1);
                 }
-            } else if (action.equalsIgnoreCase('clear')) {
+            } else if ($.equalsIgnoreCase(action, 'clear')) {
                 queue = {};
                 info = {};
                 isOpened = false;

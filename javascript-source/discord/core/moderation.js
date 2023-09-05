@@ -140,11 +140,11 @@
     function timeoutUser(message) {
         $.discordAPI.deleteMessage(message);
     }
-    
+
     function userLink(username) {
         return 'https://www.twitch.tv/popout/' + $.channelName + '/viewercard/' + username.toLowerCase();
     }
-    
+
     /*
      * @function embedDelete
      *
@@ -159,7 +159,7 @@
 
         obj['**Deleted_message_of:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
-        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -189,7 +189,7 @@
         obj['**Reason:**'] = reason;
         obj['**Time:**'] = time + ' seconds.';
 
-        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -216,7 +216,7 @@
         obj['**Ban_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
-        obj['**Last_message:**'] = (message.length() > 50 ? message.substring(0, 50) + '...' : message);
+        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -226,7 +226,7 @@
         }
         $.discordAPI.sendMessageEmbed(modLogChannel, 'red', toSend);
     }
-    
+
     /*
      * @event PubSubModerationDelete
      */
@@ -310,7 +310,7 @@
         var sender = event.getSenderId(),
             channel = event.getDiscordChannel(),
             message = event.getMessage().toLowerCase(),
-            messageLength = message.length();
+            messageLength = $.strlen(message);
 
         if (event.isAdmin() === false && !hasPermit(sender) && !isWhiteList(sender, message)) {
             if (linkToggle && $.discord.pattern.hasLink(message)) {
@@ -364,13 +364,13 @@
             subAction = args[1],
             actionArgs = args[2];
 
-        if (command.equalsIgnoreCase('moderation')) {
+        if ($.equalsIgnoreCase(command, 'moderation')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.usage'));
                 return;
             }
 
-            if (action.equalsIgnoreCase('links')) {
+            if ($.equalsIgnoreCase(action, 'links')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.links.usage'));
                     return;
@@ -379,7 +379,7 @@
                 /**
                  * @discordcommandpath moderation links toggle - Toggles the link filter.
                  */
-                if (subAction.equalsIgnoreCase('toggle')) {
+                if ($.equalsIgnoreCase(subAction, 'toggle')) {
                     linkToggle = !linkToggle;
                     $.setIniDbBoolean('discordSettings', 'linkToggle', linkToggle);
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.links.toggle', (linkToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -388,7 +388,7 @@
                 /**
                  * @discordcommandpath moderation links permittime [seconds] - Sets the amount a time a permit lasts for.
                  */
-                if (subAction.equalsIgnoreCase('permittime')) {
+                if ($.equalsIgnoreCase(subAction, 'permittime')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.links.permit.time.usage'));
                         return;
@@ -400,7 +400,7 @@
                 }
             }
 
-            if (action.equalsIgnoreCase('caps')) {
+            if ($.equalsIgnoreCase(action, 'caps')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.usage'));
                     return;
@@ -409,7 +409,7 @@
                 /**
                  * @discordcommandpath moderation caps toggle - Toggle the caps filter.
                  */
-                if (subAction.equalsIgnoreCase('toggle')) {
+                if ($.equalsIgnoreCase(subAction, 'toggle')) {
                     capsToggle = !capsToggle;
                     $.setIniDbBoolean('discordSettings', 'capsToggle', capsToggle);
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.toggle', (capsToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -418,7 +418,7 @@
                 /**
                  * @discordcommandpath moderation caps triggerlength [characters] - Sets the amount of characters needed a message before checking for caps.
                  */
-                if (subAction.equalsIgnoreCase('triggerlength')) {
+                if ($.equalsIgnoreCase(subAction, 'triggerlength')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.trigger.usage'));
                         return;
@@ -432,7 +432,7 @@
                 /**
                  * @discordcommandpath moderation caps limitpercent [percent] - Sets the amount in percent of caps are allowed in a message.
                  */
-                if (subAction.equalsIgnoreCase('limitpercent')) {
+                if ($.equalsIgnoreCase(subAction, 'limitpercent')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.caps.limit.usage'));
                         return;
@@ -444,7 +444,7 @@
                 }
             }
 
-            if (action.equalsIgnoreCase('longmessage')) {
+            if ($.equalsIgnoreCase(action, 'longmessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.long.message.usage'));
                     return;
@@ -453,7 +453,7 @@
                 /**
                  * @discordcommandpath moderation longmessage toggle - Toggles the long message filter
                  */
-                if (subAction.equalsIgnoreCase('toggle')) {
+                if ($.equalsIgnoreCase(subAction, 'toggle')) {
                     longMessageToggle = !longMessageToggle;
                     $.setIniDbBoolean('discordSettings', 'longMessageToggle', longMessageToggle);
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.long.message.toggle', (longMessageToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -462,7 +462,7 @@
                 /**
                  * @discordcommandpath moderation longmessage limit [characters] - Sets the amount of characters allowed in a message.
                  */
-                if (subAction.equalsIgnoreCase('limit')) {
+                if ($.equalsIgnoreCase(subAction, 'limit')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.long.message.limit.usage'));
                         return;
@@ -474,7 +474,7 @@
                 }
             }
 
-            if (action.equalsIgnoreCase('spam')) {
+            if ($.equalsIgnoreCase(action, 'spam')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.usage'));
                     return;
@@ -483,7 +483,7 @@
                 /**
                  * @discordcommandpath moderation spam toggle - Toggles the spam filter.
                  */
-                if (subAction.equalsIgnoreCase('toggle')) {
+                if ($.equalsIgnoreCase(subAction, 'toggle')) {
                     spamToggle = !spamToggle;
                     $.setIniDbBoolean('discordSettings', 'spamToggle', spamToggle);
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.toggle', (spamToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -492,7 +492,7 @@
                 /**
                  * @discordcommandpath moderation limit [messages] - Sets the amount of messages users are allowed to send in 5 seconds.
                  */
-                if (subAction.equalsIgnoreCase('limit')) {
+                if ($.equalsIgnoreCase(subAction, 'limit')) {
                     if (isNaN(parseInt(actionArgs))) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.spam.limit.usage'));
                         return;
@@ -505,7 +505,7 @@
             }
 
 
-            if (action.equalsIgnoreCase('blacklist')) {
+            if ($.equalsIgnoreCase(action, 'blacklist')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.usage'));
                     return;
@@ -514,7 +514,7 @@
                 /**
                  * @discordcommandpath moderation blacklist add [phrase] - Adds a word or phrase to the blacklist which will be deleted if said in any channel.
                  */
-                if (subAction.equalsIgnoreCase('add')) {
+                if ($.equalsIgnoreCase(subAction, 'add')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.add.usage'));
                         return;
@@ -529,7 +529,7 @@
                 /**
                  * @discordcommandpath moderation blacklist remove [phrase] - Removes a word or phrase to the blacklist.
                  */
-                if (subAction.equalsIgnoreCase('remove')) {
+                if ($.equalsIgnoreCase(subAction, 'remove')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.blacklist.remove.usage'));
                         return;
@@ -547,7 +547,7 @@
                 /**
                  * @discordcommandpath moderation blacklist list - Gives you a list of everything in the blacklist.
                  */
-                if (subAction.equalsIgnoreCase('list')) {
+                if ($.equalsIgnoreCase(subAction, 'list')) {
                     var keys = $.inidb.GetKeyList('discordBlacklist', ''),
                         temp = [],
                         i;
@@ -565,7 +565,7 @@
                 }
             }
 
-            if (action.equalsIgnoreCase('whitelist')) {
+            if ($.equalsIgnoreCase(action, 'whitelist')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.usage'));
                     return;
@@ -574,7 +574,7 @@
                 /**
                  * @discordcommandpath moderation whitelist add [phrase or username#discriminator] - Adds a phrase, word or username that will not get checked by the moderation system.
                  */
-                if (subAction.equalsIgnoreCase('add')) {
+                if ($.equalsIgnoreCase(subAction, 'add')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.add.usage'));
                         return;
@@ -589,7 +589,7 @@
                 /**
                  * @discordcommandpath moderation whitelist add [phrase or username#discriminator] - Removes that phrase, word or username from the whitelist.
                  */
-                if (subAction.equalsIgnoreCase('remove')) {
+                if ($.equalsIgnoreCase(subAction, 'remove')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.whitelist.remove.usage'));
                         return;
@@ -607,7 +607,7 @@
                 /**
                  * @discordcommandpath moderation whitelist list - Gives you a list of everything in the whitelist.
                  */
-                if (subAction.equalsIgnoreCase('list')) {
+                if ($.equalsIgnoreCase(subAction, 'list')) {
                     var keys = $.inidb.GetKeyList('discordWhitelist', ''),
                         temp = [],
                         i;
@@ -628,7 +628,7 @@
             /**
              * @discordcommandpath moderation cleanup [channel] [amount] - Will delete that amount of messages for that channel.
              */
-            if (action.equalsIgnoreCase('cleanup')) {
+            if ($.equalsIgnoreCase(action, 'cleanup')) {
                 var resolvedChannel = null;
                 if (subAction === undefined || (actionArgs === undefined || isNaN(parseInt(actionArgs)))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.usage'));
@@ -651,7 +651,7 @@
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.cleanup.done', actionArgs));
             }
 
-            if (action.equalsIgnoreCase('logs')) {
+            if ($.equalsIgnoreCase(action, 'logs')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.toggle.usage'));
                     return;
@@ -660,7 +660,7 @@
                 /**
                  * @discordcommandpath moderation logs toggle - Will toggle if Twitch moderation logs are to be said in Discord. Requires a bot restart.
                  */
-                if (subAction.equalsIgnoreCase('toggle')) {
+                if ($.equalsIgnoreCase(subAction, 'toggle')) {
                     modLogs = !modLogs;
                     $.setIniDbBoolean('discordSettings', 'modLogs', modLogs);
                     $.setIniDbBoolean('chatModerator', 'moderationLogs', modLogs);
@@ -670,7 +670,7 @@
                 /**
                  * @discordcommandpath moderation logs channel [channel name] - Will make Twitch moderator action be announced in that channel.
                  */
-                if (subAction.equalsIgnoreCase('channel')) {
+                if ($.equalsIgnoreCase(subAction, 'channel')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.channel.usage'));
                         return;
@@ -688,7 +688,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/core/moderation.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/core/moderation.js')) {
             reload();
         }
     });

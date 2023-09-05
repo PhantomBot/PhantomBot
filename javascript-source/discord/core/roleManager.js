@@ -159,11 +159,11 @@
     function hasRole(array, role, getName) {
         for (var i in array) {
             if (!getName) {
-                if (array[i].equalsIgnoreCase(role)) {
+                if ($.equalsIgnoreCase(array[i], role)) {
                     return true;
                 }
             } else {
-                if (array[i].getName().equalsIgnoreCase(role)) {
+                if ($.equalsIgnoreCase(array[i].getName(), role)) {
                     return true;
                 }
             }
@@ -179,7 +179,7 @@
             i;
 
         for (i in keys) {
-            if (!$.getIniDbString('ranksMapping', $.getIniDbNumber('discordRanks', keys[i]), '').equalsIgnoreCase(keys[i])) {
+            if (!$.equalsIgnoreCase($.getIniDbString('ranksMapping', $.getIniDbNumber('discordRanks', keys[i]), ''), keys[i])) {
                 $.discordAPI.deleteRole(keys[i]);
                 $.inidb.del('discordRanks', keys[i]);
             }
@@ -206,7 +206,7 @@
         let roles = [];
 
         if (autoSetPermissions === true) {
-            let group = $.inidb.OptString('group', '', username);
+            let group = $.optIniDbString('group', username);
             if (group.isPresent() && !$.inidb.exists('blacklistedDiscordRoles', group.get().toLowerCase())) {
                 roles.push($.getIniDbString('groups', group.get()));
             }
@@ -234,7 +234,7 @@
             subAction = args[1],
             actionArgs = args[2];
 
-        if (command.equalsIgnoreCase('rolemanager')) {
+        if ($.equalsIgnoreCase(command, 'rolemanager')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.usage'));
                 return;
@@ -243,7 +243,7 @@
             /*
              * @discordcommandpath rolemanager togglesyncpermissions - Makes the bot sync default permissions with those who have their accounts linked.
              */
-            if (action.equalsIgnoreCase('togglesyncpermissions')) {
+            if ($.equalsIgnoreCase(action, 'togglesyncpermissions')) {
                 autoSetPermissions = !autoSetPermissions;
                 $.setIniDbBoolean('discordSettings', 'autoSetPermissions', autoSetPermissions);
                 $.discord.say(channel, $.discord.userPrefix(mention) + (autoSetPermissions ? $.lang.get('discord.rolemanager.permission.sync.on') : $.lang.get('discord.rolemanager.permission.sync.off')));
@@ -252,7 +252,7 @@
             /*
              * @discordcommandpath rolemanager togglesyncranks - Makes the bot sync ranks with those who have their accounts linked.
              */
-            if (action.equalsIgnoreCase('togglesyncranks')) {
+            if ($.equalsIgnoreCase(action, 'togglesyncranks')) {
                 autoSetRanks = !autoSetRanks;
                 $.setIniDbBoolean('discordSettings', 'autoSetRanks', autoSetRanks);
                 $.discord.say(channel, $.discord.userPrefix(mention) + (autoSetRanks ? $.lang.get('discord.rolemanager.ranks.sync.on') : $.lang.get('discord.rolemanager.ranks.sync.off')));
@@ -261,13 +261,13 @@
             /*
              * @discordcommandpath rolemanager blacklist [add / remove] [permission or rank] - Blacklist a rank or permission from being used.
              */
-            if (action.equalsIgnoreCase('blacklist')) {
+            if ($.equalsIgnoreCase(action, 'blacklist')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.usage'));
                     return;
                 }
 
-                if (subAction.equalsIgnoreCase('add')) {
+                if ($.equalsIgnoreCase(subAction, 'add')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.add.usage'));
                         return;
@@ -278,7 +278,7 @@
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.add.success', blacklist));
                 }
 
-                if (subAction.equalsIgnoreCase('remove')) {
+                if ($.equalsIgnoreCase(subAction, 'remove')) {
                     if (actionArgs === undefined) {
                         $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.rolemanager.blacklist.remove.usage'));
                         return;

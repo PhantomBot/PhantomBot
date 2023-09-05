@@ -123,12 +123,12 @@
         /**
          * @commandpath slot - Play the slot machines for some points
          */
-        if (command.equalsIgnoreCase('slot')) {
+        if ($.equalsIgnoreCase(command, 'slot')) {
             /**
              * @commandpath slot rewards [val1] [val2] [val3] [val4] [val5] - Set the reward values for the slots.
              */
             if (args[0] !== undefined) {
-                if (args[0].equalsIgnoreCase('rewards')) {
+                if ($.equalsIgnoreCase(args[0], 'rewards')) {
                     if (args.length != 6) {
                         loadPrizes();
                         $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.rewards.usage', prizes.join(' ')));
@@ -153,7 +153,7 @@
                 /**
                  * @commandpath slot emotes [emote1] [emote2] [emote3] [emote4] [emote5] - Set the emotes for the slots.
                  */
-                if (args[0].equalsIgnoreCase('emotes')) {
+                if ($.equalsIgnoreCase(args[0], 'emotes')) {
                     if (args.length < 6) {
                         loadEmotes();
                         $.say($.whisperPrefix(sender) + $.lang.get('slotmachine.emote.usage', emoteList.join(' ')));

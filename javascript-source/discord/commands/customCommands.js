@@ -67,7 +67,7 @@
         /**
          * Checks for custom commands, no command path needed here.
          */
-        let discordCommand = $.inidb.OptString('discordCommands', '', command);
+        let discordCommand = $.optIniDbString('discordCommands', command);
         if (discordCommand.isPresent()) {
             var tag = $.transformers.tags(event, discordCommand.get(), ['discord', ['commandevent', 'noevent']], {platform: 'discord'});
             if (tag !== null) {
@@ -79,7 +79,7 @@
         /**
          * @discordcommandpath addcom [command] [response] - Adds a custom command to be used in your Discord server.
          */
-        if (command.equalsIgnoreCase('addcom')) {
+        if ($.equalsIgnoreCase(command, 'addcom')) {
             if (action === undefined || subAction === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.addcom.usage'));
                 return;
@@ -100,7 +100,7 @@
         /**
          * @discordcommandpath editcom [command] [response] - Edits an existing command.
          */
-        if (command.equalsIgnoreCase('editcom')) {
+        if ($.equalsIgnoreCase(command, 'editcom')) {
             if (action === undefined || subAction === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.editcom.usage'));
                 return;
@@ -121,7 +121,7 @@
         /**
          * @discordcommandpath delcom [command] - Deletes a custom command.
          */
-        if (command.equalsIgnoreCase('delcom')) {
+        if ($.equalsIgnoreCase(command, 'delcom')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.delcom.usage'));
                 return;
@@ -142,7 +142,7 @@
         /**
          * @discordcommandpath channelcom [command] [channel / --global / --list] - Makes a command only work in that channel, separate the channels with commas (no spaces) for multiple, use --global as the channel to make the command global again.
          */
-        if (command.equalsIgnoreCase('channelcom')) {
+        if ($.equalsIgnoreCase(command, 'channelcom')) {
             if (action === undefined || subAction === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.usage'));
                 return;
@@ -155,12 +155,12 @@
                 return;
             }
 
-            if (subAction.equalsIgnoreCase('--global') || subAction.equalsIgnoreCase('-g')) {
+            if ($.equalsIgnoreCase(subAction, '--global') || $.equalsIgnoreCase(subAction, '-g')) {
                 $.inidb.del('discordChannelcom', action);
                 $.discord.updateCommandChannel(action);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.channelcom.global', action));
                 return;
-            } else if (subAction.equalsIgnoreCase('--list') || subAction.equalsIgnoreCase('-l')) {
+            } else if ($.equalsIgnoreCase(subAction, '--list') || $.equalsIgnoreCase(subAction, '-l')) {
                 let keys = $.inidb.OptString('discordChannelcom', '',action),
                         key = [],
                         i;
@@ -194,7 +194,7 @@
         /**
          * @discordcommandpath pricecom [command] [amount] - Sets a cost for that command, users must of their Twitch accounts linked for this to work.
          */
-        if (command.equalsIgnoreCase('pricecom')) {
+        if ($.equalsIgnoreCase(command, 'pricecom')) {
             if (action === undefined || (subAction === undefined || isNaN(parseInt(subAction)))) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.pricecom.usage'));
                 return;
@@ -215,7 +215,7 @@
         /**
          * @discordcommandpath aliascom [alias] [command] - Alias a command to another command, this only works with commands that have a single command.
          */
-        if (command.equalsIgnoreCase('aliascom')) {
+        if ($.equalsIgnoreCase(command, 'aliascom')) {
             if (action === undefined || subAction === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.aliascom.usage'));
                 return;
@@ -237,7 +237,7 @@
         /**
          * @discordcommandpath delalias [alias] - Removes the alias of that command.
          */
-        if (command.equalsIgnoreCase('delalias')) {
+        if ($.equalsIgnoreCase(command, 'delalias')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.customcommands.delalias.usage'));
                 return;
@@ -253,7 +253,7 @@
             var keys = $.inidb.GetKeyList('discordAliascom', ''),
                     i;
             for (i in keys) {
-                if ($.inidb.get('discordAliascom', keys[i]).equalsIgnoreCase(action)) {
+                if ($.equalsIgnoreCase($.getIniDbString('discordAliascom', keys[i]), action)) {
                     $.inidb.del('discordAliascom', keys[i]);
                     $.discord.removeAlias(keys[i], '');
                 }
@@ -264,7 +264,7 @@
         /**
          * @discordcommandpath commands - Shows all of the custom commands you created.
          */
-        if (command.equalsIgnoreCase('commands')) {
+        if ($.equalsIgnoreCase(command, 'commands')) {
             var keys = $.inidb.GetKeyList('discordCommands', ''),
                     temp = [],
                     i;
@@ -279,7 +279,7 @@
         /**
          * @discordcommandpath botcommands - Gives you a list of commands that you are allowed to use.
          */
-        if (command.equalsIgnoreCase('botcommands')) {
+        if ($.equalsIgnoreCase(command, 'botcommands')) {
             var keys = $.inidb.GetKeyList('discordPermcom', ''),
                     temp = [],
                     i;
@@ -315,20 +315,20 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./discord/commands/customCommands.js')) {
-            if (event.getArguments().length() === 0) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/commands/customCommands.js')) {
+            if ($.strlen(event.getArguments()) === 0) {
                 if (!$.discord.commandExists(event.getArgs()[0])) {
                     $.discord.registerCommand('./discord/commands/customCommands.js', event.getArgs()[0], event.getArgs()[1]);
                 } else {
                     $.discord.setCommandPermission(event.getArgs()[0], event.getArgs()[1]);
-                    $.discord.setCommandCost(event.getArgs()[0], (event.getArgs()[4].length() === 0 ? '' : event.getArgs()[4]));
-                    if (event.getArgs()[3].length() === 0) {
-                        $.discord.removeAlias(event.getArgs()[0], $.inidb.get('discordAliascom', event.getArgs()[0]));
+                    $.discord.setCommandCost(event.getArgs()[0], ($.strlen(event.getArgs()[4]) === 0 ? '' : event.getArgs()[4]));
+                    if ($.strlen(event.getArgs()[3]) === 0) {
+                        $.discord.removeAlias(event.getArgs()[0], $.getIniDbString('discordAliascom', event.getArgs()[0]));
                     } else {
-                        $.discord.setCommandAlias(event.getArgs()[0], (event.getArgs()[3].length() === 0 ? '' : event.getArgs()[3]));
+                        $.discord.setCommandAlias(event.getArgs()[0], ($.strlen(event.getArgs()[3]) === 0 ? '' : event.getArgs()[3]));
                     }
 
-                    if (event.getArgs()[2].length() === 0) {
+                    if ($.strlen(event.getArgs()[2]) === 0) {
                         $.inidb.del('discordChannelcom', event.getArgs()[0]);
                     } else {
                         $.inidb.set('discordChannelcom', event.getArgs()[0], String(event.getArgs()[2]).replace(/#/g, '').toLowerCase());

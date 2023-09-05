@@ -255,13 +255,13 @@
         /**
          * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable discord modules though.
          */
-        if (command.equalsIgnoreCase('module')) {
-            if (action === undefined || (subAction === undefined && !action.equalsIgnoreCase('list'))) {
+        if ($.equalsIgnoreCase(command, 'module')) {
+            if (action === undefined || (subAction === undefined && $.equalsIgnoreCase(!action, 'list'))) {
                 say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.usage'));
                 return;
             }
 
-            if (action.equalsIgnoreCase('enable')) {
+            if ($.equalsIgnoreCase(action, 'enable')) {
                 var module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
@@ -290,7 +290,7 @@
             /**
              * @discordcommandpath module disable [path] - Disables any modules in the bot, it should only be used to enable discord modules though.
              */
-            if (action.equalsIgnoreCase('disable')) {
+            if ($.equalsIgnoreCase(action, 'disable')) {
                 var module = $.bot.getModule(subAction);
 
                 if (module !== undefined) {
@@ -306,7 +306,7 @@
             /**
              * @discordcommandpath module list - Lists all of the discord modules.
              */
-            if (action.equalsIgnoreCase('list')) {
+            if ($.equalsIgnoreCase(action, 'list')) {
                 var keys = Object.keys($.bot.modules),
                     modules = $.bot.modules,
                     list = [],
@@ -324,7 +324,7 @@
         /**
          * @discordcommandpath setgame [game name] - Sets the bot game.
          */
-        if (command.equalsIgnoreCase('setgame')) {
+        if ($.equalsIgnoreCase(command, 'setgame')) {
             if (action === undefined) {
                 say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.set.usage'));
                 return;
@@ -337,7 +337,7 @@
         /**
          * @discordcommandpath setstream [twitch url] [game name] - Sets the bot game and marks it as streaming.
          */
-        if (command.equalsIgnoreCase('setstream')) {
+        if ($.equalsIgnoreCase(command, 'setstream')) {
             if (action === undefined) {
                 say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.stream.set.usage'));
                 return;
@@ -350,7 +350,7 @@
         /**
          * @discordcommandpath removegame - Removes the bot's game and streaming status if set.
          */
-        if (command.equalsIgnoreCase('removegame')) {
+        if ($.equalsIgnoreCase(command, 'removegame')) {
             removeGame();
             say(channel, userPrefix(mention) + $.lang.get('discord.misc.game.removed'));
         }
@@ -360,7 +360,7 @@
      * @event discordRoleCreated
      */
     $.bind('discordRoleCreated', function(event) {
-        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+        var permObj = JSON.parse($.getIniDbString('discordPermsObj', 'obj'));
 
         permObj.roles.push({
             'name': event.getDiscordRole().getName() + '',
@@ -375,7 +375,7 @@
      * @event discordRoleUpdated
      */
     $.bind('discordRoleUpdated', function(event) {
-        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+        var permObj = JSON.parse($.getIniDbString('discordPermsObj', 'obj'));
 
         for (var i = 0; i < permObj.roles.length; i++) {
             if (permObj.roles[i]._id.equals(event.getRoleID() + '')) {
@@ -391,7 +391,7 @@
      * @event discordRoleDeleted
      */
     $.bind('discordRoleDeleted', function(event) {
-        var permObj = JSON.parse($.inidb.get('discordPermsObj', 'obj'));
+        var permObj = JSON.parse($.getIniDbString('discordPermsObj', 'obj'));
         var commands = $.inidb.GetKeyList('discordPermcom', '');
 
         for (var i = 0; i < permObj.roles.length; i++) {
@@ -402,7 +402,7 @@
         }
 
         for (var i = 0; i < commands.length; i++) {
-            var perms = JSON.parse($.inidb.get('discordPermcom', commands[i]));
+            var perms = JSON.parse($.getIniDbString('discordPermcom', commands[i]));
 
             if (perms.roles.indexOf((event.getRoleID() + '')) > -1) {
                 perms.roles.splice(perms.roles.indexOf((event.getRoleID() + '')), 1);

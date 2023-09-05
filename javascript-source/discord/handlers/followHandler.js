@@ -28,7 +28,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/followHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/handlers/followHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'followToggle', false);
             message = $.getIniDbString('discordSettings', 'followMessage', '(name) just followed!');
             channelName = $.getIniDbString('discordSettings', 'followChannel', '');
@@ -80,7 +80,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('followhandler')) {
+        if ($.equalsIgnoreCase(command, 'followhandler')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.usage'));
                 return;
@@ -89,7 +89,7 @@
             /**
              * @discordcommandpath followhandler toggle - Toggles the follower announcements.
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 toggle = !toggle;
                 $.inidb.set('discordSettings', 'followToggle', toggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.follow.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -98,7 +98,7 @@
             /**
              * @discordcommandpath followhandler message [message] - Sets the follower announcement message.
              */
-            if (action.equalsIgnoreCase('message')) {
+            if ($.equalsIgnoreCase(action, 'message')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.follow.message.usage'));
                     return;
@@ -112,7 +112,7 @@
             /**
              * @discordcommandpath followhandler channel [channel name] - Sets the channel that announcements from this module will be said in.
              */
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.followhandler.follow.channel.usage'));
                     return;

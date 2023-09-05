@@ -32,7 +32,7 @@
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        return $.inidb.GetString('discordToTwitch', '', userId);
+        return $.getIniDbString('discordToTwitch', userId);
     }
 
     /**
@@ -50,9 +50,9 @@
         /**
          * @discordcommandpath account - Checks the current account linking status of the sender.
          */
-        if (command.equalsIgnoreCase('account')) {
+        if ($.equalsIgnoreCase(command, 'account')) {
             var userId = event.getSenderId(),
-                    name = $.inidb.OptString('discordToTwitch', '', userId);
+                    name = $.optIniDbString('discordToTwitch', userId);
 
             if (action === undefined) {
                 if (name.isPresent()) {
@@ -64,7 +64,7 @@
                 /**
                  * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
                  */
-            } else if (action.equalsIgnoreCase('link')) {
+            } else if ($.equalsIgnoreCase(action, 'link')) {
                 var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+',
                         text = '',
                         i;
@@ -87,7 +87,7 @@
                 /**
                  * @discordcommandpath account remove - Removes account links from the sender.
                  */
-            } else if (action.equalsIgnoreCase('remove')) {
+            } else if ($.equalsIgnoreCase(action, 'remove')) {
                 $.inidb.del('discordToTwitch', userId);
                 $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.remove'));
             }
@@ -106,8 +106,8 @@
         /**
          * @commandpath account link [code] - Completes an account link for Discord.
          */
-        if (command.equalsIgnoreCase('account')) {
-            if (action !== undefined && action.equalsIgnoreCase('link')) {
+        if ($.equalsIgnoreCase(command, 'account')) {
+            if (action !== undefined && $.equalsIgnoreCase(action, 'link')) {
                 if (args[1] === undefined || $.jsString(args[1]).length < 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('discord.accountlink.link.fail'));
                     return;
