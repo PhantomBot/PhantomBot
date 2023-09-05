@@ -559,7 +559,7 @@
                 $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
                 entries = [];
                 saveState();
-                if ($.equalsIgnoreCase(!sender, $.botName)) {
+                if (!$.equalsIgnoreCase(sender, $.botName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.reset'));
                 }
                 return;

@@ -256,7 +256,7 @@
          * @discordcommandpath module enable [path] - Enables any modules in the bot, it should only be used to enable discord modules though.
          */
         if ($.equalsIgnoreCase(command, 'module')) {
-            if (action === undefined || (subAction === undefined && $.equalsIgnoreCase(!action, 'list'))) {
+            if (action === undefined || (subAction === undefined && !$.equalsIgnoreCase(action, 'list'))) {
                 say(channel, userPrefix(mention) + $.lang.get('discord.misc.module.usage'));
                 return;
             }
