@@ -141,7 +141,7 @@
         let emotes = event.getTags().get('emotes'),
             str = message;
 
-        if (emotes !== null && emotes.length() > 0) {
+        if (emotes !== null && $.strlen(emotes) > 0) {
             emotes = emotes.replaceAll('[0-9]+:', '').split('/');
             for (let i in emotes) {
                 str = str.replace(getWordAt(message, parseInt(emotes[i].split('-')[0])), '');

@@ -41,7 +41,7 @@
         /**
          * @discordcommandpath random - Will display something really random.
          */
-        if (command.equalsIgnoreCase('random')) {
+        if ($.equalsIgnoreCase(command, 'random')) {
             var random;
             do {
                 random = $.randRange(1, responseCount);

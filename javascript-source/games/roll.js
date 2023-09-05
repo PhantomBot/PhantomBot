@@ -57,13 +57,13 @@
         /**
          * @commandpath roll - Roll the dice for some points
          */
-        if (command.equalsIgnoreCase('roll')) {
+        if ($.equalsIgnoreCase(command, 'roll')) {
 
             /**
              * @commandpath roll rewards [double 1's] [2's] [3's] [4's] [5's] [6's] - Set the reward for each set of doubles.
              */
             if (args[0] !== undefined) {
-                if (args[0].equalsIgnoreCase('rewards')) {
+                if ($.equalsIgnoreCase(args[0], 'rewards')) {
                     if (args.length !== 7) {
                         loadPrizes();
                         $.say($.whisperPrefix(sender) + $.lang.get('roll.rewards.usage', prizes.join(' ')));

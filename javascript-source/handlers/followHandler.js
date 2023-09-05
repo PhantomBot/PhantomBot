@@ -185,7 +185,7 @@
         /**
          * @commandpath followreward [amount] - Set the points reward for following
          */
-        if (command.equalsIgnoreCase('followreward')) {
+        if ($.equalsIgnoreCase(command, 'followreward')) {
             if (isNaN(parseInt(action))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followreward.usage', $.pointNameMultiple, followReward));
                 return;
@@ -199,7 +199,7 @@
         /**
          * @commandpath followmessage [message] - Set the new follower message when there is a reward
          */
-        if (command.equalsIgnoreCase('followmessage')) {
+        if ($.equalsIgnoreCase(command, 'followmessage')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followmessage.usage'));
                 return;
@@ -213,7 +213,7 @@
         /**
          * @commandpath followdelay [message] - Set the delay in seconds between follow announcements
          */
-        if (command.equalsIgnoreCase('followdelay')) {
+        if ($.equalsIgnoreCase(command, 'followdelay')) {
             if (isNaN(parseInt(action)) || parseInt(action) < 5) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.set.followdelay.usage'));
                 return;
@@ -227,7 +227,7 @@
         /**
          * @commandpath followtoggle - Enable or disable the anouncements for new followers
          */
-        if (command.equalsIgnoreCase('followtoggle')) {
+        if ($.equalsIgnoreCase(command, 'followtoggle')) {
             followToggle = !followToggle;
             $.setIniDbBoolean('settings', 'followToggle', followToggle);
             $.say($.whisperPrefix(sender) + (followToggle ? $.lang.get('followhandler.followtoggle.on') : $.lang.get('followhandler.followtoggle.off')));
@@ -236,7 +236,7 @@
         /**
          * @commandpath checkfollow [username] - Check if a user is following the channel
          */
-        if (command.equalsIgnoreCase('checkfollow')) {
+        if ($.equalsIgnoreCase(command, 'checkfollow')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('followhandler.check.usage'));
                 return;
@@ -254,7 +254,7 @@
         /**
          * @commandpath replayfollow [username] - Replays the follow message for username
          */
-        if (command.equalsIgnoreCase('replayfollow')) {
+        if ($.equalsIgnoreCase(command, 'replayfollow')) {
             if (action === undefined) {
                 return;
             }

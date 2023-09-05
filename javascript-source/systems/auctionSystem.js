@@ -284,7 +284,7 @@
         /**
          * @commandpath auction - Primary auction command
          */
-        if (command.equalsIgnoreCase('auction')) {
+        if ($.equalsIgnoreCase(command, 'auction')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.usage'));
                 return;
@@ -293,7 +293,7 @@
             /**
              * @commandpath auction open [increments] [minimum bet] [timer] [nopoints] - Opens an auction; timer is optional; nopoints is optional and starts an auction without affecting the users' points
              */
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 usePoints(args[4] === undefined && !$.equalsIgnoreCase(args[4], 'nopoints')); //Enable Auction without Points
                 openAuction(sender, args[1], args[2], args[3]);
                 return;
@@ -302,7 +302,7 @@
             /**
              * @commandpath auction close - Closes an open auction
              */
-            if (action.equalsIgnoreCase('close')) {
+            if ($.equalsIgnoreCase(action, 'close')) {
                 closeAuction(sender);
                 return;
             }
@@ -310,7 +310,7 @@
             /**
              * @commandpath auction reset - Resets the auction.
              */
-            if (action.equalsIgnoreCase('reset')) {
+            if ($.equalsIgnoreCase(action, 'reset')) {
                 resetAuction();
                 return;
             }
@@ -318,7 +318,7 @@
             /**
              * @commandpath auction warn - Shows the top bidder in an auction
              */
-            if (action.equalsIgnoreCase('warn')) {
+            if ($.equalsIgnoreCase(action, 'warn')) {
                 warnAuction(undefined, sender, undefined);
                 return;
             }
@@ -326,7 +326,7 @@
             /**
              * @commandpath auction lastWinner - Shows the last auctions' winner and its winning bid
              */
-            if (action.equalsIgnoreCase('lastWinner')) {
+            if ($.equalsIgnoreCase(action, 'lastWinner')) {
                 var user = $.getIniDbString('auctionresults', 'winner'),
                     amount = $.getIniDbNumber('auctionresults', 'amount');
 
@@ -341,7 +341,7 @@
             /**
              * @commandpath auction setExtensionTime [extension time] - Sets the time being added to the endtimer if a bid is set in the last 10 seconds (maximum value is 29)
              */
-            if (action.equalsIgnoreCase('setExtensionTime')) {
+            if ($.equalsIgnoreCase(action, 'setExtensionTime')) {
                 if (args[1] === undefined || isNaN(parseInt(args[1]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('auctionsystem.set.usage'));
                     return;
@@ -360,7 +360,7 @@
         /**
          * @commandpath bid [amount] - Amount to bid on the current auction
          */
-        if (command.equalsIgnoreCase('bid')) {
+        if ($.equalsIgnoreCase(command, 'bid')) {
             bid(sender, action);
         }
     });

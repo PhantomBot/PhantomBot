@@ -701,13 +701,13 @@
     $.getCommandRestrictionByName = getCommandRestrictionByName;
 
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./core/commandRegister.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './core/commandRegister.js')) {
             var args = event.getArgs(),
                 eventName = args[0] + '',
                 command = args[1] + '',
                 commandLower = command.toLowerCase() + '';
             if (eventName === 'enable') {
-                let tempDisabled = $.inidb.OptString('tempDisabledCommandScript', '', commandLower);
+                let tempDisabled = $.optIniDbString('tempDisabledCommandScript', commandLower);
                 if (tempDisabled.isPresent()) {
                     $.registerChatCommand(tempDisabled.get(), commandLower);
                 }

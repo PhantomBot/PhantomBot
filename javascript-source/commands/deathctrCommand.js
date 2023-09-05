@@ -29,7 +29,7 @@
      */
     function deathUpdateFile(game) {
         var deathFile = './addons/deathctr/deathctr.txt',
-            deathCounter = parseInt($.inidb.get('deaths', game));
+            deathCounter = parseInt($.getIniDbString('deaths', game));
 
         if (!$.isDirectory('./addons/deathctr/')) {
             $.mkDir('./addons/deathctr');
@@ -54,8 +54,8 @@
         /*
          * @commandpath deathctr - Display the current number of deaths in game being played.
          */
-        if (command.equalsIgnoreCase('deathctr')) {
-            var deathCounter = parseInt($.inidb.get('deaths', game));
+        if ($.equalsIgnoreCase(command, 'deathctr')) {
+            var deathCounter = parseInt($.getIniDbString('deaths', game));
             var noDeathExists = isNaN(parseInt(deathCounter)) || parseInt(deathCounter) === 0 ? (deathCounter = 0, true) : (false);
             if (action === undefined) {
                 if (noDeathExists) {
@@ -67,7 +67,7 @@
                 /*
                  * @commandpath deathctr reset - Reset the death counter for the game being played.
                  */
-                if (action.equalsIgnoreCase('reset')) {
+                if ($.equalsIgnoreCase(action, 'reset')) {
                     if (noDeathExists) {
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.reset-nil', game));
                     } else {
@@ -81,7 +81,7 @@
                 /*
                  * @commandpath deathctr set [number] - Set the death counter for the game being played.
                  */
-                if (action.equalsIgnoreCase('set')) {
+                if ($.equalsIgnoreCase(action, 'set')) {
                     if (isNaN(parseInt(args[1]))) {
                         $.say($.whisperPrefix(sender) + $.lang.get('deathcounter.set-error'));
                         return;
@@ -97,7 +97,7 @@
                 /*
                  * @commandpath deathctr incr - Add one to the death counter for the game being played.
                  */
-                if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('incr') || action.equalsIgnoreCase('+')) {
+                if ($.equalsIgnoreCase(action, 'add') || $.equalsIgnoreCase(action, 'incr') || $.equalsIgnoreCase(action, '+')) {
                     $.say($.lang.get('deathcounter.add-success', $.ownerName, game, ($.getIniDbNumber('deaths', game, 0) + 1)));
                     $.inidb.incr('deaths', game, 1);
                     $.deathUpdateFile(game);
@@ -107,8 +107,8 @@
                 /*
                  * @commandpath deathctr decr - Subtract one from the death counter for the game being played.
                  */
-                if (action.equalsIgnoreCase('sub') || action.equalsIgnoreCase('decr') || action.equalsIgnoreCase('-')) {
-                    if (isNaN(parseInt($.inidb.get('deaths', game))) || parseInt($.inidb.get('deaths', game)) === 0) {
+                if ($.equalsIgnoreCase(action, 'sub') || $.equalsIgnoreCase(action, 'decr') || $.equalsIgnoreCase(action, '-')) {
+                    if (isNaN(parseInt($.getIniDbString('deaths', game))) || parseInt($.getIniDbString('deaths', game)) === 0) {
                         $.say($.lang.get('deathcounter.sub-zero', game));
                         return;
                     }

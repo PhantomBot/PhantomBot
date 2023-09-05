@@ -135,8 +135,8 @@
             return;
         }
 
-        let tempBet = $.inidb.get('bettingState', 'bet'),
-                tempBets = $.inidb.get('bettingState', 'bets');
+        let tempBet = $.getIniDbString('bettingState', 'bet'),
+                tempBets = $.getIniDbString('bettingState', 'bets');
 
         if (tempBet === null || tempBets === null) {
             return;
@@ -208,7 +208,7 @@
         $.say($.lang.get('bettingsystem.close.success', option));
 
         for (i in bets) {
-            if (bets[i].option.equalsIgnoreCase(option)) {
+            if ($.equalsIgnoreCase(bets[i].option, option)) {
                 winners.push(i.toLowerCase());
                 give = (((bet.total / bet.options[option].bets) * parseFloat(gain / 100)) + parseInt(bets[i].amount));
                 total += give;
@@ -390,7 +390,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('bet')) {
+        if ($.equalsIgnoreCase(command, 'bet')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.global.usage'));
                 return;
@@ -399,7 +399,7 @@
             /**
              * @commandpath bet open ["title"] ["option1, option2, option3"] [minimum bet] [maximum bet] [close timer] - Opens a bet with those options.
              */
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 open(sender, args[1], args[2], args[3], args[4], args[5]);
                 return;
             }
@@ -407,7 +407,7 @@
             /**
              * @commandpath bet close ["winning option"] - Closes the current bet.
              */
-            if (action.equalsIgnoreCase('close')) {
+            if ($.equalsIgnoreCase(action, 'close')) {
                 close(sender, (args[1] === undefined ? undefined : args.slice(1).join(' ').toLowerCase().trim()));
                 return;
             }
@@ -415,15 +415,15 @@
             /**
              * @commandpath bet reset - Resets the current bet.
              */
-            if (action.equalsIgnoreCase('reset')) {
-                reset(subAction !== undefined && subAction.equalsIgnoreCase('-refund'));
+            if ($.equalsIgnoreCase(action, 'reset')) {
+                reset(subAction !== undefined && $.equalsIgnoreCase(subAction, '-refund'));
                 return;
             }
 
             /**
              * @commandpath bet save - Toggle if bet results get saved or not after closing one.
              */
-            if (action.equalsIgnoreCase('save')) {
+            if ($.equalsIgnoreCase(action, 'save')) {
                 saveBets = !saveBets;
                 $.inidb.set('bettingSettings', 'save', saveBets);
                 $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.toggle.save', (saveBets === true ? $.lang.get('bettingsystem.now') : $.lang.get('bettingsystem.not'))));
@@ -433,7 +433,7 @@
             /**
              * @commandpath bet togglemessages - Toggles bet warning messages on or off.
              */
-            if (action.equalsIgnoreCase('togglemessages')) {
+            if ($.equalsIgnoreCase(action, 'togglemessages')) {
                 warningMessages = !warningMessages;
                 $.inidb.set('bettingSettings', 'warningMessages', warningMessages);
                 $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.warning.messages', (warningMessages === true ? $.lang.get('bettingsystem.now') : $.lang.get('bettingsystem.not'))));
@@ -443,7 +443,7 @@
             /**
              * @commandpath bet saveformat [date format] - Changes the date format past bets are saved in default is yyyy.mm.dd
              */
-            if (action.equalsIgnoreCase('saveformat')) {
+            if ($.equalsIgnoreCase(action, 'saveformat')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.saveformat.usage'));
                     return;
@@ -458,7 +458,7 @@
             /**
              * @commandpath bet gain [percent] - Changes the point gain percent users get when they win a bet.
              */
-            if (action.equalsIgnoreCase('gain')) {
+            if ($.equalsIgnoreCase(action, 'gain')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.gain.usage'));
                     return;
@@ -473,13 +473,13 @@
             /**
              * @commandpath bet lookup [date] - Displays the results of a bet made on that day. If you made multiple bets you will have to add "_#" to specify the bet.
              */
-            if (action.equalsIgnoreCase('lookup')) {
+            if ($.equalsIgnoreCase(action, 'lookup')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.lookup.usage', saveFormat));
                     return;
                 }
                 if (saveBets) {
-                    let res = $.inidb.OptString('bettingResults', '', subAction);
+                    let res = $.optIniDbString('bettingResults', subAction);
                     if (res.isPresent()) {
                         $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.lookup.show', subAction, res.get()));
                     } else {
@@ -492,7 +492,7 @@
             /**
              * @commandpath bet current - Shows current bet stats.
              */
-            if (action.equalsIgnoreCase('current')) {
+            if ($.equalsIgnoreCase(action, 'current')) {
                 if (bet.status === true) {
                     $.say($.lang.get('bettingsystem.results', bet.title, bet.opt.join(', '), bet.total, bet.entries));
                 }
@@ -505,7 +505,7 @@
                 var option = args.splice(1).join(' ').toLowerCase().trim();
                 if(option.length === 0) {
                     message(sender, $.lang.get('bettingsystem.bet.usage'));
-                    return; 
+                    return;
                 }
 
                 var points;
@@ -515,7 +515,7 @@
                     points = Math.floor($.getUserPoints(sender)/2);
                 } else if (isNaN(parseInt(action))) {
                     message(sender, $.lang.get('bettingsystem.bet.usage'));
-                    return; 
+                    return;
                 } else {
                     points = parseInt(action);
                 }

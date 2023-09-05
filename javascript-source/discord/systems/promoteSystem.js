@@ -45,13 +45,13 @@
          * @discordcommandpath promote delete - Delete yourself if permitted to do so.
          */
 
-        if (command.equalsIgnoreCase('promote')) {
+        if ($.equalsIgnoreCase(command, 'promote')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promote.usage'));
                 return;
             }
 
-            if (action.equalsIgnoreCase('add') || action.equalsIgnoreCase('delete')) {
+            if ($.equalsIgnoreCase(action, 'add') || $.equalsIgnoreCase(action, 'delete')) {
                 if (!allowSelfManage) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promote.noselfmanage'));
                     return;
@@ -72,13 +72,13 @@
                 }
             }
 
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promote.add.nobio'));
                     return;
                 }
                 var biography = args.splice(1).join(' ');
-                if (biography.equalsIgnoreCase('none')) {
+                if ($.equalsIgnoreCase(biography, 'none')) {
                     biography = '';
                 }
                 $.inidb.set('promotebio', twitchID, biography);
@@ -87,7 +87,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('delete')) {
+            if ($.equalsIgnoreCase(action, 'delete')) {
                 $.inidb.del('promotebio', twitchID);
                 $.inidb.del('promoteids', twitchID);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promote.del.success', twitchName.toLowerCase()));
@@ -95,18 +95,18 @@
             }
         }
 
-        if (command.equalsIgnoreCase('promoteadm')) {
+        if ($.equalsIgnoreCase(command, 'promoteadm')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.usage'));
                 return;
             }
 
-            if ((action.equalsIgnoreCase('add') || action.equalsIgnoreCase('delete')) && (promoteChannel.length === 0 && streamChannel.length === 0)) {
+            if (($.equalsIgnoreCase(action, 'add') || $.equalsIgnoreCase(action, 'delete')) && (promoteChannel.length === 0 && streamChannel.length === 0)) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.nochannels'));
                 return;
             }
 
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.add.nouser'));
                     return;
@@ -131,7 +131,7 @@
                     return;
                 }
                 var biography = args.splice(2).join(' ');
-                if (biography.equalsIgnoreCase('none')) {
+                if ($.equalsIgnoreCase(biography, 'none')) {
                     biography = '';
                 }
                 $.inidb.set('promotebio', twitchID, biography);
@@ -140,7 +140,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('delete')) {
+            if ($.equalsIgnoreCase(action, 'delete')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.del.nouser'));
                     return;
@@ -158,7 +158,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.channel.nochannel'));
                     return;
@@ -175,7 +175,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('streamchannel')) {
+            if ($.equalsIgnoreCase(action, 'streamchannel')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.streamchannel.nochannel'));
                     return;
@@ -193,7 +193,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('revoke')) {
+            if ($.equalsIgnoreCase(action, 'revoke')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.revoke.nouser'));
                     return;
@@ -212,7 +212,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('allow')) {
+            if ($.equalsIgnoreCase(action, 'allow')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.allow.nouser'));
                     return;
@@ -229,7 +229,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('toggleselfmanage')) {
+            if ($.equalsIgnoreCase(action, 'toggleselfmanage')) {
                 if (allowSelfManage) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.toggleselfmanage.off'));
                 } else {
@@ -240,7 +240,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('togglestats')) {
+            if ($.equalsIgnoreCase(action, 'togglestats')) {
                 if (showStats) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.togglestats.off'));
                 } else {
@@ -251,7 +251,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('togglebanner')) {
+            if ($.equalsIgnoreCase(action, 'togglebanner')) {
                 if (showBanner) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.togglebanner.off'));
                 } else {
@@ -263,7 +263,7 @@
             }
 
 
-            if (action.equalsIgnoreCase('list')) {
+            if ($.equalsIgnoreCase(action, 'list')) {
                 var twitchIDs = $.inidb.GetKeyList('promoteids', '');
                 if (twitchIDs.length === 0) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.list.empty'));
@@ -272,14 +272,14 @@
 
                 var twitchNames = [];
                 for (var i = 0; i < twitchIDs.length; i++) {
-                    twitchNames.push($.inidb.get('promoteids', twitchIDs[i]));
+                    twitchNames.push($.getIniDbString('promoteids', twitchIDs[i]));
                 }
 
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.list.success', twitchNames.join(', ')));
                 return;
             }
 
-            if (action.equalsIgnoreCase('setinterval')) {
+            if ($.equalsIgnoreCase(action, 'setinterval')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.promoteadm.setinterval.nominutes'));
                     return;
@@ -300,7 +300,7 @@
                 return;
             }
 
-            if (action.equalsIgnoreCase('so')) {
+            if ($.equalsIgnoreCase(action, 'so')) {
                 if (args[1] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.promotesystem.cmd.so.nouser'));
                     return;
@@ -311,12 +311,12 @@
                     return;
                 }
 
-                var twitchName = $.inidb.get('promoteids', twitchID);
-                var biography = $.inidb.get('promotebio', twitchID);
+                var twitchName = $.getIniDbString('promoteids', twitchID);
+                var biography = $.getIniDbString('promotebio', twitchID);
                 if (biography.equals('')) {
                     biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
                 }
-                $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
+                $.discordAPI.sendMessageEmbed($.getIniDbString('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                         .withThumbnail('http://iotv.me/i/followontwitch.jpg')
                         .withTitle('https://twitch.tv/' + twitchName)
                         .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.viewer.getByLogin(twitchName).name()))
@@ -331,7 +331,7 @@
      * Check for online status of channels every minute.
      */
     setInterval(function () {
-        if ($.inidb.get('promotesettings', 'streamchannel').equals('')) {
+        if ($.getIniDbString('promotesettings', 'streamchannel').equals('')) {
             return;
         }
 
@@ -411,9 +411,9 @@
                             embedBuilder.withImage(banner);
                         }
 
-                        embedBuilder.withFooterText($.inidb.get('promotebio', twitchID))
+                        embedBuilder.withFooterText($.getIniDbString('promotebio', twitchID))
                                 .withUrl('https://twitch.tv/' + twitchName);
-                        $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'streamchannel'), embedBuilder.build());
+                        $.discordAPI.sendMessageEmbed($.getIniDbString('promotesettings', 'streamchannel'), embedBuilder.build());
                     }
                 }
             }
@@ -443,7 +443,7 @@
         }
 
         promoteIntervalID = setInterval(function () {
-            if ($.inidb.get('promotesettings', 'channel').equals('')) {
+            if ($.getIniDbString('promotesettings', 'channel').equals('')) {
                 return;
             }
 
@@ -457,12 +457,12 @@
             }
             $.setIniDbNumber('promotesettings', 'lastidx', lastIdx);
 
-            var twitchName = $.inidb.get('promoteids', twitchIDs[lastIdx]);
-            var biography = $.inidb.get('promotebio', twitchIDs[lastIdx]);
+            var twitchName = $.getIniDbString('promoteids', twitchIDs[lastIdx]);
+            var biography = $.getIniDbString('promotebio', twitchIDs[lastIdx]);
             if (biography.equals('')) {
                 biography = $.lang.get('discord.promotesystem.promotemsg.nobio');
             }
-            $.discordAPI.sendMessageEmbed($.inidb.get('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
+            $.discordAPI.sendMessageEmbed($.getIniDbString('promotesettings', 'channel'), new Packages.tv.phantombot.discord.util.EmbedBuilder()
                     .withThumbnail('https://raw.githubusercontent.com/PhantomBot/Miscellaneous/master/Discord-Embed-Icons/followontwitch.jpg')
                     .withTitle('https://twitch.tv/' + twitchName)
                     .withDesc($.lang.get('discord.promotesystem.promotemsg.description', $.viewer.getByLogin(twitchName).name()))

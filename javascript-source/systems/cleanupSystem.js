@@ -25,7 +25,7 @@
         running = false;
 
     function cleanUp(table, amount, sender) {
-        if (table.equalsIgnoreCase('time')) {
+        if ($.equalsIgnoreCase(table, 'time')) {
             var keys = $.inidb.GetKeyList('time', ''),
                 time = parseInt(amount),
                 count = 0,
@@ -34,8 +34,8 @@
             $.consoleLn('>>> Process is starting this might take a few minutes...');
             running = true;
             for (i in keys) {
-                if (parseInt($.inidb.get('time', keys[i])) <= time) {
-                    $.consoleLn('>> Removing ' + keys[i] + ' from the time table with ' + $.inidb.get('time', keys[i]) + ' time.');
+                if (parseInt($.getIniDbString('time', keys[i])) <= time) {
+                    $.consoleLn('>> Removing ' + keys[i] + ' from the time table with ' + $.getIniDbString('time', keys[i]) + ' time.');
                     $.inidb.del('time', keys[i]);
                     count++;
                 }
@@ -46,7 +46,7 @@
             return;
         }
 
-        if (table.equalsIgnoreCase('points')) {
+        if ($.equalsIgnoreCase(table, 'points')) {
             var keys = $.inidb.GetKeyList('points', ''),
                 points = parseInt(amount),
                 count = 0,
@@ -55,8 +55,8 @@
             $.consoleLn('>>> Process is starting this might take a few minutes...');
             running = true;
             for (i in keys) {
-                if (parseInt($.inidb.get('points', keys[i])) <= points) {
-                    $.consoleLn('>> Removing ' + keys[i] + ' from the points table with ' + $.inidb.get('points', keys[i]) + ' points.');
+                if (parseInt($.getIniDbString('points', keys[i])) <= points) {
+                    $.consoleLn('>> Removing ' + keys[i] + ' from the points table with ' + $.getIniDbString('points', keys[i]) + ' points.');
                     $.inidb.del('points', keys[i]);
                     count++;
                 }
@@ -67,7 +67,7 @@
             return;
         }
 
-        if (table.equalsIgnoreCase('all')) {
+        if ($.equalsIgnoreCase(table, 'all')) {
             var keys = $.inidb.GetKeyList('visited', ''),
                 time = parseInt(amount),
                 count = 0,
@@ -77,7 +77,7 @@
             $.consoleLn('>>> Process is starting this might take a few minutes...');
             running = true;
             for (i in keys) {
-                t = ($.inidb.exists('time', keys[i]) ? parseInt($.inidb.get('time', keys[i])) : 0);
+                t = ($.inidb.exists('time', keys[i]) ? parseInt($.getIniDbString('time', keys[i])) : 0);
                 if (t <= time) {
                     $.inidb.del('time', keys[i]);
                     $.inidb.del('points', keys[i]);
@@ -112,7 +112,7 @@
          * @commandpath cleanup points [amount of points] - Will remove users from the points table with less then the points you chose.
          * @commandpath cleanup all [time in seconds] - Will remove users from all the db tables with less then the seconds you chose.
          */
-        if (command.equalsIgnoreCase('cleanup') && !running) {
+        if ($.equalsIgnoreCase(command, 'cleanup') && !running) {
             if (!action || !subAction) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cleanupsystem.run.usage'));
                 return;

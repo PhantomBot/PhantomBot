@@ -110,7 +110,7 @@
         /**
          * @commandpath greeting - Base command for controlling greetings.
          */
-        if (command.equalsIgnoreCase('greeting')) {
+        if ($.equalsIgnoreCase(command, 'greeting')) {
             if (!action) {
                 if ($.checkUserPermission(sender, event.getTags(), $.PERMISSION.Admin)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.generalusage.admin'));
@@ -123,7 +123,7 @@
             /**
              * @commandpath greeting cooldown [hours] - Cooldown in hours before displaying a greeting for a person rejoining chat.
              */
-            if (action.equalsIgnoreCase('cooldown')) {
+            if ($.equalsIgnoreCase(action, 'cooldown')) {
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.cooldown.usage'));
                     return;
@@ -144,7 +144,7 @@
             /**
              * @commandpath greeting toggle - Enable/disable the greeting system.
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 autoGreetEnabled = !autoGreetEnabled;
                 $.setIniDbBoolean('greetingSettings', 'autoGreetEnabled', autoGreetEnabled);
                 if (autoGreetEnabled) {
@@ -158,7 +158,7 @@
             /**
              * @commandpath greeting setdefault - Set the default greeting message
              */
-            if (action.equalsIgnoreCase('setdefault')) {
+            if ($.equalsIgnoreCase(action, 'setdefault')) {
                 message = args.splice(1, args.length - 1).join(' ');
 
                 if (!message) {
@@ -175,7 +175,7 @@
             /**
              * @commandpath greeting enable [default | message] - Enable greetings and use the default or set a message.
              */
-            if (action.equalsIgnoreCase('enable') && userSelfService) {
+            if ($.equalsIgnoreCase(action, 'enable') && userSelfService) {
                 message = args.splice(1, args.length - 1).join(' ');
 
                 if (!message) {
@@ -183,21 +183,21 @@
                     return;
                 }
 
-                if (message.equalsIgnoreCase('default')) {
+                if ($.equalsIgnoreCase(message, 'default')) {
                     $.inidb.set('greeting', sender, defaultJoinMessage);
                 } else {
                     $.inidb.set('greeting', sender, message);
                 }
 
-                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.personal.success', $.inidb.get('greeting', sender)));
+                $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.personal.success', $.getIniDbString('greeting', sender)));
                 return;
             }
 
             /**
              * @commandpath greeting set [username] [default | message] - Set greetings for a user and use the default or set a message.
              */
-            if (action.equalsIgnoreCase('set') || action.equalsIgnoreCase('setsilent')) {
-                isSilent = action.equalsIgnoreCase('setsilent');
+            if ($.equalsIgnoreCase(action, 'set') || $.equalsIgnoreCase(action, 'setsilent')) {
+                isSilent = $.equalsIgnoreCase(action, 'setsilent');
                 username = args[1].toLowerCase();
                 message = args.splice(2, args.length - 1).join(' ');
 
@@ -208,13 +208,13 @@
                     return;
                 }
 
-                if (message.equalsIgnoreCase('default')) {
+                if ($.equalsIgnoreCase(message, 'default')) {
                     $.inidb.set('greeting', username, defaultJoinMessage);
                 } else {
                     $.inidb.set('greeting', username, message);
                 }
                 if (!isSilent) {
-                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.success', username, $.inidb.get('greeting', username)));
+                    $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.set.success', username, $.getIniDbString('greeting', username)));
                 }
                 return;
             }
@@ -222,8 +222,8 @@
             /**
              * @commandpath greeting remove [username] - Delete a users greeting and automated greeting at join
              */
-            if (action.equalsIgnoreCase('remove') || action.equalsIgnoreCase('removesilent')) {
-                isSilent = action.equalsIgnoreCase('removesilent');
+            if ($.equalsIgnoreCase(action, 'remove') || $.equalsIgnoreCase(action, 'removesilent')) {
+                isSilent = $.equalsIgnoreCase(action, 'removesilent');
                 username = args[1].toLowerCase();
 
                 if (args[1] === undefined) {
@@ -244,7 +244,7 @@
             /**
              * @commandpath greeting disable - Delete personal greeting and automated greeting at join
              */
-            if (action.equalsIgnoreCase('disable') && userSelfService) {
+            if ($.equalsIgnoreCase(action, 'disable') && userSelfService) {
                 if ($.inidb.exists('greeting', sender)) {
                     $.inidb.del('greeting', sender);
                     $.say($.whisperPrefix(sender) + $.lang.get('greetingsystem.remove.personal.success'));
@@ -255,7 +255,7 @@
             /**
              * @commandpath greeting toggleblockselfservice - Toggles between users being allowed or prevented to set their own greeting message
              */
-            if (action.equalsIgnoreCase('toggleuserselfservice')) {
+            if ($.equalsIgnoreCase(action, 'toggleuserselfservice')) {
                 userSelfService = !userSelfService;
                 $.inidb.SetBoolean('greetingSettings', '', 'userSelfService', userSelfService);
                 if (userSelfService) {
@@ -269,7 +269,7 @@
             /**
              * @commandpath greeting toggleonjoin - Toggles if greetings are sent when a users joins the chat or when a user first sends a message
              */
-            if (action.equalsIgnoreCase('toggleonjoin')) {
+            if ($.equalsIgnoreCase(action, 'toggleonjoin')) {
                 onJoin = !onJoin;
                 $.inidb.SetBoolean('greetingSettings', '', 'onJoin', onJoin);
                 if (onJoin) {

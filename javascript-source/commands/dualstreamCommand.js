@@ -60,7 +60,7 @@
         /*
          * @commandpath multi - Displays the current multi-link information of the usage
          */
-        if (command.equalsIgnoreCase('multi')) {
+        if ($.equalsIgnoreCase(command, 'multi')) {
             if (action === undefined) {
                 if (!otherChannels.equals('Channel-1 Channel-2')) {
                     $.say($.lang.get('dualstreamcommand.link') + $.channelName + '/' + otherChannels.split(' ').join('/'));
@@ -75,7 +75,7 @@
             /*
              * @commandpath multi set [channels] - Adds a space-delimited list of channels to the multi-link (local channel already added)
              */
-            if (action.equalsIgnoreCase('set')) {
+            if ($.equalsIgnoreCase(action, 'set')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.set.usage'));
                     return;
@@ -91,7 +91,7 @@
             /*
              * @commandpath multi clear - Clears the multi-links and disables the timer
              */
-            if (action.equalsIgnoreCase('clear')) {
+            if ($.equalsIgnoreCase(action, 'clear')) {
                 otherChannels = 'Channel-1 Channel-2';
                 timerToggle = false;
 
@@ -104,13 +104,13 @@
             /*
              * @commandpath multi timer [on / off] - Enable or disabled the multi-links timer
              */
-            if (action.equalsIgnoreCase('timer')) {
+            if ($.equalsIgnoreCase(action, 'timer')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timer.usage'));
                     return;
                 }
 
-                timerToggle = subAction.equalsIgnoreCase('on');
+                timerToggle = $.equalsIgnoreCase(subAction, 'on');
                 $.say($.whisperPrefix(sender) + (timerToggle ? $.lang.get('dualstreamcommand.timer.enabled') : $.lang.get('dualstreamcommand.timer.disabled')));
                 $.inidb.set('dualStreamCommand', 'timerToggle', timerToggle);
                 return;
@@ -119,7 +119,7 @@
             /*
              * @commandpath multi timerinterval [time in minutes] - Set the interval for the multi-links timer
              */
-            if (action.equalsIgnoreCase('timerinterval')) {
+            if ($.equalsIgnoreCase(action, 'timerinterval')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.timerinterval.usage'));
                     return;
@@ -138,7 +138,7 @@
             /*
              * @commandpath multi reqmessage [amount of messages] - Set the amount of message required before triggering the dual stream link
              */
-            if (action.equalsIgnoreCase('reqmessage')) {
+            if ($.equalsIgnoreCase(action, 'reqmessage')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('dualstreamcommand.req.usage'));
                     return;
@@ -154,7 +154,7 @@
         /*
          * Panel command, no command path needed here.
          */
-        if (command.equalsIgnoreCase('reloadmulti')) {
+        if ($.equalsIgnoreCase(command, 'reloadmulti')) {
             reloadMulti();
         }
     });

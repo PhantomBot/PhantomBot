@@ -94,7 +94,7 @@
         /*
          * @commandpath clipstoggle - Toggles the clips announcements.
          */
-        if (command.equalsIgnoreCase('clipstoggle')) {
+        if ($.equalsIgnoreCase(command, 'clipstoggle')) {
             toggle = !toggle;
             $.setIniDbBoolean('clipsSettings', 'toggle', toggle);
             $.say($.whisperPrefix(sender) + (toggle ? $.lang.get('cliphandler.toggle.on') : $.lang.get('cliphandler.toggle.off')));
@@ -103,7 +103,7 @@
         /*
          * @commandpath clipsmessage - Sets a message for when someone creates a clip.
          */
-        if (command.equalsIgnoreCase('clipsmessage')) {
+        if ($.equalsIgnoreCase(command, 'clipsmessage')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.message.usage'));
                 return;
@@ -117,7 +117,7 @@
         /*
          * @commandpath lastclip - Displays information about the last clip captured.
          */
-        if (command.equalsIgnoreCase('lastclip')) {
+        if ($.equalsIgnoreCase(command, 'lastclip')) {
             var url = $.getIniDbString('streamInfo', 'last_clip_url', $.lang.get('cliphandler.noclip'));
             $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.lastclip', url));
         }
@@ -125,7 +125,7 @@
         /*
          * @commandpath topclip - Displays the top clip from the past day.
          */
-        if (command.equalsIgnoreCase('topclip')) {
+        if ($.equalsIgnoreCase(command, 'topclip')) {
             var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));
             $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.topclip', url));
         }

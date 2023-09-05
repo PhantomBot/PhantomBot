@@ -96,7 +96,7 @@
 
         for (let i = 0; i < keys.length; i++) {
             key = keys[i];
-            json = JSON.parse($.inidb.get('keywords', key));
+            json = JSON.parse($.getIniDbString('keywords', key));
             if (json.isRegex) {
                 json.isCaseSensitive = true;
                 key = key.replace('regex:', '');
@@ -133,10 +133,10 @@
                 json;
 
         for (let i = 0; i < keys.length; i++) {
-            json = JSON.parse($.inidb.get('keywords', keys[i]));
+            json = JSON.parse($.getIniDbString('keywords', keys[i]));
 
             if (json.isCaseSensitive) {
-                coolkey = $.inidb.get('coolkey', $.jsString(json.keyword).toLowerCase());
+                coolkey = $.getIniDbString('coolkey', $.jsString(json.keyword).toLowerCase());
                 $.inidb.del('coolkey', $.jsString(json.keyword).toLowerCase());
                 $.inidb.set('coolkey', json.keyword, coolkey);
             } else {
@@ -168,13 +168,13 @@
                 if (noticeKeys[noticeIdx].endsWith('_disabled')) {
                     continue;
                 }
-                notice = $.inidb.get('notices', noticeKeys[noticeIdx]);
+                notice = $.getIniDbString('notices', noticeKeys[noticeIdx]);
                 if (notice) {
                     // JSON.stringify will indefinitely hang on serializing Java strings
                     notices.push($.jsString(notice));
                     disabledKey = noticeKeys[noticeIdx] + '_disabled';
                     if ($.inidb.exists('notices', disabledKey)) {
-                        disabled.push($.inidb.GetBoolean('notices', '', disabledKey));
+                        disabled.push($.getIniDbBoolean('notices', disabledKey));
                     } else {
                         disabled.push(false);
                     }
@@ -224,7 +224,7 @@
 
 
         for (let i in cooldowns) {
-            json = JSON.parse($.inidb.get('cooldown', cooldowns[i]));
+            json = JSON.parse($.getIniDbString('cooldown', cooldowns[i]));
 
             let globalSec,
                     userSec,
@@ -246,7 +246,7 @@
         }
 
         if ($.inidb.exists('settings', 'quoteMessage')) {
-            $.inidb.set('settings', 'quoteMessage', $.inidb.get('settings', 'quoteMessage').replace('(user)', '(userrank)'));
+            $.inidb.set('settings', 'quoteMessage', $.getIniDbString('settings', 'quoteMessage').replace('(user)', '(userrank)'));
         }
 
         // Convert cooldowns to separate global and user cooldowns
@@ -254,7 +254,7 @@
 
 
         for (let i in cooldowns) {
-            json = JSON.parse($.inidb.get('discordCooldown', cooldowns[i]));
+            json = JSON.parse($.getIniDbString('discordCooldown', cooldowns[i]));
 
             let globalSec,
                     userSec,
@@ -311,13 +311,13 @@
                 json;
 
         for (let i in commands) {
-            json = JSON.parse($.inidb.get('cooldown', commands[i]));
+            json = JSON.parse($.getIniDbString('cooldown', commands[i]));
             json.modsSkip = false;
             $.inidb.set('cooldown', commands[i], JSON.stringify(json));
         }
 
         if ($.inidb.FileExists('greeting')) {
-            let autoGreetEnabled = $.inidb.GetBoolean('greeting', '', 'autoGreetEnabled'),
+            let autoGreetEnabled = $.getIniDbBoolean('greeting', 'autoGreetEnabled'),
                     defaultJoinMessage = $.getIniDbString('greeting', 'defaultJoin'),
                     greetingCooldown = $.getIniDbNumber('greeting', 'cooldown');
 
@@ -412,27 +412,27 @@
         for (let i in commands) {
             cmd = $.jsString(commands[i]);
             if (cmd.toLowerCase() !== cmd) {
-                $.inidb.set('tempDisabledCommandScript', cmd.toLowerCase(), $.inidb.get('tempDisabledCommandScript', cmd));
+                $.inidb.set('tempDisabledCommandScript', cmd.toLowerCase(), $.getIniDbString('tempDisabledCommandScript', cmd));
                 $.inidb.del('tempDisabledCommandScript', cmd);
             }
         }
 
         if ($.inidb.FileExists('traffleState') && $.inidb.HasKey('traffleState', '', 'bools')) {
-            let bools = JSON.parse($.inidb.get('traffleState', 'bools'));
+            let bools = JSON.parse($.getIniDbString('traffleState', 'bools'));
 
             $.inidb.SetBoolean('traffleState', '', 'followers', (bools[0] === 'true'));
             $.inidb.RemoveKey('traffleState', '', 'bools');
 
             if ($.inidb.FileExists('traffleSettings')) {
-                $.inidb.set('traffleState', 'isActive', $.inidb.get('traffleSettings', 'isActive'));
+                $.inidb.set('traffleState', 'isActive', $.getIniDbString('traffleSettings', 'isActive'));
                 $.inidb.RemoveKey('traffleSettings', '', 'isActive');
             }
         }
 
-        $.inidb.set('traffleSettings', 'traffleMSGToggle', $.inidb.get('settings', 'tRaffleMSGToggle'));
-        $.inidb.set('traffleSettings', 'traffleMessage', $.inidb.get('settings', 'traffleMessage'));
-        $.inidb.set('traffleSettings', 'traffleMessageInterval', $.inidb.get('settings', 'traffleMessageInterval'));
-        $.inidb.set('traffleSettings', 'traffleLimiter', $.inidb.get('settings', 'tRaffleLimiter'));
+        $.inidb.set('traffleSettings', 'traffleMSGToggle', $.getIniDbString('settings', 'tRaffleMSGToggle'));
+        $.inidb.set('traffleSettings', 'traffleMessage', $.getIniDbString('settings', 'traffleMessage'));
+        $.inidb.set('traffleSettings', 'traffleMessageInterval', $.getIniDbString('settings', 'traffleMessageInterval'));
+        $.inidb.set('traffleSettings', 'traffleLimiter', $.getIniDbString('settings', 'tRaffleLimiter'));
         $.inidb.RemoveKey('settings', '', 'traffleMSGToggle');
         $.inidb.RemoveKey('settings', '', 'traffleMessage');
         $.inidb.RemoveKey('settings', '', 'traffleMessageInterval');
@@ -452,9 +452,9 @@
 
         if ($.inidb.FileExists('ticketsList') && $.inidb.HasKey('traffleState', '', 'subTMulti') && $.inidb.HasKey('traffleState', '', 'regTMulti')) {
             let users = $.inidb.GetKeyList('ticketsList', ''),
-                    first = $.inidb.get('ticketsList', users[0]),
-                    subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti')),
-                    regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
+                    first = $.getIniDbString('ticketsList', users[0]),
+                    subTMulti = parseInt($.getIniDbString('traffleState', 'subTMulti')),
+                    regTMulti = parseInt($.getIniDbString('traffleState', 'regTMulti'));
 
             if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
                 for (let i = 0; i < users.length; i++) {
@@ -469,7 +469,7 @@
 
     addUpdate('3.6.4.2', 'installedv3.6.4.2', function() {
         if ($.inidb.FileExists('raffleState') && $.inidb.HasKey('raffleState', '', 'bools')) {
-            let bools = JSON.parse($.inidb.get('raffleState', 'bools'));
+            let bools = JSON.parse($.getIniDbString('raffleState', 'bools'));
 
             $.inidb.SetBoolean('raffleState', '', 'isFollowersOnly', (bools[0] === 'true'));
             $.inidb.SetBoolean('raffleState', '', 'isSubscribersOnly', (bools[1] === 'true'));
@@ -479,7 +479,7 @@
             $.inidb.RemoveKey('raffleState', '', 'bools');
 
             if ($.inidb.FileExists('raffleSettings')) {
-                $.inidb.set('raffleState', 'isActive', $.inidb.get('raffleSettings', 'isActive'));
+                $.inidb.set('raffleState', 'isActive', $.getIniDbString('raffleSettings', 'isActive'));
                 $.inidb.RemoveKey('raffleSettings', '', 'isActive');
             }
         }
@@ -573,7 +573,7 @@
 
         for (let i in keys) {
             try {
-                let command = $.jsString($.inidb.get('command', keys[i]));
+                let command = $.jsString($.getIniDbString('command', keys[i]));
 
                 if (command.includes('(customapi ')) {
                     command = command.replace(command, '(customapi ', '(customapi (encodeurl ');
@@ -657,7 +657,7 @@
         let keys = $.inidb.GetKeyList('blackList', '');
 
         for (let i = 0; i < keys.length; i++) {
-            let json = JSON.parse($.inidb.get('blackList', keys[i]));
+            let json = JSON.parse($.getIniDbString('blackList', keys[i]));
 
             if (json !== null && json.timeout !== undefined && json.timeout !== null) {
                 try {
@@ -686,7 +686,7 @@
         let keys = $.inidb.GetKeyList('blackList', '');
 
         for (let i = 0; i < keys.length; i++) {
-            $.inidb.set('blackList', Packages.com.gmt2001.Digest.sha256($.javaString(keys[i])), $.inidb.get('blackList', keys[i]));
+            $.inidb.set('blackList', Packages.com.gmt2001.Digest.sha256($.javaString(keys[i])), $.getIniDbString('blackList', keys[i]));
             $.inidb.del('blackList', keys[i]);
         }
     });
@@ -726,7 +726,7 @@
     addUpdate('3.8.4.0-3', 'installedv3.8.4.0-3', function() { // Ensure nightly bots which already have 3.8.4.0-2 get the change
         let commands = $.inidb.GetKeyList('cooldown', '');
         for (let i in commands) {
-            let json = JSON.parse($.inidb.get('cooldown', commands[i]));
+            let json = JSON.parse($.getIniDbString('cooldown', commands[i]));
             json.clearOnOnline = false;
             $.inidb.set('cooldown', commands[i], JSON.stringify(json));
         }
@@ -747,25 +747,25 @@
             let keys = $.inidb.GetKeyList(tables[x], '');
 
             for (let i = 0; i < keys.length; i++) {
-                val = toint($.inidb.get(tables[x], keys[i]));
+                val = toint($.getIniDbString(tables[x], keys[i]));
                 if (!isNaN(val)) {
                     $.inidb.SetInteger(tables[x], '', keys[i], val);
                 }
             }
         }
 
-        val = toint($.inidb.get('panelstats', 'gameCount'));
+        val = toint($.getIniDbString('panelstats', 'gameCount'));
         if (!isNaN(val)) {
             $.inidb.SetInteger('panelstats', '', 'gameCount', val);
         }
         if ($.inidb.exists('raffleresults', 'raffleEntries')) {
-            val = toint($.inidb.get('raffleresults', 'raffleEntries'));
+            val = toint($.getIniDbString('raffleresults', 'raffleEntries'));
             if (!isNaN(val)) {
                 $.inidb.SetInteger('raffleresults', '', 'raffleEntries', val);
             }
         }
         if ($.inidb.exists('traffleresults', 'ticketRaffleEntries')) {
-            val = toint($.inidb.get('traffleresults', 'ticketRaffleEntries'));
+            val = toint($.getIniDbString('traffleresults', 'ticketRaffleEntries'));
             if (!isNaN(val)) {
                 $.inidb.SetInteger('traffleresults', '', 'ticketRaffleEntries', val);
             }
@@ -773,16 +773,16 @@
     });
 
     // ------ Add updates above this line in execution order ------
-    if ($.inidb.FileExists('updates') && $.inidb.GetBoolean('updates', '', updates[0].variable)) {
+    if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
     }
 
 
-    if (!$.inidb.GetBoolean('updates', '', 'installedNewBot')) {
+    if (!$.getIniDbBoolean('updates', 'installedNewBot')) {
         newSetup();
     } else {
         for (let x in updates) {
-            if (!$.inidb.GetBoolean('updates', '', updates[x].variable)) {
+            if (!$.getIniDbBoolean('updates', updates[x].variable)) {
                 $.consoleLn('Starting PhantomBot v' + updates[x].version + ' updates...');
 
                 try {

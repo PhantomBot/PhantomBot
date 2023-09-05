@@ -152,7 +152,7 @@
         /*
          * @commandpath streamlabs - Controls various options for donation handling
          */
-        if (command.equalsIgnoreCase('streamlabs')) {
+        if ($.equalsIgnoreCase(command, 'streamlabs')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.usage'));
                 return;
@@ -161,7 +161,7 @@
             /*
              * @commandpath streamlabs toggledonators - Toggles the Donator's group.
              */
-            if (action.equalsIgnoreCase('toggledonators')) {
+            if ($.equalsIgnoreCase(action, 'toggledonators')) {
                 donationGroup = !donationGroup;
                 $.setIniDbBoolean('donations', 'donationGroup', donationGroup);
                 $.say($.whisperPrefix(sender) + (donationGroup ? $.lang.get('donationhandler.enabled.donators') : $.lang.get('donationhandler.disabled.donators')));
@@ -170,7 +170,7 @@
             /*
              * @commandpath streamlabs minmumbeforepromotion - Set the minimum before people get promoted to a Donator
              */
-            if (action.equalsIgnoreCase('minmumbeforepromotion')) {
+            if ($.equalsIgnoreCase(action, 'minmumbeforepromotion')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donators.min.usage'));
                     return;
@@ -184,7 +184,7 @@
             /*
              * @commandpath streamlabs announce - Toggles announcements for donations off and on
              */
-            if (action.equalsIgnoreCase('announce')) {
+            if ($.equalsIgnoreCase(action, 'announce')) {
                 announceDonations = !announceDonations;
                 $.setIniDbBoolean('donations', 'announce', announceDonations);
                 $.say($.whisperPrefix(sender) + (announceDonations ? $.lang.get('donationhandler.donations.announce.enable') : $.lang.get('donationhandler.donations.announce.disable')));
@@ -193,7 +193,7 @@
             /*
              * @commandpath streamlabs rewardmultiplier [n.n] - Set a reward multiplier for donations.
              */
-            if (action.equalsIgnoreCase('rewardmultiplier')) {
+            if ($.equalsIgnoreCase(action, 'rewardmultiplier')) {
                 if (isNaN(parseFloat(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.donations.reward.usage'));
                     return;
@@ -207,7 +207,7 @@
             /*
              * @commandpath streamlabs message [message text] - Set the donation message. Tags: (name), (amount), (points), (pointname), (message) and (currency)
              */
-            if (action.equalsIgnoreCase('message') || action.equalsIgnoreCase('lastmessage')) {
+            if ($.equalsIgnoreCase(action, 'message') || $.equalsIgnoreCase(action, 'lastmessage')) {
                 var comArg = action.toLowerCase();
 
                 if (subAction === undefined) {
@@ -232,13 +232,13 @@
              * @commandpath streamlabs currencycode [currencycode] - Set a currency code to convert all Streamlabs donations to.
              * @commandpath streamlabs currencycode erase - Removes the currency code.
              */
-            if (action.equalsIgnoreCase('currencycode')) {
+            if ($.equalsIgnoreCase(action, 'currencycode')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.usage'));
                     return;
                 }
 
-                if (subAction.equalsIgnoreCase('erase')) {
+                if ($.equalsIgnoreCase(subAction, 'erase')) {
                     $.inidb.del('donations', 'currencycode');
                     Packages.com.illusionaryone.StreamLabsAPI.instance().SetCurrencyCode('');
                     $.say($.whisperPrefix(sender) + $.lang.get('donationhandler.streamlabs.currencycode.success-erase'));

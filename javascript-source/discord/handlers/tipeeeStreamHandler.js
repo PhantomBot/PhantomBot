@@ -28,7 +28,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/tipeeeStreamHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/handlers/tipeeeStreamHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'tipeeestreamToggle', false);
             message = $.getIniDbString('discordSettings', 'tipeeestreamMessage', 'Thank you very much (name) for the tip of (formattedamount) (currency)!');
             channelName = $.getIniDbString('discordSettings', 'tipeeestreamChannel', '');
@@ -115,7 +115,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('tipeeestreamhandler')) {
+        if ($.equalsIgnoreCase(command, 'tipeeestreamhandler')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.tipeeestreamhandler.usage'));
                 return;
@@ -124,7 +124,7 @@
             /**
              * @discordcommandpath tipeeestreamhandler toggle - Toggles the TipeeeStream donation announcements.
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 toggle = !toggle;
                 $.inidb.set('discordSettings', 'tipeeestreamToggle', toggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.tipeeestreamhandler.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -133,7 +133,7 @@
             /**
              * @discordcommandpath tipeeestreamhandler message [message] - Sets the TipeeeStream donation announcement message.
              */
-            if (action.equalsIgnoreCase('message')) {
+            if ($.equalsIgnoreCase(action, 'message')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.tipeeestreamhandler.message.usage'));
                     return;
@@ -147,7 +147,7 @@
             /**
              * @discordcommandpath tipeeestreamhandler channel [channel name] - Sets the channel that announcements from this module will be said in.
              */
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.tipeeestreamhandler.channel.usage'));
                     return;

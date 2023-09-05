@@ -45,7 +45,7 @@
         /**
          * @discordcommandpath 8ball [question] - Ask the magic 8ball a question.
          */
-        if (command.equalsIgnoreCase('8ball')) {
+        if ($.equalsIgnoreCase(command, '8ball')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('8ball.usage'));
                 return;

@@ -30,7 +30,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./core/logging.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './core/logging.js')) {
             cmdLogEnabled = $.getSetIniDbBoolean('discordSettings', 'customCommandLogs', false);
             cmdDiscordLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
         }
@@ -106,8 +106,8 @@
             return;
         }
 
-        if (sender.equalsIgnoreCase('jtv')) {
-            if (message.equalsIgnoreCase('clearchat')) {
+        if ($.equalsIgnoreCase(sender, 'jtv')) {
+            if ($.equalsIgnoreCase(message, 'clearchat')) {
                 $.log.file('private-messages', '' + $.lang.get('console.received.clearchat'));
             } else if (message.indexOf('clearchat') !== -1) {
                 $.log.event($.lang.get('console.received.purgetimeoutban', message.substring(10)));
@@ -138,7 +138,7 @@
                 args = event.getArgs(),
                 action = args[0];
 
-        if (command.equalsIgnoreCase('log')) {
+        if ($.equalsIgnoreCase(command, 'log')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('logging.usage'));
                 return;
@@ -147,7 +147,7 @@
             /**
              * @commandpath log rotatedays [days] - Display or set number of days to rotate the logs. 0 to disable log rotation.
              */
-            if (action.equalsIgnoreCase('rotatedays')) {
+            if ($.equalsIgnoreCase(action, 'rotatedays')) {
                 if (args[1] === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('logging.rotatedays.usage', $.getIniDbNumber('settings', 'log_rotate_days')));
                     return;
@@ -168,7 +168,7 @@
             /**
              * @commandpath log files - Toggle the logging of files
              */
-            if (action.equalsIgnoreCase('files')) {
+            if ($.equalsIgnoreCase(action, 'files')) {
                 let enabled = !$.getIniDbBoolean('settings', 'log.file');
                 $.setIniDbBoolean('settings', 'log.file', enabled);
                 $.reloadLogs();
@@ -179,7 +179,7 @@
             /**
              * @commandpath log events - Toggle the logging of events
              */
-            if (action.equalsIgnoreCase('events')) {
+            if ($.equalsIgnoreCase(action, 'events')) {
                 let enabled = !$.getIniDbBoolean('settings', 'log.event');
                 $.setIniDbBoolean('settings', 'log.event', enabled);
                 $.reloadLogs();
@@ -190,7 +190,7 @@
             /**
              * @commandpath log errors - Toggle the logging of errors
              */
-            if (action.equalsIgnoreCase('errors')) {
+            if ($.equalsIgnoreCase(action, 'errors')) {
                 let enabled = !$.getIniDbBoolean('settings', 'log.error');
                 $.setIniDbBoolean('settings', 'log.error', enabled);
                 $.reloadLogs();

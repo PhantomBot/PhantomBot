@@ -110,7 +110,7 @@
         /**
          * @commandpath kill [username] - Kill a fellow viewer (not for real!), omit the username to kill yourself
          */
-        if (command.equalsIgnoreCase('kill')) {
+        if ($.equalsIgnoreCase(command, 'kill')) {
             if (args.length <= 0 || args[0].toLowerCase() === sender) {
                 selfKill(sender);
             } else {
@@ -121,7 +121,7 @@
         /**
          * @commandpath jailtimeouttime [amount in seconds] - Set the timeout time for jail time on the kill command.
          */
-        if (command.equalsIgnoreCase('jailtimeouttime')) {
+        if ($.equalsIgnoreCase(command, 'jailtimeouttime')) {
             if (args.length === 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('killcommand.jail.timeout.usage'));
                 return;

@@ -30,7 +30,7 @@
         keywords = [];
 
         for (i = 0; i < keys.length; i++) {
-            var json = JSON.parse($.inidb.get('keywords', keys[i]));
+            var json = JSON.parse($.getIniDbString('keywords', keys[i]));
 
             if (json.isRegex) {
                 try {
@@ -124,7 +124,7 @@
         /*
          * @commandpath keyword - Base command for keyword options
          */
-        if (command.equalsIgnoreCase('keyword')) {
+        if ($.equalsIgnoreCase(command, 'keyword')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.keyword.usage'));
                 return;
@@ -133,7 +133,7 @@
             /*
              * @commandpath keyword add [keyword] [response] - Adds a keyword and a response, use regex: at the start of the response to use regex.
              */
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 var isRegex = false,
                         isCaseSensitive = false,
                         keyword = null,
@@ -141,9 +141,9 @@
 
                 for (var i = 1; i < args.length; i++) {
                     if (keyword === null) {
-                        if (args[i].equalsIgnoreCase('--regex')) {
+                        if ($.equalsIgnoreCase(args[i], '--regex')) {
                             isRegex = true;
-                        } else if (args[i].equalsIgnoreCase('--case-sensitive')) {
+                        } else if ($.equalsIgnoreCase(args[i], '--case-sensitive')) {
                             isCaseSensitive = true;
                         } else {
                             keyword = $.jsString(args[i]);
@@ -178,7 +178,7 @@
             /*
              * @commandpath keyword remove [keyword] - Removes a given keyword
              */
-            if (action.equalsIgnoreCase('remove')) {
+            if ($.equalsIgnoreCase(action, 'remove')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.remove.usage'));
                     return;
@@ -195,7 +195,7 @@
             /*
              * @commandpath keyword cooldown [keyword] [seconds] - Sets a cooldown on the keyword. Use -1 to remove it. If you use the command: tag and you have a cooldown on that command it will use that cooldown
              */
-            if (action.equalsIgnoreCase('cooldown')) {
+            if ($.equalsIgnoreCase(action, 'cooldown')) {
                 if (subAction === undefined || isNaN(parseInt(args[2]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('keywordhandler.cooldown.usage'));
                     return;
@@ -234,7 +234,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./handlers/keywordHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './handlers/keywordHandler.js')) {
             loadKeywords();
         }
     });
