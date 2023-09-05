@@ -72,7 +72,7 @@
         /**
          * @commandpath roulette - Pull the trigger and find out if there's a bullet in the chamber
          */
-        if (command.equalsIgnoreCase('roulette')) {
+        if ($.equalsIgnoreCase(command, 'roulette')) {
             d1 = $.randRange(1, 2);
             d2 = $.randRange(1, 2);
 
@@ -114,7 +114,7 @@
         /**
          * @commandpath roulettetimeouttime [seconds] - Sets for how long the user gets timed out for when loosing at roulette
          */
-        if (command.equalsIgnoreCase('roulettetimeouttime')) {
+        if ($.equalsIgnoreCase(command, 'roulettetimeouttime')) {
             if (!$.checkUserPermission(sender, event.getTags(), $.PERMISSION.Admin)) {
                 $.say($.whisperPrefix(sender) + $.adminMsg);
                 return;

@@ -28,7 +28,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/bitsHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/handlers/bitsHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'bitsToggle', false);
             message = $.getIniDbString('discordSettings', 'bitsMessage', '(name) just cheered (amount) bits!');
             channelName = $.getIniDbString('discordSettings', 'bitsChannel', '');
@@ -152,7 +152,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('bitshandler')) {
+        if ($.equalsIgnoreCase(command, 'bitshandler')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.usage'));
                 return;
@@ -161,7 +161,7 @@
             /**
              * @discordcommandpath bitshandler toggle - Toggles bit announcements.
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 toggle = !toggle;
                 $.inidb.set('discordSettings', 'bitsToggle', toggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.toggle', (toggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -170,7 +170,7 @@
             /**
              * @discordcommandpath bitshandler message [message] - Sets the bit announcement message.
              */
-            if (action.equalsIgnoreCase('message')) {
+            if ($.equalsIgnoreCase(action, 'message')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.message.usage'));
                     return;
@@ -184,7 +184,7 @@
             /**
              * @discordcommandpath bitshandler channel [channel name] - Sets the channel bit announcements will be made in.
              */
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.bitshandler.bits.channel.usage'));
                     return;

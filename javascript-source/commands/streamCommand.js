@@ -46,7 +46,7 @@
             uptime;
 
         /*
-         * @commandpath game - Give's you the current game and the playtime if the channel is online. 
+         * @commandpath game - Give's you the current game and the playtime if the channel is online.
          * @commandpath title - Give's you the current title and the channel uptime if the channel is online.
          * @commandpath followage- Tells you how long you have been following the channel.
          * @commandpath playtime - Tells you how long the caster has been playing the current game for.
@@ -54,7 +54,7 @@
          * @commandpath age - Tells you how long you have been on Twitch for.
          * @commandpath setgame [game name] - Set your Twitch game title.
          */
-        if (command.equalsIgnoreCase('setgame')) {
+        if ($.equalsIgnoreCase(command, 'setgame')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.game.set.usage', $.getGame($.channelName)));
                 return;
@@ -66,7 +66,7 @@
         /*
          * @commandpath settitle [stream title] - Set your Twitch stream title.
          */
-        if (command.equalsIgnoreCase('settitle')) {
+        if ($.equalsIgnoreCase(command, 'settitle')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('streamcommand.title.set.usage', $.getStatus($.channelName)));
                 return;
@@ -78,7 +78,7 @@
         /*
          * @commandpath vod - Displays stream uptime and current VOD or, if offline, the last VOD available.
          */
-        if (command.equalsIgnoreCase('vod')) {
+        if ($.equalsIgnoreCase(command, 'vod')) {
             if ($.isOnline($.channelName)) {
                 vodJsonStr = $.twitch.GetChannelVODs($.channelName, 'current') + '';
                 if (vodJsonStr.length === 0 || vodJsonStr === null) {

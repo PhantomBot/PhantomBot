@@ -86,7 +86,7 @@
         /**
          * @discordcommandpath gamble [amount] - Gamble your points.
          */
-        if (command.equalsIgnoreCase('gamble')) {
+        if ($.equalsIgnoreCase(command, 'gamble')) {
             var twitchName = $.discord.resolveTwitchName(event.getSenderId());
             if (twitchName === null) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
@@ -104,12 +104,12 @@
             } else {
                 points = parseInt(action);
             }
-            
+
             gamble(channel, twitchName, mention, sender, points);
             return;
         }
 
-        if (command.equalsIgnoreCase('gambling')) {
+        if ($.equalsIgnoreCase(command, 'gambling')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.main.usage'));
                 return;
@@ -118,7 +118,7 @@
             /**
              * @discordcommandpath gambling setmax [amount] - Set how many points people can gamble.
              */
-            if (action.equalsIgnoreCase('setmax')) {
+            if ($.equalsIgnoreCase(action, 'setmax')) {
                 if (isNaN(parseInt(subAction))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.set.max.usage'));
                     return;
@@ -131,7 +131,7 @@
             /**
              * @discordcommandpath gambling setmin [amount] - Set the minimum amount of points people can gamble.
              */
-            if (action.equalsIgnoreCase('setmin')) {
+            if ($.equalsIgnoreCase(action, 'setmin')) {
                 if (isNaN(parseInt(subAction))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.set.min.usage'));
                     return;
@@ -144,7 +144,7 @@
             /**
              * @discordcommandpath gambling setwinningrange [range] - Set the winning range from 0-100. The higher the less of a chance people have at winning.
              */
-            if (action.equalsIgnoreCase('setwinningrange')) {
+            if ($.equalsIgnoreCase(action, 'setwinningrange')) {
                 if (isNaN(parseInt(subAction))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.win.range.usage'));
                     return;
@@ -157,7 +157,7 @@
             /**
              * @discordcommandpath gambling setgainpercent [amount in percent] - Set the winning gain percent.
              */
-            if (action.equalsIgnoreCase('setgainpercent')) {
+            if ($.equalsIgnoreCase(action, 'setgainpercent')) {
                 if (isNaN(parseInt(subAction))) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.gambling.percent.usage'));
                     return;
@@ -185,7 +185,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/games/gambling.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/games/gambling.js')) {
             reloadGamble();
         }
     });

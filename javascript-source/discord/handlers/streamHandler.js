@@ -43,7 +43,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/streamHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/handlers/streamHandler.js')) {
             onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
             onlinePublish = $.getIniDbBoolean('discordSettings', 'onlinePublish', false);
             onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!');
@@ -323,7 +323,7 @@
                 action = args[0],
                 subAction = args[1];
 
-        if (command.equalsIgnoreCase('streamhandler')) {
+        if ($.equalsIgnoreCase(command, 'streamhandler')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.usage'));
                 return;
@@ -332,7 +332,7 @@
             /*
              * @discordcommandpath streamhandler toggleonline - Toggles the stream online announcements.
              */
-            if (action.equalsIgnoreCase('toggleonline')) {
+            if ($.equalsIgnoreCase(action, 'toggleonline')) {
                 onlineToggle = !onlineToggle;
                 $.inidb.set('discordSettings', 'onlineToggle', onlineToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.toggle', (onlineToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -341,7 +341,7 @@
             /*
              * @discordcommandpath streamhandler toggleonlinepublish - Toggles stream online announcements being published in Discord Announcement channels.
              */
-            if (action.equalsIgnoreCase('toggleonlinepublish')) {
+            if ($.equalsIgnoreCase(action, 'toggleonlinepublish')) {
                 onlinePublish = !onlinePublish;
                 $.inidb.set('discordSettings', 'onlinePublish', onlinePublish);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.publish.' + (onlinePublish === true ? 'on' : 'off')));
@@ -350,7 +350,7 @@
             /*
              * @discordcommandpath streamhandler onlinemessage [message] - Sets the stream online announcement message.
              */
-            if (action.equalsIgnoreCase('onlinemessage')) {
+            if ($.equalsIgnoreCase(action, 'onlinemessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.message.usage'));
                     return;
@@ -364,7 +364,7 @@
             /*
              * @discordcommandpath streamhandler toggleoffline - Toggles the stream offline announcements.
              */
-            if (action.equalsIgnoreCase('toggleoffline')) {
+            if ($.equalsIgnoreCase(action, 'toggleoffline')) {
                 offlineToggle = !offlineToggle;
                 $.inidb.set('discordSettings', 'offlineToggle', offlineToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.toggle', (offlineToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -373,7 +373,7 @@
             /*
              * @discordcommandpath streamhandler toggleofflinepublish - Toggles stream offline announcements being published in Discord Announcement channels.
              */
-            if (action.equalsIgnoreCase('toggleofflinepublish')) {
+            if ($.equalsIgnoreCase(action, 'toggleofflinepublish')) {
                 offlinePublish = !offlinePublish;
                 $.inidb.set('discordSettings', 'offlinePublish', offlinePublish);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.publish.' + (offlinePublish === true ? 'on' : 'off')));
@@ -382,7 +382,7 @@
             /*
              * @discordcommandpath streamhandler offlinemessage [message] - Sets the stream offline announcement message.
              */
-            if (action.equalsIgnoreCase('offlinemessage')) {
+            if ($.equalsIgnoreCase(action, 'offlinemessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.message.usage'));
                     return;
@@ -396,7 +396,7 @@
             /*
              * @discordcommandpath streamhandler togglegame - Toggles the stream game change announcements.
              */
-            if (action.equalsIgnoreCase('togglegame')) {
+            if ($.equalsIgnoreCase(action, 'togglegame')) {
                 gameToggle = !gameToggle;
                 $.inidb.set('discordSettings', 'gameToggle', gameToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.game.toggle', (gameToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -405,7 +405,7 @@
             /*
              * @discordcommandpath streamhandler togglegamepublish - Toggles stream game change announcements being published in Discord Announcement channels.
              */
-            if (action.equalsIgnoreCase('togglegamepublish')) {
+            if ($.equalsIgnoreCase(action, 'togglegamepublish')) {
                 gamePublish = !gamePublish;
                 $.inidb.set('discordSettings', 'gamePublish', gamePublish);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.game.publish.' + (gamePublish === true ? 'on' : 'off')));
@@ -414,7 +414,7 @@
             /*
              * @discordcommandpath streamhandler gamemessage [message] - Sets the stream game change announcement message.
              */
-            if (action.equalsIgnoreCase('gamemessage')) {
+            if ($.equalsIgnoreCase(action, 'gamemessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.game.message.usage'));
                     return;
@@ -428,7 +428,7 @@
             /*
              * @discordcommandpath streamhandler togglebotstatus - If enabled the bot will be marked as streaming with your Twitch title when you go live.
              */
-            if (action.equalsIgnoreCase('togglebotstatus')) {
+            if ($.equalsIgnoreCase(action, 'togglebotstatus')) {
                 botGameToggle = !botGameToggle;
                 $.inidb.set('discordSettings', 'botGameToggle', botGameToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.bot.game.toggle', (botGameToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -437,7 +437,7 @@
             /*
              * @discordcommandpath streamhandler channel [channel name] - Sets the channel that announcements from this module will be said in.
              */
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.channel.usage'));
                     return;
@@ -451,7 +451,7 @@
             /*
              * @discordcommandpath streamhandler toggledeletemessage - Toggles if online announcements get deleted after stream.
              */
-            if (action.equalsIgnoreCase('toggledeletemessage')) {
+            if ($.equalsIgnoreCase(action, 'toggledeletemessage')) {
                 deleteMessageToggle = !deleteMessageToggle;
                 $.inidb.set('discordSettings', 'deleteMessageToggle', deleteMessageToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.delete.toggle', (deleteMessageToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));

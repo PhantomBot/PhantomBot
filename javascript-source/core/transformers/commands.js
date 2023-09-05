@@ -65,7 +65,7 @@
         temp = [];
         for (i in keys) {
             if (!keys[i].includes(' ')) {
-                temp.push('!' + keys[i] + ': ' + $.getPointsString($.inidb.get('pricecom', keys[i])));
+                temp.push('!' + keys[i] + ': ' + $.getPointsString($.getIniDbString('pricecom', keys[i])));
             }
         }
         $.paginateArray(temp, 'NULL' + prefix, ', ', true, args.event.getSender());
@@ -105,12 +105,12 @@
             if (!isNaN(match[0])) {
                 incr = parseInt(match[0]);
             } else if (match[0].toLowerCase() === 'reset') {
-                incr = -$.inidb.GetInteger(table, '', counter);
+                incr = -$.getIniDbNumber(table, counter);
             }
         }
 
         $.inidb.incr(table, counter, incr);
-        return {result: $.inidb.get(table, counter)};
+        return {result: $.getIniDbString(table, counter)};
     }
 
     /*

@@ -71,10 +71,10 @@
      * @event twitchOnline
      */
     $.bind('twitchOnline', function (event) {
-        if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
+        if (($.systemTime() - $.getIniDbString('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
             let uptime = getStreamUptimeSeconds($.channelName);
             $.inidb.set('panelstats', 'gameCount', 1);
-            count = $.inidb.get('panelstats', 'gameCount');
+            count = $.getIniDbString('panelstats', 'gameCount');
             $.inidb.del('streamInfo', 'gamesPlayed');
             $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
             $.inidb.set('panelstats', 'playTimeReset', $.systemTime());
@@ -86,7 +86,7 @@
      * @event twitchOffline
      */
     $.bind('twitchOffline', function (event) {
-        if (($.systemTime() - $.inidb.get('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
+        if (($.systemTime() - $.getIniDbString('panelstats', 'playTimeReset')) >= (480 * 6e4)) {
             $.inidb.set('panelstats', 'playTimeStart', 0);
             $.inidb.set('panelstats', 'playTimeReset', 0);
             $.inidb.set('panelstats', 'gameCount', 1);
@@ -103,15 +103,15 @@
 
         if ($.isOnline($.channelName)) {
             $.inidb.set('panelstats', 'playTimeStart', $.systemTime());
-            let played = $.inidb.OptString('streamInfo', '', 'gamesPlayed');
+            let played = $.optIniDbString('streamInfo', 'gamesPlayed');
             if (played.isPresent()) {
                 $.inidb.incr('panelstats', 'gameCount', 1);
-                count = $.inidb.get('panelstats', 'gameCount');
+                count = $.getIniDbString('panelstats', 'gameCount');
                 played = played.get();
                 played += (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '=');
                 $.inidb.set('streamInfo', 'gamesPlayed', played);
             } else {
-                count = $.inidb.get('panelstats', 'gameCount');
+                count = $.getIniDbString('panelstats', 'gameCount');
                 $.inidb.set('streamInfo', 'gamesPlayed', (count + ': ' + $.twitchcache.getGameTitle() + ' - ' + (uptime / 3600 < 10 ? '0' : '') + Math.floor(uptime / 3600) + ':' + ((uptime % 3600) / 60 < 10 ? '0' : '') + Math.floor((uptime % 3600) / 60) + '='));
             }
         }
@@ -123,7 +123,7 @@
      * @return string
      */
     function getGamesPlayed() {
-        return $.inidb.GetString('streamInfo', '', 'gamesPlayed', '').split('=').join(', ');
+        return $.getIniDbString('streamInfo', 'gamesPlayed', '').split('=').join(', ');
     }
 
     /**
@@ -131,7 +131,7 @@
      * @export $
      */
     function getPlayTime() {
-        let playTime = parseInt($.inidb.get('panelstats', 'playTimeStart')),
+        let playTime = parseInt($.getIniDbString('panelstats', 'playTimeStart')),
                 time;
 
         if (playTime) {
@@ -150,7 +150,7 @@
      */
     function isOnline(channelName) {
         if ($.twitchcache !== undefined && $.twitchcache !== null && $.twitchCacheReady
-            && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+            && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             return $.twitchcache.isStreamOnline();
         } else {
             return !$.twitch.GetStream(channelName).isNull('stream');
@@ -164,7 +164,7 @@
      * @returns {string}
      */
     function getStatus(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             return ($.twitchcache.getStreamStatus() + '');
         } else {
             let channelData = $.twitch.GetChannel(channelName);
@@ -186,7 +186,7 @@
      * @returns {string}
      */
     function getGame(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             return ($.twitchcache.getGameTitle() + '');
         } else {
             let channelData = $.twitch.GetChannel(channelName);
@@ -227,7 +227,7 @@
      * @returns {number}
      */
     function getStreamUptimeSeconds(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             return $.twitchcache.getStreamUptimeSeconds();
         } else {
             let stream = $.twitch.GetStream(channelName),
@@ -256,7 +256,7 @@
      * @returns {string}
      */
     function getStreamUptime(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             let uptime = $.twitchcache.getStreamUptimeSeconds();
 
             if (uptime === 0) {
@@ -302,7 +302,7 @@
      */
     function getStreamDownTime() {
         let now = $.systemTime(),
-                down = $.inidb.get('streamInfo', 'downtime'),
+                down = $.getIniDbString('streamInfo', 'downtime'),
                 time;
 
         if (down > 0) {
@@ -319,7 +319,7 @@
      * @returns {string}
      */
     function getStreamStartedAt(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             if ($.jsString($.twitchcache.isStreamOnlineString()) === 'false') {
                 return 'Stream is offline';
             }
@@ -345,7 +345,7 @@
      * @returns {Number}
      */
     function getViewers(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             return $.twitchcache.viewers();
         } else {
             let stream = $.twitch.GetStream(channelName);
@@ -365,7 +365,7 @@
      * @returns {Number}
      */
     function getFollows(channelName) {
-        if ($.twitchCacheReady && (channelName === undefined || channelName === null || channelName.equalsIgnoreCase($.channelName))) {
+        if ($.twitchCacheReady && (channelName === undefined || channelName === null || $.equalsIgnoreCase(channelName, $.channelName))) {
             return $.twitchcache.followers();
         } else {
             let channel = $.twitch.GetChannel(channelName);

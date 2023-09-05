@@ -77,7 +77,7 @@
         /*
          * @commandpath channelpoints - Allows setting channel points redemptions to convert into custom commands, then execute command tags
          */
-        if (command.equalsIgnoreCase('channelpoints')) {
+        if ($.equalsIgnoreCase(command, 'channelpoints')) {
             if (action === undefined || action === null) {
                 $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.info'));
             } else {
@@ -413,7 +413,7 @@
     }
 
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./handlers/ChannelPointsHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './handlers/ChannelPointsHandler.js')) {
             let args = event.getArgs();
             if (args.length > 0) {
                 switch ($.jsString(args[0])) {

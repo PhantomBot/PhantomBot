@@ -39,7 +39,7 @@
                 if (message.match('\\b' + keys[i] + '\\b') && !message.includes('!keyword')) {
                     var kevent1 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
                             event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                    var tag = $.transformers.tags(kevent1, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
+                    var tag = $.transformers.tags(kevent1, $.getIniDbString('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
                     if (tag !== null) {
                         $.discord.say(channel, tag);
                     }
@@ -51,7 +51,7 @@
                     if (!sent && message.includes(keys[i]) && !message.includes('!keyword')) {
                         var kevent2 = new Packages.tv.phantombot.event.discord.channel.DiscordChannelCommandEvent(event.getDiscordUser(), event.getDiscordChannel(),
                                 event.getDiscordMessage(), 'keyword_' + keys[i], message, event.isAdmin());
-                        var tag = $.transformers.tags(kevent2, $.inidb.get('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
+                        var tag = $.transformers.tags(kevent2, $.getIniDbString('discordKeywords', keys[i]), ['discord', ['commandevent', 'keywordevent', 'noevent']], {platform: 'discord'});
                         if (tag !== null) {
                             $.discord.say(channel, tag);
                         }
@@ -74,7 +74,7 @@
                 action = args[0],
                 subAction = args[1];
 
-        if (command.equalsIgnoreCase('keyword')) {
+        if ($.equalsIgnoreCase(command, 'keyword')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.keywordhandler.usage'));
                 return;
@@ -83,7 +83,7 @@
             /**
              * @discordcommandpath keyword add [keyword] [response] - Adds a custom keyword.
              */
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 if (subAction === undefined || args[2] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.keywordhandler.add.usage'));
                     return;
@@ -101,7 +101,7 @@
             /**
              * @discordcommandpath keyword edit [keyword] [response] - Edits a custom keyword.
              */
-            if (action.equalsIgnoreCase('edit')) {
+            if ($.equalsIgnoreCase(action, 'edit')) {
                 if (subAction === undefined || args[2] === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.keywordhandler.edit.usage'));
                     return;
@@ -119,7 +119,7 @@
             /**
              * @discordcommandpath keyword remove [keyword] - Removes a custom keyword.
              */
-            if (action.equalsIgnoreCase('remove')) {
+            if ($.equalsIgnoreCase(action, 'remove')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.keywordhandler.remove.usage'));
                     return;

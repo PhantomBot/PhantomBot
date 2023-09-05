@@ -106,7 +106,7 @@
         };
 
         for (var i = 0; i < discordRoles.size(); i++) {
-            if (discordRoles.get(i).getName().equalsIgnoreCase('@everyone')) {
+            if ($.equalsIgnoreCase(discordRoles.get(i).getName(), '@everyone')) {
                 everyoneRoleID = discordRoles.get(i).getId().asString();
                 break;
             }
@@ -210,7 +210,7 @@
 
     function updateCommandChannel(command) {
         if (commandExists(command)) {
-            commands[command].channels = $.inidb.GetString('discordChannelcom', '', command, '');
+            commands[command].channels = $.getIniDbString('discordChannelcom', command, '');
         }
     }
 
@@ -265,9 +265,9 @@
 
             commands[command] = {
                 permission: getJSONCommandPermission(command, permission),
-                cost: $.inidb.GetInteger('discordPricecom', '', command, 0),
-                alias: $.inidb.GetString('discordAliascom', '', command, ''),
-                channels: $.inidb.GetString('discordChannelcom', '', command, ''),
+                cost: $.getIniDbNumber('discordPricecom', command, 0),
+                alias: $.getIniDbString('discordAliascom', command, ''),
+                channels: $.getIniDbString('discordChannelcom', command, ''),
                 scriptFile: scriptFile,
                 subCommand: {}
             };

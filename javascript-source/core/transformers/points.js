@@ -79,7 +79,7 @@
         }
 
         return {
-            result: $.getPointsString($.inidb.GetInteger('paycom', '', cmd, 0)),
+            result: $.getPointsString($.getIniDbNumber('paycom', cmd, 0)),
             cache: true
         };
     }
@@ -142,7 +142,7 @@
         }
 
         return {
-            result: $.getPointsString($.inidb.GetInteger('pricecom', '', cmd, 0)),
+            result: $.getPointsString($.getIniDbNumber('pricecom', cmd, 0)),
             cache: true
         };
     }
@@ -168,7 +168,7 @@
             }
 
             if (user !== null) {
-                if ($.inidb.GetInteger('points', '', user) > amount) {
+                if ($.getIniDbNumber('points', user) > amount) {
                     $.inidb.decr('points', user, amount);
                 } else {
                     $.inidb.SetInteger('points', '', user, 0);
@@ -226,7 +226,7 @@
             }
 
             if (fromuser !== null && touser !== null) {
-                if ($.inidb.GetInteger('points', '', fromuser) >= amount) {
+                if ($.getIniDbNumber('points', fromuser) >= amount) {
                     $.inidb.decr('points', fromuser, amount);
                     $.inidb.incr('points', touser, amount);
                 }

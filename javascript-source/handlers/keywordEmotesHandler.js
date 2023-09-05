@@ -85,7 +85,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase(handlerModule)) {
+        if ($.equalsIgnoreCase(event.getScript(), handlerModule)) {
             loadKeywords();
         }
     });

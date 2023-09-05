@@ -27,12 +27,12 @@
                 action = args[0];
 
         /* reloads the betting vars */
-        if (command.equalsIgnoreCase('reloadbet')) {
+        if ($.equalsIgnoreCase(command, 'reloadbet')) {
             $.reloadBet();
         }
 
         /** Adds or removes a user from the moderator cache */
-        if (command.equalsIgnoreCase('permissionsetuser')) {
+        if ($.equalsIgnoreCase(command, 'permissionsetuser')) {
             if (parseInt(args[1]) <= 2) {
                 $.addModeratorToCache(action.toLowerCase());
             } else {
@@ -40,7 +40,7 @@
             }
         }
 
-        if (command.equalsIgnoreCase('reloadmisc')) {
+        if ($.equalsIgnoreCase(command, 'reloadmisc')) {
             $.reloadMisc();
             $.reloadWhispers();
         }
@@ -48,21 +48,21 @@
         /*
          * Reloads the tipeeestream vars.
          */
-        if (command.equalsIgnoreCase('tipeeestreamreload')) {
+        if ($.equalsIgnoreCase(command, 'tipeeestreamreload')) {
             $.reloadTipeeeStream();
         }
 
         /*
          * Reloads the streamelements vars.
          */
-        if (command.equalsIgnoreCase('streamelementsreload')) {
+        if ($.equalsIgnoreCase(command, 'streamelementsreload')) {
             $.reloadStreamElements();
         }
 
         /*
          * Sets permissions on a command.
          */
-        if (command.equalsIgnoreCase('permcomsilent')) {
+        if ($.equalsIgnoreCase(command, 'permcomsilent')) {
             action = action.replace('!', '').toLowerCase();
             let group = $.PERMISSION.Viewer;
 
@@ -86,9 +86,9 @@
                 let list = $.inidb.GetKeyList('aliases', '');
 
                 for (let i in list) {
-                    if (list[i].equalsIgnoreCase(action)) {
-                        $.inidb.set('permcom', $.inidb.get('aliases', list[i]), group);
-                        $.updateCommandGroup($.inidb.get('aliases', list[i]), group);
+                    if ($.equalsIgnoreCase(list[i], action)) {
+                        $.inidb.set('permcom', $.getIniDbString('aliases', list[i]), group);
+                        $.updateCommandGroup($.getIniDbString('aliases', list[i]), group);
                     }
                 }
 
@@ -120,7 +120,7 @@
         /*
          * Reloads the command variables.
          */
-        if (command.equalsIgnoreCase('reloadcommand')) {
+        if ($.equalsIgnoreCase(command, 'reloadcommand')) {
             $.addComRegisterAliases();
             $.addComRegisterCommands();
             if (action) {
@@ -132,8 +132,8 @@
         /*
          * Registers a command
          */
-        if (command.equalsIgnoreCase('registerpanel')) {
-            $.registerChatCommand($.inidb.GetString('tempDisabledCommandScript', '', args[0].toLowerCase(), './commands/customCommands.js'), args[0].toLowerCase());
+        if ($.equalsIgnoreCase(command, 'registerpanel')) {
+            $.registerChatCommand($.getIniDbString('tempDisabledCommandScript', args[0].toLowerCase(), './commands/customCommands.js'), args[0].toLowerCase());
             $.inidb.del('tempDisabledCommandScript', args[0].toLowerCase());
             return;
         }
@@ -141,7 +141,7 @@
         /*
          * unregtisters a command
          */
-        if (command.equalsIgnoreCase('unregisterpanel')) {
+        if ($.equalsIgnoreCase(command, 'unregisterpanel')) {
             $.tempUnRegisterChatCommand(args[0].toLowerCase());
             return;
         }
@@ -149,27 +149,27 @@
         /*
          * Reloads the moderation variables.
          */
-        if (command.equalsIgnoreCase('reloadmod')) {
+        if ($.equalsIgnoreCase(command, 'reloadmod')) {
             $.reloadModeration();
         }
 
-        if (command.equalsIgnoreCase('reloadkill')) {
+        if ($.equalsIgnoreCase(command, 'reloadkill')) {
             $.reloadKill();
         }
 
-        if (command.equalsIgnoreCase('reloadraid')) {
+        if ($.equalsIgnoreCase(command, 'reloadraid')) {
             $.reloadRaid();
         }
 
         /* reloads the clip vars */
-        if (command.equalsIgnoreCase('reloadclip')) {
+        if ($.equalsIgnoreCase(command, 'reloadclip')) {
             $.reloadClips();
         }
 
         /*
          * Clears the highlight
          */
-        if (command.equalsIgnoreCase("clearhighlightspanel")) {
+        if ($.equalsIgnoreCase(command, "clearhighlightspanel")) {
             $.inidb.RemoveFile("highlights");
             return;
         }
@@ -177,7 +177,7 @@
         /*
          * makes a highlight
          */
-        if (command.equalsIgnoreCase('highlightpanel')) {
+        if ($.equalsIgnoreCase(command, 'highlightpanel')) {
             if (!$.isOnline($.channelName)) {
                 return;
             }
@@ -198,7 +198,7 @@
         /*
          * Sets the title on stream
          */
-        if (command.equalsIgnoreCase('settitlesilent')) {
+        if ($.equalsIgnoreCase(command, 'settitlesilent')) {
             let argsString = args.splice(0).join(' ');
             $.updateStatus($.channelName, argsString, sender, true);
             return;
@@ -207,7 +207,7 @@
         /*
          * Sets the game on stream
          */
-        if (command.equalsIgnoreCase('setgamesilent')) {
+        if ($.equalsIgnoreCase(command, 'setgamesilent')) {
             let argsString = args.splice(0).join(' ');
             $.updateGame($.channelName, argsString, sender, true);
             return;
@@ -216,7 +216,7 @@
         /*
          * Reloads the adventure variables.
          */
-        if (command.equalsIgnoreCase('reloadadventure')) {
+        if ($.equalsIgnoreCase(command, 'reloadadventure')) {
             $.reloadAdventure();
             return;
         }
@@ -224,7 +224,7 @@
         /*
          * Reloads the gambling variables.
          */
-        if (command.equalsIgnoreCase('reloadgamble')) {
+        if ($.equalsIgnoreCase(command, 'reloadgamble')) {
             $.reloadGamble();
             return;
         }
@@ -232,7 +232,7 @@
         /*
          * Reloads the roll variables.
          */
-        if (command.equalsIgnoreCase('loadprizesroll')) {
+        if ($.equalsIgnoreCase(command, 'loadprizesroll')) {
             $.loadPrizes();
             return;
         }
@@ -240,7 +240,7 @@
         /*
          * Reloads the roulette variables.
          */
-        if (command.equalsIgnoreCase('reloadroulette')) {
+        if ($.equalsIgnoreCase(command, 'reloadroulette')) {
             $.reloadRoulette();
             return;
         }
@@ -248,7 +248,7 @@
         /*
          * Reloads the slot variables.
          */
-        if (command.equalsIgnoreCase('loadprizes')) {
+        if ($.equalsIgnoreCase(command, 'loadprizes')) {
             $.loadPrizesSlot();
             return;
         }
@@ -256,7 +256,7 @@
         /*
          * Reloads the bits variables.
          */
-        if (command.equalsIgnoreCase('reloadbits')) {
+        if ($.equalsIgnoreCase(command, 'reloadbits')) {
             $.reloadBits();
             return;
         }
@@ -264,7 +264,7 @@
         /*
          * Reloads the donation variables.
          */
-        if (command.equalsIgnoreCase('donationpanelupdate')) {
+        if ($.equalsIgnoreCase(command, 'donationpanelupdate')) {
             $.donationpanelupdate();
             return;
         }
@@ -272,7 +272,7 @@
         /*
          * Reloads the follow variables.
          */
-        if (command.equalsIgnoreCase('followerpanelupdate')) {
+        if ($.equalsIgnoreCase(command, 'followerpanelupdate')) {
             $.updateFollowConfig();
             return;
         }
@@ -280,7 +280,7 @@
         /*
          * Reloads the subscriber variables.
          */
-        if (command.equalsIgnoreCase('subscriberpanelupdate')) {
+        if ($.equalsIgnoreCase(command, 'subscriberpanelupdate')) {
             $.updateSubscribeConfig();
             return;
         }
@@ -288,7 +288,7 @@
         /*
          * Reloads the greeting variables.
          */
-        if (command.equalsIgnoreCase('greetingspanelupdate')) {
+        if ($.equalsIgnoreCase(command, 'greetingspanelupdate')) {
             $.greetingspanelupdate();
             return;
         }
@@ -296,7 +296,7 @@
         /*
          * Reloads the welcome variables.
          */
-        if (command.equalsIgnoreCase('welcomepanelupdate')) {
+        if ($.equalsIgnoreCase(command, 'welcomepanelupdate')) {
             $.welcomepanelupdate();
             return;
         }
@@ -304,14 +304,14 @@
         /*
          * Reloads the notice variables.
          */
-        if (command.equalsIgnoreCase('reloadnotice')) {
+        if ($.equalsIgnoreCase(command, 'reloadnotice')) {
             $.reloadNoticeTimers();
         }
 
         /*
          * Reloads the points variables.
          */
-        if (command.equalsIgnoreCase('reloadpoints')) {
+        if ($.equalsIgnoreCase(command, 'reloadpoints')) {
             $.updateSettings();
             return;
         }
@@ -319,7 +319,7 @@
         /*
          * Sets a points bonus
          */
-        if (command.equalsIgnoreCase('pointsbonuspanel')) {
+        if ($.equalsIgnoreCase(command, 'pointsbonuspanel')) {
             $.setTempBonus(action, args[1]);
             return;
         }
@@ -327,7 +327,7 @@
         /*
          * Gives points to everyone in the channel
          */
-        if (command.equalsIgnoreCase('pointsallpanel')) {
+        if ($.equalsIgnoreCase(command, 'pointsallpanel')) {
             for (let i in $.users) {
                 $.inidb.incr('points', $.users[i].toLowerCase(), parseInt(action));
             }
@@ -338,7 +338,7 @@
         /*
          * Takes points from everyone in the channel
          */
-        if (command.equalsIgnoreCase('pointstakeallpanel')) {
+        if ($.equalsIgnoreCase(command, 'pointstakeallpanel')) {
             for (let i in $.users) {
                 if ($.getUserPoints($.users[i].toLowerCase()) > parseInt(action)) {
                     $.inidb.decr('points', $.users[i].toLowerCase(), parseInt(action));
@@ -351,7 +351,7 @@
         /*
          * Reloads the raffle variables.
          */
-        if (command.equalsIgnoreCase('reloadraffle')) {
+        if ($.equalsIgnoreCase(command, 'reloadraffle')) {
             $.reloadRaffle();
             return;
         }
@@ -359,7 +359,7 @@
         /*
          * Reloads the rank variables.
          */
-        if (command.equalsIgnoreCase('rankreloadtable')) {
+        if ($.equalsIgnoreCase(command, 'rankreloadtable')) {
             $.loadRanksTimeTable();
             return;
         }
@@ -367,7 +367,7 @@
         /*
          * Reloads the ticket raffle variables.
          */
-        if (command.equalsIgnoreCase('reloadtraffle')) {
+        if ($.equalsIgnoreCase(command, 'reloadtraffle')) {
             $.reloadTRaffle();
             return;
         }
@@ -375,7 +375,7 @@
         /*
          * Reloads the time variables.
          */
-        if (command.equalsIgnoreCase('updatetimesettings')) {
+        if ($.equalsIgnoreCase(command, 'updatetimesettings')) {
             $.updateTimeSettings();
             return;
         }
@@ -383,7 +383,7 @@
         /*
          * Reloads the log variables.
          */
-        if (command.equalsIgnoreCase('reloadlogs')) {
+        if ($.equalsIgnoreCase(command, 'reloadlogs')) {
             $.reloadLogs();
             return;
         }

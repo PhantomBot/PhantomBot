@@ -30,7 +30,7 @@
             return 0;
         }
 
-        return $.inidb.GetInteger('points', '', username.toLowerCase(), 0);
+        return $.getIniDbNumber('points', username.toLowerCase(), 0);
     }
 
     /*
@@ -62,7 +62,7 @@
         /**
          * @discordcommandpath points - Tells you how many points you have if you linked in you Twitch account.
          */
-        if (command.equalsIgnoreCase('points')) {
+        if ($.equalsIgnoreCase(command, 'points')) {
             if (action === undefined) {
                 if (twitchName !== null) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.pointsystem.self.points', $.getPointsString($.getUserPoints(twitchName)), $.getTimeString($.getUserTime(twitchName)), $.resolveRank(twitchName)));

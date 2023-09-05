@@ -43,7 +43,7 @@
      * @return number
      */
     function getCooldown(keyword) {
-        return $.inidb.GetInteger('coolkey', '', keyword, 0);
+        return $.getIniDbNumber('coolkey', keyword, 0);
     }
 
     /**
@@ -90,7 +90,7 @@
         _lock.lock();
         try {
             for (i in cooldown) {
-                if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
+                if ($.equalsIgnoreCase(cooldown[i].keyword, keyword)) {
                     if ((cooldown[i].time - $.systemTime()) > 0) {
                         if (permCheck(username)) return 0;
                         return parseInt(cooldown[i].time - $.systemTime());
@@ -116,7 +116,7 @@
         _lock.lock();
         try {
             for (i in cooldown) {
-                if (cooldown[i].keyword.equalsIgnoreCase(keyword)) {
+                if ($.equalsIgnoreCase(cooldown[i].keyword, keyword)) {
                     cooldown.splice(i, 1);
                     return;
                 }

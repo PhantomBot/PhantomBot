@@ -49,7 +49,7 @@
         /**
          * @commandpath 8ball [question] - Ask the 8ball for advice
          */
-        if (command.equalsIgnoreCase('8ball')) {
+        if ($.equalsIgnoreCase(command, '8ball')) {
             if (!args[0]) {
                 $.say($.resolveRank(sender) + ' ' + $.lang.get('8ball.usage'));
                 $.returnCommandCost(sender, command, $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod));

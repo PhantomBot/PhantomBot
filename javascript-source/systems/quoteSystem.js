@@ -80,7 +80,7 @@
             quoteKeys = $.inidb.GetKeyList('quotes', '');
 
             for (i in quoteKeys) {
-                quotes.push($.inidb.get('quotes', quoteKeys[i]));
+                quotes.push($.getIniDbString('quotes', quoteKeys[i]));
                 $.inidb.del('quotes', quoteKeys[i]);
             }
 
@@ -118,7 +118,7 @@
             quoteId = ids.length > 0 ? $.randElement(ids) : $.rand(quotes.length);
         }
 
-        quote = $.inidb.OptString('quotes', '', quoteId);
+        quote = $.optIniDbString('quotes', quoteId);
         if (quote.isPresent()) {
             quote = JSON.parse(quote.get());
             quote.push(quoteId);
@@ -142,7 +142,7 @@
         /**
          * @commandpath editquote [id] [user|game|quote] [text] - Edit quotes.
          */
-        if (command.equalsIgnoreCase("editquote")) {
+        if ($.equalsIgnoreCase(command, "editquote")) {
             if (args.length < 3) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.usage'));
                 return;
@@ -150,15 +150,15 @@
 
             quote = getQuote(args[0]);
             if (quote.length > 0) {
-                if (args[1].equalsIgnoreCase("user")) {
+                if ($.equalsIgnoreCase(args[1], "user")) {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.user.success', args[0], args[2]));
                     quote[0] = args[2];
                     updateQuote(args[0], quote);
-                } else if (args[1].equalsIgnoreCase("game")) {
+                } else if ($.equalsIgnoreCase(args[1], "game")) {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.game.success', args[0], args.splice(2).join(' ')));
                     quote[3] = args.splice(2).join(' ');
                     updateQuote(args[0], quote);
-                } else if (args[1].equalsIgnoreCase("quote")) {
+                } else if ($.equalsIgnoreCase(args[1], "quote")) {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.edit.quote.success', args[0], args.splice(2).join(' ')));
                     quote[1] = args.splice(2).join(' ');
                     updateQuote(args[0], quote);
@@ -176,7 +176,7 @@
         /**
          * @commandpath quotemodetoggle - toggle between !addquote function modes
          */
-        if (command.equalsIgnoreCase('quotemodetoggle')) {
+        if ($.equalsIgnoreCase(command, 'quotemodetoggle')) {
             if (quoteMode) {
                 quoteMode = false;
                 $.inidb.set('settings', 'quoteMode', 'false');
@@ -194,7 +194,7 @@
         /**
          * @commandpath addquote [quote text] - Save a quote
          */
-        if (command.equalsIgnoreCase('addquote')) {
+        if ($.equalsIgnoreCase(command, 'addquote')) {
             if (quoteMode) {
                 if (args.length < 1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.add.usage1'));
@@ -211,7 +211,7 @@
                 return;
             }
 
-            var useTwitchNames = $.inidb.GetBoolean('settings', '', 'quoteTwitchNamesToggle', true);
+            var useTwitchNames = $.getIniDbBoolean('settings', 'quoteTwitchNamesToggle', true);
             var target = useTwitchNames ? args[0].toLowerCase() : args[0].substring(0, 1).toUpperCase() + args[0].substring(1).toLowerCase();
             if (useTwitchNames && !$.user.isKnown(target)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('common.user.404', target));
@@ -228,7 +228,7 @@
         /**
          * USED BY THE PANEL
          */
-        if (command.equalsIgnoreCase('addquotesilent')) {
+        if ($.equalsIgnoreCase(command, 'addquotesilent')) {
             if (!$.isBot(sender)) {
                 return;
             }
@@ -244,7 +244,7 @@
         /**
          * @commandpath delquote [quoteId] - Delete a quote
          */
-        if (command.equalsIgnoreCase('delquote')) {
+        if ($.equalsIgnoreCase(command, 'delquote')) {
             if (!args[0] || isNaN(args[0])) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.del.usage'));
                 return;
@@ -265,7 +265,7 @@
         /**
          * USED BY THE PANEL
          */
-        if (command.equalsIgnoreCase('delquotesilent')) {
+        if ($.equalsIgnoreCase(command, 'delquotesilent')) {
             if (!$.isBot(sender)) {
                 return;
             }
@@ -279,10 +279,10 @@
         /**
          * @commandpath quote [quoteId] - Announce a quote by its Id, omit the id parameter to get a random quote
          */
-        if (command.equalsIgnoreCase('quote')) {
+        if ($.equalsIgnoreCase(command, 'quote')) {
             quote = getQuote(args[0]);
             if (quote.length > 0) {
-                quoteStr = $.inidb.GetString('settings', '', 'quoteMessage', $.lang.get('quotesystem.get.success'));
+                quoteStr = $.getIniDbString('settings', 'quoteMessage', $.lang.get('quotesystem.get.success'));
                 quoteStr = quoteStr.replace('(id)', (quote.length === 5 ? quote[4].toString() : quote[3].toString()))
                                     .replace('(quote)', quote[1])
                                     .replace('(userrank)', $.resolveRank(quote[0]))
@@ -300,7 +300,7 @@
         /**
          * @commandpath quotemessage [message] - Sets the quote string with tags: (id) (quote) (user) (userrank) (game) (date)
          */
-        if (command.equalsIgnoreCase('quotemessage')) {
+        if ($.equalsIgnoreCase(command, 'quotemessage')) {
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotemessage.usage'));
                 return;
@@ -316,7 +316,7 @@
         /**
          * @commandpath quotedateformat [format] - Sets the date format for the (date) tag in a quote
          */
-        if (command.equalsIgnoreCase('quotedateformat')) {
+        if ($.equalsIgnoreCase(command, 'quotedateformat')) {
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.quotedateformat.usage', $.getSetIniDbString('settings', 'quoteDateFormat', 'dd-MM-yyyy')));
                 return;
@@ -332,7 +332,7 @@
         /**
          * @commandpath searchquote [string] - Searches the quotes for a string and returns a list of IDs
          */
-        if (command.equalsIgnoreCase('searchquote')) {
+        if ($.equalsIgnoreCase(command, 'searchquote')) {
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('quotesystem.searchquote.usage'));
                 return;
@@ -357,8 +357,8 @@
         /**
          * @commandpath quotetwitchnamestoggle - Toggles on and off if quote names need to have been seen in chat before
          */
-        if (command.equalsIgnoreCase('quotetwitchnamestoggle')) {
-            var useTwitchNames = $.inidb.GetBoolean('settings', '', 'quoteTwitchNamesToggle');
+        if ($.equalsIgnoreCase(command, 'quotetwitchnamestoggle')) {
+            var useTwitchNames = $.getIniDbBoolean('settings', 'quoteTwitchNamesToggle');
             if (useTwitchNames) {
                 useTwitchNames = false;
                 $.inidb.set('settings', 'quoteTwitchNamesToggle', 'false');

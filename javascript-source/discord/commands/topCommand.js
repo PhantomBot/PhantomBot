@@ -34,7 +34,7 @@
         /**
          * @discordcommandpath top - Display the top people with the most points
          */
-        if (command.equalsIgnoreCase('top')) {
+        if ($.equalsIgnoreCase(command, 'top')) {
             $.discord.say(channel, $.getTop5('points'));
             return;
         }
@@ -42,7 +42,7 @@
         /**
          * @discordcommandpath toptime - Display the top people with the most time
          */
-        if (command.equalsIgnoreCase('toptime')) {
+        if ($.equalsIgnoreCase(command, 'toptime')) {
             $.discord.say(channel, $.getTop5('time'));
             return;
         }
@@ -50,7 +50,7 @@
         /**
          * @discordcommandpath topamount - Set how many people who will show up in the !top points list
          */
-        if (command.equalsIgnoreCase('topamount')) {
+        if ($.equalsIgnoreCase(command, 'topamount')) {
             if (action === undefined || isNaN(parseInt(action))) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('top5.amount.points.usage'));
                 return;
@@ -69,7 +69,7 @@
         /**
          * @discordcommandpath toptimeamount - Set how many people who will show up in the !toptime list
          */
-        if (command.equalsIgnoreCase('toptimeamount')) {
+        if ($.equalsIgnoreCase(command, 'toptimeamount')) {
             if (action === undefined || isNaN(parseInt(action))) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('top5.amount.time.usage'));
                 return;

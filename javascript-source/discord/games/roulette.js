@@ -47,7 +47,7 @@
         /**
          * @discordcommandpath roulette - Pull the trigger and find out if there's a bullet in the chamber
          */
-        if (command.equalsIgnoreCase('roulette')) {
+        if ($.equalsIgnoreCase(command, 'roulette')) {
             var r1 = $.randRange(1, 2),
                 r2 = $.randRange(1, 2),
                 random;

@@ -45,7 +45,7 @@
             let game = $.getGame($.channelName);
             let match = targs.match(/([^|]+)/g);
             for (let x in match) {
-                if (game.equalsIgnoreCase(match[x])) {
+                if ($.equalsIgnoreCase(game, match[x])) {
                     if (negate) {
                         return {cancel: true};
                     } else {
@@ -111,7 +111,7 @@
                     if ($.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Admin)) {
                         return {result: ''};
                     }
-                } else if (args.event.getSender().equalsIgnoreCase(match[x])) {
+                } else if ($.equalsIgnoreCase(args.event.getSender(), match[x])) {
                     return {result: ''};
                 }
             }

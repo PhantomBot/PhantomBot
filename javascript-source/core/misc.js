@@ -47,13 +47,13 @@
 
         if (subIndex > -1) {
             for (i in list) {
-                if (list[i][subIndex].equalsIgnoreCase(value)) {
+                if ($.equalsIgnoreCase(list[i][subIndex], value)) {
                     return true;
                 }
             }
         } else {
             for (i in list) {
-                if (list[i].equalsIgnoreCase(value)) {
+                if ($.equalsIgnoreCase(list[i], value)) {
                     return true;
                 }
             }
@@ -444,7 +444,7 @@
     function getArgFromArray(array, key, defaultValue) {
         for (let i = 0; i < array.length; i++) {
             let pair = $.jsString(array[i]).split('=');
-            if (pair[0].equalsIgnoreCase(key)) {
+            if ($.equalsIgnoreCase(pair[0], key)) {
                 return pair[1];
             }
         }

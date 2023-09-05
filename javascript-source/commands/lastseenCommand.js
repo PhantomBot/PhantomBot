@@ -48,7 +48,7 @@
         /*
          * @commandpath lastseen [username] - Find out when the given user was last seen in the channel
          */
-        if (command.equalsIgnoreCase('lastseen')) {
+        if ($.equalsIgnoreCase(command, 'lastseen')) {
             if (target === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('lastseen.usage'));
                 return;
@@ -56,7 +56,7 @@
 
             target = $.user.sanitize(target);
 
-            let lastseen = $.inidb.OptInteger('lastseen', '', target.toLowerCase());
+            let lastseen = $.optIniDbNumber('lastseen', target.toLowerCase());
 
             if (lastseen.isPresent()) {
                 date = new Date(lastseen.get());

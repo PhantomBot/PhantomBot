@@ -165,7 +165,7 @@
 
         if (raidToggle === true && viewers >= raidIncMinViewers) {
             // If the user has raided before.
-            let incRaids = $.inidb.OptString('incoming_raids', '', username);
+            let incRaids = $.optIniDbString('incoming_raids', username);
             if (incRaids.isPresent()) {
                 hasRaided = true;
                 // Set the message.
@@ -240,7 +240,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('raid')) {
+        if ($.equalsIgnoreCase(command, 'raid')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.usage'));
                 return;
@@ -249,7 +249,7 @@
             /*
              * @commandpath raid toggle - Toggles if the bot should welcome raiders.
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 raidToggle = !raidToggle;
                 $.setIniDbBoolean('raidSettings', 'raidToggle', raidToggle);
                 $.say($.whisperPrefix(sender) + (raidToggle ? $.lang.get('raidhandler.toggle.enabled') : $.lang.get('raidhandler.toggle.disabled')));
@@ -259,7 +259,7 @@
             /*
              * @commandpath raid setreward [amount] - Sets the amount of points given to raiders.
              */
-            if (action.equalsIgnoreCase('setreward')) {
+            if ($.equalsIgnoreCase(action, 'setreward')) {
                 if (isNaN(subAction)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.reward.usage'));
                     return;
@@ -274,7 +274,7 @@
             /*
              * @commandpath raid setincomingminviewers [amount] - Sets the minimum amount of viewers to trigger the raid message.
              */
-            if (action.equalsIgnoreCase('setincomingminviewers')) {
+            if ($.equalsIgnoreCase(action, 'setincomingminviewers')) {
                 if (isNaN(subAction) || parseInt(subAction) < 0) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.minviewers.usage'));
                     return;
@@ -289,7 +289,7 @@
             /*
              * @commandpath raid setincomingmessage [message] - Sets the incoming raid message - Tags: (username), (viewers), (url), (times), (reward) and (game)
              */
-            if (action.equalsIgnoreCase('setincomingmessage')) {
+            if ($.equalsIgnoreCase(action, 'setincomingmessage')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.inc.message.usage'));
                     return;
@@ -304,7 +304,7 @@
             /*
              * @commandpath raid setnewincomingmessage [message] - Sets the incoming raid message for first time raiders - Tags: (username), (viewers), (url), (reward) and (game)
              */
-            if (action.equalsIgnoreCase('setnewincomingmessage')) {
+            if ($.equalsIgnoreCase(action, 'setnewincomingmessage')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.new.inc.message.usage'));
                     return;
@@ -319,7 +319,7 @@
             /*
              * @commandpath raid setoutgoingmessage [message] - Sets the outgoing message for when you raid someone - Tags (username) and (url)
              */
-            if (action.equalsIgnoreCase('setoutgoingmessage')) {
+            if ($.equalsIgnoreCase(action, 'setoutgoingmessage')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.out.message.usage'));
                     return;
@@ -334,7 +334,7 @@
             /*
              * @commandpath raid setoutgoingofflinemessage [message] - Sets a warning message which is added to chat when you use !raid on a channel that is offline.
              */
-            if (action.equalsIgnoreCase('setoutgoingofflinemessage')) {
+            if ($.equalsIgnoreCase(action, 'setoutgoingofflinemessage')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.out.messageoffline.usage'));
                     return;
@@ -349,7 +349,7 @@
             /*
              * @commandpath raid setoutgoingmessagespam [amount] - Sets the amount of times that the outgoing raid message is sent in chat. Maximum is 10 times.
              */
-            if (action.equalsIgnoreCase('setoutgoingmessagespam')) {
+            if ($.equalsIgnoreCase(action, 'setoutgoingmessagespam')) {
                 if (isNaN(subAction) || parseInt(subAction) > 10 || parseInt(subAction) < 1) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.spam.amount.usage'));
                     return;
@@ -364,13 +364,13 @@
             /*
              * @commandpath raid lookup [username] - Shows the amount of times the username has raided the channel.
              */
-            if (action.equalsIgnoreCase('lookup')) {
+            if ($.equalsIgnoreCase(action, 'lookup')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('raidhandler.lookup.usage'));
                     return;
                 }
 
-                let incRaids = $.inidb.OptString('incoming_raids', '', subAction.toLowerCase());
+                let incRaids = $.optIniDbString('incoming_raids', subAction.toLowerCase());
                 if (incRaids.isPresent()) {
                     var raidObj = JSON.parse(incRaids.get()),
                             displayName = $.viewer.getByLogin(subAction).name();

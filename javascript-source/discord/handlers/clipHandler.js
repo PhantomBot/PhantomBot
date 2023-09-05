@@ -31,7 +31,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/clipHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/handlers/clipHandler.js')) {
             toggle = $.getIniDbBoolean('discordSettings', 'clipsToggle', false);
             message = $.getIniDbString('discordSettings', 'clipsMessage', '(name) created a new clip!');
             channelName = $.getIniDbString('discordSettings', 'clipsChannel', '');
@@ -104,7 +104,7 @@
         /*
          * @discordcommandpath clipstoggle - Toggles the clips announcements.
          */
-        if (command.equalsIgnoreCase('clipstoggle')) {
+        if ($.equalsIgnoreCase(command, 'clipstoggle')) {
             toggle = !toggle;
             $.setIniDbBoolean('discordSettings', 'clipsToggle', toggle);
             $.discord.say(channel, $.discord.userPrefix(mention) + (toggle ? $.lang.get('discord.cliphandler.toggle.on') : $.lang.get('discord.cliphandler.toggle.off')));
@@ -113,7 +113,7 @@
         /*
          * @discordcommandpath clipsmessage [message] - Sets a message for when someone creates a clip.
          */
-        if (command.equalsIgnoreCase('clipsmessage')) {
+        if ($.equalsIgnoreCase(command, 'clipsmessage')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.message.usage'));
                 return;
@@ -127,7 +127,7 @@
         /*
          * @discordcommandpath clipschannel [channel] - Sets the channel to send a message to for when someone creates a clip.
          */
-        if (command.equalsIgnoreCase('clipschannel')) {
+        if ($.equalsIgnoreCase(command, 'clipschannel')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.channel.usage', channelName));
                 return;
@@ -141,7 +141,7 @@
         /*
          * @discordcommandpath lastclip - Displays information about the last clip captured.
          */
-        if (command.equalsIgnoreCase('lastclip')) {
+        if ($.equalsIgnoreCase(command, 'lastclip')) {
             var url = $.getIniDbString('streamInfo', 'last_clip_url', $.lang.get('cliphandler.noclip'));
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.lastclip', url));
         }
@@ -149,7 +149,7 @@
         /*
          * @discordcommandpath topclip - Displays the top clip from the past day.
          */
-        if (command.equalsIgnoreCase('topclip')) {
+        if ($.equalsIgnoreCase(command, 'topclip')) {
             var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));
             $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.cliphandler.topclip', url));
         }
