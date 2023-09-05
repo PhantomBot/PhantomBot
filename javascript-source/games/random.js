@@ -33,7 +33,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./games/random.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './games/random.js')) {
             pg13toggle = $.getIniDbBoolean('randomSettings', 'pg13toggle');
         }
     });
@@ -67,9 +67,9 @@
          * @commandpath random - Something random will happen
          * @commandpath random pg13toggle - Toggle PG-13 mode on and off
          */
-        if (command.equalsIgnoreCase('random')) {
+        if ($.equalsIgnoreCase(command, 'random')) {
             if (args[0] !== undefined) {
-                if (args[0].equalsIgnoreCase('pg13toggle')) {
+                if ($.equalsIgnoreCase(args[0], 'pg13toggle')) {
                     pg13toggle = !pg13toggle;
                     $.setIniDbBoolean('randomSettings', 'pg13toggle', pg13toggle);
                     $.say($.lang.get('randomcommand.pg13toggle', pg13toggle));

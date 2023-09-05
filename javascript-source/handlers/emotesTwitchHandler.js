@@ -3,7 +3,7 @@
         const tags = event.getTags();
         if (tags.containsKey('emotes')) {
             const emotesString = tags.get('emotes');
-            if (emotesString.length() > 0) {
+            if ($.strlen(emotesString) > 0) {
                 $.alertspollssocket.triggerEmotes(emotesString);
             }
         }

@@ -58,7 +58,7 @@
         /**
          * @commandpath commercial - Command for manually running comemrcials or managing the commercial autotimer
          */
-        if (command.equalsIgnoreCase('commercial')) {
+        if ($.equalsIgnoreCase(command, 'commercial')) {
             if (args.length == 0) {
                 $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.usage'));
                 return;
@@ -67,7 +67,7 @@
             /**
              * @commandpath commercial autotimer - Manages the autotimer
              */
-            if (action.equalsIgnoreCase('autotimer')) {
+            if ($.equalsIgnoreCase(action, 'autotimer')) {
                 if (args.length <= 1) {
                     if (commercialTimer) {
                         $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.status-on', commercialLength, commercialInterval));
@@ -84,7 +84,7 @@
                     /**
                     * @commandpath commercial autotimer off - Disables the autotimer
                     */
-                    if (args[1].equalsIgnoreCase("off")) {
+                    if ($.equalsIgnoreCase(args[1], "off")) {
                         $.inidb.set('commercialSettings', 'commercialtimer', false.toString());
                         commercialTimer = false;
                         clearInterval(interval);
@@ -92,14 +92,14 @@
                     /**
                     * @commandpath commercial autotimer nomessage - Removes the message sent when autotimer starts a commercial
                     */
-                    } else if (args[1].equalsIgnoreCase("nomessage")) {
+                    } else if ($.equalsIgnoreCase(args[1], "nomessage")) {
                         $.inidb.set('commercialSettings', 'message', '');
                         commercialMessage = '';
                         $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.msg-del'));
                     /**
                     * @commandpath commercial autotimer message (message) - Adds/changes the message sent when autotimer starts a commercial
                     */
-                    } else if (args.length >= 3 && args[1].equalsIgnoreCase("message") && args[2].length() > 0) {
+                    } else if (args.length >= 3 && $.equalsIgnoreCase(args[1], "message") && $.strlen(args[2]) > 0) {
                         argsString = args.slice(2).join(' ');
                         $.inidb.set('commercialSettings', 'message', argsString);
                         commercialMessage = argsString;
@@ -133,7 +133,7 @@
                         startCommercialTimer();
 
                         $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.status-on', commercialLength, commercialInterval));
-                        if (commercialMessage.length() > 0) {
+                        if ($.strlen(commercialMessage) > 0) {
                             $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.status-on-msg', commercialMessage));
                         } else {
                             $.say($.whisperPrefix(sender) + $.lang.get('commercialsystem.autotimer.status-on-nomsg'));
@@ -154,7 +154,7 @@
                 } else {
                     lastCommercial = $.systemTime();
 
-                    if (args.length < 2 || !args[1].equalsIgnoreCase("silent")) {
+                    if (args.length < 2 || $.equalsIgnoreCase(!args[1], "silent")) {
                         $.say($.lang.get('commercialsystem.run', args[0]));
                     }
                 }
@@ -179,10 +179,10 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./systems/commercialSystem.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './systems/commercialSystem.js')) {
             var action = event.getArgs()[0];
 
-            if (action.equalsIgnoreCase('setautotimer')) {
+            if ($.equalsIgnoreCase(action, 'setautotimer')) {
                 var msg = '';
 
                 if (event.getArgs().length > 3) {
@@ -200,7 +200,7 @@
                 commercialTimer = true;
 
                 startCommercialTimer();
-            } else if (action.equalsIgnoreCase('autotimeroff')) {
+            } else if ($.equalsIgnoreCase(action, 'autotimeroff')) {
                 $.inidb.set('commercialSettings', 'commercialtimer', false.toString());
                 commercialTimer = false;
                 clearInterval(interval);

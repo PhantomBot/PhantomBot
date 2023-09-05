@@ -41,7 +41,7 @@
         var i;
 
         for (i in list) {
-            if (list[i][subIndex].equalsIgnoreCase(value)) {
+            if ($.equalsIgnoreCase(list[i][subIndex], value)) {
                 return true;
             }
         }
@@ -86,7 +86,7 @@
             split,
             command;
 
-        if (sender.equalsIgnoreCase('jtv') || sender.equalsIgnoreCase('twitchnotify')) {
+        if ($.equalsIgnoreCase(sender, 'jtv') || $.equalsIgnoreCase(sender, 'twitchnotify')) {
             return;
         }
 
@@ -115,7 +115,7 @@
         /**
          * @commandpath togglewhispermode - Toggle whisper mode
          */
-        if (command.equalsIgnoreCase('togglewhispermode')) {
+        if ($.equalsIgnoreCase(command, 'togglewhispermode')) {
             whisperMode = !whisperMode;
             $.setIniDbBoolean('settings', 'whisperMode', whisperMode);
             $.say(whisperPrefix(sender) + (whisperMode ? $.lang.get('whisper.whispers.enabled') : $.lang.get('whisper.whispers.disabled')));

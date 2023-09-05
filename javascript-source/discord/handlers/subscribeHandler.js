@@ -34,7 +34,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function(event) {
-        if (event.getScript().equalsIgnoreCase('./discord/handlers/subscribeHandler.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './discord/handlers/subscribeHandler.js')) {
             subMessage = $.getIniDbString('discordSettings', 'subMessage', '(name) just subscribed!');
             primeMessage = $.getIniDbString('discordSettings', 'primeMessage', '(name) just subscribed with Twitch Prime!');
             resubMessage = $.getIniDbString('discordSettings', 'resubMessage', '(name) just subscribed for (months) months in a row!');
@@ -175,7 +175,7 @@
             action = args[0],
             subAction = args[1];
 
-        if (command.equalsIgnoreCase('subscribehandler')) {
+        if ($.equalsIgnoreCase(command, 'subscribehandler')) {
             if (action === undefined) {
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.usage'));
                 return;
@@ -184,7 +184,7 @@
             /**
              * @discordcommandpath subscribehandler subtoggle - Toggles subscriber announcements.
              */
-            if (action.equalsIgnoreCase('subtoggle')) {
+            if ($.equalsIgnoreCase(action, 'subtoggle')) {
                 subToggle = !subToggle;
                 $.inidb.set('discordSettings', 'subToggle', subToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.sub.toggle', (subToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -193,7 +193,7 @@
             /**
              * @discordcommandpath subscribehandler giftsubtoggle - Toggles gifted subscriber announcements.
              */
-            if (action.equalsIgnoreCase('giftsubtoggle')) {
+            if ($.equalsIgnoreCase(action, 'giftsubtoggle')) {
                 giftsubToggle = !giftsubToggle;
                 $.inidb.set('discordSettings', 'giftsubToggle', giftsubToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.toggle', (giftsubToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -202,7 +202,7 @@
             /**
              * @discordcommandpath subscribehandler primetoggle - Toggles Twitch Prime subscriber announcements.
              */
-            if (action.equalsIgnoreCase('primetoggle')) {
+            if ($.equalsIgnoreCase(action, 'primetoggle')) {
                 primeToggle = !primeToggle;
                 $.inidb.set('discordSettings', 'primeToggle', primeToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.prime.toggle', (primeToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -211,7 +211,7 @@
             /**
              * @discordcommandpath subscribehandler resubtoggle - Toggles re-subscriber announcements.
              */
-            if (action.equalsIgnoreCase('resubtoggle')) {
+            if ($.equalsIgnoreCase(action, 'resubtoggle')) {
                 resubToggle = !resubToggle;
                 $.inidb.set('discordSettings', 'resubToggle', resubToggle);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.resub.toggle', (resubToggle === true ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -220,7 +220,7 @@
             /**
              * @discordcommandpath subscribehandler submessage [message] - Sets the subscriber announcement message.
              */
-            if (action.equalsIgnoreCase('submessage')) {
+            if ($.equalsIgnoreCase(action, 'submessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.sub.message.usage'));
                     return;
@@ -235,7 +235,7 @@
             /**
              * @discordcommandpath subscribehandler giftsubmessage [message] - Sets the gift subscriber announcement message.
              */
-            if (action.equalsIgnoreCase('giftsubmessage')) {
+            if ($.equalsIgnoreCase(action, 'giftsubmessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.giftsub.message.usage'));
                     return;
@@ -249,7 +249,7 @@
             /**
              * @discordcommandpath subscribehandler primemessage [message] - Sets the Twitch Prime subscriber announcement message.
              */
-            if (action.equalsIgnoreCase('primemessage')) {
+            if ($.equalsIgnoreCase(action, 'primemessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.prime.sub.message.usage'));
                     return;
@@ -263,7 +263,7 @@
             /**
              * @discordcommandpath subscribehandler resubmessage [message] - Sets the re-subscriber announcement message.
              */
-            if (action.equalsIgnoreCase('resubmessage')) {
+            if ($.equalsIgnoreCase(action, 'resubmessage')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.resub.message.usage'));
                     return;
@@ -277,7 +277,7 @@
             /**
              * @discordcommandpath subscribehandler channel [channel name] - Sets the channel that announcements from this module will be said in.
              */
-            if (action.equalsIgnoreCase('channel')) {
+            if ($.equalsIgnoreCase(action, 'channel')) {
                 if (subAction === undefined) {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.subscribehandler.channel.usage'));
                     return;

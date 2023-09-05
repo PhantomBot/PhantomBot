@@ -4,8 +4,8 @@
         _lock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     function loadCacheFromDatabase() {
-        var cacheContents = $.inidb.get('emotecache', 'ffzEmotes');
-        if (cacheContents !== undefined && cacheContents !== null && cacheContents.length() > 0) {
+        var cacheContents = $.getIniDbString('emotecache', 'ffzEmotes');
+        if (cacheContents !== undefined && cacheContents !== null && $.strlen(cacheContents) > 0) {
             prepareLocalCache(JSON.parse(cacheContents));
         } else {
             // No cache :(

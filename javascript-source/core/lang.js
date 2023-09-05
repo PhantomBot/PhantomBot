@@ -36,7 +36,7 @@
         /**
          * @commandpath lang [language name] - Get or optionally set the current language (use folder name from "./lang" directory);
          */
-        if (command.equalsIgnoreCase('lang')) {
+        if ($.equalsIgnoreCase(command, 'lang')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('lang.curlang', $.jsString($.getSetIniDbString('settings', 'lang', 'english'))));
             } else {
@@ -54,7 +54,7 @@
         /**
          * @commandpath mute - Toggle muting the bot in the chat
          */
-        if (command.equalsIgnoreCase('mute')) {
+        if ($.equalsIgnoreCase(command, 'mute')) {
             inversedState = !$.getIniDbBoolean('settings', 'response_@chat');
 
             $.setIniDbBoolean('settings', 'response_@chat', inversedState);
@@ -70,7 +70,7 @@
         /**
          * @commandpath toggleme - Toggle prepending chat output with "/me".
          */
-        if (command.equalsIgnoreCase('toggleme')) {
+        if ($.equalsIgnoreCase(command, 'toggleme')) {
             inversedState = !$.getIniDbBoolean('settings', 'response_action');
 
             $.setIniDbBoolean('settings', 'response_action', inversedState);

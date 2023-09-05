@@ -30,7 +30,7 @@
         /**
          * @commandpath wordcounter - Configures various option for the wordcounter
          */
-        if (command.equalsIgnoreCase('wordcounter')) {
+        if ($.equalsIgnoreCase(command, 'wordcounter')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.usage'));
                 return;
@@ -39,7 +39,7 @@
             /**
              * @commandpath wordcounter add [word] - Adds a word that will be counted every time someone says it
              */
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.add.usage'));
                     return;
@@ -54,7 +54,7 @@
             /**
              * @commandpath wordcounter remove [word] - Removes the given word which will no longer be counted every time someone says it
              */
-            if (action.equalsIgnoreCase('remove')) {
+            if ($.equalsIgnoreCase(action, 'remove')) {
                 if (!subAction) {
                     $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.remove.usage'));
                     return;
@@ -73,8 +73,8 @@
         /**
          * @commandpath count [word] - Tells you how many times that word as been said in chat.
          */
-        if (command.equalsIgnoreCase('count')) {
-            let counter = $.inidb.OptInteger('wordCounter', '', action.toLowerCase());
+        if ($.equalsIgnoreCase(command, 'count')) {
+            let counter = $.optIniDbNumber('wordCounter', action.toLowerCase());
             if (!action || !counter.isPresent()) {
                 $.say($.whisperPrefix(sender) + $.lang.get('wordcounter.err.404'));
                 return;

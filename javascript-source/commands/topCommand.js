@@ -54,7 +54,7 @@
 
                 list.push({
                     username: keys[i],
-                    value: $.inidb.get(iniName, keys[i])
+                    value: $.getIniDbString(iniName, keys[i])
                 });
             }
         }
@@ -87,7 +87,7 @@
         /**
          * @commandpath top - Display the top people with the most points
          */
-        if (command.equalsIgnoreCase('top')) {
+        if ($.equalsIgnoreCase(command, 'top')) {
             if (!$.bot.isModuleEnabled('./systems/pointSystem.js')) {
                 return;
             }
@@ -99,7 +99,7 @@
         /**
          * @commandpath toptime - Display the top people with the most time
          */
-        if (command.equalsIgnoreCase('toptime')) {
+        if ($.equalsIgnoreCase(command, 'toptime')) {
             $.say(getTop5('time'));
             return;
         }
@@ -107,7 +107,7 @@
         /**
          * @commandpath topamount - Set how many people who will show up in the !top points list
          */
-        if (command.equalsIgnoreCase('topamount')) {
+        if ($.equalsIgnoreCase(command, 'topamount')) {
             if (action === undefined || isNaN(parseInt(action))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('top5.amount.points.usage'));
                 return;
@@ -126,7 +126,7 @@
         /**
          * @commandpath toptimeamount - Set how many people who will show up in the !toptime list
          */
-        if (command.equalsIgnoreCase('toptimeamount')) {
+        if ($.equalsIgnoreCase(command, 'toptimeamount')) {
             if (action === undefined || isNaN(parseInt(action))) {
                 $.say($.whisperPrefix(sender) + $.lang.get('top5.amount.time.usage'));
                 return;
@@ -145,7 +145,7 @@
         /**
          * @commandpath reloadtopbots - DEPRECATED. Use !reloadbots
          */
-        if (command.equalsIgnoreCase('reloadtopbots')) {
+        if ($.equalsIgnoreCase(command, 'reloadtopbots')) {
             $.say($.whisperPrefix(sender) + $.lang.get('top5.reloadtopbots'));
             return;
         }
@@ -153,7 +153,7 @@
         /**
          * Panel command, no command path needed.
          */
-        if (command.equalsIgnoreCase('reloadtop')) {
+        if ($.equalsIgnoreCase(command, 'reloadtop')) {
             reloadTop();
             return;
         }

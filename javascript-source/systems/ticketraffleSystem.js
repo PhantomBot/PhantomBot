@@ -87,7 +87,7 @@
             subTMulti = (parseInt(subMulti) < 1 ? 1 : parseInt(subMulti));
         }
 
-        if (followersOnly && followersOnly.equalsIgnoreCase('-followers')) {
+        if (followersOnly && $.equalsIgnoreCase(followersOnly, '-followers')) {
             followers = true;
             a = $.lang.get('ticketrafflesystem.msg.need.to.be.following');
         }
@@ -131,17 +131,17 @@
             return;
         }
 
-        cost = parseInt($.inidb.get('traffleState', 'cost'));
-        entries = JSON.parse($.inidb.get('traffleState', 'entries'));
-        uniqueEntries = JSON.parse($.inidb.get('traffleState', 'uniqueEntries'));
-        subTMulti = parseInt($.inidb.get('traffleState', 'subTMulti'));
-        regTMulti = parseInt($.inidb.get('traffleState', 'regTMulti'));
-        maxEntries = parseInt($.inidb.get('traffleState', 'maxEntries'));
-        totalEntries = parseInt($.inidb.get('traffleState', 'totalEntries'));
-        totalTickets = parseInt($.inidb.get('traffleState', 'totalTickets'));
-        hasDrawn = $.inidb.GetBoolean('traffleState', '', 'hasDrawn');
-        followers = $.inidb.GetBoolean('traffleState', '', 'followers');
-        raffleStatus = $.inidb.GetBoolean('traffleState', '', 'isActive');
+        cost = parseInt($.getIniDbString('traffleState', 'cost'));
+        entries = JSON.parse($.getIniDbString('traffleState', 'entries'));
+        uniqueEntries = JSON.parse($.getIniDbString('traffleState', 'uniqueEntries'));
+        subTMulti = parseInt($.getIniDbString('traffleState', 'subTMulti'));
+        regTMulti = parseInt($.getIniDbString('traffleState', 'regTMulti'));
+        maxEntries = parseInt($.getIniDbString('traffleState', 'maxEntries'));
+        totalEntries = parseInt($.getIniDbString('traffleState', 'totalEntries'));
+        totalTickets = parseInt($.getIniDbString('traffleState', 'totalTickets'));
+        hasDrawn = $.getIniDbBoolean('traffleState', 'hasDrawn');
+        followers = $.getIniDbBoolean('traffleState', 'followers');
+        raffleStatus = $.getIniDbBoolean('traffleState', 'isActive');
 
         if (raffleStatus === true) {
             if (followers) {
@@ -412,7 +412,7 @@
         }
 
         if ($.inidb.exists('ticketsList', user.toLowerCase())) {
-            let current = JSON.parse($.inidb.get('ticketsList', user.toLowerCase()));
+            let current = JSON.parse($.getIniDbString('ticketsList', user.toLowerCase()));
             times += current[POS.times];
             bonus += current[POS.bonus];
         }
@@ -425,14 +425,14 @@
         if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return JSON.parse($.inidb.get('ticketsList', user.toLowerCase()))[POS.times];
+        return JSON.parse($.getIniDbString('ticketsList', user.toLowerCase()))[POS.times];
     }
 
     function getBonusTickets(user) {
         if (!$.inidb.exists('ticketsList', user.toLowerCase())) {
             return 0;
         }
-        return JSON.parse($.inidb.get('ticketsList', user.toLowerCase()))[POS.bonus];
+        return JSON.parse($.getIniDbString('ticketsList', user.toLowerCase()))[POS.bonus];
     }
 
     function userGetsBonus(user, event) {
@@ -482,7 +482,7 @@
         /**
          * @commandpath traffle [option] - Displays usage for the command
          */
-        if (command.equalsIgnoreCase('traffle')) {
+        if ($.equalsIgnoreCase(command, 'traffle')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.usage'));
                 return;
@@ -491,7 +491,7 @@
             /**
              * @commandpath traffle open [max entries] [regular ticket multiplier (default = 1)] [subscriber ticket multiplier (default = 1)] [cost] [-followers] - Opens a ticket raffle. -followers is optional.
              */
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 if (args[4] === undefined) {
                     checkArgs(sender, args[1], args[2], 1, 1, args[3]);
                 } else {
@@ -503,7 +503,7 @@
             /**
              * @commandpath traffle close - Closes a ticket raffle.
              */
-            if (action.equalsIgnoreCase('close')) {
+            if ($.equalsIgnoreCase(action, 'close')) {
                 if (!raffleStatus) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.err.raffle.not.opened'));
                     return;
@@ -518,7 +518,7 @@
             /**
              * @commandpath traffle draw [amount (default = 1)] [loyalty points prize (default = 0)] - Picks winner(s) for the ticket raffle and optionally awards them with points, and closes the raffle if it is still open
              */
-            if (action.equalsIgnoreCase('draw')) {
+            if ($.equalsIgnoreCase(action, 'draw')) {
 
                 let amount = 1;
                 if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
@@ -552,14 +552,14 @@
             /**
              * @commandpath traffle reset - Resets the raffle.
              */
-            if (action.equalsIgnoreCase('reset')) {
+            if ($.equalsIgnoreCase(action, 'reset')) {
                 clear();
                 $.inidb.RemoveFile('ticketsList');
                 $.inidb.RemoveFile('entered');
                 $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
                 entries = [];
                 saveState();
-                if (!sender.equalsIgnoreCase($.botName)) {
+                if ($.equalsIgnoreCase(!sender, $.botName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.reset'));
                 }
                 return;
@@ -568,7 +568,7 @@
             /**
              * @commandpath traffle toggleopendraw - Toggles whether the raffle closes automatically when drawing a winner
              */
-            if (action.equalsIgnoreCase('toggleopendraw')) {
+            if ($.equalsIgnoreCase(action, 'toggleopendraw')) {
                 openDraw = !openDraw;
                 $.setIniDbBoolean('traffleSettings', 'traffleOpenDraw', openDraw);
                 $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.opendraw.' + (openDraw ? 'enable' : 'disable')));
@@ -578,7 +578,7 @@
             /**
              * @commandpath traffle messagetoggle - Toggles on and off a message when entering a ticket raffle
              */
-            if (action.equalsIgnoreCase('messagetoggle')) {
+            if ($.equalsIgnoreCase(action, 'messagetoggle')) {
                 if (msgToggle) {
                     msgToggle = false;
                     $.inidb.set('traffleSettings', 'traffleMSGToggle', msgToggle);
@@ -594,7 +594,7 @@
             /**
              * @commandpath traffle limitertoggle - Toggles the ticket limiter between only bought tickets mode and bought + bonus tickets mode
              */
-            if (action.equalsIgnoreCase('limitertoggle')) {
+            if ($.equalsIgnoreCase(action, 'limitertoggle')) {
                 if (raffleStatus) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.settings.err.open'));
                     return;
@@ -613,7 +613,7 @@
             /**
              * @commandpath traffle autoannouncemessage [message] - Sets the auto announce message for when a raffle is opened
              */
-            if (action.equalsIgnoreCase('autoannouncemessage')) {
+            if ($.equalsIgnoreCase(action, 'autoannouncemessage')) {
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msg.usage'));
                     return;
@@ -629,7 +629,7 @@
             /**
              * @commandpath traffle autoannounceinterval [minutes] - Sets the auto announce message interval. Use 0 to disable it
              */
-            if (action.equalsIgnoreCase('autoannounceinterval')) {
+            if ($.equalsIgnoreCase(action, 'autoannounceinterval')) {
                 if (!parseInt(args[1])) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.auto.msginterval.usage'));
                     return;
@@ -646,7 +646,7 @@
         /**
          * @commandpath tickets [amount / max] - Buy tickets to enter the ticket raffle.
          */
-        if (command.equalsIgnoreCase('tickets') || command.equalsIgnoreCase('ticket')) {
+        if ($.equalsIgnoreCase(command, 'tickets') || $.equalsIgnoreCase(command, 'ticket')) {
             if (!action) {
                 if (msgToggle && raffleStatus) {
                     if (userGetsBonus(sender, event)) {

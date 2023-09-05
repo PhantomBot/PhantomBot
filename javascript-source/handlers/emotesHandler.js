@@ -171,7 +171,7 @@
      * @function loadEmoteCache
      */
     function loadEmoteCache() {
-        let regExpList = $.inidb.GetString('emotecache', '', 'regexp_cache');
+        let regExpList = $.optIniDbString('emotecache', '', 'regexp_cache');
         if (!regExpList.isPresent()) {
             return;
         }

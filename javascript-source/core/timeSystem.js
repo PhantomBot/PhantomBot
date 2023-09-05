@@ -83,7 +83,7 @@
      *     getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss zzz '('Z')'");
      */
     function getCurLocalTimeString(format) {
-        let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
+        let zone = $.getIniDbString('settings', 'timezone', 'GMT');
         try {
             return Packages.java.time.ZonedDateTime.now(getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
         } catch (ex) {
@@ -99,7 +99,7 @@
      * @return {String}
      */
     function getLocalTimeString(format, utc_secs) {
-        let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
+        let zone = $.getIniDbString('settings', 'timezone', 'GMT');
         try {
             return Packages.java.time.ZonedDateTime.ofInstant(Packages.java.time.Instant.ofEpochMilli(utc_secs), getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern(format));
         } catch (ex) {
@@ -130,7 +130,7 @@
      * @return {String}
      */
     function getLocalTime() {
-        let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
+        let zone = $.getIniDbString('settings', 'timezone', 'GMT');
         try {
             return Packages.java.time.ZonedDateTime.now(getZoneId(zone)).format(Packages.java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"));
         } catch (ex) {
@@ -309,7 +309,7 @@
      * @returns {number}
      */
     function getUserTime(username) {
-        return $.inidb.GetInteger('time', '', username.toLowerCase(), 0);
+        return $.getIniDbNumber('time', username.toLowerCase(), 0);
     }
 
     /**
@@ -345,7 +345,7 @@
         /**
          * @commandpath time - Announce amount of time spent in channel
          */
-        if (command.equalsIgnoreCase('time')) {
+        if ($.equalsIgnoreCase(command, 'time')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
@@ -357,7 +357,7 @@
                 /**
                  * @commandpath time add [user] [seconds] - Add seconds to a user's logged time (for correction purposes)
                  */
-                if (action.equalsIgnoreCase('add')) {
+                if ($.equalsIgnoreCase(action, 'add')) {
 
                     if (!subject || isNaN(timeArg)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.add.usage'));
@@ -382,7 +382,7 @@
                 /**
                  * @commandpath time take [user] [seconds] - Take seconds from a user's logged time
                  */
-                if (action.equalsIgnoreCase('take')) {
+                if ($.equalsIgnoreCase(action, 'take')) {
                     if (!subject || isNaN(timeArg)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.usage'));
                         return;
@@ -402,7 +402,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('timesystem.take.success', $.getTimeString(timeArg), $.viewer.getByLogin(subject).name(), getUserTimeString(subject)));
                 }
 
-                if (action.equalsIgnoreCase('set')) {
+                if ($.equalsIgnoreCase(action, 'set')) {
                     if (!subject || isNaN(timeArg)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.settime.usage'));
                         return;
@@ -426,7 +426,7 @@
                 /**
                  * @commandpath time promotehours [hours] - Set the amount of hours a user has to be logged to automatically become a regular
                  */
-                if (action.equalsIgnoreCase('promotehours')) {
+                if ($.equalsIgnoreCase(action, 'promotehours')) {
                     if (isNaN(subject)) {
                         $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.promotehours.usage'));
                         return;
@@ -445,7 +445,7 @@
                 /**
                  * @commandpath time autolevel - Auto levels a user to regular after hitting 50 hours.
                  */
-                if (action.equalsIgnoreCase('autolevel')) {
+                if ($.equalsIgnoreCase(action, 'autolevel')) {
                     levelWithTime = !levelWithTime;
                     $.setIniDbBoolean('timeSettings', 'timeLevel', levelWithTime);
                     $.say($.whisperPrefix(sender) + (levelWithTime ? $.lang.get('timesystem.autolevel.enabled', $.getGroupNameById($.PERMISSION.Regular), hoursForLevelUp) : $.lang.get('timesystem.autolevel.disabled', $.getGroupNameById($.PERMISSION.Regular), hoursForLevelUp)));
@@ -454,7 +454,7 @@
                 /**
                  * @commandpath time autolevelnotification - Toggles if a chat announcement is made when a user is promoted to a regular.
                  */
-                if (action.equalsIgnoreCase('autolevelnotification')) {
+                if ($.equalsIgnoreCase(action, 'autolevelnotification')) {
                     timeLevelWarning = !timeLevelWarning;
                     $.setIniDbBoolean('timeSettings', 'timeLevelWarning', timeLevelWarning);
                     $.say($.whisperPrefix(sender) + (timeLevelWarning ? $.lang.get('timesystem.autolevel.chat.enabled') : $.lang.get('timesystem.autolevel.chat.disabled')));
@@ -463,7 +463,7 @@
                 /**
                  * @commandpath time offlinetime - Toggle logging a user's time when the channel is offline
                  */
-                if (action.equalsIgnoreCase('offlinetime')) {
+                if ($.equalsIgnoreCase(action, 'offlinetime')) {
                     keepTimeWhenOffline = !keepTimeWhenOffline;
                     $.setIniDbBoolean('timeSettings', 'keepTimeWhenOffline', keepTimeWhenOffline);
                     $.say($.whisperPrefix(sender) + (keepTimeWhenOffline ? $.lang.get('timesystem.offlinetime.enabled') : $.lang.get('timesystem.offlinetime.disabled')));
@@ -474,18 +474,18 @@
         /**
          * @commandpath streamertime - Announce the caster's local time
          */
-        if (command.equalsIgnoreCase('streamertime')) {
+        if ($.equalsIgnoreCase(command, 'streamertime')) {
             $.say($.whisperPrefix(sender) + $.lang.get('timesystem.streamertime', getCurLocalTimeString("MMMM dd', 'yyyy hh:mm:ss a zzz '('Z')'"), $.viewer.getByLogin($.ownerName).name()));
         }
 
         /**
          * @commandpath timezone [timezone name] - Show configured timezone or optionally set the timezone. See List: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
          */
-        if (command.equalsIgnoreCase('timezone')) {
+        if ($.equalsIgnoreCase(command, 'timezone')) {
             let tzData;
 
             if (!action) {
-                let zone = $.inidb.GetString('settings', '', 'timezone', 'GMT');
+                let zone = $.getIniDbString('settings', 'timezone', 'GMT');
                 $.say($.whisperPrefix(sender) + $.lang.get('timesystem.set.timezone.usage', zone));
                 return;
             }
@@ -522,7 +522,7 @@
             for (i in $.users) {
                 if ($.users[i] !== null) {
                     username = $.users[i].toLowerCase();
-                    let time = $.inidb.OptInteger('time', '', username);
+                    let time = $.optIniDbNumber('time', username);
                     // Only level viewers to regulars and ignore TwitchBots
                     if (!$.isTwitchBot(username)
                         && (!$.hasPermissionLevel(username) || $.isViewer(username)) //Assume users without permissions level are viewers, if they are too new the check will fail in the next condition

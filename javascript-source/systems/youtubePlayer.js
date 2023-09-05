@@ -272,7 +272,7 @@
         }
 
         if ($.inidb.exists('ytcache', searchQuery)) {
-            var jsonString = $.inidb.get('ytcache', searchQuery);
+            var jsonString = $.getIniDbString('ytcache', searchQuery);
             var jsonData = JSON.parse(jsonString);
             videoId = jsonData["id"];
             videoTitle = jsonData["title"];
@@ -286,17 +286,17 @@
             do {
                 data = $.youtube.SearchForVideo(searchQuery);
                 attempts++;
-            } while (data[0].length() < 11 && data[1] != "No Search Results Found" && attempts <= 2);
+            } while ($.strlen(data[0]) < 11 && data[1] != "No Search Results Found" && attempts <= 2);
 
             // Hit 5 trys and nothing was found
-            if (data[0].length() < 11) {
+            if ($.strlen(data[0]) < 11) {
                 throw 'No data returned.';
             }
 
             videoId = data[0];
             videoTitle = data[1];
 
-            if (videoTitle.equalsIgnoreCase('video marked private') || videoTitle.equalsIgnoreCase('no search results found')) {
+            if ($.equalsIgnoreCase(videoTitle, 'video marked private') || $.equalsIgnoreCase(videoTitle, 'no search results found')) {
                 throw videoTitle;
             }
 
@@ -447,7 +447,7 @@
                 return -2;
             }
             if (targetPlaylistName) {
-                newKey = (!$.inidb.exists(playlistDbPrefix + targetPlaylistName, 'lastkey') ? 0 : parseInt($.inidb.get(playlistDbPrefix + targetPlaylistName, 'lastkey')) + 1);
+                newKey = (!$.inidb.exists(playlistDbPrefix + targetPlaylistName, 'lastkey') ? 0 : parseInt($.getIniDbString(playlistDbPrefix + targetPlaylistName, 'lastkey')) + 1);
                 $.inidb.set(playlistDbPrefix + targetPlaylistName, newKey, youtubeVideo.getVideoId());
                 $.inidb.set(playlistDbPrefix + targetPlaylistName, 'lastkey', newKey);
             }
@@ -468,7 +468,7 @@
 
             for (i = 0; i < keyList.length; i++) {
                 if (!keyList[i].equals("lastkey")) {
-                    if ($.inidb.get(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
+                    if ($.getIniDbString(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
                         $.inidb.del(playListDbId, keyList[i]);
                         break;
                     }
@@ -494,8 +494,8 @@
                 isCurrent = false;
 
             for (i = 0; i < keyList.length; i++) {
-                if ($.inidb.get(playListDbId, keyList[i]).equals(videoId)) {
-                    if ($.inidb.get(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
+                if ($.getIniDbString(playListDbId, keyList[i]).equals(videoId)) {
+                    if ($.getIniDbString(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
                         isCurrent = true;
                     }
                     $.inidb.del(playListDbId, keyList[i]);
@@ -617,7 +617,7 @@
                 previousVideo = currentVideo;
                 try {
                     var playListIndex = defaultPlaylistReadOnly[playlistPosition];
-                    currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
+                    currentVideo = new YoutubeVideo($.getIniDbString(playListDbId, playListIndex), playlistDJname);
                 } catch (ex) {
                     $.log.error("YoutubeVideo::exception: " + ex);
                     return false;
@@ -673,10 +673,10 @@
 
                 for (var i in defaultPlaylistReadOnly) {
                     try {
-                        examineVideo = new YoutubeVideo($.inidb.get(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
+                        examineVideo = new YoutubeVideo($.getIniDbString(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
                         if (examineVideo.getVideoTitle().toLowerCase().indexOf(songTitle.toLowerCase()) >= 0) {
                             previousVideo = currentVideo;
-                            currentVideo = new YoutubeVideo($.inidb.get(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
+                            currentVideo = new YoutubeVideo($.getIniDbString(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
                             match = true;
                             break;
                         }
@@ -758,7 +758,7 @@
 
                     try {
                         var playListIndex = defaultPlaylist.shift();
-                        currentVideo = new YoutubeVideo($.inidb.get(playListDbId, playListIndex), playlistDJname);
+                        currentVideo = new YoutubeVideo($.getIniDbString(playListDbId, playListIndex), playlistDJname);
                         exception = false
                     } catch (ex) {
                         $.log.error("YoutubeVideo::exception: " + ex);
@@ -936,7 +936,7 @@
 
             for (i in keyList) {
                 if (!keyList[i].equals("lastkey")) {
-                    if ($.inidb.get(playlistDbPrefix + targetPlaylistName, keyList[i]) == youtubeVideo.getVideoId()) {
+                    if ($.getIniDbString(playlistDbPrefix + targetPlaylistName, keyList[i]) == youtubeVideo.getVideoId()) {
                         return true;
                     }
                 }
@@ -1031,10 +1031,10 @@
 
                 for (i = 0; i < playList.length; i++) {
 
-                    youTubeDbId = $.inidb.get(currentPlaylist.getplayListDbId(), playList[i]);
+                    youTubeDbId = $.getIniDbString(currentPlaylist.getplayListDbId(), playList[i]);
 
                     if ($.inidb.exists('ytcache', youTubeDbId)) {
-                        jsonString = $.inidb.get('ytcache', youTubeDbId);
+                        jsonString = $.getIniDbString('ytcache', youTubeDbId);
                         jsonData = JSON.parse(jsonString);
                         videoId = jsonData["id"];
                         videoTitle = jsonData["title"];
@@ -1187,13 +1187,13 @@
         }
 
         if (stealRefund && retval != -2 && refundUser.length > 1) {
-            if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
+            if (!$.isBot(refundUser) && $.equalsIgnoreCase(!playlistDJname, refundUser)) {
                 if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
                     var isMod = $.checkUserPermission(refundUser, event.getTags(), $.PERMISSION.Mod);
                     if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(refundUser)) || !isMod))) {
-                        var refund = $.inidb.get('pricecom', 'songrequest');
+                        var refund = $.getIniDbString('pricecom', 'songrequest');
                         if (refund == 0) {
-                            refund = $.inidb.get('pricecom', 'addsong');
+                            refund = $.getIniDbString('pricecom', 'addsong');
                         }
                         refund = parseInt(refund / 2);
                         if (refund > 0) {
@@ -1274,7 +1274,7 @@
             volume;
 
         if (state == playerStateEnum.NEW || state == playerStateEnum.NEWPAUSE) {
-            volume = $.inidb.exists('ytSettings', 'volume') ? parseInt($.inidb.get('ytSettings', 'volume')) : 5;
+            volume = $.inidb.exists('ytSettings', 'volume') ? parseInt($.getIniDbString('ytSettings', 'volume')) : 5;
             connectedPlayerClient.setVolume(volume);
             if (currentPlaylist) {
                 if (announceInChat && state == playerStateEnum.NEWPAUSE) {
@@ -1354,7 +1354,7 @@
         /**
          * Used by the panel
          */
-        if (command.equalsIgnoreCase('reloadyt')) {
+        if ($.equalsIgnoreCase(command, 'reloadyt')) {
             reloadyt();
             return;
         }
@@ -1363,7 +1363,7 @@
          * @commandpath ytp - Base command to manage YouTube player settings
          * @commandpath musicplayer - Built-in permanent alias to !ytp
          */
-        if (command.equalsIgnoreCase('ytp') || command.equalsIgnoreCase('musicplayer')) {
+        if ($.equalsIgnoreCase(command, 'ytp') || $.equalsIgnoreCase(command, 'musicplayer')) {
             pActions = ['volume', 'pause'].join(', ');
             action = args[0];
             actionArgs = args.splice(1);
@@ -1376,11 +1376,11 @@
             /**
              * @commandpath ytp clearcache now - Clears the cache of YouTube IDs from the database.
              */
-            if (action.equalsIgnoreCase('clearcache')) {
+            if ($.equalsIgnoreCase(action, 'clearcache')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.clearcache.warning'));
                 } else {
-                    if (actionArgs[0].equalsIgnoreCase('now')) {
+                    if ($.equalsIgnoreCase(actionArgs[0], 'now')) {
                         $.inidb.RemoveFile('ytcache');
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.clearcache.success'));
                     } else {
@@ -1393,7 +1393,7 @@
             /**
              * @commandpath ytp resetdefaultlist - Resets the default playlist back to the default songs.
              */
-            if (action.equalsIgnoreCase('resetdefaultlist')) {
+            if ($.equalsIgnoreCase(action, 'resetdefaultlist')) {
                 if (connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.resetdefaultlist.active'));
                     return;
@@ -1407,7 +1407,7 @@
             /**
              * @commandpath ytp togglecconly - Toggle option to only use Creative Commons licensed songs.
              */
-            if (action.equalsIgnoreCase('togglecconly')) {
+            if ($.equalsIgnoreCase(action, 'togglecconly')) {
                 if ($.getIniDbBoolean('ytSettings', 'playCCOnly')) {
                     playCCOnly = false;
                     $.setIniDbBoolean('ytSettings', 'playCCOnly', false);
@@ -1423,7 +1423,7 @@
             /**
              * @commandpath ytp togglestealrefund - Toggle refunding users half their points if their song is stolen, use to reward users with songs that are liked
              */
-            if (action.equalsIgnoreCase('togglestealrefund')) {
+            if ($.equalsIgnoreCase(action, 'togglestealrefund')) {
                 if ($.getIniDbBoolean('ytSettings', 'stealRefund')) {
                     stealRefund = false;
                     $.setIniDbBoolean('ytSettings', 'stealRefund', false);
@@ -1439,7 +1439,7 @@
             /**
              * @commandpath ytp djname [DJ Name] - Name the DJ for playlists
              */
-            if (action.equalsIgnoreCase('djname')) {
+            if ($.equalsIgnoreCase(action, 'djname')) {
                 if (actionArgs[0]) {
                     playlistDJname = actionArgs.join(' ');
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setdjname.success', playlistDJname));
@@ -1452,7 +1452,7 @@
             /**
              * @commandpath ytp delrequest [YouTube ID] - Delete a song that has been requested
              */
-            if (action.equalsIgnoreCase('delrequest')) {
+            if ($.equalsIgnoreCase(action, 'delrequest')) {
                 if (actionArgs[0]) {
                     var removedSongTitle = currentPlaylist.removeSong(actionArgs[0]);
                     if (removedSongTitle) {
@@ -1471,7 +1471,7 @@
              * @commandpath ytp volume [0-100] - Set volume in player. No value to display current volume.
              * @commandpath ytp volume [0-100] [+/-] - Set volume in player. +/- raises/lowers by 2. No value to display current volume.
              */
-            if (action.equalsIgnoreCase('volume')) {
+            if ($.equalsIgnoreCase(action, 'volume')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1501,7 +1501,7 @@
             /**
              * @commandpath ytp votecount - Set the amount of votes needed for the !skip command to work
              */
-            if (action.equalsIgnoreCase('votecount')) {
+            if ($.equalsIgnoreCase(action, 'votecount')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1530,7 +1530,7 @@
             /**
              * @commandpath ytp pause - Pause/unpause the player.
              */
-            if (action.equalsIgnoreCase('pause')) {
+            if ($.equalsIgnoreCase(action, 'pause')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1543,7 +1543,7 @@
              * @commandpath ytp togglerandom - Toggle randomizing playlists
              * @commandpath ytp shuffle - Toggle randomizing playlists
              */
-            if (action.equalsIgnoreCase('togglerandom') || action.equalsIgnoreCase('shuffle')) {
+            if ($.equalsIgnoreCase(action, 'togglerandom') || $.equalsIgnoreCase(action, 'shuffle')) {
                 randomizePlaylist = !randomizePlaylist;
 
                 $.setIniDbBoolean('ytSettings', 'randomizePlaylist', randomizePlaylist);
@@ -1562,7 +1562,7 @@
              * @commandpath ytp toggleannounce - Toggle announcing now playing in the chat
              * @commandpath ytp togglenotify - Toggle announcing now playing in the chat
              */
-            if (action.equalsIgnoreCase('toggleannounce') || action.equalsIgnoreCase('togglenotify')) {
+            if ($.equalsIgnoreCase(action, 'toggleannounce') || $.equalsIgnoreCase(action, 'togglenotify')) {
                 announceInChat = !announceInChat;
                 $.setIniDbBoolean('ytSettings', 'announceInChat', announceInChat);
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.toggleannounce.toggled', (announceInChat ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
@@ -1573,7 +1573,7 @@
              * @commandpath ytp togglerequests - Toggle song request ability for users below admin.
              * @commandpath ytp togglesr - Toggle song request ability for users below admin.
              */
-            if (action.equalsIgnoreCase('togglerequests') || action.equalsIgnoreCase('togglesr')) {
+            if ($.equalsIgnoreCase(action, 'togglerequests') || $.equalsIgnoreCase(action, 'togglesr')) {
                 songRequestsEnabled = !songRequestsEnabled;
 
                 $.setIniDbBoolean('ytSettings', 'songRequestsEnabled', songRequestsEnabled);
@@ -1590,7 +1590,7 @@
              * @commandpath ytp setrequestmax [max concurrent requests] - Set the maximum of concurrent songrequests a user can make
              * @commandpath ytp limit [max concurrent requests] - Set the maximum of concurrent songrequests a user can make
              */
-            if (action.equalsIgnoreCase('setrequestmax') || action.equalsIgnoreCase('limit')) {
+            if ($.equalsIgnoreCase(action, 'setrequestmax') || $.equalsIgnoreCase(action, 'limit')) {
                 if (!actionArgs[0] || isNaN(parseInt(actionArgs[0]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setrequestmax.usage'));
                     return;
@@ -1606,7 +1606,7 @@
              * @commandpath ytp setmaxvidlength [max video length in seconds] - Set the maximum length of a song that may be requested
              * @commandpath ytp maxvideolength [max video length in seconds] - Set the maximum length of a song that may be requested
              */
-            if (action.equalsIgnoreCase('setmaxvidlength') || action.equalsIgnoreCase('maxvideolength')) {
+            if ($.equalsIgnoreCase(action, 'setmaxvidlength') || $.equalsIgnoreCase(action, 'maxvideolength')) {
                 if (!actionArgs[0] || isNaN(parseInt(actionArgs[0]))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.ytp.setmaxvidlength.usage'));
                     return;
@@ -1621,13 +1621,13 @@
             /**
              * @commandpath ytp blacklistuser [add / remove] [user] - Blacklist a user from using the songrequest features.
              */
-            if (action.equalsIgnoreCase('blacklistuser')) {
+            if ($.equalsIgnoreCase(action, 'blacklistuser')) {
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage'));
                     return;
                 }
 
-                if (args[1].equalsIgnoreCase('add')) {
+                if ($.equalsIgnoreCase(args[1], 'add')) {
                     if (!args[2]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.usage'));
                         return;
@@ -1637,7 +1637,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.success', args[2]));
                 }
 
-                if (args[1].equalsIgnoreCase('remove')) {
+                if ($.equalsIgnoreCase(args[1], 'remove')) {
                     if (!args[2]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.usage'));
                         return;
@@ -1652,14 +1652,14 @@
             /**
              * @commandpath ytp blacklist [add / remove] [name contained in the video] - Blacklist a song name from being requested.
              */
-            if (action.equalsIgnoreCase('blacklist')) {
+            if ($.equalsIgnoreCase(action, 'blacklist')) {
                 actionArgs = args.splice(2);
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.usage.song'));
                     return;
                 }
 
-                if (args[1].equalsIgnoreCase('add')) {
+                if ($.equalsIgnoreCase(args[1], 'add')) {
                     if (!args[2]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.add.usage.song'));
                         return;
@@ -1670,7 +1670,7 @@
                     return;
                 }
 
-                if (args[1].equalsIgnoreCase('remove')) {
+                if ($.equalsIgnoreCase(args[1], 'remove')) {
                     if (!args[2]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklist.remove.usage.song'));
                         return;
@@ -1686,7 +1686,7 @@
         /**
          * @commandpath playlist - Base command: Manage playlists
          */
-        if (command.equalsIgnoreCase('playlist')) {
+        if ($.equalsIgnoreCase(command, 'playlist')) {
             pActions = ['add', 'delete', 'loadpl', 'deletepl', 'importpl'].join(', ');
             action = args[0];
             actionArgs = args.splice(1);
@@ -1699,7 +1699,7 @@
             /**
              * @commandpath playlist add [youtube link | id | search] - Add a song to the current playlist
              */
-            if (action.equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(action, 'add')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1728,7 +1728,7 @@
             /**
              * @commandpath playlist delete (videoId) - Delete the current song from the current playlist, or the specified video by YouTube Video ID
              */
-            if (action.equalsIgnoreCase('delete')) {
+            if ($.equalsIgnoreCase(action, 'delete')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1744,7 +1744,7 @@
             /**
              * @commandpath playlist loadpl [playlist name] - Load playlist by name, calling this command with an unknown playlist will create it for you.
              */
-            if (action.equalsIgnoreCase('loadpl')) {
+            if ($.equalsIgnoreCase(action, 'loadpl')) {
                 if (!connectedPlayerClient) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
@@ -1768,7 +1768,7 @@
             /**
              * Used by the panel
              */
-            if (action.equalsIgnoreCase('playlistloadpanel')) {
+            if ($.equalsIgnoreCase(action, 'playlistloadpanel')) {
                 if (actionArgs.length > 0) {
                     var requestedPlaylist = new BotPlayList(actionArgs[0], true);
                     currentPlaylist.loadNewPlaylist(actionArgs[0]);
@@ -1781,7 +1781,7 @@
             /**
              * @commandpath playlist listpl - List the playlists
              */
-            if (action.equalsIgnoreCase('listpl')) {
+            if ($.equalsIgnoreCase(action, 'listpl')) {
                 var playlistsList = $.inidb.GetKeyList('yt_playlists_registry', '');
 
                 if (playlistsList) {
@@ -1793,13 +1793,13 @@
             /**
              * @commandpath playlist deletepl [playlist name] - Delete a playlist by name
              */
-            if (action.equalsIgnoreCase('deletepl')) {
+            if ($.equalsIgnoreCase(action, 'deletepl')) {
                 if (!currentPlaylist) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.client.404'));
                     return;
                 }
                 if (actionArgs.length > 0) {
-                    if (actionArgs[0].equalsIgnoreCase('default')) {
+                    if ($.equalsIgnoreCase(actionArgs[0], 'default')) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.playlist.delete.isdefault'));
                         return;
                     }
@@ -1818,9 +1818,9 @@
             /**
              * @commandpath playlist importpl file [playlist name] [file] - Creates/overwrites playlist with new list generated from ./addons/youtubePlayer/file. File may contain links, descriptions, or YouTube IDs
              */
-            if (action.equalsIgnoreCase('importpl')) {
+            if ($.equalsIgnoreCase(action, 'importpl')) {
                 if (actionArgs.length == 3) {
-                    if (actionArgs[0].equalsIgnoreCase('file')) {
+                    if ($.equalsIgnoreCase(actionArgs[0], 'file')) {
                         var importPlaylist = new BotPlayList(actionArgs[1], false);
                         $.say($.whisperPrefix(sender) + importPlaylist.importPlaylistFile(actionArgs[1], actionArgs[2], sender));
                         return;
@@ -1842,7 +1842,7 @@
         /**
          * @commandpath stealsong [playlist name] - Add the currently playing song to the current playlist or a given playlist
          */
-        if (command.equalsIgnoreCase('stealsong')) {
+        if ($.equalsIgnoreCase(command, 'stealsong')) {
             var refundUser = '',
                 responseString;
 
@@ -1866,13 +1866,13 @@
             }
 
             if (stealRefund) {
-                if (!$.isBot(refundUser) && !playlistDJname.equalsIgnoreCase(refundUser)) {
+                if (!$.isBot(refundUser) && $.equalsIgnoreCase(!playlistDJname, refundUser)) {
                     if ($.inidb.exists('pricecom', 'songrequest') || $.inidb.exists('pricecom', 'addsong')) {
                         var isMod = $.checkUserPermission(refundUser, event.getTags(), $.PERMISSION.Mod);
                         if ((((isMod && $.getIniDbBoolean('settings', 'pricecomMods', false) && !$.isBot(sender)) || !isMod))) {
-                            var refund = $.inidb.get('pricecom', 'songrequest');
+                            var refund = $.getIniDbString('pricecom', 'songrequest');
                             if (refund == 0) {
-                                refund = $.inidb.get('pricecom', 'addsong');
+                                refund = $.getIniDbString('pricecom', 'addsong');
                             }
                             refund = parseInt(refund / 2);
                             if (refund > 0) {
@@ -1891,7 +1891,7 @@
          * @commandpath jumptosong [position in playlist] - Jump to a song in the current playlist by position in playlist.
          * @commandpath playsong [position in playlist] - Jump to a song in the current playlist by position in playlist.
          */
-        if (command.equalsIgnoreCase('jumptosong') || command.equalsIgnoreCase('playsong')) {
+        if ($.equalsIgnoreCase(command, 'jumptosong') || $.equalsIgnoreCase(command, 'playsong')) {
             if (args[0] === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.jumptosong.usage', command.toLowerCase()));
                 return;
@@ -1906,7 +1906,7 @@
         /**
          * @commandpath findsong [search string] - Finds a song based on a search string.
          */
-        if (command.equalsIgnoreCase('findsong')) {
+        if ($.equalsIgnoreCase(command, 'findsong')) {
             if (args[0] === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.findsong.usage', command.toLowerCase()));
                 return;
@@ -1921,7 +1921,7 @@
         /**
          * @commandpath skipsong - Skip the current song and proceed to the next video in line
          */
-        if (command.equalsIgnoreCase('skipsong')) {
+        if ($.equalsIgnoreCase(command, 'skipsong')) {
             _voteLock.lock();
             try {
                 var username = $.username.resolve(sender, event.getTags()),
@@ -1947,7 +1947,7 @@
                 /**
                  * @commandpath skipsong vote - allow viewers to vote to skip a song
                  */
-                if (action.equalsIgnoreCase('vote')) {
+                if ($.equalsIgnoreCase(action, 'vote')) {
                     if (voteCount == 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.skip.disabled'));
                         return;
@@ -1982,7 +1982,7 @@
         /**
          * @commandpath songrequest [YouTube ID | YouTube link | search string] - Request a song!
          */
-        if (command.equalsIgnoreCase('songrequest') || command.equalsIgnoreCase('addsong')) {
+        if ($.equalsIgnoreCase(command, 'songrequest') || $.equalsIgnoreCase(command, 'addsong')) {
             if ($.getIniDbBoolean('ytpBlacklist', sender, false)) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.blacklisted'));
                 return;
@@ -2008,7 +2008,7 @@
          * @commandpath wrongsong - Removes the last requested song from the user
          * @commandpath wrongsong user [username] - Removes the last requested song from a specific user
          */
-        if (command.equalsIgnoreCase('wrongsong')) {
+        if ($.equalsIgnoreCase(command, 'wrongsong')) {
             if (args.length == 0) {
                 var songTitle = currentPlaylist.removeUserSong(sender);
                 if (songTitle) {
@@ -2018,7 +2018,7 @@
                     $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.wrongsong.404'));
                 }
             } else {
-                if (args[0].equalsIgnoreCase('user')) {
+                if ($.equalsIgnoreCase(args[0], 'user')) {
                     if (args[1]) {
                         var songTitle = currentPlaylist.removeUserSong(args[1].toLowerCase());
                         if (songTitle) {
@@ -2038,7 +2038,7 @@
         /**
          * @commandpath previoussong - Announce the previous played song in the chat
          */
-        if (command.equalsIgnoreCase('previoussong')) {
+        if ($.equalsIgnoreCase(command, 'previoussong')) {
             if (currentPlaylist.getPreviousVideo()) {
                 $.say($.userPrefix(sender, true) + $.lang.get('ytplayer.command.previoussong', currentPlaylist.getPreviousVideo().getVideoTitle(), currentPlaylist.getPreviousVideo().getOwner(), currentPlaylist.getPreviousVideo().getVideoLink()));
             } else {
@@ -2050,7 +2050,7 @@
         /**
          * @commandpath currentsong - Announce the currently playing song in the chat
          */
-        if (command.equalsIgnoreCase('currentsong')) {
+        if ($.equalsIgnoreCase(command, 'currentsong')) {
             $.say($.userPrefix(sender, true) + $.lang.get('ytplayer.command.currentsong', currentPlaylist.getCurrentVideo().getVideoTitle(), currentPlaylist.getCurrentVideo().getOwner(), currentPlaylist.getCurrentVideo().getVideoLink()));
             return;
         }
@@ -2061,7 +2061,7 @@
          * @commandpath nextsong next [n] - Display the next n songs in queue, max of 5
          * @commandpath nextsong list [x-y] - Display songs in queue from the range, max of 5
          */
-        if (command.equalsIgnoreCase('nextsong')) {
+        if ($.equalsIgnoreCase(command, 'nextsong')) {
             var minRange,
                 maxRange,
                 showRange;
@@ -2083,7 +2083,7 @@
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.single', '#' + args[0] + ': ' + currentPlaylist.getRequestAtIndex(parseInt(args[0])).getVideoTitle()));
                         return;
                     }
-                } else if (args[0].equalsIgnoreCase('next')) {
+                } else if ($.equalsIgnoreCase(args[0], 'next')) {
                     if (!args[1]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.usage'));
                         return;
@@ -2094,7 +2094,7 @@
                     }
                     minRange = 1;
                     maxRange = parseInt(args[1]);
-                } else if (args[0].equalsIgnoreCase('list')) {
+                } else if ($.equalsIgnoreCase(args[0], 'list')) {
                     if (!args[1]) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ytplayer.command.nextsong.usage'));
                         return;

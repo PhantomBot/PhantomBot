@@ -74,7 +74,7 @@
         }
 
         if (time === undefined) {
-            time = parseInt($.inidb.get('time', username));
+            time = parseInt($.getIniDbString('time', username));
         }
 
         if (!isNaN(time)) {
@@ -109,12 +109,12 @@
 
         // Return Custom Rank
         if ($.inidb.exists('viewerRanks', username.toLowerCase())) {
-            return $.inidb.get('viewerRanks', username.toLowerCase());
+            return $.getIniDbString('viewerRanks', username.toLowerCase());
         }
 
         // Return System Rank
         if (time === undefined) {
-            time = parseInt($.inidb.get('time', username));
+            time = parseInt($.getIniDbString('time', username));
         }
 
         if (!isNaN(time)) {
@@ -127,7 +127,7 @@
         }
 
         if (userLevel >= 0) {
-            return $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString());
+            return $.getIniDbString('ranksMapping', ranksTimeTable[userLevel].toString());
         }
         return '';
     }
@@ -153,7 +153,7 @@
             username = $.viewer.getByLogin(sender).name(),
             levelTime,
             levelName,
-            userTime = parseInt($.inidb.get('time', sender)) / 3600,
+            userTime = parseInt($.getIniDbString('time', sender)) / 3600,
             userLevel,
             timeUntilNextRank,
             nextLevel,
@@ -174,13 +174,13 @@
          * @commandpath rankedit settime [time] - Number of minimum hours before user can choose custom rank.
          * @commandpath rankedit setcost [points] - Cost of custom rank.
          */
-        if (command.equalsIgnoreCase('rankedit')) {
+        if ($.equalsIgnoreCase(command, 'rankedit')) {
             if (!args[0]) {
                 $.say($.whisperPrefix(sender) + $.lang.get('ranks.edit.usage'));
                 return;
             }
 
-            if (args[0].equalsIgnoreCase('settime')) {
+            if ($.equalsIgnoreCase(args[0], 'settime')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ranks.settime.usage'));
                     return;
@@ -197,7 +197,7 @@
                 return;
             }
 
-            if (args[0].equalsIgnoreCase('setcost')) {
+            if ($.equalsIgnoreCase(args[0], 'setcost')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ranks.setcost.usage', $.pointNameMultiple));
                     return;
@@ -214,7 +214,7 @@
                 return;
             }
 
-            if (args[0].equalsIgnoreCase('custom')) {
+            if ($.equalsIgnoreCase(args[0], 'custom')) {
                 if (args.length < 3) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ranks.custom.usage'));
                     return;
@@ -233,7 +233,7 @@
                 return;
             }
 
-            if (args[0].equalsIgnoreCase('customdel')) {
+            if ($.equalsIgnoreCase(args[0], 'customdel')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ranks.customdel.usage'));
                     return;
@@ -251,7 +251,7 @@
                 return;
             }
 
-            if (args[0].equalsIgnoreCase('add')) {
+            if ($.equalsIgnoreCase(args[0], 'add')) {
                 if (args.length < 3) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ranks.add.usage'));
                     return;
@@ -278,7 +278,7 @@
                 return;
             }
 
-            if (args[0].equalsIgnoreCase('del')) {
+            if ($.equalsIgnoreCase(args[0], 'del')) {
                 if (args.length < 2) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ranks.del.usage'));
                     return;
@@ -300,9 +300,9 @@
          * @commandpath rank set [rankname] - Set rank for self if enough hours and points, if applicable, available in chat.
          * @commandpath rank del - Deletes customized rank.
          */
-        if (command.equalsIgnoreCase('rank')) {
+        if ($.equalsIgnoreCase(command, 'rank')) {
             if (args[0]) {
-                if (args[0].equalsIgnoreCase('del')) {
+                if ($.equalsIgnoreCase(args[0], 'del')) {
                     if ($.inidb.exists('viewerRanks', sender.toLowerCase())) {
                         $.say($.whisperPrefix(sender) + $.lang.get('ranks.delself.success'));
                         $.inidb.del('viewerRanks', sender.toLowerCase());
@@ -312,7 +312,7 @@
                     return;
                 }
 
-                if (args[0].equalsIgnoreCase('set')) {
+                if ($.equalsIgnoreCase(args[0], 'set')) {
                     if (!args[1]) {
                         if ($.bot.isModuleEnabled('./systems/pointSystem.js')) {
                             $.say($.whisperPrefix(sender) + $.lang.get('ranks.set.usage', rankEligableTime, rankEligableCost, $.pointNameMultiple));
@@ -344,7 +344,7 @@
             }
 
             if ($.inidb.exists('viewerRanks', username.toLowerCase())) {
-                $.say($.lang.get('ranks.rank.customsuccess', username, $.inidb.get('viewerRanks', username.toLowerCase())));
+                $.say($.lang.get('ranks.rank.customsuccess', username, $.getIniDbString('viewerRanks', username.toLowerCase())));
                 return;
             }
 
@@ -365,12 +365,12 @@
                 nextLevel = userLevel + 1;
                 timeUntilNextRank = (parseInt(ranksTimeTable[nextLevel]) - userTime).toFixed(1);
                 if (userLevel === -1) {
-                    $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
+                    $.say($.lang.get('ranks.rank.norank.success', username, timeUntilNextRank, $.getIniDbString('ranksMapping', ranksTimeTable[nextLevel].toString())));
                 } else {
-                    $.say($.lang.get('ranks.rank.success', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString()), timeUntilNextRank, $.inidb.get('ranksMapping', ranksTimeTable[nextLevel].toString())));
+                    $.say($.lang.get('ranks.rank.success', username, $.getIniDbString('ranksMapping', ranksTimeTable[userLevel].toString()), timeUntilNextRank, $.getIniDbString('ranksMapping', ranksTimeTable[nextLevel].toString())));
                 }
             } else {
-                $.say($.lang.get('ranks.rank.maxsuccess', username, $.inidb.get('ranksMapping', ranksTimeTable[userLevel].toString())));
+                $.say($.lang.get('ranks.rank.maxsuccess', username, $.getIniDbString('ranksMapping', ranksTimeTable[userLevel].toString())));
             }
             return;
         }

@@ -50,7 +50,7 @@
             return;
         }
         if ($.isOnline($.channelName) && welcomeEnabled && (welcomeMessage || welcomeMessageFirst)) {
-            if ($.inidb.exists('greeting', sender) && $.inidb.GetBoolean('greetingSettings', '', 'autoGreetEnabled') && $.bot.isModuleEnabled('./systems/greetingSystem.js')) {
+            if ($.inidb.exists('greeting', sender) && $.getIniDbBoolean('greetingSettings', 'autoGreetEnabled') && $.bot.isModuleEnabled('./systems/greetingSystem.js')) {
                 return;
             }
 
@@ -256,7 +256,7 @@
         /**
          * @commandpath welcome - Base command for controlling welcomes.
          */
-        if (command.equalsIgnoreCase('welcome')) {
+        if ($.equalsIgnoreCase(command, 'welcome')) {
             if (!action) {
                 $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.generalusage'));
                 return;
@@ -265,7 +265,7 @@
             /**
              * @commandpath welcome toggle - Enable/disable the welcome system.
              */
-            if (action.equalsIgnoreCase('toggle')) {
+            if ($.equalsIgnoreCase(action, 'toggle')) {
                 welcomeEnabled = !welcomeEnabled;
                 $.setIniDbBoolean('welcome', 'welcomeEnabled', welcomeEnabled);
                 if (welcomeEnabled) {
@@ -278,7 +278,7 @@
             /**
              * @commandpath welcome setmessage - Set the welcome message
              */
-            if (action.equalsIgnoreCase('setmessage')) {
+            if ($.equalsIgnoreCase(action, 'setmessage')) {
                 message = args.splice(1, args.length - 1).join(' ');
 
                 $.inidb.set('welcome', 'welcomeMessage', message);
@@ -295,7 +295,7 @@
             /**
              * @commandpath welcome setfirstmessage - Set the welcome message
              */
-            if (action.equalsIgnoreCase('setfirstmessage')) {
+            if ($.equalsIgnoreCase(action, 'setfirstmessage')) {
                 message = args.splice(1, args.length - 1).join(' ');
 
                 $.inidb.set('welcome', 'welcomeMessageFirst', message);
@@ -311,7 +311,7 @@
             /**
              * @commandpath welcome cooldown [hours] - Cooldown in hours before displaying a welcome for a person chatting.
              */
-            if (action.equalsIgnoreCase('cooldown')) {
+            if ($.equalsIgnoreCase(action, 'cooldown')) {
                 if (!args[1]) {
                     $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.cooldown.show', $.getIniDbNumber('welcome', 'cooldown')));
                     return;
@@ -331,7 +331,7 @@
             /**
              * @commandpath welcome disable [user] - Disable welcoming of the given user.
              */
-            if (action.equalsIgnoreCase('disable')) {
+            if ($.equalsIgnoreCase(action, 'disable')) {
                 username = !args[1] ? args[1] : $.jsString(args[1]).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
                 if (!username) {
                     $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.disableuser.usage'));
@@ -350,7 +350,7 @@
             /**
              * @commandpath welcome enable [user] - Disable welcoming of the given user.
              */
-            if (action.equalsIgnoreCase('enable')) {
+            if ($.equalsIgnoreCase(action, 'enable')) {
                 username = !args[1] ? args[1] : $.jsString(args[1]).replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
                 if (!username) {
                     $.say($.whisperPrefix(sender) + $.lang.get('welcomesystem.set.enableuser.usage'));

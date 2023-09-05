@@ -81,7 +81,7 @@
         /**
          * @discordcommandpath kill [username] - Kill a fellow viewer (not for real!).
          */
-        if (command.equalsIgnoreCase('kill')) {
+        if ($.equalsIgnoreCase(command, 'kill')) {
             if (args.length === 0) {
                 selfKill(sender, channel);
             } else {

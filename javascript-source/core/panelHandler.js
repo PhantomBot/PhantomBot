@@ -32,7 +32,7 @@
     function addObjectToArray(table, key, type, object) {
         _dataLock.lock();
         try {
-            let array = JSON.parse($.inidb.GetString(table, '', key, '[]'));
+            let array = JSON.parse($.getIniDbString(table, key, '[]'));
 
             // Make sure it is an array.
             if (object.type === undefined) {
@@ -304,7 +304,7 @@
     });
 
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getId().equalsIgnoreCase('panelDataRefresh')) {
+        if ($.equalsIgnoreCase(event.getId(), 'panelDataRefresh')) {
             updateStreamData();
         }
     });

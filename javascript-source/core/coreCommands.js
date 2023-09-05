@@ -29,7 +29,7 @@
         /*
          * @commandpath shoutout [streamer] - Give a shout out to a streamer.
          */
-        if (command.equalsIgnoreCase('shoutout')) {
+        if ($.equalsIgnoreCase(command, 'shoutout')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('corecommands.shoutout.usage', command));
                 return;
@@ -57,11 +57,11 @@
             /*
              * @commandpath shoutoutapitoggle - Toggles if the /shoutout API is also sent along with the normal !shoutout response
              */
-        } else if (command.equalsIgnoreCase('shoutoutapi')) {
+        } else if ($.equalsIgnoreCase(command, 'shoutoutapi')) {
             shoutoutApi = !shoutoutApi;
             $.setIniDbBoolean('settings', 'shoutoutapi', shoutoutApi);
             $.say($.whisperPrefix(sender) + $.lang.get('corecommands.shoutoutapi.' + (shoutoutApi ? 'enable' : 'disable')));
-        } else if (command.equalsIgnoreCase('settimevar')) {
+        } else if ($.equalsIgnoreCase(command, 'settimevar')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('corecommands.settimevar.usage', command));
                 return;
@@ -88,7 +88,7 @@
         /*
         * @commandpath synconline (silent) - Synchronizes the stream status (online/offline); Specifying the silent parameter suppresses success and failure messages
         */
-        else if (command.equalsIgnoreCase('synconline')) {
+        else if ($.equalsIgnoreCase(command, 'synconline')) {
             let silent = false;
             if (action !== undefined && $.jsString(action) === 'silent') {
                 silent = true;
@@ -108,8 +108,8 @@
         }
         /*
         * @commandpath setcommandrestriction [none/online/offline] [command] (subcommand) - Set online/offline only restriction for the specific; subcommand is an optional parameter
-        */ 
-        else if (command.equalsIgnoreCase('setcommandrestriction')) {
+        */
+        else if ($.equalsIgnoreCase(command, 'setcommandrestriction')) {
             if (action === undefined || args[1] === undefined) {
                 $.say($.lang.get('corecommands.setcommandrestriction.usage'));
                 return;
@@ -147,7 +147,7 @@
      * @event webPanelSocketUpdate
      */
     $.bind('webPanelSocketUpdate', function (event) {
-        if (event.getScript().equalsIgnoreCase('./core/coreCommands.js')) {
+        if ($.equalsIgnoreCase(event.getScript(), './core/coreCommands.js')) {
             shoutoutApi = $.getIniDbBoolean('settings', 'shoutoutapi');
         }
     });

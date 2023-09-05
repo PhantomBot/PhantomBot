@@ -192,14 +192,14 @@
         entries = $.getIniDbArray('raffleState', 'entries', []);
         entered = $.getIniDbArray('raffleState', 'entered', {});
 
-        let tempKeyword = $.inidb.OptString('raffleState', '', 'keyword'),
-                tempEntryFee = $.inidb.OptInteger('raffleState', '', 'entryFee'),
-                tempTimerTime = $.inidb.OptInteger('raffleState', '', 'timerTime'),
-                tempStartTime = $.inidb.OptInteger('raffleState', '', 'startTime'),
-                tempFollowers = $.inidb.OptBoolean('raffleState', '', 'isFollowersOnly'),
-                tempSubscribers = $.inidb.OptBoolean('raffleState', '', 'isSubscribersOnly'),
-                tempUsePoints = $.inidb.OptBoolean('raffleState', '', 'usePoints');
-                
+        let tempKeyword = $.optIniDbString('raffleState', 'keyword'),
+                tempEntryFee = $.optIniDbNumber('raffleState', 'entryFee'),
+                tempTimerTime = $.optIniDbNumber('raffleState', 'timerTime'),
+                tempStartTime = $.optIniDbNumber('raffleState', 'startTime'),
+                tempFollowers = $.optIniDbBoolean('raffleState', 'isFollowersOnly'),
+                tempSubscribers = $.optIniDbBoolean('raffleState', 'isSubscribersOnly'),
+                tempUsePoints = $.optIniDbBoolean('raffleState', 'usePoints');
+
 
         if (entries.length === 0 || entered.length === 0 || !tempKeyword.isPresent() || !tempEntryFee.isPresent() || !tempTimerTime.isPresent() || !tempStartTime.isPresent()
             || !tempFollowers.isPresent() || !tempSubscribers.isPresent() || !tempUsePoints.isPresent()) {
@@ -537,7 +537,7 @@
      * @param {object} event
      */
     $.bind('ircChannelMessage', function (event) {
-        if (status === true && event.getMessage().equalsIgnoreCase(keyword)) {
+        if (status === true && $.equalsIgnoreCase(event.getMessage(), keyword)) {
             enter(event.getSender().toLowerCase(), event.getTags());
         }
     });
@@ -555,7 +555,7 @@
                 action = args[0],
                 subAction = args[1];
 
-        if (command.equalsIgnoreCase('raffle')) {
+        if ($.equalsIgnoreCase(command, 'raffle')) {
             if (action === undefined) {
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.usage'));
                 return;
@@ -564,7 +564,7 @@
             /**
              * @commandpath raffle open [entry fee] [keyword] [close timer] [-usepoints / -usetime / -followers] - Opens a custom raffle.
              */
-            if (action.equalsIgnoreCase('open')) {
+            if ($.equalsIgnoreCase(action, 'open')) {
                 open(sender, arguments);
                 $.log.event('A raffle was opened by: ' + sender + '. Arguments (' + arguments + ')');
                 return;
@@ -573,7 +573,7 @@
             /**
              * @commandpath raffle close - Closes the current raffle.
              */
-            if (action.equalsIgnoreCase('close')) {
+            if ($.equalsIgnoreCase(action, 'close')) {
                 close(sender);
                 $.log.event('A raffle was closed by: ' + sender + '.');
                 return;
@@ -582,7 +582,7 @@
             /**
              * @commandpath raffle draw [amount (default = 1)] [prize points (default = 0)] - Picks winner(s) for the raffle and optionally awards them with points, and closes the raffle if it is still open
              */
-            if (action.equalsIgnoreCase('draw')) {
+            if ($.equalsIgnoreCase(action, 'draw')) {
                 let amount = 1;
                 if (args[1] !== undefined && (isNaN(parseInt(args[1])) || parseInt(args[1] === 0))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.err.draw.usage'));
@@ -605,7 +605,7 @@
             /**
              * @commandpath raffle lastWinners - Prints the last raffle winners
              */
-            if (action.equalsIgnoreCase('lastWinners')) {
+            if ($.equalsIgnoreCase(action, 'lastWinners')) {
                 winningMsg(lastWinners);
                 return;
             }
@@ -613,7 +613,7 @@
             /**
              * @commandpath raffle reset - Resets the raffle.
              */
-            if (action.equalsIgnoreCase('reset')) {
+            if ($.equalsIgnoreCase(action, 'reset')) {
                 clear();
                 if (sender !== $.botName.toLowerCase()) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.reset'));
@@ -624,7 +624,7 @@
             /**
              * @commandpath raffle results - Give you the current raffle information if there is one active.
              */
-            if (action.equalsIgnoreCase('results')) {
+            if ($.equalsIgnoreCase(action, 'results')) {
                 if (status) {
                     $.say($.lang.get('rafflesystem.results', keyword + (usePoints ? $.lang.get('rafflesystem.fee', $.getPointsString(entryFee)) : ''), Object.keys(entered).length));
                 }
@@ -634,7 +634,7 @@
             /**
              * @commandpath raffle subscriberbonus [0-10] - Sets the bonus luck for subscribers.
              */
-            if (action.equalsIgnoreCase('subscriberbonus')) {
+            if ($.equalsIgnoreCase(action, 'subscriberbonus')) {
                 if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0 || parseInt(subAction) > 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.subbonus.usage'));
                     return;
@@ -649,7 +649,7 @@
             /**
              * @commandpath raffle regularbonus [0-10] - Sets the bonus luck for regulars.
              */
-            if (action.equalsIgnoreCase('regularbonus')) {
+            if ($.equalsIgnoreCase(action, 'regularbonus')) {
                 if (subAction === undefined || isNaN(parseInt(subAction)) || parseInt(subAction) < 0 || parseInt(subAction) > 10) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.regbonus.usage'));
                     return;
@@ -664,7 +664,7 @@
             /**
              * @commandpath raffle whisperwinner - Toggles if the raffle winner gets a whisper from the bot saying he won.
              */
-            if (action.equalsIgnoreCase('whisperwinner')) {
+            if ($.equalsIgnoreCase(action, 'whisperwinner')) {
                 whisperWinner = !whisperWinner;
                 $.inidb.set('raffleSettings', 'raffleWhisperWinner', whisperWinner);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.whisper.winner.toggle', (whisperWinner ? '' : $.lang.get('rafflesystem.common.message'))));
@@ -673,7 +673,7 @@
             /**
              * @commandpath raffle toggleopendraw - Toggles whether the raffle closes automatically when drawing a winner
              */
-            if (action.equalsIgnoreCase('toggleopendraw')) {
+            if ($.equalsIgnoreCase(action, 'toggleopendraw')) {
                 openDraw = !openDraw;
                 $.setIniDbBoolean('raffleSettings', 'raffleOpenDraw', openDraw);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.opendraw.' + (openDraw ? 'enable' : 'disable')));
@@ -683,7 +683,7 @@
             /**
              * @commandpath raffle togglewarningmessages - Toggles the raffle warning messages when entering.
              */
-            if (action.equalsIgnoreCase('togglewarningmessages')) {
+            if ($.equalsIgnoreCase(action, 'togglewarningmessages')) {
                 sendMessages = !sendMessages;
                 $.inidb.set('raffleSettings', 'raffleMSGToggle', sendMessages);
                 $.say($.whisperPrefix(sender) + 'Raffle warning messages have been ' + (sendMessages ? $.lang.get('common.enabled') : $.lang.get('common.disabled')) + '.');
@@ -693,7 +693,7 @@
             /**
              * @commandpath raffle togglerepicks - Toggles if the same winner can be repicked more than one.
              */
-            if (action.equalsIgnoreCase('togglerepicks')) {
+            if ($.equalsIgnoreCase(action, 'togglerepicks')) {
                 noRepickSame = !noRepickSame;
                 $.inidb.set('raffleSettings', 'noRepickSame', noRepickSame);
                 $.say($.whisperPrefix(sender) + (noRepickSame ? $.lang.get('rafflesystem.raffle.repick.toggle1') : $.lang.get('rafflesystem.raffle.repick.toggle2')));
@@ -703,13 +703,13 @@
             /**
              * @commandpath raffle message [message] - Sets the raffle auto annouce messages saying that raffle is still active.
              */
-            if (action.equalsIgnoreCase('message')) {
+            if ($.equalsIgnoreCase(action, 'message')) {
                 if (subAction === undefined) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.message.usage'));
                     return;
                 }
 
-                raffleMessage = arguments.substring(action.length() + 1);
+                raffleMessage = arguments.substring($.strlen(action) + 1);
                 $.inidb.set('raffleSettings', 'raffleMessage', raffleMessage);
                 $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.message.set', raffleMessage));
                 return;
@@ -718,7 +718,7 @@
             /**
              * @commandpath raffle messagetimer [minutes] - Sets the raffle auto annouce messages interval. 0 is disabled.
              */
-            if (action.equalsIgnoreCase('messagetimer')) {
+            if ($.equalsIgnoreCase(action, 'messagetimer')) {
                 if (subAction === undefined || isNaN(parseInt(subAction))) {
                     $.say($.whisperPrefix(sender) + $.lang.get('rafflesystem.timer.usage'));
                     return;
