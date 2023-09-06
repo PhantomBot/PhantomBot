@@ -33,6 +33,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -169,7 +170,12 @@ public final class Reflect {
                                     this.classes.add(c);
                                 }
                             } catch (ClassNotFoundException ex) {
-                                com.gmt2001.Console.debug.printStackTrace(ex);
+                                com.gmt2001.Console.debug.printStackTrace(ex, Map.of(
+                                    "jarFile", jarFile == null ? null : jarFile.toString(),
+                                    "pkg", pkg,
+                                    "exclude", exclude,
+                                    "name", name
+                                ));
                             }
                         }
                     }
