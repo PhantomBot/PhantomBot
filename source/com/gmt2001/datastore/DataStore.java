@@ -16,6 +16,7 @@
  */
 package com.gmt2001.datastore;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1621,24 +1622,26 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     public List<List<String>> query(String sql, String[] replacements) {
         List<List<String>> results = new ArrayList<>();
 
-        try ( PreparedStatement statement = Datastore2.instance().prepareStatement(sql)) {
-            int i = 1;
-            for (String k : replacements) {
-                statement.setString(i++, k);
-            }
+        try (Connection conn = Datastore2.instance().getConnection()) {
+            try ( PreparedStatement statement = conn.prepareStatement(sql)) {
+                int i = 1;
+                for (String k : replacements) {
+                    statement.setString(i++, k);
+                }
 
-            if (statement.execute()) {
-                try ( ResultSet rs = statement.getResultSet()) {
-                    int numcol = rs.getMetaData().getColumnCount();
+                if (statement.execute()) {
+                    try ( ResultSet rs = statement.getResultSet()) {
+                        int numcol = rs.getMetaData().getColumnCount();
 
-                    while (rs.next()) {
-                        List<String> row = new ArrayList<>();
+                        while (rs.next()) {
+                            List<String> row = new ArrayList<>();
 
-                        for (int b = 1; b <= numcol; b++) {
-                            row.add(rs.getString(b));
+                            for (int b = 1; b <= numcol; b++) {
+                                row.add(rs.getString(b));
+                            }
+
+                            results.add(row);
                         }
-
-                        results.add(row);
                     }
                 }
             }

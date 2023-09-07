@@ -22,9 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -341,49 +339,6 @@ public abstract class Datastore2 {
         }
 
         return false;
-    }
-
-    /**
-     * Creates a {@link PreparedStatement} object for sending parameterized SQL statements to the database
-     * <p>
-     * This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
-     * or by the implementing {@link Datastore2} sub-classes
-     * <p>
-     * The {@link PreparedStatement} must be closed by calling {@link PreparedStatement#close()} to release it back to the connection
-     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
-     * <p>
-     * Consider using try-with-resources instead to safely auto-close the connection
-     * <p>
-     * Transactions are <b>not</b> comitted automatically when closing a {@link PreparedStatement} that has auto-commit disabled
-     *
-     * @see <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html" target="_blank">Using Prepared Statements</a>
-     *
-     * @param sql an SQL statement that may contain one or more {@code ?} IN parameter placeholders
-     * @return a new default {@link PreparedStatement} object containing the pre-compiled SQL statement
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return this.getConnection().prepareStatement(sql);
-    }
-
-    /**
-     * Creates a {@link Statement} object for sending SQL statements to the database
-     * <p>
-     * This directly connects to the underlying database. It should only be used by custom scripts where the selected database is known
-     * or by the implementing {@link Datastore2} sub-classes
-     * <p>
-     * The {@link Statement} must be closed by calling {@link Statement#close()} to release it back to the connection
-     * pool when the operation is complete, otherwise exhaustion of the connection pool may occur, preventing other modules from accessing the database
-     * <p>
-     * Consider using try-with-resources instead to safely auto-close the connection
-     * <p>
-     * Transactions are <b>not</b> comitted automatically when closing a {@link Statement} that has auto-commit disabled
-     *
-     * @return a new default {@link Statement} object
-     * @throws SQLException if a database access error occurs or this method is called on a closed connection
-     */
-    public Statement createStatement() throws SQLException {
-        return this.getConnection().createStatement();
     }
 
     /**
