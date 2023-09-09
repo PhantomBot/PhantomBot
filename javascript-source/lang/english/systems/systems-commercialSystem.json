@@ -1,0 +1,12 @@
+{
+    "commercialsystem.usage": "Usage: !commercial (length_secs:30,60,90,120,150,180) [silent]  --or-- !commercial autotimer",
+    "commercialsystem.run": "Running a $1 second commercial",
+    "commercialsystem.422": "Commercials can only be run on partnered channels, once per 8 minutes, when the stream is live, for one of the following lengths: 30, 60, 90, 120, 150, 180",
+    "commercialsystem.autotimer.status-off": "Commercial autotimer is off. To enable: !commercial autotimer (interval_mins:8 or greater) (length_secs:30,60,90,120,150,180) [message]",
+    "commercialsystem.autotimer.status-on": "Commercial autotimer is on. $1 seconds of ads every $2 minutes. To disable: !commercial autotimer off --or-- To add/change a message: !commercial autotimer message (message) --or-- To remove message: !commercial autotimer nomessage",
+    "commercialsystem.autotimer.bad-parm": "Failed to set autotimer. Interval must be at least 8 minutes and length must be one of: 30, 60, 90, 120, 150, 180",
+    "commercialsystem.autotimer.status-on-msg": "The message sent when an auto commercial starts: $1",
+    "commercialsystem.autotimer.status-on-nomsg": "No message is sent when an auto commercial starts",
+    "commercialsystem.autotimer.msg-set": "Changed the message sent when an auto commercial starts to: $1",
+    "commercialsystem.autotimer.msg-del": "No longer sending a message when an auto commercial starts"
+}

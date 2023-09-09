@@ -1,0 +1,9 @@
+{
+    "lang.curlang": "The current language is $1!",
+    "lang.lang.404": "That language file does not exist!",
+    "lang.lang.changed": "Changed language to $1!",
+    "lang.response.action.disabled": "Chat output will be normal text. (without /me)",
+    "lang.response.action.enabled": "Chat output wil be prepended with \"/me\".",
+    "lang.response.disabled": "Responses are now disabled! To enable them, use !mute",
+    "lang.response.enabled": "Responses are now enabled! To disable them, use: !mute"
+}

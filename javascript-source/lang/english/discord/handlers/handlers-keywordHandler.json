@@ -1,0 +1,11 @@
+{
+    "discord.keywordhandler.usage": "Usage: !keyword [add / edit / remove]",
+    "discord.keywordhandler.add.usage": "Usage: !keyword add [keyword] [response]",
+    "discord.keywordhandler.add.error": "That keyword already exists.",
+    "discord.keywordhandler.add.success": "Keyword: \"$1\" has been added!",
+    "discord.keywordhandler.edit.usage": "Usage: !keyword edit [keyword] [response]",
+    "discord.keywordhandler.404": "That keyword does not exist.",
+    "discord.keywordhandler.edit.success": "Keyword: \"$1\" has been edited!",
+    "discord.keywordhandler.remove.usage": "Usage: !keyword remove [keyword]",
+    "discord.keywordhandler.remove.success": "Keyword: \"$1\" has been removed!"
+}

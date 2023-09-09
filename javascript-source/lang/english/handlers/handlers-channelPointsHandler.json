@@ -1,0 +1,20 @@
+{
+    "channelpointshandler.config.failed": "no channel point redemption was detected. Please try again. If you are having problems please visit the PhantomBot Discord discord.com/invite/YKvMd78",
+    "channelpointshandler.command.info": "converts the redeemable into a command, then parses command tags as if a custom command was called as the bot. See \"!channelpoints add\" to configure, \"!channelpoints usage\" for usage, or \"!channelpoints example\" for an example",
+    "channelpointshandler.command.usage": "usage: !channelpoints [usage / example / list / get / add / edit / remove]",
+    "channelpointshandler.command.example": "example: !channelpoints add Thank you for redeeming @(cpdisplayname)! (playsound applause)",
+    "channelpointshandler.command.list": "active command redeemable ids: $1",
+    "channelpointshandler.command.get": "the command for channel points redeemable id $1 is: $2",
+    "channelpointshandler.command.get.usage": "usage: !channelpoints get (redeemable id)",
+    "channelpointshandler.command.get.404": "there is no command for channel points redeemable id $1",
+    "channelpointshandler.command.add.usage1": "usage: !channelpoints add (custom command definition)",
+    "channelpointshandler.command.add.usage2": "when redeemed, the (custom command definition) is parsed in the same way as a custom command created with !addcom. The (sender) will be $1 and will have ADMIN permissions",
+    "channelpointshandler.command.add.usage3": "data about the redemption can be accessed using command tags with the channelpointsevent label, check the guides for info",
+    "channelpointshandler.command.add.start": "channel points command config active. Please redeem desired redeemable.",
+    "channelpointshandler.command.add.complete": "channel points command config complete. Redeemable $1 is now registered to: $2",
+    "channelpointshandler.command.add.failed": "unable to configure command reward. Redeemable $1 is already registered to a reward",
+    "channelpointshandler.command.edit.usage1": "usage: !channelpoints edit (redeemable id) (custom command definition)",
+    "channelpointshandler.command.edit": "redeemable $1 is now registered to: $2",
+    "channelpointshandler.command.remove.usage": "usage: !channelpoints remove (redeemable id)",
+    "channelpointshandler.command.remove": "removed command reward for redeemable $1"
+}

@@ -1,0 +1,7 @@
+{
+    "commandpause.ended": "All commands are enabled again.",
+    "commandpause.notactive": "All commands are already enabled.",
+    "commandpause.initiated": "All commands are disabled for $1.",
+    "commandpause.isactive": "All commands are currently disabled.",
+    "pausecommands.usage": "usage: !pausecommands [seconds | clear]"
+}

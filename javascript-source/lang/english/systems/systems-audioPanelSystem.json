@@ -1,0 +1,18 @@
+{
+    "audiohook.usage": "Usage: !audiohook [play / list / customcommand / togglemessages]",
+    "audiohook.play.usage": "Usage: !audiohook play [audio_hook]",
+    "audiohook.play.404": "Audiohook does not exist: $1",
+    "audiohook.play.success": "Sent audio hook: $1",
+    "audiohook.list": "Audio Hooks: $1",
+    "audiohook.list.total": "Total Pages: $1",
+    "audiohook.toggle": "Audio messages have been set to $1.",
+    "audiohook.customcommand.usage": "Usage: !audiohook customcommand [add / remove] [command] [sound name]",
+    "audiohook.customcommand.add.usage": "Usage: !audiohook customcommand add [command] [sound name]",
+    "audiohook.customcommand.add.error.exists": "That command already exists or is an alias.",
+    "audiohook.customcommand.add.list": "Command !$1 will now give a list of all the audio hook commands.",
+    "audiohook.customcommand.add.error.fx.null": "That audio hook does not exist. Use: \"!audioHook list\" to see the audio list.",
+    "audiohook.customcommand.add.success": "Command !$1 will now trigger the audio hook $2!",
+    "audiohook.customcommand.remove.usage": "Usage: !audiohook customcommand remove [command]",
+    "audiohook.customcommand.remove.error.404": "That command does not exists.",
+    "audiohook.customcommand.remove.success": "Command !$1 has been removed."
+}

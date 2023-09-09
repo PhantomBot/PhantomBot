@@ -1,0 +1,22 @@
+{
+    "streamcommand.vod.404": "No videos were found.",
+    "streamcommand.vod.online": "Stream Uptime: $1 [$2]",
+    "streamcommand.vod.offline": "Stream is offline. Last video created: [$1] [Length: $2]",
+    "streamcommand.playtime.offline": "$1 is not streaming right now.",
+    "streamcommand.playtime.online": "$1 has been playing $2 for $3",
+    "streamcommand.title.offline": "Current Status: $1",
+    "streamcommand.title.no.title": "There's no status set.",
+    "streamcommand.title.online": "Current Status: $1. Uptime: $2",
+    "streamcommand.title.set.usage": "Usage: !settitle [stream title]. Currently: $1",
+    "streamcommand.game.online": "Current Game: $1. Playtime: $2",
+    "streamcommand.game.offline": "Current Game: $1",
+    "streamcommand.game.no.game": "There's no game set.",
+    "streamcommand.game.set.usage": "Usage: !setgame [game title]. Currently: $1",
+    "streamcommand.communities.set.usage": "Usage: !setcommunities [communities]. Currently: $1",
+    "streamcommand.viewers": "Currently $1 viewers are watching.",
+    "streamcommand.online.offline": "Stream is offline.",
+    "streamcommand.online.online": "Stream is online.",
+    "streamcommand.createdat.404": "Please provide a channel",
+    "streamcommand.createdat.error": "The channel does not exist or a Twitch API error occurred.",
+    "streamcommand.createdat": "Channel: $1 | Created At: $2"
+}

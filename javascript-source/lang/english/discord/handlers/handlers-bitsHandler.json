@@ -1,0 +1,10 @@
+{
+    "discord.bitshandler.usage": "Usage: !bitshandler [toggle / message / channel]",
+    "discord.bitshandler.bits.toggle": "Bit announcements have been $1.",
+    "discord.bitshandler.bits.message.usage": "Usage: !bitshandler message [message] - Tags: (name) (amount)",
+    "discord.bitshandler.bits.message.set": "Bits announcements message set to: $1",
+    "discord.bitshandler.bits.channel.usage": "Usage: !bitshandler channel [channel name]",
+    "discord.bitshandler.bits.channel.set": "Bit announcements will now be made in channel $1",
+    "discord.bitshandler.bits.embed.title": "New Cheer!",
+    "discord.bitshandler.bits.embed.messagetitle": "Message:"
+}

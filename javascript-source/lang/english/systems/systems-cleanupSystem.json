@@ -1,0 +1,5 @@
+{
+    "cleanupsystem.run.progress": "Cleanup is starting, $1 might be unresponsive or slow during this process. This might take time...",
+    "cleanupsystem.run.success": "Cleanup done!",
+    "cleanupsystem.run.usage": "Usage: !cleanup [time / points / all] [amount of time in seconds or points if cleaning points]"
+}

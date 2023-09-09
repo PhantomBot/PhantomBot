@@ -1,0 +1,9 @@
+{
+    "discord.streamlabshandler.usage": "Usage: !streamlabshandler [toggle / message / channel]",
+    "discord.streamlabshandler.toggle": "StreamLabs donation announcements have been $1.",
+    "discord.streamlabshandler.message.usage": "Usage: !streamlabshandler message [message] - Tags: (name) (amount) (currency) (message)",
+    "discord.streamlabshandler.message.set": "StreamLabs donation message set to: $1",
+    "discord.streamlabshandler.channel.usage": "Usage: !streamlabshandler channel [channel name]",
+    "discord.streamlabshandler.channel.set": "StreamLabs donation annoucements will now be made in channel $1",
+    "discord.streamlabshandler.embed.title": "New Tip!"
+}

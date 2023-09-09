@@ -1,0 +1,9 @@
+{
+    "discord.streamelementshandler.usage": "Usage: !streamelementshandler [toggle / message / channel]",
+    "discord.streamelementshandler.toggle": "StreamElements donation announcements have been $1.",
+    "discord.streamelementshandler.message.usage": "Usage: !streamelementshandler message [message] - Tags: (name) (amount) (currency) (message)",
+    "discord.streamelementshandler.message.set": "StreamElements donation message set to: $1",
+    "discord.streamelementshandler.channel.usage": "Usage: !streamelementshandler channel [channel name]",
+    "discord.streamelementshandler.channel.set": "StreamElements donation annoucements will now be made in channel $1",
+    "discord.streamelementshandler.embed.title": "New Tip!"
+}

@@ -1,0 +1,12 @@
+{
+    "logging.enabled.files": "File and chat logging has been enabled!",
+    "logging.disabled.files": "File and chat logging has been disabled!",
+    "logging.enabled.event": "Event logging has been enabled!",
+    "logging.disabled.event": "Event logging has been disabled!",
+    "logging.enabled.error": "Error logging has been enabled!",
+    "logging.disabled.error": "Error logging has been disabled!",
+    "logging.usage": "Usage: !log [files / errors / events]",
+    "logging.rotatedays.usage": "usage: !log rotatedays [days]. 0 to keep all logs. Currently: $1",
+    "logging.rotatedays.success": "Logs will rotate every $1 days.",
+    "logging.rotatedays.success.off": "Logs will not be rotated"
+}

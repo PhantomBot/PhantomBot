@@ -1,0 +1,11 @@
+{
+    "roll.rolled": "$1 rolls a [$2] and [$3]. ",
+    "roll.doubleone": "Snake eyes for $1! ",
+    "roll.doubletwo": "Hard four for $1! ",
+    "roll.doublethree": "Hard six for $1! ",
+    "roll.doublefour": "Hard eight for $1! ",
+    "roll.doublefive": "Hard ten for $1! ",
+    "roll.doublesix": "Boxcars to the max!!! $1! ",
+    "roll.rewards.usage": "usage: !roll rewards [double 1's] [2's] [3's] [4's] [5's] [6's]. Currently: $1",
+    "roll.rewards.success": "Updated rewards for the dice roll."
+}

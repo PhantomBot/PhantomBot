@@ -1,0 +1,21 @@
+{
+    "discord.subscribehandler.usage": "Usage: !subscribehandler [giftsubmessage / submessage / primemessage / resubmessage / giftsubtoggle / subtoggle / primetoggle / resubtoggle / channel]",
+    "discord.subscribehandler.sub.toggle": "Subscriber annoucements have been $1.",
+    "discord.subscribehandler.giftsub.toggle": "Gifted subscriber annoucements have been $1.",
+    "discord.subscribehandler.prime.toggle": "Twitch Prime subscriber annoucements have been $1.",
+    "discord.subscribehandler.resub.toggle": "Re-subscriber annoucements have been $1.",
+    "discord.subscribehandler.sub.message.usage": "Usage: !subscribehandler submessage [message] - Tag: (name)",
+    "discord.subscribehandler.sub.message.set": "Subscriber annoucement message set to: $1",
+    "discord.subscribehandler.giftsub.message.usage": "Usage: !subscribehandler giftsubmessage [message] - Tag: (name)",
+    "discord.subscribehandler.giftsub.message.set": "Gifted subscriber annoucement message set to: $1",
+    "discord.subscribehandler.prime.sub.message.usage": "Usage: !subscribehandler primemessage [message] - Tag: (name)",
+    "discord.subscribehandler.prime.sub.message.set": "Twitch Prime subscriber annoucement message set to: $1",
+    "discord.subscribehandler.resub.message.usage": "Usage: !subscribehandler resubmessage [message] - Tags: (name) (months)",
+    "discord.subscribehandler.resub.message.set": "Re-subscriber annoucement message set to: $1",
+    "discord.subscribehandler.channel.usage": "Usage: !subscribehandler channel [channel name]",
+    "discord.subscribehandler.channel.set": "Subscriber annoucements will now be made in channel $1",
+    "discord.subscribehandler.resubscriber.embedtitle": "New Resubscriber!",
+    "discord.subscribehandler.subscriber.embedtitle": "New Subscriber!",
+    "discord.subscribehandler.giftsubscriber.embedtitle": "New Gifted Subscription!",
+    "discord.subscribehandler.primesubscriber.embedtitle": "New Prime Subscriber!"
+}
