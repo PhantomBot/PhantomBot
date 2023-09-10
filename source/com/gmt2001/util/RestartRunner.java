@@ -143,8 +143,8 @@ public final class RestartRunner implements Listener {
                             s.forEach(l -> com.gmt2001.Console.out.println("   " + l));
                         }
                     }
-                    try (Stream<String> stdout = p.errorReader().lines()) {
-                        List<String> s = stdout.toList();
+                    try (Stream<String> stderr = p.errorReader().lines()) {
+                        List<String> s = stderr.toList();
                         if (!s.isEmpty()) {
                             com.gmt2001.Console.err.println("[RestartRunner] STDERR");
                             s.forEach(l -> com.gmt2001.Console.err.println("   " + l));
