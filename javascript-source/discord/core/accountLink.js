@@ -79,7 +79,7 @@
                     code: text
                 };
 
-                if (islinked) {
+                if (name.isPresent()) {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.relink', $.channelName, text));
                 } else {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link', $.channelName, text));

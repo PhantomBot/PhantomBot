@@ -17,6 +17,8 @@
 package com.gmt2001.util;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.json.JSONStringer;
 
@@ -121,7 +123,8 @@ public final class RestartRunner implements Listener {
 
             ExecutorService.execute(() -> {
                 try {
-                    int exitCode = Runtime.getRuntime().exec(String.format(cmd, CaselessProperties.instance().getProperty("restartcmd"))).waitFor();
+                    Process p = Runtime.getRuntime().exec(String.format(cmd, CaselessProperties.instance().getProperty("restartcmd")));
+                    int exitCode = p.waitFor();
                     if (exitCode == 0 || exitCode == 143) {
                         JSONStringer jsonObject = new JSONStringer();
                         jsonObject.object().key("query_id").value("restart-bot-result").key("results").object()
@@ -132,6 +135,20 @@ public final class RestartRunner implements Listener {
                         jsonObject.object().key("query_id").value("restart-bot-result").key("results").object()
                                 .key("success").value(false).key("code").value(exitCode).endObject().endObject();
                         WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+                    }
+                    try (Stream<String> stdout = p.inputReader().lines()) {
+                        List<String> s = stdout.toList();
+                        if (!s.isEmpty()) {
+                            com.gmt2001.Console.out.println("[RestartRunner] STDOUT");
+                            s.forEach(l -> com.gmt2001.Console.out.println("   " + l));
+                        }
+                    }
+                    try (Stream<String> stderr = p.errorReader().lines()) {
+                        List<String> s = stderr.toList();
+                        if (!s.isEmpty()) {
+                            com.gmt2001.Console.err.println("[RestartRunner] STDERR");
+                            s.forEach(l -> com.gmt2001.Console.err.println("   " + l));
+                        }
                     }
                 } catch (IOException | InterruptedException ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
