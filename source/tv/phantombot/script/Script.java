@@ -55,7 +55,7 @@ public class Script {
         }
     }
 
-    public String callMethod(String method, String arg) {
+    public static String callMethod(String method, String arg) {
         Object[] obj = new Object[]{arg};
 
         return ScriptableObject.callMethod(global, method, obj).toString();
