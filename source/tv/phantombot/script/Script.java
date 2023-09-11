@@ -42,7 +42,7 @@ public class Script {
     private long lastModified;
     private Context context;
     private boolean killed = false;
-    private static ScriptableObject scope;
+    private ScriptableObject scope;
 
     @SuppressWarnings({"CallToThreadStartDuringObjectConstruction", "LeakingThisInConstructor"})
     public Script(File file, String fileName) {
@@ -55,7 +55,7 @@ public class Script {
         }
     }
 
-    public static String callMethod(String method, String arg) {
+    public String callMethod(String method, String arg) {
         Object[] obj = new Object[]{arg};
 
         return ScriptableObject.callMethod(global, method, obj).toString();
