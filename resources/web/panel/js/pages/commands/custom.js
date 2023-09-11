@@ -96,18 +96,32 @@ $(function () {
                 tableData.push([
                     '!' + command.key,
                     command.value,
-                    $('<div/>')
-                            .append($('<i/>', {
-                                ...getDisabledIconAttr(disabledCommands.hasOwnProperty(command.key)),
-                                'style': "margin-right: 0.5em"
-                            }))
-                            .append($('<i/>', getHiddenIconAttr(hiddenCommands.hasOwnProperty(command.key))))
-                            .html(),
                     $('<div/>', {
                         'class': 'btn-group'
                     }).append($('<button/>', {
                         'type': 'button',
-                        'class': 'btn btn-xs btn-danger',
+                        'class': 'btn btn-xs btn-warning btn-disablecommand',
+                        'style': 'float: right',
+                        'data-command': command.key,
+                        'html': $('<i/>', {
+                                ...getDisabledIconAttr(disabledCommands.hasOwnProperty(command.key)),
+                                'style': "width: 9px"
+                            })
+                    })).append($('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-xs btn-warning btn-hidecommand',
+                        'style': 'float: right',
+                        'data-command': command.key,
+                        'html': $('<i/>', {
+                                ...getHiddenIconAttr(hiddenCommands.hasOwnProperty(command.key)),
+                                'style': "width: 9px"
+                            })
+                    })).html(),
+                    $('<div/>', {
+                        'class': 'btn-group'
+                    }).append($('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-xs btn-danger btn-deletecommand',
                         'style': 'float: right',
                         'data-command': command.key,
                         'html': $('<i/>', {
@@ -115,7 +129,7 @@ $(function () {
                         })
                     })).append($('<button/>', {
                         'type': 'button',
-                        'class': 'btn btn-xs btn-warning',
+                        'class': 'btn btn-xs btn-warning btn-editcommand',
                         'style': 'float: right',
                         'data-command': command.key,
                         'html': $('<i/>', {
@@ -150,11 +164,11 @@ $(function () {
             });
 
             // On delete button.
-            table.on('click', '.btn-danger', function () {
+            table.on('click', '.btn-deletecommand', function () {
                 let command = $(this).data('command'),
                         row = $(this).parents('tr');
 
-                // Ask the user if he want to remove the command.
+                // Ask the user if they want to remove the command.
                 helpers.getConfirmDeleteModal('custom_command_modal_remove', 'Are you sure you want to remove command !' + command + '?', true,
                         'The command !' + command + ' has been successfully removed!', function () {
                             // Delete all information about the command.
@@ -170,8 +184,50 @@ $(function () {
                         });
             });
 
+            // On disable button.
+            table.on('click', '.btn-disablecommand', function () {
+              let command = $(this).data('command'),
+              row = $(this).parents('tr');
+              socket.getDBValues('custom_command_edit', {
+                tables: ['command', 'disabledCommands', 'hiddenCommands'],
+                keys: [command, command, command]
+                }, function (e) {
+                  let commandDisabled = e.disabledCommands === null,
+                    commandHidden = e.hiddenCommands !== null;
+                  updateCommandVisibility(command, commandDisabled, commandHidden, function () {
+                    // Register the custom command with the cache.
+                    socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(command),
+                      e.command, JSON.stringify({disabled: commandDisabled})], function () {
+                        // Update status icon
+                        row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
+                      });
+                    });
+                  });
+            });
+
+            // On hidden button.
+            table.on('click', '.btn-hidecommand', function () {
+              let command = $(this).data('command'),
+              row = $(this).parents('tr');
+              socket.getDBValues('custom_command_edit', {
+                tables: ['command', 'disabledCommands', 'hiddenCommands'],
+                keys: [command, command, command]
+                }, function (e) {
+                  let commandDisabled = e.disabledCommands !== null,
+                    commandHidden = e.hiddenCommands === null;
+                  updateCommandVisibility(command, commandDisabled, commandHidden, function () {
+                    // Register the custom command with the cache.
+                    socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(command),
+                      e.command, JSON.stringify({hidden: commandHidden})], function () {
+                        // Update status icon
+                        row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                      });
+                    });
+                  });
+            });
+
             // On edit button.
-            table.on('click', '.btn-warning', function () {
+            table.on('click', '.btn-editcommand', function () {
                 let command = $(this).data('command'),
                         t = $(this);
 
