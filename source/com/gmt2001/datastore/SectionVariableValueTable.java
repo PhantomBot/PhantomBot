@@ -54,23 +54,15 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * @return the table instance
      */
     public static SectionVariableValueTable instance(String tableName) {
-        final String lTableName = tableName.toLowerCase();
-        Optional<SectionVariableValueTable> oTable = TABLES.entrySet().stream().filter(t -> t.getKey().equals(lTableName)).map(t -> t.getValue()).findFirst();
+        return TABLES.computeIfAbsent(tableName.toLowerCase(), lTableName -> {
+            Optional<Table<?>> cTable = Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
 
-        if (oTable.isPresent()) {
-            return oTable.get();
-        }
+            if (cTable.isPresent()) {
+                return new SectionVariableValueTable(lTableName, cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
+            }
 
-        Optional<Table<?>> cTable = Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
-        SectionVariableValueTable table;
-
-        if (cTable.isPresent()) {
-            table = new SectionVariableValueTable(lTableName, cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
-        } else {
-            table = new SectionVariableValueTable(lTableName);
-        }
-
-        return TABLES.computeIfAbsent(lTableName, k -> table);
+            return new SectionVariableValueTable(lTableName);
+        });
     }
 
     /**
