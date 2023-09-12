@@ -32,7 +32,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
       with:
         platforms: linux/amd64
     - name: Set up Docker Buildx
@@ -422,7 +422,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
       with:
         platforms: linux/amd64,linux/arm64,linux/arm/v7
     - name: Set up Docker Buildx
