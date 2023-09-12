@@ -432,7 +432,7 @@ public abstract class Datastore2 {
     }
 
     /**
-     * Returns the {@link DataType} representing the {@code LONGTEXT} equivilent SQL data type for the driver
+     * Returns the {@link DataType} representing the {@code LONGTEXT} equivalent SQL data type for the driver
      *
      * @return the DataType
      */
