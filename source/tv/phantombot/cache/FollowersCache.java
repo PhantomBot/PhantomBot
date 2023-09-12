@@ -17,8 +17,12 @@
 package tv.phantombot.cache;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +57,8 @@ public final class FollowersCache {
     private ScheduledFuture<?> fullUpdateTimeout = null;
     private int total = 0;
     private boolean killed = false;
+    private Map<String, Instant> recent = new ConcurrentHashMap<>();
+    private static final long RECENT_TIME_M = 15;
 
     public static FollowersCache instance() {
         return INSTANCE;
@@ -67,6 +73,12 @@ public final class FollowersCache {
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
+            Instant now = Instant.now();
+            recent.entrySet().forEach(kv -> {
+                if (kv.getValue().isBefore(now)) {
+                    recent.remove(kv.getKey());
+                }
+            });
         }, 30, 30, TimeUnit.SECONDS);
         this.fullUpdate = ExecutorService.submit(() -> {
             Thread.currentThread().setName("FollowersCache::fullUpdateCache");
@@ -176,10 +188,11 @@ public final class FollowersCache {
         DataStore datastore = PhantomBot.instance().getDataStore();
         loginName = loginName.toLowerCase();
         if (!datastore.exists("followed", loginName)) {
-            if (!silent) {
+            datastore.set("followed", loginName, "true");
+            if (!silent && !this.recent.containsKey(loginName)) {
+                this.recent.put(loginName, Instant.now().plus(RECENT_TIME_M, ChronoUnit.MINUTES));
                 EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt));
             }
-            datastore.set("followed", loginName, "true");
         }
         if (!datastore.exists("followedDate", loginName)) {
             datastore.set("followedDate", loginName, followedAt);

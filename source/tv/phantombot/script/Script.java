@@ -42,7 +42,7 @@ public class Script {
     private long lastModified;
     private Context context;
     private boolean killed = false;
-    private static ScriptableObject scope;
+    private ScriptableObject scope;
 
     @SuppressWarnings({"CallToThreadStartDuringObjectConstruction", "LeakingThisInConstructor"})
     public Script(File file, String fileName) {
