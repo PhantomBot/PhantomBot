@@ -64,14 +64,29 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * @return the table instance
      */
     public static SectionVariableValueTable instance(String tableName) {
+        return instance(tableName, true);
+    }
+
+    /**
+     * Retrieves an instance for the specified table
+     * <p>
+     * A case-insensitive search for the table is performed in the database if it is not already cached
+     *
+     * @param tableName the table name to lookup
+     * @param create if {@code true} and the table does not exist, it is created
+     * @return the table instance; {@code null} if the table does not exist and {@code create} was {@code false}
+     */
+    public static SectionVariableValueTable instance(String tableName, boolean create) {
         return TABLES.computeIfAbsent(tableName.toLowerCase(), lTableName -> {
             Optional<Table<?>> cTable = Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
 
             if (cTable.isPresent()) {
                 return new SectionVariableValueTable(lTableName, cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
+            } else if (create) {
+                return new SectionVariableValueTable(lTableName);
             }
 
-            return new SectionVariableValueTable(lTableName);
+            return null;
         });
     }
 
