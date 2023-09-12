@@ -32,7 +32,7 @@ import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.datastore2.meta.TableVersionRecord;
 
 /**
- * Stores the DDL version of managed Datastore2 tables
+ * Stores data in the {@link DataStore} format
  *
  * @author gmt2001
  */
@@ -42,6 +42,16 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * Table cache
      */
     private static final Map<String, SectionVariableValueTable> TABLES = new ConcurrentHashMap<>();
+
+    /**
+     * Retrieves an instance for the specified table
+     *
+     * @param table the table
+     * @return the table instance
+     */
+    public static SectionVariableValueTable instance(Table<?> table) {
+        return instance(table.getName());
+    }
 
     /**
      * Retrieves an instance for the specified table
