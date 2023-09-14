@@ -684,11 +684,14 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key) {
+        Optional<SectionVariableValueRecord> res;
         if (section == null) {
-            return dsl().fetchOptional(table, table.VARIABLE.eq(key));
+            res = dsl().fetchOptional(table, table.VARIABLE.eq(key));
         } else {
-            return dsl().fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
+            res = dsl().fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
         }
+
+        return res.map(r -> r.with(table));
     }
 
     /**
