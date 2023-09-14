@@ -747,7 +747,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     public void SetString(String fName, String section, String key, String value) {
         SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
         SectionVariableValueRecord record = this.OptRecord(table, section, key)
-            .orElseGet(() -> new SectionVariableValueRecord(table, key, section, value));
+            .orElseGet(() -> new SectionVariableValueRecord(table, section, key, value));
         record.value(value);
         record.merge();
     }
