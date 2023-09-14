@@ -88,6 +88,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             if (cTable.isPresent()) {
                 return new SectionVariableValueTable(cTable.get().getName(), cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
             } else if (create) {
+                com.gmt2001.Console.debug.println("create " + lTableName);
                 return new SectionVariableValueTable(lTableName);
             }
 
@@ -200,7 +201,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             try {
                 TableVersionRecord record = new TableVersionRecord();
                 record.values(this.tableName, SectionVariableValueRecord.serialVersionUID);
-                record.store();
+                record.merge();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }

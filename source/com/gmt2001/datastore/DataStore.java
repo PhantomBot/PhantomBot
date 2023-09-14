@@ -745,11 +745,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param value the new value of the {@code value} column
      */
     public void SetString(String fName, String section, String key, String value) {
+        SectionVariableValueRecord record = null;
+        try {
         SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
-        SectionVariableValueRecord record = this.OptRecord(table, section, key)
+        record = this.OptRecord(table, section, key)
             .orElseGet(() -> new SectionVariableValueRecord(table, section, key, value));
         record.value(value);
+        record.changed(true);
         record.merge();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.println("SetString ex " + fName + " <> " + (section == null ? "[null]" : section) + " <> " + key + " <> " + (value == null ? "[null]" : value));
+            com.gmt2001.Console.err.println(record != null ? record.format() : "[null]");
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 
     /**

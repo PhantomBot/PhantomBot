@@ -40,6 +40,7 @@ import org.jooq.ExecutorProvider;
 import org.jooq.RecordListener;
 import org.jooq.SQLDialect;
 import org.jooq.Table;
+import org.jooq.conf.SettingsTools;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
@@ -297,7 +298,7 @@ public abstract class Datastore2 {
             if (AttachableRecord.class.isAssignableFrom(ctx.record().getClass())) {
                 ((AttachableRecord) ctx.record()).doAttachments();
             }
-        }));
+        })).set(SettingsTools.defaultSettings().withReturnIdentityOnUpdatableRecord(false));
         this.dslContext = DSL.using(configuration);
     }
 
