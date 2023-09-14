@@ -30,6 +30,15 @@ public final class SectionVariableValueRecord extends Record3<SectionVariableVal
     public static final long serialVersionUID = 1L;
 
     /**
+     * Default Constructor for JOOQ
+     */
+    private SectionVariableValueRecord() {
+        super(SectionVariableValueTable.EMPTY, () -> SectionVariableValueTable.EMPTY.SECTION,
+            () -> SectionVariableValueTable.EMPTY.VARIABLE,
+            () -> SectionVariableValueTable.EMPTY.VALUE);
+    }
+
+    /**
      * Constructor
      *
      * @param table the table this record is stored in
@@ -143,5 +152,20 @@ public final class SectionVariableValueRecord extends Record3<SectionVariableVal
      */
     public org.jooq.Record3<String, String, String> values(String section, String variable, String value) {
         return this.value1(section).value2(variable).value3(value);
+    }
+
+    /**
+     * Copies the values and changed state of this record to a new one on the given table
+     *
+     * @param table the table to attach the new record to
+     * @return the new record
+     */
+    public SectionVariableValueRecord with(SectionVariableValueTable table) {
+        SectionVariableValueRecord record = new SectionVariableValueRecord(table);
+        record.values(this.section(), this.variable(), this.value());
+        record.changed(table.SECTION, this.changed(0));
+        record.changed(table.VARIABLE, this.changed(1));
+        record.changed(table.VALUE, this.changed(2));
+        return record;
     }
 }

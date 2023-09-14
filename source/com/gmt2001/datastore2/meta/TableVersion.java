@@ -114,7 +114,7 @@ public final class TableVersion extends TableImpl<TableVersionRecord> {
             try {
                 TableVersionRecord record = new TableVersionRecord();
                 record.values(TableVersion.instance(), TableVersionRecord.serialVersionUID);
-                record.store();
+                record.merge();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }

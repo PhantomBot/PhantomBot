@@ -44,6 +44,11 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
     private static final Map<String, SectionVariableValueTable> TABLES = new ConcurrentHashMap<>();
 
     /**
+     * Empty table object for {@link SectionVariableValueRecord} default constructor
+     */
+    static final SectionVariableValueTable EMPTY = new SectionVariableValueTable();
+
+    /**
      * Retrieves an instance for the specified table
      *
      * @param table the table
@@ -81,8 +86,9 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             Optional<Table<?>> cTable = Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
 
             if (cTable.isPresent()) {
-                return new SectionVariableValueTable(lTableName, cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
+                return new SectionVariableValueTable(cTable.get().getName(), cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
             } else if (create) {
+                com.gmt2001.Console.debug.println("create " + lTableName);
                 return new SectionVariableValueTable(lTableName);
             }
 
@@ -117,6 +123,13 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * The value
      */
     public final TableField<SectionVariableValueRecord, String> VALUE;
+
+    /**
+     * Constructor for {@link #EMPTY}
+     */
+    private SectionVariableValueTable() {
+        this("EMPTY", "section", "variable", "value");
+    }
 
     /**
      * Constructor
@@ -166,6 +179,10 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * Checks if the database table for {@link SectionVariableValueTable} exists, and creates it if it is missing
      */
     private void checkAndCreateTable() {
+        if (this.tableName.equals("EMPTY")) {
+            return;
+        }
+
         Optional<Table<?>> table = Datastore2.instance().findTable(this.tableName);
 
         if (!table.isPresent()) {
@@ -184,7 +201,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             try {
                 TableVersionRecord record = new TableVersionRecord();
                 record.values(this.tableName, SectionVariableValueRecord.serialVersionUID);
-                record.store();
+                record.merge();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
