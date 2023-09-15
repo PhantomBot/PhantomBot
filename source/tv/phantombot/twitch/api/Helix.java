@@ -2845,7 +2845,7 @@ public class Helix {
         first = Math.max(1, Math.min(100, first));
 
         if (ViewerCache.instance().broadcaster() == null) {
-            return Mono.just(null);
+            return Mono.empty();
         }
 
         String endpoint = "/channels/followers?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
@@ -2872,7 +2872,7 @@ public class Helix {
         first = Math.max(1, Math.min(1000, first));
 
         if (ViewerCache.instance().broadcaster() == null) {
-            return Mono.just(null);
+            return Mono.empty();
         }
 
         String endpoint = "/chat/chatters?" + this.qspValid("broadcaster_id", ViewerCache.instance().broadcaster().id())
