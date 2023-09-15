@@ -170,6 +170,14 @@ public final class RollbarProvider implements AutoCloseable {
                                 return true;
                             }
 
+                            if (custom != null) {
+                                if (custom.containsKey("_____report")) {
+                                    if (custom.get("_____report") instanceof Boolean b && b == false) {
+                                        return true;
+                                    }
+                                }
+                            }
+
                             if (error != null) {
                                 /**
                                  * Nuisance exception when Netty closes a connection after an HTTP request

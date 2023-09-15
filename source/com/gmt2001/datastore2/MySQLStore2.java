@@ -16,7 +16,10 @@
  */
 package com.gmt2001.datastore2;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Map;
 
 import org.jooq.DataType;
 import org.jooq.SQLDialect;
@@ -82,10 +85,16 @@ public final class MySQLStore2 extends Datastore2 {
          * @botpropertyrestart mysqlssl
          */
         String connectionString;
+        String dbname = CaselessProperties.instance().getProperty("mysqlname", "");
+
+        if (dbname.isBlank()) {
+            dbname = "phantombot";
+        }
+
         if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-            connectionString = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
+            connectionString = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + dbname + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
         } else {
-            connectionString = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
+            connectionString = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + dbname + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
         }
 
         MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
@@ -104,6 +113,14 @@ public final class MySQLStore2 extends Datastore2 {
             dataSource.setAllowPublicKeyRetrieval(CaselessProperties.instance().getPropertyAsBoolean("mysqlallowpublickeyretrieval", false));
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
+        }
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                statement.execute("CREATE DATABASE IF NOT EXISTS `" + dbname.replaceAll("`", "``") + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", Boolean.FALSE));
         }
 
         this.init(dataSource, SQLDialect.MYSQL);
