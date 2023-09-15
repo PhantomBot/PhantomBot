@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.FollowersCache;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.pubsub.following.PubSubFollowEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -66,14 +67,7 @@ public class PubSubFollowingProcessor extends AbstractPubSubProcessor {
     @Override
     protected void onEvent(JSONObject body) {
         if (this.isCaster) {
-            DataStore datastore = PhantomBot.instance().getDataStore();
-            if (!datastore.exists("followed", body.getString("username"))) {
-                EventBus.instance().postAsync(new TwitchFollowEvent(body.getString("username"), ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
-                datastore.set("followed", body.getString("username"), "true");
-            }
-            if (!datastore.exists("followedDate", body.getString("username"))) {
-                datastore.set("followedDate", body.getString("username"), ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-            }
+            FollowersCache.instance().addFollow(body.getString("username"), ZonedDateTime.now());
         }
         EventBus.instance().postAsync(new PubSubFollowEvent(body.getString("username"), body.getString("user_id"), body.getString("display_name")));
     }
