@@ -34,7 +34,7 @@ $(run = function () {
                 let data = JSON.parse(results[i].value);
 
                 tableData.push([
-                    i,
+                    results[i].key,
                     new Date(parseInt(data[2])).toLocaleDateString(), // Date.
                     data[0], // Username.
                     data[3], // Game.
