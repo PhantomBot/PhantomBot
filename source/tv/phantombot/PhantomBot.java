@@ -261,6 +261,9 @@ public final class PhantomBot implements Listener {
      */
     @SuppressWarnings({"removal"})
     public PhantomBot() {
+        java.util.logging.Logger l = java.util.logging.Logger.getLogger("io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider");
+        l.setLevel(java.util.logging.Level.OFF);
+
         /**
          * @botproperty reactordebug - If `true`, internal debugging for Reactor HTTP and WS processing is sent to the console. Default `false`
          * @botpropertycatsort reactordebug 300 900 Debug
