@@ -120,7 +120,7 @@ public final class ModuleVersionTable extends TableImpl<ModuleVersionRecord> {
             try {
                 TableVersionRecord record = new TableVersionRecord();
                 record.values(ModuleVersionTable.instance(), ModuleVersionRecord.serialVersionUID);
-                record.store();
+                record.merge();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }

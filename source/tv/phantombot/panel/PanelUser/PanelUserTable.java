@@ -154,7 +154,7 @@ public final class PanelUserTable extends TableImpl<PanelUser> {
             try {
                 TableVersionRecord record = new TableVersionRecord();
                 record.values(PanelUserTable.instance(), PanelUser.serialVersionUID);
-                record.store();
+                record.merge();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
