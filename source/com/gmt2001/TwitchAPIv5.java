@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.cache.FollowersCache;
 import tv.phantombot.cache.UsernameCache;
 import tv.phantombot.twitch.api.Helix;
 
@@ -116,19 +117,17 @@ public class TwitchAPIv5 {
         user_id.add(this.getIDFromChannel(channel));
         Mono<JSONObject> channelDataMono = Helix.instance().getChannelInformationAsync(this.getIDFromChannel(channel));
         Mono<JSONObject> userDataMono = Helix.instance().getUsersAsync(user_id, null);
-        Mono<JSONObject> followMono = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), 1, null);
 
-        Mono.when(Arrays.asList(channelDataMono, userDataMono, followMono)).materialize().block();
+        Mono.when(Arrays.asList(channelDataMono, userDataMono)).materialize().block();
 
         JSONObject channelData = channelDataMono.block();
         JSONObject userData = userDataMono.block();
-        JSONObject followData = followMono.block();
 
         JSONObject result = new JSONObject();
 
         this.setupResult(result, userData, null);
-        if (channelData == null || userData == null || followData == null || channelData.has("error") || userData.has("error")
-                || followData.has("error") || channelData.isNull("data") || userData.isNull("data")
+        if (channelData == null || userData == null || channelData.has("error") || userData.has("error")
+                || channelData.isNull("data") || userData.isNull("data")
                 || channelData.getJSONArray("data").length() == 0 || userData.getJSONArray("data").length() == 0) {
             result.put("_success", false);
             return result;
@@ -141,7 +140,7 @@ public class TwitchAPIv5 {
         result.put("broadcaster_language", channelData.optString("broadcaster_language"));
         result.put("created_at", userData.optString("created_at"));
         result.put("display_name", channelData.optString("broadcaster_name"));
-        result.put("followers", followData.optInt("total", 0));
+        result.put("followers", FollowersCache.instance().total());
         result.put("game", updates != null && updates.length > 1 && updates[1] != null && !updates[1].isBlank() ? updates[1] : channelData.optString("game_name"));
         result.put("language", channelData.optString("broadcaster_language"));
         result.put("logo", userData.optString("profile_image_url"));
@@ -329,7 +328,7 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetChannelFollows(String channel, int limit, String from) throws JSONException {
-        JSONObject followData = Helix.instance().getUsersFollowsAsync(null, this.getIDFromChannel(channel), limit, from).block();
+        JSONObject followData = Helix.instance().getChannelFollowersAsync(null, limit, from).block();
 
         if (followData == null || followData.has("error") || followData.isNull("data")) {
             JSONObject result = new JSONObject();
@@ -715,7 +714,7 @@ public class TwitchAPIv5 {
      * @return
      */
     public JSONObject GetUserFollowsChannel(String user, String channel) throws JSONException {
-        JSONObject followData = Helix.instance().getUsersFollowsAsync(this.getIDFromChannel(user), this.getIDFromChannel(channel), 1, null).block();
+        JSONObject followData = Helix.instance().getChannelFollowersAsync(this.getIDFromChannel(user), 1, null).block();
 
         JSONObject result = new JSONObject();
         this.setupResult(result, followData, null);
