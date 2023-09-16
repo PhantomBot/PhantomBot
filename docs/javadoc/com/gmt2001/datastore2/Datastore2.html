@@ -155,7 +155,7 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#dispose()" class="member-name-link">dispose</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Disposes of resources as neccessary</div>
+<div class="block">Disposes of resources as necessary</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#doMaintenance()" class="member-name-link">doMaintenance</a>()</code></div>
@@ -348,7 +348,7 @@ loadScripts(document, 'script');</script>
  <li>May optionally start a timer in the constructor to periodically call <a href="#doMaintenance()"><code>doMaintenance()</code></a></li>
  <li>Must be in a JAR file located in the <code>./datastores</code> folder</li>
  <li>The name of the JAR file must match the output of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#getSimpleName()" title="class or interface in java.lang" class="external-link"><code>Class.getSimpleName()</code></a> (Classname) of the type, including case</li>
- <li>The <code>.jar</code> file exension on the JAR file must be lower-case</li>
+ <li>The <code>.jar</code> file extension on the JAR file must be lower-case</li>
  <li>The value of the <code>datastore</code> property in botlogin.txt must match the output of <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Class.html#getName()" title="class or interface in java.lang" class="external-link"><code>Class.getName()</code></a> (Fully qualified classname) of the type, including case</li>
  </ul></div>
 </section>
@@ -430,7 +430,7 @@ loadScripts(document, 'script');</script>
  <p>
  Consider using try-with-resources instead to safely auto-close the connection
  <p>
- Transactions are <b>not</b> comitted automatically when closing a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> that has auto-commit disabled</div>
+ Transactions are <b>not</b> committed automatically when closing a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> that has auto-commit disabled</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>a new <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link"><code>Connection</code></a> object</dd>
@@ -619,7 +619,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="dispose()">
 <h3>dispose</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">dispose</span>()</div>
-<div class="block">Disposes of resources as neccessary
+<div class="block">Disposes of resources as necessary
  <p>
  Once this is called, the connection pool is invalid and the program must be restarted to futher access the database</div>
 </section>
