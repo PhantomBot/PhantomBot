@@ -553,8 +553,7 @@ public class Helix {
      * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
      * cursor value specified here is from the pagination response field of a prior query.
      * @return
-     * @throws JSONException
-     * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException 410 Gone: This API is not available.
      * @deprecated This endpoint is deprecated by Twitch in favor of {@link #getChannelFollowers(String, int, String)}, which requires an OAuth scope
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
@@ -574,34 +573,13 @@ public class Helix {
      * @param after Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
      * cursor value specified here is from the pagination response field of a prior query.
      * @return
-     * @throws JSONException
-     * @throws IllegalArgumentException
+     * @throws UnsupportedOperationException 410 Gone: This API is not available.
      * @deprecated This endpoint is deprecated by Twitch in favor of {@link #getChannelFollowersAsync(String, int, String)}, which requires an OAuth scope
      */
     @Deprecated(since = "3.8.0.0", forRemoval = true)
     public Mono<JSONObject> getUsersFollowsAsync(@Nullable String from_id, @Nullable String to_id, int first, @Nullable String after)
             throws JSONException, IllegalArgumentException {
-        if ((from_id == null || from_id.isBlank()) && (to_id == null || to_id.isBlank())) {
-            throw new IllegalArgumentException("from_id or to_id");
-        }
-
-        if (first <= 0) {
-            first = 20;
-        }
-
-        first = Math.max(1, Math.min(100, first));
-
-        boolean both = false;
-        if (from_id != null && !from_id.isBlank() && to_id != null && !to_id.isBlank()) {
-            both = true;
-        }
-
-        String endpoint = "/users/follows?" + this.qspValid("from_id", from_id) + (both ? "&" : "")
-                + this.qspValid("to_id", to_id) + "&first=" + first + this.qspValid("&after", after);
-
-        return this.handleQueryAsync(endpoint, () -> {
-            return this.handleRequest(HttpMethod.GET, endpoint);
-        });
+        throw new UnsupportedOperationException("410 Gone: This API is not available.");
     }
 
     /**
