@@ -386,16 +386,12 @@
      */
     function getFollowDate(sender, username, channelName) {
         username = $.user.sanitize(username);
-        channelName = $.user.sanitize(channelName);
 
-        let user = $.twitch.GetUserFollowsChannel(username, channelName);
-
-        if (user.getInt('_http') === 404) {
+        if (!$.followers.follows(username)) {
             return $.lang.get('followhandler.follow.age.datefmt.404');
         }
 
-        let date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        return date.format(Packages.java.time.format.DateTimeFormatter.ofPattern($.lang.get('followhandler.follow.age.datefmt')));
+        return $.followers.followedDate(username).format(Packages.java.time.format.DateTimeFormatter.ofPattern($.lang.get('followhandler.follow.age.datefmt')));
     }
 
     /**
@@ -408,14 +404,12 @@
         username = $.user.sanitize(username);
         channelName = $.user.sanitize(channelName);
 
-        let user = $.twitch.GetUserFollowsChannel(username, channelName);
-
-        if (user.getInt('_http') === 404) {
+        if (!$.followers.follows(username)) {
             $.say($.lang.get('followhandler.follow.age.err.404', $.userPrefix(sender, true), username, channelName));
             return;
         }
 
-        let date = Packages.java.time.ZonedDateTime.parse(user.getString('created_at'), Packages.java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        let date = $.followers.followedDate(username);
         let dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
         let days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
 
