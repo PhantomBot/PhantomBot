@@ -230,6 +230,9 @@ public abstract class Datastore2 {
                 | InvocationTargetException | ClassNotFoundException ex) {
                 com.gmt2001.Console.err.println("Unable to load the Datastore2 driver " + dataStoreType);
                 com.gmt2001.Console.err.printStackTrace(ex, Collections.singletonMap("dataStoreType", dataStoreType));
+                if (ex.getCause() != null) {
+                    com.gmt2001.Console.err.println("Caused by: " + ex.getCause().getClass().getName() + ": " + ex.getCause().getMessage());
+                }
         }
 
         return null;
