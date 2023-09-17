@@ -168,10 +168,24 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
     }
 
     /**
+     * Renames the table
+     *
+     * @param newName the new table name
+     * @return
+     */
+    public Table<SectionVariableValueRecord> rename(String newName) {
+        Datastore2.instance().dslContext().alterTable(this).renameTo(newName.toLowerCase()).execute();
+        Datastore2.instance().invalidateTableCache();
+        TABLES.remove(this.tableName);
+        return instance(newName);
+    }
+
+    /**
      * Drops the table
      */
     public void drop() {
         Datastore2.instance().dslContext().dropTableIfExists(this).execute();
+        Datastore2.instance().invalidateTableCache();
         TABLES.remove(this.tableName);
     }
 
