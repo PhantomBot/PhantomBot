@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
-import org.jooq.Nullability;
 import org.jooq.Record1;
 import org.jooq.SelectConnectByStep;
 import org.jooq.SelectForUpdateStep;
@@ -97,10 +96,6 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      */
     public Optional<Table<?>> findTable(String fName) {
         return Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + fName)).findFirst();
-    }
-
-    private void invalidateTableCache() {
-        Datastore2.instance().invalidateTableCache();
     }
 
     /**
@@ -1218,13 +1213,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param fName a table name, without the {@code phantombot_} prefix
      */
     public void AddFile(String fName) {
-        dsl().createTableIfNotExists("phantombot_" + fName)
-        .column("section", SQLDataType.VARCHAR(255).nullability(Nullability.NULL))
-        .column("variable", SQLDataType.VARCHAR(255).nullability(Nullability.NOT_NULL))
-        .column("value", Datastore2.instance().longTextDataType())
-        .unique("section", "variable").execute();
-
-        this.invalidateTableCache();
+        SectionVariableValueTable.instance(fName);
     }
 
     /**
@@ -1233,13 +1222,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param fName a table name, without the {@code phantombot_} prefix
      */
     public void RemoveFile(String fName) {
-        Optional<Table<?>> otbl = findTable(fName);
-
-        if (otbl.isPresent()) {
-            dsl().dropTable(otbl.get()).execute();
-        }
-
-        this.invalidateTableCache();
+        SectionVariableValueTable.instance(fName).drop();
     }
 
     /**
@@ -1249,13 +1232,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param fNameDest a new table name that does not yet exist, without the {@code phantombot_} prefix
      */
     public void RenameFile(String fNameSource, String fNameDest) {
-        Optional<Table<?>> otbl = findTable(fNameSource);
-
-         if (otbl.isPresent()) {
-            dsl().alterTable(otbl.get()).renameTo("phantombot_" + fNameDest).execute();
-         }
-
-        this.invalidateTableCache();
+        SectionVariableValueTable.instance(fNameSource).rename(fNameDest);
     }
 
     /**
@@ -1265,7 +1242,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return {@code true} if the table exists
      */
     public boolean FileExists(String fName) {
-        return findTable(fName).isPresent();
+        return SectionVariableValueTable.instance(fName, false) != null;
     }
 
     /**
