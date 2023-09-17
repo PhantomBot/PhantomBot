@@ -282,10 +282,26 @@ loadScripts(document, 'script');</script>
  int&nbsp;first,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets a list of users that follow the broadcaster.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getChannelFollowers(java.lang.String,java.lang.String,int,java.lang.String)" class="member-name-link">getChannelFollowers</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets a list of users that follow the specified broadcaster.</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)" class="member-name-link">getChannelFollowersAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets a list of users that follow the broadcaster.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getChannelFollowersAsync(java.lang.String,int,java.lang.String)" class="member-name-link">getChannelFollowersAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;user_id,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getChannelFollowersAsync(java.lang.String,java.lang.String,int,java.lang.String)" class="member-name-link">getChannelFollowersAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;user_id,
  int&nbsp;first,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -755,6 +771,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that returns the instance of Helix.</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 </dl>
 </section>
 </li>
@@ -771,6 +788,7 @@ loadScripts(document, 'script');</script>
 <div class="block">The maximum value of <a href="#remainingRateLimit()"><code>remainingRateLimit()</code></a></div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>The max rate limit</dd>
 </dl>
 </section>
 </li>
@@ -781,6 +799,7 @@ loadScripts(document, 'script');</script>
 <div class="block">The remaining rate limit for Helix</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>The remaining rate limit</dd>
 </dl>
 </section>
 </li>
@@ -795,6 +814,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - ID of the channel to be retrieved.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -812,6 +832,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - ID of the channel to be retrieved.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -842,6 +863,7 @@ loadScripts(document, 'script');</script>
 <dd><code>delay</code> - Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
  400 error.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -872,6 +894,7 @@ loadScripts(document, 'script');</script>
 <dd><code>delay</code> - Stream delay in seconds. Stream delay is a Twitch Partner feature; trying to set this value for other account types will return a
  400 error.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -895,6 +918,7 @@ loadScripts(document, 'script');</script>
 <dd><code>after</code> - Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
  cursor value specified here is from the pagination response field of a prior query.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -918,6 +942,7 @@ loadScripts(document, 'script');</script>
 <dd><code>after</code> - Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
  cursor value specified here is from the pagination response field of a prior query.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -952,6 +977,7 @@ loadScripts(document, 'script');</script>
 <dd><code>after</code> - Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
  cursor value specified here is from the pagination response field of a prior query.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a></code> - 410 Gone: This API is not available.</dd>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
@@ -987,6 +1013,7 @@ loadScripts(document, 'script');</script>
 <dd><code>after</code> - Cursor for forward pagination: tells the server where to start fetching the next set of results, in a multi-page response. The
  cursor value specified here is from the pagination response field of a prior query.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/UnsupportedOperationException.html" title="class or interface in java.lang" class="external-link">UnsupportedOperationException</a></code> - 410 Gone: This API is not available.</dd>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
@@ -1015,6 +1042,7 @@ loadScripts(document, 'script');</script>
  applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
  here is from the pagination response field of a prior query.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1042,6 +1070,7 @@ loadScripts(document, 'script');</script>
  applies only to queries without user_id. If a user_id is specified, it supersedes any cursor/offset combinations. The cursor value specified
  here is from the pagination response field of a prior query.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1081,6 +1110,7 @@ loadScripts(document, 'script');</script>
 <dd><code>language</code> - Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
  supported stream language or "other".</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1120,6 +1150,7 @@ loadScripts(document, 'script');</script>
 <dd><code>language</code> - Stream language. You can specify up to 100 languages. A language value must be either the ISO 639-1 two-letter code for a
  supported stream language or "other".</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1142,6 +1173,7 @@ loadScripts(document, 'script');</script>
 <dd><code>id</code> - User ID. Multiple user IDs can be specified. Limit: 100.</dd>
 <dd><code>login</code> - User login name. Multiple login names can be specified. Limit: 100.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 </dl>
@@ -1163,6 +1195,7 @@ loadScripts(document, 'script');</script>
 <dd><code>id</code> - User ID. Multiple user IDs can be specified. Limit: 100.</dd>
 <dd><code>login</code> - User login name. Multiple login names can be specified. Limit: 100.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 </dl>
@@ -1181,6 +1214,7 @@ loadScripts(document, 'script');</script>
 <dd><code>broadcaster_id</code> - ID of the channel requesting a commercial.</dd>
 <dd><code>length</code> - Desired length of the commercial in seconds. Valid options are 30, 60, 90, 120, 150, 180.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1200,6 +1234,7 @@ loadScripts(document, 'script');</script>
 <dd><code>broadcaster_id</code> - ID of the channel requesting a commercial.</dd>
 <dd><code>length</code> - Desired length of the commercial in seconds. Valid options are 30, 60, 90, 120, 150, 180.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1218,6 +1253,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - The broadcaster whose emotes are being requested.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1236,6 +1272,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - The broadcaster whose emotes are being requested.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1250,6 +1287,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets all global emotes. Global emotes are Twitch-specific emoticons that every user can use in Twitch chat.</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 </dl>
@@ -1263,6 +1301,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets all global emotes. Global emotes are Twitch-specific emoticons that every user can use in Twitch chat.</div>
 <dl class="notes">
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 </dl>
@@ -1280,6 +1319,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - ID for the broadcaster who might own specialized Cheermotes.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 </dl>
@@ -1297,6 +1337,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - ID for the broadcaster who might own specialized Cheermotes.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 </dl>
@@ -1345,6 +1386,7 @@ loadScripts(document, 'script');</script>
 <dd><code>sort</code> - Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".</dd>
 <dd><code>type</code> - Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1394,6 +1436,7 @@ loadScripts(document, 'script');</script>
 <dd><code>sort</code> - Sort order of the videos. Valid values: "time", "trending", "views". Default: "time".</dd>
 <dd><code>type</code> - Type of video. Valid values: "all", "upload", "archive", "highlight". Default: "all".</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1411,6 +1454,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - User ID for a Twitch user.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1428,6 +1472,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - User ID for a Twitch user.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1449,6 +1494,7 @@ loadScripts(document, 'script');</script>
 <dd><code>name</code> - Team name.</dd>
 <dd><code>id</code> - Team ID.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1470,6 +1516,7 @@ loadScripts(document, 'script');</script>
 <dd><code>name</code> - Team name.</dd>
 <dd><code>id</code> - Team ID.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1513,6 +1560,7 @@ loadScripts(document, 'script');</script>
 <dd><code>ended_at</code> - Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
  started_at also must be specified; otherwise, the time period is ignored.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1556,6 +1604,7 @@ loadScripts(document, 'script');</script>
 <dd><code>ended_at</code> - Ending date/time for returned clips. (Note that the seconds value is ignored.) If this is specified, started_at also must be
  specified; otherwise, the time period is ignored.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1599,6 +1648,7 @@ loadScripts(document, 'script');</script>
 <dd><code>ended_at</code> - Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
  started_at also must be specified; otherwise, the time period is ignored.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1622,6 +1672,7 @@ loadScripts(document, 'script');</script>
 <dd><code>color</code> - The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
  announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1645,6 +1696,7 @@ loadScripts(document, 'script');</script>
 <dd><code>color</code> - The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
  announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1668,6 +1720,7 @@ loadScripts(document, 'script');</script>
 <dd><code>color</code> - The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
  announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1691,6 +1744,7 @@ loadScripts(document, 'script');</script>
 <dd><code>color</code> - The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
  announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1719,6 +1773,7 @@ loadScripts(document, 'script');</script>
 <dd><code>duration</code> - To ban a user indefinitely, specify this value as <code>0</code>. To put a user in a timeout, specify the timeout period, in
  seconds. The minimum timeout is 1 second and the maximum is 1,209,600 seconds (2 weeks).</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1747,6 +1802,7 @@ loadScripts(document, 'script');</script>
 <dd><code>duration</code> - To ban a user indefinitely, specify this value as <code>0</code>. To put a user in a timeout, specify the timeout period, in
  seconds. The minimum timeout is 1 second and the maximum is 1,209,600 seconds (2 weeks).</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1766,6 +1822,7 @@ loadScripts(document, 'script');</script>
 <dd><code>broadcaster_id</code> - The ID of the broadcaster whose chat room the user is banned from chatting in.</dd>
 <dd><code>user_id</code> - The ID of the user to remove the ban or timeout from.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1785,6 +1842,7 @@ loadScripts(document, 'script');</script>
 <dd><code>broadcaster_id</code> - The ID of the broadcaster whose chat room the user is banned from chatting in.</dd>
 <dd><code>user_id</code> - The ID of the user to remove the ban or timeout from.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1809,6 +1867,7 @@ loadScripts(document, 'script');</script>
 <dd><code>message_id</code> - The ID of the message to remove. The id tag in the PRIVMSG contains the message's ID. If <code>null</code>, the request removes
  all messages in the broadcaster's chat room.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1833,6 +1892,7 @@ loadScripts(document, 'script');</script>
 <dd><code>message_id</code> - The ID of the message to remove. The id tag in the PRIVMSG contains the message's ID. If <code>null</code>, the request removes
  all messages in the broadcaster's chat room.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1856,6 +1916,7 @@ loadScripts(document, 'script');</script>
 <dd><code>from_broadcaster_id</code> - The ID of the broadcaster that's sending the raiding party.</dd>
 <dd><code>to_broadcaster_id</code> - The ID of the broadcaster to raid.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1879,6 +1940,7 @@ loadScripts(document, 'script');</script>
 <dd><code>from_broadcaster_id</code> - The ID of the broadcaster that's sending the raiding party.</dd>
 <dd><code>to_broadcaster_id</code> - The ID of the broadcaster to raid.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1900,6 +1962,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - The ID of the broadcaster that sent the raiding party.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1921,6 +1984,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>broadcaster_id</code> - The ID of the broadcaster that sent the raiding party.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -1976,6 +2040,7 @@ loadScripts(document, 'script');</script>
 <dd><code>unique_chat_mode</code> - A Boolean value that determines whether the broadcaster requires users to post only unique messages in the chat room.
  Formerly known as r9k beta.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2031,6 +2096,7 @@ loadScripts(document, 'script');</script>
 <dd><code>unique_chat_mode</code> - A Boolean value that determines whether the broadcaster requires users to post only unique messages in the chat room.
  Formerly known as r9k beta.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2063,6 +2129,7 @@ loadScripts(document, 'script');</script>
 <dd><code>to_user_id</code> - The ID of the user to receive the whisper.</dd>
 <dd><code>message</code> - The whisper message to send. The message must not be empty.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2095,6 +2162,7 @@ loadScripts(document, 'script');</script>
 <dd><code>to_user_id</code> - The ID of the user to receive the whisper.</dd>
 <dd><code>message</code> - The whisper message to send. The message must not be empty.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2117,6 +2185,7 @@ loadScripts(document, 'script');</script>
 <dd><code>only_manageable_rewards</code> - When set to <code>true</code>, only returns custom rewards that the calling Client ID can manage. Default:
  <code>false</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2139,6 +2208,7 @@ loadScripts(document, 'script');</script>
 <dd><code>only_manageable_rewards</code> - When set to <code>true</code>, only returns custom rewards that the calling Client ID can manage. Default:
  <code>false</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2203,6 +2273,7 @@ loadScripts(document, 'script');</script>
  immediately when a reward is redeemed. If <code>false</code>, status is set to <code>UNFULFILLED</code> and follows the normal request queue process. The
  default is <code>false</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2267,6 +2338,7 @@ loadScripts(document, 'script');</script>
  immediately when a reward is redeemed. If <code>false</code>, status is set to <code>UNFULFILLED</code> and follows the normal request queue process. The
  default is <code>false</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2338,6 +2410,7 @@ loadScripts(document, 'script');</script>
  immediately when a reward is redeemed. If <code>false</code>, status is set to <code>UNFULFILLED</code> and follows the normal request queue process. The
  default is <code>false</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2409,6 +2482,7 @@ loadScripts(document, 'script');</script>
  immediately when a reward is redeemed. If <code>false</code>, status is set to <code>UNFULFILLED</code> and follows the normal request queue process. The
  default is <code>false</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2427,6 +2501,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>id</code> - The ID of the custom reward to delete.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2445,6 +2520,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>id</code> - The ID of the custom reward to delete.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2470,6 +2546,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newStatus</code> - The status to set the redemption to. Setting the status to <code>CustomRewardRedemptionStatus.CANCELLED</code> refunds the user\'s
  channel points.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2495,6 +2572,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newStatus</code> - The status to set the redemption to. Setting the status to <code>CustomRewardRedemptionStatus.CANCELLED</code> refunds the user\'s
  channel points.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2519,6 +2597,7 @@ loadScripts(document, 'script');</script>
 <dd><code>isActive</code> - A Boolean value that determines whether to activate Shield Mode. Set to <code>true</code> to activate Shield Mode; otherwise,
  <code>false</code> to deactivate Shield Mode.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2543,6 +2622,7 @@ loadScripts(document, 'script');</script>
 <dd><code>isActive</code> - A Boolean value that determines whether to activate Shield Mode. Set to <code>true</code> to activate Shield Mode; otherwise,
  <code>false</code> to deactivate Shield Mode.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2564,6 +2644,7 @@ loadScripts(document, 'script');</script>
 <dd><code>from_broadcaster_id</code> - The ID of the broadcaster that's sending the Shoutout.</dd>
 <dd><code>to_broadcaster_id</code> - The ID of the broadcaster that's receiving the Shoutout.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2585,6 +2666,7 @@ loadScripts(document, 'script');</script>
 <dd><code>from_broadcaster_id</code> - The ID of the broadcaster that's sending the Shoutout.</dd>
 <dd><code>to_broadcaster_id</code> - The ID of the broadcaster that's receiving the Shoutout.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2615,6 +2697,7 @@ loadScripts(document, 'script');</script>
 <dd><code>user_id</code> - Filter subscriptions by user ID. The response contains subscriptions where this ID matches a user ID that you specified in the Condition when you created the subscription.</dd>
 <dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2632,6 +2715,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>jsonString</code> - A JSON string describing the parameters of the new subscription</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2649,6 +2733,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>id</code> - The ID of the subscription to delete.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2670,6 +2755,7 @@ loadScripts(document, 'script');</script>
 <dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 25.</dd>
 <dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2691,6 +2777,7 @@ loadScripts(document, 'script');</script>
 <dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 25.</dd>
 <dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2712,6 +2799,7 @@ loadScripts(document, 'script');</script>
 <dd><code>seconds</code> - The length of time (in seconds) that the prediction will run for. The minimum is 30 seconds and the maximum is 1800 seconds (30 minutes).</dd>
 <dd><code>choices</code> - The list of possible outcomes that the viewers may choose from. The list must contain a minimum of 2 choices and up to a maximum of 10 choices. Echo choice is limited to a maximum of 25 characters.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2733,6 +2821,7 @@ loadScripts(document, 'script');</script>
 <dd><code>duration</code> - The length of time that the prediction will run for. The minimum is 30 seconds and the maximum is 30 minutes.</dd>
 <dd><code>choices</code> - The list of possible outcomes that the viewers may choose from. The list must contain a minimum of 2 choices and up to a maximum of 10 choices. Echo choice is limited to a maximum of 25 characters.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2754,6 +2843,7 @@ loadScripts(document, 'script');</script>
 <dd><code>duration</code> - The length of time that the prediction will run for. The minimum is 30 seconds and the maximum is 30 minutes.</dd>
 <dd><code>choices</code> - The list of possible outcomes that the viewers may choose from. The list must contain a minimum of 2 choices and up to a maximum of 10 choices. Each choice is limited to a maximum of 25 characters.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2781,6 +2871,7 @@ loadScripts(document, 'script');</script>
 <dd><code>status</code> - The status to set the prediction to.</dd>
 <dd><code>winningOutcomeId</code> - The ID of the winning outcome. You must set this parameter if you set status to <code>PredictionStatus.RESOLVED</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2808,6 +2899,7 @@ loadScripts(document, 'script');</script>
 <dd><code>status</code> - The status to set the prediction to.</dd>
 <dd><code>winningOutcomeId</code> - The ID of the winning outcome. You must set this parameter if you set status to <code>PredictionStatus.RESOLVED</code>.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2824,8 +2916,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
                                throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
 <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
-<div class="block">Gets a list of users that follow the specified broadcaster.
-
+<div class="block">Gets a list of users that follow the broadcaster.
+ <p>
  You can also use this endpoint to see whether a specific user follows the broadcaster.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -2833,6 +2925,7 @@ loadScripts(document, 'script');</script>
 <dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.</dd>
 <dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2849,8 +2942,8 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
                                           throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
 <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
-<div class="block">Gets a list of users that follow the specified broadcaster.
-
+<div class="block">Gets a list of users that follow the broadcaster.
+ <p>
  You can also use this endpoint to see whether a specific user follows the broadcaster.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -2858,6 +2951,63 @@ loadScripts(document, 'script');</script>
 <dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.</dd>
 <dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getChannelFollowers(java.lang.String,java.lang.String,int,java.lang.String)">
+<h3>getChannelFollowers</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">getChannelFollowers</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
+                               throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Gets a list of users that follow the specified broadcaster.
+ <p>
+ You can also use this endpoint to see whether a specific user follows the broadcaster.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>broadcaster_id</code> - The broadcaster's ID</dd>
+<dd><code>user_id</code> - A user's ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this user if they follow the broadcaster. If not specified, the response contains all users that follow the broadcaster.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getChannelFollowersAsync(java.lang.String,java.lang.String,int,java.lang.String)">
+<h3>getChannelFollowersAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">getChannelFollowersAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
+                                          throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Gets a list of users that follow the specified broadcaster.
+ <p>
+ You can also use this endpoint to see whether a specific user follows the broadcaster.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>broadcaster_id</code> - The broadcaster's ID</dd>
+<dd><code>user_id</code> - A user's ID. Use this parameter to see whether the user follows this broadcaster. If specified, the response contains this user if they follow the broadcaster. If not specified, the response contains all users that follow the broadcaster.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 100.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
@@ -2880,6 +3030,7 @@ loadScripts(document, 'script');</script>
 <dd><code>first</code> - The maximum number of items to return per page in the response. Minimum: 1. Maximum: 1,000</dd>
 <dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
