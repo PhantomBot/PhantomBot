@@ -52,12 +52,12 @@
 
     function addToQueue(sender) {
         var rankStr = $.resolveRank(sender),
-                message = $.getIniDbString('greeting', sender, undefined),
+                message = $.optIniDbString('greeting', sender),
                 lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
                 now = $.systemTime();
         if (lastUserGreeting + greetingCooldown < now) {
-            if (message !== undefined) {
-                greetingQueue.add(message.replace('(name)', rankStr));
+            if (message.isPresent()) {
+                greetingQueue.add(message.get().replace('(name)', rankStr));
                 $.inidb.set('greetingCoolDown', sender, now);
             }
         }
