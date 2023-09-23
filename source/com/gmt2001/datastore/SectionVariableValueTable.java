@@ -82,7 +82,11 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * @return the table instance; {@code null} if the table does not exist and {@code create} was {@code false}
      */
     public static SectionVariableValueTable instance(String tableName, boolean create) {
-        return TABLES.computeIfAbsent(tableName.toLowerCase(), lTableName -> {
+        tableName = tableName.toLowerCase();
+        if (!tableName.startsWith("phantombot_")) {
+            tableName = "phantombot_" + tableName;
+        }
+        return TABLES.computeIfAbsent(tableName, lTableName -> {
             Optional<Table<?>> cTable = Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
 
             if (cTable.isPresent()) {
@@ -184,7 +188,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * Drops the table
      */
     public void drop() {
-        Datastore2.instance().dslContext().dropTableIfExists(this).execute();
+        com.gmt2001.Console.debug.println("DROP " + this.tableName);
         Datastore2.instance().invalidateTableCache();
         TABLES.remove(this.tableName);
     }
