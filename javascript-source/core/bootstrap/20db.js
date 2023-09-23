@@ -29,7 +29,7 @@
                 return this.backing !== undefined && this.backing !== null && this.backing.isPresent();
             },
             get: function() {
-                if (this.backing === undefined || this.backing === null) {
+                if (this.backing === undefined || this.backing === null || !this.backing.isPresent()) {
                     return null;
                 }
 
