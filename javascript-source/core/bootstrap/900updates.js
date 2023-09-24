@@ -329,6 +329,10 @@
             $.inidb.RemoveKey('greeting', '', 'defaultJoin');
             $.inidb.RemoveKey('greeting', '', 'cooldown');
         }
+
+        $.consoleLn('Fixing duplicate database entries...');
+        $.inidb.DropIndexes();
+        $.inidb.CreateIndexes();
     });
 
     addUpdate('3.6.4', 'installedv3.6.4', function() {

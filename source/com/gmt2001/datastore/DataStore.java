@@ -41,6 +41,8 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.H2Store2;
+import com.gmt2001.datastore2.SQLiteStore2;
 
 /**
  * Provides access to the database in a key-value store style
@@ -1651,6 +1653,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      */
     @Deprecated(since = "3.9.0.0", forRemoval = true)
     public void CreateIndexes() {
+        if (Datastore2.instance() instanceof SQLiteStore2) {
+            try (Connection c = Datastore2.instance().getConnection()) {
+                SqliteStore.CreateIndexes(c);
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } else if (Datastore2.instance() instanceof H2Store2) {
+            try (Connection c = Datastore2.instance().getConnection()) {
+                H2Store.CreateIndexes(c);
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
     }
 
     /**
@@ -1660,6 +1675,19 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      */
     @Deprecated(since = "3.9.0.0", forRemoval = true)
     public void DropIndexes() {
+        if (Datastore2.instance() instanceof SQLiteStore2) {
+            try (Connection c = Datastore2.instance().getConnection()) {
+                SqliteStore.DropIndexes(c);
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } else if (Datastore2.instance() instanceof H2Store2) {
+            try (Connection c = Datastore2.instance().getConnection()) {
+                H2Store.DropIndexes(c);
+            } catch (SQLException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
     }
 
     /**

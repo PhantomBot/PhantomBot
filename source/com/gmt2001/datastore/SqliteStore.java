@@ -1219,6 +1219,31 @@ public final class SqliteStore extends DataStore {
         }
     }
 
+    public static void CreateIndexes(Connection connection) {
+        String[] tableNames = DataStore.instance().GetFileList();
+        try (Statement statement = connection.createStatement()) {
+            for (String tableName : tableNames) {
+                try {
+                    statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_"
+                            + tableName + " (section, variable);");
+                } catch (SQLiteException ex) {
+                    if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT
+                            || ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE) {
+                        statement.execute("DELETE FROM phantombot_" + tableName
+                                + " WHERE rowid NOT IN (SELECT MIN(rowid) FROM phantombot_" + tableName
+                                + " GROUP BY section, variable);");
+                        statement.execute("CREATE UNIQUE INDEX IF NOT EXISTS " + tableName
+                                + "_idx on phantombot_" + tableName + " (section, variable);");
+                    } else {
+                        throw ex;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     @Override
     public void DropIndexes() {
         try {
@@ -1236,6 +1261,17 @@ public final class SqliteStore extends DataStore {
             }
         } finally {
             this.rwl.writeLock().unlock();
+        }
+    }
+
+    public static void DropIndexes(Connection connection) {
+        String[] tableNames = DataStore.instance().GetFileList();
+        try ( Statement statement = connection.createStatement()) {
+            for (String tableName : tableNames) {
+                statement.execute("DROP INDEX IF EXISTS " + tableName + "_idx");
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
