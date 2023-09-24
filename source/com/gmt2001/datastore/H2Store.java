@@ -40,6 +40,8 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.sqlite.SQLiteErrorCode;
+import org.sqlite.SQLiteException;
 
 import com.gmt2001.PathValidator;
 
@@ -1075,6 +1077,53 @@ public final class H2Store extends DataStore {
         }
     }
 
+    public static void CreateIndexes(Connection connection) {
+        String[] tableNames = DataStore.instance().GetFileList();
+        try (Statement statement = connection.createStatement()) {
+            for (String tableName : tableNames) {
+                try {
+                    statement.execute(
+                            "CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName
+                                    + " (`SECTION`, `VARIABLE`);");
+                } catch (SQLiteException ex) {
+                    if (ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT
+                            || ex.getResultCode() == SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE) {
+                        String lastSection = null;
+                        String lastVariable = null;
+                        String lastValue = null;
+                        boolean fixed = false;
+                        try (ResultSet rs = statement.executeQuery("SELECT `SECTION`, `VARIABLE`, `VALUE` FROM phantombot_" + tableName)) {
+                            while (rs.next()) {
+                                String thisSection = rs.getString(0);
+                                String thisVariable = rs.getString(1);
+                                String thisValue = rs.getString(2);
+
+                                if (thisVariable != null && thisSection == lastSection && thisVariable == lastVariable && !fixed) {
+                                    DataStore.instance().RemoveKey(tableName, lastSection, lastVariable);
+                                    DataStore.instance().SetString(tableName, lastSection, lastVariable, lastValue);
+                                    fixed = true;
+                                } else if (thisSection != lastSection || thisVariable != lastVariable) {
+                                    lastSection = thisSection;
+                                    lastVariable = thisVariable;
+                                    lastValue = thisValue;
+                                    fixed = false;
+                                }
+                            }
+                        }
+
+                        statement.execute(
+                            "CREATE UNIQUE INDEX IF NOT EXISTS " + tableName + "_idx on phantombot_" + tableName
+                                    + " (`SECTION`, `VARIABLE`);");
+                    } else {
+                        throw ex;
+                    }
+                }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
     @Override
     public void DropIndexes() {
         try ( Connection connection = GetConnection()) {
@@ -1084,6 +1133,17 @@ public final class H2Store extends DataStore {
                     tableName = validateFname(tableName);
                     statement.execute("DROP INDEX IF EXISTS " + tableName + "_idx");
                 }
+            }
+        } catch (SQLException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    public static void DropIndexes(Connection connection) {
+        String[] tableNames = DataStore.instance().GetFileList();
+        try (Statement statement = connection.createStatement()) {
+            for (String tableName : tableNames) {
+                statement.execute("DROP INDEX IF EXISTS " + tableName + "_idx");
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
