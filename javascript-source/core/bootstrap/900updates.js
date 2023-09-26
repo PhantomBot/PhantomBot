@@ -442,18 +442,6 @@
         $.inidb.RemoveKey('settings', '', 'traffleMessageInterval');
         $.inidb.RemoveKey('settings', '', 'traffleLimiter');
 
-        let calcBonus = function (subTMulti, regTMulti, user, tickets) {
-            let bonus = tickets;
-
-            if ($.isSub(user, null)) {
-                bonus = tickets * subTMulti;
-            } else if ($.isRegular(user)) {
-                bonus = tickets * regTMulti;
-            }
-
-            return Math.round(bonus - tickets);
-        };
-
         if ($.inidb.FileExists('ticketsList') && $.inidb.HasKey('traffleState', '', 'subTMulti') && $.inidb.HasKey('traffleState', '', 'regTMulti')) {
             let users = $.inidb.GetKeyList('ticketsList', ''),
                     first = $.getIniDbString('ticketsList', users[0]),
@@ -462,10 +450,9 @@
 
             if (!isNaN(first)) { // NaN = JSON present instead of a basic ticket count (old value) - do not update the list
                 for (let i = 0; i < users.length; i++) {
-                    let times = $.getIniDbNumber('ticketsList', users[i]),
-                            bonus = calcBonus(subTMulti, regTMulti, users[i], times);
+                    let times = $.getIniDbNumber('ticketsList', users[i]);
 
-                    $.inidb.set('ticketsList', users[i], JSON.stringify([times, bonus]));
+                    $.inidb.set('ticketsList', users[i], JSON.stringify([times, 0]));
                 }
             }
         }
@@ -747,13 +734,19 @@
             }
         }
 
+        $.consoleLn('Fixing integers in database...');
         for (let x in tables) {
+            $.consoleLn('> Table ' + tables[x]);
             let keys = $.inidb.GetKeyList(tables[x], '');
 
             for (let i = 0; i < keys.length; i++) {
                 val = toint($.getIniDbString(tables[x], keys[i]));
                 if (!isNaN(val)) {
                     $.inidb.SetInteger(tables[x], '', keys[i], val);
+                }
+
+                if (i % 100 === 0) {
+                    $.consoleLn('Still fixing table ' + tables[x] + ' ' + i + '/' + keys.length + '...');
                 }
             }
         }
