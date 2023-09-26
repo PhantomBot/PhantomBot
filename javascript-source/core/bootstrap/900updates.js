@@ -677,7 +677,7 @@
         let keys = $.inidb.GetKeyList('blackList', '');
 
         for (let i = 0; i < keys.length; i++) {
-            $.inidb.set('blackList', Packages.com.gmt2001.Digest.sha256($.javaString(keys[i])), $.getIniDbString('blackList', keys[i]));
+            $.inidb.set('blackList', Packages.com.gmt2001.security.Digest.sha256($.javaString(keys[i])), $.getIniDbString('blackList', keys[i]));
             $.inidb.del('blackList', keys[i]);
         }
     });
