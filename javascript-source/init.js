@@ -50,9 +50,15 @@
      * @param {string} where The location of the error
      * @param {java.lang.Exception_or_Error} ex The exception or error object to log
      */
-    function handleException(where, ex) {
+    function handleException(where, ex, noReport) {
         let loc = 0;
         let errmsg = null;
+        let data = new Packages.java.util.HashMap();
+
+        if (noReport === true) {
+            data.put("_____report", false);
+        }
+
         try {
             if (where === undefined || where === null || (typeof where) !== 'string') {
                 try {
@@ -90,23 +96,22 @@
                 consoleLn("Sending stack trace to error log...");
                 try {
                     loc = 6;
-                    Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, errmsg);
+                    Packages.com.gmt2001.Console.err.printStackTrace(ex.javaException, data, errmsg, false);
                 } catch (e) {
                     loc = 7;
-                    Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), errmsg);
+                    Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), data, errmsg, false);
                 }
             } else {
                 try {
                     loc = 8;
-                    Packages.com.gmt2001.Console.err.printStackTrace(ex, errmsg);
+                    Packages.com.gmt2001.Console.err.printStackTrace(ex, data, errmsg, false);
                 } catch (e) {
                     loc = 9;
-                    Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), errmsg);
+                    Packages.com.gmt2001.Console.err.printStackTrace(new Packages.java.lang.RuntimeException("Unable to printStackTrace"), data, errmsg, false);
                 }
             }
         } catch (oops) {
             let oopsmsg = "Location[handleException] Encountered an unrecoverable exception while trying to handle another exception";
-            let data = new Packages.java.util.HashMap();
             try {
                 data.put("loc", loc);
             } catch (e) {
@@ -635,8 +640,15 @@
              */
             $api.on($script, 'command', function (event) {
                 try {
-                    let sender = event.getSender(),
-                            command = event.getCommand(),
+                    let sender;
+                    try {
+                        sender = event.getSender();
+                    } catch (e) {
+                        $.consoleLn('Rejected an invalid CommandEvent');
+                        handleException('command', e, true);
+                        return;
+                    }
+                    let command = event.getCommand(),
                             args = event.getArgs(),
                             subCommand = $.getSubCommandFromArguments(command, args),
                             isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
