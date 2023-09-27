@@ -20,8 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.EvaluatorException;
@@ -30,6 +31,7 @@ import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.StackStyle;
 import org.mozilla.javascript.tools.debugger.Main;
+
 import tv.phantombot.PhantomBot;
 
 public class Script {
@@ -155,7 +157,7 @@ public class Script {
         try {
             context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
         } catch (EvaluatorException | IOException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex, Collections.singletonMap("file", this.getPath()));
+            com.gmt2001.Console.err.printStackTrace(ex, Map.of("file", this.getPath()));
         }
     }
 

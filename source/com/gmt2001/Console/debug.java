@@ -193,7 +193,13 @@ public final class debug {
 
             String stackInfo = findCallerInfo();
 
-            custom.putIfAbsent("__caller", stackInfo);
+            try {
+                custom.putIfAbsent("__caller", stackInfo);
+            } catch (UnsupportedOperationException ex) {
+                Map<String, Object> oldCustom = custom;
+                custom = new HashMap<>(oldCustom);
+                custom.putIfAbsent("__caller", stackInfo);
+            }
 
             RollbarProvider.instance().debug(e, custom, description);
 
