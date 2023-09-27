@@ -442,7 +442,9 @@ public class DiscordAPI extends DiscordUtil {
                     errorMsg = "PhantomBot can only be in 1 Discord server at a time, detected " + event.getGuilds().size();
                 }
                 com.gmt2001.Console.err.println(errorMsg + ". Disconnecting Discord...");
-                DiscordAPI.gateway.logout();
+                if (DiscordAPI.gateway != null) {
+                        DiscordAPI.gateway.logout();
+                    }
                 synchronized (DiscordAPI.instance().mutex) {
                     DiscordAPI.lastDisconnectReason = disconnectReason;
                     DiscordAPI.instance().connectionState = ConnectionState.CANNOT_RECONNECT;

@@ -924,11 +924,15 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     public void panelNotification(String type, String message, String title, Integer timeout) {
-        this.panelNotification(type, message, title, null, null);
+        this.panelNotification(type, message, title, timeout, null);
     }
 
     public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout) {
-        this.panelNotification(null, type, message, title, null, null, null);
+        this.panelNotification(type, message, title, timeout, extendedTimeout, null);
+    }
+
+    public void panelNotification(String type, String message, String title, Integer timeout, Integer extendedTimeout, Boolean progressBar) {
+        this.panelNotification(null, type, message, title, timeout, extendedTimeout, progressBar);
     }
 
     /**
