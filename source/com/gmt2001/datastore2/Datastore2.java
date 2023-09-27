@@ -25,8 +25,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
@@ -229,7 +229,7 @@ public abstract class Datastore2 {
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException | ClassNotFoundException ex) {
                 com.gmt2001.Console.err.println("Unable to load the Datastore2 driver " + dataStoreType);
-                com.gmt2001.Console.err.printStackTrace(ex, Collections.singletonMap("dataStoreType", dataStoreType));
+                com.gmt2001.Console.err.printStackTrace(ex, Map.of("dataStoreType", dataStoreType));
                 if (ex.getCause() != null) {
                     com.gmt2001.Console.err.println("Caused by: " + ex.getCause().getClass().getName() + ": " + ex.getCause().getMessage());
                 }
