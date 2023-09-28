@@ -26,7 +26,8 @@ public class ExceptionHandler implements IPublicationErrorHandler {
 
     @Override
     public void handleError(PublicationError err) {
-        com.gmt2001.Console.err.println("Failed to dispatch event [" + err.getHandler().toString() + "] to [" + err.getListener().toString() + "] " + err.getCause().getMessage());
+        com.gmt2001.Console.err.println("Failed to dispatch event " + err.toString());
+
         com.gmt2001.Console.err.printStackTrace(err.getCause());
     }
 }

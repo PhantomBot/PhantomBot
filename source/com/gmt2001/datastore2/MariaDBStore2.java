@@ -25,7 +25,7 @@ import org.jooq.DataType;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
-import org.mariadb.jdbc.MariaDbPoolDataSource;
+import org.mariadb.jdbc.MariaDbDataSource;
 
 import tv.phantombot.CaselessProperties;
 
@@ -66,7 +66,7 @@ public final class MariaDBStore2 extends Datastore2 {
             connectionString = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + dbname + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
         }
 
-        MariaDbPoolDataSource dataSource = new MariaDbPoolDataSource();
+        MariaDbDataSource dataSource = new MariaDbDataSource();
         try {
             dataSource.setUrl(connectionString);
         } catch (SQLException ex) {
