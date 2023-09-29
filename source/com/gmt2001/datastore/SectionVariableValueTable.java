@@ -155,7 +155,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
     private SectionVariableValueTable(String tableName, String section, String variable, String value) {
         super(DSL.name(tableName));
         this.tableName = tableName;
-        this.SECTION = createField(DSL.name(section), SQLDataType.VARCHAR(255).nullable(true), this, "");
+        this.SECTION = createField(DSL.name(section), SQLDataType.VARCHAR(255).nullable(false).defaultValue(""), this, "");
         this.VARIABLE = createField(DSL.name(variable), SQLDataType.VARCHAR(255).nullable(false), this, "");
         this.VALUE = createField(DSL.name(value), Datastore2.instance().longTextDataType().nullable(true), this, "");
         this.checkAndCreateTable();
