@@ -1,15 +1,15 @@
 # FAQ
 
 ## What is PhantomBot?
-PhantomBot is an actively developed open source interactive Twitch bot with a vibrant community that provides 
-entertainment and moderation for your channel, allowing you to focus on what matters the most to you - your game and 
-your viewers. PhantomBot is a bot powered by Java. PhantomBot has many modern features out of the box such as a built-in 
-webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot 
-can also be integrated with many services such as [GameWisp](https://gamewisp.com/), 
+PhantomBot is an actively developed open source interactive Twitch bot with a vibrant community that provides
+entertainment and moderation for your channel, allowing you to focus on what matters the most to you - your game and
+your viewers. PhantomBot is a bot powered by Java. PhantomBot has many modern features out of the box such as a built-in
+webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot
+can also be integrated with many services such as [GameWisp](https://gamewisp.com/),
 [StreamTip](https://streamtip.com/) and [TwitchAlerts](https://twitchalerts.com/)!
 
 ## What do I need to run PhantomBot?
-As of right now, PhantomBot requires Java 11 to run. This is included with the bot for Windows, Linux amd64, and macOS.
+As of right now, PhantomBot requires Java 11 to run. This is included with the bot for Windows, Linux, and macOS.
 
 
 ## What do I need to run the Control Panel?
@@ -17,12 +17,25 @@ The Control Panel has been tested on Chrome, Firefox, Internet Explorer and Edge
 
 
 ## Where do I get my APIOauth key?
-During setup, you will be provided with links to authorise the bot for both your Twitch account, so that it can act as 
-a channel editor, and for the bot account. If you need to change the oath tokens for any reason they can be found in 
-your botlogin.txt file in your PhantomBot folder. The `apioauth=` line is for the oath token for you, the broadcaster, 
-and the `oath=` line is for the bot channel. To update either token simple generate a new token 
-[here](https://phantombot.github.io/PhantomBot/oauth/), paste in into the relevant line after the `=` then restart the bot.
+During setup, you will be provided with links to authorize the bot for both your Twitch account, so that it can act as
+a channel editor, and for the bot account. You can authorize the bots on the bots webserver by clicking the **OAuth Setup** link on the homepage
 
+## Unable to execute Restart Commands (Linux)
+**Issue:**
+When attempting to execute a RestartCmd, the RestartRunner reports that it has failed
+
+**Troubleshooting steps:**
+- Ensure the script or executable you are trying to run is executable to the user account the bot is running as
+
+    `chmod +x /path/to/script`
+- If the script or executable needs to be run as a different user than the bot is running as, use _chown_ and the SETUID bit
+
+    `chown root:root restartbot-systemv.sh`
+
+    `chmod 4755 restartbot-systemv.sh`
+- Ensure the _jspawnhelper_ library, which is included in the Java distribution, is executable
+
+    `chmod 0755 ./java-runtime-linux/lib/jspawnhelper`
 
 ## I Get an Illegal Option Error? (OSX)
 **Issue:**
@@ -30,20 +43,8 @@ When attempting to run the launcher script launch.sh on OS X you get the followi
 readlink: illegal option -- f (and so on)
 
 **Fix:**
-Ensure that launch.osx.sh is executible (chmod +x ./launch.osx.sh) and execute that script to start the bot.
+Ensure that launch.sh is executable (chmod +x ./launch.sh) and execute that script to start the bot.
 
-
-## I Can’t Connect to Twitch IRC (Failed To Connect Spam)
-**Issue:**
-You start up the bot and all you get is the following spammed endlessly (Other stuff may eventually appear in between):
-
-Failed to connect to 'irc.chat.twitch.tv', retrying connection.
-Connecting to irc.chat.twitch.tv:6667
-**Fix 1:**
-Reset the DNS Resolver Cache (ie. An old IP for Twitch IRC is being used, for Windows)
-1. Open the command prompt.
-2. Type in the following command, followed by enter.
-ipconfig /flushdns
 
 
 ## The Bot Posts Responses Multiple Times
