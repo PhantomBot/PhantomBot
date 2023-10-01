@@ -178,9 +178,10 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * @return
      */
     public Table<SectionVariableValueRecord> rename(String newName) {
-        Datastore2.instance().dslContext().alterTable(this).renameTo(newName.toLowerCase()).execute();
+        newName = newName.toLowerCase();
+        Datastore2.instance().dslContext().alterTable(this).renameTo(newName).execute();
         Datastore2.instance().invalidateTableCache();
-        TABLES.remove(this.tableName);
+        TABLES.remove(this.tableName.toLowerCase());
         return instance(newName);
     }
 
@@ -191,7 +192,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
         com.gmt2001.Console.debug.println("DROP " + this.tableName);
         Datastore2.instance().dslContext().dropTable(this).execute();
         Datastore2.instance().invalidateTableCache();
-        TABLES.remove(this.tableName);
+        TABLES.remove(this.tableName.toLowerCase());
     }
 
     /**
