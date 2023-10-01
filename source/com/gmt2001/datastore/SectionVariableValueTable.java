@@ -189,6 +189,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      */
     public void drop() {
         com.gmt2001.Console.debug.println("DROP " + this.tableName);
+        Datastore2.instance().dslContext().dropTable(this);
         Datastore2.instance().invalidateTableCache();
         TABLES.remove(this.tableName);
     }
