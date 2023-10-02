@@ -63,7 +63,7 @@
             return (b.value - a.value);
         });
 
-        list = list.slice(0, amountPoints);
+        list = list.slice(0, amount);
 
         let top = [],
                 type = (iniName === 'points' ? $.pointNameMultiple : 'time');
