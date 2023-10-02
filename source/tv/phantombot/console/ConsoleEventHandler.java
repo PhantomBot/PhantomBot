@@ -248,7 +248,7 @@ public final class ConsoleEventHandler implements Listener {
 
                     PhantomBot.instance().getDataStore().incr("points", username, points);
                     PhantomBot.instance().getDataStore().incr("time", username, seconds);
-                    com.gmt2001.Console.out.println("[IMPORTATED] " + username + " -- Points (" + points + ") -- Time (" + seconds + ")");
+                    com.gmt2001.Console.out.println("[IMPORTED] " + username + " -- Points (" + points + ") -- Time (" + seconds + ")");
                 }
             } finally {
                 reader.close();
