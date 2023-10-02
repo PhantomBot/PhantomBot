@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -189,6 +192,67 @@ public final class ConsoleEventHandler implements Listener {
             // Export to CSV.
             PhantomBot.instance().toCSV(headers, values, "points_export.csv");
             com.gmt2001.Console.out.println("[CONSOLE] Points have been exported to points_export.csv");
+            return;
+        }
+
+        /**
+         * @consolecommand importpoints - This command imports time and points from a csv file in format (Username,Seconds,Points)
+         */
+        if (message.equalsIgnoreCase("importpoints")) {
+            if (argument != null && argument.length < 1) {
+                com.gmt2001.Console.out.println("Command usage: import  [filename.csv in ./addons/import with header (Username,Seconds,Points)]");
+                return;
+            }
+
+            File file = new File("./addons/import/" + argument[0]);
+            if (!file.exists()) {
+                com.gmt2001.Console.out.println("File " + argument[0] + " does not exist in the folder ./addons/import");
+                return;
+            }
+
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            try {
+                StringBuilder builder = new StringBuilder();
+                String line = reader.readLine(); // ignore first line because its csv format.
+
+                if (!line.equalsIgnoreCase("Username,Seconds,Points") ) {
+                    com.gmt2001.Console.out.println("File format is incorrect: (Username,Seconds,Points)");
+                    return;
+                }
+
+                while (line != null) {
+                    line = reader.readLine();
+                    builder.append(line + System.lineSeparator());
+                }
+
+                String[] finalStr = builder.toString().split(System.lineSeparator());
+
+                for (int i = 0; i < finalStr.length; i++) {
+                    String[] parts = finalStr[i].split(",");
+                    String username = parts[0].toLowerCase();
+
+                    try {
+                        int seconds = Integer.parseInt(parts[1]);
+                    } catch (NumberFormatException ex) {
+                        com.gmt2001.Console.out.println("Failed to parse seconds number: " + parts[1]);
+                        continue;
+                    }
+
+                    try {
+                        int points = Integer.parseInt(parts[2]);
+                    } catch (NumberFormatException ex) {
+                        com.gmt2001.Console.out.println("Failed to parse points number: " + parts[2]);
+                        continue;
+                    }
+
+                    PhantomBot.instance().getDataStore().incr("points", username, points);
+                    PhantomBot.instance().getDataStore().incr("time", username, seconds);
+                    com.gmt2001.Console.out.println("[IMPORTATED] " + username + " -- Points (" + points + ") -- Time (" + seconds + ")");
+                }
+            } finally {
+                reader.close();
+            }  
             return;
         }
 
