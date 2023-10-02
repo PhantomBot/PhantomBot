@@ -306,6 +306,12 @@ public final class PhantomBot implements Listener {
         this.print(this.botDevelopers());
         this.print(this.getWebSite());
         this.print("");
+        if (RepoVersion.isStressTest()) {
+            this.print("----------------");
+            this.print("Stress Test Mode");
+            this.print("----------------");
+            this.print("");
+        }
 
         try {
             Files.deleteIfExists(Paths.get("./logs/.placeholder"));
