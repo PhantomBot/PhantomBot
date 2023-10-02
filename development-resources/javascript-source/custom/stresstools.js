@@ -49,8 +49,8 @@
      * - Current used and committed non-heap memory
      */
     function doStatus() {
-        let memHeap = Packages.com.gmt2001.Reflect.getHeapMemoryUsage();
-        let memNonHeap = Packages.com.gmt2001.Reflect.getNonHeapMemoryUsage();
+        let memHeap = Packages.com.gmt2001.util.Reflect.getHeapMemoryUsage();
+        let memNonHeap = Packages.com.gmt2001.util.Reflect.getNonHeapMemoryUsage();
         let line1 = 'uptime=' + Packages.java.time.Duration.between(start, Packages.java.time.Instant.now()).toString();
         let line2 = 'numMessages=' + numMessages + ' <> numMessagesExt=' + numMessagesExt;
         let line3 = 'present=' + $.users.length + ' <> seen=' + count;
