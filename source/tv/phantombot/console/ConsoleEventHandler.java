@@ -212,9 +212,7 @@ public final class ConsoleEventHandler implements Listener {
                 return;
             }
 
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-
-            try {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                 StringBuilder builder = new StringBuilder();
                 String line = reader.readLine(); // ignore first line because its csv format.
 
@@ -254,11 +252,9 @@ public final class ConsoleEventHandler implements Listener {
                     PhantomBot.instance().getDataStore().incr("time", username, seconds);
                     com.gmt2001.Console.out.println("[IMPORTED] " + username + " -- Points (" + points + ") -- Time (" + seconds + ")");
                 }
-            } catch (FileNotFoundException | IOException ex) {
+            } catch (IOException ex) {
                 com.gmt2001.Console.err.println(ex);
-            } finally {
-                reader.close();
-            }  
+            }
             return;
         }
 
