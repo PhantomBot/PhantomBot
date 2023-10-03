@@ -255,7 +255,6 @@ public final class ConsoleEventHandler implements Listener {
                 }
             } catch (FileNotFoundException | IOException ex) {
                 com.gmt2001.Console.err.println(ex);
-            }
             } finally {
                 reader.close();
             }  
