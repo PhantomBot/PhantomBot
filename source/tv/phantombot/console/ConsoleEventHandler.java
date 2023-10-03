@@ -231,16 +231,18 @@ public final class ConsoleEventHandler implements Listener {
                 for (int i = 0; i < finalStr.length; i++) {
                     String[] parts = finalStr[i].split(",");
                     String username = parts[0].toLowerCase();
+                    int seconds = 0;
+                    int points = 0;
 
                     try {
-                        int seconds = Integer.parseInt(parts[1]);
+                        seconds = Integer.parseInt(parts[1]);
                     } catch (NumberFormatException ex) {
                         com.gmt2001.Console.out.println("Failed to parse seconds number: " + parts[1]);
                         continue;
                     }
 
                     try {
-                        int points = Integer.parseInt(parts[2]);
+                        points = Integer.parseInt(parts[2]);
                     } catch (NumberFormatException ex) {
                         com.gmt2001.Console.out.println("Failed to parse points number: " + parts[2]);
                         continue;
