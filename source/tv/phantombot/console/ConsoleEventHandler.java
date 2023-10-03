@@ -26,6 +26,7 @@ import java.util.Map;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -252,6 +253,9 @@ public final class ConsoleEventHandler implements Listener {
                     PhantomBot.instance().getDataStore().incr("time", username, seconds);
                     com.gmt2001.Console.out.println("[IMPORTED] " + username + " -- Points (" + points + ") -- Time (" + seconds + ")");
                 }
+            } catch (FileNotFoundException | IOException ex) {
+                com.gmt2001.Console.err.println(ex);
+            }
             } finally {
                 reader.close();
             }  
