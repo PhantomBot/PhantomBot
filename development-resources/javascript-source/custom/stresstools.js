@@ -39,6 +39,37 @@
     let start = Packages.java.time.Instant.now();
 
     /**
+     * Converts bytes into human-readable form
+     */
+    function displaySize(bytes) {
+        if (bytes < 1024) {
+            return bytes + ' B';
+        }
+        let kb = bytes / 1024;
+        if (kb < 1024) {
+            kb = '' + kb;
+            if (kb.indexOf('.') > 0 && kb.indexOf('.') < kb.length - 2) {
+                kb = kb.substring(0, kb.indexOf('.') + 2);
+            }
+            return kb + ' KB';
+        }
+        let mb = kb / 1024;
+        if (mb < 1024) {
+            mb = '' + mb;
+            if (mb.indexOf('.') > 0 && mb.indexOf('.') < mb.length - 2) {
+                mb = mb.substring(0, mb.indexOf('.') + 2);
+            }
+            return mb + ' MB';
+        }
+        let gb = mb / 1024;
+        gb = '' + gb;
+        if (gb.indexOf('.') > 0 && gb.indexOf('.') < gb.length - 2) {
+            gb = gb.substring(0, gb.indexOf('.') + 2);
+        }
+        return gb + ' GB';
+    }
+
+    /**
      * Reports on stats from the test to the console and a log file
      *
      * Reported stats (in order printed):
@@ -54,10 +85,10 @@
         let line1 = 'uptime=' + Packages.java.time.Duration.between(start, Packages.java.time.Instant.now()).toString();
         let line2 = 'numMessages=' + numMessages + ' <> numMessagesExt=' + numMessagesExt;
         let line3 = 'present=' + $.users.length + ' <> seen=' + count;
-        let line4 = 'Heap used=' + Packages.org.apache.commons.io.FileUtils.byteCountToDisplaySize(memHeap.getUsed())
-            + ' <> committed=' + Packages.org.apache.commons.io.FileUtils.byteCountToDisplaySize(memHeap.getCommitted());
-        let line5 = 'Non-Heap used=' + Packages.org.apache.commons.io.FileUtils.byteCountToDisplaySize(memNonHeap.getUsed())
-            + ' <> committed=' + Packages.org.apache.commons.io.FileUtils.byteCountToDisplaySize(memNonHeap.getCommitted());
+        let line4 = 'Heap used=' + displaySize(memHeap.getUsed())
+            + ' <> committed=' + displaySize(memHeap.getCommitted());
+        let line5 = 'Non-Heap used=' + displaySize(memNonHeap.getUsed())
+            + ' <> committed=' + displaySize(memNonHeap.getCommitted());
         $.consoleLn('');
         $.consoleLn(line1);
         $.consoleLn(line2);
