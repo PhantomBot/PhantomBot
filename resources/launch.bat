@@ -42,7 +42,7 @@ del /q /f %CHECKLOC% > NUL
 :SKIPDEL
 setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
-".\java-runtime\bin\java" --add-exports java.base/sun.security.x509=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms256m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
+".\java-runtime\bin\java" --add-exports java.base/sun.security.x509=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
 popd
 endlocal
 timeout /t 5
