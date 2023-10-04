@@ -72,7 +72,7 @@
 
     function duration(str) {
         try {
-            let duration = Packages.com.gmt2001.DurationString.from(str);
+            let duration = Packages.com.gmt2001.util.DurationString.from(str);
             if (duration !== Packages.java.time.Duration.ZERO) {
                 return duration.toSeconds();
             }

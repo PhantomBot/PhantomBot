@@ -135,6 +135,6 @@ if mount | grep '/tmp' | grep -q noexec; then
     tmp="-Djava.io.tmpdir=$(dirname $(readlink -f $0))/tmp"
 fi
 
-${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security -Xms256m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar PhantomBot.jar "$@" &
+${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security -Xms1m -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar PhantomBot.jar "$@" &
 
 wait_term
