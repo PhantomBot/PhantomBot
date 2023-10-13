@@ -41,7 +41,7 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('lang.curlang', $.jsString($.getSetIniDbString('settings', 'lang', 'english'))));
             } else {
                 action = action.toLowerCase();
-                if (!$.fileExists('./scripts/lang/' + action + '/main.js')) {
+                if (!$.fileExists('./scripts/lang/' + action + '/main.js') && !$.fileExists('./scripts/lang/' + action + '/main.json')) {
                     $.say($.whisperPrefix(sender) + $.lang.get('lang.lang.404'));
                 } else {
                     $.inidb.set('settings', 'lang', action);
