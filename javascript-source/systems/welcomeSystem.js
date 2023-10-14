@@ -54,8 +54,8 @@
                 return;
             }
 
-            var lastUserMessage = $.getIniDbNumber('greetingCoolDown', sender),
-                    firstTimeChatter = lastUserMessage === undefined,
+            var lastUserMessage = $.optIniDbNumber('greetingCoolDown', sender).get(),
+                    firstTimeChatter = lastUserMessage === null,
                     queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
 
             lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
