@@ -64,25 +64,28 @@ daemon=0
 myjava=0
 JAVA=""
 
-isjava=0
-for arg do
-  shift
-  if [[ "$arg" = "--daemon" ]]; then
-    daemon=1
-    continue
-  fi
-  if (( isjava == 1 )); then
-    JAVA="$arg"
-    myjava=1
-    isjava=0
-    continue
-  fi
-  if [[ "$arg" = "--java" ]]; then
-    isjava=1
-    continue
-  fi
-  set -- "$@" "$arg"
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --daemon)
+      daemon=1
+      shift
+      ;;
+    --java)
+      JAVA="$2"
+      myjava=1
+      shift
+      shift
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
 done
+
+set -- "${POSITIONAL_ARGS[@]}"
 
 # Get dir of this script
 # Special handling for macOS
