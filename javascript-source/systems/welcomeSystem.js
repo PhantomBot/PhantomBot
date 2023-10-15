@@ -54,11 +54,11 @@
                 return;
             }
 
-            var lastUserMessage = $.getIniDbNumber('greetingCoolDown', sender),
-                    firstTimeChatter = lastUserMessage === undefined,
+            var lastUserMessage = $.optIniDbNumber('greetingCoolDown', sender),
+                    firstTimeChatter = !lastUserMessage.isPresent(),
                     queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
 
-            lastUserMessage = firstTimeChatter ? 0 : lastUserMessage;
+            lastUserMessage = firstTimeChatter ? 0 : lastUserMessage.get();
 
             if (!$.inidb.exists('welcome_disabled_users', sender)) {
                 if (lastUserMessage + welcomeCooldown < now) {
