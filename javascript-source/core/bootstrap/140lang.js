@@ -140,6 +140,14 @@
         return key !== undefined && key !== null && data[key.toLowerCase()] !== undefined && data[key.toLowerCase()] !== null;
     }
 
+    $.bind('webPanelSocketUpdate', function (event) {
+        if ($.equalsIgnoreCase(event.getScript(), 'core/bootstrap/lang')) {
+            if ($.equalsIgnoreCase(event.getId(), 'langUpdated')) {
+                load(true);
+            }
+        }
+    });
+
     /** Export functions to API */
     $.lang = {
         exists: exists,

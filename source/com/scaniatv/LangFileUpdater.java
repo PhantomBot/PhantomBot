@@ -17,7 +17,6 @@
 package com.scaniatv;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -44,9 +42,10 @@ import org.json.JSONStringer;
 
 import com.gmt2001.PathValidator;
 
-import tv.phantombot.PhantomBot;
-import tv.phantombot.script.Script;
-import tv.phantombot.script.ScriptManager;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 public final class LangFileUpdater {
 
@@ -70,10 +69,12 @@ public final class LangFileUpdater {
         String stringArray;
 
         if (PathValidator.isValidPathLang(CUSTOM_LANG_ROOT + langFile)) {
+            Tuple2<String, Boolean> defaultLang = getLang(DEFAULT_LANG_ROOT + sanitizePath(langFile));
+            Tuple2<String, Boolean> customLang = getLang(CUSTOM_LANG_ROOT + sanitizePath(langFile));
             stringArray = convertLangMapToJSONArray(
                     getCustomAndDefaultLangMap(
-                            getLang(DEFAULT_LANG_ROOT + sanitizePath(langFile)),
-                            getLang(CUSTOM_LANG_ROOT + sanitizePath(langFile))
+                            defaultLang.getT1(), defaultLang.getT2(),
+                            customLang.getT1(), customLang.getT2()
                     )
             );
         } else {
@@ -90,19 +91,7 @@ public final class LangFileUpdater {
      * @param langFile
      */
     public static void updateCustomLang(String stringArray, String langFile, JSONStringer jso) throws JSONException {
-        final StringBuilder sb = new StringBuilder();
-        final JSONArray array = new JSONArray(stringArray);
         boolean success = true;
-
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject obj = array.getJSONObject(i);
-
-            sb.append("$.lang.register('");
-            sb.append(obj.getString("id"));
-            sb.append("', '");
-            sb.append(sanitizeResponse(obj.getString("response")));
-            sb.append("');\n");
-        }
 
         try {
             langFile = CUSTOM_LANG_ROOT + sanitizePath(langFile);
@@ -121,52 +110,48 @@ public final class LangFileUpdater {
                 Files.createDirectories(PathValidator.getRealPath(Paths.get(langFile)).getParent());
             }
 
-            // This is used if we need to load the script or not.
-            boolean exists = true;
-            if (!Files.exists(Paths.get(langFile))) {
-                exists = false;
+            boolean isJson = langFile.endsWith(".json");
+            String fName = langFile;
+            boolean exists = Files.exists(Paths.get(fName));
+            if (!exists) {
+                fName = langFile.replace(isJson ? ".json" : ".js", isJson ? ".js" : ".json");
+                isJson = !isJson;
+                exists = Files.exists(Paths.get(fName));
+            }
+
+            final StringBuilder sb = new StringBuilder();
+            final JSONArray array = new JSONArray(stringArray);
+
+            if (isJson) {
+                JSONStringer jss = new JSONStringer();
+                jss.object();
+
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+
+                    jss.key(obj.getString("id"));
+                    jss.value(sanitizeResponse(obj.getString("response")));
+                }
+
+                jss.endObject();
+                sb.append(jss.toString());
+            } else {
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+
+                    sb.append("$.lang.register('");
+                    sb.append(obj.getString("id"));
+                    sb.append("', '");
+                    sb.append(sanitizeResponse(obj.getString("response")));
+                    sb.append("');\n");
+                }
             }
 
             // Write the data.
             Files.write(Paths.get(langFile), sb.toString().getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
             // If the script doesn't exist, load it.
-            File file = new File(langFile);
-            if (!exists) {
-                ScriptManager.loadScript(file, langFile);
-            } else {
-                if (!PhantomBot.getReloadScripts()) {
-                    Map<String, Script> scripts = ScriptManager.getScripts();
-                    String matchPath = file.toPath().toString().substring(file.toPath().toString().indexOf("lang"));
-
-                    final List<String> errors = new ArrayList<>();
-                    scripts.values().forEach((script -> {
-                        String path = script.getFile().toPath().toString();
-
-                        if (path.contains("lang")) {
-                            if (path.substring(path.indexOf("lang")).equals(matchPath)) {
-                                try {
-                                    script.reload();
-                                } catch (IOException ex) {
-                                    errors.add(ex.getMessage());
-                                    com.gmt2001.Console.err.printStackTrace(ex);
-                                }
-                            }
-                        }
-                    }));
-
-                    if (errors.size() > 0) {
-                        jso.object().key("errors").array();
-                        errors.forEach(msg -> jso.object()
-                                .key("status").value("500")
-                                .key("title").value("Internal Server Error")
-                                .key("detail").value("IOException: " + msg)
-                                .endObject());
-                        jso.endArray().endObject();
-                        success = false;
-                    }
-                }
-            }
+            EventBus.instance().postAsync(new WebPanelSocketUpdateEvent("langUpdated", "core/bootstrap/lang", null, new String[0]));
         } catch (IOException ex) {
             jso.object().key("errors").array().object()
                     .key("status").value("500")
@@ -203,7 +188,7 @@ public final class LangFileUpdater {
         List<String> fileNames = new ArrayList<>();
         Path langRoot = Paths.get(DEFAULT_LANG_ROOT);
 
-        try ( Stream<Path> fileStream = Files.find(langRoot, Integer.MAX_VALUE, (p, a) -> p.getFileName().toString().endsWith(".js"), FileVisitOption.FOLLOW_LINKS)) {
+        try ( Stream<Path> fileStream = Files.find(langRoot, Integer.MAX_VALUE, (p, a) -> p.getFileName().toString().endsWith(".js") || p.getFileName().toString().endsWith(".json"), FileVisitOption.FOLLOW_LINKS)) {
             fileStream.forEach(p -> fileNames.add(langRoot.relativize(p).toString()));
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -220,15 +205,23 @@ public final class LangFileUpdater {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private static String getLang(String langFile) {
+    private static Tuple2<String, Boolean> getLang(String langFile) {
         final StringBuilder sb = new StringBuilder();
 
         langFile = sanitizePath(langFile);
+        boolean isJson = langFile.endsWith(".json");
 
         if (PathValidator.isValidPathLang(langFile)) {
-            if (new File(langFile).exists()) {
+            String fName = langFile;
+            boolean exists = Files.exists(Paths.get(fName));
+            if (!exists) {
+                fName = langFile.replace(isJson ? ".json" : ".js", isJson ? ".js" : ".json");
+                isJson = !isJson;
+                exists = Files.exists(Paths.get(fName));
+            }
+            if (exists) {
                 try {
-                    try ( BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(langFile)))) {
+                    try ( BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fName)))) {
                         int c;
 
                         while ((c = br.read()) != -1) {
@@ -243,7 +236,20 @@ public final class LangFileUpdater {
             sb.append("AccessDenied: Outside acceptable path");
         }
 
-        return sb.toString();
+        return Tuples.of(sb.toString(), isJson);
+    }
+
+    private static JSONObject jsonOrNull(String json, boolean isJson) {
+        if (isJson) {
+            try {
+                JSONObject jso = new JSONObject(json);
+                return jso;
+            } catch (JSONException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -254,22 +260,32 @@ public final class LangFileUpdater {
      * @param customLang
      * @return
      */
-    private static HashMap<String, String> getCustomAndDefaultLangMap(String defaultLang, String customLang) {
+    private static HashMap<String, String> getCustomAndDefaultLangMap(String defaultLang, boolean defaultJson, String customLang, boolean customJson) {
         // Create a new patter that will match if the default lang ID is also in the custom one.
         final Pattern pattern = Pattern.compile("^\\$\\.lang\\.register\\((\\'|\\\")([a-zA-Z0-9,.-]+)(\\'|\\\")\\,\\s(\\'|\\\")(.*)(\\'|\\\")\\);", Pattern.MULTILINE);
 
         // Get all matches for the default lang.
-        final Matcher m1 = pattern.matcher(defaultLang);
         final HashMap<String, String> defaultMatches = new HashMap<>();
-        while (m1.find()) {
-            defaultMatches.put(m1.group(2), m1.group(5));
+        final JSONObject jsoD = jsonOrNull(defaultLang, defaultJson);
+        if (jsoD != null) {
+            jsoD.keySet().stream().forEach(k -> defaultMatches.put(k, jsoD.optString(k)));
+        } else {
+            final Matcher m1 = pattern.matcher(defaultLang);
+            while (m1.find()) {
+                defaultMatches.put(m1.group(2), m1.group(5));
+            }
         }
 
         // Get all matches for the custom lang.
-        final Matcher m2 = pattern.matcher(customLang);
         final HashMap<String, String> customMatches = new HashMap<>();
-        while (m2.find()) {
-            customMatches.put(m2.group(2), m2.group(5));
+        final JSONObject jsoC = jsonOrNull(customLang, customJson);
+        if (jsoC != null) {
+            jsoC.keySet().stream().forEach(k -> customMatches.put(k, jsoC.optString(k)));
+        } else {
+            final Matcher m2 = pattern.matcher(customLang);
+            while (m2.find()) {
+                customMatches.put(m2.group(2), m2.group(5));
+            }
         }
 
         // Check if any is missing in the custom one.
