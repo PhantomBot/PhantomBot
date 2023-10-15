@@ -72,7 +72,8 @@ public class YouTubeAPIv3 {
                         JSONArray jaerror = jsonResult.getJSONObject("error").getJSONArray("errors");
                         if (jaerror.getJSONObject(0).has("reason") && jaerror.getJSONObject(0).has("domain")) {
                             com.gmt2001.Console.err.println("YouTubeAPIv3 Error: [Domain] " + jaerror.getJSONObject(0).getString("domain")
-                                    + " [Reason] " + jaerror.getJSONObject(0).getString("reason"));
+                                    + " [Reason] " + jaerror.getJSONObject(0).getString("reason")
+                                    + " [Message] " + jaerror.getJSONObject(0).optString("message", "none"));
                         }
                     }
                 }
