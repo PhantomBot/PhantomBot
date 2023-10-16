@@ -1,0 +1,11 @@
+{
+    "keywordhandler.add.usage": "Usage: !keyword add [flags] [keyword] [response]. Flags can by empty or any combination of \"--regex\", \"--case-sensitive\".",
+    "keywordhandler.keyword.404": "That keyword does not exist.",
+    "keywordhandler.keyword.added": "keyword \"$1\" added!",
+    "keywordhandler.keyword.removed": "keyword \"$1\" has been removed!",
+    "keywordhandler.keyword.usage": "Usage: !keyword [add / remove / cooldown] [keyword]",
+    "keywordhandler.remove.usage": "Usage: !keyword remove [keyword]",
+    "keywordhandler.cooldown.usage": "Usage: !keyword cooldown [keyword] [seconds] - Use -1 to remove a cooldown.",
+    "keywordhandler.cooldown.removed": "Cooldown for keyword $1 has been removed.",
+    "keywordhandler.cooldown.set": "Cooldown for keyword $1 has been set to $2 seconds."
+}

@@ -1,0 +1,23 @@
+{
+    "discord.customcommandlogs.sender": "By",
+    "discord.customcommandlogs.add.command": "Custom command created",
+    "discord.customcommandlogs.add.response": "Response",
+    "discord.customcommandlogs.edit.command": "Custom command edited",
+    "discord.customcommandlogs.edit.response": "New response",
+    "discord.customcommandlogs.delete.command": "Custom command deleted",
+    "discord.customcommandlogs.alias.command": "Custom alias created",
+    "discord.customcommandlogs.alias.target": "To",
+    "discord.customcommandlogs.alias.delete.command": "Custom alias deleted",
+    "discord.customcommandlogs.set.perm.command": "Command permissions updated",
+    "discord.customcommandlogs.set.perm.group": "New group",
+    "discord.customcommandlogs.set.price.command": "Command price updated",
+    "discord.customcommandlogs.set.price.amount": "New price",
+    "discord.customcommandlogs.set.pay.command": "Command reward updated",
+    "discord.customcommandlogs.set.pay.amount": "New reward",
+    "discord.customcommandlogs.disable.command": "Command disabled",
+    "discord.customcommandlogs.enable.command": "Command enabled",
+    "discord.customcommandlogs.reset.command": "Command counter reset",
+    "discord.customcommandlogs.reset.count": "New value",
+    "discord.customcommandlogs.hide.command": "Command hidden from !commands list",
+    "discord.customcommandlogs.show.command": "Command shown in !commands list"
+}

@@ -51,6 +51,21 @@ fedoramin=37
 
 #############################
 
+pushd . > '/dev/null';
+SCRIPT_PATH="${BASH_SOURCE[0]:-$0}";
+
+while [ -h "$SCRIPT_PATH" ];
+do
+    cd "$( dirname -- "$SCRIPT_PATH"; )";
+    SCRIPT_PATH="$( readlink -f -- "$SCRIPT_PATH"; )";
+done
+
+cd "$( dirname -- "$SCRIPT_PATH"; )" > '/dev/null';
+SCRIPT_PATH="$( pwd; )";
+popd  > '/dev/null'
+
+pushd "$SCRIPT_PATH"
+
 # Internal vars
 tmp=""
 interactive="-Dinteractive"
@@ -64,25 +79,28 @@ daemon=0
 myjava=0
 JAVA=""
 
-isjava=0
-for arg do
-  shift
-  if [[ "$arg" = "--daemon" ]]; then
-    daemon=1
-    continue
-  fi
-  if (( isjava == 1 )); then
-    JAVA="$arg"
-    myjava=1
-    isjava=0
-    continue
-  fi
-  if [[ "$arg" = "--java" ]]; then
-    isjava=1
-    continue
-  fi
-  set -- "$@" "$arg"
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --daemon)
+      daemon=1
+      shift
+      ;;
+    --java)
+      JAVA="$2"
+      myjava=1
+      shift
+      shift
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
 done
+
+set -- "${POSITIONAL_ARGS[@]}"
 
 # Get dir of this script
 # Special handling for macOS
@@ -274,3 +292,4 @@ if mount | grep '/tmp' | grep -q noexec; then
 fi
 
 ${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security ${interactive} -Xms1m -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar PhantomBot.jar "$@"
+popd

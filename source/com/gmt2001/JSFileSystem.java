@@ -78,6 +78,21 @@ public final class JSFileSystem {
     }
 
     /**
+     * Reads an entire file into a string
+     *
+     * @param path The path to the file to read
+     * @return The file contents; {@code null} if not an allowed location
+     * @throws IOException If an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read
+     */
+    public static String ReadFileAsString(String path) throws IOException {
+        if (!PathValidator.isValidPathScript(path)) {
+            return null;
+        }
+
+        return Files.readString(Paths.get(path));
+    }
+
+    /**
      * Creates a new directory, if it doesn't already exist
      *
      * @param path The path to the directory to create

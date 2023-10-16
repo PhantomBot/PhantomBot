@@ -1,0 +1,15 @@
+{
+    "corecommands.shoutout.usage": "Usage: !$1 (streamer)",
+    "corecommands.shoutout.offline": "Go give $1 a follow at $2 - they were last seen playing: $3!",
+    "corecommands.shoutout.online": "Go give $1 a follow at $2 - they are currently playing: $3!",
+    "corecommands.shoutoutapi.enable": "!shoutout will now also trigger the Twitch /shoutout command",
+    "corecommands.shoutoutapi.disable": "!shoutout will not trigger the Twitch /shoutout command",
+    "corecommands.shoutout.no.game": "Hey! Go give $1 a follow at $2!",
+    "corecommands.settimevar.usage": "Usage: !settimevar (varName) (Optional: Time to Set)",
+    "corecommands.settimevar.success": "Set the timevar $1 to the time $2",
+    "corecommands.synconline.success": "Syncing title, game, and online state with Twitch API. This may take a moment",
+    "corecommands.synconline.failure": "Stream status cache is not ready yet, please try again in 30 seconds",
+    "corecommands.setcommandrestriction.usage": "Usage: !setcommandrestriction [none/online/offline] [command] (subcommand) - The subcommand variable is optional",
+    "corecommands.setcommandrestriction.error": "$1 !$2 does not exist!",
+    "corecommands.setcommandrestriction.success": "Successfully changed the $1 restriction for !$2 to $3"
+}

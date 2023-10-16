@@ -1,0 +1,6 @@
+{
+    "namechange.default": "Usage: !namechange [old name] [new name]",
+    "namechange.updating": "Updating name $1 to $2 in all the database tables. This may take time.",
+    "namechange.success": "Username $1 has been updated to $2 in $3 tables!",
+    "namechange.notfound": "Username $1 was not found in any tables."
+}

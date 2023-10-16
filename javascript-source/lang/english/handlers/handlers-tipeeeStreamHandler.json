@@ -1,0 +1,20 @@
+{
+    "tipeeestream.donation.new": "Thank you very much (name) for the tip of (amount)(currency)!",
+    "tipeeestream.donation.newreward": "Thank you very much (name) for the tip of $(amount) (currency)! Here are (points) (pointname)!",
+    "tipeeestream.donations.usage": "Usage: !tipeeestream (announce | rewardmultiplier n.n | message | lastmessage)",
+    "tipeeestream.donations.announce.disable": "Tips will no longer be announced.",
+    "tipeeestream.donations.announce.enable": "Tips will now be announced.",
+    "tipeeestream.donations.reward.usage": "Usage: !tipeeestream rewardmultiplier n.n  Set to 0 to disable",
+    "tipeeestream.donations.reward.success": "The reward for tips has been set to $1 $2 per whole amount of currency donated.",
+    "tipeeestream.donations.message.usage": "Usage: !tipeeestream message [message...] Tags: (name) (amount) (currency) (currencysymbol) (message)",
+    "tipeeestream.donations.rewardmessage.usage": "Usage: !tipeeestream rewardmessage [message...] Tags: (name) (amount) (currency) (reward) (message)",
+    "tipeeestream.donations.message.no-name": "A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (message)",
+    "tipeeestream.donations.rewardmessage.no-name": "A (name) tag was not provided, at a minimum provide the (name) tag. Tags: (name) (amount) (currency) (reward) (message)",
+    "tipeeestream.donations.message.success": "Updated the message for tips when rewards are disabled.",
+    "tipeeestream.donations.rewardmessage.success": "Updated the message for tips with rewards enabled.",
+    "tipeeestream.donations.lastmessage.success": "Updates the message for !lasttip command.",
+    "tipeeestream.enabled.donators": "The donators group has been enabled.",
+    "tipeeestream.disabled.donators": "The donators group has been disabled.",
+    "tipeeestream.donators.min": "The minimum before being promoted to a Donator was set to $1",
+    "tipeeestream.donators.min.usage": "Usage: !tipeeestream minmumbeforepromotion (amount)"
+}

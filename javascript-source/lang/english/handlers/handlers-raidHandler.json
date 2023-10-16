@@ -1,0 +1,22 @@
+{
+    "raidhandler.usage": "Usage: !raid [username] | !raid [toggle / lookup / setreward / setincomingmessage / setnewincomingmessage / setoutgoingmessage / setoutgoingmessagespam]",
+    "raidhandler.toggle.enabled": "Raid alerts have successfully been enabled.",
+    "raidhandler.toggle.disabled": "Raid alerts have successfully been disabled.",
+    "raidhandler.reward.usage": "Usage: !raid setreward [amount]",
+    "raidhandler.reward.set": "Successfully set the raid reward to $1.",
+    "raidhandler.minviewers.usage": "Usage: !raid setincomingminviewers [amount]",
+    "raidhandler.minviewers.set": "Successfully set the raid minimum viewers to $1.",
+    "raidhandler.inc.message.usage": "Usage: !raid setincomingmessage [message] - Variables: (username), (viewers), (url), (times) and (game)",
+    "raidhandler.inc.message.set": "Successfully updated the incoming raid message!",
+    "raidhandler.new.inc.message.usage": "Usage: !raid setnewincomingmessage [message] - Variables: (username), (viewers), (url), and (game)",
+    "raidhandler.new.inc.message.set": "Successfully updated the new incoming raid message!",
+    "raidhandler.out.message.usage": "Usage: !raid setoutgoingmessage [message] - Variables (username) and (url)",
+    "raidhandler.out.message.set": "Successfully updated the outgoing raid message!",
+    "raidhandler.spam.amount.usage": "Usage: !raid setoutgoingmessagespam [amount] - Maximum is 10 times.",
+    "raidhandler.spam.amount.set": "Successfully updated the outgoing raid spam amount!",
+    "raidhandler.lookup.usage": "Usage: !raid lookup [username]",
+    "raidhandler.lookup.user": "$1 has raided this channel a total of $2 time(s). Their last raid was on $3 with $4 viewers.",
+    "raidhandler.lookup.user.404": "$1 has never raided this channel.",
+    "raidhandler.out.messageoffline.usage": "Usage: !raid setoutgoingofflinemessage [message]",
+    "raidhandler.out.messageoffline.set": "Successfully updated the outgoing raid offline warning message!"
+}

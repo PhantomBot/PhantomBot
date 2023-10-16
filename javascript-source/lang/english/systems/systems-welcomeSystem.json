@@ -1,0 +1,21 @@
+{
+    "welcomesystem.set.autowelcome.enabled": "Auto welcoming enabled. $1 will now welcome new chatters.",
+    "welcomesystem.set.autowelcome.disabled": "Auto welcoming disabled.",
+    "welcomesystem.set.message.empty": "$1 will only welcome first time chatters.",
+    "welcomesystem.set.message.success": "$1 will welcome new chatters with \"$2\".",
+    "welcomesystem.set.firstmessage.empty": "$1 will welcome first time chatters with the default message.",
+    "welcomesystem.set.firstmessage.success": "$1 will welcome first time chatters with \"$2\".",
+    "welcomesystem.set.cooldown.show": "Current cooldown: $1 hours. Use: !welcome cooldown hours to change it.",
+    "welcomesystem.set.cooldown.usage": "Usege: !welcome cooldown [hours]. E.g. !welcome cooldown 6",
+    "welcomesystem.set.cooldown.success": "Welcome cooldown set to $1 hours.",
+    "welcomesystem.set.disableuser.usage": "Usage: !welcome disable user.",
+    "welcomesystem.set.disableuser.fail": "Welcoming $1 is already disabled.",
+    "welcomesystem.set.disableuser.success": "$1 will not welcome $2.",
+    "welcomesystem.set.enableuser.usage": "Usage: !welcome enable user.",
+    "welcomesystem.set.enableuser.fail": "Welcoming  is already enabled.",
+    "welcomesystem.set.enableuser.success": "$1 will welcome $2.",
+    "welcomesystem.generalusage": "Usage: !welcome [toggle | setmessage text | setfirstmessage text | disable user | enable user]. Tags for message text: (names), (1 text for one name), (2 for two), (3 for three or more names)",
+    "welcomesystem.names.join1": ", ",
+    "welcomesystem.names.join2": ", and ",
+    "welcomesystem.names.join3": " and "
+}
