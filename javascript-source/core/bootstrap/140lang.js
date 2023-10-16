@@ -45,19 +45,25 @@
     }
 
     function loadJSON(path) {
+        if (!path.startsWith('./scripts/')) {
+            path = './scripts/' + path;
+        }
+
         let files = $.findFiles(path, '');
 
         for (let x in files) {
+            let fPath = path + '/' + files[x];
             try {
-                if ($.isDirectory(files[x])) {
-                    loadJSON(path + '/' + files[x]);
-                } else {
-                    let jso = JSON.parse($.readFileString(path));
+                if ($.isDirectory(fPath)) {
+                    loadJSON(fPath);
+                } else if (fPath.endsWith('.json')) {
+                    let jso = JSON.parse($.readFileString(fPath).trim());
                     for (let y in jso) {
                         register(y, jso[y]);
                     }
                 }
             } catch (e) {
+                $.log.error('Error loading ' + fPath);
                 $.log.error(e);
             }
         }
