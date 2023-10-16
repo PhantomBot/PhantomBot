@@ -48,6 +48,7 @@
         if (!path.startsWith('./scripts/')) {
             path = './scripts/' + path;
         }
+
         let files = $.findFiles(path, '');
 
         for (let x in files) {
@@ -55,7 +56,7 @@
             try {
                 if ($.isDirectory(fPath)) {
                     loadJSON(fPath);
-                } else {
+                } else if (fPath.endsWith('.json')) {
                     let jso = JSON.parse($.readFileString(fPath).trim());
                     for (let y in jso) {
                         register(y, jso[y]);
