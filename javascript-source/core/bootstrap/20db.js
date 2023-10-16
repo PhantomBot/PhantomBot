@@ -65,7 +65,9 @@
     }
 
     function optIniDbBoolean(fileName, key) {
-        return wrapOpt($.inidb.OptBoolean(fileName, '', key));
+        return wrapOpt($.inidb.OptBoolean(fileName, '', key), function(val) {
+            return val.booleanValue();
+        });
     }
 
     /**
@@ -164,7 +166,9 @@
     }
 
     function optIniDbNumber(fileName, key) {
-        return wrapOpt($.inidb.OptLong(fileName, '', key));
+        return wrapOpt($.inidb.OptLong(fileName, '', key), function(val) {
+            return val.longValue();
+        });
     }
 
     /**
@@ -177,7 +181,7 @@
     function getSetIniDbNumber(fileName, key, defaultValue) {
         let res = $.inidb.OptLong(fileName, '', key);
         if (res.isPresent()) {
-            return res.get();
+            return res.get().longValue();
         }
 
         $.inidb.SetLong(fileName, '', key, defaultValue);
@@ -211,7 +215,9 @@
     }
 
     function optIniDbFloat(fileName, key) {
-        return wrapOpt($.inidb.OptFloats(fileName, '', key));
+        return wrapOpt($.inidb.OptFloat(fileName, '', key), function(val) {
+            return val.floatValue();
+        });
     }
 
     /**
@@ -224,7 +230,7 @@
     function getSetIniDbFloat(fileName, key, defaultValue) {
         let res = $.inidb.OptFloat(fileName, '', key);
         if (res.isPresent()) {
-            return res.get();
+            return res.get().floatValue();
         }
 
         $.inidb.SetFloat(fileName, '', key, defaultValue);
