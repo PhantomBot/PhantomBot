@@ -20,14 +20,40 @@ import java.lang.ref.SoftReference;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
+import org.json.JSONStringer;
+
+import com.gmt2001.httpwsserver.HttpServerPageHandler;
+import com.gmt2001.httpwsserver.WebSocketFrameHandler;
+
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
 /**
- * A client of a {@link WsWithLongPollFallbackhandler}
+ * A client of a {@link JSONWsWithLongPollFallbackHandler}
  */
 public final class Client {
+    /**
+     * Empty response for a timed-out long poll
+     */
+    private static final String EMPTY_LONG_POLL_RESPONSE = new JSONStringer().array().endArray().toString();
+    /**
+     * Content-Type for long poll
+     */
+    private static final String LONG_POLL_CONTENT_TYPE = "json";
+    /**
+     * Write lock for accessing the context
+     */
+    private final Semaphore lock = new Semaphore(1);
+    /**
+     * The timeout when waiting for write access to the context fails
+     */
+    private final Duration lockTimeout;
     /**
      * The authenticated user
      */
@@ -56,10 +82,13 @@ public final class Client {
     /**
      * Constructor
      *
-     * @param user The authenticated user
+     * @param user        The authenticated user
+     * @param lockTimeout The timeout when waiting for write access to the context
+     *                    fails
      */
-    public Client(PanelUser user) {
+    public Client(PanelUser user, Duration lockTimeout) {
         this.user = user;
+        this.lockTimeout = lockTimeout;
     }
 
     /**
@@ -74,13 +103,23 @@ public final class Client {
     /**
      * Updates the currently active {@link ChannelHandlerContext}
      *
-     * @param ctx The context
+     * @param ctx  The context
      * @param isWs {@code true} if the context is a WS socket
      * @return {@code this}
      */
     public Client channelHandlerContext(ChannelHandlerContext ctx, boolean isWs) {
-        this.ctx = ctx;
-        this.isWs = isWs;
+        try {
+            if (this.lock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    this.ctx = ctx;
+                    this.isWs = isWs;
+                } finally {
+                    this.lock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
         return this;
     }
 
@@ -116,11 +155,14 @@ public final class Client {
     /**
      * Enqueues a message
      * <p>
-     * A separate or chained call to {@link #process()} is required to actually attempt to send the message
+     * A separate or chained call to {@link #process()} is required to actually
+     * attempt to send the message
      *
-     * @param message The message to enqueue
-     * @param strongTimeout The duration after which the strong reference to the message will be dropped
-     * @param softTimeout The duration after which the soft reference, and the entire message, will be dropped
+     * @param message       The message to enqueue
+     * @param strongTimeout The duration after which the strong reference to the
+     *                      message will be dropped
+     * @param softTimeout   The duration after which the soft reference, and the
+     *                      entire message, will be dropped
      * @return {@code this}
      */
     public Client enqueue(String message, Duration strongTimeout, Duration softTimeout) {
@@ -131,9 +173,93 @@ public final class Client {
     }
 
     /**
-     * Attempts to send the currently enqueued messages
+     * Processes timeouts
+     */
+    public void processTimeout() {
+        Instant now = Instant.now();
+        this.strongQueue.removeIf(m -> m.strongTimeout().isBefore(now));
+        this.softQueue.removeIf(m -> m.get() == null || m.get().softTimeout().isBefore(now));
+
+        try {
+            if (this.ctx != null && this.lock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    if (this.nextTimeout.isBefore(now)) {
+                        if (this.ctx != null && this.ctx.channel().isActive()) {
+                            if (this.isWs) {
+                                WebSocketFrameHandler.sendWsFrame(ctx, null, new PingWebSocketFrame(
+                                        Unpooled.copiedBuffer(Long.toString(now.toEpochMilli()).getBytes())));
+                            } else {
+                                HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
+                                        .prepareHttpResponse(HttpResponseStatus.OK, EMPTY_LONG_POLL_RESPONSE,
+                                                LONG_POLL_CONTENT_TYPE));
+                                this.ctx = null;
+                            }
+                        }
+                    }
+                } finally {
+                    this.lock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    /**
+     * Processes timeouts, then attempts to send the currently enqueued messages
      */
     public void process() {
+        this.processTimeout();
 
+        try {
+            if (this.ctx != null && this.lock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    if (this.ctx != null && this.ctx.channel().isActive()) {
+                        if (this.isWs) {
+                            Message m = this.strongQueue.poll();
+                            while (m != null) {
+                                WebSocketFrameHandler.sendWsFrame(ctx, null,
+                                        WebSocketFrameHandler.prepareTextWebSocketResponse(m.message()));
+                                m = this.strongQueue.poll();
+                            }
+
+                            SoftReference<Message> s = this.softQueue.poll();
+                            while (s != null) {
+                                if (s.get() != null) {
+                                    WebSocketFrameHandler.sendWsFrame(this.ctx, null,
+                                            WebSocketFrameHandler.prepareTextWebSocketResponse(s.get().message()));
+                                }
+                                s = this.softQueue.poll();
+                            }
+                        } else {
+                            JSONStringer jso = new JSONStringer();
+                            jso.array();
+                            Message m = this.strongQueue.poll();
+                            while (m != null) {
+                                jso.value(m.message());
+                                m = this.strongQueue.poll();
+                            }
+
+                            SoftReference<Message> s = this.softQueue.poll();
+                            while (s != null) {
+                                if (s.get() != null) {
+                                    jso.value(s.get().message());
+                                }
+                                s = this.softQueue.poll();
+                            }
+                            jso.endArray();
+                            HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
+                                    .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
+                                            LONG_POLL_CONTENT_TYPE));
+                            this.ctx = null;
+                        }
+                    }
+                } finally {
+                    this.lock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
     }
 }
