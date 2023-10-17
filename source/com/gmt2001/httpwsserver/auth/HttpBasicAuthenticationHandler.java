@@ -94,34 +94,14 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
      */
     public HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri,
             boolean allowPaneluser) {
-        this(realm, user, pass, loginUri, allowPaneluser, false);
-    }
-
-    /**
-     * Constructor
-     *
-     * @param realm          The realm to present to the user
-     * @param user           The username required for valid authentication
-     * @param pass           The password required for valid authentication
-     * @param loginUri       The login page URI
-     * @param allowPanelUser Whether this instance is allow to authenticate headers
-     *                       against {@link PanelUser}
-     * @param allowNullUser  If {@code true}, then the {@code user} parameter may be
-     *                       {@code null}, which effectively makes this handler only
-     *                       accept a {@link PanelUser} for authentication
-     * @throws IllegalArgumentException If {@code realm} contains any double quotes
-     *                                  or {@code user} contains any colons
-     */
-    protected HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri,
-            boolean allowPaneluser, boolean allowNullUser) {
-        if (realm.contains("\"") || (user == null && !allowNullUser) || (user != null && user.contains(":"))) {
+        if (realm.contains("\"") || (user != null && user.contains(":"))) {
             throw new IllegalArgumentException(
                     "Illegal realm or username. Realm must not contain double quotes, user must not contain colon");
         }
 
         this.realm = realm;
         this.user = user;
-        this.pass = Digest.sha256(pass);
+        this.pass = pass == null ? null : Digest.sha256(pass);
         this.loginUri = loginUri;
         this.allowPaneluser = allowPaneluser;
     }
@@ -156,7 +136,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
             }
 
             com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
-            if (this.user != null) {
+            if (this.user != null && this.pass != null) {
                 com.gmt2001.Console.debug.println("Expected: >" + this.user + ":" + this.pass + "<");
             }
             if (auth != null) {
@@ -171,7 +151,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
                     + "kickback=" + URLEncoder.encode(req.uri(), StandardCharsets.UTF_8));
 
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
-            if (this.user != null) {
+            if (this.user != null && this.pass != null) {
                 com.gmt2001.Console.debug.println("Expected: >" + this.user + ":" + this.pass + "<");
             }
             if (auth != null) {
@@ -284,7 +264,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
      *         {@code null} or the login fails
      */
     private boolean isAuthorizedUserPass(String user, String pass) {
-        return this.user != null && user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
+        return this.user != null && this.pass != null && user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
     }
 
     /**
