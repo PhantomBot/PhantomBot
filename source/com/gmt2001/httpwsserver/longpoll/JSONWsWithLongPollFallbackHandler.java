@@ -16,14 +16,26 @@
  */
 package com.gmt2001.httpwsserver.longpoll;
 
+import org.json.JSONObject;
+
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
-public abstract class WsWithLongPollFallbackHandler implements HttpRequestHandler, WsFrameHandler {
+public abstract class JSONWsWithLongPollFallbackHandler implements HttpRequestHandler, WsFrameHandler {
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
     }
+
+    @Override
+    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+        if (frame instanceof PongWebSocketFrame) {
+        }
+    }
+
+    public abstract void handleMessage(JSONObject jso);
 }
