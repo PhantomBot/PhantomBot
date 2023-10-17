@@ -36,6 +36,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -54,6 +55,7 @@ import io.netty.util.CharsetUtil;
  *
  * @author gmt2001
  */
+@Sharable
 public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     /**
