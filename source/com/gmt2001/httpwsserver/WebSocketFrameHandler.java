@@ -16,7 +16,16 @@
  */
 package com.gmt2001.httpwsserver;
 
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
+
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -31,12 +40,6 @@ import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.AttributeKey;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
 /**
  * Processes WebSocket frames and passes successful ones to the appropriate registered final handler
@@ -298,6 +301,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         HTTPWSServer.releaseObj(resframe);
     }
 
+    /**
+     * Closes all WS sessions
+     */
     static void closeAllWsSessions() {
         WebSocketFrame resframe = WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.ENDPOINT_UNAVAILABLE);
         WS_SESSIONS.forEach((c) -> {
@@ -308,6 +314,12 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         HTTPWSServer.releaseObj(resframe);
     }
 
+    /**
+     * Returns a queue containing all authenticated WS session channels that match the given URI
+     *
+     * @param uri The URI to match
+     * @return The matching channels
+     */
     public static Queue<Channel> getWsSessions(String uri) {
         Queue<Channel> sessions = new ConcurrentLinkedQueue<>();
 
