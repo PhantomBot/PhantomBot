@@ -32,11 +32,13 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 
 /**
- * Provides a {@link WsAuthenticationHandler} that implements A Write/ReadOnly token-based authentication where all clients share the same tokens
+ * Provides a {@link WsAuthenticationHandler} that implements A Write/ReadOnly
+ * token-based authentication where all clients share the same tokens
  *
  * @author gmt2001
  */
-public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHandler {
+public final class WsSharedRWTokenAuthenticationHandler
+        implements WsAuthenticationHandler, PanelUserAuthenticationHandler {
 
     /**
      * The authorization token that grants read-only access
@@ -55,7 +57,8 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
      */
     private final Runnable authenticatedCallback;
     /**
-     * Whether this instance is allow to authenticate headers against {@link PanelUser}
+     * Whether this instance is allow to authenticate headers against
+     * {@link PanelUser}
      */
     private final boolean allowPaneluser;
     /**
@@ -66,12 +69,14 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
      * Represents the {@code ATTR_AUTH_ATTEMPTS} attribute
      */
     private static final AttributeKey<Integer> ATTR_AUTH_ATTEMPTS = AttributeKey.valueOf("authAttempts");
+
     /**
      * Constructor
      *
-     * @param readOnlyToken The authorization token that grants read-only access
+     * @param readOnlyToken  The authorization token that grants read-only access
      * @param readWriteToken The authorization token that grants read-write access
-     * @param maxAttempts The maximum allowed auth failure responses before the connection is shut down
+     * @param maxAttempts    The maximum allowed auth failure responses before the
+     *                       connection is shut down
      */
     public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts) {
         this(readOnlyToken, readWriteToken, maxAttempts, null, false);
@@ -80,37 +85,51 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
     /**
      * Constructor
      *
-     * @param readOnlyToken The authorization token that grants read-only access
+     * @param readOnlyToken  The authorization token that grants read-only access
      * @param readWriteToken The authorization token that grants read-write access
-     * @param maxAttempts The maximum allowed auth failure responses before the connection is shut down
-     * @param allowPaneluser Whether to allow authenticating via HTTP Headers to a {@link PanelUser}
+     * @param maxAttempts    The maximum allowed auth failure responses before the
+     *                       connection is shut down
+     * @param allowPaneluser Whether to allow authenticating via HTTP Headers to a
+     *                       {@link PanelUser}
      */
-    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts, boolean allowPaneluser) {
+    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts,
+            boolean allowPaneluser) {
         this(readOnlyToken, readWriteToken, maxAttempts, null, allowPaneluser);
     }
 
     /**
      * Constructor
      *
-     * @param readOnlyToken The authorization token that grants read-only access
-     * @param readWriteToken The authorization token that grants read-write access
-     * @param maxAttempts The maximum allowed auth failure responses before the connection is shut down
-     * @param authenticatedCallback A callback to run when a connection authenticates successfully
+     * @param readOnlyToken         The authorization token that grants read-only
+     *                              access
+     * @param readWriteToken        The authorization token that grants read-write
+     *                              access
+     * @param maxAttempts           The maximum allowed auth failure responses
+     *                              before the connection is shut down
+     * @param authenticatedCallback A callback to run when a connection
+     *                              authenticates successfully
      */
-    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts, Runnable authenticatedCallback) {
+    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts,
+            Runnable authenticatedCallback) {
         this(readOnlyToken, readWriteToken, maxAttempts, authenticatedCallback, false);
     }
 
     /**
      * Constructor
      *
-     * @param readOnlyToken The authorization token that grants read-only access
-     * @param readWriteToken The authorization token that grants read-write access
-     * @param maxAttempts The maximum allowed auth failure responses before the connection is shut down
-     * @param authenticatedCallback A callback to run when a connection authenticates successfully
-     * @param allowPaneluser Whether to allow authenticating via HTTP Headers to a {@link PanelUser}
+     * @param readOnlyToken         The authorization token that grants read-only
+     *                              access
+     * @param readWriteToken        The authorization token that grants read-write
+     *                              access
+     * @param maxAttempts           The maximum allowed auth failure responses
+     *                              before the connection is shut down
+     * @param authenticatedCallback A callback to run when a connection
+     *                              authenticates successfully
+     * @param allowPaneluser        Whether to allow authenticating via HTTP Headers
+     *                              to a {@link PanelUser}
      */
-    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts, Runnable authenticatedCallback, boolean allowPaneluser) {
+    public WsSharedRWTokenAuthenticationHandler(String readOnlyToken, String readWriteToken, int maxAttempts,
+            Runnable authenticatedCallback, boolean allowPaneluser) {
         this.readOnlyToken = readOnlyToken;
         this.readWriteToken = readWriteToken;
         this.maxAttempts = maxAttempts;
@@ -119,17 +138,23 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
     }
 
     /**
-     * Checks if the given {@link WebSocketFrame} has the correct token and closes the connection after {@link maxAttempts} failed attempts
+     * Checks if the given {@link WebSocketFrame} has the correct token and closes
+     * the connection after {@link maxAttempts} failed attempts
      *
-     * Saves the authorization results in the channel attributes and recalls them to keep the session authorized in subsequent frames
+     * Saves the authorization results in the channel attributes and recalls them to
+     * keep the session authorized in subsequent frames
      *
-     * If this is an authentication frame, or another frame when authentication already failed, sends a JSON-encoded frame defined as
-     * {@code {"authresult": string:"true" or "false", "authtype": string:"none" or "read" or "read/write"}}
+     * If this is an authentication frame, or another frame when authentication
+     * already failed, sends a JSON-encoded frame defined as
+     * {@code {"authresult": string:"true" or "false", "authtype": string:"none" or
+     * "read" or "read/write"}}
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param ctx   The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to check
-     * @return, this method will also reply with the appropriate frames to continue the authentication sequence, or an {@code Unauthorized} frame if
-     * authentication has been fully attempted and failed
+     *              @return, this method will also reply with the appropriate frames
+     *              to continue the authentication sequence, or an
+     *              {@code Unauthorized} frame if
+     *              authentication has been fully attempted and failed
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
@@ -140,7 +165,8 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
         ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).setIfAbsent(null);
 
         if (ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_SENT_AUTH_REPLY).get()) {
-            if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null && !ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get().isEnabled()) {
+            if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null
+                    && !ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get().isEnabled()) {
                 this.invalidateAuthorization(ctx, frame);
                 com.gmt2001.Console.debug.println("Invalidated");
                 return false;
@@ -166,26 +192,29 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
                         astr = jso.getString("readauth");
                     }
 
-                    if (this.allowPaneluser && ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
+                    if (this.allowPaneluser
+                            && ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                         com.gmt2001.Console.debug.println("HasUser");
-                    } else if (astr.equals(readWriteToken)) {
+                    } else if (this.readWriteToken != null && astr.equals(readWriteToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.FALSE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         com.gmt2001.Console.debug.println("RWToken");
-                    } else if (astr.equals(readOnlyToken)) {
+                    } else if (this.readOnlyToken != null && astr.equals(readOnlyToken)) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         com.gmt2001.Console.debug.println("ROToken");
                     }
 
-                    if (this.allowPaneluser && ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() == null) {
+                    if (this.allowPaneluser
+                            && ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() == null) {
                         PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(astr);
-                        com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
+                        com.gmt2001.Console.debug.println("user=" + (user == null ? "null"
+                                : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                         if (user != null) {
                             ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                             ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
@@ -201,19 +230,27 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
 
         JSONStringer jsonObject = new JSONStringer();
         String hasAuth = ctx.channel().attr(ATTR_AUTHENTICATED).get() ? "true" : "false";
-        String authType = ctx.channel().attr(ATTR_AUTHENTICATED).get() ? (ctx.channel().attr(ATTR_IS_READ_ONLY).get() ? "read" : "read/write") : "none";
+        String authType = ctx.channel().attr(ATTR_AUTHENTICATED).get()
+                ? (ctx.channel().attr(ATTR_IS_READ_ONLY).get() ? "read" : "read/write")
+                : "none";
         jsonObject.object().key("authresult").value(hasAuth).key("authtype").value(authType).endObject();
 
-        com.gmt2001.Console.debug.println("AuthResult [" + ctx.channel().remoteAddress().toString() + "] " + jsonObject.toString());
+        com.gmt2001.Console.debug
+                .println("AuthResult [" + ctx.channel().remoteAddress().toString() + "] " + jsonObject.toString());
         WebSocketFrameHandler.sendWsFrame(ctx, frame, new TextWebSocketFrame(jsonObject.toString()));
 
         if (!ctx.channel().attr(ATTR_AUTHENTICATED).get()) {
             com.gmt2001.Console.debug.println("wsauthfail");
-            com.gmt2001.Console.debug.println("Expected (rw): >" + readWriteToken + "<");
-            com.gmt2001.Console.debug.println("Expected (r): >" + readOnlyToken + "<");
+            if (this.readWriteToken != null) {
+                com.gmt2001.Console.debug.println("Expected (rw): >" + this.readWriteToken + "<");
+            }
+            if (this.readOnlyToken != null) {
+                com.gmt2001.Console.debug.println("Expected (r): >" + this.readOnlyToken + "<");
+            }
             com.gmt2001.Console.debug.println("Got: >" + astr + "<");
             if (ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
-                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
+                WebSocketFrameHandler.sendWsFrame(ctx, frame,
+                        WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();
             }
         } else if (this.authenticatedCallback != null) {
@@ -231,18 +268,24 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
     }
 
     /**
-     * Checks if the given {@link HttpHeaders} contains a valid login for a panel user, if enabled
+     * Checks if the given {@link HttpHeaders} contains a valid login for a panel
+     * user, if enabled
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param ctx     The {@link ChannelHandlerContext} of the session
      * @param headers The {@link HttpHeaders} to check
      * @return {@code true} if authorized
      */
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
-        com.gmt2001.Console.debug.println("HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null" : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
-        if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers)) {
-            PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
-            com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
+        com.gmt2001.Console.debug.println(
+                "HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null"
+                        : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
+        if (this.allowPaneluser
+                && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers)) {
+            PanelUser user = PanelUserHandler
+                    .checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
+            com.gmt2001.Console.debug.println(
+                    "user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {
                 ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                 ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
@@ -251,5 +294,10 @@ public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticat
         }
 
         return false;
+    }
+
+    @Override
+    public PanelUser getUser(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
     }
 }
