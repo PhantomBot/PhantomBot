@@ -72,6 +72,10 @@ public final class Client {
      */
     private final PanelUser user;
     /**
+     * The session GUID
+     */
+    private final String guid;
+    /**
      * The strong outbound message queue
      */
     private final ConcurrentLinkedQueue<Message> strongQueue = new ConcurrentLinkedQueue<>();
@@ -111,13 +115,24 @@ public final class Client {
     /**
      * Constructor
      *
+     * @param guid        The session GUID
      * @param user        The authenticated user
      * @param lockTimeout The timeout when waiting for write access to the context
      *                    fails
      */
-    public Client(PanelUser user, Duration lockTimeout) {
+    public Client(String guid, PanelUser user, Duration lockTimeout) {
+        this.guid = guid;
         this.user = user;
         this.lockTimeout = lockTimeout;
+    }
+
+    /**
+     * The session GUID
+     *
+     * @return The GUID
+     */
+    public String guid() {
+        return this.guid;
     }
 
     /**
@@ -226,7 +241,7 @@ public final class Client {
      * A separate or chained call to {@link #process()} is required to actually
      * attempt to send the message
      *
-     * @param data           The message to enqueue
+     * @param data          The message to enqueue
      * @param strongTimeout The duration after which the strong reference to the
      *                      message will be dropped
      * @param softTimeout   The duration after which the soft reference, and the
@@ -427,6 +442,7 @@ public final class Client {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.user == null) ? 0 : this.user.hashCode());
+        result = prime * result + ((this.guid == null) ? 0 : this.guid.hashCode());
         return result;
     }
 
@@ -443,6 +459,11 @@ public final class Client {
             if (other.user != null)
                 return false;
         } else if (!this.user.equals(other.user))
+            return false;
+        if (this.guid == null) {
+            if (other.guid != null)
+                return false;
+        } else if (!this.guid.equals(other.guid))
             return false;
         return true;
     }
