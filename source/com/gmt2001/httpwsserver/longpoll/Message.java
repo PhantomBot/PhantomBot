@@ -17,6 +17,9 @@
 package com.gmt2001.httpwsserver.longpoll;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import org.json.JSONObject;
 
 /**
  * A message enqueued with a {@link Client}
@@ -25,7 +28,15 @@ final class Message {
     /**
      * The message
      */
-    private final String message;
+    private final JSONObject message;
+    /**
+     * The timestamp when the message was enqueued
+     */
+    private final Instant timestamp;
+    /**
+     * The sequence number within the {@link #timestamp}
+     */
+    private final long sequence;
     /**
      * The timestamp when the strong reference will be dropped
      */
@@ -39,13 +50,17 @@ final class Message {
      * Constructor
      *
      * @param message The message
+     * @param timestamp The timestamp when the message was enqueued
+     * @param sequence The sequence number within the timestamp
      * @param strongTimeout The timestamp when the strong reference will be dropped
      * @param softTimeout The timestamp when the soft reference will be dropped
      */
-    Message(String message, Instant strongTimeout, Instant softTimeout) {
+    Message(JSONObject message, Instant timestamp, long sequence, Instant strongTimeout, Instant softTimeout) {
         this.message = message;
-        this.strongTimeout = strongTimeout;
-        this.softTimeout = softTimeout;
+        this.timestamp = timestamp.truncatedTo(ChronoUnit.MILLIS);
+        this.sequence = sequence;
+        this.strongTimeout = strongTimeout.truncatedTo(ChronoUnit.MILLIS);
+        this.softTimeout = softTimeout.truncatedTo(ChronoUnit.MILLIS);
     }
 
     /**
@@ -53,8 +68,26 @@ final class Message {
      *
      * @return The message
      */
-    String message() {
+    JSONObject message() {
         return this.message;
+    }
+
+    /**
+     * The timestamp when the message was enqueued
+     *
+     * @return The timestamp
+     */
+    Instant timestamp() {
+        return this.timestamp;
+    }
+
+    /**
+     * The sequence number within the {@link #timestamp()}
+     *
+     * @return The sequence number
+     */
+    long sequence() {
+        return this.sequence;
     }
 
     /**
@@ -73,5 +106,33 @@ final class Message {
      */
     Instant softTimeout() {
         return this.softTimeout;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
+        result = prime * result + (int) (this.sequence ^ (this.sequence >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        Message other = (Message) obj;
+        if (this.timestamp == null) {
+            if (other.timestamp != null)
+                return false;
+        } else if (!this.timestamp.equals(other.timestamp))
+            return false;
+        if (this.sequence != other.sequence)
+            return false;
+        return true;
     }
 }
