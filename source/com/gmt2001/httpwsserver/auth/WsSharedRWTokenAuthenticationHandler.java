@@ -245,7 +245,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
         com.gmt2001.Console.debug.println("HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null" : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
-        if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getAuthHandler().isAuthorized(ctx, headers)) {
+        if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers)) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
             com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {

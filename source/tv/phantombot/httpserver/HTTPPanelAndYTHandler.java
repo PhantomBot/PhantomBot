@@ -50,7 +50,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/panel", this);
         HttpServerPageHandler.registerHttpHandler("/ytplayer", this);
         return this;
@@ -62,7 +62,7 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return authHandler;
     }
 

@@ -44,13 +44,13 @@ public class WsPanelRemoteLoginHandler implements WsFrameHandler {
     }
 
     @Override
-    public WsFrameHandler register() {
+    public WsFrameHandler registerWs() {
         WebSocketFrameHandler.registerWsHandler("/ws/panel/login", this);
         return this;
     }
 
     @Override
-    public WsAuthenticationHandler getAuthHandler() {
+    public WsAuthenticationHandler getWsAuthHandler() {
         return this.authHandler;
     }
 

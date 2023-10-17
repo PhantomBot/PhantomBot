@@ -32,14 +32,14 @@ public interface WsFrameHandler {
      *
      * @return
      */
-    WsFrameHandler register();
+    WsFrameHandler registerWs();
 
     /**
      * Gets the {@link WsAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link WsAuthenticationHandler}
      */
-    WsAuthenticationHandler getAuthHandler();
+    WsAuthenticationHandler getWsAuthHandler();
 
     /**
      * Handles the WebSocket frame and sends a response back to the client, if necessary

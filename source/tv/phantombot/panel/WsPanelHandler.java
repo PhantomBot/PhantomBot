@@ -75,13 +75,13 @@ public class WsPanelHandler implements WsFrameHandler {
     }
 
     @Override
-    public WsFrameHandler register() {
+    public WsFrameHandler registerWs() {
         WebSocketFrameHandler.registerWsHandler("/ws/panel", this);
         return this;
     }
 
     @Override
-    public WsAuthenticationHandler getAuthHandler() {
+    public WsAuthenticationHandler getWsAuthHandler() {
         return authHandler;
     }
 

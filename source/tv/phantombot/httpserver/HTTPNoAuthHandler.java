@@ -51,7 +51,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 public class HTTPNoAuthHandler implements HttpRequestHandler {
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/", this);
         HttpServerPageHandler.registerHttpHandler("/panel/login", this);
         HttpServerPageHandler.registerHttpHandler("/panel/vendors", this);
@@ -60,7 +60,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return HttpNoAuthenticationHandler.instance();
     }
 

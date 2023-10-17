@@ -55,7 +55,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/dbquery", this);
         HttpServerPageHandler.registerHttpHandler("/games", this);
         HttpServerPageHandler.registerHttpHandler("/get-lang", this);
@@ -66,7 +66,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return authHandler;
     }
 

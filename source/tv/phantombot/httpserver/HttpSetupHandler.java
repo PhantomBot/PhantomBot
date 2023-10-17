@@ -60,7 +60,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/setup", this);
         return this;
     }
@@ -71,7 +71,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return HttpNoAuthenticationHandler.instance();
     }
 

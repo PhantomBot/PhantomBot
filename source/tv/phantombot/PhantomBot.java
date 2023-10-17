@@ -725,17 +725,17 @@ public final class PhantomBot implements Listener {
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             this.checkPanelLogin();
             HTTPWSServer.instance();
-            new HTTPNoAuthHandler().register();
+            new HTTPNoAuthHandler().registerHttp();
             this.httpSetupHandler = new HttpSetupHandler();
-            this.httpSetupHandler.register();
+            this.httpSetupHandler.registerHttp();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
-            this.httpAuthenticatedHandler.register();
+            this.httpAuthenticatedHandler.registerHttp();
             this.httpPanelHandler = new HTTPPanelAndYTHandler();
-            this.httpPanelHandler.register();
+            this.httpPanelHandler.registerHttp();
             this.oauthHandler = new HTTPOAuthHandler();
-            this.oauthHandler.register();
-            this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
-            new WsPanelRemoteLoginHandler().register();
+            this.oauthHandler.registerHttp();
+            this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).registerWs();
+            new WsPanelRemoteLoginHandler().registerWs();
             RestartRunner.instance().register();
         }
     }
@@ -762,7 +762,7 @@ public final class PhantomBot implements Listener {
         }
 
         this.alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(CaselessProperties.instance().getProperty("webauthro"),
-                CaselessProperties.instance().getProperty("webauth")).register();
+                CaselessProperties.instance().getProperty("webauth")).registerWs();
 
         /* Is the music toggled on? */
         /**
@@ -771,7 +771,7 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart musicenable
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("musicenable", true)) {
-            this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).register();
+            this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).registerWs();
         }
         /* Connect to Discord if the data is present. */
         /**

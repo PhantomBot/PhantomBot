@@ -92,7 +92,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
         if (h != null) {
             try {
-                if (h.getAuthHandler().checkAuthorization(ctx, req)) {
+                if (h.getHttpAuthHandler().checkAuthorization(ctx, req)) {
                     h.handleRequest(ctx, req);
                 }
             } catch (Exception ex) {
