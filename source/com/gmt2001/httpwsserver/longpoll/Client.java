@@ -19,10 +19,13 @@ package com.gmt2001.httpwsserver.longpoll;
 import java.lang.ref.SoftReference;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
@@ -47,11 +50,21 @@ public final class Client {
      */
     private static final String LONG_POLL_CONTENT_TYPE = "json";
     /**
-     * Write lock for accessing the context
+     * Write lock for accessing {@link #ctx}
      */
-    private final Semaphore lock = new Semaphore(1);
+    private final Semaphore contextLock = new Semaphore(1);
     /**
-     * The timeout when waiting for write access to the context fails
+     * Write lock for accessing {@link #lastSentTimestamp} and
+     * {@link #lastSentSequence}
+     */
+    private final Semaphore sendSequenceLock = new Semaphore(1);
+    /**
+     * Write lock for accessing {@link #lastReceivedTimestamp} and
+     * {@link #lastReceivedSequence}
+     */
+    private final Semaphore receiveSequenceLock = new Semaphore(1);
+    /**
+     * The timeout when waiting for locks fail
      */
     private final Duration lockTimeout;
     /**
@@ -73,11 +86,27 @@ public final class Client {
     /**
      * The next timeout
      */
-    private Instant nextTimeout = Instant.now();
+    private Instant nextTimeout = Instant.MIN;
     /**
      * {@code true} if {@link #ctx} is a WS socket
      */
     private boolean isWs = false;
+    /**
+     * Last send timestamp attached to an enqueued message
+     */
+    private Instant lastSentTimestamp = Instant.MIN;
+    /**
+     * Last send sequence number attached to an enqueued message
+     */
+    private long lastSentSequence = 0L;
+    /**
+     * Last timestamp attached to a received message
+     */
+    private Instant lastReceivedTimestamp = Instant.MIN;
+    /**
+     * Last sequence number attached to a received message
+     */
+    private long lastReceivedSequence = 0L;
 
     /**
      * Constructor
@@ -101,29 +130,6 @@ public final class Client {
     }
 
     /**
-     * Updates the currently active {@link ChannelHandlerContext}
-     *
-     * @param ctx  The context
-     * @param isWs {@code true} if the context is a WS socket
-     * @return {@code this}
-     */
-    public Client channelHandlerContext(ChannelHandlerContext ctx, boolean isWs) {
-        try {
-            if (this.lock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
-                try {
-                    this.ctx = ctx;
-                    this.isWs = isWs;
-                } finally {
-                    this.lock.release();
-                }
-            }
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-        return this;
-    }
-
-    /**
      * Indicates if the current context is a WS socket
      *
      * @return {@code true} if the context is a WS socket
@@ -139,7 +145,7 @@ public final class Client {
      * @return {@code this}
      */
     public Client timeout(Duration timeout) {
-        this.nextTimeout = Instant.now().plus(timeout);
+        this.nextTimeout = Instant.now().plus(timeout).truncatedTo(ChronoUnit.MILLIS);
         return this;
     }
 
@@ -153,22 +159,110 @@ public final class Client {
     }
 
     /**
+     * Sets the last received sequence for this client
+     *
+     * @param timestamp The message timestamp
+     * @param sequence  The message sequence
+     * @return {@code this}
+     */
+    public Client lastReceived(Instant timestamp, long sequence) {
+        timestamp = timestamp.truncatedTo(ChronoUnit.MILLIS);
+        try {
+            if (this.receiveSequenceLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    if (timestamp.isAfter(this.lastReceivedTimestamp)
+                            || (timestamp.equals(this.lastReceivedTimestamp) && sequence > this.lastReceivedSequence)) {
+                        this.lastReceivedTimestamp = timestamp;
+                        this.lastReceivedSequence = sequence;
+                    }
+                } finally {
+                    this.receiveSequenceLock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        return this;
+    }
+
+    /**
+     * The last received message timestamp, to the nearest millisecond
+     *
+     * @return The timestamp
+     */
+    public Instant lastReceivedTimestamp() {
+        return this.lastReceivedTimestamp;
+    }
+
+    /**
+     * The last received message sequence within {@link #lastReceivedTimestamp()}
+     *
+     * @return The sequence
+     */
+    public long lastReceivedSequence() {
+        return this.lastReceivedSequence;
+    }
+
+    /**
      * Enqueues a message
      * <p>
      * A separate or chained call to {@link #process()} is required to actually
      * attempt to send the message
      *
-     * @param message       The message to enqueue
+     * @param jso           The message to enqueue
      * @param strongTimeout The duration after which the strong reference to the
      *                      message will be dropped
      * @param softTimeout   The duration after which the soft reference, and the
      *                      entire message, will be dropped
      * @return {@code this}
      */
-    public Client enqueue(String message, Duration strongTimeout, Duration softTimeout) {
-        Message m = new Message(message, Instant.now().plus(strongTimeout), Instant.now().plus(softTimeout));
-        this.strongQueue.add(m);
-        this.softQueue.add(new SoftReference<>(m));
+    public Client enqueue(JSONStringer jso, Duration strongTimeout, Duration softTimeout) {
+        return this.enqueue(new JSONObject(jso.toString()), strongTimeout, softTimeout);
+    }
+
+    /**
+     * Enqueues a message
+     * <p>
+     * A separate or chained call to {@link #process()} is required to actually
+     * attempt to send the message
+     *
+     * @param data           The message to enqueue
+     * @param strongTimeout The duration after which the strong reference to the
+     *                      message will be dropped
+     * @param softTimeout   The duration after which the soft reference, and the
+     *                      entire message, will be dropped
+     * @return {@code this}
+     */
+    public Client enqueue(Object data, Duration strongTimeout, Duration softTimeout) {
+        try {
+            if (this.sendSequenceLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+                    long sequence = 0L;
+
+                    if (!now.equals(this.lastSentTimestamp)) {
+                        this.lastSentSequence = 0L;
+                    } else {
+                        sequence = ++this.lastSentSequence;
+                    }
+
+                    JSONObject message = new JSONObject();
+                    JSONObject metadata = new JSONObject();
+                    metadata.put("timestamp", now.toEpochMilli());
+                    metadata.put("sequence", sequence);
+                    message.put("metadata", metadata);
+                    message.put("data", data);
+                    Message m = new Message(message, now, sequence, now.plus(strongTimeout),
+                            now.plus(softTimeout));
+                    this.strongQueue.add(m);
+                    this.softQueue.add(new SoftReference<>(m));
+                } finally {
+                    this.sendSequenceLock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
         return this;
     }
 
@@ -176,12 +270,12 @@ public final class Client {
      * Processes timeouts
      */
     public void processTimeout() {
-        Instant now = Instant.now();
+        Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         this.strongQueue.removeIf(m -> m.strongTimeout().isBefore(now));
         this.softQueue.removeIf(m -> m.get() == null || m.get().softTimeout().isBefore(now));
 
         try {
-            if (this.ctx != null && this.lock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+            if (this.ctx != null && this.contextLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
                 try {
                     if (this.nextTimeout.isBefore(now)) {
                         if (this.ctx != null && this.ctx.channel().isActive()) {
@@ -197,7 +291,7 @@ public final class Client {
                         }
                     }
                 } finally {
-                    this.lock.release();
+                    this.contextLock.release();
                 }
             }
         } catch (InterruptedException ex) {
@@ -206,47 +300,65 @@ public final class Client {
     }
 
     /**
-     * Processes timeouts, then attempts to send the currently enqueued messages
+     * Updates the currently active {@link ChannelHandlerContext}, proceses
+     * timeouts, removes enqueued messages which are before or equal to the
+     * specified sequence, then attempts to replay softly enqueued messages until
+     * reaching the first strongly enqueued message
+     *
+     *
+     * @param ctx                         The context
+     * @param isWs                        {@code true} if the context is a WS socket
+     * @param lastClientReceivedTimestamp The timestamp to start at
+     * @param lastClientReceivedSequence  The sequence to start at, exclusive
+     * @return {@code this}
      */
-    public void process() {
+    public Client setContextAndReplay(ChannelHandlerContext ctx, boolean isWs, Instant lastClientReceivedTimestamp,
+            long lastClientReceivedSequence) {
         this.processTimeout();
 
+        final Instant lastClientReceivedTimestampF = lastClientReceivedTimestamp.truncatedTo(ChronoUnit.MILLIS);
+        this.strongQueue.removeIf(m -> m.timestamp().isBefore(lastClientReceivedTimestampF)
+                || (m.timestamp().equals(lastClientReceivedTimestampF) && m.sequence() <= lastClientReceivedSequence));
+        this.softQueue.removeIf(m -> m.get() == null || m.get().timestamp().isBefore(lastClientReceivedTimestampF)
+                || (m.get().timestamp().equals(lastClientReceivedTimestampF)
+                        && m.get().sequence() <= lastClientReceivedSequence));
+
         try {
-            if (this.ctx != null && this.lock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+            if (this.contextLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
                 try {
+                    this.ctx = ctx;
+                    this.isWs = isWs;
                     if (this.ctx != null && this.ctx.channel().isActive()) {
                         if (this.isWs) {
-                            Message m = this.strongQueue.poll();
-                            while (m != null) {
-                                WebSocketFrameHandler.sendWsFrame(ctx, null,
-                                        WebSocketFrameHandler.prepareTextWebSocketResponse(m.message()));
-                                m = this.strongQueue.poll();
-                            }
+                            Iterator<SoftReference<Message>> it = this.softQueue.iterator();
 
-                            SoftReference<Message> s = this.softQueue.poll();
-                            while (s != null) {
+                            while (it.hasNext()) {
+                                SoftReference<Message> s = it.next();
                                 if (s.get() != null) {
-                                    WebSocketFrameHandler.sendWsFrame(this.ctx, null,
+                                    if (s.get().equals(this.strongQueue.peek())) {
+                                        break;
+                                    }
+
+                                    WebSocketFrameHandler.sendWsFrame(ctx, null,
                                             WebSocketFrameHandler.prepareTextWebSocketResponse(s.get().message()));
                                 }
-                                s = this.softQueue.poll();
                             }
                         } else {
                             JSONStringer jso = new JSONStringer();
                             jso.array();
-                            Message m = this.strongQueue.poll();
-                            while (m != null) {
-                                jso.value(m.message());
-                                m = this.strongQueue.poll();
-                            }
+                            Iterator<SoftReference<Message>> it = this.softQueue.iterator();
 
-                            SoftReference<Message> s = this.softQueue.poll();
-                            while (s != null) {
+                            while (it.hasNext()) {
+                                SoftReference<Message> s = it.next();
                                 if (s.get() != null) {
+                                    if (s.get().equals(this.strongQueue.peek())) {
+                                        break;
+                                    }
+
                                     jso.value(s.get().message());
                                 }
-                                s = this.softQueue.poll();
                             }
+
                             jso.endArray();
                             HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
                                     .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
@@ -255,7 +367,54 @@ public final class Client {
                         }
                     }
                 } finally {
-                    this.lock.release();
+                    this.contextLock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+
+        return this;
+    }
+
+    /**
+     * Processes timeouts, then attempts to send the currently strongly enqueued
+     * messages
+     */
+    public void process() {
+        this.processTimeout();
+
+        try {
+            if (this.ctx != null && this.contextLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    if (this.ctx != null && this.ctx.channel().isActive()) {
+                        if (this.isWs) {
+                            Message m = this.strongQueue.poll();
+
+                            while (m != null) {
+                                WebSocketFrameHandler.sendWsFrame(ctx, null,
+                                        WebSocketFrameHandler.prepareTextWebSocketResponse(m.message()));
+                                m = this.strongQueue.poll();
+                            }
+                        } else {
+                            JSONStringer jso = new JSONStringer();
+                            jso.array();
+                            Message m = this.strongQueue.poll();
+
+                            while (m != null) {
+                                jso.value(m.message());
+                                m = this.strongQueue.poll();
+                            }
+
+                            jso.endArray();
+                            HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
+                                    .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
+                                            LONG_POLL_CONTENT_TYPE));
+                            this.ctx = null;
+                        }
+                    }
+                } finally {
+                    this.contextLock.release();
                 }
             }
         } catch (InterruptedException ex) {
