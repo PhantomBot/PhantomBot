@@ -230,7 +230,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * status code is appended to the beginning of the HTML response
      *
      * @param status The {@link HttpResponseStatus} to return
-     * @return A {@link FullHttpRequest} that is ready to transmit
+     * @return A {@link FullHttpResponse} that is ready to transmit
      */
     public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status) {
         return prepareHttpResponse(status, (byte[]) null, null);
@@ -247,7 +247,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      *
      * @param status The {@link HttpResponseStatus} to return
      * @param content The content to send
-     * @return A {@link FullHttpRequest} that is ready to transmit
+     * @return A {@link FullHttpResponse} that is ready to transmit
      */
     public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, String content) {
         return prepareHttpResponse(status, content.getBytes(CharsetUtil.UTF_8), null);
@@ -265,7 +265,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param status The {@link HttpResponseStatus} to return
      * @param content The content to send
      * @param fileNameOrType The filename or type extension for MIME type detection
-     * @return A {@link FullHttpRequest} that is ready to transmit
+     * @return A {@link FullHttpResponse} that is ready to transmit
      */
     public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, String content, String fileNameOrType) {
         return prepareHttpResponse(status, content.getBytes(CharsetUtil.UTF_8), fileNameOrType);
@@ -283,7 +283,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * @param status The {@link HttpResponseStatus} to return
      * @param content The content to send
      * @param fileNameOrType The filename or type extension for MIME type detection
-     * @return A {@link FullHttpRequest} that is ready to transmit
+     * @return A {@link FullHttpResponse} that is ready to transmit
      */
     public static FullHttpResponse prepareHttpResponse(HttpResponseStatus status, byte[] content, String fileNameOrType) {
         boolean isError = status.codeClass() == HttpStatusClass.CLIENT_ERROR || status.codeClass() == HttpStatusClass.SERVER_ERROR || status.codeClass() == HttpStatusClass.UNKNOWN;
@@ -352,7 +352,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     @SuppressWarnings("unchecked")
     public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res, boolean forceclose) {
         boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR || res.status().codeClass() == HttpStatusClass.SERVER_ERROR || res.status().codeClass() == HttpStatusClass.UNKNOWN;
-        if (!HttpUtil.isKeepAlive(req) || isError || forceclose) {
+        if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
             res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
             ctx.writeAndFlush(res).addListeners((p) -> {
                 HTTPWSServer.releaseObj(res);
@@ -448,7 +448,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     /**
      * Parses out cookies and converts them to a Map
      *
-     * @param headers The {@link FullHttpRequest} containing the request
+     * @param headers The headers of the request
      * @return A Map of cookies
      */
     public static Map<String, String> parseCookies(HttpHeaders headers) {
@@ -471,10 +471,12 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     public static Map<String, String> parsePost(FullHttpRequest req) {
         Map<String, String> post = new HashMap<>();
 
-        Stream.of(req.content().toString(Charset.defaultCharset()).split("&")).forEach(ppost -> {
-            String[] spost = ppost.split("=", 2);
-            post.put(spost[0], spost.length == 2 ? URLDecoder.decode(spost[1], Charset.defaultCharset()) : null);
-        });
+        if (req != null) {
+            Stream.of(req.content().toString(Charset.defaultCharset()).split("&")).forEach(ppost -> {
+                String[] spost = ppost.split("=", 2);
+                post.put(spost[0], spost.length == 2 ? URLDecoder.decode(spost[1], Charset.defaultCharset()) : null);
+            });
+        }
 
         return post;
     }
