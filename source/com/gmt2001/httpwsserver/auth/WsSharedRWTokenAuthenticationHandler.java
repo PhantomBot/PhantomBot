@@ -36,7 +36,7 @@ import org.json.JSONStringer;
  *
  * @author gmt2001
  */
-public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHandler {
+public final class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHandler {
 
     /**
      * The authorization token that grants read-only access
@@ -66,11 +66,6 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      * Represents the {@code ATTR_AUTH_ATTEMPTS} attribute
      */
     private static final AttributeKey<Integer> ATTR_AUTH_ATTEMPTS = AttributeKey.valueOf("authAttempts");
-    /**
-     * Represents the {@code ATTR_AUTH_USER} attribute
-     */
-    public static final AttributeKey<PanelUser> ATTR_AUTH_USER = AttributeKey.valueOf("authUser");
-
     /**
      * Constructor
      *
@@ -142,10 +137,10 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         ctx.channel().attr(ATTR_IS_READ_ONLY).setIfAbsent(Boolean.TRUE);
         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).setIfAbsent(Boolean.FALSE);
         ctx.channel().attr(ATTR_AUTH_ATTEMPTS).setIfAbsent(0);
-        ctx.channel().attr(ATTR_AUTH_USER).setIfAbsent(null);
+        ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).setIfAbsent(null);
 
         if (ctx.channel().attr(ATTR_AUTHENTICATED).get() && ctx.channel().attr(ATTR_SENT_AUTH_REPLY).get()) {
-            if (ctx.channel().attr(ATTR_AUTH_USER).get() != null && !ctx.channel().attr(ATTR_AUTH_USER).get().isEnabled()) {
+            if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null && !ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get().isEnabled()) {
                 this.invalidateAuthorization(ctx, frame);
                 com.gmt2001.Console.debug.println("Invalidated");
                 return false;
@@ -171,7 +166,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         astr = jso.getString("readauth");
                     }
 
-                    if (this.allowPaneluser && ctx.channel().attr(ATTR_AUTH_USER).get() != null) {
+                    if (this.allowPaneluser && ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
@@ -188,12 +183,12 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                         com.gmt2001.Console.debug.println("ROToken");
                     }
 
-                    if (this.allowPaneluser && ctx.channel().attr(ATTR_AUTH_USER).get() == null) {
+                    if (this.allowPaneluser && ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() == null) {
                         PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(astr);
                         com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                         if (user != null) {
                             ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
-                            ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                            ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                             ctx.channel().attr(ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
                             ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
                         }
@@ -232,7 +227,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
     public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.FALSE);
         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);
-        ctx.channel().attr(ATTR_AUTH_USER).set(null);
+        ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(null);
     }
 
     /**
@@ -250,7 +245,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
             com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {
                 ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.TRUE);
-                ctx.channel().attr(ATTR_AUTH_USER).set(user);
+                ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                 return true;
             }
         }

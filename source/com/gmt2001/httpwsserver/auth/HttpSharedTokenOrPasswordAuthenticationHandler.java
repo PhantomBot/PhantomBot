@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author gmt2001
  */
-public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthenticationHandler {
+public final class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthenticationHandler {
 
     /**
      * The authorization token that grants access

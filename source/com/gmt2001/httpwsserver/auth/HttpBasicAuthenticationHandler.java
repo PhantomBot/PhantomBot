@@ -41,7 +41,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  *
  * @author gmt2001
  */
-public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler {
+public final class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler, PanelUserAuthenticationHandler {
 
     /**
      * The realm to present to the user
@@ -112,7 +112,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * @throws IllegalArgumentException If {@code realm} contains any double quotes
      *                                  or {@code user} contains any colons
      */
-    HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri,
+    protected HttpBasicAuthenticationHandler(String realm, String user, String pass, String loginUri,
             boolean allowPaneluser, boolean allowNullUser) {
         if (realm.contains("\"") || (user == null && !allowNullUser) || (user != null && user.contains(":"))) {
             throw new IllegalArgumentException(
@@ -137,6 +137,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
+        ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).setIfAbsent(null);
         HttpHeaders headers = req.headers();
 
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
@@ -190,7 +191,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
-        return this.isAuthorized(req.headers(), req.uri());
+        return this.isAuthorized(ctx, req.headers(), req.uri());
     }
 
     @Override
@@ -200,7 +201,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
-        return this.isAuthorized(headers, null);
+        return this.isAuthorized(ctx, headers, null);
     }
 
     /**
@@ -226,33 +227,9 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         return outAuth;
     }
 
-    /**
-     * Checks if the user is authorized and returns the {@link PanelUser} using the
-     * Base64-encoded login and request URI
-     *
-     * @param req The inbound HTTP request
-     * @return {@code null} if not authorized
-     */
-    PanelUser getAuthorizedPanelB64(FullHttpRequest req) {
-        return this.getAuthorizedPanelB64(req.headers(), req.uri());
-    }
-
-    /**
-     * Checks if the user is authorized and returns the {@link PanelUser} using the
-     * Base64-encoded login and request URI
-     *
-     * @param headers    The HTTP headers of the request
-     * @param requestUri The request URI
-     * @return {@code null} if not authorized
-     */
-    PanelUser getAuthorizedPanelB64(HttpHeaders headers, String requestUri) {
-        String auth = getAuthorizationString(headers);
-
-        if (auth != null) {
-            return this.getAuthorizedPanelB64(auth, requestUri);
-        }
-
-        return null;
+    @Override
+    public PanelUser getUser(ChannelHandlerContext ctx) {
+        return ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
     }
 
     /**
@@ -264,7 +241,7 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * @return {@code null} if panel login is not allowed by this handler or the
      *         login fails
      */
-    PanelUser getAuthorizedPanelB64(String auth, String requestUri) {
+    private PanelUser getAuthorizedPanelB64(String auth, String requestUri) {
         return this.allowPaneluser ? PanelUserHandler.checkLoginAndGetUserB64(auth, requestUri) : null;
     }
 
@@ -272,13 +249,16 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      * Checks if the user is authorized, using {@link PanelUser} with the
      * Base64-encoded login and request URI
      *
+     * @param ctx        The context
      * @param auth       The Base64-encoded login
      * @param requestUri The request URI
      * @return {@code false} if panel login is not allowed by this handler or the
      *         login fails
      */
-    private boolean isAuthorizedPanelB64(String auth, String requestUri) {
-        return this.getAuthorizedPanelB64(auth, requestUri) != null;
+    private boolean isAuthorizedPanelB64(ChannelHandlerContext ctx, String auth, String requestUri) {
+        PanelUser user = this.getAuthorizedPanelB64(auth, requestUri);
+        ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
+        return user != null;
     }
 
     /**
@@ -310,18 +290,19 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
     /**
      * Decodes the authorization string and then checks if the user is authorized
      *
+     * @param ctx        The context
      * @param headers    The HTTP headers of the request
      * @param requestUri The request URI
      * @return {@code true} if authorized
      */
-    private boolean isAuthorized(HttpHeaders headers, String requestUri) {
+    private boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         String auth = getAuthorizationString(headers);
 
         if (auth != null) {
             String userpass = new String(Base64.getDecoder().decode(auth));
             if (!userpass.isBlank()) {
                 int colon = userpass.indexOf(':');
-                return this.isAuthorizedPanelB64(auth, requestUri)
+                return this.isAuthorizedPanelB64(ctx, auth, requestUri)
                         || this.isAuthorizedUserPass(userpass.substring(0, colon), userpass.substring(colon + 1));
             }
         }

@@ -25,7 +25,7 @@ import io.netty.handler.codec.http.HttpHeaders;
  *
  * @author gmt2001
  */
-public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
+public final class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
 
     /**
      * An instance of {@link HttpNoAuthenticationHandler}

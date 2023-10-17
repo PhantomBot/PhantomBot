@@ -18,6 +18,7 @@ package tv.phantombot.ytplayer;
 
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
+import com.gmt2001.httpwsserver.auth.PanelUserAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.WsSharedRWTokenAuthenticationHandler;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -118,7 +119,7 @@ public class WsYTHandler implements WsFrameHandler {
         });
 
         if (frame instanceof TextWebSocketFrame tframe) {
-            PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+            PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
             if (clientConnected && !ctx.channel().attr(ATTR_IS_PLAYER).get() && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
                 JSONStringer jso = new JSONStringer();
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("secondconnection").value(true).endObject().toString()));

@@ -27,7 +27,7 @@ import org.json.JSONStringer;
  *
  * @author gmt2001
  */
-public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
+public final class WsNoAuthenticationHandler implements WsAuthenticationHandler {
 
     /**
      * An instance of {@link WsNoAuthenticationHandler}
