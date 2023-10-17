@@ -262,4 +262,29 @@ public final class Client {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.user == null) ? 0 : this.user.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        Client other = (Client) obj;
+        if (this.user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!this.user.equals(other.user))
+            return false;
+        return true;
+    }
 }
