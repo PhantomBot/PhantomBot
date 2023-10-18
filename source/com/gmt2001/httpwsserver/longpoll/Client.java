@@ -315,6 +315,30 @@ public final class Client {
     }
 
     /**
+     * Processes timeouts and removes enqueued messages which are before or equal to
+     * the
+     * specified sequence
+     *
+     *
+     * @param lastClientReceivedTimestamp The latest timestamp to remove
+     * @param lastClientReceivedSequence  The latest sequence within the timestamp
+     *                                    to remove
+     * @return {@code this}
+     */
+    public Client skip(Instant lastClientReceivedTimestamp, long lastClientReceivedSequence) {
+        this.processTimeout();
+
+        final Instant lastClientReceivedTimestampF = lastClientReceivedTimestamp.truncatedTo(ChronoUnit.MILLIS);
+        this.strongQueue.removeIf(m -> m.timestamp().isBefore(lastClientReceivedTimestampF)
+                || (m.timestamp().equals(lastClientReceivedTimestampF) && m.sequence() <= lastClientReceivedSequence));
+        this.softQueue.removeIf(m -> m.get() == null || m.get().timestamp().isBefore(lastClientReceivedTimestampF)
+                || (m.get().timestamp().equals(lastClientReceivedTimestampF)
+                        && m.get().sequence() <= lastClientReceivedSequence));
+
+        return this;
+    }
+
+    /**
      * Updates the currently active {@link ChannelHandlerContext}, proceses
      * timeouts, removes enqueued messages which are before or equal to the
      * specified sequence, then attempts to replay softly enqueued messages until
@@ -329,14 +353,7 @@ public final class Client {
      */
     public Client setContextAndReplay(ChannelHandlerContext ctx, boolean isWs, Instant lastClientReceivedTimestamp,
             long lastClientReceivedSequence) {
-        this.processTimeout();
-
-        final Instant lastClientReceivedTimestampF = lastClientReceivedTimestamp.truncatedTo(ChronoUnit.MILLIS);
-        this.strongQueue.removeIf(m -> m.timestamp().isBefore(lastClientReceivedTimestampF)
-                || (m.timestamp().equals(lastClientReceivedTimestampF) && m.sequence() <= lastClientReceivedSequence));
-        this.softQueue.removeIf(m -> m.get() == null || m.get().timestamp().isBefore(lastClientReceivedTimestampF)
-                || (m.get().timestamp().equals(lastClientReceivedTimestampF)
-                        && m.get().sequence() <= lastClientReceivedSequence));
+        this.skip(lastClientReceivedTimestamp, lastClientReceivedSequence);
 
         try {
             if (this.contextLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
