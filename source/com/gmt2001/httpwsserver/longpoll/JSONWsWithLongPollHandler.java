@@ -26,7 +26,9 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
-public abstract class JSONWsWithLongPollFallbackHandler implements HttpRequestHandler, WsFrameHandler {
+public abstract class JSONWsWithLongPollHandler implements HttpRequestHandler, WsFrameHandler {
+    protected final ClientCache clientCache;
+
     @Override
     public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
     }
@@ -34,6 +36,7 @@ public abstract class JSONWsWithLongPollFallbackHandler implements HttpRequestHa
     @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof PongWebSocketFrame) {
+            this.clientCache.pong(ctx);
         }
     }
 
