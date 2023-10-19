@@ -18,10 +18,15 @@ package com.gmt2001.httpwsserver.longpoll;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.gmt2001.httpwsserver.auth.PanelUserAuthenticationHandler;
@@ -35,6 +40,11 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * {@link JSONWsWithLongPollHandler}
  */
 public final class ClientCache {
+    /**
+     * Write lock for accessing {@link #lastSentTimestamp} and
+     * {@link #lastSentSequence}
+     */
+    private final Semaphore sendSequenceLock = new Semaphore(1);
     /**
      * The timeout until a WS client is sent a PING frame or an HTTP client is sent
      * an empty response
@@ -54,6 +64,14 @@ public final class ClientCache {
      * The clients
      */
     private final CopyOnWriteArrayList<Client> clients = new CopyOnWriteArrayList<>();
+    /**
+     * Last send timestamp attached to an enqueued message
+     */
+    private Instant lastSentTimestamp = Instant.MIN;
+    /**
+     * Last send sequence number attached to an enqueued message
+     */
+    private long lastSentSequence = 0L;
 
     /**
      * Constructor
@@ -90,6 +108,15 @@ public final class ClientCache {
                 this.clients.remove(c);
             }
         });
+    }
+
+    /**
+     * Returns an unmodifiable list of current clients
+     *
+     * @return A list of {@link Client}
+     */
+    public List<Client> clients() {
+        return Collections.unmodifiableList(this.clients);
     }
 
     /**
@@ -164,12 +191,68 @@ public final class ClientCache {
     }
 
     /**
+     * Enqueues a message
+     * <p>
+     * A separate or chained call to {@link #process()} is required to actually
+     * attempt to send the message
+     *
+     * @param clients The clients to enqueue the message with
+     * @param jso     The message to enqueue
+     * @return {@code this}
+     */
+    public ClientCache enqueue(Iterable<Client> clients, JSONStringer jso) {
+        return this.enqueue(clients, new JSONObject(jso.toString()));
+    }
+
+    /**
+     * Enqueues a message
+     * <p>
+     * A separate or chained call to {@link #process()} is required to actually
+     * attempt to send the message
+     *
+     * @param clients The clients to enqueue the message with
+     * @param data    The message to enqueue
+     * @return {@code this}
+     */
+    public ClientCache enqueue(Iterable<Client> clients, Object data) {
+        try {
+            if (this.sendSequenceLock.tryAcquire(this.ctxTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
+                try {
+                    Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+                    long sequence = 0L;
+
+                    if (!now.equals(this.lastSentTimestamp)) {
+                        this.lastSentSequence = 0L;
+                    } else {
+                        sequence = ++this.lastSentSequence;
+                    }
+
+                    JSONObject message = new JSONObject();
+                    JSONObject metadata = new JSONObject();
+                    metadata.put("timestamp", now.toEpochMilli());
+                    metadata.put("sequence", sequence);
+                    message.put("metadata", metadata);
+                    message.put("data", data);
+                    Message m = new Message(message, now, sequence, now.plus(this.strongTimeout),
+                            now.plus(this.softTimeout));
+                    clients.forEach(c -> c.enqueue(m));
+                } finally {
+                    this.sendSequenceLock.release();
+                }
+            }
+        } catch (InterruptedException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        return this;
+    }
+
+    /**
      * Broadcasts a message to all connected clients
      *
      * @param jso A {@link JSONStringer} containing the message to send
      */
     public void broadcast(JSONStringer jso) {
-        this.clients.forEach(c -> c.enqueue(jso, this.strongTimeout, this.softTimeout));
+        this.enqueue(this.clients, jso);
     }
 
     /**
@@ -178,7 +261,7 @@ public final class ClientCache {
      * @param message The message to send
      */
     public void broadcast(Object message) {
-        this.clients.forEach(c -> c.enqueue(message, this.strongTimeout, this.softTimeout));
+        this.enqueue(this.clients, message);
     }
 
     /**
@@ -188,8 +271,7 @@ public final class ClientCache {
      * @param jso  A {@link JSONStringer} containing the message to send
      */
     public void send(String user, JSONStringer jso) {
-        this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(user))
-                .forEach(c -> c.enqueue(jso, this.strongTimeout, this.softTimeout));
+        this.enqueue(this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(user)).toList(), jso);
     }
 
     /**
@@ -199,8 +281,8 @@ public final class ClientCache {
      * @param message The message to send
      */
     public void send(String user, Object message) {
-        this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(user))
-                .forEach(c -> c.enqueue(message, this.strongTimeout, this.softTimeout));
+        this.enqueue(this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(user)).toList(),
+                message);
     }
 
     /**
@@ -210,8 +292,7 @@ public final class ClientCache {
      * @param jso  A {@link JSONStringer} containing the message to send
      */
     public void send(PanelUser user, JSONStringer jso) {
-        this.clients.stream().filter(c -> c.user().equals(user))
-                .forEach(c -> c.enqueue(jso, this.strongTimeout, this.softTimeout));
+        this.enqueue(this.clients.stream().filter(c -> c.user().equals(user)).toList(), jso);
     }
 
     /**
@@ -221,8 +302,7 @@ public final class ClientCache {
      * @param message The message to send
      */
     public void send(PanelUser user, Object message) {
-        this.clients.stream().filter(c -> c.user().equals(user))
-                .forEach(c -> c.enqueue(message, this.strongTimeout, this.softTimeout));
+        this.enqueue(this.clients.stream().filter(c -> c.user().equals(user)).toList(), message);
     }
 
     /**
@@ -232,7 +312,7 @@ public final class ClientCache {
      * @param jso    A {@link JSONStringer} containing the message to send
      */
     public void send(Client client, JSONStringer jso) {
-        client.enqueue(jso, this.strongTimeout, this.softTimeout);
+        this.enqueue(List.of(client), jso);
     }
 
     /**
@@ -242,6 +322,6 @@ public final class ClientCache {
      * @param message The message to send
      */
     public void send(Client client, Object message) {
-        client.enqueue(message, this.strongTimeout, this.softTimeout);
+        this.enqueue(List.of(client), message);
     }
 }

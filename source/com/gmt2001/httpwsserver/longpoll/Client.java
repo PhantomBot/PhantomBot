@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
@@ -53,11 +52,6 @@ public final class Client {
      * Write lock for accessing {@link #ctx}
      */
     private final Semaphore contextLock = new Semaphore(1);
-    /**
-     * Write lock for accessing {@link #lastSentTimestamp} and
-     * {@link #lastSentSequence}
-     */
-    private final Semaphore sendSequenceLock = new Semaphore(1);
     /**
      * Write lock for accessing {@link #lastReceivedTimestamp} and
      * {@link #lastReceivedSequence}
@@ -96,14 +90,6 @@ public final class Client {
      */
     private boolean isWs = false;
     /**
-     * Last send timestamp attached to an enqueued message
-     */
-    private Instant lastSentTimestamp = Instant.MIN;
-    /**
-     * Last send sequence number attached to an enqueued message
-     */
-    private long lastSentSequence = 0L;
-    /**
      * Last timestamp attached to a received message
      */
     private Instant lastReceivedTimestamp = Instant.MIN;
@@ -120,7 +106,7 @@ public final class Client {
      * @param lockTimeout The timeout when waiting for write access to the context
      *                    fails
      */
-    public Client(String guid, PanelUser user, Duration lockTimeout) {
+    Client(String guid, PanelUser user, Duration lockTimeout) {
         this.guid = guid;
         this.user = user;
         this.lockTimeout = lockTimeout;
@@ -159,7 +145,7 @@ public final class Client {
      * @param timeout The duration after which the timeout will elapse
      * @return {@code this}
      */
-    public Client timeout(Duration timeout) {
+    Client timeout(Duration timeout) {
         this.nextTimeout = Instant.now().plus(timeout).truncatedTo(ChronoUnit.MILLIS);
         return this;
     }
@@ -180,7 +166,7 @@ public final class Client {
      * @param sequence  The message sequence
      * @return {@code this}
      */
-    public Client lastReceived(Instant timestamp, long sequence) {
+    Client lastReceived(Instant timestamp, long sequence) {
         timestamp = timestamp.truncatedTo(ChronoUnit.MILLIS);
         try {
             if (this.receiveSequenceLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
@@ -219,72 +205,19 @@ public final class Client {
     }
 
     /**
-     * Enqueues a message
-     * <p>
-     * A separate or chained call to {@link #process()} is required to actually
-     * attempt to send the message
+     * Enqueues a message with this client
      *
-     * @param jso           The message to enqueue
-     * @param strongTimeout The duration after which the strong reference to the
-     *                      message will be dropped
-     * @param softTimeout   The duration after which the soft reference, and the
-     *                      entire message, will be dropped
-     * @return {@code this}
+     * @param m The message
      */
-    public Client enqueue(JSONStringer jso, Duration strongTimeout, Duration softTimeout) {
-        return this.enqueue(new JSONObject(jso.toString()), strongTimeout, softTimeout);
-    }
-
-    /**
-     * Enqueues a message
-     * <p>
-     * A separate or chained call to {@link #process()} is required to actually
-     * attempt to send the message
-     *
-     * @param data          The message to enqueue
-     * @param strongTimeout The duration after which the strong reference to the
-     *                      message will be dropped
-     * @param softTimeout   The duration after which the soft reference, and the
-     *                      entire message, will be dropped
-     * @return {@code this}
-     */
-    public Client enqueue(Object data, Duration strongTimeout, Duration softTimeout) {
-        try {
-            if (this.sendSequenceLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
-                try {
-                    Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-                    long sequence = 0L;
-
-                    if (!now.equals(this.lastSentTimestamp)) {
-                        this.lastSentSequence = 0L;
-                    } else {
-                        sequence = ++this.lastSentSequence;
-                    }
-
-                    JSONObject message = new JSONObject();
-                    JSONObject metadata = new JSONObject();
-                    metadata.put("timestamp", now.toEpochMilli());
-                    metadata.put("sequence", sequence);
-                    message.put("metadata", metadata);
-                    message.put("data", data);
-                    Message m = new Message(message, now, sequence, now.plus(strongTimeout),
-                            now.plus(softTimeout));
-                    this.strongQueue.add(m);
-                    this.softQueue.add(new SoftReference<>(m));
-                } finally {
-                    this.sendSequenceLock.release();
-                }
-            }
-        } catch (InterruptedException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
-        return this;
+    void enqueue(Message m) {
+        this.strongQueue.add(m);
+        this.softQueue.add(new SoftReference<Message>(m));
     }
 
     /**
      * Processes timeouts
      */
-    public void processTimeout() {
+    void processTimeout() {
         Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         this.strongQueue.removeIf(m -> m.strongTimeout().isBefore(now));
         this.softQueue.removeIf(m -> m.get() == null || m.get().softTimeout().isBefore(now));
@@ -325,7 +258,7 @@ public final class Client {
      *                                    to remove
      * @return {@code this}
      */
-    public Client skip(Instant lastClientReceivedTimestamp, long lastClientReceivedSequence) {
+    Client skip(Instant lastClientReceivedTimestamp, long lastClientReceivedSequence) {
         this.processTimeout();
 
         final Instant lastClientReceivedTimestampF = lastClientReceivedTimestamp.truncatedTo(ChronoUnit.MILLIS);
@@ -351,7 +284,7 @@ public final class Client {
      * @param lastClientReceivedSequence  The sequence to start at, exclusive
      * @return {@code this}
      */
-    public Client setContextAndReplay(ChannelHandlerContext ctx, boolean isWs, Instant lastClientReceivedTimestamp,
+    Client setContextAndReplay(ChannelHandlerContext ctx, boolean isWs, Instant lastClientReceivedTimestamp,
             long lastClientReceivedSequence) {
         this.skip(lastClientReceivedTimestamp, lastClientReceivedSequence);
 
@@ -413,7 +346,7 @@ public final class Client {
      * Processes timeouts, then attempts to send the currently strongly enqueued
      * messages
      */
-    public void process() {
+    void process() {
         this.processTimeout();
 
         try {
