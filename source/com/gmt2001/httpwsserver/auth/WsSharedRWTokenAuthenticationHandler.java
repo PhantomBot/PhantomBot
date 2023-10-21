@@ -16,6 +16,7 @@
  */
 package com.gmt2001.httpwsserver.auth;
 
+import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -278,12 +279,12 @@ public final class WsSharedRWTokenAuthenticationHandler
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         com.gmt2001.Console.debug.println(
-                "HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null"
-                        : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
+                "HeaderAuth " + (HttpServerPageHandler.getAuthorizationString(headers) == null ? "null"
+                        : HttpServerPageHandler.getAuthorizationString(headers)));
         if (this.allowPaneluser
                 && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers, requestUri)) {
             PanelUser user = PanelUserHandler
-                    .checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
+                    .checkLoginAndGetUserB64(HttpServerPageHandler.getAuthorizationString(headers), null);
             com.gmt2001.Console.debug.println(
                     "user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {

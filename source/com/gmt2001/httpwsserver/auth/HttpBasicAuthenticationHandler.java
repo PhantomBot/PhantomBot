@@ -19,7 +19,6 @@ package com.gmt2001.httpwsserver.auth;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Map;
 
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.security.Digest;
@@ -126,7 +125,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
             return true;
         }
 
-        String auth = getAuthorizationString(req.headers());
+        String auth = HttpServerPageHandler.getAuthorizationString(req.headers());
 
         if (this.loginUri == null || this.loginUri.isBlank()) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
@@ -181,7 +180,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
-        String auth = getAuthorizationString(headers);
+        String auth = HttpServerPageHandler.getAuthorizationString(headers);
 
         if (auth != null) {
             String userpass = new String(Base64.getDecoder().decode(auth));
@@ -193,29 +192,6 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
         }
 
         return false;
-    }
-
-    /**
-     * Checks the given {@link HttpHeaders} for either an
-     * {@code Authorization Basic}, or a cookie named {@code panellogin}
-     *
-     * @param headers The {@link HttpHeaders} to check
-     * @return The authorization string, still encoded with Base64, giving
-     *         preference to {@code Authorization Basic}; {@code null} if neither is
-     *         found
-     */
-    public static String getAuthorizationString(HttpHeaders headers) {
-        String auth = headers.get("Authorization");
-        String outAuth = null;
-
-        if (auth != null && auth.startsWith("Basic ")) {
-            outAuth = auth.substring(6);
-        } else {
-            Map<String, String> cookies = HttpServerPageHandler.parseCookies(headers);
-            outAuth = cookies.getOrDefault("panellogin", null);
-        }
-
-        return outAuth;
     }
 
     @Override

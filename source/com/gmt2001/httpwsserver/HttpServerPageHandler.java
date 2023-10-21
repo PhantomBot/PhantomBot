@@ -124,6 +124,29 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     /**
+     * Checks the given {@link HttpHeaders} for either an
+     * {@code Authorization Basic}, or a cookie named {@code panellogin}
+     *
+     * @param headers The {@link HttpHeaders} to check
+     * @return The authorization string, still encoded with Base64, giving
+     *         preference to {@code Authorization Basic}; {@code null} if neither is
+     *         found
+     */
+    public static String getAuthorizationString(HttpHeaders headers) {
+        String auth = headers.get("Authorization");
+        String outAuth = null;
+
+        if (auth != null && auth.startsWith("Basic ")) {
+            outAuth = auth.substring(6);
+        } else {
+            Map<String, String> cookies = parseCookies(headers);
+            outAuth = cookies.getOrDefault("panellogin", null);
+        }
+
+        return outAuth;
+    }
+
+    /**
      * Determines the best {@link HttpRequestHandler} to use for a given URI
      *
      * @param uri The URI to check
