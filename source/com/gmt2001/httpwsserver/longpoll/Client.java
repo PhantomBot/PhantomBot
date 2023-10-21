@@ -37,7 +37,7 @@ import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
 /**
- * A client of a {@link JSONWsWithLongPollHandler}
+ * A client of a {@link WsWithLongPollHandler}
  */
 public final class Client {
     /**

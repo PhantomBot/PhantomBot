@@ -26,7 +26,10 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
-public abstract class JSONWsWithLongPollHandler implements HttpRequestHandler, WsFrameHandler {
+public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFrameHandler {
+    /**
+     * The cache of {@link Client}
+     */
     protected final ClientCache clientCache;
 
     @Override
