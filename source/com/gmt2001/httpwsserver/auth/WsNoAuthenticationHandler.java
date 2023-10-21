@@ -80,7 +80,7 @@ public final class WsNoAuthenticationHandler implements WsAuthenticationHandler 
     }
 
     @Override
-    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         return false;
     }
 }

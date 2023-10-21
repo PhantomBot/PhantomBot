@@ -56,9 +56,10 @@ public interface WsAuthenticationHandler {
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param headers The {@link HttpHeaders} to check
+     * @param requestUri The request URI
      * @return {@code true} if authorized
      */
-    boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers);
+    boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri);
 
     /**
      * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler

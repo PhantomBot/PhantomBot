@@ -276,7 +276,7 @@ public final class WsSharedRWTokenAuthenticationHandler
      * @return {@code true} if authorized
      */
     @Override
-    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         com.gmt2001.Console.debug.println(
                 "HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null"
                         : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));

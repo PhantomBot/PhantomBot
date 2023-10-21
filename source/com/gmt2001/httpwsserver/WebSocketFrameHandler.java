@@ -138,7 +138,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 ctx.channel().attr(ATTR_URI).set(ruri);
                 ctx.channel().attr(ATTR_FRAME_HANDLER).set(h);
                 ctx.channel().attr(ATTR_ALLOW_NON_SSL).set(allowNonSsl ? "true" : "false");
-                h.getWsAuthHandler().checkAuthorizationHeaders(ctx, hc.requestHeaders());
+                h.getWsAuthHandler().checkAuthorizationHeaders(ctx, hc.requestHeaders(), ruri);
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     WS_SESSIONS.remove(f.channel());
