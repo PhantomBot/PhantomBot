@@ -73,7 +73,7 @@ public final class HttpNoAuthenticationHandler implements HttpAuthenticationHand
     }
 
     @Override
-    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         return true;
     }
 }

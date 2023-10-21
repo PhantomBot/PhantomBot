@@ -109,7 +109,7 @@ public final class HttpSharedTokenOrPasswordAuthenticationHandler implements Htt
 
         String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
 
-        return this.isAuthorized(ctx, req.headers()) || (auth3 != null && auth3.equals(token));
+        return this.isAuthorized(ctx, req.headers(), req.uri()) || (auth3 != null && auth3.equals(token));
     }
 
     @Override
@@ -118,7 +118,7 @@ public final class HttpSharedTokenOrPasswordAuthenticationHandler implements Htt
     }
 
     @Override
-    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         String auth1 = headers.get("password");
         String auth2 = headers.get("webauth");
 

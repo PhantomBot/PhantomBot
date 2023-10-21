@@ -180,8 +180,19 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
     }
 
     @Override
-    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
-        return this.isAuthorized(ctx, headers, null);
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
+        String auth = getAuthorizationString(headers);
+
+        if (auth != null) {
+            String userpass = new String(Base64.getDecoder().decode(auth));
+            if (!userpass.isBlank()) {
+                int colon = userpass.indexOf(':');
+                return this.isAuthorizedPanelB64(ctx, auth, requestUri)
+                        || this.isAuthorizedUserPass(userpass.substring(0, colon), userpass.substring(colon + 1));
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -265,28 +276,5 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
      */
     private boolean isAuthorizedUserPass(String user, String pass) {
         return this.user != null && this.pass != null && user.equalsIgnoreCase(this.user) && pass.equals(this.pass);
-    }
-
-    /**
-     * Decodes the authorization string and then checks if the user is authorized
-     *
-     * @param ctx        The context
-     * @param headers    The HTTP headers of the request
-     * @param requestUri The request URI
-     * @return {@code true} if authorized
-     */
-    private boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
-        String auth = getAuthorizationString(headers);
-
-        if (auth != null) {
-            String userpass = new String(Base64.getDecoder().decode(auth));
-            if (!userpass.isBlank()) {
-                int colon = userpass.indexOf(':');
-                return this.isAuthorizedPanelB64(ctx, auth, requestUri)
-                        || this.isAuthorizedUserPass(userpass.substring(0, colon), userpass.substring(colon + 1));
-            }
-        }
-
-        return false;
     }
 }

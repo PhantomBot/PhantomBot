@@ -281,7 +281,7 @@ public final class WsSharedRWTokenAuthenticationHandler
                 "HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null"
                         : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
         if (this.allowPaneluser
-                && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers)) {
+                && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers, requestUri)) {
             PanelUser user = PanelUserHandler
                     .checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
             com.gmt2001.Console.debug.println(
