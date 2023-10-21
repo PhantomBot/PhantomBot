@@ -66,9 +66,9 @@ public final class Client {
      */
     private final PanelUser user;
     /**
-     * The session GUID
+     * The session ID
      */
-    private final String guid;
+    private final String sessionId;
     /**
      * The strong outbound message queue
      */
@@ -101,24 +101,24 @@ public final class Client {
     /**
      * Constructor
      *
-     * @param guid        The session GUID
+     * @param sessionId   The session ID
      * @param user        The authenticated user
      * @param lockTimeout The timeout when waiting for write access to the context
      *                    fails
      */
-    Client(String guid, PanelUser user, Duration lockTimeout) {
-        this.guid = guid;
+    Client(String sessionId, PanelUser user, Duration lockTimeout) {
+        this.sessionId = sessionId;
         this.user = user;
         this.lockTimeout = lockTimeout;
     }
 
     /**
-     * The session GUID
+     * The session ID
      *
-     * @return The GUID
+     * @return The session ID
      */
-    public String guid() {
-        return this.guid;
+    public String sessionId() {
+        return this.sessionId;
     }
 
     /**
@@ -208,16 +208,20 @@ public final class Client {
      * Enqueues a message with this client
      *
      * @param m The message
+     * @return {@code this}
      */
-    void enqueue(Message m) {
+    Client enqueue(Message m) {
         this.strongQueue.add(m);
         this.softQueue.add(new SoftReference<Message>(m));
+        return this;
     }
 
     /**
      * Processes timeouts
+     *
+     * @return {@code this}
      */
-    void processTimeout() {
+    Client processTimeout() {
         Instant now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         this.strongQueue.removeIf(m -> m.strongTimeout().isBefore(now));
         this.softQueue.removeIf(m -> m.get() == null || m.get().softTimeout().isBefore(now));
@@ -245,6 +249,8 @@ public final class Client {
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        return this;
     }
 
     /**
@@ -345,8 +351,10 @@ public final class Client {
     /**
      * Processes timeouts, then attempts to send the currently strongly enqueued
      * messages
+     *
+     * @return {@code this}
      */
-    void process() {
+    Client process() {
         this.processTimeout();
 
         try {
@@ -385,6 +393,8 @@ public final class Client {
         } catch (InterruptedException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+
+        return this;
     }
 
     @Override
@@ -392,7 +402,7 @@ public final class Client {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.user == null) ? 0 : this.user.hashCode());
-        result = prime * result + ((this.guid == null) ? 0 : this.guid.hashCode());
+        result = prime * result + ((this.sessionId == null) ? 0 : this.sessionId.hashCode());
         return result;
     }
 
@@ -410,10 +420,10 @@ public final class Client {
                 return false;
         } else if (!this.user.equals(other.user))
             return false;
-        if (this.guid == null) {
-            if (other.guid != null)
+        if (this.sessionId == null) {
+            if (other.sessionId != null)
                 return false;
-        } else if (!this.guid.equals(other.guid))
+        } else if (!this.sessionId.equals(other.sessionId))
             return false;
         return true;
     }

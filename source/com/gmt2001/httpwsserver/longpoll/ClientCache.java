@@ -128,25 +128,32 @@ public final class ClientCache {
      * @param isWs                        {@code true} if the context is a WS socket
      * @param lastClientReceivedTimestamp The timestamp to start at
      * @param lastClientReceivedSequence  The sequence to start at, exclusive
+     * @return An optional that contains the client; empty optional if the
+     *         {@link PanelUser} or Session ID is {@code null}
      */
-    public void addOrUpdateClient(ChannelHandlerContext ctx, boolean isWs, Instant lastClientReceivedTimestamp,
+    public Optional<Client> addOrUpdateClient(ChannelHandlerContext ctx, boolean isWs,
+            Instant lastClientReceivedTimestamp,
             long lastClientReceivedSequence) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
-        String guid = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_GUID).get();
+        String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
-        if (user != null && guid != null) {
-            Optional<Client> client = this.clients.stream().filter(c -> c.guid().equals(guid) && c.user().equals(user))
-                    .findFirst();
+        if (user != null && sessionId != null) {
+            Optional<Client> client = this.client(user, sessionId);
 
             if (client.isPresent()) {
-                client.get().setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
-                        .process();
+                return Optional.of(client.get()
+                        .setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
+                        .process());
             } else {
-                Client c = new Client(guid, user, this.ctxTimeout);
+                Client c = new Client(sessionId, user, this.ctxTimeout);
                 this.clients.add(c);
-                c.setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence).process();
+                return Optional
+                        .of(c.setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
+                                .process());
             }
         }
+
+        return Optional.empty();
     }
 
     /**
@@ -166,17 +173,54 @@ public final class ClientCache {
      * Gets the {@link Client} associated with the context
      *
      * @param ctx The context
-     * @return An optional that contains the client, if found
+     * @return An optional that contains the client; empty optional if the client
+     *         was not found, or the {@link PanelUser} or Session ID is
+     *         {@code null}
      */
     public Optional<Client> client(ChannelHandlerContext ctx) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
-        String guid = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_GUID).get();
+        String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
-        if (user != null && guid != null) {
-            return this.clients.stream().filter(c -> c.guid().equals(guid) && c.user().equals(user)).findFirst();
+        return this.client(user, sessionId);
+    }
+
+    /**
+     * Gets the {@link Client} associated with the {@link PanelUser} and Session ID
+     *
+     * @param user      The panel user
+     * @param sessionId The session ID
+     * @return An optional that contains the client; empty optional if the client
+     *         was not found, or the {@link PanelUser} or Session ID is
+     *         {@code null}
+     */
+    public Optional<Client> client(PanelUser user, String sessionId) {
+        if (user != null && sessionId != null) {
+            return this.clients.stream().filter(c -> c.sessionId().equals(sessionId) && c.user().equals(user))
+                    .findFirst();
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Gets a list of all {@link Client} associated with the provided username
+     *
+     * @param username The username
+     * @return A list of clients
+     */
+    public List<Client> clients(String username) {
+        return this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(username)).toList();
+    }
+
+    /**
+     * Gets a list of all {@link Client} associated with the provided
+     * {@link PanelUser}
+     *
+     * @param user The panel user
+     * @return A list of clients
+     */
+    public List<Client> clients(PanelUser user) {
+        return this.clients.stream().filter(c -> c.user().equals(user)).toList();
     }
 
     /**
@@ -267,22 +311,21 @@ public final class ClientCache {
     /**
      * Sends a message to all clients which match a given username
      *
-     * @param user The username
-     * @param jso  A {@link JSONStringer} containing the message to send
+     * @param username The username
+     * @param jso      A {@link JSONStringer} containing the message to send
      */
-    public void send(String user, JSONStringer jso) {
-        this.enqueue(this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(user)).toList(), jso);
+    public void send(String username, JSONStringer jso) {
+        this.enqueue(this.clients(username), jso);
     }
 
     /**
      * Sends a message to all clients which match a given username
      *
-     * @param user    The username
-     * @param message The message to send
+     * @param username The username
+     * @param message  The message to send
      */
-    public void send(String user, Object message) {
-        this.enqueue(this.clients.stream().filter(c -> c.user().getUsername().equalsIgnoreCase(user)).toList(),
-                message);
+    public void send(String username, Object message) {
+        this.enqueue(this.clients, message);
     }
 
     /**
@@ -292,7 +335,7 @@ public final class ClientCache {
      * @param jso  A {@link JSONStringer} containing the message to send
      */
     public void send(PanelUser user, JSONStringer jso) {
-        this.enqueue(this.clients.stream().filter(c -> c.user().equals(user)).toList(), jso);
+        this.enqueue(this.clients(user), jso);
     }
 
     /**
@@ -302,7 +345,7 @@ public final class ClientCache {
      * @param message The message to send
      */
     public void send(PanelUser user, Object message) {
-        this.enqueue(this.clients.stream().filter(c -> c.user().equals(user)).toList(), message);
+        this.enqueue(this.clients(user), message);
     }
 
     /**

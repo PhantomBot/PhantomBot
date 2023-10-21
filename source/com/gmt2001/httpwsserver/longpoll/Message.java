@@ -49,11 +49,11 @@ final class Message {
     /**
      * Constructor
      *
-     * @param message The message
-     * @param timestamp The timestamp when the message was enqueued
-     * @param sequence The sequence number within the timestamp
+     * @param message       The message
+     * @param timestamp     The timestamp when the message was enqueued
+     * @param sequence      The sequence number within the timestamp
      * @param strongTimeout The timestamp when the strong reference will be dropped
-     * @param softTimeout The timestamp when the soft reference will be dropped
+     * @param softTimeout   The timestamp when the soft reference will be dropped
      */
     Message(JSONObject message, Instant timestamp, long sequence, Instant strongTimeout, Instant softTimeout) {
         this.message = message;
