@@ -75,11 +75,6 @@ public final class WsNoAuthenticationHandler implements WsAuthenticationHandler 
     }
 
     @Override
-    public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
-    }
-
-    @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         return false;
     }

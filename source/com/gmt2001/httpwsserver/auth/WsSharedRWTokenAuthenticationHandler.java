@@ -261,7 +261,12 @@ public final class WsSharedRWTokenAuthenticationHandler
         return ctx.channel().attr(ATTR_AUTHENTICATED).get();
     }
 
-    @Override
+    /**
+     * Invalidates the authentication of the specified {@link ChannelHandlerContext}
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param frame The {@link WebSocketFrame}
+     */
     public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
         ctx.channel().attr(ATTR_AUTHENTICATED).set(Boolean.FALSE);
         ctx.channel().attr(ATTR_IS_READ_ONLY).set(Boolean.TRUE);

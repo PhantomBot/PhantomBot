@@ -60,13 +60,4 @@ public interface WsAuthenticationHandler {
      * @return {@code true} if authorized
      */
     boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri);
-
-    /**
-     * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
-     *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param frame The {@link WebSocketFrame}
-     * @throws UnsupportedOperationException Thrown if the selected authentication handler does not support this operation
-     */
-    void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame);
 }

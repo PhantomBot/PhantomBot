@@ -75,13 +75,4 @@ public interface HttpAuthenticationHandler {
      * @return {@code true} if authorized
      */
     boolean isAuthorized(String user, String pass);
-
-    /**
-     * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
-     *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param req The {@link FullHttpRequest}
-     * @throws UnsupportedOperationException Thrown if the selected authentication handler does not support this operation
-     */
-    void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 }

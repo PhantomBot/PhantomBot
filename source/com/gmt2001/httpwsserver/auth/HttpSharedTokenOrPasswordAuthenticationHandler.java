@@ -99,11 +99,6 @@ public final class HttpSharedTokenOrPasswordAuthenticationHandler implements Htt
     }
 
     @Override
-    public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
-    }
-
-    @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
