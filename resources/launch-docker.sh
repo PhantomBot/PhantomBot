@@ -55,6 +55,21 @@ prep_term
 
 unset DISPLAY
 
+pushd . > '/dev/null';
+SCRIPT_PATH="${BASH_SOURCE[0]:-$0}";
+
+while [ -h "$SCRIPT_PATH" ];
+do
+    cd "$( dirname -- "$SCRIPT_PATH"; )";
+    SCRIPT_PATH="$( readlink -f -- "$SCRIPT_PATH"; )";
+done
+
+cd "$( dirname -- "$SCRIPT_PATH"; )" > '/dev/null';
+SCRIPT_PATH="$( pwd; )";
+popd  > '/dev/null'
+
+pushd "$SCRIPT_PATH"
+
 tmp=""
 success=0
 hwname="$( uname -m )"
@@ -131,10 +146,14 @@ if (( success == 0 )); then
 fi
 
 if mount | grep '/tmp' | grep -q noexec; then
-    mkdir -p $(dirname $(readlink -f $0))/tmp
-    tmp="-Djava.io.tmpdir=$(dirname $(readlink -f $0))/tmp"
+    mkdir -p $SCRIPT_PATH/tmp
+    tmp="-Djava.io.tmpdir=$SCRIPT_PATH/tmp"
 fi
 
-${JAVA} --add-exports java.base/sun.security.x509=ALL-UNNAMED ${tmp} -Duser.language=en -Djava.security.policy=config/security -Xms1m -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar PhantomBot.jar "$@" &
+touch java.opt.custom
+
+${JAVA} @java.opt ${tmp} @java.opt.custom -jar PhantomBot.jar "$@" &
 
 wait_term
+
+popd
