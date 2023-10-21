@@ -289,7 +289,7 @@ public final class WsSharedRWTokenAuthenticationHandler
         if (this.allowPaneluser
                 && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers, requestUri)) {
             PanelUser user = PanelUserHandler
-                    .checkLoginAndGetUserB64(HttpServerPageHandler.getAuthorizationString(headers), null);
+                    .checkLoginAndGetUserB64(HttpServerPageHandler.getAuthorizationString(headers), requestUri);
             com.gmt2001.Console.debug.println(
                     "user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
             if (user != null) {
