@@ -135,7 +135,7 @@ public final class ClientCache {
             Instant lastClientReceivedTimestamp,
             long lastClientReceivedSequence) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
-        String sessionId = ctx.channel().attr(JSONWsWithLongPollHandler.ATTR_SESSIONID).get();
+        String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
         if (user != null && sessionId != null) {
             Optional<Client> client = this.client(user, sessionId);
@@ -179,7 +179,7 @@ public final class ClientCache {
      */
     public Optional<Client> client(ChannelHandlerContext ctx) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
-        String sessionId = ctx.channel().attr(JSONWsWithLongPollHandler.ATTR_SESSIONID).get();
+        String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
         return this.client(user, sessionId);
     }
