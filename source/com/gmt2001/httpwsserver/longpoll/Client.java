@@ -41,14 +41,6 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  */
 public final class Client {
     /**
-     * Empty response for a timed-out long poll
-     */
-    private static final String EMPTY_LONG_POLL_RESPONSE = new JSONStringer().array().endArray().toString();
-    /**
-     * Content-Type for long poll
-     */
-    private static final String LONG_POLL_CONTENT_TYPE = "json";
-    /**
      * Write lock for accessing {@link #ctx}
      */
     private final Semaphore contextLock = new Semaphore(1);
@@ -236,8 +228,8 @@ public final class Client {
                                         Unpooled.copiedBuffer(Long.toString(now.toEpochMilli()).getBytes())));
                             } else {
                                 HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
-                                        .prepareHttpResponse(HttpResponseStatus.OK, EMPTY_LONG_POLL_RESPONSE,
-                                                LONG_POLL_CONTENT_TYPE));
+                                        .prepareHttpResponse(HttpResponseStatus.OK, WsWithLongPollHandler.EMPTY_LONG_POLL_RESPONSE,
+                                                WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
                                 this.ctx = null;
                             }
                         }
@@ -333,7 +325,7 @@ public final class Client {
                             jso.endArray();
                             HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
                                     .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
-                                            LONG_POLL_CONTENT_TYPE));
+                                            WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
                             this.ctx = null;
                         }
                     }
@@ -382,7 +374,7 @@ public final class Client {
                             jso.endArray();
                             HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
                                     .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
-                                            LONG_POLL_CONTENT_TYPE));
+                                            WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
                             this.ctx = null;
                         }
                     }

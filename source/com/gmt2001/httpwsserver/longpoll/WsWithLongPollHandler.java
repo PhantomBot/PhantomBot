@@ -24,6 +24,7 @@ import java.util.Base64;
 import java.util.Optional;
 
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
@@ -37,6 +38,14 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
 public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFrameHandler {
+    /**
+     * Content-Type for long poll
+     */
+    public static final String LONG_POLL_CONTENT_TYPE = "json";
+    /**
+     * Empty response for a timed-out long poll
+     */
+    public static final String EMPTY_LONG_POLL_RESPONSE = new JSONStringer().array().endArray().toString();
     /**
      * The entropy of a session ID, in bits
      */
