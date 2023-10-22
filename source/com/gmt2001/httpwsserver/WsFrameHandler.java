@@ -19,6 +19,7 @@ package com.gmt2001.httpwsserver;
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
 import com.gmt2001.wspinger.WSServerPinger;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
@@ -62,8 +63,10 @@ public interface WsFrameHandler {
 
     /**
      * Handles the channel closing for any reason
+     *
+     * @param channel The channel that was closed
      */
-    default void onClose() {}
+    default void onClose(Channel channel) {}
 
     /**
      * Returns a {@link WSServerPinger} to check for connectivity

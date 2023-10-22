@@ -16,6 +16,7 @@
  */
 package com.gmt2001.wsclient;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
@@ -43,6 +44,8 @@ public interface WsClientFrameHandler {
 
     /**
      * Handles the channel closing for any reason
+     *
+     * @param channel The channel that was closed
      */
-    void onClose();
+    void onClose(Channel channel);
 }

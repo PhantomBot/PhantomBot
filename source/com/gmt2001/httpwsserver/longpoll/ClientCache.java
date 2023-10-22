@@ -33,6 +33,7 @@ import org.json.JSONStringer;
 import com.gmt2001.httpwsserver.auth.PanelUserAuthenticationHandler;
 import com.gmt2001.util.concurrent.ExecutorService;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
@@ -104,13 +105,18 @@ public final class ClientCache {
      * Processes timeouts and removes old clients
      */
     private void cleanup() {
-        Instant clientTimeout = Instant.now().plus(this.ctxTimeout.multipliedBy(3));
         this.clients.forEach(c -> {
             c.processTimeout();
-            if (c.timeout().isBefore(clientTimeout)) {
-                this.clients.remove(c);
-            }
         });
+    }
+
+    /**
+     * Removes a client
+     *
+     * @param client The client to remove
+     */
+    void remove(Client client) {
+        this.clients.remove(client);
     }
 
     /**
@@ -172,19 +178,6 @@ public final class ClientCache {
     }
 
     /**
-     * Registers that a client has responded to a PING
-     *
-     * @param ctx The context
-     */
-    public void pong(ChannelHandlerContext ctx) {
-        Optional<Client> client = this.client(ctx);
-
-        if (client.isPresent()) {
-            client.get().timeout(this.ctxTimeout);
-        }
-    }
-
-    /**
      * Gets the {@link Client} associated with the context
      *
      * @param ctx The context
@@ -193,8 +186,20 @@ public final class ClientCache {
      *         {@code null}
      */
     public Optional<Client> client(ChannelHandlerContext ctx) {
-        PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
-        String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
+        return this.client(ctx.channel());
+    }
+
+    /**
+     * Gets the {@link Client} associated with the channel
+     *
+     * @param channel The channel
+     * @return An optional that contains the client; empty optional if the client
+     *         was not found, or the {@link PanelUser} or Session ID is
+     *         {@code null}
+     */
+    public Optional<Client> client(Channel channel) {
+        PanelUser user = channel.attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
+        String sessionId = channel.attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
         return this.client(user, sessionId);
     }

@@ -158,9 +158,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                     WsFrameHandler wh = f.channel().attr(ATTR_FRAME_HANDLER).get();
                     WSServerPinger wp = f.channel().attr(ATTR_PINGER).get();
                     if (wp != null) {
-                        wp.onClose();
+                        wp.onClose(f.channel());
                     }
-                    wh.onClose();
+                    wh.onClose(f.channel());
                 });
                 WS_SESSIONS.add(ctx.channel());
                 if (p != null) {

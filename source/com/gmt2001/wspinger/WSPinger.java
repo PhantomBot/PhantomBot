@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 
 import com.gmt2001.util.concurrent.ExecutorService;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
@@ -185,7 +186,7 @@ public abstract class WSPinger {
      * @param ctx
      */
     public void handshakeComplete(ChannelHandlerContext ctx) {
-        this.onClose();
+        this.onClose(ctx.channel());
         synchronized (this.lock) {
             if (this.connected() && !ExecutorService.isShutdown()) {
                 this.failureCount = 0;
@@ -206,7 +207,7 @@ public abstract class WSPinger {
     /**
      * Cancels future execution of the timers when the socket closes
      */
-    public void onClose() {
+    public void onClose(Channel channel) {
         synchronized (this.lock) {
             boolean changed = false;
             if (this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {

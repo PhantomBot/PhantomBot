@@ -92,9 +92,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                 this.connected = false;
                 if (this.client.pinger != null) {
-                    this.client.pinger.onClose();
+                    this.client.pinger.onClose(f.channel());
                 }
-                this.client.handler.onClose();
+                this.client.handler.onClose(f.channel());
             });
             this.connected = true;
             if (this.client.pinger != null) {

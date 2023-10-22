@@ -24,6 +24,8 @@ import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 import com.gmt2001.wspinger.WSClientPinger;
+
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -420,7 +422,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
     }
 
     @Override
-    public void onClose() {
+    public void onClose(Channel channel) {
         this.onClose(0, "channel closed");
     }
 

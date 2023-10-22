@@ -30,10 +30,8 @@ import org.json.JSONStringer;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
 /**
@@ -78,7 +76,7 @@ public final class Client {
     /**
      * The next timeout
      */
-    private Instant nextTimeout = Instant.MIN;
+    private Instant nextTimeout = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     /**
      * {@code true} if {@link #ctx} is a WS socket
      */
@@ -225,10 +223,7 @@ public final class Client {
                 try {
                     if (this.nextTimeout.isBefore(now)) {
                         if (this.ctx != null && this.ctx.channel().isActive()) {
-                            if (this.isWs) {
-                                WebSocketFrameHandler.sendWsFrame(ctx, null, new PingWebSocketFrame(
-                                        Unpooled.copiedBuffer(Long.toString(now.toEpochMilli()).getBytes())));
-                            } else {
+                            if (!this.isWs) {
                                 HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
                                         .prepareHttpResponse(HttpResponseStatus.OK, WsWithLongPollHandler.EMPTY_LONG_POLL_RESPONSE,
                                                 WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
