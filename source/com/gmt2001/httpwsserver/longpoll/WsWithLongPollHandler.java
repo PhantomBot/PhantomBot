@@ -109,7 +109,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      * @return A session ID
      */
     protected final String sessionIdSupplier() {
-        byte[] b = new byte[SESSION_ID_ENTROPY];
+        byte[] b = new byte[SESSION_ID_ENTROPY / 8];
         String sessionId;
 
         do {
