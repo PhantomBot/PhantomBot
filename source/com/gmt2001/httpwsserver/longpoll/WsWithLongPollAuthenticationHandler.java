@@ -47,6 +47,56 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
 /**
  * A combined authentication handler for a WS with long polling webserver
  * handler
+ * <p>
+ * Accepts authentication via the following methods:
+ * <ul>
+ * <li>Header {@code Authorization: Basic base64[User:Pass]}</li>
+ * <li>Cookie {@code panellogin=base64[User:Pass]}</li>
+ * <li>WS or HTTP long poll frame
+ * <code>{"authenticate": "Authentication Token"}</code></li>
+ * </ul>
+ * <i>NOTE: Password should be a hex-encoded SHA-256 hash. See
+ * {@link com.gmt2001.security.Digest#sha256(String)}</i>
+ * <p>
+ * <i>NOTE: If both the {@code Authorization: Basic} header and
+ * {@code panellogin} cookie are provided, the {@code Authorization: Basic}
+ * header takes priority</i>
+ * <p>
+ * <i>NOTE: For HTTP long polling, {@code authenticate} frames must be wrapped
+ * in a JSON array, and response frames will be wrapped in a JSON array</i>
+ * <p>
+ * When authenticating via Web Socket or HTTP long poll {@code authenticate}
+ * frame, the following response frame is sent:
+ * <ul>
+ * <li>On Failure:
+ * <code>{"authresult": "false", "authtype": "none", "sessionId": null}</code>
+ * </li>
+ * <li>On Success:
+ * <code>{"authresult": "true", "authtype": {@value #AUTH_TYPE}, "sessionId": "base64 session ID"}</code>
+ * </li>
+ * </ul>
+ * <i>If an {@code authenticate} frame sent via Web Socket fails or throws an
+ * exception, the connection is closed</i>
+ * <p>
+ * HTTP Response Codes:
+ * <ul>
+ * <li>{@link HttpResponseStatus#OK} - {@code authenticate} frame passed
+ * validation. See response JSON for session information</li>
+ * <li>{@link HttpResponseStatus#UNAUTHORIZED} - All possible authentication
+ * methods failed validation</li>
+ * <li>{@link HttpResponseStatus#INTERNAL_SERVER_ERROR} - Failed to parse first
+ * JSON array entry as a JSON object, or a database error occurred. See
+ * core-error log or bot console for information</li>
+ * </ul>
+ * <p>
+ * Web Socket Close Codes:
+ * <ul>
+ * <li>{@link WebSocketCloseStatus#POLICY_VIOLATION} - All possible
+ * authentication methods failed validation</li>
+ * <li>{@link WebSocketCloseStatus#INTERNAL_SERVER_ERROR} - Failed to parse
+ * frame text as a JSON object, or a database error occurred. See core-error log
+ * or bot console for information</li>
+ * </ul>
  */
 public final class WsWithLongPollAuthenticationHandler
         implements HttpAuthenticationHandler, WsAuthenticationHandler, PanelUserAuthenticationHandler {
@@ -153,8 +203,8 @@ public final class WsWithLongPollAuthenticationHandler
                     ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).set(Boolean.TRUE);
                     authorized = true;
                 }
-            } catch (JSONException ex) {
-                com.gmt2001.Console.debug.printStackTrace(ex);
+            } catch (JSONException | DataAccessException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
                 WebSocketFrameHandler.sendWsFrame(ctx, frame,
                         WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.INTERNAL_SERVER_ERROR));
                 ctx.close();
