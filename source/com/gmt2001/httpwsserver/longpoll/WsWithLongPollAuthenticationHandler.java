@@ -17,7 +17,7 @@
 package com.gmt2001.httpwsserver.longpoll;
 
 import java.nio.charset.StandardCharsets;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.jooq.exception.DataAccessException;
 import org.json.JSONArray;
@@ -66,8 +66,13 @@ public final class WsWithLongPollAuthenticationHandler
     private final Runnable authenticatedCallback;
     /**
      * Function which provides a session ID
+     * <p>
+     *
+     * @param ChannelHandlerContext The context
+     * @param Boolean               {@code true} if WS; {@code false} if HTTP
+     * @return The session ID
      */
-    private final Function<ChannelHandlerContext, String> sessionIdSupplier;
+    protected final BiFunction<ChannelHandlerContext, Boolean, String> sessionIdSupplier;
 
     /**
      * Constructor
@@ -75,10 +80,11 @@ public final class WsWithLongPollAuthenticationHandler
      * @param authenticatedCallback Optional callback to run when a client
      *                              successfully authenticates via an authentication
      *                              frame
-     * @param sessionIdSupplier     Function which provides a session ID
+     * @param sessionIdSupplier     Function which provides a session ID. See
+     *                              {@link #sessionIdSupplier}
      */
     public WsWithLongPollAuthenticationHandler(Runnable authenticatedCallback,
-            Function<ChannelHandlerContext, String> sessionIdSupplier) {
+            BiFunction<ChannelHandlerContext, Boolean, String> sessionIdSupplier) {
         if (sessionIdSupplier == null) {
             throw new IllegalArgumentException("sessionIdSupplier");
         }
@@ -260,7 +266,8 @@ public final class WsWithLongPollAuthenticationHandler
     public boolean isAuthorized(ChannelHandlerContext ctx, JSONObject jso) {
         if (jso.has("authenticate")) {
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
-                ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx));
+                ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx,
+                        ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null));
                 com.gmt2001.Console.debug.println("HasUser");
                 return true;
             } else {
@@ -269,7 +276,8 @@ public final class WsWithLongPollAuthenticationHandler
                         : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
-                    ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx));
+                    ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx,
+                            ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null));
                     return true;
                 }
             }
@@ -285,7 +293,8 @@ public final class WsWithLongPollAuthenticationHandler
         if (auth != null) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(auth, requestUri);
             ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
-            ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx));
+            ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx,
+                    ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null));
             return user != null;
         }
 
