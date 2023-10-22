@@ -66,7 +66,7 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(new HttpContentCompressor());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
-        pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true));
+        pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true, false));
         pipeline.addLast(new WebSocketFrameAggregator(65536));
         pipeline.addLast("pagehandler", pageHandler);
         pipeline.addLast("wshandler", frameHandler);
