@@ -157,6 +157,16 @@ public final class ClientCache {
     }
 
     /**
+     * Indicates if the provided session ID is already in use
+     *
+     * @param sessionId The session ID
+     * @return {@code true} if any existing client is using the provided session ID
+     */
+    boolean sessionIdExists(String sessionId) {
+        return this.clients.stream().anyMatch(c -> c.sessionId().equals(sessionId));
+    }
+
+    /**
      * Registers that a client has responded to a PING
      *
      * @param ctx The context
