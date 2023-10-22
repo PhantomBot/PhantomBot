@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -128,29 +129,31 @@ public final class ClientCache {
      * @param isWs                        {@code true} if the context is a WS socket
      * @param lastClientReceivedTimestamp The timestamp to start at
      * @param lastClientReceivedSequence  The sequence to start at, exclusive
+     * @param sessionIdSupplier           A supplier of unique session IDs
      * @return An optional that contains the client; empty optional if the
-     *         {@link PanelUser} or Session ID is {@code null}
+     *         {@link PanelUser} is {@code null}
      */
     public Optional<Client> addOrUpdateClient(ChannelHandlerContext ctx, boolean isWs,
-            Instant lastClientReceivedTimestamp,
-            long lastClientReceivedSequence) {
+            Instant lastClientReceivedTimestamp, long lastClientReceivedSequence, Supplier<String> sessionIdSupplier) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
         String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
-        if (user != null && sessionId != null) {
-            Optional<Client> client = this.client(user, sessionId);
+        if (user != null) {
+            if (sessionId != null) {
+                Optional<Client> client = this.client(user, sessionId);
 
-            if (client.isPresent()) {
-                return Optional.of(client.get()
-                        .setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
-                        .process());
-            } else {
-                Client c = new Client(sessionId, user, this.ctxTimeout);
-                this.clients.add(c);
-                return Optional
-                        .of(c.setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
-                                .process());
+                if (client.isPresent()) {
+                    return Optional.of(client.get()
+                            .setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
+                            .process());
+                }
             }
+
+            Client c = new Client(sessionIdSupplier.get(), user, this.ctxTimeout);
+            this.clients.add(c);
+            return Optional
+                    .of(c.setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
+                            .process());
         }
 
         return Optional.empty();
