@@ -16,19 +16,19 @@
  */
 package com.gmt2001.wspinger;
 
-import com.gmt2001.util.concurrent.ExecutorService;
-import com.gmt2001.wsclient.WSClient;
-import com.gmt2001.wsclient.WsClientFrameHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
-import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.gmt2001.util.concurrent.ExecutorService;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import tv.phantombot.CaselessProperties;
 
 /**
@@ -36,7 +36,7 @@ import tv.phantombot.CaselessProperties;
  *
  * @author gmt2001
  */
-public class WSPinger implements WsClientFrameHandler {
+public abstract class WSPinger {
 
     /**
      * The current number of failures
@@ -77,11 +77,7 @@ public class WSPinger implements WsClientFrameHandler {
     /**
      * Mutex
      */
-    private final Object lock = new Object();
-    /**
-     * The {@link WSClient} that this pinger is connected to
-     */
-    private WSClient client = null;
+    protected final Object lock = new Object();
     /**
      * Remote address for debug messages
      */
@@ -177,7 +173,6 @@ public class WSPinger implements WsClientFrameHandler {
      * @param ctx
      * @param frame
      */
-    @Override
     public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (this.pongParser.test(frame)) {
             this.receivedPong();
@@ -189,11 +184,10 @@ public class WSPinger implements WsClientFrameHandler {
      *
      * @param ctx
      */
-    @Override
     public void handshakeComplete(ChannelHandlerContext ctx) {
         this.onClose();
-        synchronized (lock) {
-            if (this.client != null && this.client.connected() && !ExecutorService.isShutdown()) {
+        synchronized (this.lock) {
+            if (this.connected() && !ExecutorService.isShutdown()) {
                 this.failureCount = 0;
                 this.lastPong = Instant.now();
                 this.timerFuture = ExecutorService.scheduleAtFixedRate(this::sendPing, this.interval.toMillis(), this.interval.toMillis(), TimeUnit.MILLISECONDS);
@@ -212,9 +206,8 @@ public class WSPinger implements WsClientFrameHandler {
     /**
      * Cancels future execution of the timers when the socket closes
      */
-    @Override
     public void onClose() {
-        synchronized (lock) {
+        synchronized (this.lock) {
             boolean changed = false;
             if (this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 this.timerFuture.cancel(true);
@@ -233,21 +226,10 @@ public class WSPinger implements WsClientFrameHandler {
     }
 
     /**
-     * Stores the {@link WSClient} that this pinger is linked to
-     *
-     * @param client
-     */
-    public void setClient(WSClient client) {
-        synchronized (lock) {
-            this.client = client;
-        }
-    }
-
-    /**
      * Cancels the failure timer, then logs the current time in lastPong and resets the failureCount
      */
     private void receivedPong() {
-        synchronized (lock) {
+        synchronized (this.lock) {
             if (this.failureFuture != null && !this.failureFuture.isCancelled() && !this.failureFuture.isDone()) {
                 this.failureFuture.cancel(true);
             }
@@ -267,7 +249,7 @@ public class WSPinger implements WsClientFrameHandler {
      * or canceled
      */
     private void checkPongFailure() {
-        synchronized (lock) {
+        synchronized (this.lock) {
             if (this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 if (Instant.now().minus(this.timeout).plusMillis(1).isAfter(this.lastPong)) {
                     this.failureCount++;
@@ -278,7 +260,7 @@ public class WSPinger implements WsClientFrameHandler {
                 }
 
                 if (this.failureCount >= this.failureLimit) {
-                    this.client.close(WebSocketCloseStatus.POLICY_VIOLATION, "PING failure limit exceeded");
+                    this.close(WebSocketCloseStatus.POLICY_VIOLATION, "PING failure limit exceeded");
 
                     if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
                         com.gmt2001.Console.debug.println("Failure limit reached: Remote[" + this.remote + "] failureLimit[" + this.failureLimit + "]");
@@ -294,10 +276,10 @@ public class WSPinger implements WsClientFrameHandler {
      * timerFuture is null, done, or canceled
      */
     public void sendPing() {
-        synchronized (lock) {
-            if (this.client != null && this.client.connected() && this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
+        synchronized (this.lock) {
+            if (this.connected() && this.timerFuture != null && !this.timerFuture.isCancelled() && !this.timerFuture.isDone()) {
                 try {
-                    this.client.send(this.pingFrameFactory.get());
+                    this.send(this.pingFrameFactory.get());
                     this.failureFuture = ExecutorService.schedule(this::checkPongFailure, this.timeout.toMillis(), TimeUnit.MILLISECONDS);
 
                     if (CaselessProperties.instance().getPropertyAsBoolean("wspingerdebug", false)) {
@@ -309,4 +291,26 @@ public class WSPinger implements WsClientFrameHandler {
             }
         }
     }
+
+    /**
+     * Indicates if the remote endpoint is connected
+     *
+     * @return {@code true} if connected
+     */
+    protected abstract boolean connected();
+
+    /**
+     * Sends the frame to the remote endpoint
+     *
+     * @param frame The frame to send
+     */
+    protected abstract void send(WebSocketFrame frame);
+
+    /**
+     * Closes the socket
+     *
+     * @param status The close code
+     * @param reason The reason for closing
+     */
+    protected abstract void close(WebSocketCloseStatus status, String reason);
 }

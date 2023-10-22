@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
+import com.gmt2001.wspinger.WSServerPinger;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -63,6 +64,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     public static final AttributeKey<WsFrameHandler> ATTR_FRAME_HANDLER = AttributeKey.valueOf("frameHandler");
     /**
+     * Represents the {@code ATTR_PINGER} attribute, which stores the {@link WSServerPinger} that checks connectivity
+     */
+    public static final AttributeKey<WSServerPinger> ATTR_PINGER = AttributeKey.valueOf("pinger");
+    /**
      * Represents the {@code ATTR_ALLOW_NON_SSL} attribute, which stores if the client is allowed to bypass SSL requirements
      */
     public static final AttributeKey<String> ATTR_ALLOW_NON_SSL = AttributeKey.valueOf("allowNonSsl");
@@ -90,6 +95,11 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         WsFrameHandler h = ctx.channel().attr(ATTR_FRAME_HANDLER).get();
 
         if (h.getWsAuthHandler().checkAuthorization(ctx, frame)) {
+            WSServerPinger p = ctx.channel().attr(ATTR_PINGER).get();
+            if (p != null) {
+                p.handleFrame(ctx, frame);
+            }
+
             h.handleFrame(ctx, frame);
         }
     }
@@ -135,15 +145,28 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                     }
                 }
 
+                WSServerPinger p = h.pinger();
+
                 ctx.channel().attr(ATTR_URI).set(ruri);
                 ctx.channel().attr(ATTR_FRAME_HANDLER).set(h);
+                ctx.channel().attr(ATTR_PINGER).set(p);
                 ctx.channel().attr(ATTR_ALLOW_NON_SSL).set(allowNonSsl ? "true" : "false");
                 h.getWsAuthHandler().checkAuthorizationHeaders(ctx, hc.requestHeaders(), ruri);
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     WS_SESSIONS.remove(f.channel());
+                    WsFrameHandler wh = f.channel().attr(ATTR_FRAME_HANDLER).get();
+                    WSServerPinger wp = f.channel().attr(ATTR_PINGER).get();
+                    if (wp != null) {
+                        wp.onClose();
+                    }
+                    wh.onClose();
                 });
                 WS_SESSIONS.add(ctx.channel());
+                if (p != null) {
+                    p.handshakeComplete(ctx);
+                }
+                h.handshakeComplete(ctx);
             }
         }
     }

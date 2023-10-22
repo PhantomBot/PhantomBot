@@ -23,7 +23,7 @@ import com.gmt2001.util.Reflect;
 import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
-import com.gmt2001.wspinger.WSPinger;
+import com.gmt2001.wspinger.WSClientPinger;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -59,9 +59,9 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      */
     private final WindowedSwitchingRateLimiter rateLimiter = new WindowedSwitchingRateLimiter(30000L, 100, 20, false);
     /**
-     * A {@link WSPinger} to handle pinging to detect connection failure
+     * A {@link WSClientPinger} to handle pinging to detect connection failure
      */
-    private final WSPinger pinger = new WSPinger(Duration.ofSeconds(15), Duration.ofSeconds(5), 4, new TMIPingPongSupplierPredicate());
+    private final WSClientPinger pinger = new WSClientPinger(Duration.ofSeconds(15), Duration.ofSeconds(5), 4, new TMIPingPongSupplierPredicate());
     /**
      * Indicates when the connection is legitimately closing and should not be reconnected
      */

@@ -18,6 +18,7 @@ package com.gmt2001.wsclient;
 
 import com.gmt2001.dns.CompositeAddressResolverGroup;
 import com.gmt2001.dns.EventLoopDetector;
+import com.gmt2001.wspinger.WSClientPinger;
 import com.gmt2001.wspinger.WSPinger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -66,9 +67,9 @@ public class WSClient {
      */
     WebSocketFrameHandler frameHandler = null;
     /**
-     * The {@link WSPinger} that will send PING on an interval, or {@code null} if this is not desired
+     * The {@link WSClientPinger} that will send PING on an interval, or {@code null} if this is not desired
      */
-    final WSPinger pinger;
+    final WSClientPinger pinger;
     /**
      * The {@link Channel} for the session
      */
@@ -95,11 +96,11 @@ public class WSClient {
      *
      * @param uri The URI to connect to
      * @param handler An object implementing {@link WsClientFrameHandler} which will receive frames
-     * @param pinger The {@link WSPinger} that will send PING on an interval, or {@code null} if this is not desired
+     * @param pinger The {@link WSClientPinger} that will send PING on an interval, or {@code null} if this is not desired
      * @throws SSLException Failed to create the {@link SslContext}
      * @throws IllegalArgumentException URI scheme is not ws or wss
      */
-    public WSClient(URI uri, WsClientFrameHandler handler, WSPinger pinger) throws SSLException, IllegalArgumentException {
+    public WSClient(URI uri, WsClientFrameHandler handler, WSClientPinger pinger) throws SSLException, IllegalArgumentException {
         try {
             this.uri = uri;
 

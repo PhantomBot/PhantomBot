@@ -17,6 +17,8 @@
 package com.gmt2001.httpwsserver;
 
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
+import com.gmt2001.wspinger.WSServerPinger;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 
@@ -50,4 +52,25 @@ public interface WsFrameHandler {
      * @param frame The {@link WebSocketFrame} to process
      */
     void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
+
+    /**
+     * Handles the handshake complete event
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     */
+    default void handshakeComplete(ChannelHandlerContext ctx) {}
+
+    /**
+     * Handles the channel closing for any reason
+     */
+    default void onClose() {}
+
+    /**
+     * Returns a {@link WSServerPinger} to check for connectivity
+     *
+     * @return A pinger; {@code null} if not used
+     */
+    default WSServerPinger pinger() {
+        return null;
+    }
 }

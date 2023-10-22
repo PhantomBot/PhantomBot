@@ -42,7 +42,7 @@ public interface WsClientFrameHandler {
     void handshakeComplete(ChannelHandlerContext ctx);
 
     /**
-     * Handles the channel closing for any reason.
+     * Handles the channel closing for any reason
      */
     void onClose();
 }
