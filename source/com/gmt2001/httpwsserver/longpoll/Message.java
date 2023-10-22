@@ -23,6 +23,8 @@ import org.json.JSONObject;
 
 /**
  * A message enqueued with a {@link Client}
+ *
+ * @author gmt2001
  */
 final class Message {
     /**

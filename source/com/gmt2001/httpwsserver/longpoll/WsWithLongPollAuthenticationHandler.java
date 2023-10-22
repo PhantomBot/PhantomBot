@@ -97,6 +97,8 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  * frame text as a JSON object, or a database error occurred. See core-error log
  * or bot console for information</li>
  * </ul>
+ *
+ * @author gmt2001
  */
 public final class WsWithLongPollAuthenticationHandler
         implements HttpAuthenticationHandler, WsAuthenticationHandler, PanelUserAuthenticationHandler {

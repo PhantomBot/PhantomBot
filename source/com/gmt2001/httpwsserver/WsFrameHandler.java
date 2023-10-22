@@ -68,9 +68,10 @@ public interface WsFrameHandler {
     /**
      * Returns a {@link WSServerPinger} to check for connectivity
      *
+     * @param ctx The context
      * @return A pinger; {@code null} if not used
      */
-    default WSServerPinger pinger() {
+    default WSServerPinger pinger(ChannelHandlerContext ctx) {
         return null;
     }
 }

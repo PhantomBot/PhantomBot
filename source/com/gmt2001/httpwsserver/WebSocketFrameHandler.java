@@ -145,7 +145,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                     }
                 }
 
-                WSServerPinger p = h.pinger();
+                WSServerPinger p = h.pinger(ctx);
 
                 ctx.channel().attr(ATTR_URI).set(ruri);
                 ctx.channel().attr(ATTR_FRAME_HANDLER).set(h);

@@ -39,6 +39,8 @@ import tv.phantombot.panel.PanelUser.PanelUser;
 /**
  * Manages a list of authenticated {@link Client} which are associated with a
  * {@link WsWithLongPollHandler}
+ *
+ * @author gmt2001
  */
 public final class ClientCache {
     /**

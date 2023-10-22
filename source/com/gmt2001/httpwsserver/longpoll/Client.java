@@ -38,6 +38,8 @@ import tv.phantombot.panel.PanelUser.PanelUser;
 
 /**
  * A client of a {@link WsWithLongPollHandler}
+ *
+ * @author gmt2001
  */
 public final class Client {
     /**
