@@ -121,11 +121,11 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     }
 
     @Override
-    public void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+    public final void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
     }
 
     @Override
-    public void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
+    public final void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof PongWebSocketFrame) {
             this.clientCache.pong(ctx);
         }
@@ -134,12 +134,12 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     public abstract void handleMessage(ChannelHandlerContext ctx, JSONObject jso);
 
     @Override
-    public HttpAuthenticationHandler getHttpAuthHandler() {
+    public final HttpAuthenticationHandler getHttpAuthHandler() {
         return this.authHandler;
     }
 
     @Override
-    public WsAuthenticationHandler getWsAuthHandler() {
+    public final WsAuthenticationHandler getWsAuthHandler() {
         return this.authHandler;
     }
 }
