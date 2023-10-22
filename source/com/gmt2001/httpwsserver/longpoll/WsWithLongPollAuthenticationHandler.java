@@ -227,7 +227,7 @@ public final class WsWithLongPollAuthenticationHandler
             }
 
             JSONArray jsa = new JSONArray(req.content().toString(StandardCharsets.UTF_8));
-            if (jsa.length() > 0) {
+            if (!jsa.isEmpty()) {
                 if (this.isAuthorized(ctx, jsa.getJSONObject(0))) {
                     this.httpResult(ctx, req, HttpResponseStatus.OK, true);
 
