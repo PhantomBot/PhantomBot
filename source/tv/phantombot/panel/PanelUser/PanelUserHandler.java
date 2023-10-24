@@ -810,12 +810,21 @@ public final class PanelUserHandler {
      * Gets a permissions map which includes full permission to all available {@link PANEL_SECTIONS panel sections}
      */
     public static Map<String, Permission> getFullAccessPermissions() {
+        return getAccessPermissions(true);
+    }
+
+    /**
+     * Gets a permissions map which includes permission to all available {@link PANEL_SECTIONS panel sections}
+     *
+     * @param full {@code true} for {@link Permission#READ_WRITE}; otherwise {@link Permission#READ_ONLY}
+     */
+    public static Map<String, Permission> getAccessPermissions(boolean full) {
         Map<String, Permission> permissions = new HashMap<>();
         for (String section : PANEL_SECTIONS) {
             if (!PhantomBot.instance().hasDiscordToken() && section.equalsIgnoreCase("discord")) {
                 continue;
             }
-            permissions.put(section, Permission.READ_WRITE);
+            permissions.put(section, full ? Permission.READ_WRITE : Permission.READ_ONLY);
         }
         return permissions;
     }
