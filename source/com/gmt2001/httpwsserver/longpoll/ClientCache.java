@@ -369,6 +369,28 @@ public final class ClientCache {
     }
 
     /**
+     * Sends a message to the {@link Client} associated with the specified
+     * {@link ChannelHandlerContext}
+     *
+     * @param ctx The context
+     * @param jso A {@link JSONStringer} containing the message to send
+     */
+    public void send(ChannelHandlerContext ctx, JSONStringer jso) {
+        this.client(ctx).ifPresent(c -> this.send(c, jso));
+    }
+
+    /**
+     * Sends a message to the {@link Client} associated with the specified
+     * {@link ChannelHandlerContext}
+     *
+     * @param ctx     The context
+     * @param message The message to send
+     */
+    public void send(ChannelHandlerContext ctx, Object message) {
+        this.client(ctx).ifPresent(c -> this.send(c, message));
+    }
+
+    /**
      * Sends a message to the specified {@link Client}
      *
      * @param client The client
