@@ -19,6 +19,7 @@ package tv.phantombot.panel.PanelUser;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,13 +38,46 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler.Permission;
  * Represents a panel user and should be managed through {@link PanelUserHandler}
  *
  * @author Sartharon
+ * @author gmt2001
  */
 public final class PanelUser extends Record8<PanelUser, String, String, String, PermissionMap, Boolean, Long, Long, Boolean> {
     /**
      * Version of this record implementation
      */
     public static final long serialVersionUID = 1L;
-    private static final PanelUser CONFIGUSER = new PanelUser(CaselessProperties.instance().getProperty("paneluser", "panel"), Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")));
+    /**
+     * The panel config users, defined by in botlogin.txt
+     */
+    private static final List<PanelUser> CONFIG_USERS = List.of(
+        /**
+         * Root User
+         */
+        new PanelUser(
+        CaselessProperties.instance().getProperty("paneluser", "panel"),
+        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        CaselessProperties.instance().getProperty("webauth"), true, true),
+        /**
+         * Read Only User
+         */
+        new PanelUser(
+        CaselessProperties.instance().getProperty("paneluser", "panel") + "_RO",
+        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        CaselessProperties.instance().getProperty("webauthro"), false, false),
+        /**
+         * YT Root User
+         */
+        new PanelUser(
+        CaselessProperties.instance().getProperty("paneluser", "panel") + "_YT",
+        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        CaselessProperties.instance().getProperty("ytauth"), false, true),
+        /**
+         * YT Read Only User
+         */
+        new PanelUser(
+        CaselessProperties.instance().getProperty("paneluser", "panel") + "_YT_RO",
+        Digest.sha256(CaselessProperties.instance().getProperty("panelpassword", "panel")),
+        CaselessProperties.instance().getProperty("ytauthro"), false, false)
+    );
     private Type userType;
     /**
      * User types
@@ -85,23 +119,58 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
     }
 
     /**
-     * Constructor used for new user creations
+     * Constructor used for new database user creations
+     *
+     * @param username The username
+     * @param permissions The permission set
+     * @param enabled {@code true} to enable login
+     * @param canManageUsers {@code true} to enable CRUD on other panel users (including self)
+     * @param canRestartBot {@code true} to enable triggering bot restart, if configured
      */
     PanelUser(String username, Map<String, Permission> permissions, boolean enabled, boolean canManageUsers, boolean canRestartBot) {
         this(username, permissions, Type.NEW, enabled, false, canManageUsers, canRestartBot);
     }
 
     /**
-     * Constructor used for the user defined in botlogin.txt {@link CONFIGUSER}
+     * Constructor used for the users/tokens defined in botlogin.txt {@link Type#CONFIG}
+     * <p>
+     * Gives full access to panel sections
+     *
+     * @param username The username
+     * @param password The password
+     * @param token The webauth token
+     * @param canManage {@code true} to enable CRUD on panel users and triggering bot restart
+     * @param full {@code true} for {@link Permission#READ_WRITE}; otherwise {@link Permission#READ_ONLY}
      */
-    PanelUser(String username, String password) {
-        this(username, PanelUserHandler.getFullAccessPermissions(), Type.CONFIG, true, true, true, true);
+    PanelUser(String username, String password, String token, boolean canManage, boolean full) {
+        this(username, password, token, canManage, PanelUserHandler.getAccessPermissions(full));
+    }
+
+    /**
+     * Constructor used for the users/tokens defined in botlogin.txt {@link Type#CONFIG}
+     *
+     * @param username The username
+     * @param password The password
+     * @param token The webauth token
+     * @param canManage {@code true} to enable CRUD on panel users and triggering bot restart
+     * @param permissions The permission set
+     */
+    PanelUser(String username, String password, String token, boolean canManage, Map<String, Permission> permissions) {
+        this(username, permissions, Type.CONFIG, true, true, canManage, canManage);
         this.changePassword(password);
-        this.setToken(CaselessProperties.instance().getProperty("webauth"));
+        this.setToken(token);
     }
 
     /**
      * Internal constructor
+     *
+     * @param username The username
+     * @param permissions The permission set
+     * @param userType The user type
+     * @param enabled {@code true} to enable login
+     * @param hasSetPassword {@code false} to force password change on next login
+     * @param canManageUsers {@code true} to enable CRUD on other panel users (including self if not {@link Type#CONFIG})
+     * @param canRestartBot {@code true} to enable triggering bot restart, if configured
      */
     PanelUser(String username, Map<String, Permission> permissions, Type userType, boolean enabled, boolean hasSetPassword, boolean canManageUsers, boolean canRestartBot) {
         this();
@@ -532,8 +601,10 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @see DataStore#exists(String, String)
      */
     public static PanelUser LookupByUsername(String username) {
-        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
-            return CONFIGUSER;
+        Optional<PanelUser> configUser = CONFIG_USERS.stream().filter(u -> u.getUsername().equalsIgnoreCase(username)).findFirst();
+
+        if (configUser.isPresent()) {
+            return configUser.get();
         }
 
         return Datastore2.instance().dslContext().fetchOne(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.equalIgnoreCase(username));
@@ -546,8 +617,10 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @see PanelUser#LookupByUsername(String)
      */
     public static PanelUser LookupByAuthToken(String token) {
-        if (token.equals(CaselessProperties.instance().getProperty("webauth")) || token.equals(CaselessProperties.instance().getProperty("webauthro"))) {
-            return CONFIGUSER;
+        Optional<PanelUser> configUser = CONFIG_USERS.stream().filter(u -> u.getToken().equals(token)).findFirst();
+
+        if (configUser.isPresent()) {
+            return configUser.get();
         }
 
         return Datastore2.instance().dslContext().fetchOne(PanelUserTable.instance(), PanelUserTable.instance().TOKEN.eq(token));
@@ -569,7 +642,9 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
      * @return {@code true} if the username already exists in the database or is the config user
      */
     public static boolean UserExists(String username) {
-        if (username.equals(CaselessProperties.instance().getProperty("paneluser", "panel"))) {
+        Optional<PanelUser> configUser = CONFIG_USERS.stream().filter(u -> u.getUsername().equalsIgnoreCase(username)).findFirst();
+
+        if (configUser.isPresent()) {
             return true;
         }
 
