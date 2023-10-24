@@ -1,5 +1,6 @@
 package tv.phantombot.event.emotes;
 
+import org.apache.commons.lang3.Validate;
 import org.mozilla.javascript.NativeObject;
 
 /**
@@ -10,51 +11,40 @@ import org.mozilla.javascript.NativeObject;
  */
 public class EmotesCacheUpdatedEvent extends EmotesEvent {
     /**
-     * Contents of the bttvEmote Cache
-     * Format: {
-     * global: {
-     * id: String,
-     * code: String,
-     * imageType: String
-     * },
-     * local: {
-     * ...
-     * },
-     * shared: {
-     * ...
-     * }
-     * }
+     * Object with provider as key and an object with keys local, shared and global as value.
+     * <pre>
+     *     {
+     *         "providerName": {
+     *             "local": [
+     *             {
+     *                 "id": "someId",
+     *                 "code": "someCode"
+     *             },
+     *             {
+     *                 "id": "otherId",
+     *                 "code": "otherCode"
+     *             }
+     *             ],
+     *             "shared": [],
+     *             "global": null
+     *         },
+     *         "otherProvider": {
+     *             "local": [],
+     *             "shared": null,
+     *             "global": []
+     *         }
+     *     }
+     * </pre>
      */
-    private final NativeObject bttvEmotes;
+    private final NativeObject emoteSets;
 
-    /**
-     * Contents of the ffzEmote Cache
-     * Format: {
-     * global: {
-     * id: String,
-     * code: String,
-     * },
-     * local: {
-     * ...
-     * },
-     * shared: {
-     * ...
-     * }
-     * }
-     */
-    private final NativeObject ffzEmotes;
-
-    public EmotesCacheUpdatedEvent(NativeObject bttvEmotes, NativeObject ffzEmotes) {
+    public EmotesCacheUpdatedEvent(NativeObject emoteSets) {
         super();
-        this.bttvEmotes = bttvEmotes;
-        this.ffzEmotes = ffzEmotes;
+        Validate.notNull(emoteSets);
+        this.emoteSets = emoteSets;
     }
 
-    public NativeObject getBttvEmotes() {
-        return this.bttvEmotes;
-    }
-
-    public NativeObject getFfzEmotes() {
-        return this.ffzEmotes;
+    public NativeObject getEmoteSets(){
+        return this.emoteSets;
     }
 }

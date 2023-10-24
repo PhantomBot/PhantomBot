@@ -18,17 +18,23 @@
  */
 package tv.phantombot.cache;
 
+
 import com.gmt2001.twitch.cache.ViewerCache;
-import com.illusionaryone.BTTVAPIv3;
-import com.illusionaryone.FrankerZAPIv1;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.lang3.Validate;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
+import tv.phantombot.twitch.emotes.BttvApiV3;
+import tv.phantombot.twitch.emotes.EmoteApiRequestFailedException;
+import tv.phantombot.twitch.emotes.EmoteEntry;
+import tv.phantombot.twitch.emotes.EmoteProvider;
+import tv.phantombot.twitch.emotes.FrankerFacezApiV1;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class EmotesCache implements Runnable {
 
@@ -45,6 +51,7 @@ public class EmotesCache implements Runnable {
         return instance;
     }
 
+    private final List<EmoteProvider> emoteProviders;
     private final String channel;
     private final Thread updateThread;
     private Instant timeoutExpire = Instant.now();
@@ -57,6 +64,11 @@ public class EmotesCache implements Runnable {
         if (channel.startsWith("#")) {
             channel = channel.substring(1);
         }
+
+        this.emoteProviders = List.of(
+                BttvApiV3.instance(),
+                FrankerFacezApiV1.instance()
+        );
 
         this.channel = channel;
         this.updateThread = new Thread(this, "tv.phantombot.cache.EmotesCache");
@@ -98,56 +110,48 @@ public class EmotesCache implements Runnable {
         }
     }
 
-    private boolean checkJSONExceptions(JSONObject jsonResult, boolean ignore404, String emoteType) throws JSONException {
 
-        if (jsonResult.getBoolean("_success")) {
-            if (jsonResult.getInt("_http") == 200) {
-                return true;
-            } else if (jsonResult.getInt("_http") == 404 && ignore404) {
-                return true;
-            }
+    private void updateCache() {
+        // We know, the broadcaster identity is potentially needed by the emoteProviders, so we do a check here
+        // once, so it's not necessary to implement more logic as needed in the providers
+        if (ViewerCache.instance().broadcaster() == null) {
+            com.gmt2001.Console.warn.println("Broadcaster is not in Viewer Cache. Skipping emote cache update");
+            return;
         }
-        return false;
+        List<EmotesSet> providerEmotes = this.emoteProviders.stream()
+                .map(this::getProviderEmotes)
+                .collect(Collectors.toList());
+
+        com.gmt2001.Console.debug.println("Pushing EmotesGetEvent to EventBus");
+        EventBus.instance().postAsync(new EmotesGetEvent(providerEmotes));
     }
 
-    private void updateCache() throws Exception {
-        JSONObject bttvJsonResult;
-        JSONObject bttvLocalJsonResult;
-        JSONObject ffzJsonResult;
-        JSONObject ffzLocalJsonResult;
+    protected EmotesSet getProviderEmotes(EmoteProvider provider){
+        List<EmoteEntry> localEmotes = null;
+        List<EmoteEntry> sharedEmotes = null;
+        List<EmoteEntry> globalEmotes = null;
 
-        com.gmt2001.Console.debug.println("Polling Emotes from BTTV and FFZ");
-
-        bttvJsonResult = BTTVAPIv3.instance().GetGlobalEmotes();
-        if (!checkJSONExceptions(bttvJsonResult, true, "Global BTTV")) {
-            com.gmt2001.Console.err.println("Failed to get BTTV Emotes");
-            return;
+        com.gmt2001.Console.debug.println("Getting local emotes of " + provider.getProviderName());
+        try {
+            localEmotes = provider.getLocalEmotes();
+        } catch (EmoteApiRequestFailedException e) {
+            com.gmt2001.Console.err.println("Failed to get local emotes of " + provider.getProviderName() + ":" + e);
         }
 
-        if (ViewerCache.instance().broadcaster() == null) {
-            return;
+        com.gmt2001.Console.debug.println("Getting shared emotes of " + provider.getProviderName());
+        try {
+            sharedEmotes = provider.getSharedEmotes();
+        } catch (EmoteApiRequestFailedException e) {
+            com.gmt2001.Console.err.println("Failed to get shared emotes of " + provider.getProviderName() + ":" + e);
         }
 
-        bttvLocalJsonResult = BTTVAPIv3.instance().GetLocalEmotes(ViewerCache.instance().broadcaster().id());
-        if (!checkJSONExceptions(bttvLocalJsonResult, true, "Local BTTV")) {
-            com.gmt2001.Console.err.println("Failed to get BTTV Local Emotes");
-            return;
+        com.gmt2001.Console.debug.println("Getting global emotes of " + provider.getProviderName());
+        try {
+            globalEmotes = provider.getGlobalEmotes();
+        } catch (EmoteApiRequestFailedException e) {
+            com.gmt2001.Console.err.println("Failed to get global emotes of " + provider.getProviderName() + ":" + e);
         }
-
-        ffzJsonResult = FrankerZAPIv1.instance().GetGlobalEmotes();
-        if (!checkJSONExceptions(ffzJsonResult, true, "Global FrankerZ")) {
-            com.gmt2001.Console.err.println("Failed to get FFZ Emotes");
-            return;
-        }
-
-        ffzLocalJsonResult = FrankerZAPIv1.instance().GetLocalEmotes(this.channel);
-        if (!checkJSONExceptions(ffzLocalJsonResult, true, "Local FrankerZ")) {
-            com.gmt2001.Console.err.println("Failed to get FFZ Local Emotes");
-            return;
-        }
-
-        com.gmt2001.Console.debug.println("Pushing Emote JSON Objects to EventBus");
-        EventBus.instance().postAsync(new EmotesGetEvent(null, bttvJsonResult, bttvLocalJsonResult, ffzJsonResult, ffzLocalJsonResult));
+        return new EmotesSet(provider.getProviderName(), localEmotes, sharedEmotes, globalEmotes);
     }
 
     public void kill() {
@@ -158,5 +162,44 @@ public class EmotesCache implements Runnable {
         instances.entrySet().forEach((instance) -> {
             instance.getValue().kill();
         });
+    }
+
+    /**
+     * Contains emotes for the different categories local, shared and global from an
+     * emote provider. Collections can be null if not supplied or supported by the provider
+     */
+    public static class EmotesSet {
+        public final String provider;
+        private final List<EmoteEntry> localEmotes;
+        private final List<EmoteEntry> sharedEmotes;
+        private final List<EmoteEntry> globalEmotes;
+
+        public EmotesSet(String provider, List<EmoteEntry> localEmotes, List<EmoteEntry> sharedEmotes, List<EmoteEntry> globalEmotes) {
+            Validate.notEmpty(provider, "provider can't be null");
+            this.provider = provider;
+            this.localEmotes = localEmotes;
+            this.sharedEmotes = sharedEmotes;
+            this.globalEmotes = globalEmotes;
+        }
+
+        public String getProvider() {
+            return this.provider;
+        }
+
+        public List<EmoteEntry> getLocalEmotes() {
+            return this.localEmotes;
+        }
+
+        public List<EmoteEntry> getSharedEmotes() {
+            return this.sharedEmotes;
+        }
+
+        public List<EmoteEntry> getGlobalEmotes() {
+            return this.globalEmotes;
+        }
+
+        public String toString() {
+            return "EmotesCache.EmotesSet(provider=" + this.getProvider() + ", localEmotes=" + this.getLocalEmotes() + ", sharedEmotes=" + this.getSharedEmotes() + ", globalEmotes=" + this.getGlobalEmotes() + ")";
+        }
     }
 }
