@@ -60,6 +60,10 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     public static final AttributeKey<String> ATTR_URI = AttributeKey.valueOf("uri");
     /**
+     * Represents the {@code ATTR_REQUEST_URI} attribute, which stores the full request URI of the client
+     */
+    public static final AttributeKey<String> ATTR_REQUEST_URI = AttributeKey.valueOf("requestUri");
+    /**
      * Represents the {@code ATTR_FRAME_HANDLER} attribute, which stores the {@link WsFrameHandler} that processes frames for this client
      */
     public static final AttributeKey<WsFrameHandler> ATTR_FRAME_HANDLER = AttributeKey.valueOf("frameHandler");
@@ -148,6 +152,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 WSServerPinger p = h.pinger(ctx);
 
                 ctx.channel().attr(ATTR_URI).set(ruri);
+                ctx.channel().attr(ATTR_REQUEST_URI).set(hc.requestUri());
                 ctx.channel().attr(ATTR_FRAME_HANDLER).set(h);
                 ctx.channel().attr(ATTR_PINGER).set(p);
                 ctx.channel().attr(ATTR_ALLOW_NON_SSL).set(allowNonSsl ? "true" : "false");
