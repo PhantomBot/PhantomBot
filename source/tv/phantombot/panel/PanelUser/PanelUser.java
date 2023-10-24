@@ -536,7 +536,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
             return CONFIGUSER;
         }
 
-        return Datastore2.instance().dslContext().fetchOne(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.eq(username));
+        return Datastore2.instance().dslContext().fetchOne(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.equalIgnoreCase(username));
     }
 
     /**
@@ -573,7 +573,7 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
             return true;
         }
 
-        return Datastore2.instance().dslContext().fetchExists(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.eq(username));
+        return Datastore2.instance().dslContext().fetchExists(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.equalIgnoreCase(username));
     }
 
     @Override
