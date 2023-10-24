@@ -17,7 +17,7 @@
 package com.gmt2001.httpwsserver.longpoll;
 
 import java.nio.charset.StandardCharsets;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.jooq.exception.DataAccessException;
 import org.json.JSONArray;
@@ -41,6 +41,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
+import reactor.util.function.Tuple3;
+import reactor.util.function.Tuples;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
@@ -122,9 +124,10 @@ public final class WsWithLongPollAuthenticationHandler
      *
      * @param ChannelHandlerContext The context
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
+     * @param String                The request URI
      * @return The session ID
      */
-    protected final BiFunction<ChannelHandlerContext, Boolean, String> sessionIdSupplier;
+    protected final Function<Tuple3<ChannelHandlerContext, Boolean, String>, String> sessionIdSupplier;
 
     /**
      * Constructor
@@ -136,7 +139,7 @@ public final class WsWithLongPollAuthenticationHandler
      *                              {@link #sessionIdSupplier}
      */
     public WsWithLongPollAuthenticationHandler(Runnable authenticatedCallback,
-            BiFunction<ChannelHandlerContext, Boolean, String> sessionIdSupplier) {
+            Function<Tuple3<ChannelHandlerContext, Boolean, String>, String> sessionIdSupplier) {
         if (sessionIdSupplier == null) {
             throw new IllegalArgumentException("sessionIdSupplier");
         }
@@ -201,7 +204,8 @@ public final class WsWithLongPollAuthenticationHandler
             try {
                 JSONObject jso = new JSONObject(tFrame.text());
 
-                if (this.isAuthorized(ctx, jso)) {
+                if (this.isAuthorized(ctx, ctx.channel().attr(WebSocketFrameHandler.ATTR_REQUEST_URI).get(), true,
+                        jso)) {
                     ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).set(Boolean.TRUE);
                     authorized = true;
                 }
@@ -280,7 +284,7 @@ public final class WsWithLongPollAuthenticationHandler
 
             JSONArray jsa = new JSONArray(req.content().toString(StandardCharsets.UTF_8));
             if (!jsa.isEmpty()) {
-                if (this.isAuthorized(ctx, jsa.getJSONObject(0))) {
+                if (this.isAuthorized(ctx, req.uri(), false, jsa.getJSONObject(0))) {
                     this.httpResult(ctx, req, HttpResponseStatus.OK, true);
 
                     if (this.authenticatedCallback != null) {
@@ -311,15 +315,17 @@ public final class WsWithLongPollAuthenticationHandler
      * Sets {@link PanelUserAuthenticationHandler.ATTR_AUTH_USER} if authorization
      * is successful and not already set
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param jso The data frame to check
+     * @param ctx        The {@link ChannelHandlerContext} of the session
+     * @param requestUri The request URI
+     * @param isWs       {@code true} if the connection is a Web Socket
+     * @param jso        The data frame to check
      * @return {@code true} if authorized
      */
-    public boolean isAuthorized(ChannelHandlerContext ctx, JSONObject jso) {
+    public boolean isAuthorized(ChannelHandlerContext ctx, String requestUri, boolean isWs, JSONObject jso) {
         if (jso.has("authenticate")) {
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
-                ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx,
-                        ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null));
+                ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
+                        isWs, requestUri)));
                 com.gmt2001.Console.debug.println("HasUser");
                 return true;
             } else {
@@ -328,8 +334,8 @@ public final class WsWithLongPollAuthenticationHandler
                         : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
-                    ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx,
-                            ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null));
+                    ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
+                            isWs, requestUri)));
                     return true;
                 }
             }
@@ -345,8 +351,8 @@ public final class WsWithLongPollAuthenticationHandler
         if (auth != null) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(auth, requestUri);
             ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
-            ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(ctx,
-                    ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null));
+            ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
+                    ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null, requestUri)));
             return user != null;
         }
 

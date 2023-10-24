@@ -43,12 +43,20 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple3;
+import reactor.util.function.Tuples;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
 /**
  * A combined frame handler for a WS with long polling webserver endpoint
  * <p>
  * Authentication is handled via a {@link WsWithLongPollAuthenticationHandler}
+ * <p>
+ * When initiating a Web Socket connection or performing a
+ * {@link HttpMethod#GET}, the query params {@code afterTimestamp=millis} and
+ * {@code afterSequence=sequence} can be used to signal where the stream should
+ * resume and trigger message replay, if available
  * <p>
  * When frames are sent via Web Socket:
  * <ol>
@@ -97,6 +105,11 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * <i>NOTE: {@link HttpMethod#POST} requests must have a body consisting of a
  * JSON array containing the JSON object(s) that would be sent over the Web
  * Socket</i>
+ * <p>
+ * Server -> Client frame format:
+ * <code>{"metadata": {"timestamp": enqueueTimestampMillis, "sequence": sequenceWithinTimestamp},
+ *   "data": data}
+ * </code>
  *
  * @author gmt2001
  */
@@ -166,13 +179,16 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     /**
      * Returns the session ID for the client
      *
-     * @param ctx  The context
-     * @param isWs {@code true} if WS; {@code false} if HTTP
+     * @param params                A tuple containing the below params
+     * @param ChannelHandlerContext The context
+     * @param Boolean               {@code true} if WS; {@code false} if HTTP
+     * @param String                The request URI
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
-    protected final String clientSessionId(ChannelHandlerContext ctx, boolean isWs) {
-        Optional<Client> client = this.clientCache.addOrUpdateClient(ctx, isWs, Instant.MIN, 0L,
-                this::sessionIdSupplier);
+    protected final String clientSessionId(Tuple3<ChannelHandlerContext, Boolean, String> params) {
+        Tuple2<Instant, Long> after = this.lastReceivedParams(params.getT3());
+        Optional<Client> client = this.clientCache.addOrUpdateClient(params.getT1(), params.getT2(), after.getT1(),
+                after.getT2(), this::sessionIdSupplier);
 
         if (client.isPresent()) {
             return client.get().sessionId();
@@ -196,6 +212,34 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
         } while (this.clientCache.sessionIdExists(sessionId));
 
         return sessionId;
+    }
+
+    /**
+     * Checks the request URI for query params denoting the last received message
+     *
+     * @param requestUri The request URI
+     * @return A tuple containing the last received Instant and Sequence
+     */
+    private Tuple2<Instant, Long> lastReceivedParams(String requestUri) {
+        QueryStringDecoder qsd = new QueryStringDecoder(requestUri);
+
+        Instant afterTimestamp = Instant.MIN;
+        long afterSequence = 0L;
+        if (qsd.parameters().containsKey("afterTimestamp")) {
+            try {
+                afterTimestamp = Instant.ofEpochMilli(Long.parseLong(qsd.parameters().get("afterTimestamp").get(0)));
+            } catch (NumberFormatException ex) {
+            }
+        }
+
+        if (qsd.parameters().containsKey("afterSequence")) {
+            try {
+                afterSequence = Long.parseLong(qsd.parameters().get("afterSequence").get(0));
+            } catch (NumberFormatException ex) {
+            }
+        }
+
+        return Tuples.of(afterTimestamp, afterSequence);
     }
 
     @Override

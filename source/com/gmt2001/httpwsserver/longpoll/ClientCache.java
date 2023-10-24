@@ -244,6 +244,18 @@ public final class ClientCache {
     }
 
     /**
+     * Sets the last received sequence for the {@link Client} of the given
+     * {@link ChannelHandlerContext}
+     *
+     * @param ctx       The context
+     * @param timestamp The message timestamp
+     * @param sequence  The message sequence
+     */
+    public void lastReceived(ChannelHandlerContext ctx, Instant timestamp, long sequence) {
+        this.client(ctx).ifPresent(c -> this.lastReceived(c, timestamp, sequence));
+    }
+
+    /**
      * Sets the last received sequence for the given {@link Client}
      *
      * @param client    The client
