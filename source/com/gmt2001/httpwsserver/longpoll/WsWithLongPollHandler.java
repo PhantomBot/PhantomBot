@@ -51,13 +51,25 @@ import tv.phantombot.panel.PanelUser.PanelUser;
 /**
  * A combined frame handler for a WS with long polling webserver endpoint
  * <p>
- * Authentication is handled via a {@link WsWithLongPollAuthenticationHandler}
- * <p>
+ * Authentication is handled via a {@link WsWithLongPollAuthenticationHandler}.
+ * See documentation for that class on how to perform authentication and the
+ * authentication responses
+ * <hr>
  * When initiating a Web Socket connection or performing a
  * {@link HttpMethod#GET}, the query params {@code afterTimestamp=millis} and
  * {@code afterSequence=sequence} can be used to signal where the stream should
- * resume and trigger message replay, if available
+ * resume and trigger message replay, if available. All messages after the
+ * specified timestamp/sequence combination will be replayed if the GC hasn't
+ * collected them, excluding the message which exactly matches
  * <p>
+ * The values can be updated without replaying messages by adding the optional
+ * {@code skipTimestamp} and {@code skipSequence} parameters in the metadata of
+ * a frame. See the frame format below
+ * <p>
+ * <i>NOTE: It is not possible to return to an earlier timestamp/sequence once
+ * the query param or metadata param is sent. The messages are permanently
+ * released to the GC</i>
+ * <hr>
  * When frames are sent via Web Socket:
  * <ol>
  * <li>If the frame is a RFC 6455 {@code PING} frame, netty automatically
@@ -71,7 +83,7 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * dropped</li>
  * <li>All other frames are dropped</li>
  * </ol>
- * <p>
+ * <hr>
  * When frames are sent via HTTP:
  * <ol>
  * <li>If the HTTP method is not {@link HttpMethod#GET} or
@@ -85,8 +97,9 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * while processing a frame, {@link HttpResponseStatus#INTERNAL_SERVER_ERROR} is
  * returned and the exception is logged in core-error</li>
  * <li>If the HTTP method is {@link HttpMethod#POST} and an element in the JSON
- * array is not a JSON object, {@link HttpResponseStatus#UNPROCESSABLE_ENTITY}
- * is returned</li>
+ * array is not a JSON object or the JSON object does not conform to the
+ * specification below, {@link HttpResponseStatus#UNPROCESSABLE_ENTITY} is
+ * returned and any {@link JSONException} exception is logged in core-error</li>
  * <li>If the HTTP method is {@link HttpMethod#POST} and all frames are
  * processed successfully, {@link HttpResponseStatus#ACCEPTED} is returned</li>
  * <li>If the HTTP method is {@link HttpMethod#GET} and outbound frames are
@@ -96,20 +109,38 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * then completes with an empty JSON array if there are still no outbound frames
  * available
  * </ol>
- * <i>NOTE: If the HTTP method is {@link HttpMethod#POST} or a 4xx/5xx response
- * is returned, it is still possible that some frames completed successfully</i>
+ * <i>NOTE: If the HTTP method is {@link HttpMethod#POST} and a
+ * {@link HttpResponseStatus#INTERNAL_SERVER_ERROR} or
+ * {@link HttpResponseStatus#UNPROCESSABLE_ENTITY} response is returned, the
+ * response body will be a JSON array containing frames which errored. Any
+ * frames not in the array should be considered successfully transmitted.
+ * <code>[{"index": arrayIndex, "code": responseCode, "status": "response code name",
+ * "frame": frame}, ...]</code></i>
  * <p>
- * <i>NOTE: If the HTTP method is {@link HttpMethod#POST} or a 4xx/5xx response
- * is returned, an empty JSON array is returned in the body</i>
- * <p>
- * <i>NOTE: {@link HttpMethod#POST} requests must have a body consisting of a
- * JSON array containing the JSON object(s) that would be sent over the Web
- * Socket</i>
- * <p>
+ * <i>NOTE: If the HTTP method is {@link HttpMethod#POST} and a response of
+ * {@link HttpResponseStatus#ACCEPTED} or {@link HttpResponseStatus#BAD_REQUEST}
+ * is returned, or a {@link HttpResponseStatus#METHOD_NOT_ALLOWED} response is
+ * returned for any other HTTP method, an empty JSON array is returned in the
+ * body</i>
+ * <hr>
  * Server -> Client frame format:
  * <code>{"metadata": {"timestamp": enqueueTimestampMillis, "sequence": sequenceWithinTimestamp},
- *   "data": data}
+ *   "data": dataJsonObject}
  * </code>
+ * <p>
+ * <i>For {@link HttpMethod#GET}, all available frames are returned in a JSON
+ * array. For Web Socket, each frame is sent individually as a {@code TEXT}
+ * frame</i>
+ * <hr>
+ * Client -> Server frame format:
+ * <code>{"metadata": {"timestamp": enqueueTimestampMillis, "sequence": sequenceWithinTimestamp,
+ *  "skipTimestamp?": timestampMillis, "skipSequence?": sequence}, "data": dataJsonObject}
+ * </code>
+ * <p>
+ * <i>For {@link HttpMethod#POST}, a JSON array must be sent, containing the
+ * described JSON object as values. Multiple frames may be send in a single JSON
+ * array. For Web Socket, each frame must be sent individually as a {@code TEXT}
+ * frame</i>
  *
  * @author gmt2001
  */
@@ -242,6 +273,38 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
         return Tuples.of(afterTimestamp, afterSequence);
     }
 
+    /**
+     * Validates that a JSON object is formed according to the specification, and
+     * updates the last received from client values. Also processes skip parameters,
+     * if present
+     *
+     * @param ctx The context
+     * @param jso The frame
+     * @return {@code true} if the frame is valid
+     */
+    private boolean validateFrameUpdateClientReceived(ChannelHandlerContext ctx, JSONObject jso) {
+        try {
+            JSONObject metadata = jso.getJSONObject("metadata");
+
+            jso.getJSONObject("data");
+
+            if (metadata.has("skipTimestamp") && metadata.has("skipSequence")) {
+                this.clientCache.client(ctx)
+                        .ifPresent(c -> c.skip(Instant.ofEpochMilli(metadata.getLong("skipTimestamp")),
+                                metadata.getLong("skipSequence")));
+            }
+
+            this.clientCache.lastReceived(ctx, Instant.ofEpochMilli(metadata.getLong("timestamp")),
+                    metadata.getLong("sequence"));
+
+            return true;
+        } catch (JSONException ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+
+        return false;
+    }
+
     @Override
     public final void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
@@ -254,6 +317,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
         }
 
         if (req.method().equals(HttpMethod.POST)) {
+            JSONArray response = new JSONArray();
             JSONArray jsa = null;
             try {
                 jsa = new JSONArray(req.content().toString(StandardCharsets.UTF_8));
@@ -263,16 +327,34 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
 
             HttpResponseStatus status = (jsa == null || jsa.isEmpty() ? HttpResponseStatus.BAD_REQUEST
                     : HttpResponseStatus.ACCEPTED);
-            for (int i = 0; i < jsa.length(); i++) {
-                try {
-                    if (jsa.get(i) instanceof JSONObject jso) {
-                        this.handleMessage(ctx, jso);
-                    } else if (status.equals(HttpResponseStatus.ACCEPTED)) {
-                        status = HttpResponseStatus.UNPROCESSABLE_ENTITY;
+
+            if (jsa != null) {
+                for (int i = 0; i < jsa.length(); i++) {
+                    try {
+                        if (jsa.get(i) instanceof JSONObject jso && this.validateFrameUpdateClientReceived(ctx, jso)) {
+                            this.handleMessage(ctx, jso.getJSONObject("data"));
+                        } else {
+                            if (status.equals(HttpResponseStatus.ACCEPTED)) {
+                                status = HttpResponseStatus.UNPROCESSABLE_ENTITY;
+                            }
+
+                            JSONObject err = new JSONObject();
+                            err.put("index", i);
+                            err.put("code", HttpResponseStatus.UNPROCESSABLE_ENTITY.code());
+                            err.put("status", HttpResponseStatus.UNPROCESSABLE_ENTITY.reasonPhrase());
+                            err.put("frame", jsa.get(i));
+                            response.put(err);
+                        }
+                    } catch (Exception ex) {
+                        com.gmt2001.Console.err.logStackTrace(ex);
+                        status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+                        JSONObject err = new JSONObject();
+                        err.put("index", i);
+                        err.put("code", HttpResponseStatus.INTERNAL_SERVER_ERROR.code());
+                        err.put("status", HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase());
+                        err.put("frame", jsa.isNull(i) ? null : jsa.get(i));
+                        response.put(err);
                     }
-                } catch (Exception ex) {
-                    com.gmt2001.Console.err.logStackTrace(ex);
-                    status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
                 }
             }
 
@@ -282,7 +364,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
 
             HttpServerPageHandler.sendHttpResponse(ctx, req,
                     HttpServerPageHandler.prepareHttpResponse(status,
-                            EMPTY_LONG_POLL_RESPONSE, LONG_POLL_CONTENT_TYPE));
+                            response.toString(), LONG_POLL_CONTENT_TYPE));
         }
     }
 
@@ -297,7 +379,9 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
                 return;
             }
 
-            this.handleMessage(ctx, jso);
+            if (this.validateFrameUpdateClientReceived(ctx, jso)) {
+                this.handleMessage(ctx, jso.getJSONObject("data"));
+            }
         }
     }
 
@@ -305,7 +389,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      * Handles a message frame
      *
      * @param ctx The context
-     * @param jso The message
+     * @param jso The {@code data} field of the frame
      */
     public abstract void handleMessage(ChannelHandlerContext ctx, JSONObject jso);
 

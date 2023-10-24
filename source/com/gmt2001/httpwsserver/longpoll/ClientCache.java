@@ -244,7 +244,7 @@ public final class ClientCache {
     }
 
     /**
-     * Sets the last received sequence for the {@link Client} of the given
+     * Sets the last received sequence from the {@link Client} of the given
      * {@link ChannelHandlerContext}
      *
      * @param ctx       The context
@@ -256,7 +256,7 @@ public final class ClientCache {
     }
 
     /**
-     * Sets the last received sequence for the given {@link Client}
+     * Sets the last received sequence from the given {@link Client}
      *
      * @param client    The client
      * @param timestamp The message timestamp

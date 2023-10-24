@@ -152,7 +152,7 @@ public final class Client {
     }
 
     /**
-     * Sets the last received sequence for this client
+     * Sets the last received sequence from this client
      *
      * @param timestamp The message timestamp
      * @param sequence  The message sequence
