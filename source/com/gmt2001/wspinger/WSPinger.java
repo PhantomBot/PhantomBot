@@ -30,6 +30,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import tv.phantombot.CaselessProperties;
 
 /**
@@ -186,6 +187,15 @@ public abstract class WSPinger {
      * @param ctx
      */
     public void handshakeComplete(ChannelHandlerContext ctx) {
+        this.handshakeComplete(ctx, null);
+    }
+
+    /**
+     * Initializes failureCount and lastPong, then starts the ping timer
+     *
+     * @param ctx
+     */
+    public void handshakeComplete(ChannelHandlerContext ctx, HandshakeComplete hc) {
         this.onClose(ctx.channel());
         synchronized (this.lock) {
             if (this.connected() && !ExecutorService.isShutdown()) {

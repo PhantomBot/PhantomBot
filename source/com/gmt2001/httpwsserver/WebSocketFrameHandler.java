@@ -164,9 +164,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                 });
                 WS_SESSIONS.add(ctx.channel());
                 if (p != null) {
-                    p.handshakeComplete(ctx);
+                    p.handshakeComplete(ctx, hc);
                 }
-                h.handshakeComplete(ctx);
+                h.handshakeComplete(ctx, hc);
             }
         }
     }

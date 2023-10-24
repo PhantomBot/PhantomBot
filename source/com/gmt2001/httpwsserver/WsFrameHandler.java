@@ -22,6 +22,7 @@ import com.gmt2001.wspinger.WSServerPinger;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 
 /**
  * Represents a handler for WebSocket frames
@@ -58,8 +59,9 @@ public interface WsFrameHandler {
      * Handles the handshake complete event
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param hc The handshake parameters
      */
-    default void handshakeComplete(ChannelHandlerContext ctx) {}
+    default void handshakeComplete(ChannelHandlerContext ctx, HandshakeComplete hc) {}
 
     /**
      * Handles the channel closing for any reason
