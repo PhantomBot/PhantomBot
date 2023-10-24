@@ -408,7 +408,7 @@ public final class PanelUserHandler {
         }
 
         if (requestUri != null) {
-            if ((requestUri.contains("/setup/") || requestUri.contains("/oauth/")) && !user.isConfigUser()){
+            if ((requestUri.contains("/setup/") || requestUri.contains("/oauth/")) && (!user.isConfigUser() || !user.canManageUsers())){
                 return null;
             }
             if (requestUri.contains("/ytplayer/") && !(user.getPermission().containsKey("youtube player") && user.getPermission().get("youtube player").equals(Permission.READ_WRITE))) {
