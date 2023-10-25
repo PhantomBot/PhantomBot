@@ -111,7 +111,6 @@
         <script src="../vendors/bootstrap/js/bootstrap.min.js"></script>
         <script src="../vendors/PACE/pace.min.js"></script>
         <script src="../vendors/select2/select2.full.min.js"></script>
-        <script src="../../common/reconnecting-websocket/reconnectingWS.min.js"></script>
         <!-- Crypto-JS -->
         <script src="../vendors/crypto-js/crypto-js-4.1.1.min.js"></script>
         <script src="/common/js/session.js"></script>
@@ -152,67 +151,70 @@
             }
 
             function doLogin(hostname, port, username, password, remember) {
-                let webSocket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + hostname + (port.length > 0 ? ':' + port : '') + '/ws/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''));
-
                 password = CryptoJS.SHA256(password).toString();
-                webSocket.onopen = function () {
-                    Pace.restart();
-
-                    webSocket.send(JSON.stringify({
-                        remote: true,
-                        query: 'login',
-                        params: {
-                            type: 'Auth',
-                            user: username,
-                            pass: password
-                        }
-                    }));
-                };
-
-                webSocket.onmessage = function (e) {
-                    let message = JSON.parse(e.data);
-
-                    if (message.errors !== undefined) {
-                        if (message.errors[0].status === '401') {
-                            $('#error-box').removeClass('hide');
-                            $('#alert-br').removeClass('hide');
-                            $('#error-box').html('Invalid Login');
-                            webSocket.close(1000);
-                        } else {
-                            $('#error-box').removeClass('hide');
-                            $('#alert-br').removeClass('hide');
-                            $('#error-box').html('An unexpected error occurred while attempting to login<br />' + message.errors[0].status + ' ' + message.errors[0].title + ':' + message.errors[0].detail);
-                            webSocket.close(1000);
-                        }
-                    } else if (message.authtoken !== undefined) {
-                        let webauth = message.authtoken;
-                        webSocket.close(1000);
-                        window.localStorage.setItem('bothostname', hostname);
-                        window.localStorage.setItem('botport', port);
-                        window.localStorage.setItem('remember', remember);
-                        window.localStorage.setItem('isStable', message["build-type"] !== undefined && message["build-type"] === "stable");
-                        if (remember !== 'tab' && remember !== 'session') {
-                            window.localStorage.setItem('webauth', webauth);
-                            if (remember !== 'forever') {
-                                window.localStorage.setItem('expires', Date.now() + (parseInt(remember) * 3600000));
+                $.ajax(
+                            {
+                                type: 'PUT',
+                                url: window.location.protocol + '//' + hostname + (port.length > 0 ? ':' + port : '') + '/panel/login?target=' + hostname + (port.length > 0 ? ':' + port : ''),
+                                contentType: 'application/json',
+                                crossDomain: true,
+                                dataType: 'json',
+                                data: JSON.stringify({
+                                    remote: true,
+                                    query: 'login',
+                                    params: {
+                                        type: 'Auth',
+                                        user: username,
+                                        pass: password
+                                    }
+                                })
                             }
-                            window.localStorage.setItem('b64', btoa(username + ':' + password));
+                    ).always((dataJq, status, jqErr) => {
+                        let message;
+                        if (status == 'success') {
+                            message = dataJq;
                         } else {
-                            window.localStorage.removeItem('webauth');
-                            window.localStorage.removeItem('expires');
-                            window.localStorage.removeItem('b64');
+                            message = dataJq.responseJSON;
                         }
-                        let age = '; Max-Age=300';
-                        if (remember === 'session') {
-                            age = '';
+
+                        if (message.errors !== undefined) {
+                            if (message.errors[0].status === '401') {
+                                $('#error-box').removeClass('hide');
+                                $('#alert-br').removeClass('hide');
+                                $('#error-box').html('Invalid Login');
+                            } else {
+                                $('#error-box').removeClass('hide');
+                                $('#alert-br').removeClass('hide');
+                                $('#error-box').html('An unexpected error occurred while attempting to login<br />' + message.errors[0].status + ' ' + message.errors[0].title + ':' + message.errors[0].detail);
+                            }
+                        } else if (message.authtoken !== undefined) {
+                            let webauth = message.authtoken;
+                            window.localStorage.setItem('bothostname', hostname);
+                            window.localStorage.setItem('botport', port);
+                            window.localStorage.setItem('remember', remember);
+                            window.localStorage.setItem('isStable', message["build-type"] !== undefined && message["build-type"] === "stable");
+                            if (remember !== 'tab' && remember !== 'session') {
+                                window.localStorage.setItem('webauth', webauth);
+                                if (remember !== 'forever') {
+                                    window.localStorage.setItem('expires', Date.now() + (parseInt(remember) * 3600000));
+                                }
+                                window.localStorage.setItem('b64', btoa(username + ':' + password));
+                            } else {
+                                window.localStorage.removeItem('webauth');
+                                window.localStorage.removeItem('expires');
+                                window.localStorage.removeItem('b64');
+                            }
+                            let age = '; Max-Age=300';
+                            if (remember === 'session') {
+                                age = '';
+                            }
+                            history.pushState({}, "PhantomBot | Log in | Success");
+                            window.sessionStorage.setItem('webauth', webauth);
+                            window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
+                            document.cookie = window.sessionStorage.getItem('cookie');
+                            doKickback(window.localStorage.getItem('isStable'));
                         }
-                        history.pushState({}, "PhantomBot | Log in | Success");
-                        window.sessionStorage.setItem('webauth', webauth);
-                        window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
-                        document.cookie = window.sessionStorage.getItem('cookie');
-                        doKickback(window.localStorage.getItem('isStable'));
-                    }
-                };
+                    });
             }
 
             function login() {
