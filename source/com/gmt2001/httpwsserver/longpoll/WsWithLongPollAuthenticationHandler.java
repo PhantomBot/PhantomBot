@@ -67,7 +67,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  * <p>
  * <i>NOTE: For HTTP long polling, {@code authenticate} frames must be wrapped
  * in a JSON array, and response frames will be wrapped in a JSON array</i>
- * <p>
+ * <hr>
  * When authenticating via Web Socket or HTTP long poll {@code authenticate}
  * frame, the following response frame is sent:
  * <ul>
@@ -81,6 +81,10 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  * <i>If an {@code authenticate} frame sent via Web Socket fails or throws an
  * exception, the connection is closed</i>
  * <p>
+ * A session can be resumed when authorizing via {@code Authorization} header or
+ * cookie by also including the header {@code SessionID: sessionId} with a valid
+ * session ID as returned in a {@code authresult} success frame
+ * <hr>
  * HTTP Response Codes:
  * <ul>
  * <li>{@link HttpResponseStatus#OK} - {@code authenticate} frame passed
@@ -91,7 +95,7 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  * JSON array entry as a JSON object, or a database error occurred. See
  * core-error log or bot console for information</li>
  * </ul>
- * <p>
+ * <hr>
  * Web Socket Close Codes:
  * <ul>
  * <li>{@link WebSocketCloseStatus#POLICY_VIOLATION} - All possible
