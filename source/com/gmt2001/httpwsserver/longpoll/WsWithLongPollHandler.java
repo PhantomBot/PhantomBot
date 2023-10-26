@@ -368,6 +368,12 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @Deprecated Frames which do not have the new wrapper JSONObject are deprecated for removal
+     */
+    @Deprecated(forRemoval = true, since = "3.11.0.0")
     @Override
     public final void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof TextWebSocketFrame textFrame) {
@@ -381,6 +387,8 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
 
             if (this.validateFrameUpdateClientReceived(ctx, jso)) {
                 this.handleMessage(ctx, jso.getJSONObject("data"));
+            } else {
+                this.handleMessage(ctx, jso);
             }
         }
     }
