@@ -44,7 +44,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import reactor.util.function.Tuple2;
-import reactor.util.function.Tuple3;
+import reactor.util.function.Tuple4;
 import reactor.util.function.Tuples;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
@@ -214,12 +214,13 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      * @param ChannelHandlerContext The context
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
      * @param String                The request URI
+     * @param String The session ID provided in the headers
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
-    protected final String clientSessionId(Tuple3<ChannelHandlerContext, Boolean, String> params) {
+    protected final String clientSessionId(Tuple4<ChannelHandlerContext, Boolean, String, String> params) {
         Tuple2<Instant, Long> after = this.lastReceivedParams(params.getT3());
         Optional<Client> client = this.clientCache.addOrUpdateClient(params.getT1(), params.getT2(), after.getT1(),
-                after.getT2(), this::sessionIdSupplier);
+                after.getT2(), params.getT4(), this::sessionIdSupplier);
 
         if (client.isPresent()) {
             return client.get().sessionId();

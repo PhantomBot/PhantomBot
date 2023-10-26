@@ -137,14 +137,15 @@ public final class ClientCache {
      * @param isWs                        {@code true} if the context is a WS socket
      * @param lastClientReceivedTimestamp The timestamp to start at
      * @param lastClientReceivedSequence  The sequence to start at, exclusive
+     * @param sessionId                   The session ID provided in the headers
      * @param sessionIdSupplier           A supplier of unique session IDs
      * @return An optional that contains the client; empty optional if the
      *         {@link PanelUser} is {@code null}
      */
     public Optional<Client> addOrUpdateClient(ChannelHandlerContext ctx, boolean isWs,
-            Instant lastClientReceivedTimestamp, long lastClientReceivedSequence, Supplier<String> sessionIdSupplier) {
+            Instant lastClientReceivedTimestamp, long lastClientReceivedSequence, String sessionId,
+            Supplier<String> sessionIdSupplier) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
-        String sessionId = ctx.channel().attr(WsWithLongPollAuthenticationHandler.ATTR_SESSIONID).get();
 
         if (user != null) {
             if (sessionId != null) {

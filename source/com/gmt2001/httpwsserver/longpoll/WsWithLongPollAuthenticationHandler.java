@@ -41,7 +41,8 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
-import reactor.util.function.Tuple3;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuple4;
 import reactor.util.function.Tuples;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
@@ -119,15 +120,16 @@ public final class WsWithLongPollAuthenticationHandler
      */
     private final Runnable authenticatedCallback;
     /**
-     * Function which provides a session ID
+     * Function which provides a session ID or validates one provided in the headers
      * <p>
      *
      * @param ChannelHandlerContext The context
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
      * @param String                The request URI
-     * @return The session ID
+     * @param String                The session ID provided in the headers
+     * @return The input session ID if valid; otherwise a new sesison ID
      */
-    protected final Function<Tuple3<ChannelHandlerContext, Boolean, String>, String> sessionIdSupplier;
+    protected final Function<Tuple4<ChannelHandlerContext, Boolean, String, String>, String> sessionIdSupplier;
 
     /**
      * Constructor
@@ -135,11 +137,12 @@ public final class WsWithLongPollAuthenticationHandler
      * @param authenticatedCallback Optional callback to run when a client
      *                              successfully authenticates via an authentication
      *                              frame
-     * @param sessionIdSupplier     Function which provides a session ID. See
+     * @param sessionIdSupplier     Function which provides a session ID or
+     *                              validates one provided in the headers. See
      *                              {@link #sessionIdSupplier}
      */
     public WsWithLongPollAuthenticationHandler(Runnable authenticatedCallback,
-            Function<Tuple3<ChannelHandlerContext, Boolean, String>, String> sessionIdSupplier) {
+            Function<Tuple4<ChannelHandlerContext, Boolean, String, String>, String> sessionIdSupplier) {
         if (sessionIdSupplier == null) {
             throw new IllegalArgumentException("sessionIdSupplier");
         }
@@ -325,7 +328,7 @@ public final class WsWithLongPollAuthenticationHandler
         if (jso.has("authenticate")) {
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                        isWs, requestUri)));
+                        isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
                 com.gmt2001.Console.debug.println("HasUser");
                 return true;
             } else {
@@ -335,7 +338,7 @@ public final class WsWithLongPollAuthenticationHandler
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                     ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                            isWs, requestUri)));
+                            isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
                     return true;
                 }
             }
@@ -346,13 +349,15 @@ public final class WsWithLongPollAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
-        String auth = HttpServerPageHandler.getAuthorizationString(headers);
+        Tuple2<String, String> auth = HttpServerPageHandler.getAuthorizationHeaders(headers);
 
-        if (auth != null) {
-            PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(auth, requestUri);
+        if (auth.getT1() != null) {
+            PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(auth.getT1(), requestUri);
             ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
-            ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                    ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null, requestUri)));
+            ctx.channel().attr(ATTR_SESSIONID)
+                    .set(this.sessionIdSupplier.apply(Tuples.of(ctx,
+                            ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null, requestUri,
+                            auth.getT2())));
             return user != null;
         }
 
