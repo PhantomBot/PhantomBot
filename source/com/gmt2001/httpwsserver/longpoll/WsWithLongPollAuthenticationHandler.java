@@ -131,7 +131,7 @@ public final class WsWithLongPollAuthenticationHandler
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
      * @param String                The request URI
      * @param String                The session ID provided in the headers
-     * @return The input session ID if valid; otherwise a new sesison ID
+     * @return The input session ID if valid; otherwise a new session ID
      */
     protected final Function<Tuple4<ChannelHandlerContext, Boolean, String, String>, String> sessionIdSupplier;
 
