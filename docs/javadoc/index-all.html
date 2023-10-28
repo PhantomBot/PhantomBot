@@ -1152,6 +1152,11 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the context</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#client(io.netty.channel.ChannelHandlerContext,java.lang.String)" class="member-name-link">client(ChannelHandlerContext, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> and
+ Session ID</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#client(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">client(PanelUser, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
 <dd>
 <div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a> and Session ID</div>
@@ -1186,7 +1191,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets a list of all <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the provided
  <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#clientSessionId(reactor.util.function.Tuple4)" class="member-name-link">clientSessionId(Tuple4&lt;ChannelHandlerContext, Boolean, String, String&gt;)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#clientSessionId(reactor.util.function.Tuple5)" class="member-name-link">clientSessionId(Tuple5&lt;ChannelHandlerContext, Boolean, Boolean, String, String&gt;)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
 <dd>
 <div class="block">Returns the session ID for the client</div>
 </dd>
@@ -6481,6 +6486,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String,boolean)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String, boolean)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contain a valid authorization, or if
+ the underlying <code>Channel</code> has already been
+ authenticated</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,java.lang.String,boolean,org.json.JSONObject)" class="member-name-link">isAuthorized(ChannelHandlerContext, String, boolean, JSONObject)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Checks if the given <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> is a valid auth request frame</div>
@@ -12183,7 +12194,7 @@ the order they are declared.</div>
 <div class="block">A combined authentication handler for a WS with long polling webserver
  handler</div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#%3Cinit%3E(java.lang.Runnable,java.util.function.Function)" class="member-name-link">WsWithLongPollAuthenticationHandler(Runnable, Function&lt;Tuple4&lt;ChannelHandlerContext, Boolean, String, String&gt;, String&gt;)</a> - Constructor for class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#%3Cinit%3E(java.lang.Runnable,java.util.function.Function)" class="member-name-link">WsWithLongPollAuthenticationHandler(Runnable, Function&lt;Tuple5&lt;ChannelHandlerContext, Boolean, Boolean, String, String&gt;, String&gt;)</a> - Constructor for class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Constructor</div>
 </dd>
