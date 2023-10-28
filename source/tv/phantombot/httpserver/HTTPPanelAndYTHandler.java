@@ -16,6 +16,13 @@
  */
 package tv.phantombot.httpserver;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.List;
+
 import com.gmt2001.PathValidator;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
@@ -25,15 +32,10 @@ import com.gmt2001.util.Reflect;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import tv.phantombot.CaselessProperties;
 
 /**
@@ -77,13 +79,18 @@ public class HTTPPanelAndYTHandler implements HttpRequestHandler {
         }
 
         if (req.uri().startsWith("/panel/checklogin")) {
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.NO_CONTENT);
-            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
+                    List.of(HttpMethod.GET, req.method()),
+                    List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString()),
+                    Duration.ofMinutes(15)));
+            return;
+        }
 
-            com.gmt2001.Console.debug.println("204 " + req.method().asciiName() + ": " + qsd.path());
-            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+        if (req.method().equals(HttpMethod.OPTIONS)) {
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
+                    List.of(HttpMethod.GET),
+                    List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString()),
+                    Duration.ofMinutes(15)));
             return;
         }
 

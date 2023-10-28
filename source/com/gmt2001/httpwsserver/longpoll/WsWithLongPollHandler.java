@@ -22,6 +22,7 @@ import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 import org.json.JSONArray;
@@ -38,6 +39,7 @@ import com.gmt2001.wspinger.WSServerPinger;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
@@ -214,7 +216,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      * @param ChannelHandlerContext The context
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
      * @param String                The request URI
-     * @param String The session ID provided in the headers
+     * @param String                The session ID provided in the headers
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
     protected final String clientSessionId(Tuple4<ChannelHandlerContext, Boolean, String, String> params) {
@@ -310,6 +312,15 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     public final void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
+        if (req.method().equals(HttpMethod.OPTIONS)) {
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
+                    List.of(HttpMethod.GET, HttpMethod.POST),
+                    List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString(),
+                            "SessionID"),
+                    Duration.ofMinutes(15)));
+            return;
+        }
+
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.POST)) {
             com.gmt2001.Console.debug.println("405 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(
@@ -375,7 +386,8 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     /**
      * {@inheritDoc}
      *
-     * @Deprecated Frames which do not have the new wrapper JSONObject are deprecated for removal
+     * @Deprecated Frames which do not have the new wrapper JSONObject are
+     *             deprecated for removal
      */
     @Deprecated(forRemoval = true, since = "3.11.0.0")
     @Override

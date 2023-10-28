@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -110,6 +111,14 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+            return;
+        }
+
+        if (req.uri().startsWith("/panel/login") && req.method().equals(HttpMethod.OPTIONS)) {
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
+                    List.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT),
+                    List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString()),
+                    Duration.ofMinutes(15)));
             return;
         }
 
