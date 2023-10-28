@@ -99,9 +99,9 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color">
 <div class="block">Constructor that does not initialize a <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger"><code>WSPinger</code></a></div>
 </div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSPinger)" class="member-name-link">WSClient</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSClientPinger)" class="member-name-link">WSClient</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a>&nbsp;handler,
- <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a>&nbsp;pinger)</code></div>
+ <a href="../wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a>&nbsp;pinger)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Constructor</div>
 </div>
@@ -218,11 +218,11 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="&lt;init&gt;(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSPinger)">
+<section class="detail" id="&lt;init&gt;(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSClientPinger)">
 <h3>WSClient</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">WSClient</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html" title="class or interface in java.net" class="external-link">URI</a>&nbsp;uri,
  <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a>&nbsp;handler,
- <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a>&nbsp;pinger)</span>
+ <a href="../wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a>&nbsp;pinger)</span>
          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLException.html" title="class or interface in javax.net.ssl" class="external-link">SSLException</a>,
 <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
 <div class="block">Constructor</div>
@@ -230,7 +230,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>uri</code> - The URI to connect to</dd>
 <dd><code>handler</code> - An object implementing <a href="WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient"><code>WsClientFrameHandler</code></a> which will receive frames</dd>
-<dd><code>pinger</code> - The <a href="../wspinger/WSPinger.html" title="class in com.gmt2001.wspinger"><code>WSPinger</code></a> that will send PING on an interval, or <code>null</code> if this is not desired</dd>
+<dd><code>pinger</code> - The <a href="../wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger"><code>WSClientPinger</code></a> that will send PING on an interval, or <code>null</code> if this is not desired</dd>
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/javax/net/ssl/SSLException.html" title="class or interface in javax.net.ssl" class="external-link">SSLException</a></code> - Failed to create the <a href="https://netty.io/4.1/api/io/netty/handler/ssl/SslContext.html" title="class or interface in io.netty.handler.ssl" class="external-link"><code>SslContext</code></a></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - URI scheme is not ws or wss</dd>

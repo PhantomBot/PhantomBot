@@ -86,7 +86,8 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandler</a></code>, <code><a href="https://netty.io/4.1/api/io/netty/channel/ChannelInboundHandler.html" title="class or interface in io.netty.channel" class="external-link">ChannelInboundHandler</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">WebSocketFrameHandler</span>
+<div class="type-signature"><span class="annotations"><a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandler.Sharable.html" title="class or interface in io.netty.channel" class="external-link">@Sharable</a>
+</span><span class="modifiers">public class </span><span class="element-name type-name-label">WebSocketFrameHandler</span>
 <span class="extends-implements">extends <a href="https://netty.io/4.1/api/io/netty/channel/SimpleChannelInboundHandler.html" title="class or interface in io.netty.channel" class="external-link">SimpleChannelInboundHandler</a>&lt;<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&gt;</span></div>
 <div class="block">Processes WebSocket frames and passes successful ones to the appropriate registered final handler</div>
 <dl class="notes">
@@ -123,6 +124,16 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color"><code><a href="#ATTR_FRAME_HANDLER" class="member-name-link">ATTR_FRAME_HANDLER</a></code></div>
 <div class="col-last odd-row-color">
 <div class="block">Represents the <code>ATTR_FRAME_HANDLER</code> attribute, which stores the <a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> that processes frames for this client</div>
+</div>
+<div class="col-first even-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#ATTR_PINGER" class="member-name-link">ATTR_PINGER</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Represents the <code>ATTR_PINGER</code> attribute, which stores the <a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger"><code>WSServerPinger</code></a> that checks connectivity</div>
+</div>
+<div class="col-first odd-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#ATTR_REQUEST_URI" class="member-name-link">ATTR_REQUEST_URI</a></code></div>
+<div class="col-last odd-row-color">
+<div class="block">Represents the <code>ATTR_REQUEST_URI</code> attribute, which stores the full request URI of the client</div>
 </div>
 <div class="col-first even-row-color"><code>static final <a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#ATTR_URI" class="member-name-link">ATTR_URI</a></code></div>
@@ -173,7 +184,9 @@ loadScripts(document, 'script');</script>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Queue.html" title="class or interface in java.util" class="external-link">Queue</a>&lt;<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getWsSessions(java.lang.String)" class="member-name-link">getWsSessions</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns a queue containing all authenticated WS session channels that match the given URI</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#prepareBinaryWebSocketResponse(byte%5B%5D)" class="member-name-link">prepareBinaryWebSocketResponse</a><wbr>(byte[]&nbsp;content)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -270,10 +283,24 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="ATTR_REQUEST_URI">
+<h3>ATTR_REQUEST_URI</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">ATTR_REQUEST_URI</span></div>
+<div class="block">Represents the <code>ATTR_REQUEST_URI</code> attribute, which stores the full request URI of the client</div>
+</section>
+</li>
+<li>
 <section class="detail" id="ATTR_FRAME_HANDLER">
 <h3>ATTR_FRAME_HANDLER</h3>
 <div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a>&gt;</span>&nbsp;<span class="element-name">ATTR_FRAME_HANDLER</span></div>
 <div class="block">Represents the <code>ATTR_FRAME_HANDLER</code> attribute, which stores the <a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> that processes frames for this client</div>
+</section>
+</li>
+<li>
+<section class="detail" id="ATTR_PINGER">
+<h3>ATTR_PINGER</h3>
+<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://netty.io/4.1/api/io/netty/util/AttributeKey.html" title="class or interface in io.netty.util" class="external-link">AttributeKey</a>&lt;<a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a>&gt;</span>&nbsp;<span class="element-name">ATTR_PINGER</span></div>
+<div class="block">Represents the <code>ATTR_PINGER</code> attribute, which stores the <a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger"><code>WSServerPinger</code></a> that checks connectivity</div>
 </section>
 </li>
 <li>
@@ -488,6 +515,13 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getWsSessions(java.lang.String)">
 <h3>getWsSessions</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Queue.html" title="class or interface in java.util" class="external-link">Queue</a>&lt;<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&gt;</span>&nbsp;<span class="element-name">getWsSessions</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uri)</span></div>
+<div class="block">Returns a queue containing all authenticated WS session channels that match the given URI</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>uri</code> - The URI to match</dd>
+<dt>Returns:</dt>
+<dd>The matching channels</dd>
+</dl>
 </section>
 </li>
 <li>

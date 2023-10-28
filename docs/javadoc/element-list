@@ -10,6 +10,7 @@ com.gmt2001.dns
 com.gmt2001.httpclient
 com.gmt2001.httpwsserver
 com.gmt2001.httpwsserver.auth
+com.gmt2001.httpwsserver.longpoll
 com.gmt2001.httpwsserver.x509
 com.gmt2001.module
 com.gmt2001.ratelimiters

@@ -32,6 +32,7 @@
         window.localStorage.removeItem('isStable');
         window.localStorage.removeItem('expires');
         window.localStorage.removeItem('b64');
+        window.sessionStorage.removeItem('b64');
         window.sessionStorage.removeItem('webauth');
         window.sessionStorage.removeItem('cookie');
         document.cookie = 'panellogin=' + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=1'
