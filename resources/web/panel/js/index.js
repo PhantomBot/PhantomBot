@@ -43,7 +43,8 @@ $(function () {
         lastReceivedTimestamp = 0,
         lastReceivedSequence = 0,
         lastTimestamp = 0,
-        lastSequence = 0;
+        lastSequence = 0,
+        sessionId = null;
     const maxReconnectAttempts = 3;
     const webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://')
         + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {
@@ -70,7 +71,9 @@ $(function () {
                             'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(toSend)
+                        mode: 'cors',
+                        credentials: 'include',
+                        body: toSend
                     }).then(async r => {
                         await navigator.locks.request('longpoll.send', async () => {
                             if (isLongpollInit()) {
@@ -89,8 +92,34 @@ $(function () {
         });
     };
 
-    const fetchLongpoll = function() {
+    const isJSObject = function(obj) {
+        return obj !== undefined && obj !== null && typeof obj === 'object' && !Array.isArray(obj);
+    }
 
+    const fetchLongpoll = function() {
+        navigator.locks.request('receiver.sequence', () => {
+            return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
+        })
+        .then(lastReceived => fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
+                'Content-Type': 'application/json',
+                'SessionID': sessionId
+            },
+            mode: 'cors',
+            credentials: 'include'
+        })).then(r => r.json()).then(jsa => {
+            if (Array.isArray(jsa)) {
+                jsa.forEach(element => {
+                    if (isJSObject(element)) {
+                        onmessage(element);
+                    }
+                });
+            } else if (isJSObject(jsa)) {
+                onmessage(jsa);
+            }
+        });
     };
 
     const close = function(code) {
@@ -103,7 +132,28 @@ $(function () {
                     await navigator.locks.request('longpoll.queue', () => {
                         socket.longpoll.queue.splice(0, Infinity);
                     });
+                    onclose();
                 }
+            });
+        }
+    };
+
+    const sendAuth = async function() {
+        const message = {
+            authenticate: getAuth()
+        };
+
+        if (usingWebsocket) {
+            webSocket.send(JSON.stringify(message));
+        } else {
+            const toSend = JSON.stringify([message]);
+            fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
+                    'Content-Type': 'application/json'
+                },
+                body: toSend
             });
         }
     };
@@ -132,8 +182,11 @@ $(function () {
         });
 
         if (usingWebsocket) {
-            message.metadata.skipTimestamp = lastReceivedTimestamp;
-            message.metadata.skipSequence = lastReceivedSequence;
+            await navigator.locks.request('receiver.sequence', () => {
+                message.metadata.skipTimestamp = lastReceivedTimestamp;
+                message.metadata.skipSequence = lastReceivedSequence;
+            });
+
             webSocket.send(JSON.stringify(message));
         } else {
             await navigator.locks.request('longpoll.queue', () => {
@@ -152,10 +205,10 @@ $(function () {
                     queue: [],
                     sending: false,
                     closed: false,
-                    init: false,
-                    fetch: null
+                    init: false
                 };
                 socket.longpoll.init = true;
+                onopen();
                 fetchLongpoll();
             }
         });
@@ -861,9 +914,7 @@ $(function () {
         // Remove all alerts.
         toastr.remove();
         // Auth with the socket.
-        sendToSocket({
-            authenticate: getAuth()
-        });
+        sendAuth();
     };
 
     /*
@@ -883,11 +934,15 @@ $(function () {
         try {
             helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
 
-            if (e.data === 'PING') {
+            if (e.data !== undefined && e.data === 'PING') {
                 return;
             }
 
-            let message = JSON.parse(e.data);
+            let message = e;
+
+            if (e.data !== undefined && !isJSObject(e.data)) {
+                message = JSON.parse(e.data);
+            }
 
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
@@ -896,6 +951,7 @@ $(function () {
                     toastr.error('Failed to auth with the socket.', '', {timeOut: 0});
                     close();
                 } else {
+                    sessionId = message.sessionId;
                     // This is to stop a reconnect loading the main page.
                     if (helpers.isAuth === true) {
                         helpers.log('Found reconnect auth', helpers.LOG_TYPE.DEBUG);
@@ -921,6 +977,7 @@ $(function () {
                         lastReceivedSequence = message.metadata.sequence;
                     }
                 });
+                message = message.data;
             }
 
             if (message.id !== undefined) {
