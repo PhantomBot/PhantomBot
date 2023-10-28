@@ -284,9 +284,6 @@ public final class ClientCache {
 
     /**
      * Enqueues a message
-     * <p>
-     * A separate or chained call to {@link #process()} is required to actually
-     * attempt to send the message
      *
      * @param clients The clients to enqueue the message with
      * @param jso     The message to enqueue
@@ -298,9 +295,6 @@ public final class ClientCache {
 
     /**
      * Enqueues a message
-     * <p>
-     * A separate or chained call to {@link #process()} is required to actually
-     * attempt to send the message
      *
      * @param clients The clients to enqueue the message with
      * @param data    The message to enqueue
