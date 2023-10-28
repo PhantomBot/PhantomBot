@@ -206,6 +206,21 @@ public final class ClientCache {
     }
 
     /**
+     * Gets the {@link Client} associated with the {@link ChannelHandlerContext} and
+     * Session ID
+     *
+     * @param ctx       The context
+     * @param sessionId The session ID
+     * @return An optional that contains the client; empty optional if the client
+     *         was not found, or the {@link PanelUser} or Session ID is
+     *         {@code null}
+     */
+    public Optional<Client> client(ChannelHandlerContext ctx, String sessionId) {
+        PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
+        return this.client(user, sessionId);
+    }
+
+    /**
      * Gets the {@link Client} associated with the {@link PanelUser} and Session ID
      *
      * @param user      The panel user
@@ -269,9 +284,6 @@ public final class ClientCache {
 
     /**
      * Enqueues a message
-     * <p>
-     * A separate or chained call to {@link #process()} is required to actually
-     * attempt to send the message
      *
      * @param clients The clients to enqueue the message with
      * @param jso     The message to enqueue
@@ -283,9 +295,6 @@ public final class ClientCache {
 
     /**
      * Enqueues a message
-     * <p>
-     * A separate or chained call to {@link #process()} is required to actually
-     * attempt to send the message
      *
      * @param clients The clients to enqueue the message with
      * @param data    The message to enqueue

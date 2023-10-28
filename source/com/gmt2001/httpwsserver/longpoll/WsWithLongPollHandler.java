@@ -46,7 +46,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import reactor.util.function.Tuple2;
-import reactor.util.function.Tuple4;
+import reactor.util.function.Tuple5;
 import reactor.util.function.Tuples;
 import tv.phantombot.panel.PanelUser.PanelUser;
 
@@ -214,15 +214,22 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      *
      * @param params                A tuple containing the below params
      * @param ChannelHandlerContext The context
+     * @param Boolean               {@code true} if HTTP GET or WS; {@code false} if
+     *                              HTTP POST
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
      * @param String                The request URI
      * @param String                The session ID provided in the headers
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
-    protected final String clientSessionId(Tuple4<ChannelHandlerContext, Boolean, String, String> params) {
-        Tuple2<Instant, Long> after = this.lastReceivedParams(params.getT3());
-        Optional<Client> client = this.clientCache.addOrUpdateClient(params.getT1(), params.getT2(), after.getT1(),
-                after.getT2(), params.getT4(), this::sessionIdSupplier);
+    protected final String clientSessionId(Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String> params) {
+        Tuple2<Instant, Long> after = this.lastReceivedParams(params.getT4());
+        Optional<Client> client;
+        if (params.getT2()) {
+            client = this.clientCache.addOrUpdateClient(params.getT1(), params.getT3(), after.getT1(),
+                    after.getT2(), params.getT5(), this::sessionIdSupplier);
+        } else {
+            client = this.clientCache.client(params.getT1(), params.getT5());
+        }
 
         if (client.isPresent()) {
             return client.get().sessionId();

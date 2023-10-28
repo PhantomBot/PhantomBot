@@ -205,7 +205,7 @@ public final class Client {
     Client enqueue(Message m) {
         this.strongQueue.add(m);
         this.softQueue.add(new SoftReference<Message>(m));
-        return this;
+        return this.process();
     }
 
     /**
@@ -349,7 +349,7 @@ public final class Client {
         try {
             if (this.ctx != null && this.contextLock.tryAcquire(this.lockTimeout.toMillis(), TimeUnit.MILLISECONDS)) {
                 try {
-                    if (this.ctx != null && this.ctx.channel().isActive()) {
+                    if (this.ctx != null && this.ctx.channel().isActive() && !this.strongQueue.isEmpty()) {
                         if (this.isWs) {
                             Message m = this.strongQueue.poll();
 
