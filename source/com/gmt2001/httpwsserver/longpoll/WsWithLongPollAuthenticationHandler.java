@@ -119,6 +119,10 @@ public final class WsWithLongPollAuthenticationHandler
      */
     private static final String AUTH_TYPE = "read/write";
     /**
+     * Content-Type for auth result
+     */
+    public static final String AUTH_RESULT_CONTENT_TYPE = "json";
+    /**
      * Optional callback to run when a client successfully authenticates via
      * an authentication frame
      */
@@ -267,9 +271,8 @@ public final class WsWithLongPollAuthenticationHandler
     private void httpResult(ChannelHandlerContext ctx, FullHttpRequest req, HttpResponseStatus status,
             boolean authorized) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
-        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status);
-
         JSONStringer jss = this.authResult(ctx, authorized, true);
+        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, jss.toString(), AUTH_RESULT_CONTENT_TYPE);
 
         com.gmt2001.Console.debug.println(status.code() + " " + req.method().asciiName() + ": " + qsd.path());
 
