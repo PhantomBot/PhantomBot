@@ -358,11 +358,13 @@ public final class WsWithLongPollAuthenticationHandler
         if (auth.getT1() != null) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(auth.getT1(), requestUri);
             ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
-            ctx.channel().attr(ATTR_SESSIONID)
-                    .set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                            ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null, requestUri,
-                            auth.getT2())));
-            return user != null;
+            if (user != null) {
+                ctx.channel().attr(ATTR_SESSIONID)
+                        .set(this.sessionIdSupplier.apply(Tuples.of(ctx,
+                                ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null, requestUri,
+                                auth.getT2())));
+                return true;
+            }
         }
 
         return false;
