@@ -209,6 +209,7 @@
                                 age = '';
                             }
                             history.pushState({}, "PhantomBot | Log in | Success");
+                            window.sessionStorage.setItem('b64', btoa(username + ':' + password));
                             window.sessionStorage.setItem('webauth', webauth);
                             window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
                             document.cookie = window.sessionStorage.getItem('cookie');
@@ -390,6 +391,7 @@
                               && window.localStorage.getItem('expires') && window.localStorage.getItem('expires') > Date.now()
                               && (window.sessionStorage.getItem('/panel/login#remember') === null || parseInt(window.sessionStorage.getItem('/panel/login#remember')) < Date.now())) {
                                 window.sessionStorage.setItem('/panel/login#remember', (Date.now() + 10000));
+                                window.sessionStorage.setItem('b64', window.localStorage.getItem('b64'));
                                 window.sessionStorage.setItem('webauth', window.localStorage.getItem('webauth'));
                                 window.sessionStorage.setItem('cookie', 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=300');
                                 history.pushState({}, "PhantomBot | Log in | Success");

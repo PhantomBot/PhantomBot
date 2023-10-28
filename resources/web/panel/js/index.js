@@ -38,22 +38,139 @@ $(function () {
                 }
         );
     }
-    var webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {reconnectInterval: 500}),
-            callbacks = [],
+
+    let usingWebsocket = true,
+        lastReceivedTimestamp = 0,
+        lastReceivedSequence = 0,
+        lastTimestamp = 0,
+        lastSequence = 0;
+    const maxReconnectAttempts = 3;
+    const webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://')
+        + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {
+        reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false, maxReconnectAttempts: maxReconnectAttempts
+    });
+
+    let callbacks = [],
             listeners = [],
             socket = {};
+
+    const isLongpollInit = function() {
+        return !usingWebsocket && socket.hasOwnProperty('longpoll') && socket.longpoll.init && !socket.longpoll.closed;
+    };
+
+    const sendLongpoll = async function() {
+        navigator.locks.request('longpoll.send', () => {
+            if (isLongpollInit() && !socket.longpoll.sending) {
+                socket.longpoll.sending = true;
+                navigator.locks.request('longpoll.queue', () => {
+                    const toSend = JSON.stringify(socket.longpoll.queue.splice(0, Infinity));
+                    fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(toSend)
+                    }).then(async r => {
+                        await navigator.locks.request('longpoll.send', async () => {
+                            if (isLongpollInit()) {
+                                socket.longpoll.sending = false;
+                            }
+                        });
+
+                        navigator.locks.request('longpoll.queue', () => {
+                            if (socket.longpoll.queue.length > 0) {
+                                sendLongpoll();
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    };
+
+    const fetchLongpoll = function() {
+
+    };
+
+    const close = function(code) {
+        if (usingWebsocket) {
+            webSocket.close(code);
+        } else {
+            navigator.locks.request('longpoll.close', async () => {
+                if (isLongpollInit()) {
+                    socket.longpoll.closed = true;
+                    await navigator.locks.request('longpoll.queue', () => {
+                        socket.longpoll.queue.splice(0, Infinity);
+                    });
+                }
+            });
+        }
+    };
+
+    const send = async function(message) {
+        message = {
+            metadata: {
+                timestamp: 0,
+                sequence: 0
+            },
+            data: message
+        };
+
+        await navigator.locks.request('sender.sequence', () => {
+            const now = Date.now();
+            if (now === lastTimestamp) {
+                lastSequence++;
+            } else {
+                lastSequence = 0;
+            }
+
+            lastTimestamp = now;
+
+            message.metadata.timestamp = now;
+            message.metadata.sequence = lastSequence;
+        });
+
+        if (usingWebsocket) {
+            message.metadata.skipTimestamp = lastReceivedTimestamp;
+            message.metadata.skipSequence = lastReceivedSequence;
+            webSocket.send(JSON.stringify(message));
+        } else {
+            await navigator.locks.request('longpoll.queue', () => {
+                if (isLongpollInit()) {
+                    socket.longpoll.queue.push(message);
+                    sendLongpoll();
+                }
+            });
+        }
+    };
+
+    const initLongPoll = function() {
+        navigator.locks.request('longpoll.init', () => {
+            if (!socket.hasOwnProperty('longpoll')) {
+                socket.longpoll = {
+                    queue: [],
+                    sending: false,
+                    closed: false,
+                    init: false,
+                    fetch: null
+                };
+                socket.longpoll.init = true;
+                fetchLongpoll();
+            }
+        });
+    };
 
     /*
      * @function Used to send messages to the socket. This should be private to this script.
      *
      * @param {Object} message
      */
-    var sendToSocket = function (message) {
+    const sendToSocket = function (message) {
         try {
             message.section = $.currentPage().folder;
-            let json = JSON.stringify(message);
 
-            webSocket.send(json);
+            send(message);
 
             // Make sure to not show the user's token.
             if (json.indexOf('authenticate') !== -1) {
@@ -75,7 +192,7 @@ $(function () {
      * @param {Function} callback
      * @param {Boolean}  storeKey
      */
-    var generateCallBack = function (id, tables, isUpdate, isArray, callback, storeKey) {
+    const generateCallBack = function (id, tables, isUpdate, isArray, callback, storeKey) {
         if (callbacks[id] !== undefined) {
             helpers.logError('Callback with id "' + id + '" exists already. Aborting update.', helpers.LOG_TYPE.FORCE);
         } else {
@@ -729,7 +846,7 @@ $(function () {
     };
 
     socket.close = function () {
-        webSocket.close(1000);
+        close(1000);
     };
 
     // WebSocket events.
@@ -737,7 +854,7 @@ $(function () {
     /*
      * @function Called when the socket opens.
      */
-    webSocket.onopen = function () {
+    const onopen = function () {
         helpers.log('Connection established with the websocket.', helpers.LOG_TYPE.FORCE);
         // Restart Pace.
         Pace.restart();
@@ -752,7 +869,7 @@ $(function () {
     /*
      * @function Socket calls when it closes
      */
-    webSocket.onclose = function () {
+    const onclose = function () {
         helpers.logError('Connection lost with the websocket.', helpers.LOG_TYPE.FORCE);
         // Add error toast.
         toastr.error('Connection lost with the websocket.', '', {timeOut: 0});
@@ -762,13 +879,11 @@ $(function () {
     /*
      * @function Socket calls when it gets message.
      */
-    webSocket.onmessage = function (e) {
+    const onmessage = async function (e) {
         try {
             helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
 
             if (e.data === 'PING') {
-                helpers.log('Sending PONG', helpers.LOG_TYPE.DEBUG);
-                webSocket.send('PONG');
                 return;
             }
 
@@ -779,7 +894,7 @@ $(function () {
                 if (message.authresult === 'false') {
                     helpers.logError('Failed to auth with the socket.', helpers.LOG_TYPE.FORCE);
                     toastr.error('Failed to auth with the socket.', '', {timeOut: 0});
-                    webSocket.close();
+                    close();
                 } else {
                     // This is to stop a reconnect loading the main page.
                     if (helpers.isAuth === true) {
@@ -795,6 +910,17 @@ $(function () {
                     helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 }
                 return;
+            }
+
+            if (message.metadata !== undefined) {
+                navigator.locks.request('receiver.sequence', () => {
+                    if (message.metadata.timestamp > lastReceivedTimestamp) {
+                        lastReceivedTimestamp = message.metadata.timestamp;
+                        lastReceivedSequence = message.metadata.sequence;
+                    } else if (message.metadata.timestamp === lastReceivedTimestamp && message.metadata.sequence > lastReceivedSequence) {
+                        lastReceivedSequence = message.metadata.sequence;
+                    }
+                });
             }
 
             if (message.id !== undefined) {
@@ -873,6 +999,20 @@ $(function () {
             helpers.logError('Failed to parse message from socket: ' + ex.stack + '\n\n' + e.data, helpers.LOG_TYPE.FORCE);
         }
     };
+
+    webSocket.onopen = onopen;
+    webSocket.onclose = onclose;
+    webSocket.onmessage = onmessage;
+    webSocket.onconnecting = function(event) {
+        if (event.code !== undefined && event.code !== null && event.code > 0) {
+            if (webSocket.reconnectAttempts >= maxReconnectAttempts) {
+                usingWebsocket = false;
+                initLongPoll();
+            }
+        }
+    }
+
+    webSocket.open();
 
     // Make this a global object.
     window.socket = socket;
