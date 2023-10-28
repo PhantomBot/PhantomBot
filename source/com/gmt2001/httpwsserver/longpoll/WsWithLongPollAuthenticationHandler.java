@@ -35,6 +35,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -42,7 +43,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
 import reactor.util.function.Tuple2;
-import reactor.util.function.Tuple4;
+import reactor.util.function.Tuple5;
 import reactor.util.function.Tuples;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
@@ -132,12 +133,14 @@ public final class WsWithLongPollAuthenticationHandler
      * <p>
      *
      * @param ChannelHandlerContext The context
+     * @param Boolean               {@code true} if HTTP GET or WS; {@code false} if
+     *                              HTTP POST
      * @param Boolean               {@code true} if WS; {@code false} if HTTP
      * @param String                The request URI
      * @param String                The session ID provided in the headers
      * @return The input session ID if valid; otherwise a new session ID
      */
-    protected final Function<Tuple4<ChannelHandlerContext, Boolean, String, String>, String> sessionIdSupplier;
+    protected final Function<Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String>, String> sessionIdSupplier;
 
     /**
      * Constructor
@@ -150,7 +153,7 @@ public final class WsWithLongPollAuthenticationHandler
      *                              {@link #sessionIdSupplier}
      */
     public WsWithLongPollAuthenticationHandler(Runnable authenticatedCallback,
-            Function<Tuple4<ChannelHandlerContext, Boolean, String, String>, String> sessionIdSupplier) {
+            Function<Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String>, String> sessionIdSupplier) {
         if (sessionIdSupplier == null) {
             throw new IllegalArgumentException("sessionIdSupplier");
         }
@@ -272,7 +275,8 @@ public final class WsWithLongPollAuthenticationHandler
             boolean authorized) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
         JSONStringer jss = this.authResult(ctx, authorized, true);
-        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, jss.toString(), AUTH_RESULT_CONTENT_TYPE);
+        FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, jss.toString(),
+                AUTH_RESULT_CONTENT_TYPE);
 
         com.gmt2001.Console.debug.println(status.code() + " " + req.method().asciiName() + ": " + qsd.path());
 
@@ -282,13 +286,13 @@ public final class WsWithLongPollAuthenticationHandler
     /**
      * Processes an authentication frame sent via HTTP
      *
-     * @param ctx The context
-     * @param req The request
-     * @param jso The data frame
+     * @param ctx    The context
+     * @param req    The request
+     * @param jso    The data frame
      * @param doFail {@code true} to also send fail result
      * @return {@code true} on success
      */
-    boolean httpAuthFrame(ChannelHandlerContext ctx,  FullHttpRequest req, JSONObject jso, boolean doFail) {
+    boolean httpAuthFrame(ChannelHandlerContext ctx, FullHttpRequest req, JSONObject jso, boolean doFail) {
         try {
             if (this.isAuthorized(ctx, req.uri(), false, jso)) {
                 this.httpResult(ctx, req, HttpResponseStatus.OK, true);
@@ -346,7 +350,7 @@ public final class WsWithLongPollAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
-        return this.isAuthorized(ctx, req.headers(), req.uri());
+        return this.isAuthorized(ctx, req.headers(), req.uri(), req.method().equals(HttpMethod.GET));
     }
 
     /**
@@ -365,7 +369,7 @@ public final class WsWithLongPollAuthenticationHandler
         if (jso.has("authenticate")) {
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                        isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
+                        false, isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
                 com.gmt2001.Console.debug.println("HasUser");
                 return true;
             } else {
@@ -375,7 +379,7 @@ public final class WsWithLongPollAuthenticationHandler
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                     ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                            isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
+                            false, isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
                     return true;
                 }
             }
@@ -386,6 +390,25 @@ public final class WsWithLongPollAuthenticationHandler
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
+        return this.isAuthorized(ctx, headers, requestUri, true);
+    }
+
+    /**
+     * Checks if the given {@link HttpHeaders} contain a valid authorization, or if
+     * the underlying {@link Channel} has already been
+     * authenticated
+     * <p>
+     * When returning {@code false}, this method MUST NOT send a response to the
+     * client
+     *
+     * @param ctx        The {@link ChannelHandlerContext} of the session
+     * @param headers    The {@link HttpHeaders} to check
+     * @param requestUri The request URI
+     * @param isGet      {@code true} if HTTP GET or WS; {@code false} for any other
+     *                   HTTP method
+     * @return {@code true} if authorized
+     */
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri, boolean isGet) {
         Tuple2<String, String> auth = HttpServerPageHandler.getAuthorizationHeaders(headers);
 
         if (auth.getT1() != null) {
@@ -393,8 +416,9 @@ public final class WsWithLongPollAuthenticationHandler
             ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
             if (user != null) {
                 ctx.channel().attr(ATTR_SESSIONID)
-                        .set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                                ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null, requestUri,
+                        .set(this.sessionIdSupplier.apply(Tuples.of(ctx, isGet,
+                                ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).get() != null,
+                                requestUri,
                                 auth.getT2())));
                 return true;
             }
