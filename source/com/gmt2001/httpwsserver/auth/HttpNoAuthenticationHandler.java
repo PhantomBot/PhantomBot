@@ -25,7 +25,7 @@ import io.netty.handler.codec.http.HttpHeaders;
  *
  * @author gmt2001
  */
-public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
+public final class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
 
     /**
      * An instance of {@link HttpNoAuthenticationHandler}
@@ -57,10 +57,6 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
         return true;
     }
 
-    @Override
-    public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
-    }
 
     @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
@@ -73,7 +69,7 @@ public class HttpNoAuthenticationHandler implements HttpAuthenticationHandler {
     }
 
     @Override
-    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         return true;
     }
 }

@@ -16,13 +16,24 @@
  */
 package com.gmt2001.httpwsserver;
 
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
+import com.gmt2001.wspinger.WSServerPinger;
+
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
@@ -31,18 +42,13 @@ import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.AttributeKey;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
 /**
  * Processes WebSocket frames and passes successful ones to the appropriate registered final handler
  *
  * @author gmt2001
  */
+@Sharable
 public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> {
 
     /**
@@ -54,9 +60,17 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     public static final AttributeKey<String> ATTR_URI = AttributeKey.valueOf("uri");
     /**
+     * Represents the {@code ATTR_REQUEST_URI} attribute, which stores the full request URI of the client
+     */
+    public static final AttributeKey<String> ATTR_REQUEST_URI = AttributeKey.valueOf("requestUri");
+    /**
      * Represents the {@code ATTR_FRAME_HANDLER} attribute, which stores the {@link WsFrameHandler} that processes frames for this client
      */
     public static final AttributeKey<WsFrameHandler> ATTR_FRAME_HANDLER = AttributeKey.valueOf("frameHandler");
+    /**
+     * Represents the {@code ATTR_PINGER} attribute, which stores the {@link WSServerPinger} that checks connectivity
+     */
+    public static final AttributeKey<WSServerPinger> ATTR_PINGER = AttributeKey.valueOf("pinger");
     /**
      * Represents the {@code ATTR_ALLOW_NON_SSL} attribute, which stores if the client is allowed to bypass SSL requirements
      */
@@ -84,7 +98,12 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
     protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) throws Exception {
         WsFrameHandler h = ctx.channel().attr(ATTR_FRAME_HANDLER).get();
 
-        if (h.getAuthHandler().checkAuthorization(ctx, frame)) {
+        if (h.getWsAuthHandler().checkAuthorization(ctx, frame)) {
+            WSServerPinger p = ctx.channel().attr(ATTR_PINGER).get();
+            if (p != null) {
+                p.handleFrame(ctx, frame);
+            }
+
             h.handleFrame(ctx, frame);
         }
     }
@@ -130,15 +149,29 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
                     }
                 }
 
+                WSServerPinger p = h.pinger(ctx);
+
                 ctx.channel().attr(ATTR_URI).set(ruri);
+                ctx.channel().attr(ATTR_REQUEST_URI).set(hc.requestUri());
                 ctx.channel().attr(ATTR_FRAME_HANDLER).set(h);
+                ctx.channel().attr(ATTR_PINGER).set(p);
                 ctx.channel().attr(ATTR_ALLOW_NON_SSL).set(allowNonSsl ? "true" : "false");
-                h.getAuthHandler().checkAuthorizationHeaders(ctx, hc.requestHeaders());
+                h.getWsAuthHandler().checkAuthorizationHeaders(ctx, hc.requestHeaders(), ruri);
                 ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).setIfAbsent(Boolean.FALSE);
                 ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                     WS_SESSIONS.remove(f.channel());
+                    WsFrameHandler wh = f.channel().attr(ATTR_FRAME_HANDLER).get();
+                    WSServerPinger wp = f.channel().attr(ATTR_PINGER).get();
+                    if (wp != null) {
+                        wp.onClose(f.channel());
+                    }
+                    wh.onClose(f.channel());
                 });
                 WS_SESSIONS.add(ctx.channel());
+                if (p != null) {
+                    p.handshakeComplete(ctx, hc);
+                }
+                h.handshakeComplete(ctx, hc);
             }
         }
     }
@@ -298,6 +331,9 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         HTTPWSServer.releaseObj(resframe);
     }
 
+    /**
+     * Closes all WS sessions
+     */
     static void closeAllWsSessions() {
         WebSocketFrame resframe = WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.ENDPOINT_UNAVAILABLE);
         WS_SESSIONS.forEach((c) -> {
@@ -308,6 +344,12 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
         HTTPWSServer.releaseObj(resframe);
     }
 
+    /**
+     * Returns a queue containing all authenticated WS session channels that match the given URI
+     *
+     * @param uri The URI to match
+     * @return The matching channels
+     */
     public static Queue<Channel> getWsSessions(String uri) {
         Queue<Channel> sessions = new ConcurrentLinkedQueue<>();
 

@@ -27,7 +27,7 @@ import org.json.JSONStringer;
  *
  * @author gmt2001
  */
-public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
+public final class WsNoAuthenticationHandler implements WsAuthenticationHandler {
 
     /**
      * An instance of {@link WsNoAuthenticationHandler}
@@ -75,12 +75,7 @@ public class WsNoAuthenticationHandler implements WsAuthenticationHandler {
     }
 
     @Override
-    public void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
-    }
-
-    @Override
-    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         return false;
     }
 }

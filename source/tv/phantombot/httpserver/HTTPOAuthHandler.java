@@ -56,7 +56,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/oauth", this);
         return this;
     }
@@ -67,7 +67,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return HttpNoAuthenticationHandler.instance();
     }
 

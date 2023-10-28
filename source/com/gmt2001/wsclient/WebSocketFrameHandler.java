@@ -29,6 +29,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -92,9 +93,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
             ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                 this.connected = false;
                 if (this.client.pinger != null) {
-                    this.client.pinger.onClose();
+                    this.client.pinger.onClose(f.channel());
                 }
-                this.client.handler.onClose();
+                this.client.handler.onClose(f.channel());
             });
             this.connected = true;
             if (this.client.pinger != null) {

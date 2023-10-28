@@ -23,10 +23,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.gmt2001.PathValidator;
 import com.gmt2001.httpwsserver.HTTPWSServer;
@@ -43,6 +48,10 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
+import tv.phantombot.RepoVersion;
+import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
 /**
  *
@@ -51,7 +60,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 public class HTTPNoAuthHandler implements HttpRequestHandler {
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/", this);
         HttpServerPageHandler.registerHttpHandler("/panel/login", this);
         HttpServerPageHandler.registerHttpHandler("/panel/vendors", this);
@@ -60,7 +69,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return HttpNoAuthenticationHandler.instance();
     }
 
@@ -105,38 +114,110 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             return;
         }
 
-        if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true"))) {
-            String sameSite = "";
-            String user = "";
-            String pass = "";
-            String kickback = "";
+        if (req.uri().startsWith("/panel/login") && req.method().equals(HttpMethod.OPTIONS)) {
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
+                    List.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT),
+                    List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString()),
+                    Duration.ofMinutes(15)));
+            return;
+        }
 
-            if (req.method().equals(HttpMethod.POST)) {
-                Map<String, String> post = HttpServerPageHandler.parsePost(req);
+        if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST)
+            || req.method().equals(HttpMethod.PUT) || req.uri().contains("logout=true"))) {
+            if (req.method().equals(HttpMethod.PUT)) {
+                JSONStringer jsonObject = new JSONStringer();
+                HttpResponseStatus status = HttpResponseStatus.OK;
+                JSONObject jso = null;
 
-                user = post.getOrDefault("user", "");
-                pass = post.getOrDefault("pass", "");
-                kickback = URLDecoder.decode(post.getOrDefault("kickback", ""), StandardCharsets.UTF_8);
+                try {
+                    jso = new JSONObject(req.content());
+                } catch (JSONException ex) {
+                    jsonObject.object().key("errors").array().object()
+                            .key("status").value("500")
+                            .key("title").value("Internal Server Error")
+                            .key("detail").value("Unable to parse frame as JSON object")
+                            .endObject().endArray().endObject();
+
+                    status = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+                    com.gmt2001.Console.err.logStackTrace(ex);
+                }
+
+                if (jso != null) {
+                    if (jso.has("remote") && jso.getString("query").equals("login")) {
+                        jsonObject.object();
+                        if (jso.getJSONObject("params").getString("type").equalsIgnoreCase("AuthRO")) {
+                            jsonObject.key("authtoken").value(CaselessProperties.instance().getProperty("webauthro")).key("authtype").value("read");
+                        } else if (PanelUserHandler.checkLogin(jso.getJSONObject("params").getString("user"), jso.getJSONObject("params").getString("pass"))) {
+                            jsonObject.key("authtoken").value(PanelUserHandler.getUserAuthToken(jso.getJSONObject("params").getString("user")));
+                        } else if (jso.getJSONObject("params").getString("user").equals("broadcaster") && PhantomBot.instance() != null
+                                && PhantomBot.instance().getHTTPOAuthHandler().validateBroadcasterToken(jso.getJSONObject("params").getString("pass"))) {
+                            jsonObject.key("authtoken").value(jso.getJSONObject("params").getString("pass")).key("authtype").value("oauth/broadcaster");
+                        } else if (jso.getJSONObject("params").getString("user").equalsIgnoreCase("token") && PhantomBot.instance() != null
+                                && PhantomBot.instance().getHTTPSetupHandler().checkTokenAuthorization(jso.getJSONObject("params").getString("user"), jso.getJSONObject("params").getString("pass"))) {
+                            jsonObject.key("authtoken").value("").key("authtype").value("setup/token");
+                        } else {
+                            jsonObject.key("errors").array().object()
+                                    .key("status").value("401")
+                                    .key("title").value("Unauthorized")
+                                    .key("detail").value("Invalid Credentials")
+                                    .endObject().endArray();
+                            status = HttpResponseStatus.UNAUTHORIZED;
+                        }
+
+                        if (status.equals(HttpResponseStatus.OK)) {
+                            jsonObject.key("version-data").object().key("version").value(RepoVersion.getPhantomBotVersion()).key("commit").value(RepoVersion.getRepoVersion());
+                            jsonObject.key("build-type").value(RepoVersion.getBuildType());
+                            jsonObject.key("java-version").value(System.getProperty("java.runtime.version"));
+                            jsonObject.key("os-version").value(System.getProperty("os.name"));
+                            jsonObject.endObject();
+                        }
+
+                        jsonObject.endObject();
+                    } else {
+                        jsonObject.object().key("errors").array().object()
+                                .key("status").value("406")
+                                .key("title").value("Not Acceptable")
+                                .key("detail").value("Query not acceptable")
+                                .endObject().endArray().endObject();
+                        status = HttpResponseStatus.NOT_ACCEPTABLE;
+                    }
+                }
+
+                com.gmt2001.Console.debug.println(status.code() + " " + req.method().asciiName() + ": " + qsd.path());
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(status, jsonObject.toString(), "json"));
+            } else {
+                String sameSite = "";
+                String user = "";
+                String pass = "";
+                String kickback = "";
+
+                if (req.method().equals(HttpMethod.POST)) {
+                    Map<String, String> post = HttpServerPageHandler.parsePost(req);
+
+                    user = post.getOrDefault("user", "");
+                    pass = post.getOrDefault("pass", "");
+                    kickback = URLDecoder.decode(post.getOrDefault("kickback", ""), StandardCharsets.UTF_8);
+                }
+
+                FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
+
+                if (req.uri().contains("logout=true")) {
+                    res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "")
+                            + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
+                } else if (req.method().equals(HttpMethod.POST)) {
+                    res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes()))
+                            + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
+                }
+
+                if (kickback.isBlank()) {
+                    kickback = "/panel";
+                }
+
+                res.headers().set(HttpHeaderNames.LOCATION, kickback);
+                com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
+
+                HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             }
-
-            FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.SEE_OTHER);
-
-            if (req.uri().contains("logout=true")) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "")
-                        + "; HttpOnly; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/");
-            } else if (req.method().equals(HttpMethod.POST)) {
-                res.headers().add(HttpHeaderNames.SET_COOKIE, "panellogin=" + new String(Base64.getEncoder().encode((user + ":" + pass).getBytes()))
-                        + (HTTPWSServer.instance().isSsl() ? "; Secure" + sameSite : "") + "; HttpOnly; Path=/");
-            }
-
-            if (kickback.isBlank()) {
-                kickback = "/panel";
-            }
-
-            res.headers().set(HttpHeaderNames.LOCATION, kickback);
-            com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
-
-            HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
         }
 

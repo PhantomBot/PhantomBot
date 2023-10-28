@@ -134,6 +134,8 @@ RUN set -eux; \
     ln -s "${DATADIR}/scripts/lang" "${BASEDIR}/scripts/lang/custom"; \
     touch "${DATADIR}/gameslist/gamesList.txt"; \
     ln -s "${DATADIR}/gameslist/gamesList.txt" "${BASEDIR}/web/panel/js/utils/gamesList.txt"; \
+    touch "${DATADIR}/java.opt.custom"; \
+    ln -s "${DATADIR}/java.opt.custom" "${BASEDIR}/java.opt.custom"; \
     chmod u+x "${BASEDIR}/restartbot-docker.sh"; \
     chmod u+x "${BASEDIR}/launch-docker.sh"; \
     chmod u+x "${BASEDIR}/docker-entrypoint.sh"

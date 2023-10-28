@@ -17,8 +17,12 @@
 package com.gmt2001.httpwsserver;
 
 import com.gmt2001.httpwsserver.auth.WsAuthenticationHandler;
+import com.gmt2001.wspinger.WSServerPinger;
+
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 
 /**
  * Represents a handler for WebSocket frames
@@ -32,14 +36,14 @@ public interface WsFrameHandler {
      *
      * @return
      */
-    WsFrameHandler register();
+    WsFrameHandler registerWs();
 
     /**
      * Gets the {@link WsAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link WsAuthenticationHandler}
      */
-    WsAuthenticationHandler getAuthHandler();
+    WsAuthenticationHandler getWsAuthHandler();
 
     /**
      * Handles the WebSocket frame and sends a response back to the client, if necessary
@@ -50,4 +54,29 @@ public interface WsFrameHandler {
      * @param frame The {@link WebSocketFrame} to process
      */
     void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame);
+
+    /**
+     * Handles the handshake complete event
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param hc The handshake parameters
+     */
+    default void handshakeComplete(ChannelHandlerContext ctx, HandshakeComplete hc) {}
+
+    /**
+     * Handles the channel closing for any reason
+     *
+     * @param channel The channel that was closed
+     */
+    default void onClose(Channel channel) {}
+
+    /**
+     * Returns a {@link WSServerPinger} to check for connectivity
+     *
+     * @param ctx The context
+     * @return A pinger; {@code null} if not used
+     */
+    default WSServerPinger pinger(ChannelHandlerContext ctx) {
+        return null;
+    }
 }

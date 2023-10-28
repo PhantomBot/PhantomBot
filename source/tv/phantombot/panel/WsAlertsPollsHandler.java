@@ -51,13 +51,13 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     @Override
-    public WsFrameHandler register() {
+    public WsFrameHandler registerWs() {
         WebSocketFrameHandler.registerWsHandler("/ws/alertspolls", this);
         return this;
     }
 
     @Override
-    public WsAuthenticationHandler getAuthHandler() {
+    public WsAuthenticationHandler getWsAuthHandler() {
         return authHandler;
     }
 

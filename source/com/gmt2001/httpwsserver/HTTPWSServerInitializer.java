@@ -33,6 +33,10 @@ import io.netty.handler.ssl.SslContext;
  * @author gmt2001
  */
 class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
+    private static HttpServerPageHandler pageHandler = new HttpServerPageHandler();
+    private static WebSocketFrameHandler frameHandler = new WebSocketFrameHandler();
+    private static CatchSslExceptionHandler sslExceptionHandler = new CatchSslExceptionHandler();
+    private static RequestLogger requestLogger = new RequestLogger();
 
     /**
      * Constructor
@@ -50,21 +54,21 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new RequestLogger());
+        pipeline.addLast(requestLogger);
 
         SslContext sslCtx = HTTPWSServer.instance().getSslContext();
         if (sslCtx != null) {
             pipeline.addLast("sslhandler", new HttpOptionalSslHandler(sslCtx));
-            pipeline.addLast(new CatchSslExceptionHandler());
+            pipeline.addLast(sslExceptionHandler);
         }
 
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpContentCompressor());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
-        pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true));
+        pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true, false));
         pipeline.addLast(new WebSocketFrameAggregator(65536));
-        pipeline.addLast("pagehandler", new HttpServerPageHandler());
-        pipeline.addLast("wshandler", new WebSocketFrameHandler());
+        pipeline.addLast("pagehandler", pageHandler);
+        pipeline.addLast("wshandler", frameHandler);
     }
 }

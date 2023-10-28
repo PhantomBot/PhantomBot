@@ -18,13 +18,14 @@ package com.gmt2001.httpwsserver;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelHandler.Sharable;
 
 /**
  *
  * @author gmt2001
  */
+@Sharable
 public class CatchSslExceptionHandler extends ChannelInboundHandlerAdapter {
-
     /**
      * Handles exceptions that are thrown up the stack
      *

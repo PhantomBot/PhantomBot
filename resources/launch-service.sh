@@ -30,22 +30,19 @@
 
 pwd=""
 
-# Get dir of this script
-# Special handling for macOS
-if [[ "$OSTYPE" =~ "darwin" ]]; then
-    SOURCE="${BASH_SOURCE[0]}"
-    while [ -h "$SOURCE" ]; do
-        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-        SOURCE="$(readlink "$SOURCE")"
-        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-    done
-    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-    pwd=$DIR
-else
-    pwd=$(dirname $(readlink -f $0))
-fi
+pushd . > '/dev/null';
+SCRIPT_PATH="${BASH_SOURCE[0]:-$0}";
 
-# cd to script dir
-cd $pwd
+while [ -h "$SCRIPT_PATH" ];
+do
+    cd "$( dirname -- "$SCRIPT_PATH"; )";
+    SCRIPT_PATH="$( readlink -f -- "$SCRIPT_PATH"; )";
+done
+
+cd "$( dirname -- "$SCRIPT_PATH"; )" > '/dev/null';
+SCRIPT_PATH="$( pwd; )";
+popd  > '/dev/null'
+
+pushd "$SCRIPT_PATH"
 
 ./launch.sh --daemon "$@"

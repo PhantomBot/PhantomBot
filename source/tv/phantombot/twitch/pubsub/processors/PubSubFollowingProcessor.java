@@ -16,15 +16,12 @@
  */
 package tv.phantombot.twitch.pubsub.processors;
 
-import com.gmt2001.datastore.DataStore;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import org.json.JSONObject;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.cache.FollowersCache;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.pubsub.following.PubSubFollowEvent;
-import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
 
 /**
  * A processor for follow events from PubSub

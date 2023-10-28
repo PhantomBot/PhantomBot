@@ -32,14 +32,14 @@ public interface HttpRequestHandler {
      *
      * @return
      */
-    HttpRequestHandler register();
+    HttpRequestHandler registerHttp();
 
     /**
      * Gets the {@link HttpAuthenticationHandler} assigned to this endpoint
      *
      * @return An {@link HttpAuthenticationHandler}
      */
-    HttpAuthenticationHandler getAuthHandler();
+    HttpAuthenticationHandler getHttpAuthHandler();
 
     /**
      * Handles the HTTP request and sends a response back to the client

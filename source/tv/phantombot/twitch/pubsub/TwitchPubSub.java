@@ -27,6 +27,8 @@ import com.gmt2001.util.Reflect;
 import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
+
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -462,7 +464,7 @@ public class TwitchPubSub extends SubmissionPublisher<PubSubMessage> {
         }
 
         @Override
-        public void onClose() {
+        public void onClose(Channel channel) {
             this.onClose(0, "channel closed");
         }
     }

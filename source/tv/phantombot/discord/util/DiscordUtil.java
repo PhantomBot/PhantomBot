@@ -16,6 +16,22 @@
  */
 package tv.phantombot.discord.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.gmt2001.PathValidator;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -50,27 +66,11 @@ import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
 import discord4j.rest.util.Color;
 import discord4j.rest.util.Permission;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.discord.DiscordAPI;
-import tv.phantombot.discord.util.DiscordUtil.MessageCreateFile;
 
 /**
  * Has all of the methods to work with Discord4J.
