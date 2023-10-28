@@ -21,12 +21,14 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.gmt2001.PathValidator;
@@ -43,6 +45,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
@@ -201,7 +204,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     /**
      * Detects the content MIME type based on the filename or manually provided type
      * extension
-     *
+     * <p>
      * NOTE: This method ignores everything before the last {@code .} in the
      * filename
      *
@@ -282,7 +285,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     /**
      * Creates and prepares a {@link FullHttpResponse} for transmission of a status
      * code only
-     *
+     * <p>
      * If the value of {@code status} is in the {@code CLIENT ERROR 4xx},
      * {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
      * status code is appended to the beginning of the HTML response
@@ -297,10 +300,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     /**
      * Creates and prepares a {@link FullHttpResponse} for transmission as
      * text/plain
-     *
+     * <p>
      * This method automatically sets the {@code Content-Type} and
      * {@code Content-Length} headers
-     *
+     * <p>
      * If the value of {@code status} is in the {@code CLIENT ERROR 4xx},
      * {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
      * status code is appended to the beginning of the HTML response, along with 2
@@ -317,10 +320,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
     /**
      * Creates and prepares a {@link FullHttpResponse} for transmission
-     *
+     * <p>
      * This method automatically sets the {@code Content-Type} and
      * {@code Content-Length} headers
-     *
+     * <p>
      * If the value of {@code status} is in the {@code CLIENT ERROR 4xx},
      * {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
      * status code is appended to the beginning of the HTML response, along with 2
@@ -339,10 +342,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
     /**
      * Creates and prepares a {@link FullHttpResponse} for transmission
-     *
+     * <p>
      * This method automatically sets the {@code Content-Type} and
      * {@code Content-Length} headers
-     *
+     * <p>
      * If the value of {@code status} is in the {@code CLIENT ERROR 4xx},
      * {@code SERVER ERROR 5xx}, or an unknown class, then the standard name of the
      * status code is appended to the beginning of the HTML response, along with 2
@@ -397,6 +400,43 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
 
         res.headers().set(HttpHeaderNames.CACHE_CONTROL, HttpHeaderValues.NO_STORE);
         res.headers().add(HttpHeaderNames.CACHE_CONTROL, HttpHeaderValues.MAX_AGE + "=" + HttpHeaderValues.ZERO);
+
+        return res;
+    }
+
+    /**
+     * Creates and prepares a CORS preflight {@link FullHttpResponse} for
+     * transmission
+     *
+     * @param req            The preflight request
+     * @param allowedMethods The allowed {@link HttpMethod}
+     * @param allowedHeaders The allowed {@link HttpHeaderNames}
+     * @param cacheTime      The maximum time the browser is allowed to cache the
+     *                       preflight response
+     * @return A {@link FullHttpResponse} that is ready to transmit
+     */
+    public static FullHttpResponse preparePreflightResponse(FullHttpRequest req, List<HttpMethod> allowedMethods,
+            List<String> allowedHeaders, Duration cacheTime) {
+        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT,
+                Unpooled.buffer());
+
+        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, req.headers().get(HttpHeaderNames.ORIGIN));
+        res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
+        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, cacheTime.toSeconds());
+        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, true);
+        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, true);
+
+        if (!allowedMethods.isEmpty()) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS,
+                    allowedMethods.stream().map(m -> m.name()).collect(Collectors.joining(", ")));
+        }
+
+        if (!allowedHeaders.isEmpty()) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS,
+                    allowedHeaders.stream().collect(Collectors.joining(", ")));
+        }
+
+        res.headers().set(HttpHeaderNames.CONTENT_LENGTH, 0);
 
         return res;
     }
@@ -473,7 +513,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     /**
      * Checks if the file or directory pointed to by {@code p} exists, is not
      * hidden, is not a symlink, and is readable
-     *
+     * <p>
      * Sends back a {@code 404 NOT FOUND} or {@code 403 FORBIDDEN} on failure
      *
      * @param ctx              The {@link ChannelHandlerContext} of the session
