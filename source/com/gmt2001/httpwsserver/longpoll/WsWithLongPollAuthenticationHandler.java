@@ -279,6 +279,42 @@ public final class WsWithLongPollAuthenticationHandler
         HttpServerPageHandler.sendHttpResponse(ctx, req, res);
     }
 
+    /**
+     * Processes an authentication frame sent via HTTP
+     *
+     * @param ctx The context
+     * @param req The request
+     * @param jso The data frame
+     * @param doFail {@code true} to also send fail result
+     * @return {@code true} on success
+     */
+    boolean httpAuthFrame(ChannelHandlerContext ctx,  FullHttpRequest req, JSONObject jso, boolean doFail) {
+        try {
+            if (this.isAuthorized(ctx, req.uri(), false, jso)) {
+                this.httpResult(ctx, req, HttpResponseStatus.OK, true);
+
+                if (this.authenticatedCallback != null) {
+                    this.authenticatedCallback.run();
+                }
+
+                return true;
+            }
+
+            if (doFail) {
+                this.httpResult(ctx, req, HttpResponseStatus.UNAUTHORIZED, false);
+            }
+        } catch (JSONException | DataAccessException ex) {
+            if (doFail) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+                this.httpResult(ctx, req, HttpResponseStatus.INTERNAL_SERVER_ERROR, false);
+            } else {
+                throw ex;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
         ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).setIfAbsent(null);
@@ -294,13 +330,7 @@ public final class WsWithLongPollAuthenticationHandler
 
             JSONArray jsa = new JSONArray(req.content().toString(StandardCharsets.UTF_8));
             if (!jsa.isEmpty()) {
-                if (this.isAuthorized(ctx, req.uri(), false, jsa.getJSONObject(0))) {
-                    this.httpResult(ctx, req, HttpResponseStatus.OK, true);
-
-                    if (this.authenticatedCallback != null) {
-                        this.authenticatedCallback.run();
-                    }
-
+                if (this.httpAuthFrame(ctx, req, jsa.getJSONObject(0), false)) {
                     return true;
                 }
             }

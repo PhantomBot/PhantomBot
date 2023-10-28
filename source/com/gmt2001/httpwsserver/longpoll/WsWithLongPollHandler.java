@@ -334,6 +334,9 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
                     try {
                         if (jsa.get(i) instanceof JSONObject jso && this.validateFrameUpdateClientReceived(ctx, jso)) {
                             this.handleMessage(ctx, jso.getJSONObject("data"));
+                        } else if (jsa.get(i) instanceof JSONObject jso && jso.has("authenticate")) {
+                            this.authHandler.httpAuthFrame(ctx, req, jso, true);
+                            return;
                         } else {
                             if (status.equals(HttpResponseStatus.ACCEPTED)) {
                                 status = HttpResponseStatus.UNPROCESSABLE_ENTITY;
