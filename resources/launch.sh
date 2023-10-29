@@ -23,9 +23,7 @@
 # % chmod +x launch.sh
 # % ./launch.sh
 #
-# Optional command line parameters
-# --daemon - Enables daemon mode (STDIN disabled)
-# --java </path/to/jre/bin/java> - Overrides the first Java executable attempted
+# Usage available by using the --help flag
 #
 
 unset DISPLAY
@@ -100,6 +98,8 @@ while [[ $# -gt 0 ]]; do
       echo "  --daemon                        Enables daemon mode (STDIN disabled)"
       echo "  --java </path/to/jre/bin/java>  Overrides the first Java executable attempted"
       echo "  args                            Arguments to pass to PhantomBot.jar"
+      echo ""
+      echo "JVM flags can be passed by editing the java.opt.custom file"
       exit 0
     ;;
     *)
