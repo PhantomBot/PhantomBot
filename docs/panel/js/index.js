@@ -120,7 +120,7 @@ $(function () {
             } else if (isJSObject(jsa)) {
                 onmessage(jsa);
             }
-        });
+        }).finally(() => fetchLongpoll);
     };
 
     const close = function(code) {

@@ -316,7 +316,24 @@ implements <a href="../auth/HttpAuthenticationHandler.html" title="interface in 
 <h3>sessionIdSupplier</h3>
 <div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="https://projectreactor.io/docs/core/release/api/reactor/util/function/Tuple5.html" title="class or interface in reactor.util.function" class="external-link">Tuple5</a>&lt;<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">sessionIdSupplier</span></div>
 <div class="block">Function which provides a session ID or validates one provided in the headers
- <p></div>
+ <p>
+ <ul>
+ <li><b>Parameters:</b>
+ <ul>
+ <li><b>ChannelHandlerContext</b> The context</li>
+ <li><b>Boolean</b> <code>true</code> if HTTP GET or WS; <code>false</code> if HTTP
+ POST</li>
+ <li><b>Boolean</b> <code>true</code> if WS; <code>false</code> if HTTP</li>
+ <li><b>String</b> The request URI</li>
+ <li><b>String</b> The session ID provided in the headers</li>
+ </ul>
+ </li>
+ <li><b>Returns:</b>
+ <ul>
+ <li>The input session ID if valid; otherwise a new session ID</li>
+ </ul>
+ </li>
+ </ul></div>
 </section>
 </li>
 </ul>

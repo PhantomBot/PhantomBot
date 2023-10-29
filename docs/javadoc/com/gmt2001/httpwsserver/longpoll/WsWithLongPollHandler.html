@@ -124,6 +124,9 @@ implements <a href="../HttpRequestHandler.html" title="interface in com.gmt2001.
  <hr>
  When frames are sent via HTTP:
  <ol>
+ <li>If the HTTP method is <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#OPTIONS" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.OPTIONS</code></a>,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpResponseStatus.html#NO_CONTENT" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpResponseStatus.NO_CONTENT</code></a> is returned with CORS preflight
+ response headers</li>
  <li>If the HTTP method is not <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#GET" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.GET</code></a> or
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a>, <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpResponseStatus.html#METHOD_NOT_ALLOWED" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpResponseStatus.METHOD_NOT_ALLOWED</code></a> is
  returned</li>
@@ -176,7 +179,7 @@ implements <a href="../HttpRequestHandler.html" title="interface in com.gmt2001.
  </code>
  <p>
  <i>For <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpMethod.html#POST" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpMethod.POST</code></a>, a JSON array must be sent, containing the
- described JSON object as values. Multiple frames may be send in a single JSON
+ described JSON object as values. Multiple frames may be sent in a single JSON
  array. For Web Socket, each frame must be sent individually as a <code>TEXT</code>
  frame</i></div>
 <dl class="notes">
@@ -422,13 +425,8 @@ implements <a href="../HttpRequestHandler.html" title="interface in com.gmt2001.
 <div class="block">Returns the session ID for the client</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>params</code> - A tuple containing the below params</dd>
-<dd><code>ChannelHandlerContext</code> - The context</dd>
-<dd><code>Boolean</code> - <code>true</code> if HTTP GET or WS; <code>false</code> if
-                              HTTP POST</dd>
-<dd><code>Boolean</code> - <code>true</code> if WS; <code>false</code> if HTTP</dd>
-<dd><code>String</code> - The request URI</dd>
-<dd><code>String</code> - The session ID provided in the headers</dd>
+<dd><code>params</code> - A tuple containing the params. See
+               <a href="WsWithLongPollAuthenticationHandler.html#sessionIdSupplier"><code>WsWithLongPollAuthenticationHandler.sessionIdSupplier</code></a></dd>
 <dt>Returns:</dt>
 <dd>The session ID; <code>null</code> if the <a href="../../../../tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a> is <code>null</code></dd>
 </dl>
@@ -472,7 +470,7 @@ implements <a href="../HttpRequestHandler.html" title="interface in com.gmt2001.
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</span></div>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 <div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary
-
+ <p>
  Only gets called if the <a href="../auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> returned <code>true</code></div>
 <dl class="notes">
 <dt>Specified by:</dt>
