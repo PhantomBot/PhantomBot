@@ -212,13 +212,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     /**
      * Returns the session ID for the client
      *
-     * @param params                A tuple containing the below params
-     * @param ChannelHandlerContext The context
-     * @param Boolean               {@code true} if HTTP GET or WS; {@code false} if
-     *                              HTTP POST
-     * @param Boolean               {@code true} if WS; {@code false} if HTTP
-     * @param String                The request URI
-     * @param String                The session ID provided in the headers
+     * @param params                A tuple containing the params. See {@link WsWithLongPollAuthenticationHandler#sessionIdSupplier}
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
     protected final String clientSessionId(Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String> params) {

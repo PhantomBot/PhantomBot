@@ -131,14 +131,23 @@ public final class WsWithLongPollAuthenticationHandler
     /**
      * Function which provides a session ID or validates one provided in the headers
      * <p>
-     *
-     * @param ChannelHandlerContext The context
-     * @param Boolean               {@code true} if HTTP GET or WS; {@code false} if
-     *                              HTTP POST
-     * @param Boolean               {@code true} if WS; {@code false} if HTTP
-     * @param String                The request URI
-     * @param String                The session ID provided in the headers
-     * @return The input session ID if valid; otherwise a new session ID
+     * <ul>
+     * <li><b>Parameters:</b>
+     * <ul>
+     * <li><b>ChannelHandlerContext</b> The context</li>
+     * <li><b>Boolean</b> {@code true} if HTTP GET or WS; {@code false} if HTTP
+     * POST</li>
+     * <li><b>Boolean</b> {@code true} if WS; {@code false} if HTTP</li>
+     * <li><b>String</b> The request URI</li>
+     * <li><b>String</b> The session ID provided in the headers</li>
+     * </ul>
+     * </li>
+     * <li><b>Returns:</b>
+     * <ul>
+     * <li>The input session ID if valid; otherwise a new session ID</li>
+     * </ul>
+     * </li>
+     * </ul>
      */
     protected final Function<Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String>, String> sessionIdSupplier;
 
