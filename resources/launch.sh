@@ -24,7 +24,7 @@
 # % ./launch.sh
 #
 # Optional command line parameters
-# --daemon - Enables daemon mode (No console input)
+# --daemon - Enables daemon mode (STDIN disabled)
 # --java </path/to/jre/bin/java> - Overrides the first Java executable attempted
 #
 
@@ -93,6 +93,15 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    --help)
+      echo "Usage: launch.sh [options] [args]"
+      echo ""
+      echo "Options:"
+      echo "  --daemon                        Enables daemon mode (STDIN disabled)"
+      echo "  --java </path/to/jre/bin/java>  Overrides the first Java executable attempted"
+      echo "  args                            Arguments to pass to PhantomBot.jar"
+      exit 0
+    ;;
     *)
       POSITIONAL_ARGS+=("$1")
       shift
