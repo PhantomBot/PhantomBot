@@ -175,7 +175,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             outAuth = cookies.getOrDefault("panellogin", null);
         }
 
-        return Tuples.of(outAuth, headers.get("SessionID"));
+        return Tuples.of(outAuth, headers.get("SessionID", ""));
     }
 
     /**

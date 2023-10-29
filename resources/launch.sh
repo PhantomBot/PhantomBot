@@ -23,9 +23,7 @@
 # % chmod +x launch.sh
 # % ./launch.sh
 #
-# Optional command line parameters
-# --daemon - Enables daemon mode (No console input)
-# --java </path/to/jre/bin/java> - Overrides the first Java executable attempted
+# Usage available by using the --help flag
 #
 
 unset DISPLAY
@@ -93,6 +91,17 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    --help)
+      echo "Usage: launch.sh [options] [args]"
+      echo ""
+      echo "Options:"
+      echo "  --daemon                        Enables daemon mode (STDIN disabled)"
+      echo "  --java </path/to/jre/bin/java>  Overrides the first Java executable attempted"
+      echo "  args                            Arguments to pass to PhantomBot.jar"
+      echo ""
+      echo "JVM flags can be passed by editing the java.opt.custom file"
+      exit 0
+    ;;
     *)
       POSITIONAL_ARGS+=("$1")
       shift
@@ -101,24 +110,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 set -- "${POSITIONAL_ARGS[@]}"
-
-# Get dir of this script
-# Special handling for macOS
-if [[ "$OSTYPE" =~ "darwin" ]]; then
-    SOURCE="${BASH_SOURCE[0]}"
-    while [ -h "$SOURCE" ]; do
-        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-        SOURCE="$(readlink "$SOURCE")"
-        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-    done
-    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-    pwd=$DIR
-else
-    pwd=$(dirname $(readlink -f $0))
-fi
-
-# cd to script dir
-cd $pwd
 
 if (( daemon == 1 )); then
     interactive=""
