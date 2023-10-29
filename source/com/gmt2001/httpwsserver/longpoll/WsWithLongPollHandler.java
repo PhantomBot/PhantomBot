@@ -88,6 +88,9 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * <hr>
  * When frames are sent via HTTP:
  * <ol>
+ * <li>If the HTTP method is {@link HttpMethod#OPTIONS},
+ * {@link HttpResponseStatus#NO_CONTENT} is returned with CORS preflight
+ * response headers</li>
  * <li>If the HTTP method is not {@link HttpMethod#GET} or
  * {@link HttpMethod#POST}, {@link HttpResponseStatus#METHOD_NOT_ALLOWED} is
  * returned</li>
@@ -140,7 +143,7 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * </code>
  * <p>
  * <i>For {@link HttpMethod#POST}, a JSON array must be sent, containing the
- * described JSON object as values. Multiple frames may be send in a single JSON
+ * described JSON object as values. Multiple frames may be sent in a single JSON
  * array. For Web Socket, each frame must be sent individually as a {@code TEXT}
  * frame</i>
  *
@@ -212,13 +215,8 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     /**
      * Returns the session ID for the client
      *
-     * @param params                A tuple containing the below params
-     * @param ChannelHandlerContext The context
-     * @param Boolean               {@code true} if HTTP GET or WS; {@code false} if
-     *                              HTTP POST
-     * @param Boolean               {@code true} if WS; {@code false} if HTTP
-     * @param String                The request URI
-     * @param String                The session ID provided in the headers
+     * @param params A tuple containing the params. See
+     *               {@link WsWithLongPollAuthenticationHandler#sessionIdSupplier}
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
     protected final String clientSessionId(Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String> params) {
@@ -391,7 +389,12 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     }
 
     /**
-     * {@inheritDoc}
+     * Handles the WebSocket frame and sends a response back to the client, if necessary
+     * <p>
+     * Only gets called if the {@link WsAuthenticationHandler} returned {@code true}
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param frame The {@link WebSocketFrame} to process
      *
      * @Deprecated Frames which do not have the new wrapper JSONObject are
      *             deprecated for removal

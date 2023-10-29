@@ -47,7 +47,7 @@ public interface WsFrameHandler {
 
     /**
      * Handles the WebSocket frame and sends a response back to the client, if necessary
-     *
+     * <p>
      * Only gets called if the {@link WsAuthenticationHandler} returned {@code true}
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
