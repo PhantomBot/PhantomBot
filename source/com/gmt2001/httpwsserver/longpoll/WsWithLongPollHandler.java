@@ -88,6 +88,9 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * <hr>
  * When frames are sent via HTTP:
  * <ol>
+ * <li>If the HTTP method is {@link HttpMethod#OPTIONS},
+ * {@link HttpResponseStatus#NO_CONTENT} is returned with CORS preflight
+ * response headers</li>
  * <li>If the HTTP method is not {@link HttpMethod#GET} or
  * {@link HttpMethod#POST}, {@link HttpResponseStatus#METHOD_NOT_ALLOWED} is
  * returned</li>
@@ -212,7 +215,8 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     /**
      * Returns the session ID for the client
      *
-     * @param params                A tuple containing the params. See {@link WsWithLongPollAuthenticationHandler#sessionIdSupplier}
+     * @param params A tuple containing the params. See
+     *               {@link WsWithLongPollAuthenticationHandler#sessionIdSupplier}
      * @return The session ID; {@code null} if the {@link PanelUser} is {@code null}
      */
     protected final String clientSessionId(Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String> params) {
