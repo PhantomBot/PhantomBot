@@ -67,7 +67,6 @@ pushd "$SCRIPT_PATH"
 # Internal vars
 tmp=""
 interactive="-Dinteractive"
-pwd=""
 hwname="$( uname -m )"
 trylinux=0
 trymac=0
@@ -116,7 +115,7 @@ if (( daemon == 1 )); then
     if [[ ! -O "PhantomBot.jar" ]]; then
         echo "The directory is not chown by the service user"
         echo "Please run the following command to fix this:"
-        echo "   sudo chown ${EUID} ${pwd}"
+        echo "   sudo chown ${EUID} ${SCRIPT_PATH}"
 
         exit 1
     fi
@@ -278,8 +277,8 @@ if (( success == 0 )); then
 fi
 
 if mount | grep '/tmp' | grep -q noexec; then
-    mkdir -p ${pwd}/tmp
-    tmp="-Djava.io.tmpdir=${pwd}/tmp"
+    mkdir -p ${SCRIPT_PATH}/tmp
+    tmp="-Djava.io.tmpdir=${SCRIPT_PATH}/tmp"
 fi
 
 touch java.opt.custom
