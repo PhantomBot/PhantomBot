@@ -148,7 +148,7 @@ public final class ClientCache {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
 
         if (user != null) {
-            if (sessionId != null) {
+            if (sessionId != null && !sessionId.isBlank()) {
                 Optional<Client> client = this.client(user, sessionId);
 
                 if (client.isPresent()) {
@@ -230,7 +230,7 @@ public final class ClientCache {
      *         {@code null}
      */
     public Optional<Client> client(PanelUser user, String sessionId) {
-        if (user != null && sessionId != null) {
+        if (user != null && sessionId != null && !sessionId.isBlank()) {
             return this.clients.stream().filter(c -> c.sessionId().equals(sessionId) && c.user().equals(user))
                     .findFirst();
         }
