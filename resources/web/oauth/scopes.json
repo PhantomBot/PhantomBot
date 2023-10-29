@@ -46,6 +46,10 @@
             "desc": "Run commercials on a channel.",
             "tooltip": "Used to run commercials."
         },
+        "channel:manage:polls" : {
+            "desc": "Manage a channel’s polls.",
+            "tooltip": "Used to start or end Twitch native polls."
+        },
         "channel:manage:predictions" : {
             "desc": "Manage of channel's Channel Points Predictions.",
             "tooltip": "Used to start or end predictions."
