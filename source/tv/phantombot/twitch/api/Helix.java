@@ -2561,6 +2561,60 @@ public class Helix {
     }
 
     /**
+     * Gets a list of polls that the broadcaster created.
+     * Polls are available for 90 days after they’re created.
+     * @param pollIds A list of IDs that identify the polls to return. You may specify a maximum of 20 IDs.
+     *           Specify this parameter only if you want to filter the list that the request returns.
+     *           The endpoint ignores duplicate IDs and those not owned by this broadcaster.
+     * @param first The maximum number of items to return per page in the response.
+     *              The minimum page size is 1 item per page and the maximum is 20 items per page. The default is 20.
+     * @param after The cursor used to get the next page of results. The Pagination object in the response contains
+     *              the cursor’s value.
+     * @return A list of polls. The list is empty if the broadcaster hasn’t created polls.
+     * @throws JSONException when the result object could not be parsed
+     * @throws IllegalArgumentException when more ids are passed than the API allows
+     */
+    public JSONObject getPolls(List<String> pollIds, int first, String after){
+        return getPollsAsync(pollIds, first, after).block();
+    }
+
+    /**
+     * Gets a list of polls that the broadcaster created.
+     * Polls are available for 90 days after they’re created.
+     * @param pollIds A list of IDs that identify the polls to return. You may specify a maximum of 20 IDs.
+     *           Specify this parameter only if you want to filter the list that the request returns.
+     *           The endpoint ignores duplicate IDs and those not owned by this broadcaster.
+     * @param first The maximum number of items to return per page in the response.
+     *              The minimum page size is 1 item per page and the maximum is 20 items per page. The default is 20.
+     * @param after The cursor used to get the next page of results. The Pagination object in the response contains
+     *              the cursor’s value.
+     * @return A list of polls. The list is empty if the broadcaster hasn’t created polls.
+     * @throws JSONException when the result object could not be parsed
+     * @throws IllegalArgumentException when more ids are passed than the API allows
+     */
+    public Mono<JSONObject> getPollsAsync(List<String> pollIds, int first, String after)
+            throws JSONException, IllegalArgumentException {
+        final byte apiLimit = 20;
+        if (pollIds != null && !pollIds.isEmpty() && pollIds.size() > apiLimit) {
+            throw new IllegalArgumentException("API allows a maximum of " + apiLimit + " ids");
+        }
+
+        first = Math.min(apiLimit, Math.max(1, first));
+
+        String ids = "";
+
+        if (pollIds != null && !pollIds.isEmpty()) {
+            ids = pollIds.stream().limit(apiLimit).collect(Collectors.joining("&id="));
+        }
+
+        String endpoint = "/polls?" + this.qspValid("broadcaster_id", TwitchValidate.instance().getAPIUserID())
+                + this.qspValid("&id", ids) + this.qspValid("&first", Integer.toString(first))
+                + this.qspValid("&after", after);
+
+        return this.handleQueryAsync(endpoint, () -> this.handleRequest(HttpMethod.GET, endpoint));
+    }
+
+    /**
      * Gets a list of Channel Points Predictions that the broadcaster created.
      *
      * @param id The ID of the prediction to get; {@code null} to get the most recent predictions. You may specify a maximum of 25 IDs.
