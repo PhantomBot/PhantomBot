@@ -111,24 +111,6 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}"
 
-# Get dir of this script
-# Special handling for macOS
-if [[ "$OSTYPE" =~ "darwin" ]]; then
-    SOURCE="${BASH_SOURCE[0]}"
-    while [ -h "$SOURCE" ]; do
-        DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-        SOURCE="$(readlink "$SOURCE")"
-        [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
-    done
-    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-    pwd=$DIR
-else
-    pwd=$(dirname $(readlink -f $0))
-fi
-
-# cd to script dir
-cd $pwd
-
 if (( daemon == 1 )); then
     interactive=""
     if [[ ! -O "PhantomBot.jar" ]]; then
