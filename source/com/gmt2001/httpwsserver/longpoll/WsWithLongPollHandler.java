@@ -143,7 +143,7 @@ import tv.phantombot.panel.PanelUser.PanelUser;
  * </code>
  * <p>
  * <i>For {@link HttpMethod#POST}, a JSON array must be sent, containing the
- * described JSON object as values. Multiple frames may be send in a single JSON
+ * described JSON object as values. Multiple frames may be sent in a single JSON
  * array. For Web Socket, each frame must be sent individually as a {@code TEXT}
  * frame</i>
  *
