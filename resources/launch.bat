@@ -20,39 +20,32 @@ REM
 REM
 REM PhantomBot Launcher - Windows
 REM
+REM The powershell launcher launch.ps1 is recommended over this one
+REM This script will try to launch the powershell version first
+REM
 
-set CHECKLOC=%~dp0%config\wtcheck.txt
-set LAUNCHER=%~dp0%launch.bat
-
-IF /I "%1" == "--nowt" GOTO :LAUNCH
-
-WHERE powershell >nul 2>nul
-IF %ERRORLEVEL% NEQ 0 GOTO :LAUNCH
-
-WHERE wt >nul 2>nul
-IF %ERRORLEVEL% EQU 0 GOTO :SWITCHTOWT
-
+IF EXIST %~dp0launch.ps1 GOTO :LAUNCHPWSH
 GOTO :LAUNCH
 
+:LAUNCHPWSH
+WHERE pwsh >nul 2>nul
+IF %ERRORLEVEL% NEQ 0 GOTO :LAUNCHOLDPWSH
+pwsh -ExecutionPolicy Bypass -File %~dp0launch.ps1 %*
+GOTO :END
+
+:LAUNCHOLDPWSH
+WHERE powershell >nul 2>nul
+IF %ERRORLEVEL% NEQ 0 GOTO :LAUNCH
+powershell -ExecutionPolicy Bypass -File %~dp0launch.ps1 %*
+GOTO :END
+
 :LAUNCH
-IF EXIST %CHECKLOC% GOTO :DODEL
-GOTO :SKIPDEL
-:DODEL
-del /q /f %CHECKLOC% > NUL
-:SKIPDEL
 setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
-".\java-runtime\bin\java" --add-exports java.base/sun.security.x509=ALL-UNNAMED -Duser.language=en -Djava.security.policy=config/security -Dinteractive -Xms1m -XX:MaxHeapFreeRatio=10 -XX:MinHeapFreeRatio=10 -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar "PhantomBot.jar" %*
+type nul >>java.opt.custom
+".\java-runtime\bin\java" @java.opt -Dinteractive @java.opt.custom -jar "PhantomBot.jar" %*
 popd
 endlocal
+
+:END
 timeout /t 5
-
-GOTO :EOF
-
-:SWITCHTOWT
-setlocal enableextensions enabledelayedexpansion
-copy /y NUL %CHECKLOC% > NUL
-wt nt --profile "Command Prompt" --startingDirectory "%~dp0\" --title PhantomBot %LAUNCHER% --nowt %*
-timeout /t 5 /nobreak > NUL
-IF EXIST %CHECKLOC% GOTO :LAUNCH
-endlocal

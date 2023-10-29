@@ -49,6 +49,7 @@ fedoramin=37
 
 #############################
 
+# Determine the directory of the running script
 pushd . > '/dev/null';
 SCRIPT_PATH="${BASH_SOURCE[0]:-$0}";
 
@@ -62,12 +63,12 @@ cd "$( dirname -- "$SCRIPT_PATH"; )" > '/dev/null';
 SCRIPT_PATH="$( pwd; )";
 popd  > '/dev/null'
 
+# Switch to script directory
 pushd "$SCRIPT_PATH"
 
 # Internal vars
 tmp=""
 interactive="-Dinteractive"
-pwd=""
 hwname="$( uname -m )"
 trylinux=0
 trymac=0
@@ -79,6 +80,7 @@ JAVA=""
 
 POSITIONAL_ARGS=()
 
+# Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
     --daemon)
@@ -111,12 +113,14 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}"
 
+# Ensure running user has chown if daemon mode
+# Also disable interactive switch
 if (( daemon == 1 )); then
     interactive=""
     if [[ ! -O "PhantomBot.jar" ]]; then
         echo "The directory is not chown by the service user"
         echo "Please run the following command to fix this:"
-        echo "   sudo chown ${EUID} ${pwd}"
+        echo "   sudo chown ${EUID} ${SCRIPT_PATH}"
 
         exit 1
     fi
@@ -278,8 +282,8 @@ if (( success == 0 )); then
 fi
 
 if mount | grep '/tmp' | grep -q noexec; then
-    mkdir -p ${pwd}/tmp
-    tmp="-Djava.io.tmpdir=${pwd}/tmp"
+    mkdir -p ${SCRIPT_PATH}/tmp
+    tmp="-Djava.io.tmpdir=${SCRIPT_PATH}/tmp"
 fi
 
 touch java.opt.custom
