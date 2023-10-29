@@ -49,6 +49,7 @@ fedoramin=37
 
 #############################
 
+# Determine the directory of the running script
 pushd . > '/dev/null';
 SCRIPT_PATH="${BASH_SOURCE[0]:-$0}";
 
@@ -62,6 +63,7 @@ cd "$( dirname -- "$SCRIPT_PATH"; )" > '/dev/null';
 SCRIPT_PATH="$( pwd; )";
 popd  > '/dev/null'
 
+# Switch to script directory
 pushd "$SCRIPT_PATH"
 
 # Internal vars
@@ -78,6 +80,7 @@ JAVA=""
 
 POSITIONAL_ARGS=()
 
+# Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
     --daemon)
@@ -110,6 +113,8 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}"
 
+# Ensure running user has chown if daemon mode
+# Also disable interactive switch
 if (( daemon == 1 )); then
     interactive=""
     if [[ ! -O "PhantomBot.jar" ]]; then

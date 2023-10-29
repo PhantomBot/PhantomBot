@@ -19,5 +19,129 @@
 #
 # PhantomBot Launcher - Windows Powershell
 #
+# Usage available by using Get-Help -Name .\launch.ps1 -Full
+#
 
-cmd /C .\launch.bat --nowt
+<#
+.SYNOPSIS
+
+Launches PhantomBot
+
+.PARAMETER Daemon
+Enables daemon mode (STDIN disabled)
+
+.PARAMETER Java
+Overrides the first Java executable attempted. This should be a full path to java.exe
+#>
+
+# Params
+param(
+    [switch]$Daemon = $false,
+    [string]$Java,
+    [Parameter(ValueFromRemainingArguments = $true)]
+    [string[]]$JavaArgs
+)
+
+##### Script Settings #######
+
+# Required Java major version
+$javarequired = 17
+
+#############################
+
+# Determines the directory of the running script
+function Get-ScriptPath()
+{
+    # If using PowerShell ISE
+    if ($psISE)
+    {
+        $ScriptPath = Split-Path -Parent -Path $psISE.CurrentFile.FullPath
+    }
+    # If using PowerShell 3.0 or greater
+    elseif ($PSVersionTable.PSVersion.Major -gt 3)
+    {
+        $ScriptPath = $PSScriptRoot
+    }
+    # If using PowerShell 2.0 or lower
+    else
+    {
+        $ScriptPath = split-path -parent $MyInvocation.MyCommand.Path
+    }
+
+    # If still not found
+    # I found this can happen if running an exe created using PS2EXE module
+    if (-not $ScriptPath) {
+        $ScriptPath = [System.AppDomain]::CurrentDomain.BaseDirectory.TrimEnd('\')
+    }
+
+    # Return result
+    return $ScriptPath
+}
+
+# Switch to script directory
+pushd Get-ScriptPath
+
+# Internal vars
+$interactive = "-Dinteractive"
+$JAVA = ""
+$success = $false
+
+# Disable interactive switch if daemon mode
+if ($Daemon) {
+    $interactive = ""
+}
+
+# Try command line Java
+if (-not $success -And $PSBoundParameters.ContainsKey('Java')) {
+    $JAVA = $Java
+    $jver = (& $JAVA --version 2>$null)
+    $res = $LASTEXITCODE
+    $jvermaj = (($jver[0] -split "\s+")[1] -split "\.")[0]
+    if ($res -eq 0 -And $jvermaj -eq $javarequired) {
+        $success = $true
+    }
+}
+
+# Try java-runtime
+if (-not $success) {
+    $JAVA = ".\java-runtime\bin\java.exe"
+    $jver = (& $JAVA --version 2>$null)
+    $res = $LASTEXITCODE
+    $jvermaj = (($jver[0] -split "\s+")[1] -split "\.")[0]
+    if ($res -eq 0 -And $jvermaj -eq $javarequired) {
+        $success = $true
+    }
+}
+
+# Try system Java
+if (-not $success) {
+    $JAVA = (& Get-Command java 2>$null).Path
+    if ($JAVA.Length -gt 0) {
+        $jver = (& $JAVA --version 2>$null)
+        $res = $LASTEXITCODE
+        $jvermaj = (($jver[0] -split "\s+")[1] -split "\.")[0]
+        if ($res -eq 0 -And $jvermaj -eq $javarequired) {
+            $success = $true
+        }
+    }
+}
+
+# Print instructions if no Java satisfied requirements
+if (-not $success) {
+    Write-Output "PhantomBot requires Java ${javarequired} to run"
+    Write-Output
+    Write-Output "Eclipse Temurin by Adoptium is the officially supported JVM of PhantomBot"
+    Write-Output "Information about Adoptium is available at: https://adoptium.net"
+    Write-Output
+
+    Write-Output "It is recommended to download the Windows package for PhantomBot"
+    Write-Output "from our GitHub repo and use the included Java runtime"
+    Write-Output "https://github.com/PhantomBot/PhantomBot/releases/latest"
+
+    Exit 1
+}
+
+$null >> java.opt.custom
+
+& $JAVA `@java.opt $interactive `@java.opt.custom -jar PhantomBot.jar @JavaArgs
+popd
