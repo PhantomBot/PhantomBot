@@ -19,7 +19,7 @@
 #
 # PhantomBot Launcher - Windows Powershell
 #
-# Usage available by using Get-Help -Name .\launch.ps1 -Full
+# Usage available by using Get-Help -Name .\launch.ps1 -Detailed
 #
 
 <#
