@@ -16,7 +16,6 @@
  */
 package com.gmt2001.wsclient;
 
-import com.gmt2001.httpwsserver.HTTPWSServer;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -39,6 +38,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
+import com.gmt2001.httpwsserver.ReferenceCountedUtil;
 
 /**
  * Processes WebSocket frames and passes successful ones to the final handler
@@ -202,21 +203,22 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
         try {
+            ReferenceCountedUtil.releaseAuto(resframe);
             if (ch != null) {
                 ChannelFuture future = ch.writeAndFlush(resframe);
                 if (future != null) {
                     future.addListener((p) -> {
-                        HTTPWSServer.releaseObj(resframe);
+                        ReferenceCountedUtil.releaseObj(resframe);
                     });
                 } else {
-                    HTTPWSServer.releaseObj(resframe);
+                    ReferenceCountedUtil.releaseObj(resframe);
                 }
             } else {
-                HTTPWSServer.releaseObj(resframe);
+                ReferenceCountedUtil.releaseObj(resframe);
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            HTTPWSServer.releaseObj(resframe);
+            ReferenceCountedUtil.releaseObj(resframe);
         }
     }
 

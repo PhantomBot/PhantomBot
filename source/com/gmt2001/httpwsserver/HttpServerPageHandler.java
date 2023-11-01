@@ -380,10 +380,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 try {
                     res.content().writeBytes(buf).writeBytes(bcontent);
                 } finally {
-                    HTTPWSServer.releaseObj(bcontent);
+                    ReferenceCountedUtil.releaseObj(bcontent);
                 }
             } finally {
-                HTTPWSServer.releaseObj(buf);
+                ReferenceCountedUtil.releaseObj(buf);
             }
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType("html"));
             HttpUtil.setContentLength(res, res.content().readableBytes());
@@ -392,7 +392,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             try {
                 res.content().writeBytes(bcontent);
             } finally {
-                HTTPWSServer.releaseObj(bcontent);
+                ReferenceCountedUtil.releaseObj(bcontent);
             }
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType(fileNameOrType));
             HttpUtil.setContentLength(res, res.content().readableBytes());
@@ -470,10 +470,11 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 || res.status().codeClass() == HttpStatusClass.SERVER_ERROR
                 || res.status().codeClass() == HttpStatusClass.UNKNOWN;
         try {
+            ReferenceCountedUtil.releaseAuto(res);
             if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
                 res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
                 ctx.writeAndFlush(res).addListeners((p) -> {
-                    HTTPWSServer.releaseObj(res);
+                    ReferenceCountedUtil.releaseObj(res);
                 }, ChannelFutureListener.CLOSE);
             } else {
                 if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
@@ -481,12 +482,12 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 }
 
                 ctx.writeAndFlush(res).addListener((p) -> {
-                    HTTPWSServer.releaseObj(res);
+                    ReferenceCountedUtil.releaseObj(res);
                 });
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            HTTPWSServer.releaseObj(res);
+            ReferenceCountedUtil.releaseObj(res);
         }
     }
 

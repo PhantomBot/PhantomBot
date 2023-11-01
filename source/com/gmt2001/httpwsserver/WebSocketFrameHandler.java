@@ -292,12 +292,13 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
      */
     public static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
         try {
+            ReferenceCountedUtil.releaseAuto(resframe);
             ch.writeAndFlush(resframe).addListener((p) -> {
-                HTTPWSServer.releaseObj(resframe);
+                ReferenceCountedUtil.releaseObj(resframe);
             });
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
-            HTTPWSServer.releaseObj(resframe);
+            ReferenceCountedUtil.releaseObj(resframe);
         }
     }
 
@@ -313,7 +314,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             }
         });
 
-        HTTPWSServer.releaseObj(resframe);
+        ReferenceCountedUtil.releaseObj(resframe);
     }
 
     /**
@@ -333,7 +334,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             }
         });
 
-        HTTPWSServer.releaseObj(resframe);
+        ReferenceCountedUtil.releaseObj(resframe);
     }
 
     /**
@@ -346,7 +347,7 @@ public class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocket
             c.close();
         });
 
-        HTTPWSServer.releaseObj(resframe);
+        ReferenceCountedUtil.releaseObj(resframe);
     }
 
     /**

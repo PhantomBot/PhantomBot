@@ -37,6 +37,7 @@ import com.gmt2001.TestData;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.httpwsserver.HttpRequestHandler;
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
+import com.gmt2001.httpwsserver.ReferenceCountedUtil;
 import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.httpwsserver.WsFrameHandler;
 import com.gmt2001.httpwsserver.auth.PanelUserAuthenticationHandler;
@@ -560,10 +561,10 @@ public class WsPanelHandler extends WsWithLongPollHandler {
                     try {
                         jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();
                     } finally {
-                        HTTPWSServer.releaseObj(buf2);
+                        ReferenceCountedUtil.releaseObj(buf2);
                     }
                 } finally {
-                    HTTPWSServer.releaseObj(buf);
+                    ReferenceCountedUtil.releaseObj(buf);
                 }
             } catch (IOException ex) {
                 jsonObject.object().key("errors").array().object()
