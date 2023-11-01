@@ -469,19 +469,24 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR
                 || res.status().codeClass() == HttpStatusClass.SERVER_ERROR
                 || res.status().codeClass() == HttpStatusClass.UNKNOWN;
-        if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
-            res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            ctx.writeAndFlush(res).addListeners((p) -> {
-                HTTPWSServer.releaseObj(res);
-            }, ChannelFutureListener.CLOSE);
-        } else {
-            if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
-                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-            }
+        try {
+            if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
+                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+                ctx.writeAndFlush(res).addListeners((p) -> {
+                    HTTPWSServer.releaseObj(res);
+                }, ChannelFutureListener.CLOSE);
+            } else {
+                if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
+                    res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+                }
 
-            ctx.writeAndFlush(res).addListener((p) -> {
-                HTTPWSServer.releaseObj(res);
-            });
+                ctx.writeAndFlush(res).addListener((p) -> {
+                    HTTPWSServer.releaseObj(res);
+                });
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            HTTPWSServer.releaseObj(res);
         }
     }
 
