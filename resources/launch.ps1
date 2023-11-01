@@ -96,7 +96,7 @@ if ($Help) {
 }
 
 # Switch to script directory
-pushd Get-ScriptPath
+Push-Location Get-ScriptPath
 
 # Internal vars
 $interactive = "-Dinteractive"
@@ -161,4 +161,4 @@ if (-not $success) {
 $null >> java.opt.custom
 
 & $JAVA `@java.opt $interactive `@java.opt.custom -jar PhantomBot.jar @JavaArgs
-popd
+Pop-Location
