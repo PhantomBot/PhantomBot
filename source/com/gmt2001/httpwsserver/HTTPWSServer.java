@@ -44,7 +44,6 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
 
 import com.gmt2001.PathValidator;
-import com.gmt2001.Console.err;
 import com.gmt2001.dns.EventLoopDetector;
 import com.gmt2001.httpwsserver.x509.SelfSignedX509CertificateGenerator;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -54,8 +53,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.util.IllegalReferenceCountException;
-import io.netty.util.ReferenceCounted;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
@@ -71,23 +68,15 @@ public final class HTTPWSServer {
      */
     private static final HTTPWSServer INSTANCE = new HTTPWSServer();
 
+    /**
+     * X-Forwarded-Host
+     */
     public static final String HEADER_X_FORWARDED_HOST = "X-Forwarded-Host";
+    /**
+     * CF-Ray
+     */
     public static final String HEADER_CF_RAY = "CF-Ray";
 
-    /**
-     * Releases a {@link ReferenceCounted} object
-     *
-     * @param obj The object to release
-     */
-    public static void releaseObj(ReferenceCounted obj) {
-        try {
-            if (obj != null && obj.refCnt() > 0) {
-                obj.release();
-            }
-        } catch (IllegalReferenceCountException ex) {
-            err.printStackTrace(ex);
-        }
-    }
     /**
      * The server's {@link EventLoopGroup}
      */

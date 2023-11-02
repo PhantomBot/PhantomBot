@@ -380,10 +380,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 try {
                     res.content().writeBytes(buf).writeBytes(bcontent);
                 } finally {
-                    HTTPWSServer.releaseObj(bcontent);
+                    ReferenceCountedUtil.releaseObj(bcontent);
                 }
             } finally {
-                HTTPWSServer.releaseObj(buf);
+                ReferenceCountedUtil.releaseObj(buf);
             }
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType("html"));
             HttpUtil.setContentLength(res, res.content().readableBytes());
@@ -392,7 +392,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             try {
                 res.content().writeBytes(bcontent);
             } finally {
-                HTTPWSServer.releaseObj(bcontent);
+                ReferenceCountedUtil.releaseObj(bcontent);
             }
             res.headers().set(HttpHeaderNames.CONTENT_TYPE, detectContentType(fileNameOrType));
             HttpUtil.setContentLength(res, res.content().readableBytes());
@@ -469,19 +469,25 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR
                 || res.status().codeClass() == HttpStatusClass.SERVER_ERROR
                 || res.status().codeClass() == HttpStatusClass.UNKNOWN;
-        if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
-            res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            ctx.writeAndFlush(res).addListeners((p) -> {
-                HTTPWSServer.releaseObj(res);
-            }, ChannelFutureListener.CLOSE);
-        } else {
-            if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
-                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
-            }
+        try {
+            ReferenceCountedUtil.releaseAuto(res);
+            if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
+                res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+                ctx.writeAndFlush(res).addListeners((p) -> {
+                    ReferenceCountedUtil.releaseObj(res);
+                }, ChannelFutureListener.CLOSE);
+            } else {
+                if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
+                    res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+                }
 
-            ctx.writeAndFlush(res).addListener((p) -> {
-                HTTPWSServer.releaseObj(res);
-            });
+                ctx.writeAndFlush(res).addListener((p) -> {
+                    ReferenceCountedUtil.releaseObj(res);
+                });
+            }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            ReferenceCountedUtil.releaseObj(res);
         }
     }
 

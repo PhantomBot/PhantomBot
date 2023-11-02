@@ -19,7 +19,7 @@
 #
 # PhantomBot Launcher - Windows Powershell
 #
-# Usage available by using Get-Help -Name .\launch.ps1 -Full
+# Usage available by using Get-Help -Name .\launch.ps1 -Detailed
 #
 
 <#
@@ -27,18 +27,29 @@
 
 Launches PhantomBot
 
+.DESCRIPTION
+
+Searches for a Java executable which matches the currently required Java version and then launches PhantomBot
+
+.PARAMETER Help
+Shortcut run the Get-Help cmdlet on this script and then exit
+
 .PARAMETER Daemon
 Enables daemon mode (STDIN disabled)
 
 .PARAMETER Java
 Overrides the first Java executable attempted. This should be a full path to java.exe
+
+.PARAMETER JavaArgs
+Command line arguments to pass to the jar file
 #>
 
 # Params
 param(
+    [switch]$Help = $false,
     [switch]$Daemon = $false,
     [string]$Java,
-    [Parameter(ValueFromRemainingArguments = $true)]
+    [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
     [string[]]$JavaArgs
 )
 
@@ -78,8 +89,14 @@ function Get-ScriptPath()
     return $ScriptPath
 }
 
+if ($Help) {
+    $ScriptPath = Get-ScriptPath
+    & Get-Help -Name $ScriptPath\launch.ps1 -Detailed
+    Exit 0
+}
+
 # Switch to script directory
-pushd Get-ScriptPath
+Push-Location Get-ScriptPath
 
 # Internal vars
 $interactive = "-Dinteractive"
@@ -144,4 +161,4 @@ if (-not $success) {
 $null >> java.opt.custom
 
 & $JAVA `@java.opt $interactive `@java.opt.custom -jar PhantomBot.jar @JavaArgs
-popd
+Pop-Location

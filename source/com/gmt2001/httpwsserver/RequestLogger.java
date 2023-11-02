@@ -47,7 +47,10 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf b) {
-            ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
+            ByteBuf bb = b.retainedDuplicate();
+            ReferenceCountedUtil.releaseAuto(b);
+            ReferenceCountedUtil.releaseAuto(bb);
+            ctx.channel().attr(ATTR_BB).set(bb);
         }
 
         super.channelRead(ctx, msg);

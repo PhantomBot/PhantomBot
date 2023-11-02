@@ -39,6 +39,10 @@ public final class MariaDBStore2 extends Datastore2 {
      * MariaDB {@code LONGTEXT} type
      */
     private static final DataType<String> LONGTEXT = new DefaultDataType<>(SQLDialect.MARIADB, SQLDataType.CLOB, "longtext", "char");
+    /**
+     * The selected schema
+     */
+    private final String schema;
 
     /**
      * Constructor
@@ -50,6 +54,7 @@ public final class MariaDBStore2 extends Datastore2 {
             Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
+            this.schema = null;
             return;
         }
 
@@ -59,6 +64,8 @@ public final class MariaDBStore2 extends Datastore2 {
         if (dbname.isBlank()) {
             dbname = "phantombot";
         }
+
+        this.schema = dbname;
 
         if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
             connectionString = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + dbname + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
@@ -87,5 +94,12 @@ public final class MariaDBStore2 extends Datastore2 {
     @Override
     public DataType<String> longTextDataType() {
         return LONGTEXT;
+    }
+
+    @Override
+    protected void prepareConnection(Connection connection) throws SQLException {
+        super.prepareConnection(connection);
+        connection.setCatalog(this.schema);
+        connection.setSchema(this.schema);
     }
 }
