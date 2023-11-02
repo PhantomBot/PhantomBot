@@ -323,6 +323,15 @@ public abstract class Datastore2 {
     }
 
     /**
+     * Allows the driver to perform operations to prepare the connection for use, such as selecting the schema
+     *
+     * @param connection the connection to prepare
+     * @throws SQLException if a database access error occurs
+     */
+    protected void prepareConnection(Connection connection) throws SQLException {
+    }
+
+    /**
      * Retrieves a {@link Connection} from the connection pool
      *
      * <p>
@@ -341,7 +350,9 @@ public abstract class Datastore2 {
      * @throws TimeoutException when no connection becomes available within the timeout
      */
     public Connection getConnection() throws SQLException, TimeoutException {
-        return this.connectionPoolManager.getConnection();
+        Connection connection = this.connectionPoolManager.getConnection();
+        this.prepareConnection(connection);
+        return connection;
     }
 
     /**
