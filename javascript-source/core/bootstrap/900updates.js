@@ -226,23 +226,27 @@
         for (let i in cooldowns) {
             json = JSON.parse($.getIniDbString('cooldown', cooldowns[i]));
 
-            let globalSec,
-                userSec,
-                curSec = parseInt(json.seconds);
-
-            if (json.isGlobal !== undefined && json.isGlobal.toString().equals('true')) {
-                globalSec = curSec;
-                userSec = -1;
+            if (json === null) {
+                $.inidb.del('cooldown', cooldowns[i]);
             } else {
-                globalSec = -1;
-                userSec = curSec;
-            }
+                let globalSec,
+                    userSec,
+                    curSec = parseInt(json.seconds);
 
-            $.inidb.set('cooldown', cooldowns[i], JSON.stringify({
-                command: String(json.command),
-                globalSec: globalSec,
-                userSec: userSec
-            }));
+                if (json.isGlobal !== undefined && json.isGlobal.toString().equals('true')) {
+                    globalSec = curSec;
+                    userSec = -1;
+                } else {
+                    globalSec = -1;
+                    userSec = curSec;
+                }
+
+                $.inidb.set('cooldown', cooldowns[i], JSON.stringify({
+                    command: String(json.command),
+                    globalSec: globalSec,
+                    userSec: userSec
+                }));
+            }
         }
 
         if ($.inidb.exists('settings', 'quoteMessage')) {
