@@ -59,6 +59,7 @@ public final class FollowersCache {
     private boolean killed = false;
     private Map<String, Instant> recent = new ConcurrentHashMap<>();
     private static final long RECENT_TIME_M = 15;
+    private static final long MAX_ANNOUNCE_MINUTES = 30;
 
     public static FollowersCache instance() {
         return INSTANCE;
@@ -187,15 +188,16 @@ public final class FollowersCache {
     public void addFollow(String loginName, String followedAt, boolean silent) {
         DataStore datastore = PhantomBot.instance().getDataStore();
         loginName = loginName.toLowerCase();
+        if (!datastore.exists("followedDate", loginName)) {
+            datastore.set("followedDate", loginName, followedAt);
+        }
         if (!datastore.exists("followed", loginName)) {
             datastore.set("followed", loginName, "true");
-            if (!silent && !this.recent.containsKey(loginName)) {
+            if (!silent && !this.recent.containsKey(loginName)
+                && Duration.between(this.followedDate(loginName), Instant.now()).abs().toMinutes() < MAX_ANNOUNCE_MINUTES) {
                 this.recent.put(loginName, Instant.now().plus(RECENT_TIME_M, ChronoUnit.MINUTES));
                 EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt));
             }
-        }
-        if (!datastore.exists("followedDate", loginName)) {
-            datastore.set("followedDate", loginName, followedAt);
         }
     }
 
