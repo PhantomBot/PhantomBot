@@ -1402,6 +1402,16 @@ $(function () {
     };
 
     /**
+     * @function Used to print warning messages in the console.
+     *
+     * @param {String}  message
+     * @param {Number} type
+     */
+    helpers.logWarning = function (message, type) {
+        console.log('%c[PhantomBot Warning]', 'color: orange; font-weight: 900;', message);
+    };
+
+    /**
      * @function Used to print error messages in the console.
      *
      * @param {String}  message

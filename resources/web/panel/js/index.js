@@ -39,17 +39,43 @@ $(function () {
         );
     }
 
-    let usingWebsocket = true,
+    window.forceHttp = function() {
+        window.localStorage.setItem('forceHttp', true);
+        window.localStorage.setItem('forceWs', false);
+        helpers.log('Panel will be forced to use HTTP Long Polling on next refresh', helpers.LOG_TYPE.FORCE);
+    }
+
+    window.forceWs = function() {
+        window.localStorage.setItem('forceHttp', false);
+        window.localStorage.setItem('forceWs', true);
+        helpers.log('Panel will be forced to use WebSocket with infinite reconnects on next refresh', helpers.LOG_TYPE.FORCE);
+    }
+
+    window.forceNormal = function() {
+        window.localStorage.setItem('forceHttp', false);
+        window.localStorage.setItem('forceWs', false);
+        helpers.log('Panel will be reset to use WebSocket with 3 reconnects, then HTTP Long Polling as a backup, on next refresh', helpers.LOG_TYPE.FORCE);
+    }
+
+    let usingWebsocket = window.localStorage.getItem('forceHttp') ? false : true,
         lastReceivedTimestamp = 0,
         lastReceivedSequence = 0,
         lastTimestamp = 0,
         lastSequence = 0,
         sessionId = null;
-    const maxReconnectAttempts = 3;
+    const maxReconnectAttempts = window.localStorage.getItem('forceWs') ? Infinity : 3;
     const webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://')
         + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {
         reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false, maxReconnectAttempts: maxReconnectAttempts
     });
+
+    if (window.localStorage.getItem('forceHttp')) {
+        helpers.log('Force HTTP Long Polling option enabled', helpers.LOG_TYPE.FORCE);
+    } else if (window.localStorage.getItem('forceWs')) {
+        helpers.log('Force WebSocket option enabled', helpers.LOG_TYPE.FORCE);
+    } else {
+        helpers.log('Initializing WebSocket with ' + maxReconnectAttempts + ' reconnects before switching to HTTP Long Polling', helpers.LOG_TYPE.FORCE);
+    }
 
     let callbacks = [],
             listeners = [],
@@ -1065,12 +1091,17 @@ $(function () {
         if (event.code !== undefined && event.code !== null && event.code > 0) {
             if (webSocket.reconnectAttempts >= maxReconnectAttempts) {
                 usingWebsocket = false;
+                helpers.logWarning('WebSocket retry limit reached, switching to HTTP Long Polling');
                 initLongPoll();
             }
         }
     }
 
-    webSocket.open();
+    if (usingWebsocket) {
+        webSocket.open();
+    } else {
+        initLongPoll();
+    }
 
     // Make this a global object.
     window.socket = socket;
