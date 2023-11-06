@@ -225,8 +225,8 @@ $(function () {
         }
     };
 
-    const initLongPoll = function() {
-        navigator.locks.request('longpoll.init', () => {
+    const initLongPoll = async function() {
+        await navigator.locks.request('longpoll.init', () => {
             if (!socket.hasOwnProperty('longpoll')) {
                 socket.longpoll = {
                     queue: [],
@@ -960,11 +960,7 @@ $(function () {
                 return;
             }
 
-            let message = e;
-
-            if (e.data !== undefined && !isJSObject(e.data)) {
-                message = JSON.parse(e.data);
-            }
+            let message = JSON.parse(e.data);
 
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
@@ -991,7 +987,7 @@ $(function () {
             }
 
             if (message.metadata !== undefined) {
-                navigator.locks.request('receiver.sequence', () => {
+                await navigator.locks.request('receiver.sequence', () => {
                     if (message.metadata.timestamp > lastReceivedTimestamp) {
                         lastReceivedTimestamp = message.metadata.timestamp;
                         lastReceivedSequence = message.metadata.sequence;
