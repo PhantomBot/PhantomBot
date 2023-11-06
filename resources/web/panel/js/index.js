@@ -91,7 +91,7 @@ $(function () {
                 socket.longpoll.sending = true;
                 navigator.locks.request('longpoll.queue', () => {
                     const toSend = JSON.stringify(socket.longpoll.queue.splice(0, Infinity));
-                    fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+                    fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost(), {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
@@ -126,7 +126,7 @@ $(function () {
         navigator.locks.request('receiver.sequence', () => {
             return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
         })
-        .then(lastReceived => fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost()
+        .then(lastReceived => fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost()
             + '&afterTimestamp=' + lastReceived.timestamp + '&afterSequence=' + lastReceived.sequence, {
             method: 'GET',
             headers: {
@@ -174,7 +174,7 @@ $(function () {
             webSocket.send(JSON.stringify(message));
         } else {
             const toSend = JSON.stringify([message]);
-            fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+            fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost(), {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
