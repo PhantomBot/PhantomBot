@@ -263,6 +263,7 @@ public final class WsWithLongPollAuthenticationHandler
 
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
+        ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).setIfAbsent(Boolean.FALSE);
         if (this.isAuthorized(ctx, headers, requestUri)) {
             ctx.channel().attr(WsAuthenticationHandler.ATTR_AUTHENTICATED).set(Boolean.TRUE);
 
