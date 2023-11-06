@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -98,6 +99,9 @@ public class FrankerFacezApiV1 implements EmoteProvider {
     @Override
     public List<EmoteEntry> getSharedEmotes() throws EmoteApiRequestFailedException {
         HttpClientResponse response = readJsonFromUrl(APIURL + "/room/id/" + ViewerCache.instance().broadcaster().id());
+        if (response.responseCode().code() == 404) {
+            return Collections.emptyList();
+        }
         checkResponseForError(response);
         try {
             String setId = String.valueOf(response.json().getJSONObject("room").get("set"));
