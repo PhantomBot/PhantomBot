@@ -308,22 +308,24 @@ public final class Client {
                             jso.array();
                             Iterator<SoftReference<Message>> it = this.softQueue.iterator();
 
-                            while (it.hasNext()) {
-                                SoftReference<Message> s = it.next();
-                                if (s.get() != null) {
-                                    if (s.get().equals(this.strongQueue.peek())) {
-                                        break;
+                            if (it.hasNext()) {
+                                while (it.hasNext()) {
+                                    SoftReference<Message> s = it.next();
+                                    if (s.get() != null) {
+                                        if (s.get().equals(this.strongQueue.peek())) {
+                                            break;
+                                        }
+
+                                        jso.value(s.get().message());
                                     }
-
-                                    jso.value(s.get().message());
                                 }
-                            }
 
-                            jso.endArray();
-                            HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
-                                    .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
-                                            WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
-                            this.ctx = null;
+                                jso.endArray();
+                                HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
+                                        .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
+                                                WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
+                                this.ctx = null;
+                            }
                         }
                     }
                 } finally {
