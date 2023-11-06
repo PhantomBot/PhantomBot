@@ -252,12 +252,7 @@ $(function () {
 
             send(message);
 
-            // Make sure to not show the user's token.
-            if (json.indexOf('authenticate') !== -1) {
-                helpers.log('sendToSocket:: ' + json.substring(0, json.length - 20) + '.."}', helpers.LOG_TYPE.DEBUG);
-            } else {
-                helpers.log('sendToSocket:: ' + json, helpers.LOG_TYPE.DEBUG);
-            }
+            helpers.log('sendToSocket:: ' + JSON.stringify(message).replace(getAuth(), '...'), helpers.LOG_TYPE.DEBUG);
         } catch (e) {
             helpers.logError('Failed to send message to socket: ' + e.message, helpers.LOG_TYPE.DEBUG);
         }
