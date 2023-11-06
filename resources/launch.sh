@@ -281,6 +281,8 @@ if (( success == 0 )); then
     exit 1
 fi
 
+chm=$(chmod u+x $( dirname -- "$( dirname -- "$JAVA" )" )/lib/jspawnhelper 2>/dev/null)
+
 if mount | grep '/tmp' | grep -q noexec; then
     mkdir -p ${SCRIPT_PATH}/tmp
     tmp="-Djava.io.tmpdir=${SCRIPT_PATH}/tmp"
