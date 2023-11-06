@@ -962,6 +962,18 @@ $(function () {
 
             let message = JSON.parse(e.data);
 
+            if (message.metadata !== undefined) {
+                await navigator.locks.request('receiver.sequence', () => {
+                    if (message.metadata.timestamp > lastReceivedTimestamp) {
+                        lastReceivedTimestamp = message.metadata.timestamp;
+                        lastReceivedSequence = message.metadata.sequence;
+                    } else if (message.metadata.timestamp === lastReceivedTimestamp && message.metadata.sequence > lastReceivedSequence) {
+                        lastReceivedSequence = message.metadata.sequence;
+                    }
+                });
+                message = message.data;
+            }
+
             // Check this message here before doing anything else.
             if (message.authresult !== undefined) {
                 if (message.authresult === 'false') {
@@ -984,18 +996,6 @@ $(function () {
                     helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 }
                 return;
-            }
-
-            if (message.metadata !== undefined) {
-                await navigator.locks.request('receiver.sequence', () => {
-                    if (message.metadata.timestamp > lastReceivedTimestamp) {
-                        lastReceivedTimestamp = message.metadata.timestamp;
-                        lastReceivedSequence = message.metadata.sequence;
-                    } else if (message.metadata.timestamp === lastReceivedTimestamp && message.metadata.sequence > lastReceivedSequence) {
-                        lastReceivedSequence = message.metadata.sequence;
-                    }
-                });
-                message = message.data;
             }
 
             if (message.id !== undefined) {
@@ -1031,7 +1031,14 @@ $(function () {
                         if (callback.isArray) {
                             callback.queryData = message.results;
                         } else if (callback.storeKey === true) {
-                            callback.queryData[Object.keys(message.results)[1]] = message.results.value;
+                            let key = 'value';
+                            for (const k of Object.keys(message.results)) {
+                                if (k !== 'table' && k !== 'value') {
+                                    key = k;
+                                    break;
+                                }
+                            }
+                            callback.queryData[key] = message.results.value;
                         } else {
                             callback.queryData[message.results.table] = message.results.value;
                         }
