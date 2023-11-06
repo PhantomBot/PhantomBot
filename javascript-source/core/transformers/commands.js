@@ -78,7 +78,7 @@
      * @formula (count amount:int) increases the count of how often this command has been called by the specified amount and outputs new count
      * @formula (count amount:int name:str) increases the count of how often the named counter has been called by the specified amount and outputs new count
      * @formula (count reset name:str) zeroes the named counter and outputs new count
-     * @labels twitch discord commandevent commands
+     * @labels twitch discord noevent commandevent commands
      * @example Caster: !addcom !spam Chat has been spammed (count) times
      * User: !spam
      * Bot: Chat has been spammed 5050 times.
@@ -90,7 +90,7 @@
         let match;
         match = $.parseArgs(args.args, ' ', 2, true);
         let incr = 1;
-        let counter = args.event.getCommand();
+        let counter;
         let table = 'commandCount';
 
         if (args.platform === 'discord') {
@@ -99,6 +99,10 @@
 
         if (match !== null && match.length > 1 && match[1].length > 0) {
             counter = match[1];
+        } else if (args.event === undefined || args.event.getCommand === undefined) {
+            return {result: 'No counter name'};
+        } else {
+            counter = args.event.getCommand();
         }
 
         if (match !== null && match.length > 0) {
@@ -172,7 +176,7 @@
     let transformers = [
         new $.transformers.transformer('command', ['twitch', 'discord', 'commandevent', 'commands'], command),
         new $.transformers.transformer('commandslist', ['twitch', 'commandevent', 'commands'], commandslist),
-        new $.transformers.transformer('count', ['twitch', 'discord', 'commandevent', 'commands'], count),
+        new $.transformers.transformer('count', ['twitch', 'discord', 'noevent', 'commandevent', 'commands'], count),
         new $.transformers.transformer('delaycommand', ['twitch', 'discord', 'commandevent', 'commands'], delaycommand),
         new $.transformers.transformer('help', ['twitch', 'discord', 'commandevent', 'commands'], help)
     ];
