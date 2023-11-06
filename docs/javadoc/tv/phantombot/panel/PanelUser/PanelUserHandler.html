@@ -279,40 +279,45 @@ loadScripts(document, 'script');</script>
  <br/><br/>
  Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can be deleted</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getAllPanelSectionsJSONObject(org.json.JSONStringer)" class="member-name-link">getAllPanelSectionsJSONObject</a><wbr>(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getAccessPermissions(boolean)" class="member-name-link">getAccessPermissions</a><wbr>(boolean&nbsp;full)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Gets a permissions map which includes permission to all available <code>panel sections</code></div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getAllPanelSectionsJSONObject(org.json.JSONStringer)" class="member-name-link">getAllPanelSectionsJSONObject</a><wbr>(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Adds the available <code>panel sections</code> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getAllUsersJSONObject(org.json.JSONStringer)" class="member-name-link">getAllUsersJSONObject</a><wbr>(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getAllUsersJSONObject(org.json.JSONStringer)" class="member-name-link">getAllUsersJSONObject</a><wbr>(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, creationDate, lastLogin) as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFullAccessPermissions()" class="member-name-link">getFullAccessPermissions</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getFullAccessPermissions()" class="member-name-link">getFullAccessPermissions</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Gets a permissions map which includes full permission to all available <code>panel sections</code></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getPermissionsJSONObject(org.json.JSONStringer)" class="member-name-link">getPermissionsJSONObject</a><wbr>(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getPermissionsJSONObject(org.json.JSONStringer)" class="member-name-link">getPermissionsJSONObject</a><wbr>(<a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Adds the <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a> as an array to an <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link"><code>JSONStringer</code></a> instance</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUserAuthToken(java.lang.String)" class="member-name-link">getUserAuthToken</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUserAuthToken(java.lang.String)" class="member-name-link">getUserAuthToken</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Get the authentication token for a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUserJSONObject(java.lang.String,org.json.JSONStringer)" class="member-name-link">getUserJSONObject</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getUserJSONObject(java.lang.String,org.json.JSONStringer)" class="member-name-link">getUserJSONObject</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username,
  <a href="https://stleary.github.io/JSON-java/org/json/JSONStringer.html" title="class or interface in org.json" class="external-link">JSONStringer</a>&nbsp;jsonObject)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Adds the <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> safe properties (username, isEnabled, <a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser"><code>permissions</code></a>, hasSetPassword, <a href="PanelUser.Type.html" title="enum class in tv.phantombot.panel.PanelUser"><code>userType) as an array to an {@link JSONStringer JSONStringer} instance</code></a></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#resetPassword(java.lang.String)" class="member-name-link">resetPassword</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="PanelUserHandler.PanelMessage.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.PanelMessage</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#resetPassword(java.lang.String)" class="member-name-link">resetPassword</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;username)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Resets a <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user's</code></a> password
  <br/><br/>
  Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can have their passwords reset</div>
@@ -828,6 +833,17 @@ loadScripts(document, 'script');</script>
 <h3>getFullAccessPermissions</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</span>&nbsp;<span class="element-name">getFullAccessPermissions</span>()</div>
 <div class="block">Gets a permissions map which includes full permission to all available <code>panel sections</code></div>
+</section>
+</li>
+<li>
+<section class="detail" id="getAccessPermissions(boolean)">
+<h3>getAccessPermissions</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="PanelUserHandler.Permission.html" title="enum class in tv.phantombot.panel.PanelUser">PanelUserHandler.Permission</a>&gt;</span>&nbsp;<span class="element-name">getAccessPermissions</span><wbr><span class="parameters">(boolean&nbsp;full)</span></div>
+<div class="block">Gets a permissions map which includes permission to all available <code>panel sections</code></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>full</code> - <code>true</code> for <a href="PanelUserHandler.Permission.html#READ_WRITE"><code>PanelUserHandler.Permission.READ_WRITE</code></a>; otherwise <a href="PanelUserHandler.Permission.html#READ_ONLY"><code>PanelUserHandler.Permission.READ_ONLY</code></a></dd>
+</dl>
 </section>
 </li>
 <li>

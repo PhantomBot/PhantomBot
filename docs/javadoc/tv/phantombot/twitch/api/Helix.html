@@ -190,6 +190,22 @@ loadScripts(document, 'script');</script>
 <div class="block">Creates an EventSub subscription.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createPoll(java.lang.String,java.util.List,int,int)" class="member-name-link">createPoll</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;title,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;choices,
+ int&nbsp;durationSec,
+ int&nbsp;channelPointsPerVote)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates a poll that viewers in the broadcaster’s channel can vote on.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createPollAsync(java.lang.String,java.util.List,int,int)" class="member-name-link">createPollAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;title,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;choices,
+ int&nbsp;durationSec,
+ int&nbsp;channelPointsPerVote)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates a poll that viewers in the broadcaster’s channel can vote on.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createPrediction(java.lang.String,long,java.util.List)" class="member-name-link">createPrediction</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;title,
  long&nbsp;seconds,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;choices)</code></div>
@@ -236,6 +252,18 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteEventSubSubscriptionAsync(java.lang.String)" class="member-name-link">deleteEventSubSubscriptionAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deletes an EventSub subscription.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#endPoll(java.lang.String,java.lang.String)" class="member-name-link">endPoll</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;status)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Ends an active poll.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#endPollAsync(java.lang.String,java.lang.String)" class="member-name-link">endPollAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;status)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Ends an active poll.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#endPrediction(java.lang.String,tv.phantombot.twitch.api.Helix.PredictionStatus,java.lang.String)" class="member-name-link">endPrediction</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
@@ -408,6 +436,20 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getGlobalEmotesAsync()" class="member-name-link">getGlobalEmotesAsync</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets all global emotes.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPolls(java.util.List,int,java.lang.String)" class="member-name-link">getPolls</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;pollIds,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets a list of polls that the broadcaster created.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPollsAsync(java.util.List,int,java.lang.String)" class="member-name-link">getPollsAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;pollIds,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets a list of polls that the broadcaster created.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPredictions(java.util.List,int,java.lang.String)" class="member-name-link">getPredictions</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;id,
@@ -2737,6 +2779,160 @@ loadScripts(document, 'script');</script>
 <dt>Throws:</dt>
 <dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getPolls(java.util.List,int,java.lang.String)">
+<h3>getPolls</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">getPolls</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;pollIds,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span></div>
+<div class="block">Gets a list of polls that the broadcaster created.
+ Polls are available for 90 days after they’re created.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>pollIds</code> - A list of IDs that identify the polls to return. You may specify a maximum of 20 IDs.
+                Specify this parameter only if you want to filter the list that the request returns.
+                The endpoint ignores duplicate IDs and those not owned by this broadcaster.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response.
+                The minimum page size is 1 item per page and the maximum is 20 items per page. The default is 20.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results. The Pagination object in the response contains
+                the cursor’s value.</dd>
+<dt>Returns:</dt>
+<dd>A list of polls. The list is empty if the broadcaster hasn’t created polls.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - when the result object could not be parsed</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when more ids are passed than the API allows</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getPollsAsync(java.util.List,int,java.lang.String)">
+<h3>getPollsAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">getPollsAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;pollIds,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
+                               throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Gets a list of polls that the broadcaster created.
+ Polls are available for 90 days after they’re created.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>pollIds</code> - A list of IDs that identify the polls to return. You may specify a maximum of 20 IDs.
+                Specify this parameter only if you want to filter the list that the request returns.
+                The endpoint ignores duplicate IDs and those not owned by this broadcaster.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response.
+                The minimum page size is 1 item per page and the maximum is 20 items per page. The default is 20.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results. The Pagination object in the response contains
+                the cursor’s value.</dd>
+<dt>Returns:</dt>
+<dd>A list of polls. The list is empty if the broadcaster hasn’t created polls.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - when the result object could not be parsed</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when more ids are passed than the API allows</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createPoll(java.lang.String,java.util.List,int,int)">
+<h3>createPoll</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">createPoll</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;title,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;choices,
+ int&nbsp;durationSec,
+ int&nbsp;channelPointsPerVote)</span>
+                      throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Creates a poll that viewers in the broadcaster’s channel can vote on.
+ The poll begins as soon as it’s created. You may run only one poll at a time.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>title</code> - The question that viewers will vote on. For example, What game should I play next? The question
+                             may contain a maximum of 60 characters.</dd>
+<dd><code>choices</code> - A list of choices each with a maximum of 25 characters, that viewers may choose from.
+                             The list must contain a minimum of 2 choices and up to a maximum of 5 choices.</dd>
+<dd><code>durationSec</code> - The length of time (in seconds) that the poll will run for. The minimum is 15 seconds and
+                             the maximum is 1800 seconds (30 minutes).</dd>
+<dd><code>channelPointsPerVote</code> - The number of points that the viewer must spend to cast one additional vote.
+                             The minimum is 1 and the maximum is 1000000. 0 and smaller disables this option.</dd>
+<dt>Returns:</dt>
+<dd>A list that contains the single poll that you created.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - when the result object could not be parsed</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when more ids are passed than the API allows</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createPollAsync(java.lang.String,java.util.List,int,int)">
+<h3>createPollAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">createPollAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;title,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;choices,
+ int&nbsp;durationSec,
+ int&nbsp;channelPointsPerVote)</span>
+                                 throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Creates a poll that viewers in the broadcaster’s channel can vote on.
+ The poll begins as soon as it’s created. You may run only one poll at a time.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>title</code> - The question that viewers will vote on. For example, What game should I play next? The question
+                             may contain a maximum of 60 characters.</dd>
+<dd><code>choices</code> - A list of choices each with a maximum of 25 characters, that viewers may choose from.
+                             The list must contain a minimum of 2 choices and up to a maximum of 5 choices.</dd>
+<dd><code>durationSec</code> - The length of time (in seconds) that the poll will run for. The minimum is 15 seconds and
+                             the maximum is 1800 seconds (30 minutes).</dd>
+<dd><code>channelPointsPerVote</code> - The number of points that the viewer must spend to cast one additional vote.
+                             The minimum is 1 and the maximum is 1000000. 0 and smaller disables this option.</dd>
+<dt>Returns:</dt>
+<dd>A list that contains the single poll that you created.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - when the result object could not be parsed</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when more ids are passed than the API allows</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="endPoll(java.lang.String,java.lang.String)">
+<h3>endPoll</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">endPoll</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;status)</span>
+                   throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Ends an active poll. You have the option to end it or end it and archive it.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - The ID of the poll to update.</dd>
+<dd><code>status</code> - The status to set the poll to. Possible case-sensitive values are:
+               TERMINATED — Ends the poll before the poll is scheduled to end. The poll remains publicly visible.
+               ARCHIVED — Ends the poll before the poll is scheduled to end, and then archives it, so it's no longer publicly visible.</dd>
+<dt>Returns:</dt>
+<dd>A list that contains the poll that you ended.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - when the result object could not be parsed</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when more ids are passed than the API allows</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="endPollAsync(java.lang.String,java.lang.String)">
+<h3>endPollAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">endPollAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;status)</span>
+                              throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Ends an active poll. You have the option to end it or end it and archive it.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>id</code> - The ID of the poll to update.</dd>
+<dd><code>status</code> - The status to set the poll to. Possible case-sensitive values are:
+               TERMINATED — Ends the poll before the poll is scheduled to end. The poll remains publicly visible.
+               ARCHIVED — Ends the poll before the poll is scheduled to end, and then archives it, so it's no longer publicly visible.</dd>
+<dt>Returns:</dt>
+<dd>A list that contains the poll that you ended.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code> - when the result object could not be parsed</dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code> - when more ids are passed than the API allows</dd>
 </dl>
 </section>
 </li>

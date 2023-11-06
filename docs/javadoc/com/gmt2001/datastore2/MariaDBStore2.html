@@ -128,6 +128,11 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link"><code>DataType</code></a> representing the <code>LONGTEXT</code> equivalent SQL data type for the driver</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#prepareConnection(java.sql.Connection)" class="member-name-link">prepareConnection</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a>&nbsp;connection)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Allows the driver to perform operations to prepare the connection for use, such as selecting the schema</div>
+</div>
 </div>
 </div>
 </div>
@@ -174,6 +179,23 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="Datastore2.html#longTextDataType()">longTextDataType</a></code>&nbsp;in class&nbsp;<code><a href="Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></code></dd>
 <dt>Returns:</dt>
 <dd>the DataType</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="prepareConnection(java.sql.Connection)">
+<h3>prepareConnection</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">prepareConnection</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/Connection.html" title="class or interface in java.sql" class="external-link">Connection</a>&nbsp;connection)</span>
+                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="Datastore2.html#prepareConnection(java.sql.Connection)">Datastore2</a></code></span></div>
+<div class="block">Allows the driver to perform operations to prepare the connection for use, such as selecting the schema</div>
+<dl class="notes">
+<dt>Overrides:</dt>
+<dd><code><a href="Datastore2.html#prepareConnection(java.sql.Connection)">prepareConnection</a></code>&nbsp;in class&nbsp;<code><a href="Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>connection</code> - the connection to prepare</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.sql/java/sql/SQLException.html" title="class or interface in java.sql" class="external-link">SQLException</a></code> - if a database access error occurs</dd>
 </dl>
 </section>
 </li>
