@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.StampedLock;
 
-import com.gmt2001.Console.err;
 import com.gmt2001.util.concurrent.ExecutorService;
 
 import io.netty.util.IllegalReferenceCountException;
@@ -123,7 +122,6 @@ public final class ReferenceCountedUtil {
                 obj.release(all ? obj.refCnt() : 1);
             }
         } catch (IllegalReferenceCountException ex) {
-            err.printStackTrace(ex);
         }
     }
 }
