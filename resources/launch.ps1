@@ -89,14 +89,15 @@ function Get-ScriptPath()
     return $ScriptPath
 }
 
+$ScriptPath = Get-ScriptPath
+
 if ($Help) {
-    $ScriptPath = Get-ScriptPath
     & Get-Help -Name $ScriptPath\launch.ps1 -Detailed
     Exit 0
 }
 
 # Switch to script directory
-Push-Location Get-ScriptPath
+Push-Location $ScriptPath
 
 # Internal vars
 $interactive = "-Dinteractive"
