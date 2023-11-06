@@ -29,7 +29,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -134,7 +134,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
 
         if (!qsd.parameters().containsKey("table") || qsd.parameters().get("table").isEmpty() || qsd.parameters().get("table").get(0).isBlank()) {
             jsonObject.object().key("error").value("table not provided").endObject();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
             return;
         }
 
@@ -153,14 +153,14 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } else if (!PhantomBot.instance().getDataStore().FileExists(dbTable)) {
             jsonObject.object().key("error").value("table does not exist").endObject();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } else if (qsd.parameters().containsKey("keyExists")) {
             if (qsd.parameters().get("keyExists").isEmpty() || qsd.parameters().get("keyExists").get(0).isBlank()) {
                 jsonObject.object().key("error").value("key not provided").endObject();
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
             } else {
                 jsonObject.object().key("table");
                 jsonObject.object();
@@ -170,12 +170,12 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 jsonObject.endObject();
                 jsonObject.endObject();
 
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
             }
         } else if (qsd.parameters().containsKey("getData")) {
             if (qsd.parameters().get("getData").isEmpty() || qsd.parameters().get("getData").get(0).isBlank()) {
                 jsonObject.object().key("error").value("key not provided").endObject();
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
             } else {
                 jsonObject.object().key("table");
                 jsonObject.object();
@@ -185,7 +185,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
                 jsonObject.endObject();
                 jsonObject.endObject();
 
-                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
             }
         } else if (qsd.parameters().containsKey("getKeys")) {
             jsonObject.object();
@@ -205,7 +205,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } else if (qsd.parameters().containsKey("getAllRows")) {
             jsonObject.object();
             jsonObject.key("table");
@@ -225,7 +225,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } else if (qsd.parameters().containsKey("getSortedRows")) {
             jsonObject.object();
             jsonObject.key("table");
@@ -261,7 +261,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } else if (qsd.parameters().containsKey("getSortedRowsByValue")) {
             jsonObject.object();
             jsonObject.key("table");
@@ -297,16 +297,16 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             jsonObject.endObject();
             jsonObject.endObject();
 
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } else {
             jsonObject.object().key("error").value("malformed request").endObject();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.BAD_REQUEST, jsonObject.toString().getBytes(StandardCharsets.UTF_8), "json"));
         }
     }
 
     private void handleGames(ChannelHandlerContext ctx, FullHttpRequest req, QueryStringDecoder qsd) {
         if (!qsd.parameters().containsKey("search") || qsd.parameters().get("search").isEmpty() || qsd.parameters().get("search").get(0).isBlank()) {
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "[]".getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "[]".getBytes(StandardCharsets.UTF_8), "json"));
             return;
         }
 
@@ -324,7 +324,7 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
 
             stringer.endArray();
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, stringer.toString().getBytes(Charset.forName("UTF-8")), "json"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, stringer.toString().getBytes(StandardCharsets.UTF_8), "json"));
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);
@@ -352,16 +352,16 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             }
         }
 
-        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, outputString.getBytes(Charset.forName("UTF-8")), "plain"));
+        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, outputString.getBytes(StandardCharsets.UTF_8), "plain"));
     }
 
     private void handleLang(ChannelHandlerContext ctx, FullHttpRequest req) {
         if (req.headers().contains("lang-path")) {
             com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, LangFileUpdater.getCustomLang(req.headers().get("lang-path")).getBytes(Charset.forName("UTF-8")), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, LangFileUpdater.getCustomLang(req.headers().get("lang-path")).getBytes(StandardCharsets.UTF_8), "plain"));
         } else {
             com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": get-lang");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", LangFileUpdater.getLangFiles()).getBytes(Charset.forName("UTF-8")), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, String.join("\n", LangFileUpdater.getLangFiles()).getBytes(StandardCharsets.UTF_8), "plain"));
         }
     }
 
@@ -381,28 +381,28 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
         }
 
         com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": irc " + user + " -> " + msg);
-        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "event posted".getBytes(Charset.forName("UTF-8")), "plain"));
+        HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "event posted".getBytes(StandardCharsets.UTF_8), "plain"));
     }
 
     private void putLang(ChannelHandlerContext ctx, FullHttpRequest req) {
         JSONStringer jso = new JSONStringer();
-        LangFileUpdater.updateCustomLang(req.content().toString(Charset.forName("UTF-8")), req.headers().get("lang-path"), jso);
+        LangFileUpdater.updateCustomLang(req.content().toString(StandardCharsets.UTF_8), req.headers().get("lang-path"), jso);
 
         JSONObject j;
         try {
             j = new JSONObject(jso.toString());
         } catch (JSONException ex) {
             com.gmt2001.Console.debug.println("500" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, "Unable to Check Success.".getBytes(Charset.forName("UTF-8")), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, "Unable to Check Success.".getBytes(StandardCharsets.UTF_8), "plain"));
             com.gmt2001.Console.err.logStackTrace(ex);
             return;
         }
         if (j.getBoolean("success")) {
             com.gmt2001.Console.debug.println("200" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.".getBytes(Charset.forName("UTF-8")), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "File Updated.".getBytes(StandardCharsets.UTF_8), "plain"));
         } else {
             com.gmt2001.Console.debug.println("500" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, j.getJSONArray("errors").getJSONObject(0).getString("detail").getBytes(Charset.forName("UTF-8")), "plain"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, j.getJSONArray("errors").getJSONObject(0).getString("detail").getBytes(StandardCharsets.UTF_8), "plain"));
         }
     }
 

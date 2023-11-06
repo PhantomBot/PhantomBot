@@ -18,7 +18,6 @@ package tv.phantombot.httpserver;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -130,7 +129,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 JSONObject jso = null;
 
                 try {
-                    jso = new JSONObject(req.content());
+                    jso = new JSONObject(req.content().toString(StandardCharsets.UTF_8));
                 } catch (JSONException ex) {
                     jsonObject.object().key("errors").array().object()
                             .key("status").value("500")
@@ -322,7 +321,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                     + HttpServerPageHandler.detectContentType("html") + ")");
-            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(Charset.forName("UTF-8")), "html"));
+            HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, ret.getBytes(StandardCharsets.UTF_8), "html"));
         } catch (NumberFormatException | IOException ex) {
             com.gmt2001.Console.debug.println("500");
             com.gmt2001.Console.debug.printStackTrace(ex);

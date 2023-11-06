@@ -18,7 +18,7 @@ package tv.phantombot.panel;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -559,7 +559,7 @@ public class WsPanelHandler extends WsWithLongPollHandler {
                 try {
                     ByteBuf buf2 = Base64.encode(buf);
                     try {
-                        jsonObject.object().key("logo").value(buf2.toString(Charset.forName("UTF-8"))).endObject();
+                        jsonObject.object().key("logo").value(buf2.toString(StandardCharsets.UTF_8)).endObject();
                     } finally {
                         ReferenceCountedUtil.releaseObj(buf2);
                     }

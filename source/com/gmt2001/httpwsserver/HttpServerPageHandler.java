@@ -188,7 +188,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     static HttpRequestHandler determineHttpRequestHandler(String uri) {
         String bestMatch = "";
 
-        if (URLDecoder.decode(uri, Charset.forName("UTF-8")).contains("..")) {
+        if (URLDecoder.decode(uri, StandardCharsets.UTF_8).contains("..")) {
             return null;
         }
 
@@ -507,7 +507,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             });
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(
-                    HttpResponseStatus.OK, String.join("\n", listing).getBytes(Charset.forName("UTF-8")), "plain"));
+                    HttpResponseStatus.OK, String.join("\n", listing).getBytes(StandardCharsets.UTF_8), "plain"));
         } catch (IOException ex) {
             com.gmt2001.Console.debug.println("500: " + p.toString());
             com.gmt2001.Console.debug.printStackTrace(ex);

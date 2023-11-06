@@ -18,7 +18,7 @@ package tv.phantombot.twitch.api;
 
 import java.math.BigInteger;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
@@ -200,7 +200,7 @@ public class Helix {
             return input;
         }
 
-        return URLEncoder.encode(input, Charset.forName("UTF-8"));
+        return URLEncoder.encode(input, StandardCharsets.UTF_8);
     }
 
     private String qspValid(String key, String value) {

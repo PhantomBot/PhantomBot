@@ -19,7 +19,6 @@ package tv.phantombot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -1448,7 +1447,7 @@ public final class PhantomBot implements Listener {
             stream = new FileOutputStream(new File(fileName));
 
             // Write the content.
-            stream.write(builder.toString().getBytes(Charset.forName("UTF-8")));
+            stream.write(builder.toString().getBytes(StandardCharsets.UTF_8));
             stream.flush();
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed writing data to file [IOException]: " + ex.getMessage());
