@@ -62,11 +62,13 @@ $(function () {
         lastReceivedSequence = 0,
         lastTimestamp = 0,
         lastSequence = 0,
-        sessionId = null;
+        sessionId = null,
+        reconnectAttempts = 0,
+        reconnectTimestamp = 0;
     const maxReconnectAttempts = window.localStorage.getItem('forceWs') ? Infinity : 3;
     const webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://')
         + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {
-        reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false, maxReconnectAttempts: maxReconnectAttempts
+        reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false
     });
 
     if (window.localStorage.getItem('forceHttp')) {
@@ -1085,14 +1087,21 @@ $(function () {
     webSocket.onopen = onopen;
     webSocket.onclose = onclose;
     webSocket.onmessage = onmessage;
-    webSocket.onconnecting = function(event) {
-        if (event.code !== undefined && event.code !== null && event.code > 0) {
-            if (webSocket.reconnectAttempts >= maxReconnectAttempts) {
+    webSocket.onconnecting = function() {
+        navigator.locks.request('webSocket.reconnect', () => {
+            if (Date.now() > reconnectTimestamp) {
+                reconnectAttempts = 0;
+                reconnectTimestamp = Date.now() + (30 * 1000);
+            } else {
+                reconnectAttempts = reconnectAttempts + 1;
+            }
+            if (reconnectAttempts >= maxReconnectAttempts) {
+                webSocket.close();
                 usingWebsocket = false;
                 helpers.logWarning('WebSocket retry limit reached, switching to HTTP Long Polling');
                 initLongPoll();
             }
-        }
+        });
     }
 
     if (usingWebsocket) {
