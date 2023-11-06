@@ -733,7 +733,10 @@ public final class PhantomBot implements Listener {
             this.httpPanelHandler.registerHttp();
             this.oauthHandler = new HTTPOAuthHandler();
             this.oauthHandler.registerHttp();
-            this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).registerWs();
+            WsPanelHandler ph = new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth"));
+            ph.registerHttp();
+            ph.registerWs();
+            this.panelHandler = ph;
             new WsPanelRemoteLoginHandler().registerWs();
             RestartRunner.instance().register();
         }
