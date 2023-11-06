@@ -377,9 +377,13 @@ public final class WsWithLongPollAuthenticationHandler
      */
     public boolean isAuthorized(ChannelHandlerContext ctx, String requestUri, boolean isWs, JSONObject jso) {
         if (jso.has("authenticate")) {
+            String sessionId = ctx.channel().attr(ATTR_SESSIONID).get();
+            if (sessionId == null) {
+                sessionId = "";
+            }
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                        false, isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
+                        false, isWs, requestUri, sessionId)));
                 com.gmt2001.Console.debug.println("HasUser");
                 return true;
             } else {
@@ -389,7 +393,7 @@ public final class WsWithLongPollAuthenticationHandler
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                     ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
-                            false, isWs, requestUri, ctx.channel().attr(ATTR_SESSIONID).get())));
+                            false, isWs, requestUri, sessionId)));
                     return true;
                 }
             }
