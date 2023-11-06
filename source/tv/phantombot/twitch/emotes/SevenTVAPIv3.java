@@ -25,6 +25,7 @@ import com.gmt2001.twitch.cache.ViewerCache;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -83,6 +84,9 @@ public class SevenTVAPIv3 implements EmoteProvider {
     @Override
     public List<EmoteEntry> getLocalEmotes() throws EmoteApiRequestFailedException {
         HttpClientResponse response = readJsonFromUrl(APIURL + "/users/twitch/" + ViewerCache.instance().broadcaster().id());
+        if (response.responseCode().code() == 404) {
+            return Collections.emptyList();
+        }
         checkResponseForError(response);
         try {
             return mapEmotesFromData(response.json().getJSONObject("emote_set").getJSONArray("emotes"));
