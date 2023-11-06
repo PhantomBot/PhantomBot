@@ -221,13 +221,8 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      */
     protected final String clientSessionId(Tuple5<ChannelHandlerContext, Boolean, Boolean, String, String> params) {
         Tuple2<Instant, Long> after = this.lastReceivedParams(params.getT4());
-        Optional<Client> client;
-        if (params.getT2()) {
-            client = this.clientCache.addOrUpdateClient(params.getT1(), params.getT3(), after.getT1(),
-                    after.getT2(), params.getT5(), this::sessionIdSupplier);
-        } else {
-            client = this.clientCache.client(params.getT1(), params.getT5());
-        }
+        Optional<Client> client = this.clientCache.addOrUpdateClient(params.getT1(), params.getT3(), after.getT1(),
+                after.getT2(), params.getT5(), this::sessionIdSupplier, params.getT2());
 
         if (client.isPresent()) {
             return client.get().sessionId();
@@ -316,7 +311,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     @Override
     public final void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
-
+com.gmt2001.Console.debug.println(req.method().asciiName() + ": " + qsd.path());
         if (req.method().equals(HttpMethod.OPTIONS)) {
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
                     List.of(HttpMethod.GET, HttpMethod.POST),
@@ -351,6 +346,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
                         if (jsa.get(i) instanceof JSONObject jso && this.validateFrameUpdateClientReceived(ctx, jso)) {
                             this.handleMessage(ctx, jso.getJSONObject("data"));
                         } else if (jsa.get(i) instanceof JSONObject jso && jso.has("authenticate")) {
+                            com.gmt2001.Console.debug.println("frame");
                             this.authHandler.httpAuthFrame(ctx, req, jso, true);
                             return;
                         } else {
@@ -389,11 +385,12 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     }
 
     /**
-     * Handles the WebSocket frame and sends a response back to the client, if necessary
+     * Handles the WebSocket frame and sends a response back to the client, if
+     * necessary
      * <p>
      * Only gets called if the {@link WsAuthenticationHandler} returned {@code true}
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param ctx   The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to process
      *
      * @Deprecated Frames which do not have the new wrapper JSONObject are

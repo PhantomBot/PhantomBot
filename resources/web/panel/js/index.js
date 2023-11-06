@@ -183,6 +183,16 @@ $(function () {
                     'Content-Type': 'application/json'
                 },
                 body: toSend
+            }).then(r => r.json()).then(jsa => {
+                if (Array.isArray(jsa)) {
+                    jsa.forEach(element => {
+                        if (isJSObject(element)) {
+                            onmessage(element);
+                        }
+                    });
+                } else if (isJSObject(jsa)) {
+                    onmessage(jsa);
+                }
             });
         }
     };

@@ -181,22 +181,14 @@ public final class WsWithLongPollAuthenticationHandler
      *
      * @param ctx        The {@link ChannelHandlerContext} of the session
      * @param authorized {@code true} if authorized
-     * @param jsonArray  {@code true} to enclose the JSON object in a JSON array
      * @return A {@link JSONStringer} with the auth result
      */
-    private JSONStringer authResult(ChannelHandlerContext ctx, boolean authorized, boolean jsonArray) {
+    private JSONStringer authResult(ChannelHandlerContext ctx, boolean authorized) {
         JSONStringer jss = new JSONStringer();
-        if (jsonArray) {
-            jss.array();
-        }
 
         jss.object().key("authresult").value(authorized ? "true" : "false").key("authtype")
                 .value(authorized ? AUTH_TYPE : "none").key("sessionId")
                 .value(authorized ? ctx.channel().attr(ATTR_SESSIONID).get() : null).endObject();
-
-        if (jsonArray) {
-            jss.endArray();
-        }
 
         return jss;
     }
@@ -239,7 +231,7 @@ public final class WsWithLongPollAuthenticationHandler
                 ctx.close();
             }
 
-            JSONStringer jsonObject = this.authResult(ctx, authorized, false);
+            JSONStringer jsonObject = this.authResult(ctx, authorized);
 
             com.gmt2001.Console.debug
                     .println("AuthResult [" + ctx.channel().remoteAddress().toString() + "] " + jsonObject.toString());
@@ -284,7 +276,8 @@ public final class WsWithLongPollAuthenticationHandler
     private void httpResult(ChannelHandlerContext ctx, FullHttpRequest req, HttpResponseStatus status,
             boolean authorized) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
-        JSONStringer jss = this.authResult(ctx, authorized, true);
+        JSONStringer jss = this.authResult(ctx, authorized);
+        com.gmt2001.Console.debug.println(jss.toString());
         FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, jss.toString(),
                 AUTH_RESULT_CONTENT_TYPE);
 
@@ -305,6 +298,7 @@ public final class WsWithLongPollAuthenticationHandler
     boolean httpAuthFrame(ChannelHandlerContext ctx, FullHttpRequest req, JSONObject jso, boolean doFail) {
         try {
             if (this.isAuthorized(ctx, req.uri(), false, jso)) {
+                com.gmt2001.Console.debug.println("200");
                 this.httpResult(ctx, req, HttpResponseStatus.OK, true);
 
                 if (this.authenticatedCallback != null) {
