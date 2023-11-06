@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -121,9 +122,13 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             return;
         }
 
-        if (req.uri().startsWith("/panel/login") && (req.method().equals(HttpMethod.POST)
-            || req.method().equals(HttpMethod.PUT) || req.uri().contains("logout=true"))) {
-            if (req.method().equals(HttpMethod.PUT)) {
+        if (req.uri().startsWith("/panel/login")) {
+            if (req.method().equals(HttpMethod.HEAD)) {
+                HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
+                    List.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.GET),
+                    Collections.emptyList(), Duration.ZERO));
+                return;
+            } else if (req.method().equals(HttpMethod.PUT)) {
                 JSONStringer jsonObject = new JSONStringer();
                 HttpResponseStatus status = HttpResponseStatus.OK;
                 JSONObject jso = null;
@@ -184,7 +189,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
                 com.gmt2001.Console.debug.println(status.code() + " " + req.method().asciiName() + ": " + qsd.path());
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(status, jsonObject.toString(), "json"));
-            } else {
+                return;
+            } else if (req.method().equals(HttpMethod.POST) || req.uri().contains("logout=true")) {
                 String sameSite = "";
                 String user = "";
                 String pass = "";
@@ -216,8 +222,8 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
 
                 HttpServerPageHandler.sendHttpResponse(ctx, req, res);
+                return;
             }
-            return;
         }
 
         if (!req.method().equals(HttpMethod.GET) && !req.method().equals(HttpMethod.HEAD)) {
