@@ -159,7 +159,7 @@ if (-not $success) {
     Exit 1
 }
 
-$null >> java.opt.custom
+New-Item -ItemType File -Name java.opt.custom 1>$null 2>&1
 
 & $JAVA `@java.opt $interactive `@java.opt.custom -jar PhantomBot.jar @JavaArgs
 Pop-Location
