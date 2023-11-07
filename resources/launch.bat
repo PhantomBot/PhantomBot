@@ -35,15 +35,17 @@ GOTO :END
 
 :LAUNCHOLDPWSH
 WHERE powershell >nul 2>nul
-IF %ERRORLEVEL% NEQ 0 GOTO :LAUNCH
+IF %ERRORLEVEL% NEQ 0 GOTO :LAUNCHCMD
 powershell -ExecutionPolicy Bypass -File %~dp0launch.ps1 %*
 GOTO :END
 
-:LAUNCH
+:LAUNCHCMD
 setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
+:LAUNCH
 type nul >>java.opt.custom
 ".\java-runtime\bin\java" @java.opt -Dinteractive @java.opt.custom -jar "PhantomBot.jar" %*
+IF %ERRORLEVEL% EQ 53 GOTO :LAUNCH
 popd
 endlocal
 

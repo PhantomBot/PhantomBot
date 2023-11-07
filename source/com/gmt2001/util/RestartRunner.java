@@ -27,6 +27,7 @@ import com.gmt2001.util.concurrent.ExecutorService;
 
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.RepoVersion;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
@@ -95,7 +96,7 @@ public final class RestartRunner implements Listener {
          * @botpropertycatsort restartcmd 50 50 Misc
          */
         return CaselessProperties.instance().containsKey("restartcmd")
-                && !CaselessProperties.instance().getProperty("restartcmd").isBlank();
+                && !CaselessProperties.instance().getProperty("restartcmd").isBlank() || !RepoVersion.isDocker();
     }
 
     /**
@@ -104,7 +105,8 @@ public final class RestartRunner implements Listener {
      * The broadcast of the 0 exit code may not always work depending on timings of the bot shutdown and the method used to initiate the shutdown
      */
     public void restartBot() {
-        if (this.canRestart()) {
+        if (CaselessProperties.instance().containsKey("restartcmd")
+                && !CaselessProperties.instance().getProperty("restartcmd").isBlank()) {
             String cmd;
             String osname = System.getProperty("os.name").toLowerCase();
             if (osname.contains("win")) {
@@ -158,6 +160,8 @@ public final class RestartRunner implements Listener {
                     WebSocketFrameHandler.broadcastWsFrame("/ws/panel", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
                 }
             });
+        } else if (!RepoVersion.isDocker()) {
+            System.exit(53);
         }
     }
 }
