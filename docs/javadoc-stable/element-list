@@ -87,6 +87,7 @@ tv.phantombot.panel.PanelUser
 tv.phantombot.script
 tv.phantombot.scripts.handler
 tv.phantombot.twitch.api
+tv.phantombot.twitch.emotes
 tv.phantombot.twitch.irc
 tv.phantombot.twitch.irc.chat.utils
 tv.phantombot.twitch.pubsub
