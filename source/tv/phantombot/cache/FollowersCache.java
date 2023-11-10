@@ -194,7 +194,7 @@ public final class FollowersCache {
         if (!datastore.exists("followed", loginName)) {
             datastore.set("followed", loginName, "true");
             if (!silent && !this.recent.containsKey(loginName)
-                && Duration.between(this.followedDate(loginName), Instant.now()).abs().toMinutes() < MAX_ANNOUNCE_MINUTES) {
+                && Duration.between(this.followedDate(loginName), ZonedDateTime.now()).abs().toMinutes() < MAX_ANNOUNCE_MINUTES) {
                 this.recent.put(loginName, Instant.now().plus(RECENT_TIME_M, ChronoUnit.MINUTES));
                 EventBus.instance().postAsync(new TwitchFollowEvent(loginName, followedAt));
             }
