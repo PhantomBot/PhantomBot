@@ -207,6 +207,24 @@ $(function () {
                 }).modal('toggle');
     });
 
+    // Browser source button on click.
+    $('#copy-poll-obs').on('click', function() {
+        helpers.getModal('poll-obs', 'OBS Browser Source', 'Copy', $('<form/>', {
+            'role': 'form'
+        })
+            // Append options.
+            .append(helpers.getInputGroup('poll-obs-copy', 'text', 'Browser Source URL', '', window.location.protocol + '//' + window.location.host + '/obs/poll-chart',
+                'Copy Browser Source URL for OBS.')),
+            function() {
+                // Copy to user clipboard
+                $('#poll-obs-copy').prop('disabled', false);
+                $('#poll-obs-copy').select();
+                document.execCommand('copy');
+
+                $('#poll-obs').modal('toggle');
+            }).modal('toggle');
+    });
+
     // Module toggle.
     $('#pollSystemModuleToggle').on('change', function () {
         socket.sendCommandSync('poll_system_module_toggle_cmd',
