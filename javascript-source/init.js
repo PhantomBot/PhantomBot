@@ -678,25 +678,29 @@
                                 subcmd,
                                 parts;
 
-                        event.handeled();
-                        if (alias.indexOf(';') === -1) {
-                            parts = alias.split(' ');
-                            aliasCommand = parts.shift();
-                            aliasArguments = parts.join(' ');
-
-                            $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                        if (alias === null) {
+                            $.inidb.del('aliases', command);
                         } else {
-                            parts = alias.split(';');
-
-                            for (let i = 0; i < parts.length; i++) {
-                                subcmd = parts[i].split(' ');
-                                aliasCommand = subcmd.shift();
-                                aliasArguments = subcmd.join(' ');
+                            event.handeled();
+                            if (alias.indexOf(';') === -1) {
+                                parts = alias.split(' ');
+                                aliasCommand = parts.shift();
+                                aliasArguments = parts.join(' ');
 
                                 $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                            } else {
+                                parts = alias.split(';');
+
+                                for (let i = 0; i < parts.length; i++) {
+                                    subcmd = parts[i].split(' ');
+                                    aliasCommand = subcmd.shift();
+                                    aliasArguments = subcmd.join(' ');
+
+                                    $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                                }
                             }
+                            return;
                         }
-                        return;
                     }
 
                     // Check the command permission.
