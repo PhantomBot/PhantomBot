@@ -316,8 +316,12 @@
 
         for (let i in commands) {
             json = JSON.parse($.getIniDbString('cooldown', commands[i]));
-            json.modsSkip = false;
-            $.inidb.set('cooldown', commands[i], JSON.stringify(json));
+            if (json === null) {
+                $.inidb.del('cooldown', commands[i])
+            } else {
+                json.modsSkip = false;
+                $.inidb.set('cooldown', commands[i], JSON.stringify(json));
+            }
         }
 
         if ($.inidb.FileExists('greeting')) {
@@ -722,8 +726,12 @@
         let commands = $.inidb.GetKeyList('cooldown', '');
         for (let i in commands) {
             let json = JSON.parse($.getIniDbString('cooldown', commands[i]));
-            json.clearOnOnline = false;
-            $.inidb.set('cooldown', commands[i], JSON.stringify(json));
+            if (json === null) {
+                $.inidb.del('cooldown', commands[i]);
+            } else {
+                json.clearOnOnline = false;
+                $.inidb.set('cooldown', commands[i], JSON.stringify(json));
+            }
         }
     });
 
