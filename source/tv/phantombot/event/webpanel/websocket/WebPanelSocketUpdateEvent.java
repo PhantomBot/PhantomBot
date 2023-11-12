@@ -37,7 +37,7 @@ public class WebPanelSocketUpdateEvent extends WebPanelSocketEvent {
         this.id = id;
         this.script = script;
         this.arguments = arguments;
-        this.args = args.clone();
+        this.args = args == null ? new String[0] : args.clone();
         this.requiresReply = false;
     }
 
