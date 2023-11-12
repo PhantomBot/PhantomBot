@@ -214,7 +214,7 @@ $(function () {
         })
             // Append options.
             .append(helpers.getInputGroup('poll-obs-copy', 'text', 'Browser Source URL', '', window.location.protocol + '//' + window.location.host + '/obs/poll-chart',
-                'Copy Browser Source URL for OBS.')),
+                'Copy Browser Source URL for OBS.', true)),
             function() {
                 // Copy to user clipboard
                 $('#poll-obs-copy').prop('disabled', false);
