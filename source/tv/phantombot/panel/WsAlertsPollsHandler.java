@@ -84,7 +84,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     private void handlePollState(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
-        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent("pollState", "./systems/pollSystem.js", new String[], false));
+        EventBus.instance().postAsync(new WebPanelSocketUpdateEvent("pollState", "./systems/pollSystem.js", null, null));
     }
 
     public void sendJSONToAll(String jsonString) {
