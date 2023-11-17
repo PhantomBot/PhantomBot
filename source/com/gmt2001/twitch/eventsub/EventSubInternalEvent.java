@@ -18,6 +18,7 @@ package com.gmt2001.twitch.eventsub;
 
 import io.netty.handler.codec.http.FullHttpRequest;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import org.json.JSONObject;
 import tv.phantombot.event.Event;
@@ -37,7 +38,7 @@ public abstract class EventSubInternalEvent extends Event {
 
     EventSubInternalEvent(FullHttpRequest req) {
         super();
-        JSONObject data = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
+        JSONObject data = new JSONObject(req.content().toString(StandardCharsets.UTF_8));
         this.challenge = data.optString("challenge");
         this.event = data.optJSONObject("event");
         this.messageId = req.headers().get("Twitch-Eventsub-Message-Id");

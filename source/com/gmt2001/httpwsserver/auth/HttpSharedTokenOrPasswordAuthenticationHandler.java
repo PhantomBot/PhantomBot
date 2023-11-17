@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author gmt2001
  */
-public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthenticationHandler {
+public final class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthenticationHandler {
 
     /**
      * The authorization token that grants access
@@ -99,17 +99,12 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
     }
 
     @Override
-    public void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        throw new UnsupportedOperationException("Not supported by this authentication handler.");
-    }
-
-    @Override
     public boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
 
-        return this.isAuthorized(ctx, req.headers()) || (auth3 != null && auth3.equals(token));
+        return this.isAuthorized(ctx, req.headers(), req.uri()) || (auth3 != null && auth3.equals(token));
     }
 
     @Override
@@ -118,7 +113,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
     }
 
     @Override
-    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers) {
+    public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         String auth1 = headers.get("password");
         String auth2 = headers.get("webauth");
 

@@ -29,6 +29,7 @@ import com.gmt2001.PathValidator;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.util.AttributeKey;
 import io.netty.util.IllegalReferenceCountException;
 import tv.phantombot.PhantomBot;
@@ -38,6 +39,7 @@ import tv.phantombot.PhantomBot;
  *
  * @author gmt2001
  */
+@Sharable
 public final class RequestLogger extends ChannelInboundHandlerAdapter {
     private static final AttributeKey<ByteBuf> ATTR_BB = AttributeKey.valueOf("BB");
     private static final DateTimeFormatter dtfmt = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss_n");
@@ -45,7 +47,10 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf b) {
-            ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
+            ByteBuf bb = b.retainedDuplicate();
+            ReferenceCountedUtil.releaseAuto(b);
+            ReferenceCountedUtil.releaseAuto(bb);
+            ctx.channel().attr(ATTR_BB).set(bb);
         }
 
         super.channelRead(ctx, msg);

@@ -650,4 +650,29 @@ public final class PanelUser extends Record8<PanelUser, String, String, String, 
 
         return Datastore2.instance().dslContext().fetchExists(PanelUserTable.instance(), PanelUserTable.instance().USERNAME.equalIgnoreCase(username));
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((this.userType == null) ? 0 : this.userType.hashCode());
+        result = prime * result + ((this.getUsername() == null) ? 0 : this.getUsername().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        PanelUser other = (PanelUser) obj;
+        if (this.userType != other.userType)
+            return false;
+        if (this.getUsername() != other.getUsername())
+            return false;
+        return true;
+    }
 }

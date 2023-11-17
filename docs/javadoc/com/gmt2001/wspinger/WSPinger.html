@@ -45,13 +45,13 @@ loadScripts(document, 'script');</script>
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field-summary">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor-summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
 </ul>
 <ul class="sub-nav-list">
 <li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
+<li><a href="#field-detail">Field</a>&nbsp;|&nbsp;</li>
 <li><a href="#constructor-detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method-detail">Method</a></li>
 </ul>
@@ -76,13 +76,12 @@ loadScripts(document, 'script');</script>
 </div>
 <section class="class-description" id="class-description">
 <dl class="notes">
-<dt>All Implemented Interfaces:</dt>
-<dd><code><a href="../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+<dt>Direct Known Subclasses:</dt>
+<dd><code><a href="WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></code>, <code><a href="WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></code></dd>
 </dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">WSPinger</span>
-<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
-implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></span></div>
+<div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">WSPinger</span>
+<span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
 <div class="block">Pings the remote endpoint periodically; closes the socket if a PONG is not received after a defined number of PING attempts</div>
 <dl class="notes">
 <dt>Author:</dt>
@@ -91,6 +90,23 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- =========== FIELD SUMMARY =========== -->
+<li>
+<section class="field-summary" id="field-summary">
+<h2>Field Summary</h2>
+<div class="caption"><span>Fields</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Field</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>protected final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></div>
+<div class="col-second even-row-color"><code><a href="#lock" class="member-name-link">lock</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Mutex</div>
+</div>
+</div>
+</section>
+</li>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <li>
 <section class="constructor-summary" id="constructor-summary">
@@ -128,12 +144,23 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel">
 <div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#close(io.netty.handler.codec.http.websocketx.WebSocketCloseStatus,java.lang.String)" class="member-name-link">close</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketCloseStatus.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketCloseStatus</a>&nbsp;status,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Closes the socket</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#connected()" class="member-name-link">connected</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Indicates if the remote endpoint is connected</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</code></div>
@@ -146,20 +173,26 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
 <div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose()" class="member-name-link">onClose</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)" class="member-name-link">handshakeComplete</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.HandshakeComplete.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketServerProtocolHandler.HandshakeComplete</a>&nbsp;hc)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose(io.netty.channel.Channel)" class="member-name-link">onClose</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&nbsp;channel)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Cancels future execution of the timers when the socket closes</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#send(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">send</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Sends the frame to the remote endpoint</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPing()" class="member-name-link">sendPing</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sends a PING frame with the value of payload, if enabled, then starts the failure timer, increases the payload for the next frame, and ensures
  payload won't overflow <code>Long.MAX_VALUE</code>.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setClient(com.gmt2001.wsclient.WSClient)" class="member-name-link">setClient</a><wbr>(<a href="../wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a>&nbsp;client)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Stores the <a href="../wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a> that this pinger is linked to</div>
 </div>
 </div>
 </div>
@@ -173,6 +206,21 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
 </section>
 <section class="details">
 <ul class="details-list">
+<!-- ============ FIELD DETAIL =========== -->
+<li>
+<section class="field-details" id="field-detail">
+<h2>Field Details</h2>
+<ul class="member-list">
+<li>
+<section class="detail" id="lock">
+<h3>lock</h3>
+<div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span>&nbsp;<span class="element-name">lock</span></div>
+<div class="block">Mutex</div>
+</section>
+</li>
+</ul>
+</section>
+</li>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <li>
 <section class="constructor-details" id="constructor-detail">
@@ -251,8 +299,6 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</span></div>
 <div class="block">Passed received <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/PongWebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>PongWebSocketFrame</code></a> to <code>receivedPong()</code></div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../wsclient/WsClientFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">handleFrame</a></code>&nbsp;in interface&nbsp;<code><a href="../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>ctx</code> - </dd>
 <dd><code>frame</code> - </dd>
@@ -265,33 +311,28 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">handshakeComplete</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</span></div>
 <div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../wsclient/WsClientFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)">handshakeComplete</a></code>&nbsp;in interface&nbsp;<code><a href="../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
 <dt>Parameters:</dt>
 <dd><code>ctx</code> - </dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="onClose()">
-<h3>onClose</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span>()</div>
-<div class="block">Cancels future execution of the timers when the socket closes</div>
+<section class="detail" id="handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)">
+<h3>handshakeComplete</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">handshakeComplete</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.HandshakeComplete.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketServerProtocolHandler.HandshakeComplete</a>&nbsp;hc)</span></div>
+<div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
 <dl class="notes">
-<dt>Specified by:</dt>
-<dd><code><a href="../wsclient/WsClientFrameHandler.html#onClose()">onClose</a></code>&nbsp;in interface&nbsp;<code><a href="../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>ctx</code> - </dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="setClient(com.gmt2001.wsclient.WSClient)">
-<h3>setClient</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setClient</span><wbr><span class="parameters">(<a href="../wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a>&nbsp;client)</span></div>
-<div class="block">Stores the <a href="../wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a> that this pinger is linked to</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>client</code> - </dd>
-</dl>
+<section class="detail" id="onClose(io.netty.channel.Channel)">
+<h3>onClose</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&nbsp;channel)</span></div>
+<div class="block">Cancels future execution of the timers when the socket closes</div>
 </section>
 </li>
 <li>
@@ -301,6 +342,41 @@ implements <a href="../wsclient/WsClientFrameHandler.html" title="interface in c
 <div class="block">Sends a PING frame with the value of payload, if enabled, then starts the failure timer, increases the payload for the next frame, and ensures
  payload won't overflow <code>Long.MAX_VALUE</code>. No-op if client is <code>null</code>, {@link WSClient.connected()} is <code>false</code>, or the
  timerFuture is null, done, or canceled</div>
+</section>
+</li>
+<li>
+<section class="detail" id="connected()">
+<h3>connected</h3>
+<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">connected</span>()</div>
+<div class="block">Indicates if the remote endpoint is connected</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd><code>true</code> if connected</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="send(io.netty.handler.codec.http.websocketx.WebSocketFrame)">
+<h3>send</h3>
+<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">send</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</span></div>
+<div class="block">Sends the frame to the remote endpoint</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>frame</code> - The frame to send</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="close(io.netty.handler.codec.http.websocketx.WebSocketCloseStatus,java.lang.String)">
+<h3>close</h3>
+<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">close</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketCloseStatus.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketCloseStatus</a>&nbsp;status,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</span></div>
+<div class="block">Closes the socket</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>status</code> - The close code</dd>
+<dd><code>reason</code> - The reason for closing</dd>
+</dl>
 </section>
 </li>
 </ul>

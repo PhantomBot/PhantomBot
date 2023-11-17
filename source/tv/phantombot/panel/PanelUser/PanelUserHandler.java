@@ -420,7 +420,7 @@ public final class PanelUserHandler {
             user.setLastLoginNOW();
 
             try {
-            user.doupdate();
+                user.doupdate();
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }

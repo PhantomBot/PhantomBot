@@ -30,57 +30,49 @@ public interface HttpAuthenticationHandler {
     /**
      * Checks if the given {@link FullHttpRequest} is a valid authentication request, or if the underlying {@link Channel} has already been
      * authenticated
-     *
+     * <p>
      * When returning {@code false}, this method MUST also send either an {@code 401 Unauthorized}, a {@code Header Location}, or an error page back
      * to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} to check
-     * @return otherwise
+     * @return {@code true} if authorized
      */
     boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 
     /**
      * Checks if the given {@link FullHttpRequest} is a valid authentication request, or if the underlying {@link Channel} has already been
      * authenticated
-     *
+     * <p>
      * When returning {@code false}, this method MUST NOT send a response to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param req The {@link FullHttpRequest} to check
-     * @return otherwise
+     * @return {@code true} if authorized
      */
     boolean isAuthorized(ChannelHandlerContext ctx, FullHttpRequest req);
 
     /**
      * Checks if the given {@link HttpHeaders} contain a valid authorization, or if the underlying {@link Channel} has already been
      * authenticated
-     *
+     * <p>
      * When returning {@code false}, this method MUST NOT send a response to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param headers The {@link HttpHeaders} to check
-     * @return otherwise
+     * @param requestUri The request URI
+     * @return {@code true} if authorized
      */
-    boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers);
+    boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri);
 
     /**
      * Checks if the given username and password is a valid
-     *
+     * <p>
      * When returning {@code false}, this method MUST NOT send a response to the client
      *
      * @param user The username
      * @param pass The password
-     * @return otherwise
+     * @return {@code true} if authorized
      */
     boolean isAuthorized(String user, String pass);
-
-    /**
-     * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
-     *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param req The {@link FullHttpRequest}
-     * @throws UnsupportedOperationException Thrown if the selected authentication handler does not support this operation
-     */
-    void invalidateAuthorization(ChannelHandlerContext ctx, FullHttpRequest req);
 }

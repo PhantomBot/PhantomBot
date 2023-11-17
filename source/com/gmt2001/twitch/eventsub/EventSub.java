@@ -48,6 +48,7 @@ import com.gmt2001.util.concurrent.ExecutorService;
 import com.gmt2001.wsclient.WSClient;
 import com.gmt2001.wsclient.WsClientFrameHandler;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
@@ -650,7 +651,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     }
 
     @Override
-    public void onClose() {
+    public void onClose(Channel channel) {
         if (this.oldClient != null && !this.oldClient.connected()) {
             debug("onClose oldClient");
             this.oldClient = null;

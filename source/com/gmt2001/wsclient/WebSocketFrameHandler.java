@@ -16,7 +16,6 @@
  */
 package com.gmt2001.wsclient;
 
-import com.gmt2001.httpwsserver.HTTPWSServer;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -29,6 +28,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -38,6 +38,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.json.JSONObject;
 import org.json.JSONStringer;
+
+import com.gmt2001.httpwsserver.ReferenceCountedUtil;
 
 /**
  * Processes WebSocket frames and passes successful ones to the final handler
@@ -66,7 +68,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     /**
      * Handles incoming WebSocket frames
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param ctx   The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} containing the request frame
      * @throws Exception Passes any thrown exceptions up the stack
      */
@@ -87,14 +89,16 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof WebSocketClientProtocolHandler.ClientHandshakeStateEvent hs && hs == WebSocketClientProtocolHandler.ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
-            com.gmt2001.Console.debug.println("200 WS Client: Remote: [" + ctx.channel().remoteAddress().toString() + "]");
+        if (evt instanceof WebSocketClientProtocolHandler.ClientHandshakeStateEvent hs
+                && hs == WebSocketClientProtocolHandler.ClientHandshakeStateEvent.HANDSHAKE_COMPLETE) {
+            com.gmt2001.Console.debug
+                    .println("200 WS Client: Remote: [" + ctx.channel().remoteAddress().toString() + "]");
             ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
                 this.connected = false;
                 if (this.client.pinger != null) {
-                    this.client.pinger.onClose();
+                    this.client.pinger.onClose(f.channel());
                 }
-                this.client.handler.onClose();
+                this.client.handler.onClose(f.channel());
             });
             this.connected = true;
             if (this.client.pinger != null) {
@@ -107,7 +111,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     /**
      * Handles exceptions that are thrown up the stack
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param ctx   The {@link ChannelHandlerContext} of the session
      * @param cause The exception
      */
     @Override
@@ -127,7 +131,8 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     /**
-     * Creates and prepares a text-type {@link WebSocketFrame} for transmission from a {@link JSONObject}
+     * Creates and prepares a text-type {@link WebSocketFrame} for transmission from
+     * a {@link JSONObject}
      *
      * @param json The {@link JSONObject} to send
      * @return A {@link WebSocketFrame} that is ready to transmit
@@ -137,7 +142,8 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     }
 
     /**
-     * Creates and prepares a text-type {@link WebSocketFrame} for transmission from a {@link JSONStringer}
+     * Creates and prepares a text-type {@link WebSocketFrame} for transmission from
+     * a {@link JSONStringer}
      *
      * @param json The {@link JSONStringer} to send
      * @return A {@link WebSocketFrame} that is ready to transmit
@@ -180,7 +186,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     /**
      * Transmits a {@link WebSocketFrame} back to the client
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param ctx      The {@link ChannelHandlerContext} of the session
      * @param reqframe The {@link WebSocketFrame} containing the request
      * @param resframe The {@link WebSocketFrame} to transmit
      */
@@ -191,28 +197,37 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     /**
      * Transmits a {@link WebSocketFrame} back to the client
      *
-     * @param ch The {@link Channel} of the session
+     * @param ch       The {@link Channel} of the session
      * @param reqframe The {@link WebSocketFrame} containing the request
      * @param resframe The {@link WebSocketFrame} to transmit
      */
     static void sendWsFrame(Channel ch, WebSocketFrame reqframe, WebSocketFrame resframe) {
-        if (ch != null) {
-            ChannelFuture future = ch.writeAndFlush(resframe);
-            if (future != null) {
-                future.addListener((p) -> {
-                    HTTPWSServer.releaseObj(resframe);
-                });
+        try {
+            ReferenceCountedUtil.releaseAuto(resframe);
+            if (ch != null) {
+                ChannelFuture future = ch.writeAndFlush(resframe);
+                if (future != null) {
+                    future.addListener((p) -> {
+                        ReferenceCountedUtil.releaseObj(resframe);
+                    });
+                } else {
+                    ReferenceCountedUtil.releaseObj(resframe);
+                }
             } else {
-                HTTPWSServer.releaseObj(resframe);
+                ReferenceCountedUtil.releaseObj(resframe);
             }
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            ReferenceCountedUtil.releaseObj(resframe);
         }
     }
 
     /**
      * Sends a Close frame, then closes the connection
      *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param closeFrame An optional close {@link WebSocketFrame} to transmit. Sends NORMAL_CLOSURE if null
+     * @param ctx        The {@link ChannelHandlerContext} of the session
+     * @param closeFrame An optional close {@link WebSocketFrame} to transmit. Sends
+     *                   NORMAL_CLOSURE if null
      * @return A {@link ChannelFuture} that can be awaited
      */
     static ChannelFuture close(ChannelHandlerContext ctx, WebSocketFrame closeFrame) {
@@ -222,8 +237,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
     /**
      * Sends a Close frame, then closes the connection
      *
-     * @param ch The {@link Channel} of the session
-     * @param closeFrame An optional close {@link WebSocketFrame} to transmit. Sends NORMAL_CLOSURE if null
+     * @param ch         The {@link Channel} of the session
+     * @param closeFrame An optional close {@link WebSocketFrame} to transmit. Sends
+     *                   NORMAL_CLOSURE if null
      * @return A {@link ChannelFuture} that can be awaited
      */
     static ChannelFuture close(Channel ch, WebSocketFrame closeFrame) {
@@ -292,7 +308,7 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
                 @Override
                 public Void get(long timeout, TimeUnit unit)
                         throws InterruptedException, ExecutionException, TimeoutException {
-                            return null;
+                    return null;
                 }
 
                 @Override
@@ -307,7 +323,8 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
                 @Override
                 @SafeVarargs
-                public final ChannelFuture addListeners(GenericFutureListener<? extends Future<? super Void>>... listeners) {
+                public final ChannelFuture addListeners(
+                        GenericFutureListener<? extends Future<? super Void>>... listeners) {
                     return this;
                 }
 
@@ -318,8 +335,9 @@ class WebSocketFrameHandler extends SimpleChannelInboundHandler<WebSocketFrame> 
 
                 @Override
                 @SafeVarargs
-                public final ChannelFuture removeListeners(GenericFutureListener<? extends Future<? super Void>>... listeners) {
-                            return this;
+                public final ChannelFuture removeListeners(
+                        GenericFutureListener<? extends Future<? super Void>>... listeners) {
+                    return this;
                 }
 
                 @Override

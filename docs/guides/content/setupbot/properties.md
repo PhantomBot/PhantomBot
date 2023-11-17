@@ -530,7 +530,7 @@ if `true` and `debugon` is also enabled, enables debug output for gameslistupdat
 
 Data Type: _Boolean_
 
-if `true`, information about inbound ws frames for the panel are sent to the debug log. default `false`
+if `true`, information about inbound ws frames for the
 
 &nbsp;
 

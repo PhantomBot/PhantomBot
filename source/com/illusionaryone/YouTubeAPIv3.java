@@ -22,6 +22,7 @@ import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -109,7 +110,7 @@ public class YouTubeAPIv3 {
             q = matcher.group(1);
         }
 
-        JSONObject j = GetData("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + URLEncoder.encode(q, Charset.forName("UTF-8")) + "&format=json");
+        JSONObject j = GetData("https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=" + URLEncoder.encode(q, StandardCharsets.UTF_8) + "&format=json");
         if (j.getBoolean("_success") && !j.toString().contains("Bad Request") && !j.toString().contains("Not Found")) {
             if (j.toString().contains("Unauthorized")) {
                 com.gmt2001.Console.debug.println("URL Check Returned Unauthorized (Video Marked Private)");
@@ -130,7 +131,7 @@ public class YouTubeAPIv3 {
                 }
             }
         } else {
-            q = URLEncoder.encode(q, Charset.forName("UTF-8"));
+            q = URLEncoder.encode(q, StandardCharsets.UTF_8);
 
             JSONObject j2 = GetData("https://www.googleapis.com/youtube/v3/search?q=" + q + "&key=" + apikey + "&type=video&part=snippet&maxResults=1");
             if (j2.getBoolean("_success")) {

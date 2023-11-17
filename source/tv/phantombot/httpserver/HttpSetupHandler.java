@@ -30,7 +30,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,7 +60,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpRequestHandler register() {
+    public HttpRequestHandler registerHttp() {
         HttpServerPageHandler.registerHttpHandler("/setup", this);
         return this;
     }
@@ -71,7 +71,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
     }
 
     @Override
-    public HttpAuthenticationHandler getAuthHandler() {
+    public HttpAuthenticationHandler getHttpAuthHandler() {
         return HttpNoAuthenticationHandler.instance();
     }
 
@@ -162,7 +162,7 @@ public class HttpSetupHandler implements HttpRequestHandler {
 
             try {
                 Transaction t = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
-                JSONObject jo = new JSONObject(req.content().toString(Charset.forName("UTF-8")));
+                JSONObject jo = new JSONObject(req.content().toString(StandardCharsets.UTF_8));
                 jo.keySet().forEach(k -> t.setProperty(k, jo.isNull(k) ? (String) null : "" + jo.get(k)));
                 t.commit();
             } catch (JSONException ex) {

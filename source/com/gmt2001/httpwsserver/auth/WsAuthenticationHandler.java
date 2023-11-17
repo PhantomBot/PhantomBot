@@ -40,7 +40,7 @@ public interface WsAuthenticationHandler {
 
     /**
      * Checks if the given {@link WebSocketFrame} is a valid authentication frame, or if the underlying {@link Channel} has already been authenticated
-     *
+     * <p>
      * When returning {@code false}, this method MUST also send an {@code Authentication Required} frame back to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
@@ -51,21 +51,13 @@ public interface WsAuthenticationHandler {
 
     /**
      * Checks if the given {@link HttpHeaders} contains a valid authorization, or if the underlying {@link Channel} has already been authenticated
-     *
+     * <p>
      * When returning {@code false}, this method MUST NOT send any frames back to the client
      *
      * @param ctx The {@link ChannelHandlerContext} of the session
      * @param headers The {@link HttpHeaders} to check
+     * @param requestUri The request URI
      * @return {@code true} if authorized
      */
-    boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers);
-
-    /**
-     * Invalidates the authentication of the specified {@link ChannelHandlerContext}, if supported by the authentication handler
-     *
-     * @param ctx The {@link ChannelHandlerContext} of the session
-     * @param frame The {@link WebSocketFrame}
-     * @throws UnsupportedOperationException Thrown if the selected authentication handler does not support this operation
-     */
-    void invalidateAuthorization(ChannelHandlerContext ctx, WebSocketFrame frame);
+    boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri);
 }

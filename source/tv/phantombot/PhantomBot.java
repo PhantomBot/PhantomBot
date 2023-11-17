@@ -19,7 +19,6 @@ package tv.phantombot;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -725,17 +724,20 @@ public final class PhantomBot implements Listener {
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             this.checkPanelLogin();
             HTTPWSServer.instance();
-            new HTTPNoAuthHandler().register();
+            new HTTPNoAuthHandler().registerHttp();
             this.httpSetupHandler = new HttpSetupHandler();
-            this.httpSetupHandler.register();
+            this.httpSetupHandler.registerHttp();
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
-            this.httpAuthenticatedHandler.register();
+            this.httpAuthenticatedHandler.registerHttp();
             this.httpPanelHandler = new HTTPPanelAndYTHandler();
-            this.httpPanelHandler.register();
+            this.httpPanelHandler.registerHttp();
             this.oauthHandler = new HTTPOAuthHandler();
-            this.oauthHandler.register();
-            this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
-            new WsPanelRemoteLoginHandler().register();
+            this.oauthHandler.registerHttp();
+            WsPanelHandler ph = new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth"));
+            ph.registerHttp();
+            ph.registerWs();
+            this.panelHandler = ph;
+            new WsPanelRemoteLoginHandler().registerWs();
             RestartRunner.instance().register();
         }
     }
@@ -762,7 +764,7 @@ public final class PhantomBot implements Listener {
         }
 
         this.alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(CaselessProperties.instance().getProperty("webauthro"),
-                CaselessProperties.instance().getProperty("webauth")).register();
+                CaselessProperties.instance().getProperty("webauth")).registerWs();
 
         /* Is the music toggled on? */
         /**
@@ -771,7 +773,7 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart musicenable
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("musicenable", true)) {
-            this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).register();
+            this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).registerWs();
         }
         /* Connect to Discord if the data is present. */
         /**
@@ -1448,7 +1450,7 @@ public final class PhantomBot implements Listener {
             stream = new FileOutputStream(new File(fileName));
 
             // Write the content.
-            stream.write(builder.toString().getBytes(Charset.forName("UTF-8")));
+            stream.write(builder.toString().getBytes(StandardCharsets.UTF_8));
             stream.flush();
         } catch (IOException ex) {
             com.gmt2001.Console.err.println("Failed writing data to file [IOException]: " + ex.getMessage());
