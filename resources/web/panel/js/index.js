@@ -57,7 +57,7 @@ $(function () {
         helpers.log('Panel will be reset to use WebSocket with 3 reconnects, then HTTP Long Polling as a backup, on next refresh', helpers.LOG_TYPE.FORCE);
     }
 
-    let usingWebsocket = window.localStorage.getItem('forceHttp') ? false : true,
+    let usingWebsocket = window.localStorage.getItem('forceHttp') === 'true' ? false : true,
         lastReceivedTimestamp = 0,
         lastReceivedSequence = 0,
         lastTimestamp = 0,
@@ -65,15 +65,15 @@ $(function () {
         sessionId = null,
         reconnectAttempts = 0,
         reconnectTimestamp = 0;
-    const maxReconnectAttempts = window.localStorage.getItem('forceWs') ? Infinity : 3;
+    const maxReconnectAttempts = window.localStorage.getItem('forceWs') === 'true' ? Infinity : 3;
     const webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://')
         + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {
         reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false
     });
 
-    if (window.localStorage.getItem('forceHttp')) {
+    if (window.localStorage.getItem('forceHttp') === 'true') {
         helpers.log('Force HTTP Long Polling option enabled', helpers.LOG_TYPE.FORCE);
-    } else if (window.localStorage.getItem('forceWs')) {
+    } else if (window.localStorage.getItem('forceWs') === 'true') {
         helpers.log('Force WebSocket option enabled', helpers.LOG_TYPE.FORCE);
     } else {
         helpers.log('Initializing WebSocket with ' + maxReconnectAttempts + ' reconnects before switching to HTTP Long Polling', helpers.LOG_TYPE.FORCE);
