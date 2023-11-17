@@ -949,7 +949,7 @@ Defined in script: _./javascript-source/core/transformers/commands.js_
 - `(count amount:int name:str)` - increases the count of how often the named counter has been called by the specified amount and outputs new count
 - `(count reset name:str)` - zeroes the named counter and outputs new count
 
-**Labels:** twitch discord commandevent commands
+**Labels:** twitch discord noevent commandevent commands
 
 
 _NOTE: Specify an amount of `0` to display the count without changing it._
@@ -998,12 +998,12 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 - `(customapi url:str)` - http GET url and output returned text
 
-**Labels:** twitch discord commandevent customapi
+**Labels:** twitch discord noevent commandevent customapi
 
 
 _NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
 
-_NOTE: if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
+_NOTE: if any args, $1-$9, are used in the url, the input event must be a CommandEvent, and the args are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
 
 _NOTE: this will output the full response from the remote url, so be careful not to cause spam or lock up the bot with a webpage_
 
@@ -1029,12 +1029,12 @@ Defined in script: _./javascript-source/core/transformers/customapi.js_
 
 - `(customapijson url:str specs:str)` - httpGet url and extract json info according to specs
 
-**Labels:** twitch discord commandevent customapi
+**Labels:** twitch discord noevent commandevent customapi
 
 
 _NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
 
-_NOTE: if any args, $1-$9, are used in the url, they are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
+_NOTE: if any args, $1-$9, are used in the url, the input event must be a CommandEvent, and they are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
 
 _NOTE: the response must be a JSONObject. arrays are only supported with a known index, walking arrays is not supported_
 

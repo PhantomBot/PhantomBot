@@ -288,7 +288,16 @@ if mount | grep '/tmp' | grep -q noexec; then
     tmp="-Djava.io.tmpdir=${SCRIPT_PATH}/tmp"
 fi
 
-touch java.opt.custom
+function launch {
+    touch java.opt.custom
 
-${JAVA} @java.opt ${tmp} ${interactive} @java.opt.custom -jar PhantomBot.jar "$@"
+    ${JAVA} @java.opt ${tmp} ${interactive} @java.opt.custom -jar PhantomBot.jar "$@"
+
+    if (( $? == 53 )); then
+        launch
+    fi
+}
+
+launch
+
 popd

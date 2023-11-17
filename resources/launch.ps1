@@ -159,7 +159,16 @@ if (-not $success) {
     Exit 1
 }
 
-New-Item -ItemType File -Name java.opt.custom 1>$null 2>&1
+$Launch = {
+    New-Item -ItemType File -Name java.opt.custom 1>$null 2>&1
 
-& $JAVA `@java.opt $interactive `@java.opt.custom -jar PhantomBot.jar @JavaArgs
+    & $JAVA `@java.opt $interactive `@java.opt.custom -jar PhantomBot.jar @JavaArgs
+
+    if ($LASTEXITCODE -eq 53) {
+        .$Launch
+    }
+}
+
+&$Launch
+
 Pop-Location
