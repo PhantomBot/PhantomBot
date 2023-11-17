@@ -325,7 +325,7 @@ public final class Client {
                                 jso.endArray();
 
                                 if (hasMessage) {
-                                    WsWithLongPollHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
+                                    HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
                                             .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
                                                     WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
                                     this.ctx = null;
