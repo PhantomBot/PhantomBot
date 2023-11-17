@@ -89,8 +89,9 @@ $(function () {
 
     const sendLongpoll = async function() {
         navigator.locks.request('longpoll.send', () => {
-            if (isLongpollInit() && !socket.longpoll.sending) {
-                socket.longpoll.sending = true;
+            if (isLongpollInit() && socket.longpoll.sendingAbort === null) {
+                socket.longpoll.sendingAbort = new AbortController();
+                socket.longpoll.sendingAbortTimer = setTimeout(() => socket.longpoll.sendingAbort.abort(), 30 * 1000);
                 navigator.locks.request('longpoll.queue', () => {
                     const toSend = JSON.stringify(socket.longpoll.queue.splice(0, Infinity));
                     fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost(), {
@@ -102,11 +103,13 @@ $(function () {
                         },
                         mode: 'cors',
                         credentials: 'include',
-                        body: toSend
-                    }).then(async r => {
+                        body: toSend,
+                        signal: socket.longpoll.sendingAbort.signal
+                    }).finally(async r => {
                         await navigator.locks.request('longpoll.send', async () => {
                             if (isLongpollInit()) {
-                                socket.longpoll.sending = false;
+                                socket.longpoll.sendingAbort = null;
+                                clearInterval(socket.longpoll.sendingAbortTimer);
                             }
                         });
 
@@ -126,28 +129,42 @@ $(function () {
     }
 
     const fetchLongpoll = function() {
-        navigator.locks.request('receiver.sequence', () => {
-            return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
-        })
-        .then(lastReceived => fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost()
-            + '&afterTimestamp=' + lastReceived.timestamp + '&afterSequence=' + lastReceived.sequence, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
-                'Content-Type': 'application/json',
-                'SessionID': sessionId
-            },
-            mode: 'cors',
-            credentials: 'include'
-        })).then(r => r.json()).then(jsa => {
-            if (Array.isArray(jsa)) {
-                jsa.forEach(element => {
-                    if (isJSObject(element)) {
-                        onmessage(element);
+        navigator.locks.request('longpoll.receive', async () => {
+            if (isLongpollInit() && socket.longpoll.receivingAbort === null) {
+                socket.longpoll.receivingAbort = new AbortController();
+                socket.longpoll.receivingAbortTimer = setTimeout(() => socket.longpoll.receivingAbort.abort(), 30 * 1000);
+
+                await navigator.locks.request('receiver.sequence', () => {
+                    return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
+                })
+                .then(lastReceived => fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost()
+                    + '&afterTimestamp=' + lastReceived.timestamp + '&afterSequence=' + lastReceived.sequence, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
+                        'Content-Type': 'application/json',
+                        'SessionID': sessionId
+                    },
+                    mode: 'cors',
+                    credentials: 'include'
+                })).then(r => r.json()).then(jsa => {
+                    if (Array.isArray(jsa)) {
+                        jsa.forEach(element => {
+                            if (isJSObject(element)) {
+                                onmessage(element);
+                            }
+                        });
+                    } else if (isJSObject(jsa)) {
+                        onmessage(jsa);
                     }
+                }).finally(r => {
+                    navigator.locks.request('longpoll.receive', async () => {
+                        if (isLongpollInit()) {
+                            socket.longpoll.receivingAbort = null;
+                            clearInterval(socket.longpoll.receivingAbortTimer);
+                        }
+                    });
                 });
-            } else if (isJSObject(jsa)) {
-                onmessage(jsa);
             }
         }).finally(() => fetchLongpoll());
     };
@@ -243,7 +260,10 @@ $(function () {
             if (!socket.hasOwnProperty('longpoll')) {
                 socket.longpoll = {
                     queue: [],
-                    sending: false,
+                    sendingAbort: null,
+                    sendingAbortTimer: null,
+                    receivingAbort: null,
+                    receivingAbortTimer: null,
                     closed: false,
                     init: false
                 };
