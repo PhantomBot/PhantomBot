@@ -97,7 +97,8 @@ $(function () {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'SessionID': sessionId
                         },
                         mode: 'cors',
                         credentials: 'include',
@@ -248,9 +249,14 @@ $(function () {
                 };
                 socket.longpoll.init = true;
                 onopen();
-                fetchLongpoll();
             }
         });
+    };
+
+    const onAuth = function() {
+        if (!usingWebsocket) {
+            fetchLongpoll();
+        }
     };
 
     /*
@@ -988,6 +994,7 @@ $(function () {
                     close();
                 } else {
                     sessionId = message.sessionId;
+                    onAuth();
                     // This is to stop a reconnect loading the main page.
                     if (helpers.isAuth === true) {
                         helpers.log('Found reconnect auth', helpers.LOG_TYPE.DEBUG);
