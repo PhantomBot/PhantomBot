@@ -139,14 +139,14 @@ public final class ClientCache {
      * @param lastClientReceivedSequence  The sequence to start at, exclusive
      * @param sessionId                   The session ID provided in the headers
      * @param sessionIdSupplier           A supplier of unique session IDs
-     * @param isPost                      {@code true} to not update the ctx and
+     * @param isGet                       {@code false} to not update the ctx and
      *                                    process
      * @return An optional that contains the client; empty optional if the
      *         {@link PanelUser} is {@code null}
      */
     public Optional<Client> addOrUpdateClient(ChannelHandlerContext ctx, boolean isWs,
             Instant lastClientReceivedTimestamp, long lastClientReceivedSequence, String sessionId,
-            Supplier<String> sessionIdSupplier, boolean isPost) {
+            Supplier<String> sessionIdSupplier, boolean isGet) {
         PanelUser user = ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get();
 
         if (user != null) {
@@ -154,12 +154,10 @@ public final class ClientCache {
                 Optional<Client> client = this.client(user, sessionId);
 
                 if (client.isPresent()) {
-                    if (!isPost) {
-                        com.gmt2001.Console.debug.println("process1");
+                    if (isGet) {
                         client.get()
                                 .setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
                                 .process();
-                                com.gmt2001.Console.debug.println("process1 end");
                     }
 
                     return client;
@@ -169,11 +167,9 @@ public final class ClientCache {
             Client c = new Client(sessionIdSupplier.get(), user, this.ctxTimeout).timeout(this.ctxTimeout);
             this.clients.add(c);
 
-            if (!isPost) {
-                com.gmt2001.Console.debug.println("process2");
+            if (isGet) {
                 c.setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
                         .process();
-                        com.gmt2001.Console.debug.println("process2 end");
             }
 
             return Optional.of(c);

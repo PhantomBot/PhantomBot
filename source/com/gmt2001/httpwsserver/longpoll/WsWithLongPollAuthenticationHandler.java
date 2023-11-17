@@ -233,13 +233,10 @@ public final class WsWithLongPollAuthenticationHandler
 
             JSONStringer jsonObject = this.authResult(ctx, authorized);
 
-            com.gmt2001.Console.debug
-                    .println("AuthResult [" + ctx.channel().remoteAddress().toString() + "] " + jsonObject.toString());
             WebSocketFrameHandler.sendWsFrame(ctx, frame, new TextWebSocketFrame(jsonObject.toString()));
             ctx.channel().attr(WsAuthenticationHandler.ATTR_SENT_AUTH_REPLY).set(Boolean.TRUE);
 
             if (!authorized) {
-                com.gmt2001.Console.debug.println("ws auth fail");
                 WebSocketFrameHandler.sendWsFrame(ctx, frame,
                         WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();
@@ -277,7 +274,6 @@ public final class WsWithLongPollAuthenticationHandler
             boolean authorized) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
         JSONStringer jss = this.authResult(ctx, authorized);
-        com.gmt2001.Console.debug.println(jss.toString());
         FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(status, jss.toString(),
                 AUTH_RESULT_CONTENT_TYPE);
 
@@ -378,12 +374,9 @@ public final class WsWithLongPollAuthenticationHandler
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
                         false, isWs, requestUri, sessionId)));
-                com.gmt2001.Console.debug.println("HasUser");
                 return true;
             } else {
                 PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(jso.getString("authenticate"));
-                com.gmt2001.Console.debug.println("user=" + (user == null ? "null"
-                        : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                     ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,

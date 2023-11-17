@@ -311,7 +311,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
     @Override
     public final void handleRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
-com.gmt2001.Console.debug.println(req.method().asciiName() + ": " + qsd.path());
+
         if (req.method().equals(HttpMethod.OPTIONS)) {
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
                     List.of(HttpMethod.GET, HttpMethod.POST),
@@ -346,7 +346,6 @@ com.gmt2001.Console.debug.println(req.method().asciiName() + ": " + qsd.path());
                         if (jsa.get(i) instanceof JSONObject jso && this.validateFrameUpdateClientReceived(ctx, jso)) {
                             this.handleMessage(ctx, jso.getJSONObject("data"));
                         } else if (jsa.get(i) instanceof JSONObject jso && jso.has("authenticate")) {
-                            com.gmt2001.Console.debug.println("frame");
                             this.authHandler.httpAuthFrame(ctx, req, jso, true);
                             return;
                         } else {
