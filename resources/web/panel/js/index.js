@@ -964,15 +964,9 @@ $(function () {
     /*
      * @function Socket calls when it gets message.
      */
-    const onmessage = async function (e) {
+    const onmessage = async function (message) {
         try {
-            helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
-
-            if (e.data !== undefined && e.data === 'PING') {
-                return;
-            }
-
-            let message = JSON.parse(e.data);
+            helpers.log('Message from socket: ' + JSON.stringify(message), helpers.LOG_TYPE.DEBUG);
 
             if (message.metadata !== undefined) {
                 await navigator.locks.request('receiver.sequence', () => {
@@ -1089,14 +1083,24 @@ $(function () {
                 }
             }
         } catch (ex) {
-            // Line number won't be accurate, function will by anonymous, but we get the stack so it should be fine.
-            helpers.logError('Failed to parse message from socket: ' + ex.stack + '\n\n' + e.data, helpers.LOG_TYPE.FORCE);
+            console.log(ex);
         }
     };
 
     webSocket.onopen = onopen;
     webSocket.onclose = onclose;
-    webSocket.onmessage = onmessage;
+    webSocket.onmessage = function(e) {
+        try {
+            if (e.data === undefined || e.data === null || e.data === 'PING') {
+                return;
+            }
+
+            onmessage(JSON.parse(e.data));
+        } catch (ex) {
+            console.log(ex);
+        }
+    };
+
     webSocket.onconnecting = function() {
         navigator.locks.request('webSocket.reconnect', () => {
             if (Date.now() > reconnectTimestamp) {
