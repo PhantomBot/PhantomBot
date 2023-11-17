@@ -91,7 +91,11 @@ $(function () {
         navigator.locks.request('longpoll.send', () => {
             if (isLongpollInit() && socket.longpoll.sendingAbort === null) {
                 socket.longpoll.sendingAbort = new AbortController();
-                socket.longpoll.sendingAbortTimer = setTimeout(() => socket.longpoll.sendingAbort.abort(), 30 * 1000);
+                socket.longpoll.sendingAbortTimer = setTimeout(() => {
+                    if (socket.longpoll.sendingAbort !== null) {
+                        socket.longpoll.sendingAbort.abort();
+                    }
+                }, 30 * 1000);
                 navigator.locks.request('longpoll.queue', () => {
                     const toSend = JSON.stringify(socket.longpoll.queue.splice(0, Infinity));
                     fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost(), {
@@ -114,8 +118,8 @@ $(function () {
                     }).finally(async r => {
                         await navigator.locks.request('longpoll.send', async () => {
                             if (isLongpollInit()) {
-                                socket.longpoll.sendingAbort = null;
                                 clearInterval(socket.longpoll.sendingAbortTimer);
+                                socket.longpoll.sendingAbort = null;
                             }
                         });
 
@@ -138,7 +142,11 @@ $(function () {
         navigator.locks.request('longpoll.receive', async () => {
             if (isLongpollInit() && socket.longpoll.receivingAbort === null) {
                 socket.longpoll.receivingAbort = new AbortController();
-                socket.longpoll.receivingAbortTimer = setTimeout(() => socket.longpoll.receivingAbort.abort(), 30 * 1000);
+                socket.longpoll.receivingAbortTimer = setTimeout(() => {
+                    if (socket.longpoll.receivingAbort !== null) {
+                        socket.longpoll.receivingAbort.abort();
+                    }
+                }, 30 * 1000);
 
                 await navigator.locks.request('receiver.sequence', () => {
                     return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
@@ -175,8 +183,8 @@ $(function () {
                 }).finally(r => {
                     navigator.locks.request('longpoll.receive', async () => {
                         if (isLongpollInit()) {
-                            socket.longpoll.receivingAbort = null;
                             clearInterval(socket.longpoll.receivingAbortTimer);
+                            socket.longpoll.receivingAbort = null;
                         }
                     });
                 });
