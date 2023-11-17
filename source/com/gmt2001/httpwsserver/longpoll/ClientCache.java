@@ -155,7 +155,7 @@ public final class ClientCache {
 
                 if (client.isPresent()) {
                     if (isGet) {
-                        client.get()
+                        client.get().timeout(this.ctxTimeout)
                                 .setContextAndReplay(ctx, isWs, lastClientReceivedTimestamp, lastClientReceivedSequence)
                                 .process();
                     }

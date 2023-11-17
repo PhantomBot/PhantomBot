@@ -309,6 +309,7 @@ public final class Client {
                             Iterator<SoftReference<Message>> it = this.softQueue.iterator();
 
                             if (it.hasNext()) {
+                                boolean hasMessage = false;
                                 while (it.hasNext()) {
                                     SoftReference<Message> s = it.next();
                                     if (s.get() != null) {
@@ -317,14 +318,18 @@ public final class Client {
                                         }
 
                                         jso.value(s.get().message());
+                                        hasMessage = true;
                                     }
                                 }
 
                                 jso.endArray();
-                                HttpServerPageHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
-                                        .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
-                                                WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
-                                this.ctx = null;
+
+                                if (hasMessage) {
+                                    WsWithLongPollHandler.sendHttpResponse(this.ctx, null, HttpServerPageHandler
+                                            .prepareHttpResponse(HttpResponseStatus.OK, jso.toString(),
+                                                    WsWithLongPollHandler.LONG_POLL_CONTENT_TYPE));
+                                    this.ctx = null;
+                                }
                             }
                         }
                     }
