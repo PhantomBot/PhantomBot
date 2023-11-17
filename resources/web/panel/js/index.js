@@ -290,6 +290,8 @@ $(function () {
     };
 
     const onAuth = function() {
+        helpers.log('Connection established with the websocket.', helpers.LOG_TYPE.FORCE);
+
         if (!usingWebsocket) {
             fetchLongpoll();
         }
@@ -984,7 +986,6 @@ $(function () {
      * @function Called when the socket opens.
      */
     const onopen = function () {
-        helpers.log('Connection established with the websocket.', helpers.LOG_TYPE.FORCE);
         // Restart Pace.
         Pace.restart();
         // Remove all alerts.
