@@ -105,6 +105,12 @@ $(function () {
                         credentials: 'include',
                         body: toSend,
                         signal: socket.longpoll.sendingAbort.signal
+                    }).then(r => {
+                        if (!r.ok) {
+                            close(r.status);
+                        }
+                    }, () => {
+                        close(-1);
                     }).finally(async r => {
                         await navigator.locks.request('longpoll.send', async () => {
                             if (isLongpollInit()) {
@@ -147,7 +153,16 @@ $(function () {
                     },
                     mode: 'cors',
                     credentials: 'include'
-                })).then(r => r.json()).then(jsa => {
+                })).then(r => {
+                    if (r.ok) {
+                        return r.json();
+                    } else {
+                        close(r.status);
+                        return Promise.reject();
+                    }
+                }, () => {
+                        close(-1);
+                }).then(jsa => {
                     if (Array.isArray(jsa)) {
                         jsa.forEach(element => {
                             if (isJSObject(element)) {
@@ -180,6 +195,7 @@ $(function () {
                         socket.longpoll.queue.splice(0, Infinity);
                     });
                     onclose();
+                    setTimeout(() => initLongPoll(), 2 * 1000);
                 }
             });
         }
@@ -257,7 +273,7 @@ $(function () {
 
     const initLongPoll = async function() {
         await navigator.locks.request('longpoll.init', () => {
-            if (!socket.hasOwnProperty('longpoll')) {
+            if (!socket.hasOwnProperty('longpoll') || socket.longpoll.closed) {
                 socket.longpoll = {
                     queue: [],
                     sendingAbort: null,
