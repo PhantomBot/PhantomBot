@@ -39,17 +39,45 @@ $(function () {
         );
     }
 
-    let usingWebsocket = true,
+    window.forceHttp = function() {
+        window.localStorage.setItem('forceHttp', true);
+        window.localStorage.setItem('forceWs', false);
+        helpers.log('Panel will be forced to use HTTP Long Polling on next refresh', helpers.LOG_TYPE.FORCE);
+    }
+
+    window.forceWs = function() {
+        window.localStorage.setItem('forceHttp', false);
+        window.localStorage.setItem('forceWs', true);
+        helpers.log('Panel will be forced to use WebSocket with infinite reconnects on next refresh', helpers.LOG_TYPE.FORCE);
+    }
+
+    window.forceNormal = function() {
+        window.localStorage.setItem('forceHttp', false);
+        window.localStorage.setItem('forceWs', false);
+        helpers.log('Panel will be reset to use WebSocket with 3 reconnects, then HTTP Long Polling as a backup, on next refresh', helpers.LOG_TYPE.FORCE);
+    }
+
+    let usingWebsocket = window.localStorage.getItem('forceHttp') === 'true' ? false : true,
         lastReceivedTimestamp = 0,
         lastReceivedSequence = 0,
         lastTimestamp = 0,
         lastSequence = 0,
-        sessionId = null;
-    const maxReconnectAttempts = 3;
+        sessionId = null,
+        reconnectAttempts = 0,
+        reconnectTimestamp = 0;
+    const maxReconnectAttempts = window.localStorage.getItem('forceWs') === 'true' ? Infinity : 3;
     const webSocket = new ReconnectingWebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://')
         + helpers.getBotHost() + '/ws/panel?target=' + helpers.getBotHost(), null, {
-        reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false, maxReconnectAttempts: maxReconnectAttempts
+        reconnectInterval: 500, reconnectDecay: 2, automaticOpen: false
     });
+
+    if (window.localStorage.getItem('forceHttp') === 'true') {
+        helpers.log('Force HTTP Long Polling option enabled', helpers.LOG_TYPE.FORCE);
+    } else if (window.localStorage.getItem('forceWs') === 'true') {
+        helpers.log('Force WebSocket option enabled', helpers.LOG_TYPE.FORCE);
+    } else {
+        helpers.log('Initializing WebSocket with ' + maxReconnectAttempts + ' reconnects before switching to HTTP Long Polling', helpers.LOG_TYPE.FORCE);
+    }
 
     let callbacks = [],
             listeners = [],
@@ -61,23 +89,33 @@ $(function () {
 
     const sendLongpoll = async function() {
         navigator.locks.request('longpoll.send', () => {
-            if (isLongpollInit() && !socket.longpoll.sending) {
-                socket.longpoll.sending = true;
+            if (isLongpollInit() && socket.longpoll.sendingAbort === null) {
+                socket.longpoll.sendingAbort = new AbortController();
+                socket.longpoll.sendingAbortTimer = setTimeout(() => socket.longpoll.sendingAbort.abort(), 30 * 1000);
                 navigator.locks.request('longpoll.queue', () => {
                     const toSend = JSON.stringify(socket.longpoll.queue.splice(0, Infinity));
-                    fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+                    fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost(), {
                         method: 'POST',
                         headers: {
                             'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'SessionID': sessionId
                         },
                         mode: 'cors',
                         credentials: 'include',
-                        body: toSend
-                    }).then(async r => {
+                        body: toSend,
+                        signal: socket.longpoll.sendingAbort.signal
+                    }).then(r => {
+                        if (!r.ok) {
+                            close(r.status);
+                        }
+                    }, () => {
+                        close(-1);
+                    }).finally(async r => {
                         await navigator.locks.request('longpoll.send', async () => {
                             if (isLongpollInit()) {
-                                socket.longpoll.sending = false;
+                                socket.longpoll.sendingAbort = null;
+                                clearInterval(socket.longpoll.sendingAbortTimer);
                             }
                         });
 
@@ -97,30 +135,53 @@ $(function () {
     }
 
     const fetchLongpoll = function() {
-        navigator.locks.request('receiver.sequence', () => {
-            return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
-        })
-        .then(lastReceived => fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost()
-            + '&afterTimestamp=' + lastReceived.timestamp + '&afterSequence=' + lastReceived.sequence, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
-                'Content-Type': 'application/json',
-                'SessionID': sessionId
-            },
-            mode: 'cors',
-            credentials: 'include'
-        })).then(r => r.json()).then(jsa => {
-            if (Array.isArray(jsa)) {
-                jsa.forEach(element => {
-                    if (isJSObject(element)) {
-                        onmessage(element);
+        navigator.locks.request('longpoll.receive', async () => {
+            if (isLongpollInit() && socket.longpoll.receivingAbort === null) {
+                socket.longpoll.receivingAbort = new AbortController();
+                socket.longpoll.receivingAbortTimer = setTimeout(() => socket.longpoll.receivingAbort.abort(), 30 * 1000);
+
+                await navigator.locks.request('receiver.sequence', () => {
+                    return {timestamp: lastReceivedTimestamp, sequence:lastReceivedSequence};
+                })
+                .then(lastReceived => fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost()
+                    + '&afterTimestamp=' + lastReceived.timestamp + '&afterSequence=' + lastReceived.sequence, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
+                        'Content-Type': 'application/json',
+                        'SessionID': sessionId
+                    },
+                    mode: 'cors',
+                    credentials: 'include'
+                })).then(r => {
+                    if (r.ok) {
+                        return r.json();
+                    } else {
+                        close(r.status);
+                        return Promise.reject();
                     }
+                }, () => {
+                        close(-1);
+                }).then(jsa => {
+                    if (Array.isArray(jsa)) {
+                        jsa.forEach(element => {
+                            if (isJSObject(element)) {
+                                onmessage(element);
+                            }
+                        });
+                    } else if (isJSObject(jsa)) {
+                        onmessage(jsa);
+                    }
+                }).finally(r => {
+                    navigator.locks.request('longpoll.receive', async () => {
+                        if (isLongpollInit()) {
+                            socket.longpoll.receivingAbort = null;
+                            clearInterval(socket.longpoll.receivingAbortTimer);
+                        }
+                    });
                 });
-            } else if (isJSObject(jsa)) {
-                onmessage(jsa);
             }
-        }).finally(() => fetchLongpoll);
+        }).finally(() => fetchLongpoll());
     };
 
     const close = function(code) {
@@ -134,6 +195,7 @@ $(function () {
                         socket.longpoll.queue.splice(0, Infinity);
                     });
                     onclose();
+                    setTimeout(() => initLongPoll(), 2 * 1000);
                 }
             });
         }
@@ -148,13 +210,23 @@ $(function () {
             webSocket.send(JSON.stringify(message));
         } else {
             const toSend = JSON.stringify([message]);
-            fetch(helpers.getBotSchemePath() + '/longpoll/panel?target=' + helpers.getBotHost(), {
+            fetch(window.location.protocol + '//' + window.location.host + '/longpoll/panel?target=' + helpers.getBotHost(), {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Basic ' + window.sessionStorage.getItem('b64'),
                     'Content-Type': 'application/json'
                 },
                 body: toSend
+            }).then(r => r.json()).then(jsa => {
+                if (Array.isArray(jsa)) {
+                    jsa.forEach(element => {
+                        if (isJSObject(element)) {
+                            onmessage(element);
+                        }
+                    });
+                } else if (isJSObject(jsa)) {
+                    onmessage(jsa);
+                }
             });
         }
     };
@@ -199,20 +271,30 @@ $(function () {
         }
     };
 
-    const initLongPoll = function() {
-        navigator.locks.request('longpoll.init', () => {
-            if (!socket.hasOwnProperty('longpoll')) {
+    const initLongPoll = async function() {
+        await navigator.locks.request('longpoll.init', () => {
+            if (!socket.hasOwnProperty('longpoll') || socket.longpoll.closed) {
                 socket.longpoll = {
                     queue: [],
-                    sending: false,
+                    sendingAbort: null,
+                    sendingAbortTimer: null,
+                    receivingAbort: null,
+                    receivingAbortTimer: null,
                     closed: false,
                     init: false
                 };
                 socket.longpoll.init = true;
                 onopen();
-                fetchLongpoll();
             }
         });
+    };
+
+    const onAuth = function() {
+        helpers.log('Connection established with the websocket.', helpers.LOG_TYPE.FORCE);
+
+        if (!usingWebsocket) {
+            fetchLongpoll();
+        }
     };
 
     /*
@@ -226,12 +308,7 @@ $(function () {
 
             send(message);
 
-            // Make sure to not show the user's token.
-            if (json.indexOf('authenticate') !== -1) {
-                helpers.log('sendToSocket:: ' + json.substring(0, json.length - 20) + '.."}', helpers.LOG_TYPE.DEBUG);
-            } else {
-                helpers.log('sendToSocket:: ' + json, helpers.LOG_TYPE.DEBUG);
-            }
+            helpers.log('sendToSocket:: ' + JSON.stringify(message).replace(getAuth(), '...'), helpers.LOG_TYPE.DEBUG);
         } catch (e) {
             helpers.logError('Failed to send message to socket: ' + e.message, helpers.LOG_TYPE.DEBUG);
         }
@@ -909,7 +986,6 @@ $(function () {
      * @function Called when the socket opens.
      */
     const onopen = function () {
-        helpers.log('Connection established with the websocket.', helpers.LOG_TYPE.FORCE);
         // Restart Pace.
         Pace.restart();
         // Remove all alerts.
@@ -931,18 +1007,20 @@ $(function () {
     /*
      * @function Socket calls when it gets message.
      */
-    const onmessage = async function (e) {
+    const onmessage = async function (message) {
         try {
-            helpers.log('Message from socket: ' + e.data, helpers.LOG_TYPE.DEBUG);
+            helpers.log('Message from socket: ' + JSON.stringify(message), helpers.LOG_TYPE.DEBUG);
 
-            if (e.data !== undefined && e.data === 'PING') {
-                return;
-            }
-
-            let message = e;
-
-            if (e.data !== undefined && !isJSObject(e.data)) {
-                message = JSON.parse(e.data);
+            if (message.metadata !== undefined) {
+                await navigator.locks.request('receiver.sequence', () => {
+                    if (message.metadata.timestamp > lastReceivedTimestamp) {
+                        lastReceivedTimestamp = message.metadata.timestamp;
+                        lastReceivedSequence = message.metadata.sequence;
+                    } else if (message.metadata.timestamp === lastReceivedTimestamp && message.metadata.sequence > lastReceivedSequence) {
+                        lastReceivedSequence = message.metadata.sequence;
+                    }
+                });
+                message = message.data;
             }
 
             // Check this message here before doing anything else.
@@ -953,6 +1031,7 @@ $(function () {
                     close();
                 } else {
                     sessionId = message.sessionId;
+                    onAuth();
                     // This is to stop a reconnect loading the main page.
                     if (helpers.isAuth === true) {
                         helpers.log('Found reconnect auth', helpers.LOG_TYPE.DEBUG);
@@ -967,18 +1046,6 @@ $(function () {
                     helpers.log('Auth success', helpers.LOG_TYPE.DEBUG);
                 }
                 return;
-            }
-
-            if (message.metadata !== undefined) {
-                navigator.locks.request('receiver.sequence', () => {
-                    if (message.metadata.timestamp > lastReceivedTimestamp) {
-                        lastReceivedTimestamp = message.metadata.timestamp;
-                        lastReceivedSequence = message.metadata.sequence;
-                    } else if (message.metadata.timestamp === lastReceivedTimestamp && message.metadata.sequence > lastReceivedSequence) {
-                        lastReceivedSequence = message.metadata.sequence;
-                    }
-                });
-                message = message.data;
             }
 
             if (message.id !== undefined) {
@@ -1014,7 +1081,14 @@ $(function () {
                         if (callback.isArray) {
                             callback.queryData = message.results;
                         } else if (callback.storeKey === true) {
-                            callback.queryData[Object.keys(message.results)[1]] = message.results.value;
+                            let key = 'value';
+                            for (const k of Object.keys(message.results)) {
+                                if (k !== 'table' && k !== 'value') {
+                                    key = k;
+                                    break;
+                                }
+                            }
+                            callback.queryData[key] = message.results.value;
                         } else {
                             callback.queryData[message.results.table] = message.results.value;
                         }
@@ -1053,24 +1127,46 @@ $(function () {
                 }
             }
         } catch (ex) {
-            // Line number won't be accurate, function will by anonymous, but we get the stack so it should be fine.
-            helpers.logError('Failed to parse message from socket: ' + ex.stack + '\n\n' + e.data, helpers.LOG_TYPE.FORCE);
+            console.log(ex);
         }
     };
 
     webSocket.onopen = onopen;
     webSocket.onclose = onclose;
-    webSocket.onmessage = onmessage;
-    webSocket.onconnecting = function(event) {
-        if (event.code !== undefined && event.code !== null && event.code > 0) {
-            if (webSocket.reconnectAttempts >= maxReconnectAttempts) {
+    webSocket.onmessage = function(e) {
+        try {
+            if (e.data === undefined || e.data === null || e.data === 'PING') {
+                return;
+            }
+
+            onmessage(JSON.parse(e.data));
+        } catch (ex) {
+            console.log(ex);
+        }
+    };
+
+    webSocket.onconnecting = function() {
+        navigator.locks.request('webSocket.reconnect', () => {
+            if (Date.now() > reconnectTimestamp) {
+                reconnectAttempts = 0;
+                reconnectTimestamp = Date.now() + (30 * 1000);
+            } else {
+                reconnectAttempts = reconnectAttempts + 1;
+            }
+            if (reconnectAttempts >= maxReconnectAttempts) {
+                webSocket.close();
                 usingWebsocket = false;
+                helpers.logWarning('WebSocket retry limit reached, switching to HTTP Long Polling');
                 initLongPoll();
             }
-        }
+        });
     }
 
-    webSocket.open();
+    if (usingWebsocket) {
+        webSocket.open();
+    } else {
+        initLongPoll();
+    }
 
     // Make this a global object.
     window.socket = socket;
