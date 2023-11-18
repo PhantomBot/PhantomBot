@@ -157,7 +157,7 @@
                 // Send the message as an embed.
                 msg = $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                         .withColor(100, 65, 164)
-                        .withThumbnail($.twitchcache.getLogoLink())
+                        .withThumbnail($.lang.get('discord.streamhandler.offline.thumbnail', $.twitchcache.getLogoLink()))
                         .withTitle(sanitizeTitle(s))
                         .appendField($.lang.get('discord.streamhandler.offline.game'), getTrimmedGameName(), true)
                         .appendField($.lang.get('discord.streamhandler.offline.viewers'), $.lang.get('discord.streamhandler.offline.viewers.stat', avgViewers, maxViewers), true)
@@ -166,7 +166,7 @@
                         .appendField($.lang.get('discord.streamhandler.common.uptime'), $.getTimeString($.twitchcache.getLastStreamUptimeSeconds()), true)
                         .withTimestamp(Date.now())
                         .withFooterText('Twitch')
-                        .withFooterIcon($.twitchcache.getLogoLink())
+                        .withFooterIcon($.lang.get('discord.streamhandler.offline.footericon', $.twitchcache.getLogoLink()))
                         .withUrl('https://twitch.tv/' + $.channelName).build());
                 if (deleteMessageToggle) {
                     offlineMessages.push(msg);
@@ -222,15 +222,15 @@
                     // Send the message as an embed.
                     msg = $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                             .withColor(100, 65, 164)
-                            .withThumbnail($.twitchcache.getLogoLink())
+                            .withThumbnail($.lang.get('discord.streamhandler.online.thumbnail', $.twitchcache.getLogoLink()))
                             .withTitle(sanitizeTitle(s))
                             .appendField($.lang.get('discord.streamhandler.common.game'), getTrimmedGameName(), false)
                             .appendField($.lang.get('discord.streamhandler.common.title'), $.twitchcache.getStreamStatus(), false)
                             .withUrl('https://twitch.tv/' + $.channelName)
                             .withTimestamp(Date.now())
                             .withFooterText('Twitch')
-                            .withFooterIcon($.twitchcache.getLogoLink())
-                            .withImage($.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999)).build());
+                            .withFooterIcon($.lang.get('discord.streamhandler.online.footericon', $.twitchcache.getLogoLink()))
+                            .withImage($.lang.get('discord.streamhandler.online.image', $.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999))).build());
                     if (deleteMessageToggle) {
                         liveMessages.push(msg);
                     }
@@ -289,7 +289,7 @@
         }
         var msg = $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()
                 .withColor(100, 65, 164)
-                .withThumbnail($.twitchcache.getLogoLink())
+                .withThumbnail($.lang.get('discord.streamhandler.game.thumbnail', $.twitchcache.getLogoLink()))
                 .withTitle(sanitizeTitle(s))
                 .appendField($.lang.get('discord.streamhandler.common.game'), getTrimmedGameName(), false)
                 .appendField($.lang.get('discord.streamhandler.common.title'), $.twitchcache.getStreamStatus(), false)
@@ -297,8 +297,8 @@
                 .withUrl('https://twitch.tv/' + $.channelName)
                 .withTimestamp(Date.now())
                 .withFooterText('Twitch')
-                .withFooterIcon($.twitchcache.getLogoLink())
-                .withImage($.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999)).build());
+                .withFooterIcon($.lang.get('discord.streamhandler.game.footericon', $.twitchcache.getLogoLink()))
+                .withImage($.lang.get('discord.streamhandler.game.image', $.twitchcache.getPreviewLink() + '?=' + $.randRange(1, 99999))).build());
         liveMessages.push(msg);
 
         if (gamePublish && $.discordAPI.canChannelPublish(channelName)) {
