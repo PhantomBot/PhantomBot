@@ -24,9 +24,11 @@
     var onlineToggle = $.getSetIniDbBoolean('discordSettings', 'onlineToggle', false),
             onlinePublish = $.getSetIniDbBoolean('discordSettings', 'onlinePublish', false),
             onlineMessage = $.getSetIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!'),
+            onlineDelay = $.getSetIniDbNumber('discordSettings', 'onlineDelay', 60),
             offlineToggle = $.getSetIniDbBoolean('discordSettings', 'offlineToggle', false),
             offlinePublish = $.getSetIniDbBoolean('discordSettings', 'offlinePublish', false),
             offlineMessage = $.getSetIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.'),
+            offlineDelay = $.getSetIniDbNumber('discordSettings', 'offlineDelay', 60),
             gameToggle = $.getSetIniDbBoolean('discordSettings', 'gameToggle', false),
             gamePublish = $.getSetIniDbBoolean('discordSettings', 'gamePublish', false),
             gameMessage = $.getSetIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!'),
@@ -47,9 +49,11 @@
             onlineToggle = $.getIniDbBoolean('discordSettings', 'onlineToggle', false);
             onlinePublish = $.getIniDbBoolean('discordSettings', 'onlinePublish', false);
             onlineMessage = $.getIniDbString('discordSettings', 'onlineMessage', '(name) just went online on Twitch!');
+            onlineDelay = $.getIniDbNumber('discordSettings', 'onlineDelay', 60);
             offlineToggle = $.getIniDbBoolean('discordSettings', 'offlineToggle', false);
             offlinePublish = $.getIniDbBoolean('discordSettings', 'offlinePublish', false);
             offlineMessage = $.getIniDbString('discordSettings', 'offlineMessage', '(name) is now offline.');
+            offlineDelay = $.getIniDbNumber('discordSettings', 'offlineDelay', 60);
             gameToggle = $.getIniDbBoolean('discordSettings', 'gameToggle', false);
             gamePublish = $.getIniDbBoolean('discordSettings', 'gamePublish', false);
             gameMessage = $.getIniDbString('discordSettings', 'gameMessage', '(name) just changed game on Twitch!');
@@ -184,7 +188,7 @@
             }
 
             clearInterval(interval);
-        }, 6e4);
+        }, offlineDelay * 1000);
     });
 
     /*
@@ -266,7 +270,7 @@
 
                 $.setIniDbNumber('discordStreamStats', 'followers', $.getFollows($.channelName));
             }
-        }, 6e4);
+        }, onlineDelay * 1000);
     });
 
     /*
@@ -362,6 +366,24 @@
             }
 
             /*
+             * @discordcommandpath streamhandler onlinedelay [seconds] - Sets the number of seconds the bot waits before posting the online message to Discord. Lower times could result in old or missing thumbnails
+             */
+            if ($.equalsIgnoreCase(action, 'onlinedelay')) {
+                if (subAction === undefined || isNaN(subAction)) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.delay.usage'));
+                    return;
+                }
+
+                let delay = parseInt(subAction);
+                if (delay < 1) {
+                    delay = 1;
+                }
+                onlineDelay = delay;
+                $.inidb.set('discordSettings', 'onlineDelay', onlineDelay);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.online.delay.set', onlineDelay));
+            }
+
+            /*
              * @discordcommandpath streamhandler toggleoffline - Toggles the stream offline announcements.
              */
             if ($.equalsIgnoreCase(action, 'toggleoffline')) {
@@ -391,6 +413,24 @@
                 offlineMessage = args.slice(1).join(' ');
                 $.inidb.set('discordSettings', 'offlineMessage', offlineMessage);
                 $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.message.set', offlineMessage));
+            }
+
+            /*
+             * @discordcommandpath streamhandler offlinedelay [seconds] - Sets the number of seconds the bot waits before posting the offline message to Discord. Lower times could result in old or missing thumbnails
+             */
+            if ($.equalsIgnoreCase(action, 'offlinedelay')) {
+                if (subAction === undefined || isNaN(subAction)) {
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.delay.usage'));
+                    return;
+                }
+
+                let delay = parseInt(subAction);
+                if (delay < 1) {
+                    delay = 1;
+                }
+                offlineDelay = delay;
+                $.inidb.set('discordSettings', 'offlineDelay', offlineDelay);
+                $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.streamhandler.offline.delay.set', offlineDelay));
             }
 
             /*
@@ -467,9 +507,11 @@
         $.discord.registerSubCommand('streamhandler', 'toggleonline', 1);
         $.discord.registerSubCommand('streamhandler', 'toggleonlinepublish', 1);
         $.discord.registerSubCommand('streamhandler', 'onlinemessage', 1);
+        $.discord.registerSubCommand('streamhandler', 'onlinedelay', 1);
         $.discord.registerSubCommand('streamhandler', 'toggleoffline', 1);
         $.discord.registerSubCommand('streamhandler', 'toggleofflinepublish', 1);
         $.discord.registerSubCommand('streamhandler', 'offlinemessage', 1);
+        $.discord.registerSubCommand('streamhandler', 'offlinedelay', 1);
         $.discord.registerSubCommand('streamhandler', 'togglegame', 1);
         $.discord.registerSubCommand('streamhandler', 'togglegamepublish', 1);
         $.discord.registerSubCommand('streamhandler', 'gamemessage', 1);
