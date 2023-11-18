@@ -28,5 +28,13 @@
     "discord.streamhandler.offline.followers": "Followers",
     "discord.streamhandler.offline.viewers.stat": "Average - $1 High - $2",
     "discord.streamhandler.offline.chatters.stat": "Average - $1 High - $2",
-    "discord.streamhandler.offline.followers.stat": "Session - $1 Total - $2"
+    "discord.streamhandler.offline.followers.stat": "Session - $1 Total - $2",
+    "discord.streamhandler.online.thumbnail": "$1",
+    "discord.streamhandler.online.footericon": "$1",
+    "discord.streamhandler.online.image": "$1",
+    "discord.streamhandler.game.thumbnail": "$1",
+    "discord.streamhandler.game.footericon": "$1",
+    "discord.streamhandler.game.image": "$1",
+    "discord.streamhandler.offline.thumbnail": "$1",
+    "discord.streamhandler.offline.footericon": "$1"
 }
