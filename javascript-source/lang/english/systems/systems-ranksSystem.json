@@ -27,5 +27,6 @@
     "ranks.set.failure.nopoints": "Not enough hours ($1) to set rank!",
     "ranks.set.success": "Set rank to: $1",
     "ranks.delself.404": "You do not have a custom rank.",
-    "ranks.delself.success": "Deleted your custom rank."
+    "ranks.delself.success": "Deleted your custom rank.",
+    "rank.toggle.displayranks": "Showing ranks in bot replies has been set to $1."
 }

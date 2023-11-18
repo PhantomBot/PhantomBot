@@ -63,11 +63,23 @@
                     </div>
 
                     <div class="form-group">
-                        <!-- Twitch Permcom toggle. -->
+                        <!-- Twitch cooldown msg toggle. -->
                         <label for="cmd-cooldown-messages">Enable Cooldown Messages on Twitch</label>
                         <div class="dropdown">
                             <select class="form-control" id="cmd-cooldown-messages" style="cursor: pointer;" data-toggle="tooltip"
                                 title="If a message should be said in a chat when a user tries to use a command that's still on cooldown.">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!-- Resolve rank toggle. -->
+                        <label for="cmd-show-resolverank">Enable the ability to resolve user ranks in bot replies</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="cmd-show-resolverank" style="cursor: pointer;" data-toggle="tooltip"
+                                title="If user ranks should be shown in some bot replies.">
                                 <option>Yes</option>
                                 <option>No</option>
                             </select>
