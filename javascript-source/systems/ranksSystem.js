@@ -25,6 +25,7 @@
 
     var rankEligableTime = $.getSetIniDbNumber('settings', 'rankEligableTime', 50),
         rankEligableCost = $.getSetIniDbNumber('settings', 'rankEligableCost', 200),
+        rankShowRankInResolveRank = $.getSetIniDbBoolean('settings', 'rankShowRankInResolveRank', false),
         ranksTimeTable;
 
     /**
@@ -140,7 +141,8 @@
      * @returns {string}
      */
     function resolveRank(username) {
-        return (getRank(username.toLowerCase()) + ' ' + ($.username.hasUser(username) === true ? $.username.get(username) : username)).trim();
+        return ((rankShowRankInResolveRank === true ? 
+            getRank(username.toLowerCase()) : '') + ' ' + ($.username.hasUser(username) === true ? $.username.get(username) : username)).trim();
     }
 
     /**
@@ -298,6 +300,7 @@
         /**
          * @commandpath rank - Display current rank.
          * @commandpath rank set [rankname] - Set rank for self if enough hours and points, if applicable, available in chat.
+         * @commandpath rank toggleshowinbotreplies - Toggles if ranks are shown in bot replies.
          * @commandpath rank del - Deletes customized rank.
          */
         if ($.equalsIgnoreCase(command, 'rank')) {
@@ -309,6 +312,15 @@
                     } else {
                         $.say($.whisperPrefix(sender) + $.lang.get('ranks.delself.404'));
                     }
+                    return;
+                }
+
+                if ($.equalsIgnoreCase(args[0], 'toggleshowinbotreplies')) {
+                    rankShowRankInResolveRank = !rankShowRankInResolveRank;
+
+                    $.setIniDbBoolean('settings', 'rankShowRankInResolveRank', rankShowRankInResolveRank);
+
+                    $.say($.whisperPrefix(sender) + $.lang.get('rank.toggle.displayranks', rankShowRankInResolveRank));
                     return;
                 }
 
@@ -392,6 +404,18 @@
 
         $.registerChatSubcommand('rank', 'set', $.PERMISSION.Viewer);
         $.registerChatSubcommand('rank', 'del', $.PERMISSION.Viewer);
+        $.registerChatSubcommand('rank', 'toggleshowinbotreplies', $.PERMISSION.Admin);
+    });
+
+    /**
+     * @event webPanelSocketUpdate
+     */
+    $.bind('webPanelSocketUpdate', function(event) {
+        if ($.equalsIgnoreCase(event.getScript(), './systems/rankSystem.js')) {
+            if ($.equalsIgnoreCase(event.getArgs()[0], 'update')) {
+                rankShowRankInResolveRank = $.getIniDbBoolean('settings', 'rankShowRankInResolveRank');
+            }
+        }
     });
 
     /**
