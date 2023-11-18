@@ -465,9 +465,15 @@
     $.bind('initReady', function () {
         $.discord.registerCommand('./discord/handlers/streamHandler.js', 'streamhandler', 1);
         $.discord.registerSubCommand('streamhandler', 'toggleonline', 1);
+        $.discord.registerSubCommand('streamhandler', 'toggleonlinepublish', 1);
         $.discord.registerSubCommand('streamhandler', 'onlinemessage', 1);
+        $.discord.registerSubCommand('streamhandler', 'toggleoffline', 1);
+        $.discord.registerSubCommand('streamhandler', 'toggleofflinepublish', 1);
+        $.discord.registerSubCommand('streamhandler', 'offlinemessage', 1);
         $.discord.registerSubCommand('streamhandler', 'togglegame', 1);
+        $.discord.registerSubCommand('streamhandler', 'togglegamepublish', 1);
         $.discord.registerSubCommand('streamhandler', 'gamemessage', 1);
+        $.discord.registerSubCommand('streamhandler', 'togglebotstatus', 1);
         $.discord.registerSubCommand('streamhandler', 'channel', 1);
         $.discord.registerSubCommand('streamhandler', 'toggledeletemessage', 1);
     });
