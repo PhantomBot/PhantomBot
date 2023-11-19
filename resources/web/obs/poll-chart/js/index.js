@@ -136,7 +136,7 @@ $(function() {
         }, 1e3);
 
         // Make the chart.
-        chart = new Chart(poll.get(0).getContext('2d'), getChartConfig(obj, obj));
+        chart = new Chart(poll.get(0).getContext('2d'), getChartConfig(obj));
 
         chart.update();
     };
