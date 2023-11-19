@@ -117,6 +117,7 @@
             $.inidb.set('pollVotes', poll.options[i], 0);
             objOBS.push({
                 'label': poll.options[i],
+                'title': question,
                 'votes': 0
             });
         }

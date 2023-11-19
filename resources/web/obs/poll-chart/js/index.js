@@ -136,7 +136,7 @@ $(function() {
         }, 1e3);
 
         // Make the chart.
-        chart = new Chart(poll.get(0).getContext('2d'), getChartConfig(obj));
+        chart = new Chart(poll.get(0).getContext('2d'), getChartConfig(obj, obj));
 
         chart.update();
     };
@@ -190,7 +190,7 @@ $(function() {
                 'legend': {
                     'labels': {
                         'fontSize': 25,
-                        'fontColor': 'black',
+                        'fontColor': getOptionSetting('fontColor', 'black'),
                         'padding': 25
                     },
                     'position': 'top',
@@ -198,12 +198,12 @@ $(function() {
                 'title': {
                     'display': true,
                     'fontSize': 35,
-                    'fontColor': 'black',
-                    'text': '!vote [#]'
+                    'fontColor': getOptionSetting('fontColor', 'black'),
+                    'text': obj.title + ' - !vote [#]'
                 },
                 'plugins': {
                     'datalabels': {
-                        'color': '#000',
+                        'color': getOptionSetting('fontColor', 'black'),
                         'font': {
                             'size': 50
                         },
