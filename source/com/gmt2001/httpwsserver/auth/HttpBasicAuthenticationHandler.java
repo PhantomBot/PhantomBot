@@ -129,7 +129,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
 
         if (this.loginUri == null || this.loginUri.isBlank()) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
-            if (auth == null) {
+            if (auth.isBlank()) {
                 com.gmt2001.Console.debug.println("WWW-Authenticate");
                 res.headers().set("WWW-Authenticate", "Basic realm=\"" + this.realm + "\", charset=\"UTF-8\"");
             }
@@ -138,7 +138,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
             if (this.user != null && this.pass != null) {
                 com.gmt2001.Console.debug.println("Expected: >" + this.user + ":" + this.pass + "<");
             }
-            if (auth != null) {
+            if (!auth.isBlank()) {
                 com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
             }
 
@@ -153,7 +153,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
             if (this.user != null && this.pass != null) {
                 com.gmt2001.Console.debug.println("Expected: >" + this.user + ":" + this.pass + "<");
             }
-            if (auth != null) {
+            if (!auth.isBlank()) {
                 com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
             }
 
@@ -177,7 +177,7 @@ public final class HttpBasicAuthenticationHandler implements HttpAuthenticationH
     public boolean isAuthorized(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         String auth = HttpServerPageHandler.getAuthorizationString(headers);
 
-        if (auth != null) {
+        if (!auth.isBlank()) {
             String userpass = new String(Base64.getDecoder().decode(auth));
             if (!userpass.isBlank()) {
                 int colon = userpass.indexOf(':');

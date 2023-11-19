@@ -141,7 +141,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      *
      * @param headers The {@link HttpHeaders} to check
      * @return The authorization string, still encoded with Base64, giving
-     *         preference to {@code Authorization Basic}; {@code null} if neither is
+     *         preference to {@code Authorization Basic}; Empty string if neither is
      *         found
      */
     public static String getAuthorizationString(HttpHeaders headers) {
@@ -167,13 +167,13 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      */
     public static Tuple2<String, String> getAuthorizationHeaders(HttpHeaders headers) {
         String auth = headers.get("Authorization");
-        String outAuth = null;
+        String outAuth = "";
 
         if (auth != null && auth.startsWith("Basic ")) {
             outAuth = auth.substring(6);
         } else {
             Map<String, String> cookies = parseCookies(headers);
-            outAuth = cookies.getOrDefault("panellogin", null);
+            outAuth = cookies.getOrDefault("panellogin", "");
         }
 
         return Tuples.of(outAuth, headers.get("SessionID", ""));
