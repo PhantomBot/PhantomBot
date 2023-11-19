@@ -284,7 +284,7 @@ public final class WsSharedRWTokenAuthenticationHandler
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers, String requestUri) {
         com.gmt2001.Console.debug.println(
-                "HeaderAuth " + (HttpServerPageHandler.getAuthorizationString(headers) == null ? "null"
+                "HeaderAuth " + (HttpServerPageHandler.getAuthorizationString(headers).isBlank() ? "null"
                         : HttpServerPageHandler.getAuthorizationString(headers)));
         if (this.allowPaneluser
                 && PhantomBot.instance().getHTTPPanelAndYTHandler().getHttpAuthHandler().isAuthorized(ctx, headers, requestUri)) {
