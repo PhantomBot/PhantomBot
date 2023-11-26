@@ -287,20 +287,22 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      */
     private boolean validateFrameUpdateClientReceived(ChannelHandlerContext ctx, JSONObject jso) {
         try {
-            JSONObject metadata = jso.getJSONObject("metadata");
+            if (jso.has("metadata")) {
+                JSONObject metadata = jso.getJSONObject("metadata");
 
-            jso.getJSONObject("data");
+                jso.getJSONObject("data");
 
-            if (metadata.has("skipTimestamp") && metadata.has("skipSequence")) {
-                this.clientCache.client(ctx)
-                        .ifPresent(c -> c.skip(Instant.ofEpochMilli(metadata.getLong("skipTimestamp")),
-                                metadata.getLong("skipSequence")));
+                if (metadata.has("skipTimestamp") && metadata.has("skipSequence")) {
+                    this.clientCache.client(ctx)
+                            .ifPresent(c -> c.skip(Instant.ofEpochMilli(metadata.getLong("skipTimestamp")),
+                                    metadata.getLong("skipSequence")));
+                }
+
+                this.clientCache.lastReceived(ctx, Instant.ofEpochMilli(metadata.getLong("timestamp")),
+                        metadata.getLong("sequence"));
+
+                return true;
             }
-
-            this.clientCache.lastReceived(ctx, Instant.ofEpochMilli(metadata.getLong("timestamp")),
-                    metadata.getLong("sequence"));
-
-            return true;
         } catch (JSONException ex) {
             com.gmt2001.Console.err.logStackTrace(ex);
         }
