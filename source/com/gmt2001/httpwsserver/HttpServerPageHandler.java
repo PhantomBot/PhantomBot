@@ -421,8 +421,10 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT,
                 Unpooled.buffer());
 
-        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, req.headers().get(HttpHeaderNames.ORIGIN));
-        res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
+        if (req.headers().get(HttpHeaderNames.ORIGIN) != null) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, req.headers().get(HttpHeaderNames.ORIGIN));
+            res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
+        }
         res.headers().set(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, cacheTime.toSeconds());
         res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, true);
         res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, true);
