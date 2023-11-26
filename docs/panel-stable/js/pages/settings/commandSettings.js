@@ -20,9 +20,9 @@ $(run = function () {
     // Get command settings.
     socket.getDBValues('get_command_settings', {
         tables: ['settings', 'settings', 'settings', 'settings', 'cooldownSettings',
-            'cooldownSettings', 'panelData'],
+            'cooldownSettings', 'panelData', 'settings'],
         keys: ['permComMsgEnabled', 'priceComMsgEnabled', 'coolDownMsgEnabled',
-            'pricecomMods', 'modCooldown', 'defaultCooldownTime', 'hasDiscord']
+            'pricecomMods', 'modCooldown', 'defaultCooldownTime', 'hasDiscord', 'rankShowRankInResolveRank']
     }, true, function (e) {
         // Set cost message.
         $('#cmd-cost-messages').val((helpers.isTrue(e.priceComMsgEnabled) ? 'Yes' : 'No'));
@@ -30,6 +30,8 @@ $(run = function () {
         $('#cmd-perm-messages').val((helpers.isTrue(e.permComMsgEnabled) ? 'Yes' : 'No'));
         // Set cooldown message.
         $('#cmd-cooldown-messages').val((helpers.isTrue(e.coolDownMsgEnabled) ? 'Yes' : 'No'));
+        // Set resolve rank.
+        $('#cmd-show-resolverank').val((helpers.isTrue(e.rankShowRankInResolveRank) ? 'Yes' : 'No'));
         // Set cost for mods.
         $('#pricecom-mods').val((helpers.isTrue(e.pricecomMods) ? 'No' : 'Yes'));
         // Set cooldown for mods.
@@ -59,6 +61,7 @@ $(function () {
         let cmdCostMessage = $('#cmd-cost-messages').find(':selected').text() === 'Yes',
                 cmdPermMessage = $('#cmd-perm-messages').find(':selected').text() === 'Yes',
                 cmdCooldownMessage = $('#cmd-cooldown-messages').find(':selected').text() === 'Yes',
+                cmdShowResolverank = $('#cmd-show-resolverank').find(':selected').text() === 'Yes',
                 priceComMods = $('#pricecom-mods').find(':selected').text() !== 'Yes',
                 cooldownMods = $('#cooldown-mods').find(':selected').text() !== 'Yes',
                 globalTime = $('#global-cooldown'),
@@ -95,6 +98,12 @@ $(function () {
                 }, function () {
                     socket.wsEvent('update_cmd_settings_ws', './core/commandCoolDown.js', null, ['update'], function () {
                         toastr.success('Successfully update command settings!');
+                    });
+                });
+
+                socket.updateDBValue('update_resolverank_setting', 'settings', 'rankShowRankInResolveRank', cmdShowResolverank, function() {
+                    socket.wsEvent('update_resolverank_setting_ws', './systems/rankSystem.js', null, ['update'], function() {
+                        // Do nothing.
                     });
                 });
         }

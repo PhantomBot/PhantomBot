@@ -140,15 +140,15 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 <div class="block">Handles the handshake complete event</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose()" class="member-name-link">onClose</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose(int,java.lang.String)" class="member-name-link">onClose</a><wbr>(int&nbsp;code,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Handles the channel closing for any reason.</div>
+<div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose(int,java.lang.String)" class="member-name-link">onClose</a><wbr>(int&nbsp;code,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;reason)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onClose(io.netty.channel.Channel)" class="member-name-link">onClose</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&nbsp;channel)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
+<div class="block">Handles the channel closing for any reason</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onMessages(java.lang.String)" class="member-name-link">onMessages</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;messages)</code></div>
@@ -520,14 +520,16 @@ implements <a href="../../wsclient/WsClientFrameHandler.html" title="interface i
 </section>
 </li>
 <li>
-<section class="detail" id="onClose()">
+<section class="detail" id="onClose(io.netty.channel.Channel)">
 <h3>onClose</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">WsClientFrameHandler</a></code></span></div>
-<div class="block">Handles the channel closing for any reason.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&nbsp;channel)</span></div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html#onClose(io.netty.channel.Channel)">WsClientFrameHandler</a></code></span></div>
+<div class="block">Handles the channel closing for any reason</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../wsclient/WsClientFrameHandler.html#onClose()">onClose</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+<dd><code><a href="../../wsclient/WsClientFrameHandler.html#onClose(io.netty.channel.Channel)">onClose</a></code>&nbsp;in interface&nbsp;<code><a href="../../wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>channel</code> - The channel that was closed</dd>
 </dl>
 </section>
 </li>

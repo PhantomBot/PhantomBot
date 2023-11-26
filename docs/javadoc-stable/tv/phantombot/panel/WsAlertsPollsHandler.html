@@ -123,7 +123,7 @@ implements <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title
  boolean&nbsp;ignoreIsPlaying)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAuthHandler()" class="member-name-link">getAuthHandler</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getWsAuthHandler()" class="member-name-link">getWsAuthHandler</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the <a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> assigned to this endpoint</div>
 </div>
@@ -131,9 +131,7 @@ implements <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary
-
- Only gets called if the <a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> returned <code>true</code></div>
+<div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#playVideo(java.lang.String)" class="member-name-link">playVideo</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;filename)</code></div>
@@ -152,7 +150,7 @@ implements <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title
  boolean&nbsp;fullscreen)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#register()" class="member-name-link">register</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerWs()" class="member-name-link">registerWs</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Registers this <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> with the <a href="../../../com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver"><code>WebSocketFrameHandler</code></a></div>
 </div>
@@ -231,6 +229,9 @@ implements <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-com.gmt2001.httpwsserver.WsFrameHandler">Methods inherited from interface&nbsp;com.gmt2001.httpwsserver.<a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></h3>
+<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)">handshakeComplete</a>, <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#onClose(io.netty.channel.Channel)">onClose</a>, <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#pinger(io.netty.channel.ChannelHandlerContext)">pinger</a></code></div>
 </section>
 </li>
 </ul>
@@ -258,27 +259,27 @@ implements <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="register()">
-<h3>register</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></span>&nbsp;<span class="element-name">register</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#register()">WsFrameHandler</a></code></span></div>
+<section class="detail" id="registerWs()">
+<h3>registerWs</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></span>&nbsp;<span class="element-name">registerWs</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#registerWs()">WsFrameHandler</a></code></span></div>
 <div class="block">Registers this <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> with the <a href="../../../com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver"><code>WebSocketFrameHandler</code></a></div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#register()">register</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></dd>
+<dd><code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#registerWs()">registerWs</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></dd>
 <dt>Returns:</dt>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="getAuthHandler()">
-<h3>getAuthHandler</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></span>&nbsp;<span class="element-name">getAuthHandler</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#getAuthHandler()">WsFrameHandler</a></code></span></div>
+<section class="detail" id="getWsAuthHandler()">
+<h3>getWsAuthHandler</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></span>&nbsp;<span class="element-name">getWsAuthHandler</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#getWsAuthHandler()">WsFrameHandler</a></code></span></div>
 <div class="block">Gets the <a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> assigned to this endpoint</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#getAuthHandler()">getAuthHandler</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></dd>
+<dd><code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#getWsAuthHandler()">getWsAuthHandler</a></code>&nbsp;in interface&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></dd>
 <dt>Returns:</dt>
 <dd>An <a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a></dd>
 </dl>
@@ -291,7 +292,7 @@ implements <a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html" title
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</span></div>
 <div class="block"><span class="descfrm-type-label">Description copied from interface:&nbsp;<code><a href="../../../com/gmt2001/httpwsserver/WsFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)">WsFrameHandler</a></code></span></div>
 <div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary
-
+ <p>
  Only gets called if the <a href="../../../com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> returned <code>true</code></div>
 <dl class="notes">
 <dt>Specified by:</dt>

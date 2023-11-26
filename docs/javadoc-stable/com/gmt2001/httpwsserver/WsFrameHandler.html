@@ -74,7 +74,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="../../../tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></code>, <code><a href="../../../tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></code>, <code><a href="../../../tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></code>, <code><a href="../../../tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></code></dd>
+<dd><code><a href="../../../tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></code>, <code><a href="../../../tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></code>, <code><a href="../../../tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></code>, <code><a href="longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></code>, <code><a href="../../../tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public interface </span><span class="element-name type-name-label">WsFrameHandler</span></div>
@@ -91,14 +91,14 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel">
 <div class="summary-table three-column-summary" aria-labelledby="method-summary-table-tab0">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getAuthHandler()" class="member-name-link">getAuthHandler</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#getWsAuthHandler()" class="member-name-link">getWsAuthHandler</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Gets the <a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> assigned to this endpoint</div>
 </div>
@@ -106,13 +106,27 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary
-
- Only gets called if the <a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> returned <code>true</code></div>
+<div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#register()" class="member-name-link">register</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)" class="member-name-link">handshakeComplete</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.HandshakeComplete.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketServerProtocolHandler.HandshakeComplete</a>&nbsp;hc)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Handles the handshake complete event</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#onClose(io.netty.channel.Channel)" class="member-name-link">onClose</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&nbsp;channel)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Handles the channel closing for any reason</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#pinger(io.netty.channel.ChannelHandlerContext)" class="member-name-link">pinger</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">Returns a <a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger"><code>WSServerPinger</code></a> to check for connectivity</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#registerWs()" class="member-name-link">registerWs</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Registers this <a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> with the <a href="WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver"><code>WebSocketFrameHandler</code></a></div>
 </div>
 </div>
@@ -130,9 +144,9 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="register()">
-<h3>register</h3>
-<div class="member-signature"><span class="return-type"><a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></span>&nbsp;<span class="element-name">register</span>()</div>
+<section class="detail" id="registerWs()">
+<h3>registerWs</h3>
+<div class="member-signature"><span class="return-type"><a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></span>&nbsp;<span class="element-name">registerWs</span>()</div>
 <div class="block">Registers this <a href="WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> with the <a href="WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver"><code>WebSocketFrameHandler</code></a></div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -140,9 +154,9 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="getAuthHandler()">
-<h3>getAuthHandler</h3>
-<div class="member-signature"><span class="return-type"><a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></span>&nbsp;<span class="element-name">getAuthHandler</span>()</div>
+<section class="detail" id="getWsAuthHandler()">
+<h3>getWsAuthHandler</h3>
+<div class="member-signature"><span class="return-type"><a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></span>&nbsp;<span class="element-name">getWsAuthHandler</span>()</div>
 <div class="block">Gets the <a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> assigned to this endpoint</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -156,12 +170,49 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">handleFrame</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
  <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketFrame</a>&nbsp;frame)</span></div>
 <div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary
-
+ <p>
  Only gets called if the <a href="auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> returned <code>true</code></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> of the session</dd>
 <dd><code>frame</code> - The <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> to process</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)">
+<h3>handshakeComplete</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">handshakeComplete</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx,
+ <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketServerProtocolHandler.HandshakeComplete.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link">WebSocketServerProtocolHandler.HandshakeComplete</a>&nbsp;hc)</span></div>
+<div class="block">Handles the handshake complete event</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>ctx</code> - The <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> of the session</dd>
+<dd><code>hc</code> - The handshake parameters</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onClose(io.netty.channel.Channel)">
+<h3>onClose</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onClose</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/Channel.html" title="class or interface in io.netty.channel" class="external-link">Channel</a>&nbsp;channel)</span></div>
+<div class="block">Handles the channel closing for any reason</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>channel</code> - The channel that was closed</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="pinger(io.netty.channel.ChannelHandlerContext)">
+<h3>pinger</h3>
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></span>&nbsp;<span class="element-name">pinger</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</span></div>
+<div class="block">Returns a <a href="../wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger"><code>WSServerPinger</code></a> to check for connectivity</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>ctx</code> - The context</dd>
+<dt>Returns:</dt>
+<dd>A pinger; <code>null</code> if not used</dd>
 </dl>
 </section>
 </li>

@@ -184,6 +184,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Adds a follow to the cache, and sends notifications if necessary</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#addOrUpdateClient(io.netty.channel.ChannelHandlerContext,boolean,java.time.Instant,long,java.lang.String,java.util.function.Supplier,boolean)" class="member-name-link">addOrUpdateClient(ChannelHandlerContext, boolean, Instant, long, String, Supplier&lt;String&gt;, boolean)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Adds a <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a>, or updates an existing one, with the provided context
+ and sequence, then replays any missed soft messages and sends any pending
+ strong messages</div>
+</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#addReaction(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji)" class="member-name-link">addReaction(Message, ReactionEmoji)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>
 <div class="block">Method that adds a reaction to a message.</div>
@@ -361,9 +367,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Represents the <code>ATTR_ALLOW_NON_SSL</code> attribute, which stores if the client is allowed to bypass SSL requirements</div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#ATTR_AUTH_USER" class="member-name-link">ATTR_AUTH_USER</a> - Static variable in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/auth/PanelUserAuthenticationHandler.html#ATTR_AUTH_USER" class="member-name-link">ATTR_AUTH_USER</a> - Static variable in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/PanelUserAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">PanelUserAuthenticationHandler</a></dt>
 <dd>
-<div class="block">Represents the <code>ATTR_AUTH_USER</code> attribute</div>
+<div class="block">Represents the <code>ATTR_AUTH_USER</code> attribute, which stores the authenticated user</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#ATTR_AUTHENTICATED" class="member-name-link">ATTR_AUTHENTICATED</a> - Static variable in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
 <dd>
@@ -377,9 +383,22 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Represents the <code>ATTR_IS_READ_ONLY</code> attribute</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#ATTR_PINGER" class="member-name-link">ATTR_PINGER</a> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
+<div class="block">Represents the <code>ATTR_PINGER</code> attribute, which stores the <a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger"><code>WSServerPinger</code></a> that checks connectivity</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#ATTR_REQUEST_URI" class="member-name-link">ATTR_REQUEST_URI</a> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
+<div class="block">Represents the <code>ATTR_REQUEST_URI</code> attribute, which stores the full request URI of the client</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#ATTR_SENT_AUTH_REPLY" class="member-name-link">ATTR_SENT_AUTH_REPLY</a> - Static variable in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Represents the <code>attrSentAuthReply</code> attribute</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#ATTR_SESSIONID" class="member-name-link">ATTR_SESSIONID</a> - Static variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Represents the <code>ATTR_SESSIONID</code> attribute, which uniquely identifies a
+ browser session</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#ATTR_URI" class="member-name-link">ATTR_URI</a> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
@@ -388,6 +407,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/cache/Viewer.html#attributes()" class="member-name-link">attributes()</a> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
 <dd>
 <div class="block">Marks that the attributes have been set on this viewer</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#AUTH_RESULT_CONTENT_TYPE" class="member-name-link">AUTH_RESULT_CONTENT_TYPE</a> - Static variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Content-Type for auth result</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSubSubscription.SubscriptionStatus.html#AUTHORIZATION_REVOKED" class="member-name-link">AUTHORIZATION_REVOKED</a> - Enum constant in enum class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSubSubscription.SubscriptionStatus.html" title="enum class in com.gmt2001.twitch.eventsub">EventSubSubscription.SubscriptionStatus</a></dt>
 <dd>
@@ -507,6 +530,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/PhantomBot.html#botVersion()" class="member-name-link">botVersion()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">Current Version Of PhantomBot.</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#broadcast(java.lang.Object)" class="member-name-link">broadcast(Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Broadcasts a message to all connected clients</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#broadcast(org.json.JSONStringer)" class="member-name-link">broadcast(JSONStringer)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Broadcasts a message to all connected clients</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/cache/Viewer.html#broadcaster()" class="member-name-link">broadcaster()</a> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
 <dd>
@@ -911,9 +942,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">channelRead0(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Handles incoming HTTP requests and passes valid ones to the appropriate <a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver"><code>HttpRequestHandler</code></a>
+<div class="block">Handles incoming HTTP requests and passes valid ones to the appropriate
+ <a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver"><code>HttpRequestHandler</code></a>
 
- If a handler is not available for the requested path, then <code>404 NOT FOUND</code> is sent back to the client</div>
+ If a handler is not available for the requested path, then
+ <code>404 NOT FOUND</code> is sent back to the client</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpSslRedirectHandler.html#channelRead0(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">channelRead0(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpSslRedirectHandler.html" title="class in com.gmt2001.httpwsserver">HttpSslRedirectHandler</a></dt>
 <dd>
@@ -960,14 +993,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">checkAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpRequest</code></a> is a valid authentication request, or if the underlying <code>Channel</code> has already been
- authenticated
-
- When returning <code>false</code>, this method MUST also send either an <code>401 Unauthorized</code>, a <code>Header Location</code>, or an error page back
- to the client</div>
+ authenticated</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">checkAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
 <dd>
-<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpRequest</code></a> has the correct header with valid credentials</div>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpRequest</code></a> has the correct header with valid
+ credentials</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">checkAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpNoAuthenticationHandler</a></dt>
 <dd>
@@ -977,11 +1008,11 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpRequest</code></a> has the correct header with valid credentials</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">checkAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">checkAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
 <dd>
-<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> is a valid authentication frame, or if the underlying <code>Channel</code> has already been authenticated
-
- When returning <code>false</code>, this method MUST also send an <code>Authentication Required</code> frame back to the client</div>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> is a valid authentication frame, or if the underlying <code>Channel</code> has already been authenticated</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">checkAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsNoAuthenticationHandler</a></dt>
 <dd>
@@ -992,25 +1023,32 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">checkAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
 <dd>
-<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> has the correct token and closes the connection after <code>WsSharedRWTokenAuthenticationHandler.maxAttempts</code> failed attempts
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/websocketx/WebSocketFrame.html" title="class or interface in io.netty.handler.codec.http.websocketx" class="external-link"><code>WebSocketFrame</code></a> has the correct token and closes
+ the connection after <code>WsSharedRWTokenAuthenticationHandler.maxAttempts</code> failed attempts
 
- Saves the authorization results in the channel attributes and recalls them to keep the session authorized in subsequent frames
+ Saves the authorization results in the channel attributes and recalls them to
+ keep the session authorized in subsequent frames
 
- If this is an authentication frame, or another frame when authentication already failed, sends a JSON-encoded frame defined as
- <code>{"authresult": string:"true" or "false", "authtype": string:"none" or "read" or "read/write"}</code></div>
+ If this is an authentication frame, or another frame when authentication
+ already failed, sends a JSON-encoded frame defined as
+ <code>{"authresult": string:"true" or "false", "authtype": string:"none" or
+ "read" or "read/write"}</code></div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
-<dd>
-<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contains a valid authorization, or if the underlying <code>Channel</code> has already been authenticated
-
- When returning <code>false</code>, this method MUST NOT send any frames back to the client</div>
-</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsNoAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#checkAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">checkAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders, String)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
 <dd>
-<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contains a valid login for a panel user, if enabled</div>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contains a valid authorization, or if the underlying <code>Channel</code> has already been authenticated</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsNoAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contains a valid login for a panel
+ user, if enabled</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#checkAuthorizationHeaders(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">checkAuthorizationHeaders(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkAuthTokenAndGetUser(java.lang.String)" class="member-name-link">checkAuthTokenAndGetUser(String)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
 <div class="block">Checks if the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel user</code></a> is allowed to logon to the web panel and/or use the websocket by his authentication token</div>
@@ -1025,9 +1063,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#checkFilePermissions(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,java.nio.file.Path,boolean)" class="member-name-link">checkFilePermissions(ChannelHandlerContext, FullHttpRequest, Path, boolean)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Checks if the file or directory pointed to by <code>p</code> exists, is not hidden, is not a symlink, and is readable
-
- Sends back a <code>404 NOT FOUND</code> or <code>403 FORBIDDEN</code> on failure</div>
+<div class="block">Checks if the file or directory pointed to by <code>p</code> exists, is not
+ hidden, is not a symlink, and is readable</div>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html#checkLogin(java.lang.String,java.lang.String)" class="member-name-link">checkLogin(String, String)</a> - Static method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a></dt>
 <dd>
@@ -1107,6 +1144,57 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/JSTimers.html#clearTimer(int)" class="member-name-link">clearTimer(int)</a> - Method in class com.gmt2001.<a href="com/gmt2001/JSTimers.html" title="class in com.gmt2001">JSTimers</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#client(io.netty.channel.Channel)" class="member-name-link">client(Channel)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the channel</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#client(io.netty.channel.ChannelHandlerContext)" class="member-name-link">client(ChannelHandlerContext)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the context</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#client(io.netty.channel.ChannelHandlerContext,java.lang.String)" class="member-name-link">client(ChannelHandlerContext, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a> and
+ Session ID</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#client(tv.phantombot.panel.PanelUser.PanelUser,java.lang.String)" class="member-name-link">client(PanelUser, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a> and Session ID</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html" class="type-name-link" title="class in com.gmt2001.httpwsserver.longpoll">Client</a> - Class in <a href="com/gmt2001/httpwsserver/longpoll/package-summary.html">com.gmt2001.httpwsserver.longpoll</a></dt>
+<dd>
+<div class="block">A client of a <a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>WsWithLongPollHandler</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#clientCache" class="member-name-link">clientCache</a> - Variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">The cache of <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" class="type-name-link" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a> - Class in <a href="com/gmt2001/httpwsserver/longpoll/package-summary.html">com.gmt2001.httpwsserver.longpoll</a></dt>
+<dd>
+<div class="block">Manages a list of authenticated <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> which are associated with a
+ <a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>WsWithLongPollHandler</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#%3Cinit%3E(java.time.Duration,java.time.Duration,java.time.Duration)" class="member-name-link">ClientCache(Duration, Duration, Duration)</a> - Constructor for class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#clients()" class="member-name-link">clients()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Returns an unmodifiable list of current clients</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#clients(java.lang.String)" class="member-name-link">clients(String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets a list of all <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the provided username</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#clients(tv.phantombot.panel.PanelUser.PanelUser)" class="member-name-link">clients(PanelUser)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Gets a list of all <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the provided
+ <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#clientSessionId(reactor.util.function.Tuple5)" class="member-name-link">clientSessionId(Tuple5&lt;ChannelHandlerContext, Boolean, Boolean, String, String&gt;)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">Returns the session ID for the client</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/HTTPWSServer.html#close()" class="member-name-link">close()</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HTTPWSServer.html" title="class in com.gmt2001.httpwsserver">HTTPWSServer</a></dt>
 <dd>
 <div class="block">Shuts down the server, with a grace period for ongoing requests to finish</div>
@@ -1140,6 +1228,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sends a WebSocket frame of type Close, then closes the socket, with a grace period for ongoing requests to finish</div>
 </dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#close(io.netty.handler.codec.http.websocketx.WebSocketCloseStatus,java.lang.String)" class="member-name-link">close(WebSocketCloseStatus, String)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/wspinger/WSPinger.html#close(io.netty.handler.codec.http.websocketx.WebSocketCloseStatus,java.lang.String)" class="member-name-link">close(WebSocketCloseStatus, String)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dd>
+<div class="block">Closes the socket</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html#close(io.netty.handler.codec.http.websocketx.WebSocketCloseStatus,java.lang.String)" class="member-name-link">close(WebSocketCloseStatus, String)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/wsclient/WSClient.html#close(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">close(WebSocketFrame)</a> - Method in class com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a></dt>
 <dd>
 <div class="block">Sends a WebSocket frame of type Close, then closes the socket, with a grace period for ongoing requests to finish</div>
@@ -1177,6 +1273,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/httpwsserver/package-summary.html">com.gmt2001.httpwsserver</a> - package com.gmt2001.httpwsserver</dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/package-summary.html">com.gmt2001.httpwsserver.auth</a> - package com.gmt2001.httpwsserver.auth</dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/package-summary.html">com.gmt2001.httpwsserver.longpoll</a> - package com.gmt2001.httpwsserver.longpoll</dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/x509/package-summary.html">com.gmt2001.httpwsserver.x509</a> - package com.gmt2001.httpwsserver.x509</dt>
 <dd>&nbsp;</dd>
@@ -1384,6 +1482,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Indicates if the socket is connected.</div>
 </dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#connected()" class="member-name-link">connected()</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/wspinger/WSPinger.html#connected()" class="member-name-link">connected()</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dd>
+<div class="block">Indicates if the remote endpoint is connected</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html#connected()" class="member-name-link">connected()</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.ConnectionState.html#CONNECTED" class="member-name-link">CONNECTED</a> - Enum constant in enum class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.ConnectionState.html" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/discord/DiscordAPI.ConnectionState.html#CONNECTING" class="member-name-link">CONNECTING</a> - Enum constant in enum class tv.phantombot.discord.<a href="tv/phantombot/discord/DiscordAPI.ConnectionState.html" title="enum class in tv.phantombot.discord">DiscordAPI.ConnectionState</a></dt>
@@ -1716,6 +1822,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#crossJoin(org.jooq.TableLike)" class="member-name-link">crossJoin(TableLike&lt;?&gt;)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#ctxTimeout" class="member-name-link">ctxTimeout</a> - Variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">The timeout until a WS client is sent a PING frame or an HTTP client is sent
+ an empty response</div>
+</dd>
 <dt><a href="tv/phantombot/ytplayer/YTPlayerState.html#CUED" class="member-name-link">CUED</a> - Enum constant in enum class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/YTPlayerState.html" title="enum class in tv.phantombot.ytplayer">YTPlayerState</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#currentId()" class="member-name-link">currentId()</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
@@ -1955,9 +2066,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#detectContentType(java.lang.String)" class="member-name-link">detectContentType(String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Detects the content MIME type based on the filename or manually provided type extension
-
- NOTE: This method ignores everything before the last <code>.</code> in the filename</div>
+<div class="block">Detects the content MIME type based on the filename or manually provided type
+ extension</div>
 </dd>
 <dt><a href="com/gmt2001/security/Digest.html" class="type-name-link" title="class in com.gmt2001.security">Digest</a> - Class in <a href="com/gmt2001/security/package-summary.html">com.gmt2001.security</a></dt>
 <dd>
@@ -2351,6 +2461,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/cache/EmotesCache.EmotesSet.html#%3Cinit%3E(java.lang.String,java.util.List,java.util.List,java.util.List)" class="member-name-link">EmotesSet(String, List&lt;EmoteEntry&gt;, List&lt;EmoteEntry&gt;, List&lt;EmoteEntry&gt;)</a> - Constructor for class tv.phantombot.cache.<a href="tv/phantombot/cache/EmotesCache.EmotesSet.html" title="class in tv.phantombot.cache">EmotesCache.EmotesSet</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#EMPTY_LONG_POLL_RESPONSE" class="member-name-link">EMPTY_LONG_POLL_RESPONSE</a> - Static variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">Empty response for a timed-out long poll</div>
+</dd>
 <dt><a href="com/gmt2001/RollbarProvider.html#enable()" class="member-name-link">enable()</a> - Method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>
 <div class="block">Enables sending Rollbar exception reports and prints the disable/GDPR info to the console</div>
@@ -2391,13 +2505,25 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Locks, resolves, or cancels a Channel Points Prediction.</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#enqueue(java.lang.Iterable,java.lang.Object)" class="member-name-link">enqueue(Iterable&lt;Client&gt;, Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Enqueues a message</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#enqueue(java.lang.Iterable,org.json.JSONStringer)" class="member-name-link">enqueue(Iterable&lt;Client&gt;, JSONStringer)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Enqueues a message</div>
+</dd>
 <dt><a href="tv/phantombot/CaselessProperties.html#entrySet()" class="member-name-link">entrySet()</a> - Method in class tv.phantombot.<a href="tv/phantombot/CaselessProperties.html" title="class in tv.phantombot">CaselessProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#eq(org.jooq.Table)" class="member-name-link">eq(Table&lt;SectionVariableValueRecord&gt;)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#equal(org.jooq.Table)" class="member-name-link">equal(Table&lt;SectionVariableValueRecord&gt;)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/Console/err.html" class="type-name-link" title="class in com.gmt2001.Console">err</a> - Class in <a href="com/gmt2001/Console/package-summary.html">com.gmt2001.Console</a></dt>
 <dd>&nbsp;</dd>
@@ -3350,35 +3476,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/PhantomBot.html#getAuthFlow()" class="member-name-link">getAuthFlow()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#getAuthorizationHeaders(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">getAuthorizationHeaders(HttpHeaders)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Gets the <a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>HttpAuthenticationHandler</code></a> assigned to this endpoint</div>
+<div class="block">Returns the authorization headers and session ID</div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#getAuthorizationString(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">getAuthorizationString(HttpHeaders)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Gets the <a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> assigned to this endpoint</div>
-</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html" title="class in tv.phantombot.httpserver">HTTPAuthenticatedHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPNoAuthHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPOAuthHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPOAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPOAuthHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html" title="class in tv.phantombot.httpserver">HTTPPanelAndYTHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HttpSetupHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#getAuthHandler()" class="member-name-link">getAuthHandler()</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#getAuthorizationString(io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">getAuthorizationString(HttpHeaders)</a> - Static method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
-<dd>
-<div class="block">Checks the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> for either an <code>Authorization Basic</code>, or a cookie named <code>panellogin</code></div>
+<div class="block">Checks the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> for either an
+ <code>Authorization: Basic</code> header, or a cookie named <code>panellogin</code></div>
 </dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#getBinding()" class="member-name-link">getBinding()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
@@ -4005,6 +4110,22 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.management/java/lang/management/MemoryUsage.html" title="class or interface in java.lang.management" class="external-link"><code>MemoryUsage</code></a> containing information about the current memory usage of the heap</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>HttpAuthenticationHandler</code></a> assigned to this endpoint</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html" title="class in tv.phantombot.httpserver">HTTPAuthenticatedHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPNoAuthHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPOAuthHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPOAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPOAuthHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html" title="class in tv.phantombot.httpserver">HTTPPanelAndYTHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HttpSetupHandler.html#getHttpAuthHandler()" class="member-name-link">getHttpAuthHandler()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/PhantomBot.html#getHTTPOAuthHandler()" class="member-name-link">getHTTPOAuthHandler()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/PhantomBot.html#getHTTPPanelAndYTHandler()" class="member-name-link">getHTTPPanelAndYTHandler()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
@@ -4992,6 +5113,16 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Method that returns the user whose mode changed</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#getUser(io.netty.channel.ChannelHandlerContext)" class="member-name-link">getUser(ChannelHandlerContext)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/PanelUserAuthenticationHandler.html#getUser(io.netty.channel.ChannelHandlerContext)" class="member-name-link">getUser(ChannelHandlerContext)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/PanelUserAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">PanelUserAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Returns the authenticated <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#getUser(io.netty.channel.ChannelHandlerContext)" class="member-name-link">getUser(ChannelHandlerContext)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#getUser(io.netty.channel.ChannelHandlerContext)" class="member-name-link">getUser(ChannelHandlerContext)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/discord/util/DiscordUtil.html#getUser(java.lang.String)" class="member-name-link">getUser(String)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/TwitchAPIv5.html#GetUser(java.lang.String)" class="member-name-link">GetUser(String)</a> - Method in class com.gmt2001.<a href="com/gmt2001/TwitchAPIv5.html" title="class in com.gmt2001">TwitchAPIv5</a></dt>
@@ -5230,8 +5361,22 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/twitch/irc/TwitchSession.html#getWrites()" class="member-name-link">getWrites()</a> - Method in class tv.phantombot.twitch.irc.<a href="tv/phantombot/twitch/irc/TwitchSession.html" title="class in tv.phantombot.twitch.irc">TwitchSession</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#getWsSessions(java.lang.String)" class="member-name-link">getWsSessions(String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#getWsAuthHandler()" class="member-name-link">getWsAuthHandler()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#getWsAuthHandler()" class="member-name-link">getWsAuthHandler()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
+<dd>
+<div class="block">Gets the <a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> assigned to this endpoint</div>
+</dd>
+<dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#getWsAuthHandler()" class="member-name-link">getWsAuthHandler()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html#getWsAuthHandler()" class="member-name-link">getWsAuthHandler()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#getWsAuthHandler()" class="member-name-link">getWsAuthHandler()</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#getWsSessions(java.lang.String)" class="member-name-link">getWsSessions(String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
+<dd>
+<div class="block">Returns a queue containing all authenticated WS session channels that match the given URI</div>
+</dd>
 <dt><a href="tv/phantombot/event/ytplayer/YTPlayerDeletePlaylistByIDEvent.html#getYouTubeID()" class="member-name-link">getYouTubeID()</a> - Method in class tv.phantombot.event.ytplayer.<a href="tv/phantombot/event/ytplayer/YTPlayerDeletePlaylistByIDEvent.html" title="class in tv.phantombot.event.ytplayer">YTPlayerDeletePlaylistByIDEvent</a></dt>
 <dd>
 <div class="block">Method that returns the YouTube song ID.</div>
@@ -5301,29 +5446,31 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/script/ObservingDebugger.html#handleCompilationDone(org.mozilla.javascript.Context,org.mozilla.javascript.debug.DebuggableScript,java.lang.String)" class="member-name-link">handleCompilationDone(Context, DebuggableScript, String)</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ObservingDebugger.html" title="class in tv.phantombot.script">ObservingDebugger</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysByOrderQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,org.json.JSONObject)" class="member-name-link">handleDBKeysByOrderQuery(ChannelHandlerContext, WebSocketFrame, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysByOrderQuery(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleDBKeysByOrderQuery(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysListQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,org.json.JSONObject)" class="member-name-link">handleDBKeysListQuery(ChannelHandlerContext, WebSocketFrame, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysListQuery(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleDBKeysListQuery(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,org.json.JSONObject)" class="member-name-link">handleDBKeysQuery(ChannelHandlerContext, WebSocketFrame, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysQuery(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleDBKeysQuery(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysSearchQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,org.json.JSONObject)" class="member-name-link">handleDBKeysSearchQuery(ChannelHandlerContext, WebSocketFrame, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBKeysSearchQuery(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleDBKeysSearchQuery(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleDBQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,java.lang.String,java.lang.String)" class="member-name-link">handleDBQuery(ChannelHandlerContext, WebSocketFrame, String, String)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,org.json.JSONObject)" class="member-name-link">handleDBQuery(ChannelHandlerContext, WebSocketFrame, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBQuery(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleDBQuery(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleDBUpdate(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">handleDBUpdate(ChannelHandlerContext, WebSocketFrame, String, String, String, String)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBValuesByOrderQuery(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame,org.json.JSONObject)" class="member-name-link">handleDBValuesByOrderQuery(ChannelHandlerContext, WebSocketFrame, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleDBValuesByOrderQuery(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleDBValuesByOrderQuery(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/ExceptionHandler.html#handleError(net.engio.mbassy.bus.error.PublicationError)" class="member-name-link">handleError(PublicationError)</a> - Method in class tv.phantombot.event.<a href="tv/phantombot/event/ExceptionHandler.html" title="class in tv.phantombot.event">ExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
 <dd>
-<div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary
-
- Only gets called if the <a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> returned <code>true</code></div>
+<div class="block">Handles the WebSocket frame and sends a response back to the client, if necessary</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSub.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub">EventSub</a></dt>
 <dd>&nbsp;</dd>
@@ -5339,11 +5486,15 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#handleFrame(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">handleFrame(ChannelHandlerContext, WebSocketFrame)</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#handleMessage(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleMessage(ChannelHandlerContext, JSONObject)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">Handles a message frame</div>
+</dd>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#handleMessage(io.netty.channel.ChannelHandlerContext,org.json.JSONObject)" class="member-name-link">handleMessage(ChannelHandlerContext, JSONObject)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#handleRequest(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleRequest(ChannelHandlerContext, FullHttpRequest)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
 <dd>
@@ -5351,6 +5502,8 @@ loadScripts(document, 'script');</script>
 
  Only gets called if the <a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>HttpAuthenticationHandler</code></a> returned <code>true</code></div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#handleRequest(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleRequest(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html#handleRequest(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleRequest(ChannelHandlerContext, FullHttpRequest)</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html" title="class in tv.phantombot.httpserver">HTTPAuthenticatedHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html#handleRequest(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">handleRequest(ChannelHandlerContext, FullHttpRequest)</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPNoAuthHandler</a></dt>
@@ -5372,6 +5525,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Handles the handshake complete event</div>
 </dd>
 <dt><a href="com/gmt2001/wspinger/WSPinger.html#handshakeComplete(io.netty.channel.ChannelHandlerContext)" class="member-name-link">handshakeComplete(ChannelHandlerContext)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dd>
+<div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)" class="member-name-link">handshakeComplete(ChannelHandlerContext, WebSocketServerProtocolHandler.HandshakeComplete)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
+<dd>
+<div class="block">Handles the handshake complete event</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSPinger.html#handshakeComplete(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler.HandshakeComplete)" class="member-name-link">handshakeComplete(ChannelHandlerContext, WebSocketServerProtocolHandler.HandshakeComplete)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
 <dd>
 <div class="block">Initializes failureCount and lastPong, then starts the ping timer</div>
 </dd>
@@ -5407,9 +5568,13 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Indicates if there was an exception not related to JSON decoding</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/PanelUser/PanelUser.html#hashCode()" class="member-name-link">hashCode()</a> - Method in class tv.phantombot.panel.PanelUser.<a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser">PanelUser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/PatternDetector.html#hasIpLinks(java.lang.String)" class="member-name-link">hasIpLinks(String)</a> - Static method in class com.gmt2001.<a href="com/gmt2001/PatternDetector.html" title="class in com.gmt2001">PatternDetector</a></dt>
 <dd>
@@ -5493,9 +5658,13 @@ loadScripts(document, 'script');</script>
 <div class="block">Shortcut to perform a HEAD with the specified headers</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HTTPWSServer.html#HEADER_CF_RAY" class="member-name-link">HEADER_CF_RAY</a> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HTTPWSServer.html" title="class in com.gmt2001.httpwsserver">HTTPWSServer</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">CF-Ray</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/HTTPWSServer.html#HEADER_X_FORWARDED_HOST" class="member-name-link">HEADER_X_FORWARDED_HOST</a> - Static variable in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HTTPWSServer.html" title="class in com.gmt2001.httpwsserver">HTTPWSServer</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">X-Forwarded-Host</div>
+</dd>
 <dt><a href="com/gmt2001/HttpResponse.html#headers" class="member-name-link">headers</a> - Variable in class com.gmt2001.<a href="com/gmt2001/HttpResponse.html" title="class in com.gmt2001">HttpResponse</a></dt>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
@@ -5532,7 +5701,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" class="type-name-link" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a> - Class in <a href="com/gmt2001/httpwsserver/auth/package-summary.html">com.gmt2001.httpwsserver.auth</a></dt>
 <dd>
-<div class="block">Provides a <a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>HttpAuthenticationHandler</code></a> that implements HTTP Basic authentication, as well as allowing the same format to be provided in a
+<div class="block">Provides a <a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>HttpAuthenticationHandler</code></a> that implements HTTP Basic
+ authentication, as well as allowing the same format to be provided in a
  cookie</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">HttpBasicAuthenticationHandler(String, String, String, String)</a> - Constructor for class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
@@ -5611,7 +5781,8 @@ loadScripts(document, 'script');</script>
 &nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" class="type-name-link" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a> - Class in <a href="com/gmt2001/httpwsserver/package-summary.html">com.gmt2001.httpwsserver</a></dt>
 <dd>
-<div class="block">Processes HTTP requests and passes successful ones to the appropriate registered final handler</div>
+<div class="block">Processes HTTP requests and passes successful ones to the appropriate
+ registered final handler</div>
 </dd>
 <dt><a href="tv/phantombot/httpserver/HttpSetupHandler.html" class="type-name-link" title="class in tv.phantombot.httpserver">HttpSetupHandler</a> - Class in <a href="tv/phantombot/httpserver/package-summary.html">tv.phantombot.httpserver</a></dt>
 <dd>&nbsp;</dd>
@@ -6091,24 +6262,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#intoXML(org.jooq.XMLFormat)" class="member-name-link">intoXML(XMLFormat)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
-<dd>
-<div class="block">Invalidates the authentication of the specified <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a>, if supported by the authentication handler</div>
-</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpNoAuthenticationHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpSharedTokenOrPasswordAuthenticationHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">WsAuthenticationHandler</a></dt>
-<dd>
-<div class="block">Invalidates the authentication of the specified <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a>, if supported by the authentication handler</div>
-</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsNoAuthenticationHandler</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#invalidateAuthorization(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">invalidateAuthorization(ChannelHandlerContext, WebSocketFrame)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Invalidates the authentication of the specified <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/datastore2/Datastore2.html#invalidateTableCache()" class="member-name-link">invalidateTableCache()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
 <dd>
 <div class="block">Invalidates the cache of known tables</div>
@@ -6332,9 +6489,7 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">isAuthorized(ChannelHandlerContext, FullHttpRequest)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpRequest.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpRequest</code></a> is a valid authentication request, or if the underlying <code>Channel</code> has already been
- authenticated
-
- When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+ authenticated</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">isAuthorized(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
@@ -6342,30 +6497,42 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">isAuthorized(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpSharedTokenOrPasswordAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest)" class="member-name-link">isAuthorized(ChannelHandlerContext, FullHttpRequest)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
 <dd>
 <div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contain a valid authorization, or if the underlying <code>Channel</code> has already been
- authenticated
-
- When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+ authenticated</div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpNoAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpNoAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpSharedTokenOrPasswordAuthenticationHandler</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpSharedTokenOrPasswordAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.HttpHeaders,java.lang.String,boolean)" class="member-name-link">isAuthorized(ChannelHandlerContext, HttpHeaders, String, boolean)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Checks if the given <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/HttpHeaders.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>HttpHeaders</code></a> contain a valid authorization, or if
+ the underlying <code>Channel</code> has already been
+ authenticated</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(io.netty.channel.ChannelHandlerContext,java.lang.String,boolean,org.json.JSONObject)" class="member-name-link">isAuthorized(ChannelHandlerContext, String, boolean, JSONObject)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Checks if the given <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a> is a valid auth request frame</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html#isAuthorized(java.lang.String,java.lang.String)" class="member-name-link">isAuthorized(String, String)</a> - Method in interface com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth">HttpAuthenticationHandler</a></dt>
 <dd>
-<div class="block">Checks if the given username and password is a valid
-
- When returning <code>false</code>, this method MUST NOT send a response to the client</div>
+<div class="block">Checks if the given username and password is a valid</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html#isAuthorized(java.lang.String,java.lang.String)" class="member-name-link">isAuthorized(String, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpBasicAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpBasicAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html#isAuthorized(java.lang.String,java.lang.String)" class="member-name-link">isAuthorized(String, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpNoAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpNoAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html#isAuthorized(java.lang.String,java.lang.String)" class="member-name-link">isAuthorized(String, String)</a> - Method in class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/HttpSharedTokenOrPasswordAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">HttpSharedTokenOrPasswordAuthenticationHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#isAuthorized(java.lang.String,java.lang.String)" class="member-name-link">isAuthorized(String, String)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HTTPWSServer.html#isAutoSsl()" class="member-name-link">isAutoSsl()</a> - Method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HTTPWSServer.html" title="class in com.gmt2001.httpwsserver">HTTPWSServer</a></dt>
 <dd>&nbsp;</dd>
@@ -6573,6 +6740,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/PathValidator.html#isValidPathWebAuth(java.lang.String)" class="member-name-link">isValidPathWebAuth(String)</a> - Static method in class com.gmt2001.<a href="com/gmt2001/PathValidator.html" title="class in com.gmt2001">PathValidator</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#isWs()" class="member-name-link">isWs()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>
+<div class="block">Indicates if the current context is a WS socket</div>
+</dd>
 <dt><a href="tv/phantombot/PhantomBot.html#isYouTubeKeyEmpty()" class="member-name-link">isYouTubeKeyEmpty()</a> - Method in class tv.phantombot.<a href="tv/phantombot/PhantomBot.html" title="class in tv.phantombot">PhantomBot</a></dt>
 <dd>
 <div class="block">Check to see if YouTube Key is configured.</div>
@@ -6712,6 +6883,23 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Timestamp of last login</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#lastReceived(com.gmt2001.httpwsserver.longpoll.Client,java.time.Instant,long)" class="member-name-link">lastReceived(Client, Instant, long)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sets the last received sequence from the given <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#lastReceived(io.netty.channel.ChannelHandlerContext,java.time.Instant,long)" class="member-name-link">lastReceived(ChannelHandlerContext, Instant, long)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sets the last received sequence from the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> of the given
+ <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#lastReceivedSequence()" class="member-name-link">lastReceivedSequence()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>
+<div class="block">The last received message sequence within <a href="com/gmt2001/httpwsserver/longpoll/Client.html#lastReceivedTimestamp()"><code>Client.lastReceivedTimestamp()</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#lastReceivedTimestamp()" class="member-name-link">lastReceivedTimestamp()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>
+<div class="block">The last received message timestamp, to the nearest millisecond</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/cache/Viewer.html#lastSeen()" class="member-name-link">lastSeen()</a> - Method in class com.gmt2001.twitch.cache.<a href="com/gmt2001/twitch/cache/Viewer.html" title="class in com.gmt2001.twitch.cache">Viewer</a></dt>
 <dd>
 <div class="block">The last time this user was seen</div>
@@ -6760,7 +6948,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#listDirectory(io.netty.channel.ChannelHandlerContext,io.netty.handler.codec.http.FullHttpRequest,java.nio.file.Path)" class="member-name-link">listDirectory(ChannelHandlerContext, FullHttpRequest, Path)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> back to the client that lists the contents of the directory pointed to by <code>p</code></div>
+<div class="block">Transmits a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> back to the client that lists the
+ contents of the directory pointed to by <code>p</code></div>
 </dd>
 <dt><a href="tv/phantombot/event/Listener.html" class="type-name-link" title="interface in tv.phantombot.event">Listener</a> - Interface in <a href="tv/phantombot/event/package-summary.html">tv.phantombot.event</a></dt>
 <dd>
@@ -6797,6 +6986,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/RollbarProvider.html#localsToCustom(java.lang.String%5B%5D,java.lang.Object%5B%5D)" class="member-name-link">localsToCustom(String[], Object[])</a> - Static method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>
 <div class="block">Creates a new <code>custom</code> map and adds the provided local variables to a sub-object</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSPinger.html#lock" class="member-name-link">lock</a> - Variable in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dd>
+<div class="block">Mutex</div>
 </dd>
 <dt><a href="tv/phantombot/twitch/api/Helix.PredictionStatus.html#LOCKED" class="member-name-link">LOCKED</a> - Enum constant in enum class tv.phantombot.twitch.api.<a href="tv/phantombot/twitch/api/Helix.PredictionStatus.html" title="enum class in tv.phantombot.twitch.api">Helix.PredictionStatus</a></dt>
 <dd>
@@ -6900,6 +7093,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/illusionaryone/Logger.html#logTimestamp(java.time.ZoneId)" class="member-name-link">logTimestamp(ZoneId)</a> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.html" title="class in com.illusionaryone">Logger</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#LONG_POLL_CONTENT_TYPE" class="member-name-link">LONG_POLL_CONTENT_TYPE</a> - Static variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">Content-Type for long poll</div>
+</dd>
 <dt><a href="com/gmt2001/datastore2/Datastore2.html#longTextDataType()" class="member-name-link">longTextDataType()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
 <dd>
 <div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link"><code>DataType</code></a> representing the <code>LONGTEXT</code> equivalent SQL data type for the driver</div>
@@ -7287,24 +7484,12 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="tv/phantombot/script/ScriptApi.html#on(tv.phantombot.script.Script,java.lang.String,tv.phantombot.script.ScriptEventHandler)" class="member-name-link">on(Script, String, ScriptEventHandler)</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptApi.html" title="class in tv.phantombot.script">ScriptApi</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/twitch/eventsub/EventSub.html#onClose()" class="member-name-link">onClose()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub">EventSub</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#onClose()" class="member-name-link">onClose()</a> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
 <dd>
 <div class="block">Default handler for TMIMessageType.CLOSE, no-op</div>
 </dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/UserStateTMIProcessor.html#onClose()" class="member-name-link">onClose()</a> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/UserStateTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">UserStateTMIProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html#onClose()" class="member-name-link">onClose()</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html" title="class in com.gmt2001.twitch.tmi">TwitchMessageInterface</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="com/gmt2001/wsclient/WsClientFrameHandler.html#onClose()" class="member-name-link">onClose()</a> - Method in interface com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></dt>
-<dd>
-<div class="block">Handles the channel closing for any reason.</div>
-</dd>
-<dt><a href="com/gmt2001/wspinger/WSPinger.html#onClose()" class="member-name-link">onClose()</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
-<dd>
-<div class="block">Cancels future execution of the timers when the socket closes</div>
-</dd>
 <dt><a href="tv/phantombot/twitch/pubsub/processors/AbstractPubSubProcessor.html#onClose()" class="member-name-link">onClose()</a> - Method in class tv.phantombot.twitch.pubsub.processors.<a href="tv/phantombot/twitch/pubsub/processors/AbstractPubSubProcessor.html" title="class in tv.phantombot.twitch.pubsub.processors">AbstractPubSubProcessor</a></dt>
 <dd>
 <div class="block">Default handler for PubSubMessageType.CLOSE, no-op</div>
@@ -7314,6 +7499,22 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html#onClose(int,java.lang.String)" class="member-name-link">onClose(int, String)</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html" title="class in com.gmt2001.twitch.tmi">TwitchMessageInterface</a></dt>
 <dd>
 <div class="block">Notifies subscribed processors that the socket has closed and initiates reconnecting if there wasn't an outbound 1000 close code</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#onClose(io.netty.channel.Channel)" class="member-name-link">onClose(Channel)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
+<dd>
+<div class="block">Handles the channel closing for any reason</div>
+</dd>
+<dt><a href="com/gmt2001/twitch/eventsub/EventSub.html#onClose(io.netty.channel.Channel)" class="member-name-link">onClose(Channel)</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub">EventSub</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html#onClose(io.netty.channel.Channel)" class="member-name-link">onClose(Channel)</a> - Method in class com.gmt2001.twitch.tmi.<a href="com/gmt2001/twitch/tmi/TwitchMessageInterface.html" title="class in com.gmt2001.twitch.tmi">TwitchMessageInterface</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/wsclient/WsClientFrameHandler.html#onClose(io.netty.channel.Channel)" class="member-name-link">onClose(Channel)</a> - Method in interface com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WsClientFrameHandler.html" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a></dt>
+<dd>
+<div class="block">Handles the channel closing for any reason</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSPinger.html#onClose(io.netty.channel.Channel)" class="member-name-link">onClose(Channel)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dd>
+<div class="block">Cancels future execution of the timers when the socket closes</div>
 </dd>
 <dt><a href="com/gmt2001/module/Module.html#onCommandEvent(tv.phantombot.event.command.CommandEvent)" class="member-name-link">onCommandEvent(CommandEvent)</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
 <dd>
@@ -7720,7 +7921,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sends a toastr notification to the panel
 
- The notification is sent to all currently authenticated users on the panel if the parameter ctx is  <code>null</code></div>
+ The notification is sent to all currently authenticated users on the panel if
+ the parameter ctx is <code>null</code></div>
 </dd>
 <dt><a href="tv/phantombot/panel/WsPanelHandler.html#panelNotification(java.lang.String,java.lang.String)" class="member-name-link">panelNotification(String, String)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>&nbsp;</dd>
@@ -7739,6 +7941,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUser.Type.html" class="type-name-link" title="enum class in tv.phantombot.panel.PanelUser">PanelUser.Type</a> - Enum Class in <a href="tv/phantombot/panel/PanelUser/package-summary.html">tv.phantombot.panel.PanelUser</a></dt>
 <dd>
 <div class="block">User types</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/auth/PanelUserAuthenticationHandler.html" class="type-name-link" title="interface in com.gmt2001.httpwsserver.auth">PanelUserAuthenticationHandler</a> - Interface in <a href="com/gmt2001/httpwsserver/auth/package-summary.html">com.gmt2001.httpwsserver.auth</a></dt>
+<dd>
+<div class="block">An extension of an authentication handler which can potentially use a <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a> for authorization</div>
 </dd>
 <dt><a href="tv/phantombot/panel/PanelUser/PanelUserHandler.html" class="type-name-link" title="class in tv.phantombot.panel.PanelUser">PanelUserHandler</a> - Class in <a href="tv/phantombot/panel/PanelUser/package-summary.html">tv.phantombot.panel.PanelUser</a></dt>
 <dd>
@@ -7853,6 +8059,12 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/gmt2001/util/Reflect.html#pid()" class="member-name-link">pid()</a> - Static method in class com.gmt2001.util.<a href="com/gmt2001/util/Reflect.html" title="class in com.gmt2001.util">Reflect</a></dt>
 <dd>
 <div class="block">Attempts to retrieve the PID of the running process from the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.management/java/lang/management/RuntimeMXBean.html" title="class or interface in java.lang.management" class="external-link"><code>RuntimeMXBean</code></a> of the JVM process</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#pinger(io.netty.channel.ChannelHandlerContext)" class="member-name-link">pinger(ChannelHandlerContext)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#pinger(io.netty.channel.ChannelHandlerContext)" class="member-name-link">pinger(ChannelHandlerContext)</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
+<dd>
+<div class="block">Returns a <a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger"><code>WSServerPinger</code></a> to check for connectivity</div>
 </dd>
 <dt><a href="com/gmt2001/wspinger/PingPongSupplierPredicate.html" class="type-name-link" title="interface in com.gmt2001.wspinger">PingPongSupplierPredicate</a> - Interface in <a href="com/gmt2001/wspinger/package-summary.html">com.gmt2001.wspinger</a></dt>
 <dd>
@@ -8034,40 +8246,26 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#prepareHttpResponse(io.netty.handler.codec.http.HttpResponseStatus)" class="member-name-link">prepareHttpResponse(HttpResponseStatus)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission of a status code only
-
- If the value of <code>status</code> is in the <code>CLIENT ERROR 4xx</code>, <code>SERVER ERROR 5xx</code>, or an unknown class, then the standard name of the
- status code is appended to the beginning of the HTML response</div>
+<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission of a status
+ code only</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#prepareHttpResponse(io.netty.handler.codec.http.HttpResponseStatus,byte%5B%5D,java.lang.String)" class="member-name-link">prepareHttpResponse(HttpResponseStatus, byte[], String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission
-
- This method automatically sets the <code>Content-Type</code> and <code>Content-Length</code> headers
-
- If the value of <code>status</code> is in the <code>CLIENT ERROR 4xx</code>, <code>SERVER ERROR 5xx</code>, or an unknown class, then the standard name of the
- status code is appended to the beginning of the HTML response, along with 2 line breaks and the MIME type is set to <code>text/html</code>, unless
- <code>fileNameOrType</code> ends with <code>json</code> or <code>xml</code></div>
+<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#prepareHttpResponse(io.netty.handler.codec.http.HttpResponseStatus,java.lang.String)" class="member-name-link">prepareHttpResponse(HttpResponseStatus, String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission as text/plain
-
- This method automatically sets the <code>Content-Type</code> and <code>Content-Length</code> headers
-
- If the value of <code>status</code> is in the <code>CLIENT ERROR 4xx</code>, <code>SERVER ERROR 5xx</code>, or an unknown class, then the standard name of the
- status code is appended to the beginning of the HTML response, along with 2 line breaks and the MIME type is set to <code>text/html</code>, unless
- <code>fileNameOrType</code> ends with <code>json</code> or <code>xml</code></div>
+<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission as
+ text/plain</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#prepareHttpResponse(io.netty.handler.codec.http.HttpResponseStatus,java.lang.String,java.lang.String)" class="member-name-link">prepareHttpResponse(HttpResponseStatus, String, String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
-<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission
-
- This method automatically sets the <code>Content-Type</code> and <code>Content-Length</code> headers
-
- If the value of <code>status</code> is in the <code>CLIENT ERROR 4xx</code>, <code>SERVER ERROR 5xx</code>, or an unknown class, then the standard name of the
- status code is appended to the beginning of the HTML response, along with 2 line breaks and the MIME type is set to <code>text/html</code>, unless
- <code>fileNameOrType</code> ends with <code>json</code> or <code>xml</code></div>
+<div class="block">Creates and prepares a <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for transmission</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#preparePreflightResponse(io.netty.handler.codec.http.FullHttpRequest,java.util.List,java.util.List,java.time.Duration)" class="member-name-link">preparePreflightResponse(FullHttpRequest, List&lt;HttpMethod&gt;, List&lt;String&gt;, Duration)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
+<dd>
+<div class="block">Creates and prepares a CORS preflight <a href="https://netty.io/4.1/api/io/netty/handler/codec/http/FullHttpResponse.html" title="class or interface in io.netty.handler.codec.http" class="external-link"><code>FullHttpResponse</code></a> for
+ transmission</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#prepareTextWebSocketResponse(java.lang.String)" class="member-name-link">prepareTextWebSocketResponse(String)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
@@ -8734,6 +8932,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">RFC3339 timestamp of when the reward was redeemed as a string.</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html" class="type-name-link" title="class in com.gmt2001.httpwsserver">ReferenceCountedUtil</a> - Class in <a href="com/gmt2001/httpwsserver/package-summary.html">com.gmt2001.httpwsserver</a></dt>
+<dd>
+<div class="block">Utilities for working with <a href="https://netty.io/4.1/api/io/netty/util/ReferenceCounted.html" title="class or interface in io.netty.util" class="external-link"><code>ReferenceCounted</code></a> objects</div>
+</dd>
 <dt><a href="com/gmt2001/util/Reflect.html" class="type-name-link" title="class in com.gmt2001.util">Reflect</a> - Class in <a href="com/gmt2001/util/package-summary.html">com.gmt2001.util</a></dt>
 <dd>
 <div class="block">Provides methods which perform common reflection operations</div>
@@ -8746,33 +8948,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Refreshes the internal list of existing subscriptions</div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#register()" class="member-name-link">register()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
-<dd>
-<div class="block">Registers this <a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver"><code>HttpRequestHandler</code></a> with the <a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver"><code>HttpServerPageHandler</code></a></div>
-</dd>
-<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#register()" class="member-name-link">register()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
-<dd>
-<div class="block">Registers this <a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> with the <a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver"><code>WebSocketFrameHandler</code></a></div>
-</dd>
 <dt><a href="com/gmt2001/util/RestartRunner.html#register()" class="member-name-link">register()</a> - Method in class com.gmt2001.util.<a href="com/gmt2001/util/RestartRunner.html" title="class in com.gmt2001.util">RestartRunner</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html" title="class in tv.phantombot.httpserver">HTTPAuthenticatedHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPNoAuthHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPOAuthHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPOAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPOAuthHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html" title="class in tv.phantombot.httpserver">HTTPPanelAndYTHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/httpserver/HttpSetupHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#register()" class="member-name-link">register()</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/script/ScriptEventManager.html#register(java.lang.String,tv.phantombot.script.ScriptEventHandler)" class="member-name-link">register(String, ScriptEventHandler)</a> - Method in class tv.phantombot.script.<a href="tv/phantombot/script/ScriptEventManager.html" title="class in tv.phantombot.script">ScriptEventManager</a></dt>
 <dd>
@@ -8782,15 +8958,51 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Registers an instance of a class implementing <a href="tv/phantombot/event/Listener.html" title="interface in tv.phantombot.event"><code>Listener</code></a> to receive events</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/HttpRequestHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver">HttpRequestHandler</a></dt>
+<dd>
+<div class="block">Registers this <a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver"><code>HttpRequestHandler</code></a> with the <a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver"><code>HttpServerPageHandler</code></a></div>
+</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPAuthenticatedHandler.html" title="class in tv.phantombot.httpserver">HTTPAuthenticatedHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPNoAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPNoAuthHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPOAuthHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPOAuthHandler.html" title="class in tv.phantombot.httpserver">HTTPOAuthHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HTTPPanelAndYTHandler.html" title="class in tv.phantombot.httpserver">HTTPPanelAndYTHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/httpserver/HttpSetupHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#registerHttp()" class="member-name-link">registerHttp()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html#registerHttpHandler(java.lang.String,com.gmt2001.httpwsserver.HttpRequestHandler)" class="member-name-link">registerHttpHandler(String, HttpRequestHandler)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HttpServerPageHandler.html" title="class in com.gmt2001.httpwsserver">HttpServerPageHandler</a></dt>
 <dd>
 <div class="block">Registers a HTTP URI path to a <a href="com/gmt2001/httpwsserver/HttpRequestHandler.html" title="interface in com.gmt2001.httpwsserver"><code>HttpRequestHandler</code></a></div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html#registerWs()" class="member-name-link">registerWs()</a> - Method in interface com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a></dt>
+<dd>
+<div class="block">Registers this <a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a> with the <a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver"><code>WebSocketFrameHandler</code></a></div>
+</dd>
+<dt><a href="tv/phantombot/panel/WsAlertsPollsHandler.html#registerWs()" class="member-name-link">registerWs()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsAlertsPollsHandler.html" title="class in tv.phantombot.panel">WsAlertsPollsHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/WsPanelHandler.html#registerWs()" class="member-name-link">registerWs()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html#registerWs()" class="member-name-link">registerWs()</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelRemoteLoginHandler.html" title="class in tv.phantombot.panel">WsPanelRemoteLoginHandler</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/ytplayer/WsYTHandler.html#registerWs()" class="member-name-link">registerWs()</a> - Method in class tv.phantombot.ytplayer.<a href="tv/phantombot/ytplayer/WsYTHandler.html" title="class in tv.phantombot.ytplayer">WsYTHandler</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html#registerWsHandler(java.lang.String,com.gmt2001.httpwsserver.WsFrameHandler)" class="member-name-link">registerWsHandler(String, WsFrameHandler)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/WebSocketFrameHandler.html" title="class in com.gmt2001.httpwsserver">WebSocketFrameHandler</a></dt>
 <dd>
 <div class="block">Registers a WS URI path to a <a href="com/gmt2001/httpwsserver/WsFrameHandler.html" title="interface in com.gmt2001.httpwsserver"><code>WsFrameHandler</code></a></div>
 </dd>
-<dt><a href="com/gmt2001/httpwsserver/HTTPWSServer.html#releaseObj(io.netty.util.ReferenceCounted)" class="member-name-link">releaseObj(ReferenceCounted)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/HTTPWSServer.html" title="class in com.gmt2001.httpwsserver">HTTPWSServer</a></dt>
+<dt><a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html#releaseAuto(io.netty.util.ReferenceCounted)" class="member-name-link">releaseAuto(ReferenceCounted)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html" title="class in com.gmt2001.httpwsserver">ReferenceCountedUtil</a></dt>
+<dd>
+<div class="block">Fully releases a <a href="https://netty.io/4.1/api/io/netty/util/ReferenceCounted.html" title="class or interface in io.netty.util" class="external-link"><code>ReferenceCounted</code></a> object at least 30 seconds into the future</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html#releaseObj(io.netty.util.ReferenceCounted)" class="member-name-link">releaseObj(ReferenceCounted)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html" title="class in com.gmt2001.httpwsserver">ReferenceCountedUtil</a></dt>
+<dd>
+<div class="block">Releases a <a href="https://netty.io/4.1/api/io/netty/util/ReferenceCounted.html" title="class or interface in io.netty.util" class="external-link"><code>ReferenceCounted</code></a> object</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html#releaseObj(io.netty.util.ReferenceCounted,boolean)" class="member-name-link">releaseObj(ReferenceCounted, boolean)</a> - Static method in class com.gmt2001.httpwsserver.<a href="com/gmt2001/httpwsserver/ReferenceCountedUtil.html" title="class in com.gmt2001.httpwsserver">ReferenceCountedUtil</a></dt>
 <dd>
 <div class="block">Releases a <a href="https://netty.io/4.1/api/io/netty/util/ReferenceCounted.html" title="class or interface in io.netty.util" class="external-link"><code>ReferenceCounted</code></a> object</div>
 </dd>
@@ -9259,10 +9471,36 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sends a WebSocket frame of type Binary</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(com.gmt2001.httpwsserver.longpoll.Client,java.lang.Object)" class="member-name-link">send(Client, Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to the specified <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(com.gmt2001.httpwsserver.longpoll.Client,org.json.JSONStringer)" class="member-name-link">send(Client, JSONStringer)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to the specified <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(io.netty.channel.ChannelHandlerContext,java.lang.Object)" class="member-name-link">send(ChannelHandlerContext, Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the specified
+ <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(io.netty.channel.ChannelHandlerContext,org.json.JSONStringer)" class="member-name-link">send(ChannelHandlerContext, JSONStringer)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to the <a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll"><code>Client</code></a> associated with the specified
+ <a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link"><code>ChannelHandlerContext</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/wsclient/WSClient.html#send(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">send(WebSocketFrame)</a> - Method in class com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a></dt>
 <dd>
 <div class="block">Sends a WebSocket frame</div>
 </dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#send(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">send(WebSocketFrame)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/wspinger/WSPinger.html#send(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">send(WebSocketFrame)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dd>
+<div class="block">Sends the frame to the remote endpoint</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html#send(io.netty.handler.codec.http.websocketx.WebSocketFrame)" class="member-name-link">send(WebSocketFrame)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/wsclient/WSClient.html#send(java.lang.String)" class="member-name-link">send(String)</a> - Method in class com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a></dt>
 <dd>
 <div class="block">Sends a WebSocket frame of type Text</div>
@@ -9271,9 +9509,25 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Method that sends channel message.</div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(java.lang.String,java.lang.Object)" class="member-name-link">send(String, Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to all clients which match a given username</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(java.lang.String,org.json.JSONStringer)" class="member-name-link">send(String, JSONStringer)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to all clients which match a given username</div>
+</dd>
 <dt><a href="com/gmt2001/wsclient/WSClient.html#send(org.json.JSONObject)" class="member-name-link">send(JSONObject)</a> - Method in class com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a></dt>
 <dd>
 <div class="block">Stringifys a <a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link"><code>JSONObject</code></a>, then sends it as a WebSocket frame of type Text</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(tv.phantombot.panel.PanelUser.PanelUser,java.lang.Object)" class="member-name-link">send(PanelUser, Object)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to all clients which match a given <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html#send(tv.phantombot.panel.PanelUser.PanelUser,org.json.JSONStringer)" class="member-name-link">send(PanelUser, JSONStringer)</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/ClientCache.html" title="class in com.gmt2001.httpwsserver.longpoll">ClientCache</a></dt>
+<dd>
+<div class="block">Sends a message to all clients which match a given <a href="tv/phantombot/panel/PanelUser/PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>PanelUser</code></a></div>
 </dd>
 <dt><a href="tv/phantombot/panel/WsPanelHandler.html#sendAck(java.lang.String)" class="member-name-link">sendAck(String)</a> - Method in class tv.phantombot.panel.<a href="tv/phantombot/panel/WsPanelHandler.html" title="class in tv.phantombot.panel">WsPanelHandler</a></dt>
 <dd>
@@ -9474,9 +9728,25 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Shortcut to get the instance of <a href="tv/phantombot/twitch/irc/TwitchSession.html" title="class in tv.phantombot.twitch.irc"><code>TwitchSession</code></a></div>
 </dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#SESSION_ID_ENTROPY" class="member-name-link">SESSION_ID_ENTROPY</a> - Static variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">The entropy of a session ID, in bits</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#sessionId()" class="member-name-link">sessionId()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>
+<div class="block">The session ID</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/EventSub.html#sessionId()" class="member-name-link">sessionId()</a> - Method in class com.gmt2001.twitch.eventsub.<a href="com/gmt2001/twitch/eventsub/EventSub.html" title="class in com.gmt2001.twitch.eventsub">EventSub</a></dt>
 <dd>
 <div class="block">Returns the WebSocket session ID</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#sessionIdSupplier" class="member-name-link">sessionIdSupplier</a> - Variable in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Function which provides a session ID or validates one provided in the headers</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#sessionIdSupplier()" class="member-name-link">sessionIdSupplier()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">Provides a unique session ID</div>
 </dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#set(int,java.lang.Object)" class="member-name-link">set(int, Object)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
 <dd>&nbsp;</dd>
@@ -9532,7 +9802,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sets the current cache.</div>
 </dd>
-<dt><a href="com/gmt2001/wspinger/WSPinger.html#setClient(com.gmt2001.wsclient.WSClient)" class="member-name-link">setClient(WSClient)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger">WSPinger</a></dt>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#setClient(com.gmt2001.wsclient.WSClient)" class="member-name-link">setClient(WSClient)</a> - Method in class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
 <dd>
 <div class="block">Stores the <a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a> that this pinger is linked to</div>
 </dd>
@@ -10183,6 +10453,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationAction.html#time()" class="member-name-link">time()</a> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationAction.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent.ModerationAction</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#timeout()" class="member-name-link">timeout()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>
+<div class="block">The timestamp of the next timeout of the context</div>
+</dd>
 <dt><a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationActions.Actions.html#Timeout" class="member-name-link">Timeout</a> - Enum constant in enum class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.ModerationActions.Actions.html" title="enum class in tv.phantombot.event.irc.message">IrcModerationEvent.ModerationActions.Actions</a></dt>
 <dd>
 <div class="block">Timeout</div>
@@ -10987,6 +11261,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#useIndexForOrderBy(java.lang.String...)" class="member-name-link">useIndexForOrderBy(String...)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/Client.html#user()" class="member-name-link">user()</a> - Method in class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/Client.html" title="class in com.gmt2001.httpwsserver.longpoll">Client</a></dt>
+<dd>
+<div class="block">The authenticated user</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html#user()" class="member-name-link">user()</a> - Method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/AbstractTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">AbstractTMIProcessor</a></dt>
 <dd>
 <div class="block">Shortcut to get the bot username</div>
@@ -11854,13 +12132,30 @@ the order they are declared.</div>
 <dd>
 <div class="block">Constructor that does not initialize a <a href="com/gmt2001/wspinger/WSPinger.html" title="class in com.gmt2001.wspinger"><code>WSPinger</code></a></div>
 </dd>
-<dt><a href="com/gmt2001/wsclient/WSClient.html#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSPinger)" class="member-name-link">WSClient(URI, WsClientFrameHandler, WSPinger)</a> - Constructor for class com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a></dt>
+<dt><a href="com/gmt2001/wsclient/WSClient.html#%3Cinit%3E(java.net.URI,com.gmt2001.wsclient.WsClientFrameHandler,com.gmt2001.wspinger.WSClientPinger)" class="member-name-link">WSClient(URI, WsClientFrameHandler, WSClientPinger)</a> - Constructor for class com.gmt2001.wsclient.<a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient">WSClient</a></dt>
 <dd>
 <div class="block">Constructor</div>
 </dd>
 <dt><a href="com/gmt2001/wsclient/WsClientFrameHandler.html" class="type-name-link" title="interface in com.gmt2001.wsclient">WsClientFrameHandler</a> - Interface in <a href="com/gmt2001/wsclient/package-summary.html">com.gmt2001.wsclient</a></dt>
 <dd>
 <div class="block">Represents a handler for WebSocket client frames</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html" class="type-name-link" title="class in com.gmt2001.wspinger">WSClientPinger</a> - Class in <a href="com/gmt2001/wspinger/package-summary.html">com.gmt2001.wspinger</a></dt>
+<dd>
+<div class="block">Pings the remote endpoint of a <a href="com/gmt2001/wsclient/WSClient.html" title="class in com.gmt2001.wsclient"><code>WSClient</code></a> periodically; closes the socket if a PONG is not received after a
+ defined number of PING attempts</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#%3Cinit%3E(java.time.Duration,java.time.Duration,int)" class="member-name-link">WSClientPinger(Duration, Duration, int)</a> - Constructor for class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
+<dd>
+<div class="block">Constructor that uses RFC6455 PING/PONG frames</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#%3Cinit%3E(java.time.Duration,java.time.Duration,int,com.gmt2001.wspinger.PingPongSupplierPredicate)" class="member-name-link">WSClientPinger(Duration, Duration, int, PingPongSupplierPredicate)</a> - Constructor for class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSClientPinger.html#%3Cinit%3E(java.time.Duration,java.time.Duration,int,java.util.function.Supplier,java.util.function.Predicate)" class="member-name-link">WSClientPinger(Duration, Duration, int, Supplier&lt;WebSocketFrame&gt;, Predicate&lt;WebSocketFrame&gt;)</a> - Constructor for class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSClientPinger.html" title="class in com.gmt2001.wspinger">WSClientPinger</a></dt>
+<dd>
+<div class="block">Constructor</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/WsFrameHandler.html" class="type-name-link" title="interface in com.gmt2001.httpwsserver">WsFrameHandler</a> - Interface in <a href="com/gmt2001/httpwsserver/package-summary.html">com.gmt2001.httpwsserver</a></dt>
 <dd>
@@ -11896,9 +12191,27 @@ the order they are declared.</div>
 <dd>
 <div class="block">Constructor</div>
 </dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html" class="type-name-link" title="class in com.gmt2001.wspinger">WSServerPinger</a> - Class in <a href="com/gmt2001/wspinger/package-summary.html">com.gmt2001.wspinger</a></dt>
+<dd>
+<div class="block">Pings the remote endpoint of a <a href="com/gmt2001/httpwsserver/HTTPWSServer.html" title="class in com.gmt2001.httpwsserver"><code>HTTPWSServer</code></a> periodically; closes the socket if a PONG is not received after a
+ defined number of PING attempts</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html#%3Cinit%3E(io.netty.channel.ChannelHandlerContext,java.time.Duration,java.time.Duration,int)" class="member-name-link">WSServerPinger(ChannelHandlerContext, Duration, Duration, int)</a> - Constructor for class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></dt>
+<dd>
+<div class="block">Constructor that uses RFC6455 PING/PONG frames</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html#%3Cinit%3E(io.netty.channel.ChannelHandlerContext,java.time.Duration,java.time.Duration,int,com.gmt2001.wspinger.PingPongSupplierPredicate)" class="member-name-link">WSServerPinger(ChannelHandlerContext, Duration, Duration, int, PingPongSupplierPredicate)</a> - Constructor for class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/wspinger/WSServerPinger.html#%3Cinit%3E(io.netty.channel.ChannelHandlerContext,java.time.Duration,java.time.Duration,int,java.util.function.Supplier,java.util.function.Predicate)" class="member-name-link">WSServerPinger(ChannelHandlerContext, Duration, Duration, int, Supplier&lt;WebSocketFrame&gt;, Predicate&lt;WebSocketFrame&gt;)</a> - Constructor for class com.gmt2001.wspinger.<a href="com/gmt2001/wspinger/WSServerPinger.html" title="class in com.gmt2001.wspinger">WSServerPinger</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" class="type-name-link" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a> - Class in <a href="com/gmt2001/httpwsserver/auth/package-summary.html">com.gmt2001.httpwsserver.auth</a></dt>
 <dd>
-<div class="block">Provides a <a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> that implements A Write/ReadOnly token-based authentication where all clients share the same tokens</div>
+<div class="block">Provides a <a href="com/gmt2001/httpwsserver/auth/WsAuthenticationHandler.html" title="interface in com.gmt2001.httpwsserver.auth"><code>WsAuthenticationHandler</code></a> that implements A Write/ReadOnly
+ token-based authentication where all clients share the same tokens</div>
 </dd>
 <dt><a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html#%3Cinit%3E(java.lang.String,java.lang.String,int)" class="member-name-link">WsSharedRWTokenAuthenticationHandler(String, String, int)</a> - Constructor for class com.gmt2001.httpwsserver.auth.<a href="com/gmt2001/httpwsserver/auth/WsSharedRWTokenAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.auth">WsSharedRWTokenAuthenticationHandler</a></dt>
 <dd>
@@ -11919,6 +12232,23 @@ the order they are declared.</div>
 <dt><a href="com/gmt2001/httpwsserver/WsSslErrorHandler.html" class="type-name-link" title="class in com.gmt2001.httpwsserver">WsSslErrorHandler</a> - Class in <a href="com/gmt2001/httpwsserver/package-summary.html">com.gmt2001.httpwsserver</a></dt>
 <dd>
 <div class="block">Processes WebSocket frames and passes successful ones to the appropriate registered final handler</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" class="type-name-link" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a> - Class in <a href="com/gmt2001/httpwsserver/longpoll/package-summary.html">com.gmt2001.httpwsserver.longpoll</a></dt>
+<dd>
+<div class="block">A combined authentication handler for a WS with long polling webserver
+ handler</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html#%3Cinit%3E(java.lang.Runnable,java.util.function.Function)" class="member-name-link">WsWithLongPollAuthenticationHandler(Runnable, Function&lt;Tuple5&lt;ChannelHandlerContext, Boolean, Boolean, String, String&gt;, String&gt;)</a> - Constructor for class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollAuthenticationHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollAuthenticationHandler</a></dt>
+<dd>
+<div class="block">Constructor</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" class="type-name-link" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a> - Class in <a href="com/gmt2001/httpwsserver/longpoll/package-summary.html">com.gmt2001.httpwsserver.longpoll</a></dt>
+<dd>
+<div class="block">A combined frame handler for a WS with long polling webserver endpoint</div>
+</dd>
+<dt><a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html#%3Cinit%3E(java.lang.Runnable,java.time.Duration,java.time.Duration,java.time.Duration)" class="member-name-link">WsWithLongPollHandler(Runnable, Duration, Duration, Duration)</a> - Constructor for class com.gmt2001.httpwsserver.longpoll.<a href="com/gmt2001/httpwsserver/longpoll/WsWithLongPollHandler.html" title="class in com.gmt2001.httpwsserver.longpoll">WsWithLongPollHandler</a></dt>
+<dd>
+<div class="block">Constructor</div>
 </dd>
 <dt><a href="tv/phantombot/ytplayer/WsYTHandler.html" class="type-name-link" title="class in tv.phantombot.ytplayer">WsYTHandler</a> - Class in <a href="tv/phantombot/ytplayer/package-summary.html">tv.phantombot.ytplayer</a></dt>
 <dd>&nbsp;</dd>
