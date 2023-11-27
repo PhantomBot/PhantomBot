@@ -90,7 +90,7 @@ $(function () {
                     // Add the box for max bet.
                     .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.'))
                     // Add the box for odds.
-                    .append(helpers.getInputGroup('odds', 'number', 'Adventure odds', '', e.odds, 'The odds a player may win an adventure (0 = users never win; 100 = users always win)'))
+                    .append(helpers.getInputGroup('odds', 'number', 'Adventure odds', '', e.odds, 'The odds a player may win an adventure (0 = users never win; 100 = users always win). This setting is overridden by adventure specific odds!'))
                     // Add the box for set up the permission who can start the adventure.
                     .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ? e.startPermission : 7), helpers.getPermGroupNames())),
                     function () { // Callback once the user clicks save.

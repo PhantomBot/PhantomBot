@@ -15,7 +15,7 @@
     "adventuresystem.runstory": "Starting adventure \"$1\" with $2 player(s).",
     "adventuresystem.set.success": "Set $1 to $2.",
     "adventuresystem.set.usage": "Usage: !adventure set [settingname] [value].",
-    "adventuresystem.set.usage.odds": "The odds are only configurable from 0 to 100 (0 = users never win; 100 = users always win)",
+    "adventuresystem.set.usage.odds": "The odds are only configurable from 0 to 100 (0 = users never win; 100 = users always win). This setting is overridden by adventure specific odds!",
     "adventuresystem.start.success": "$1 is trying get a team together for some serious adventure business! Use \"!adventure [$2]\" to join in!",
     "adventuresystem.tamagotchijoined": "$1 is also joining the adventure.",
     "adventuresystem.top5": "The top 5 adventurers are: $1.",
