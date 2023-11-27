@@ -92,7 +92,7 @@ $(function () {
                     // Add the box for odds.
                     .append(helpers.getInputGroup('odds', 'number', 'Adventure odds', '', e.odds, 'The odds a player may win an adventure (0 = users never win; 100 = users always win)'))
                     // Add the box for set up the permission who can start the adventure.
-                    .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ?? 7), helpers.getPermGroupNames())),
+                    .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ? e.startPermission : 7), helpers.getPermGroupNames())),
                     function () { // Callback once the user clicks save.
                         let entryMessages = $('#entry-messages').find(':selected').text() === 'Yes',
                                 userMessages = $('#user-messages').find(':selected').text() === 'Yes',
