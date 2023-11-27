@@ -374,14 +374,14 @@ public final class WsWithLongPollAuthenticationHandler
             if (ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).get() != null) {
                 ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
                         false, isWs, requestUri, sessionId)));
-                return sessionId.equals(ctx.channel().attr(ATTR_SESSIONID).get());
+                return true;
             } else {
                 PanelUser user = PanelUserHandler.checkAuthTokenAndGetUser(jso.getString("authenticate"));
                 if (user != null) {
                     ctx.channel().attr(PanelUserAuthenticationHandler.ATTR_AUTH_USER).set(user);
                     ctx.channel().attr(ATTR_SESSIONID).set(this.sessionIdSupplier.apply(Tuples.of(ctx,
                             false, isWs, requestUri, sessionId)));
-                    return sessionId.equals(ctx.channel().attr(ATTR_SESSIONID).get());
+                    return true;
                 }
             }
         }
