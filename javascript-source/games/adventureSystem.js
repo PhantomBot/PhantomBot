@@ -44,7 +44,8 @@
         enterMessage = $.getIniDbBoolean('adventureSettings', 'enterMessage');
         warningMessage = $.getIniDbBoolean('adventureSettings', 'warningMessage');
         coolDownAnnounce = $.getIniDbBoolean('adventureSettings', 'coolDownAnnounce');
-        startPermission = $.getSetIniDbNumber('adventureSettings', 'startPermission', $.PERMISSION.Viewer);
+        odds = $.getIniDbNumber('adventureSettings', 'odds');
+        startPermission = $.getIniDbNumber('adventureSettings', 'startPermission');
     }
 
     /**
