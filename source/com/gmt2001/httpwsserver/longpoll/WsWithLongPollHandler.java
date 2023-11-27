@@ -393,11 +393,7 @@ public abstract class WsWithLongPollHandler implements HttpRequestHandler, WsFra
      *
      * @param ctx   The {@link ChannelHandlerContext} of the session
      * @param frame The {@link WebSocketFrame} to process
-     *
-     * @Deprecated Frames which do not have the new wrapper JSONObject are
-     *             deprecated for removal
      */
-    @Deprecated(forRemoval = true, since = "3.11.0.0")
     @Override
     public final void handleFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
         if (frame instanceof TextWebSocketFrame textFrame) {
