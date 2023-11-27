@@ -421,27 +421,50 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT,
                 Unpooled.buffer());
 
-        if (req.headers().get(HttpHeaderNames.ORIGIN) != null) {
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, req.headers().get(HttpHeaderNames.ORIGIN));
-            res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
-        }
-        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, cacheTime.toSeconds());
-        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, true);
-        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, true);
-
-        if (!allowedMethods.isEmpty()) {
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS,
-                    allowedMethods.stream().map(m -> m.name()).collect(Collectors.joining(", ")));
-        }
-
-        if (!allowedHeaders.isEmpty()) {
-            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS,
-                    allowedHeaders.stream().collect(Collectors.joining(", ")));
-        }
+        addCORSResponse(req, res, allowedMethods, allowedHeaders, cacheTime);
 
         res.headers().set(HttpHeaderNames.CONTENT_LENGTH, 0);
 
         return res;
+    }
+
+    /**
+     * Adds CORS headers to a response
+     *
+     * @param req            The request
+     * @param res            The response
+     * @param allowedMethods The allowed {@link HttpMethod}
+     * @param allowedHeaders The allowed {@link HttpHeaderNames}
+     * @param cacheTime      The maximum time the browser is allowed to cache the
+     *                       response if it is a preflight
+     */
+    public static void addCORSResponse(FullHttpRequest req, FullHttpResponse res, List<HttpMethod> allowedMethods,
+            List<String> allowedHeaders, Duration cacheTime) {
+        if (req == null || res == null) {
+            return;
+        }
+
+        if (req.headers().get(HttpHeaderNames.ORIGIN) != null) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, req.headers().get(HttpHeaderNames.ORIGIN));
+            res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
+        }
+
+        if (cacheTime != null && !cacheTime.isNegative()) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_MAX_AGE, cacheTime.toSeconds());
+        }
+
+        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, true);
+        res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK, true);
+
+        if (allowedMethods != null && !allowedMethods.isEmpty()) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS,
+                    allowedMethods.stream().map(m -> m.name()).collect(Collectors.joining(", ")));
+        }
+
+        if (allowedHeaders != null && !allowedHeaders.isEmpty()) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS,
+                    allowedHeaders.stream().collect(Collectors.joining(", ")));
+        }
     }
 
     /**
@@ -454,7 +477,6 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
     public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
         sendHttpResponse(ctx, req, res, false);
     }
-
     /**
      * Transmits a {@link FullHttpResponse} back to the client
      *
@@ -466,13 +488,51 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      *                   explicitly close
      *                   the connection
      */
-    @SuppressWarnings("unchecked")
     public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res,
             boolean forceclose) {
+        sendHttpResponse(ctx, req, res, forceclose, null, null, null);
+    }
+
+    /**
+     * Transmits a {@link FullHttpResponse} back to the client
+     *
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param res The {@link FullHttpResponse} to transmit
+     * @param allowedMethods The allowed {@link HttpMethod}
+     * @param allowedHeaders The allowed {@link HttpHeaderNames}
+     * @param cacheTime      The maximum time the browser is allowed to cache the
+     *                       CORS headers
+     */
+    public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res,
+            List<HttpMethod> allowedMethods, List<String> allowedHeaders, Duration cacheTime) {
+        sendHttpResponse(ctx, req, res, false, allowedMethods, allowedHeaders, cacheTime);
+    }
+
+    /**
+     * Transmits a {@link FullHttpResponse} back to the client
+     *
+     * @param ctx        The {@link ChannelHandlerContext} of the session
+     * @param req        The {@link FullHttpRequest} containing the request
+     * @param res        The {@link FullHttpResponse} to transmit
+     * @param forceclose If true, connection is closed regardless of status code;
+     *                   otherwise, only errors or unknown status codes will
+     *                   explicitly close
+     *                   the connection
+     * @param allowedMethods The allowed {@link HttpMethod}
+     * @param allowedHeaders The allowed {@link HttpHeaderNames}
+     * @param cacheTime      The maximum time the browser is allowed to cache the
+     *                       CORS headers
+     */
+    @SuppressWarnings("unchecked")
+    public static void sendHttpResponse(ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res,
+            boolean forceclose, List<HttpMethod> allowedMethods, List<String> allowedHeaders, Duration cacheTime) {
         boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR
                 || res.status().codeClass() == HttpStatusClass.SERVER_ERROR
                 || res.status().codeClass() == HttpStatusClass.UNKNOWN;
         try {
+            addCORSResponse(req, res, allowedMethods, allowedHeaders, cacheTime);
+
             ReferenceCountedUtil.releaseAuto(res);
             if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
                 res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);

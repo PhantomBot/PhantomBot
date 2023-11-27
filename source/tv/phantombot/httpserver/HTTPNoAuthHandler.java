@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +57,9 @@ import tv.phantombot.panel.PanelUser.PanelUserHandler;
  * @author gmt2001
  */
 public class HTTPNoAuthHandler implements HttpRequestHandler {
+    private static final List<HttpMethod> LOGIN_METHODS = List.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT);
+    private static final List<String> LOGIN_HEADERS = List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString());
+    private static final Duration CORS_CACHE = Duration.ofMinutes(15);
 
     @Override
     public HttpRequestHandler registerHttp() {
@@ -79,10 +81,6 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
         if (req.uri().startsWith("/presence")) {
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, "PBok".getBytes(), null);
-            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            if (origin != null && !origin.isBlank()) {
-                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            }
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
@@ -95,10 +93,6 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
             }
 
             FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK, (isSsl ? "true" : "false").getBytes(), null);
-            String origin = req.headers().get(HttpHeaderNames.ORIGIN);
-            if (origin != null && !origin.isBlank()) {
-                res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            }
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + qsd.path());
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
             return;
@@ -116,17 +110,14 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
 
         if (req.uri().startsWith("/panel/login") && req.method().equals(HttpMethod.OPTIONS)) {
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
-                    List.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT),
-                    List.of(HttpHeaderNames.AUTHORIZATION.toString(), HttpHeaderNames.CONTENT_TYPE.toString()),
-                    Duration.ofMinutes(15)));
+                    LOGIN_METHODS, LOGIN_HEADERS, CORS_CACHE));
             return;
         }
 
         if (req.uri().startsWith("/panel/login")) {
             if (req.method().equals(HttpMethod.HEAD)) {
                 HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.preparePreflightResponse(req,
-                    List.of(HttpMethod.POST, HttpMethod.PUT, HttpMethod.GET),
-                    Collections.emptyList(), Duration.ZERO));
+                    LOGIN_METHODS, LOGIN_HEADERS, CORS_CACHE));
                 return;
             } else if (req.method().equals(HttpMethod.PUT)) {
                 JSONStringer jsonObject = new JSONStringer();
