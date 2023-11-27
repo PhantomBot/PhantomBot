@@ -299,7 +299,7 @@ public final class Client {
                                         break;
                                     }
 
-                                    WebSocketFrameHandler.sendWsFrame(ctx, null,
+                                    WebSocketFrameHandler.sendWsFrame(this.ctx, null,
                                             WebSocketFrameHandler.prepareTextWebSocketResponse(s.get().message()));
                                 }
                             }
@@ -361,7 +361,7 @@ public final class Client {
                             Message m = this.strongQueue.poll();
 
                             while (m != null) {
-                                WebSocketFrameHandler.sendWsFrame(ctx, null,
+                                WebSocketFrameHandler.sendWsFrame(this.ctx, null,
                                         WebSocketFrameHandler.prepareTextWebSocketResponse(m.message()));
                                 m = this.strongQueue.poll();
                             }
