@@ -27,6 +27,7 @@
         warningMessage = $.getSetIniDbBoolean('adventureSettings', 'warningMessage', false),
         coolDownAnnounce = $.getSetIniDbBoolean('adventureSettings', 'coolDownAnnounce', false),
         startPermission = $.getSetIniDbNumber('adventureSettings', 'startPermission', $.PERMISSION.Viewer),
+        odds = $.getSetIniDbNumber('adventureSettings', 'odds', 50),
         currentAdventure = {},
         stories = [],
         lastStory,
@@ -192,10 +193,10 @@
         _currentAdventureLock.lock();
         try {
             for (let i in currentAdventure.users) {
-                if ($.randRange(0, 20) > 5) {
-                    currentAdventure.survivors.push(currentAdventure.users[i]);
-                } else {
+                if ($.randRange(1, 100) > odds) {
                     currentAdventure.caught.push(currentAdventure.users[i]);
+                } else {
+                    currentAdventure.survivors.push(currentAdventure.users[i]);
                 }
             }
         } finally {
@@ -591,6 +592,27 @@
                     }
 
                     $.inidb.set('adventureSettings', 'coolDownAnnounce', coolDownAnnounce);
+                }
+
+                /**
+                 * @commandpath adventure set odds [value] - Set the odds of players surviving adventures
+                 */
+                if ($.equalsIgnoreCase(actionArg1, 'odds')) {
+                    if (isNaN(actionArg2)) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage'));
+                        return;
+                    }
+
+                    let tmp = parseInt(actionArg2);
+                    if (tmp < 0 || tmp > 100) {
+                        $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.usage.odds'));
+                        return;
+                    }
+
+                    odds = tmp;
+                    $.setIniDbNumber('adventureSettings', 'odds', odds);
+                    // Pretty up the output
+                    actionArg2 = actionArg2 + '%';
                 }
 
                 $.say($.whisperPrefix(sender) + $.lang.get('adventuresystem.set.success', actionArg1, actionArg2));
