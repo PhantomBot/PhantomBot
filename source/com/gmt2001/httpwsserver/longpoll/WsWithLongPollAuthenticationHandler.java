@@ -332,11 +332,18 @@ public final class WsWithLongPollAuthenticationHandler
                 return true;
             }
 
-            JSONArray jsa = new JSONArray(req.content().toString(StandardCharsets.UTF_8));
-            if (!jsa.isEmpty()) {
-                if (this.httpAuthFrame(ctx, req, jsa.getJSONObject(0), false)) {
-                    return true;
+            String source = req.content().toString(StandardCharsets.UTF_8);
+            JSONObject jso = null;
+            if (source.startsWith("[")) {
+                JSONArray jsa = new JSONArray(source);
+                if (!jsa.isEmpty()) {
+                    jso = jsa.getJSONObject(0);
                 }
+            } else if (source.startsWith("{")) {
+                jso = new JSONObject(source);
+            }
+            if (jso != null && this.httpAuthFrame(ctx, req, jso, false)) {
+                return true;
             }
         } catch (JSONException | DataAccessException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
