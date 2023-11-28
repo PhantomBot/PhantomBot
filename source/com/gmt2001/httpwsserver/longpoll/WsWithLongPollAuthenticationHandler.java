@@ -328,7 +328,7 @@ public final class WsWithLongPollAuthenticationHandler
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         try {
-            if (this.isAuthorized(ctx, req)) {
+            if (this.isAuthorized(ctx, req) || req.method().equals(HttpMethod.OPTIONS)) {
                 return true;
             }
 
