@@ -215,7 +215,7 @@
                     window.sessionStorage.setItem('webauth', webauth);
                     window.sessionStorage.setItem('cookie', 'panellogin=' + btoa(username + ':' + password) + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/' + age);
                     document.cookie = window.sessionStorage.getItem('cookie');
-                    doKickback(window.localStorage.getItem('isStable') === 'false');
+                    doKickback(window.localStorage.getItem('isStable') === 'true');
                 }
             });
         }
@@ -401,7 +401,7 @@
                             window.sessionStorage.setItem('cookie', 'panellogin=' + window.localStorage.getItem('b64') + (window.location.protocol === 'https:' ? '; Secure' : '') + '; SameSite=Lax; Path=/; Max-Age=300');
                             history.pushState({}, "PhantomBot | Log in | Success");
                             document.cookie = window.sessionStorage.getItem('cookie');
-                            doKickback(window.localStorage.getItem('isStable') === 'false');
+                            doKickback(window.localStorage.getItem('isStable') === 'true');
                         } else {
                             if (window.sessionStorage.getItem('/panel/login#remember') !== null && parseInt(window.sessionStorage.getItem('/panel/login#remember')) >= Date.now()) {
                                 $('#error-box').removeClass('hide');
