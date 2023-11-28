@@ -52,6 +52,7 @@ import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
@@ -64,6 +65,11 @@ import reactor.util.function.Tuples;
  */
 @Sharable
 public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
+    /**
+     * The Origin header
+     */
+    public static final AttributeKey<String> ATTR_ORIGIN = AttributeKey.valueOf("ORIGIN");
 
     /**
      * A map of registered {@link HttpRequestHandler} for handling HTTP Requests
@@ -97,6 +103,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             RequestLogger.log(ctx);
             return;
         }
+
+        ctx.channel().attr(ATTR_ORIGIN).set(req.headers().get(HttpHeaderNames.ORIGIN));
 
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
         HttpRequestHandler h = determineHttpRequestHandler(qsd.path());
@@ -421,7 +429,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT,
                 Unpooled.buffer());
 
-        addCORSResponse(req, res, allowedMethods, allowedHeaders, cacheTime);
+        addCORSResponse(req, res, null, allowedMethods, allowedHeaders, cacheTime);
 
         res.headers().set(HttpHeaderNames.CONTENT_LENGTH, 0);
 
@@ -433,19 +441,23 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      *
      * @param req            The request
      * @param res            The response
+     * @param origin         The {@code Origin} header value
      * @param allowedMethods The allowed {@link HttpMethod}
      * @param allowedHeaders The allowed {@link HttpHeaderNames}
      * @param cacheTime      The maximum time the browser is allowed to cache the
      *                       response if it is a preflight
      */
-    public static void addCORSResponse(FullHttpRequest req, FullHttpResponse res, List<HttpMethod> allowedMethods,
+    public static void addCORSResponse(FullHttpRequest req, FullHttpResponse res, String origin, List<HttpMethod> allowedMethods,
             List<String> allowedHeaders, Duration cacheTime) {
-        if (req == null || res == null) {
+        if (res == null) {
             return;
         }
 
-        if (req.headers().get(HttpHeaderNames.ORIGIN) != null) {
+        if (req != null && req.headers().get(HttpHeaderNames.ORIGIN) != null) {
             res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, req.headers().get(HttpHeaderNames.ORIGIN));
+            res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
+        } else if (origin != null) {
+            res.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             res.headers().set(HttpHeaderNames.VARY, HttpHeaderNames.ORIGIN);
         }
 
@@ -531,7 +543,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 || res.status().codeClass() == HttpStatusClass.SERVER_ERROR
                 || res.status().codeClass() == HttpStatusClass.UNKNOWN;
         try {
-            addCORSResponse(req, res, allowedMethods, allowedHeaders, cacheTime);
+            addCORSResponse(req, res, ctx.channel().attr(ATTR_ORIGIN).get(), allowedMethods, allowedHeaders, cacheTime);
 
             ReferenceCountedUtil.releaseAuto(res);
             if (req == null || !HttpUtil.isKeepAlive(req) || isError || forceclose) {
