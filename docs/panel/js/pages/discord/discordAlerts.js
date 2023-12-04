@@ -397,11 +397,12 @@ $(function () {
     // Stream Alert settings.
     $('#discordStreamHandlerSettings').on('click', function () {
         socket.getDBValues('alerts_get_stream_settings', {
-            tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
-                'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+            tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+                'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
                 'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
             keys: ['onlineToggle', 'onlinePublish', 'onlineMessage', 'offlineToggle', 'offlinePublish', 'offlineMessage',
-                'gameToggle', 'gamePublish', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle']
+                'gameToggle', 'gamePublish', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle',
+                'onlineDelay', 'offlineDelay']
         }, true, function (e) {
             helpers.getModal('stream-alert', 'Stream Alert Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -425,7 +426,9 @@ $(function () {
                                             'Show your bot as streaming when you go live.'))
                                     // Add the text area for the online message.
                                     .append(helpers.getTextAreaGroup('online-message', 'text', 'Online Message', '', e.onlineMessage,
-                                            'Message said when you go live. This message is in an embed style. Tags: (name)', false))))
+                                            'Message said when you go live. This message is in an embed style. Tags: (name)', false))
+                                    .append(helpers.getInputGroup('online-delay', 'number', 'Online Delay', '', e.onlineDelay,
+                                            'The number of seconds the bot waits before posting the online message to Discord. Lower times could result in old or missing thumbnails'))))
                             // Append second collapsible accordion.
                             .append(helpers.getCollapsibleAccordion('main-2', 'Offline Settings', $('<form/>', {
                                 'role': 'form'
@@ -437,7 +440,9 @@ $(function () {
                                             'If the message is posted to a Discord Announcement channel, attempts to publish it to subscribers.'))
                                     // Add the text area for the offline message.
                                     .append(helpers.getTextAreaGroup('offline-message', 'text', 'Offline Message', '', e.offlineMessage,
-                                            'Message said when you go offline. This message is in an embed style. Tags: (name)', false))))
+                                            'Message said when you go offline. This message is in an embed style. Tags: (name)', false))
+                                    .append(helpers.getInputGroup('offline-delay', 'number', 'Offline Delay', '', e.offlineDelay,
+                                            'The number of seconds the bot waits before posting the offline message to Discord. Lower times could result in old or missing thumbnails'))))
                             // Append third collapsible accordion.
                             .append(helpers.getCollapsibleAccordion('main-3', 'Game Change Settings', $('<form/>', {
                                 'role': 'form'
@@ -465,9 +470,11 @@ $(function () {
                                 onlinePublish = $('#online-publish').find(':selected').text() === 'Yes',
                                 statusToggle = $('#online-status').find(':selected').text() === 'Yes',
                                 onlineMessage = $('#online-message'),
+                                onlineDelay = $('#online-delay'),
                                 offlineToggle = $('#offline-toggle').find(':selected').text() === 'Yes',
                                 offlinePublish = $('#offline-publish').find(':selected').text() === 'Yes',
                                 offlineMessage = $('#offline-message'),
+                                offlineDelay = $('#offline-delay'),
                                 gameToggle = $('#game-toggle').find(':selected').text() === 'Yes',
                                 gamePublish = $('#game-publish').find(':selected').text() === 'Yes',
                                 gameMessage = $('#game-message'),
@@ -476,18 +483,22 @@ $(function () {
 
                         switch (false) {
                             case helpers.handleInputString(onlineMessage):
+                            case helpers.handleInputNumber(onlineDelay, 1):
                             case helpers.handleInputString(offlineMessage):
+                            case helpers.handleInputNumber(offlineDelay, 1):
                             case helpers.handleInputString(gameMessage):
                                 break;
                             default:
                                 socket.updateDBValues('discord_stream_alerts_updater', {
-                                    tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
-                                        'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+                                    tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
+                                        'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings',
                                         'discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
                                     keys: ['onlineToggle', 'onlinePublish', 'onlineMessage', 'offlineToggle', 'offlinePublish', 'offlineMessage',
-                                        'gameToggle', 'gamePublish', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle'],
+                                        'gameToggle', 'gamePublish', 'gameMessage', 'botGameToggle', 'onlineChannel', 'deleteMessageToggle',
+                                        'onlineDelay', 'offlineDelay'],
                                     values: [onlineToggle, onlinePublish, onlineMessage.val(), offlineToggle, offlinePublish, offlineMessage.val(),
-                                        gameToggle, gamePublish, gameMessage.val(), statusToggle, channel.val(), deleteMessageToggle]
+                                        gameToggle, gamePublish, gameMessage.val(), statusToggle, channel.val(), deleteMessageToggle,
+                                        onlineDelay, offlineDelay]
                                 }, function () {
                                     socket.wsEvent('discord', './discord/handlers/streamHandler.js', '', [], function () {
                                         // Close the modal.
