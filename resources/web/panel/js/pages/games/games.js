@@ -62,8 +62,8 @@ $(function () {
     $('#adventureSystemSettings').on('click', function () {
         socket.getDBValues('get_adventure_settings', {
             tables: ['adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings',
-                'adventureSettings', 'adventureSettings', 'adventureSettings'],
-            keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce', 'startPermission']
+                'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings'],
+            keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce', 'startPermission', 'odds']
         }, true, function (e) {
             helpers.getModal('adventure-settings', 'Adventure Settings', 'Save', $('<form/>', {
                 'role': 'form'
@@ -89,8 +89,10 @@ $(function () {
                     .append(helpers.getInputGroup('min-bet', 'number', 'Adventure Minimum Bet', '', e.minBet, 'The minimum amount of points a user can join an adventure with.'))
                     // Add the box for max bet.
                     .append(helpers.getInputGroup('max-bet', 'number', 'Adventure Maximum Bet', '', e.maxBet, 'The maximum amount of points a user can join an adventure with.'))
+                    // Add the box for odds.
+                    .append(helpers.getInputGroup('odds', 'number', 'Adventure odds', '', e.odds, 'The odds a player may win an adventure (0 = users never win; 100 = users always win). This setting is overridden by adventure specific odds!'))
                     // Add the box for set up the permission who can start the adventure.
-                    .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ?? 7), helpers.getPermGroupNames())),
+                    .append(helpers.getDropdownGroup('start-permission', 'Permission to start adventure', helpers.getGroupNameById(e.startPermission ? e.startPermission : 7), helpers.getPermGroupNames())),
                     function () { // Callback once the user clicks save.
                         let entryMessages = $('#entry-messages').find(':selected').text() === 'Yes',
                                 userMessages = $('#user-messages').find(':selected').text() === 'Yes',
@@ -100,6 +102,7 @@ $(function () {
                                 gainPercent = $('#gain'),
                                 minBet = $('#min-bet'),
                                 maxBet = $('#max-bet'),
+                                odds = $('#odds'),
                                 startPermission = helpers.getGroupIdByName($('#start-permission').find(':selected').text(), true);
 
                         // Make sure everything has been filled in.
@@ -109,13 +112,14 @@ $(function () {
                             case helpers.handleInputNumber(gainPercent, 1):
                             case helpers.handleInputNumber(minBet, 1):
                             case helpers.handleInputNumber(maxBet, 1):
+                            case helpers.handleInputNumber(odds, 0, 100):
                                 break;
                             default:
                                 socket.updateDBValues('adventure_update_settings', {
                                     tables: ['adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings',
-                                        'adventureSettings', 'adventureSettings', 'adventureSettings'],
-                                    keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce', 'startPermission'],
-                                    values: [joinTime.val(), cooldownTime.val(), gainPercent.val(), minBet.val(), maxBet.val(), entryMessages, userMessages, cooldownMessage, startPermission]
+                                        'adventureSettings', 'adventureSettings', 'adventureSettings', 'adventureSettings'],
+                                    keys: ['joinTime', 'coolDown', 'gainPercent', 'minBet', 'maxBet', 'enterMessage', 'warningMessage', 'coolDownAnnounce', 'startPermission', 'odds'],
+                                    values: [joinTime.val(), cooldownTime.val(), gainPercent.val(), minBet.val(), maxBet.val(), entryMessages, userMessages, cooldownMessage, startPermission, odds.val()]
                                 }, function () {
                                     socket.sendCommand('adventure_update_settings_cmd', 'reloadadventure', function () {
                                         // Close the modal.
