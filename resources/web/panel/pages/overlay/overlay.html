@@ -58,13 +58,23 @@
             </div>
             <!-- Flying Emoticons -->
             <div class="box box-solid">
-                <div class="box-header">
+                <div class="box-header with-border">
                     <label class="switch" data-toggle="tooltip" title="Module toggle">
                         <input type="checkbox" class="trigger-update" id="overlayEnableFlyingEmotes" checked="">
                         <span class="slider round"></span>
                     </label>
                     <h3 class="box-title">Show flying emotes</h3>
                     <span class="help-block">Show emotes from the chat flying up on the screen</span>
+                </div>
+                <!-- Box content -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="overlayflyingEmoteSize">Flying emotes size</label>
+                        <input type="number" class="form-control trigger-update" id="overlayflyingEmoteSize" placeholder="112"
+                               value="112" min="10"
+                               step="1" max="1000"/>
+                        <span class="help-block">Defines the flying emote's size in pixel (The default is 112).</span>
+                    </div>
                 </div>
             </div>
             <!-- Gif alerts -->
@@ -80,7 +90,7 @@
                 <!-- Box content -->
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="overlayAudioHookVolume">Gif Alerts Audio Volume</label>
+                        <label for="overlayGifAlertVolume">Gif Alerts Audio Volume</label>
                         <input type="number" class="form-control trigger-update" id="overlayGifAlertVolume" placeholder="0.8"
                                value="0.8" min="0.0"
                                step=".05" max="1.0"/>

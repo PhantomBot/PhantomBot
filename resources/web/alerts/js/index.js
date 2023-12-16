@@ -432,7 +432,7 @@ $(function () {
         }
 
         // scaling of the emote (by width)
-        const size = 112;
+        const size = getOptionSetting('flyingEmoteSize', 112);
 
         const browserSafeId = emoteId.replace(/\W/g, '');
 
