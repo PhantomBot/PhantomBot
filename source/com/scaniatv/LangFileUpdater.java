@@ -115,36 +115,31 @@ public final class LangFileUpdater {
             boolean exists = Files.exists(Paths.get(fName));
             if (!exists) {
                 fName = langFile.replace(isJson ? ".json" : ".js", isJson ? ".js" : ".json");
-                isJson = !isJson;
                 exists = Files.exists(Paths.get(fName));
             }
 
             final StringBuilder sb = new StringBuilder();
             final JSONArray array = new JSONArray(stringArray);
 
-            if (isJson) {
-                JSONStringer jss = new JSONStringer();
-                jss.object();
+            JSONStringer jss = new JSONStringer();
+            jss.object();
 
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
 
-                    jss.key(obj.getString("id"));
-                    jss.value(sanitizeResponse(obj.getString("response")));
-                }
+                jss.key(obj.getString("id"));
+                jss.value(sanitizeResponse(obj.getString("response")));
+            }
 
-                jss.endObject();
-                sb.append(jss.toString());
-            } else {
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
+            jss.endObject();
+            sb.append(jss.toString());
 
-                    sb.append("$.lang.register('");
-                    sb.append(obj.getString("id"));
-                    sb.append("', '");
-                    sb.append(sanitizeResponse(obj.getString("response")));
-                    sb.append("');\n");
-                }
+            if (exists) {
+                Files.deleteIfExists(Paths.get(fName));
+            }
+
+            if (!isJson) {
+                langFile = langFile.replace(".js", ".json");
             }
 
             // Write the data.
