@@ -87,7 +87,7 @@ jobs:
         BRANCH: ${{ steps.build_env.outputs.branch }}
       run: ant -noinput -Dversion=$BRANCH -Dbuildtype=$BUILDTYPE -Drollbar_token=$ROLLBAR_TOKEN -Drollbar_endpoint=$ROLLBAR_ENDPOINT -buildfile build.xml dist
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ format('PhantomBot-{0}', steps.build_env.outputs.branch) }}
         path: ${{ format('dist/PhantomBot-{0}', steps.build_env.outputs.branch) }}
