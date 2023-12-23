@@ -99,7 +99,7 @@ jobs:
         chmod +x $SCRIPT
         /bin/bash $SCRIPT
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.folder }}
         path: resources/${{ matrix.folder }}/**

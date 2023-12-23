@@ -36,7 +36,7 @@ jobs:
         echo docs/panel-stable/ >> paths.txt
         echo docs/common/ >> paths.txt
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: docsremotepanel
         path: |
@@ -60,7 +60,7 @@ jobs:
       run: |
         echo docs/guides/content-stable/ >> paths.txt
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: docsguides
         path: |
@@ -83,7 +83,7 @@ jobs:
       run: |
         echo docs/javadoc-stable/ >> paths.txt
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: docsjavadoc
         path: |
