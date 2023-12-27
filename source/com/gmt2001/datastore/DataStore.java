@@ -663,7 +663,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(String fName, String section, String key) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName, false);
+        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
 
         if (table == null) {
             return Optional.empty();
@@ -836,7 +836,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param values the new values to set the {@code value} column to
      */
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName, false);
+        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
 
         if (table != null) {
             dsl().batched(c -> {

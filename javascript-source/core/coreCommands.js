@@ -57,7 +57,7 @@
             /*
              * @commandpath shoutoutapitoggle - Toggles if the /shoutout API is also sent along with the normal !shoutout response
              */
-        } else if ($.equalsIgnoreCase(command, 'shoutoutapi')) {
+        } else if ($.equalsIgnoreCase(command, 'shoutoutapitoggle')) {
             shoutoutApi = !shoutoutApi;
             $.setIniDbBoolean('settings', 'shoutoutapi', shoutoutApi);
             $.say($.whisperPrefix(sender) + $.lang.get('corecommands.shoutoutapi.' + (shoutoutApi ? 'enable' : 'disable')));
