@@ -40,8 +40,8 @@ $(function () {
         // Update event toggle.
         $('#toggle-reverse-events').prop('checked', helpers.isReverseSortEvents);
 
-        // Disable isntant commercials if the module is disabled
-        if (e['./systems/commercialSystem.js'] !== 'true') {
+        // Disable instant commercials if the module is disabled
+        if (!helpers.isTrue(e['./systems/commercialSystem.js'])) {
             $('#grp-instant-commercial').addClass('hidden');
         } else {
             $('#instant-commercial-length').select2({
