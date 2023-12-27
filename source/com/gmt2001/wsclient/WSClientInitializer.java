@@ -16,6 +16,9 @@
  */
 package com.gmt2001.wsclient;
 
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -27,6 +30,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketClientProtocolHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketVersion;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketClientCompressionHandler;
+import io.netty.handler.ssl.SslHandler;
 
 /**
  * Initializes {@link SocketChannel} objects for a {@link WSClient}
@@ -65,13 +69,19 @@ class WSClientInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline pipeline = ch.pipeline();
 
         if (this.client.sslCtx != null) {
-            pipeline.addLast("sslhandler", this.client.sslCtx.newHandler(ch.alloc(), this.client.host, this.client.port));
+            SslHandler sslHandler = this.client.sslCtx.newHandler(ch.alloc(), this.client.host, this.client.port);
+            SSLEngine sslEngine = sslHandler.engine();
+            SSLParameters sslParameters = sslEngine.getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            sslEngine.setSSLParameters(sslParameters);
+            pipeline.addLast("sslhandler", sslHandler);
         }
 
         pipeline.addLast(new HttpClientCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(WebSocketClientCompressionHandler.INSTANCE);
-        pipeline.addLast(new WebSocketClientProtocolHandler(WebSocketClientHandshakerFactory.newHandshaker(this.client.uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())));
+        pipeline.addLast(new WebSocketClientProtocolHandler(WebSocketClientHandshakerFactory
+                .newHandshaker(this.client.uri, WebSocketVersion.V13, null, false, new DefaultHttpHeaders())));
         pipeline.addLast(new WebSocketFrameAggregator(65536));
         pipeline.addLast("wshandler", this.client.frameHandler);
     }
