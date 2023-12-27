@@ -30,7 +30,7 @@ $(function () {
 
         for (i = 0; i < keys.length; i++) {
             // Handle the status of the buttons.
-            if (results[keys[i]] === 'false') {
+            if (!helpers.isTrue(results[keys[i]])) {
                 module = keys[i].substring(keys[i].lastIndexOf('/') + 1).replace('.js', '');
 
                 // Handle the switch.

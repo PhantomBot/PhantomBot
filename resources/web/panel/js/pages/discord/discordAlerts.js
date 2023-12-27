@@ -32,9 +32,10 @@ $(function () {
                 module = '',
                 i;
         for (i = 0; i < keys.length; i++) {
-            module = keys[i].substring(keys[i].lastIndexOf('/') + 1).replace('.js', '');
             // Handle the status of the buttons.
-            if (e[keys[i]] === 'false') {
+            if (!helpers.isTrue(e[keys[i]])) {
+                module = keys[i].substring(keys[i].lastIndexOf('/') + 1).replace('.js', '');
+
                 // Handle the switch.
                 $('#' + module + 'Toggle').prop('checked', false);
                 // Handle the settings button.
