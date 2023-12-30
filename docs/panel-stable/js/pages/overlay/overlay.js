@@ -27,6 +27,7 @@ $(function () {
     const enableAudioHooks = 'enableAudioHooks';
     const audioHookVolume = 'audioHookVolume';
     const enableFlyingEmotes = 'enableFlyingEmotes';
+    const flyingEmotesSize = 'flyingEmotesSize';
     const enableGifAlerts = 'enableGifAlerts';
     const gifAlertVolume = 'gifAlertVolume';
     const enableVideoClips = 'enableVideoClips';
@@ -44,12 +45,12 @@ $(function () {
             tables: [
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable, moduleConfigTable
+                moduleConfigTable, moduleConfigTable, moduleConfigTable
             ],
             keys: [
                 enableAudioHooks, audioHookVolume, enableFlyingEmotes,
                 enableGifAlerts, gifAlertVolume, enableDebug,
-                enableVideoClips, videoClipVolume
+                enableVideoClips, videoClipVolume, flyingEmotesSize
             ]
         }, true, function (config) {
             // handle boolean values
@@ -70,7 +71,7 @@ $(function () {
                 }
             });
             // handle decimals
-            [audioHookVolume, gifAlertVolume, videoClipVolume].forEach((key) => {
+            [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize].forEach((key) => {
                 let inputNode = document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1));
                 // Convert the value to a String and then to number to validate it
                 // and use the default value, if it's invalid
@@ -120,7 +121,7 @@ $(function () {
 
     function save() {
         // Collect values from the form with special caution to checkbox elements
-        let keysStrings = [audioHookVolume, gifAlertVolume, videoClipVolume];
+        let keysStrings = [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize];
         let keysCheckboxes = [enableAudioHooks, enableFlyingEmotes, enableGifAlerts, enableVideoClips, enableDebug];
         let valuesStrings = keysStrings.map(key => inputElements[moduleId + key[0].toUpperCase() + key.slice(1)].value);
         let valuesCheckboxes = keysCheckboxes.map(key => inputElements[moduleId + key[0].toUpperCase() + key.slice(1)].checked);
@@ -131,7 +132,7 @@ $(function () {
             tables: [
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable, moduleConfigTable
+                moduleConfigTable, moduleConfigTable, moduleConfigTable
             ],
             keys: keys,
             values: values
