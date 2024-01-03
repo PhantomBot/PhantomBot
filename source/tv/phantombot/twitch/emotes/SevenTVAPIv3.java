@@ -37,7 +37,7 @@ import java.util.stream.StreamSupport;
  */
 public class SevenTVAPIv3 implements EmoteProvider {
 
-    public static final String PROVIDER_NAME = "7tv";
+    public static final String PROVIDER_NAME = "sevenTv";
     private static SevenTVAPIv3 instance;
     private static final String APIURL = "https://7tv.io/v3";
 
