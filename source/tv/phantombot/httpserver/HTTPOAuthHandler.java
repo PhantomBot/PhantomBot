@@ -22,6 +22,7 @@ import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.httpwsserver.auth.HttpAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpBasicAuthenticationHandler;
 import com.gmt2001.httpwsserver.auth.HttpNoAuthenticationHandler;
+import com.gmt2001.security.Digest;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.util.Reflect;
 
@@ -49,10 +50,11 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     private String token;
 
     public HTTPOAuthHandler() {
-        authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
+        this.authHandler = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", CaselessProperties.instance().getProperty("paneluser", "panel"),
                 CaselessProperties.instance().getProperty("panelpassword", "panel"), "/panel/login/");
-        token = PhantomBot.generateRandomString(TOKENLEN);
-        authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
+        String token = PhantomBot.generateRandomString(TOKENLEN);
+        this.authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login/");
+        this.token = Digest.sha256(token);
     }
 
     @Override
@@ -129,9 +131,10 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
     }
 
     public String changeBroadcasterToken() {
-        token = PhantomBot.generateRandomString(TOKENLEN);
-        authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
-        return token;
+        String token = PhantomBot.generateRandomString(TOKENLEN);
+        this.authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
+        this.token = Digest.sha256(token);
+        return this.token;
     }
 
     public boolean validateBroadcasterToken(String token) {
