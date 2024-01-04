@@ -134,7 +134,7 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
         String token = PhantomBot.generateRandomString(TOKENLEN);
         this.authHandlerBroadcaster = new HttpBasicAuthenticationHandler("PhantomBot Web OAuth", "broadcaster", token, "/panel/login");
         this.token = Digest.sha256(token);
-        return this.token;
+        return token;
     }
 
     public boolean validateBroadcasterToken(String token) {
