@@ -20,6 +20,7 @@
         winRange = $.getSetIniDbNumber('gambling', 'winRange', 50),
         max = $.getSetIniDbNumber('gambling', 'max', 100),
         min = $.getSetIniDbNumber('gambling', 'min', 5),
+        allowWhenOffline = $.getSetIniDbBoolean('gambling', 'allowWhenOffline', true),
         gain = Math.abs(winGainPercent / 100);
 
     /**
@@ -30,6 +31,7 @@
         winRange = $.getIniDbNumber('gambling', 'winRange');
         max = $.getIniDbNumber('gambling', 'max');
         min = $.getIniDbNumber('gambling', 'min');
+        allowWhenOffline = $.getIniDbBoolean('gambling', 'allowWhenOffline'),
         gain = Math.abs(winGainPercent / 100);
     }
 
@@ -80,6 +82,11 @@
          * @commandpath gamble [amount] - Gamble your points.
          */
         if ($.equalsIgnoreCase(command, 'gamble')) {
+            if (!allowWhenOffline && !$.isOnline($.channelName)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('gambling.allowwhenoffline.disabled'));
+                return;
+            }
+
             var points;
             if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
                 points = $.getUserPoints(sender);
@@ -147,6 +154,15 @@
             $.inidb.set('gambling', 'winGainPercent', winGainPercent);
             $.say($.whisperPrefix(sender) + $.lang.get('gambling.percent', winGainPercent));
         }
+
+        /**
+         * @commandpath gambleoffline - Toggle allowing gambling when the channel is offline
+         */
+        if ($.equalsIgnoreCase(command, 'gambleoffline')) {
+            allowWhenOffline = !allowWhenOffline;
+            $.setIniDbBoolean('gambling', 'allowWhenOffline', allowWhenOffline);
+            $.say($.whisperPrefix(sender) + (allowWhenOffline ? $.lang.get('gambling.allowwhenoffline.enabled') : $.lang.get('gambling.allowwhenoffline.disabled')));
+        }
     });
 
     $.bind('initReady', function() {
@@ -155,6 +171,7 @@
         $.registerChatCommand('./games/gambling.js', 'gamblesetmin', $.PERMISSION.Admin);
         $.registerChatCommand('./games/gambling.js', 'gamblesetwinningrange', $.PERMISSION.Admin);
         $.registerChatCommand('./games/gambling.js', 'gamblesetgainpercent', $.PERMISSION.Admin);
+        $.registerChatCommand('./games/gambling.js', 'gambleoffline', $.PERMISSION.Admin);
     });
 
     $.reloadGamble = reloadGamble;

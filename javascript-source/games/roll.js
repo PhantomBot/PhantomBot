@@ -21,7 +21,8 @@
  * A game where the bot will generate two random dices and award the sender with the points corresponding to the output.
  */
 (function() {
-    var prizes = [];
+    var prizes = []
+        allowWhenOffline = $.getSetIniDbBoolean('rollprizes', 'allowWhenOffline', true);
 
     /* Set default prices in the DB for the Panel */
     $.getSetIniDbNumber('rollprizes', 'prizes_0', 4);
@@ -41,6 +42,7 @@
         prizes[3] = $.getSetIniDbNumber('rollprizes', 'prizes_3', 64);
         prizes[4] = $.getSetIniDbNumber('rollprizes', 'prizes_4', 100);
         prizes[5] = $.getSetIniDbNumber('rollprizes', 'prizes_5', 144);
+        allowWhenOffline = $.getSetIniDbBoolean('rollprizes', 'allowWhenOffline', true);
     }
 
     /**
@@ -85,6 +87,21 @@
                     $.inidb.set('rollprizes', 'prizes_5', args[6]);
                     return;
                 }
+
+                /**
+                 * @commandpath roll rolloffline - Toggle allowing rolling when the channel is offline
+                 */
+                if ($.equalsIgnoreCase(args[0], 'rolloffline')) {
+                    allowWhenOffline = !allowWhenOffline;
+                    $.setIniDbBoolean('rollprizes', 'allowWhenOffline', allowWhenOffline);
+                    $.say($.whisperPrefix(sender) + (allowWhenOffline ? $.lang.get('roll.allowwhenoffline.enabled') : $.lang.get('roll.allowwhenoffline.disabled')));
+                    return;
+                }
+            }
+
+            if (!allowWhenOffline && !$.isOnline($.channelName)) {
+                $.say($.whisperPrefix(sender) + $.lang.get('roll.allowwhenoffline.disabled'));
+                return;
             }
 
             dice1 = $.randRange(1, 6);
@@ -128,6 +145,7 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./games/roll.js', 'roll');
         $.registerChatSubcommand('roll', 'rewards', $.PERMISSION.Admin);
+        $.registerChatSubcommand('roll', 'rolloffline', $.PERMISSION.Admin);
     });
 
 

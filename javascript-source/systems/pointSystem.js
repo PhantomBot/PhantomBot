@@ -29,6 +29,7 @@
             onlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'onlinePayoutInterval', 10),
             offlinePayoutInterval = $.getSetIniDbNumber('pointSettings', 'offlinePayoutInterval', 0),
             activeBonus = $.getSetIniDbNumber('pointSettings', 'activeBonus', 0),
+            onlyModsCanCheckUsers = $.getSetIniDbBoolean('pointSettings', 'onlyModsCanCheckUsers', false),
             penalties = [],
             pointsBonus = false,
             pointsBonusAmount = 0,
@@ -55,6 +56,7 @@
         $.pointNameMultiple = pointNameMultiple;
         pointsMessage = $.getIniDbString('pointSettings', 'pointsMessage');
         activeBonus = $.getIniDbNumber('pointSettings', 'activeBonus');
+        onlyModsCanCheckUsers = $.getIniDbBoolean('pointSettings', 'onlyModsCanCheckUsers');
 
         if (tempPointNameSingle !== 'point' && tempPointNameSingle !== pointNameSingle.toLowerCase()) {
             $.unregisterChatCommand(tempPointNameSingle);
@@ -372,13 +374,15 @@
                 args = event.getArgs(),
                 action = args[0],
                 actionArg1 = args[1],
-                actionArg2 = args[2];
+                actionArg2 = args[2],
+                isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
         /**
          * @commandpath points - Announce points in chat when no parameters are given.
          */
         if ($.equalsIgnoreCase(command, 'points') || $.equalsIgnoreCase(command, 'point') || $.equalsIgnoreCase(command, pointNameMultiple) || $.equalsIgnoreCase(command, pointNameSingle)) {
-            if (!action) {
+            // if onlyModsCanCheckUsers and the user is not a mod, then disallow progressing further
+            if (!action || (!isMod && onlyModsCanCheckUsers)) {
                 $.say(getPointsMessage(sender, username));
                 return;
             }
@@ -705,6 +709,16 @@
                 $.say($.whisperPrefix(sender) + $.lang.get('pointsystem.active.bonus.set', getPointsString(activeBonus)));
                 return;
             }
+
+            /**
+             * @commandpath points modonlyusercheck - Toggle allowing only mods able to view others points
+             */
+            if ($.equalsIgnoreCase(action, 'modonlyusercheck')) {
+                onlyModsCanCheckUsers = !onlyModsCanCheckUsers;
+                $.setIniDbBoolean('pointSettings', 'onlyModsCanCheckUsers', onlyModsCanCheckUsers);
+                $.say($.whisperPrefix(sender) + (onlyModsCanCheckUsers ? $.lang.get('pointsystem.modonlyusercheck.enabled', pointNameMultiple) : $.lang.get('pointsystem.modonlyusercheck.disabled', pointNameMultiple)));
+                return;
+            }
         }
 
 
@@ -815,7 +829,8 @@
         $.registerChatSubcommand('points', 'resetall', $.PERMISSION.Admin);
         $.registerChatSubcommand('points', 'setmessage', $.PERMISSION.Admin);
         $.registerChatSubcommand('points', 'setactivebonus', $.PERMISSION.Admin);
-
+        $.registerChatSubcommand('points', 'modonlyusercheck', $.PERMISSION.Admin);
+        
         updateSettings();
     });
 

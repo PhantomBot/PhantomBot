@@ -28,6 +28,7 @@
     let levelWithTime = $.getSetIniDbBoolean('timeSettings', 'timeLevel', false),
             timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true),
             keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', true),
+            onlyModsCanCheckUsers = $.getSetIniDbBoolean('timeSettings', 'onlyModsCanCheckUsers', false),
             hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50);
 
     /**
@@ -37,6 +38,7 @@
         levelWithTime = $.getIniDbBoolean('timeSettings', 'timeLevel');
         keepTimeWhenOffline = $.getIniDbBoolean('timeSettings', 'keepTimeWhenOffline');
         hoursForLevelUp = $.getIniDbNumber('timeSettings', 'timePromoteHours');
+        onlyModsCanCheckUsers = $.getIniDbBoolean('timeSettings', 'onlyModsCanCheckUsers');
         timeLevelWarning = $.getIniDbBoolean('timeSettings', 'timeLevelWarning');
     }
 
@@ -340,13 +342,15 @@
                 args = event.getArgs(),
                 action = args[0],
                 subject,
-                timeArg;
+                timeArg,
+                isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
         /**
          * @commandpath time - Announce amount of time spent in channel
          */
         if ($.equalsIgnoreCase(command, 'time')) {
-            if (!action) {
+            // if onlyModsCanCheckUsers and the user is not a mod, then disallow progressing further
+            if (!action || (!isMod && onlyModsCanCheckUsers)) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.self", $.resolveRank(sender), getUserTimeString(sender)));
             } else if (action && $.inidb.exists('time', action.toLowerCase())) {
                 $.say($.whisperPrefix(sender) + $.lang.get("timesystem.get.other", $.viewer.getByLogin(action).name(), getUserTimeString(action)));
@@ -468,6 +472,15 @@
                     $.setIniDbBoolean('timeSettings', 'keepTimeWhenOffline', keepTimeWhenOffline);
                     $.say($.whisperPrefix(sender) + (keepTimeWhenOffline ? $.lang.get('timesystem.offlinetime.enabled') : $.lang.get('timesystem.offlinetime.disabled')));
                 }
+
+                /**
+                 * @commandpath time modonlyusercheck - Toggle allowing only mods able to view others time
+                 */
+                if ($.equalsIgnoreCase(action, 'modonlyusercheck')) {
+                    onlyModsCanCheckUsers = !onlyModsCanCheckUsers;
+                    $.setIniDbBoolean('timeSettings', 'onlyModsCanCheckUsers', onlyModsCanCheckUsers);
+                    $.say($.whisperPrefix(sender) + (onlyModsCanCheckUsers ? $.lang.get('timesystem.modonlyusercheck.enabled') : $.lang.get('timesystem.modonlyusercheck.disabled')));
+                }
             }
         }
 
@@ -559,6 +572,7 @@
         $.registerChatSubcommand('time', 'autolevel', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'promotehours', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'autolevelnotification', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'modonlyusercheck', $.PERMISSION.Admin);
     });
 
     /** Export functions to API */

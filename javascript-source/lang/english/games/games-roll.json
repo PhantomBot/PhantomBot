@@ -7,5 +7,7 @@
     "roll.doublefive": "Hard ten for $1! ",
     "roll.doublesix": "Boxcars to the max!!! $1! ",
     "roll.rewards.usage": "usage: !roll rewards [double 1's] [2's] [3's] [4's] [5's] [6's]. Currently: $1",
-    "roll.rewards.success": "Updated rewards for the dice roll."
+    "roll.rewards.success": "Updated rewards for the dice roll.",
+    "roll.allowwhenoffline.enabled": "Rolling is allowed while channel is offline.",
+    "roll.allowwhenoffline.disabled": "Rolling is prevented while channel is offline."
 }

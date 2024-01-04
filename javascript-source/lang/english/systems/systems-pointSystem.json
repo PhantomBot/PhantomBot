@@ -52,5 +52,7 @@
     "pointsystem.active.bonus.usage": "Usage: !points setactivebonus [amount]",
     "pointsystem.active.bonus.set": "Active bonus set to $1",
     "pointsystem.bonus.usage": "Usage: !points bonus [amount] [for time]",
-    "pointsystem.bonus.say": "For the next $1 I will be giving out $2 extra $3 at each payouts!"
+    "pointsystem.bonus.say": "For the next $1 I will be giving out $2 extra $3 at each payouts!",
+    "pointsystem.modonlyusercheck.disabled": "Anyone can view other's $1 earned in chat.",
+    "pointsystem.modonlyusercheck.enabled": "Only mods can request other's $1 earned in chat."
 }
