@@ -12,5 +12,7 @@
     "gambling.win.range.usage": "Usage: !gamblesetwinningrange [range]",
     "gambling.win.range": "Set gambling win range to $1-100 lose range to 1-$2",
     "gambling.percent.usage": "Usage: !gamblesetgainpercent [amount]",
-    "gambling.percent": "Set gambling gain percent to $1%"
+    "gambling.percent": "Set gambling gain percent to $1%",
+    "gambling.allowwhenoffline.enabled": "Gambling is allowed while channel is offline.",
+    "gambling.allowwhenoffline.disabled": "Gambling is prevented while channel is offline."
 }
