@@ -277,6 +277,20 @@ $(function() {
         return rx.test(window.location.hostname);
     };
 
+    helpers.isTrue = function(val) {
+        if (val === undefined || val === null) {
+            return false;
+        }
+
+        try {
+            if (typeof val === 'string') {
+                val = val.trim().toLowerCase();
+            }
+        } catch (e) {}
+
+        return val === true || val === 1 || val === 'true' || val === '1' || val === 'yes';
+    };
+
     // Export object.
     window.helpers = helpers;
 });
