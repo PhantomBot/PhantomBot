@@ -21,7 +21,7 @@
     // Pre-build regular expressions.z
     var reCommandTag = new RegExp(/\(command\s([\w]+)\)/),
             customCommands = [],
-            ScriptEventManager = Packages.tv.phantombot.script.ScriptEventManager,
+            EventBus = Packages.tv.phantombot.event.EventBus,
             CommandEvent = Packages.tv.phantombot.event.command.CommandEvent,
             _lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             disablecomBlocked = ['disablecom', 'enablecom'];
@@ -35,9 +35,9 @@
      */
     function runCommand(username, command, args, tags) {
         if (tags !== undefined) {
-            ScriptEventManager.instance().onEvent(new CommandEvent(username, command, args, tags));
+            EventBus.instance().postAsync(new CommandEvent(username, command, args, tags));
         } else {
-            ScriptEventManager.instance().onEvent(new CommandEvent(username, command, args));
+            EventBus.instance().postAsync(new CommandEvent(username, command, args));
         }
     }
 
