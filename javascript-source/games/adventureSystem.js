@@ -106,7 +106,7 @@
             stories.push({
                 game: ($.lang.exists(prefix + '.' + storyId + '.game') ? $.lang.get(prefix + '.' + storyId + '.game') : null),
                 title: $.lang.get(prefix + '.' + storyId + '.title'),
-                odds: $.lang.get(prefix + '.' + storyId + '.odds') ? parseInt($.lang.get(prefix + '.' + storyId + '.odds')) : odds,
+                odds: $.lang.exists(prefix + '.' + storyId + '.odds') ? parseInt($.lang.get(prefix + '.' + storyId + '.odds')) : odds,
                 lines: lines
             });
 
