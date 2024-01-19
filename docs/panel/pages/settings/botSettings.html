@@ -31,7 +31,7 @@
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#bot_logging" data-toggle="tab">Logging</a></li>
-                <li><a href="#bot_out" data-toggle="tab">Message Output</a></li>
+                <li><a href="#bot_out" data-toggle="tab">Message Input/Output</a></li>
             </ul>
 
             <div class="tab-content">
@@ -86,6 +86,18 @@
                         <div class="dropdown">
                             <select class="form-control" id="bot-whisper-mode" style="cursor: pointer;" data-toggle="tooltip"
                                 title="Send all responses in whispers except for custom commands.">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Allow Non-Moderator Whisper Commands. -->
+                    <div class="form-group">
+                        <label>Allow Non-Moderator Whisper Commands</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="bot-allowNonModWhispers" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Allow non-moderators to send commands to the bot via whisper.">
                                 <option>Yes</option>
                                 <option>No</option>
                             </select>
