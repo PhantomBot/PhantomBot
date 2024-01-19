@@ -79,6 +79,8 @@
     "init.toggle.botname": "The !$1 command has been $2. !pbcore can always be used to access these commands.",
     "whisper.whispers.disabled": "[Whisper Mode] has been disabled.",
     "whisper.whispers.enabled": "[Whisper Mode] has been enabled.",
+    "whisper.allowNonModWhispers.disabled": "Bot now only responds to whisper commands from moderators.",
+    "whisper.allowNonModWhispers.enabled": "Bot now responds to whisper commands from all users.",
     "common.hours": " hours, ",
     "common.hours2": " hours, ",
     "common.hours3": " hours",
