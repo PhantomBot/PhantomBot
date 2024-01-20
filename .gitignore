@@ -71,3 +71,4 @@ lib.extra/
 
 # Allow java-runtime files
 !resources/java-runtime*/*
+/.vs
