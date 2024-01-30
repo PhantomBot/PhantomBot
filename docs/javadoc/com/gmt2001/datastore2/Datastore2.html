@@ -241,10 +241,10 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a list of cached known tables, blocking until available</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>reactor.core.publisher.Mono&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Table.html" title="class or interface in org.jooq" class="external-link">Table</a>&lt;?&gt;&gt;&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Table.html" title="class or interface in org.jooq" class="external-link">Table</a>&lt;?&gt;&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tablesAsync()" class="member-name-link">tablesAsync</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns a list of cached known tables in a <code>Mono</code></div>
+<div class="block">Returns a list of cached known tables in a <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link"><code>Mono</code></a></div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#testConnection()" class="member-name-link">testConnection</a>()</code></div>
@@ -504,15 +504,15 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="tablesAsync()">
 <h3>tablesAsync</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">reactor.core.publisher.Mono&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Table.html" title="class or interface in org.jooq" class="external-link">Table</a>&lt;?&gt;&gt;&gt;</span>&nbsp;<span class="element-name">tablesAsync</span>()</div>
-<div class="block">Returns a list of cached known tables in a <code>Mono</code>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Table.html" title="class or interface in org.jooq" class="external-link">Table</a>&lt;?&gt;&gt;&gt;</span>&nbsp;<span class="element-name">tablesAsync</span>()</div>
+<div class="block">Returns a list of cached known tables in a <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link"><code>Mono</code></a>
  <p>
- If the cache has not been invalidated, returns a <code>Mono</code> which returns the previous cached result
+ If the cache has not been invalidated, returns a <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link"><code>Mono</code></a> which returns the previous cached result
  <p>
  If the cache has been invalidated with <a href="#invalidateTableCache()"><code>invalidateTableCache()</code></a>, refreshes the cache</div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>a <code>Mono</code> which will provive a list of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Table.html" title="class or interface in org.jooq" class="external-link"><code>Table</code></a></dd>
+<dd>a <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link"><code>Mono</code></a> which will provive a list of <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/Table.html" title="class or interface in org.jooq" class="external-link"><code>Table</code></a></dd>
 </dl>
 </section>
 </li>
