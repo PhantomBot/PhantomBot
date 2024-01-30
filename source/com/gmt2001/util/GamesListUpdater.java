@@ -179,13 +179,13 @@ public final class GamesListUpdater {
             debug("Processing indexes...");
             for (int i = 0; i < indexesToUpdate.length(); i++) {
                 if (force) {
-                    com.gmt2001.Console.out.println("Updating from index " + indexesToUpdate.getInt(i) + "...");
+                    com.gmt2001.Console.out.println("Updating list of Twitch-supported games from index " + indexesToUpdate.getInt(i) + "...");
                 }
                 UpdateFromIndex(data, indexesToUpdate.getInt(i), force);
             }
 
             if (force) {
-                com.gmt2001.Console.out.println("Updating from manual index...");
+                com.gmt2001.Console.out.println("Updating list of Twitch-supported games from manual index...");
             }
             UpdateFromIndex(data, -1, force);
 
