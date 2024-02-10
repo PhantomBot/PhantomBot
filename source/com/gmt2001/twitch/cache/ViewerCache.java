@@ -260,7 +260,7 @@ public final class ViewerCache implements Listener {
     }
 
     /**
-     * Updates the cache when a TMI message is recieved
+     * Updates the cache when a TMI message is received
      *
      * @param event The event to process
      */
@@ -566,7 +566,7 @@ public final class ViewerCache implements Listener {
      * @param login The user login to lookup
      * @return The associated user id; {@code null} if the specified user login is not in the database
      */
-    public String lookupIdBylogin(String login) {
+    public String lookupIdByLogin(String login) {
         if (PhantomBot.instance().getDataStore().HasKey("loginToId", "", login)) {
             return PhantomBot.instance().getDataStore().GetString("loginToId", "", login);
         }
