@@ -202,6 +202,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(java.time.zone.ZoneRulesException.class)) {
+                                    return true;
+                                }
+
                                 if (error.getClass().equals(discord4j.rest.http.client.ClientException.class)
                                     && error.getMessage().matches("(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found)")) {
                                     return true;
