@@ -494,7 +494,7 @@
 
             for (i = 0; i < keyList.length; i++) {
                 if ($.getIniDbString(playListDbId, keyList[i]).equals(videoId)) {
-                    if ($.getIniDbString(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
+                    if (currentVideo !== null && $.getIniDbString(playListDbId, keyList[i]) == currentVideo.getVideoId()) {
                         isCurrent = true;
                     }
                     $.inidb.del(playListDbId, keyList[i]);
@@ -912,14 +912,16 @@
          * the text constantly in a loop.
          */
         this.updateCurrentSongFile = function(youtubeVideo) {
-            var writer = new Packages.java.io.OutputStreamWriter(new Packages.java.io.FileOutputStream(baseFileOutputPath + 'currentsong.txt'), 'UTF-8');
-
+            var writer = null;
             try {
+                writer = new Packages.java.io.OutputStreamWriter(new Packages.java.io.FileOutputStream(baseFileOutputPath + 'currentsong.txt'), 'UTF-8');
                 writer.write(youtubeVideo.getVideoTitle());
             } catch (ex) {
                 $.log.error('Failed to update current song file: ' + ex.toString());
             } finally {
-                writer.close();
+                if (writer !== null) {
+                    writer.close();
+                }
             }
         };
 
