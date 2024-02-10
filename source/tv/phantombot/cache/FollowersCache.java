@@ -218,7 +218,7 @@ public final class FollowersCache {
      */
     public boolean follows(String loginName) {
         JSONObject jso = Helix.instance().getChannelFollowers(ViewerCache.instance().getByLogin(loginName).id(), 1, null);
-        if (!jso.has("status")) {
+        if (jso != null && !jso.has("status")) {
             JSONArray jsa = jso.getJSONArray("data");
             if (jsa.length() > 0) {
                 this.addFollow(jsa.getJSONObject(0).optString("user_login"), jsa.getJSONObject(0).optString("followed_at"));
