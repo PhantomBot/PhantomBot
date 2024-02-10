@@ -51,7 +51,8 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
         try {
             super.channelRead(ctx, msg);
         } catch (Exception ex) {
-            if (!(ex.getClass() == IllegalAccessException.class && ex.getMessage().startsWith("Content-Length"))) {
+            if (!(ex.getClass() == IllegalArgumentException.class && (
+                ex.getMessage().startsWith("Content-Length") || ex.getMessage().startsWith("Invalid separator")))) {
                 throw ex;
             }
         }
