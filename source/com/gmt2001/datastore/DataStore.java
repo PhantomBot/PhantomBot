@@ -38,6 +38,7 @@ import org.jooq.SelectWhereStep;
 import org.jooq.SortOrder;
 import org.jooq.Table;
 import org.jooq.exception.DataAccessException;
+import org.jooq.exception.TooManyRowsException;
 import org.jooq.impl.SQLDataType;
 
 import com.gmt2001.datastore2.Datastore2;
@@ -681,11 +682,34 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key) {
+        return this.OptRecord(table, section, key, false);
+    }
+
+    /**
+     * Returns the record for the given table, section, and key
+     *
+     * @param table the table to search
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param isRetry if {@code false}, a {@link TooManyRowsException} triggers a table rebuild; otherwise, the exception is re-thrown up the stack
+     * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
+     */
+    private Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key, boolean isRetry) {
         Optional<SectionVariableValueRecord> res;
-        if (section == null) {
-            res = dsl().fetchOptional(table, table.VARIABLE.eq(key));
-        } else {
-            res = dsl().fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
+
+        try {
+            if (section == null) {
+                res = dsl().fetchOptional(table, table.VARIABLE.eq(key));
+            } else {
+                res = dsl().fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
+            }
+        } catch (TooManyRowsException ex) {
+            if (isRetry) {
+                throw ex;
+            } else {
+                table.rebuildTable();
+                return this.OptRecord(table, section, key, true);
+            }
         }
 
         return res.map(r -> r.with(table));

@@ -63,7 +63,8 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * <p>
      * If the table does not exist, it is created
      * <p>
-     * A case-insensitive search for the table is performed in the database if it is not already cached
+     * A case-insensitive search for the table is performed in the database if it is
+     * not already cached
      *
      * @param tableName the table name to lookup
      * @return the table instance
@@ -75,11 +76,13 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
     /**
      * Retrieves an instance for the specified table
      * <p>
-     * A case-insensitive search for the table is performed in the database if it is not already cached
+     * A case-insensitive search for the table is performed in the database if it is
+     * not already cached
      *
      * @param tableName the table name to lookup
-     * @param create if {@code true} and the table does not exist, it is created
-     * @return the table instance; {@code null} if the table does not exist and {@code create} was {@code false}
+     * @param create    if {@code true} and the table does not exist, it is created
+     * @return the table instance; {@code null} if the table does not exist and
+     *         {@code create} was {@code false}
      */
     public static SectionVariableValueTable instance(String tableName, boolean create) {
         tableName = tableName.toLowerCase();
@@ -87,10 +90,12 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             tableName = "phantombot_" + tableName;
         }
         return TABLES.computeIfAbsent(tableName, lTableName -> {
-            Optional<Table<?>> cTable = Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
+            Optional<Table<?>> cTable = Datastore2.instance().tables().stream()
+                    .filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
 
             if (cTable.isPresent()) {
-                return new SectionVariableValueTable(cTable.get().getName(), cTable.get().field(0).getName(), cTable.get().field(1).getName(), cTable.get().field(2).getName());
+                return new SectionVariableValueTable(cTable.get().getName(), cTable.get().field(0).getName(),
+                        cTable.get().field(1).getName(), cTable.get().field(2).getName());
             } else if (create) {
                 com.gmt2001.Console.debug.println("create " + lTableName);
                 return new SectionVariableValueTable(lTableName);
@@ -148,14 +153,15 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * Constructor
      *
      * @param tableName the exact case-sensitive name of the table
-     * @param section the exact case-sensitive name of the {@code section} field
-     * @param variable the exact case-sensitive name of the {@code variable} field
-     * @param value the exact case-sensitive name of the {@code value} field
+     * @param section   the exact case-sensitive name of the {@code section} field
+     * @param variable  the exact case-sensitive name of the {@code variable} field
+     * @param value     the exact case-sensitive name of the {@code value} field
      */
     private SectionVariableValueTable(String tableName, String section, String variable, String value) {
         super(DSL.name(tableName));
         this.tableName = tableName;
-        this.SECTION = createField(DSL.name(section), SQLDataType.VARCHAR(255).nullable(false).defaultValue(""), this, "");
+        this.SECTION = createField(DSL.name(section), SQLDataType.VARCHAR(255).nullable(false).defaultValue(""), this,
+                "");
         this.VARIABLE = createField(DSL.name(variable), SQLDataType.VARCHAR(255).nullable(false), this, "");
         this.VALUE = createField(DSL.name(value), Datastore2.instance().longTextDataType().nullable(true), this, "");
         this.checkAndCreateTable();
@@ -196,7 +202,65 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
     }
 
     /**
-     * Checks if the database table for {@link SectionVariableValueTable} exists, and creates it if it is missing
+     * Re-creates the table, de-duplicating data
+     */
+    void rebuildTable() {
+        String tempName = this.tableName + "______TEMP";
+
+        try {
+            Datastore2.instance().dslContext().dropTableIfExists(tempName).execute();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+
+        this.createTable(tempName);
+
+        try {
+            Datastore2.instance().dslContext().transaction(transaction -> {
+                Optional<Table<?>> tempOTable = transaction.dsl().meta().getTables().stream()
+                        .filter(t -> t.getName().equals(tempName)).findFirst();
+
+                if (tempOTable.isPresent()) {
+                    Table<?> tempTable = tempOTable.get();
+
+                    transaction.dsl().insertInto(tempTable)
+                            .columns(tempTable.field(this.SECTION.getName(), String.class),
+                                    tempTable.field(this.VARIABLE.getName(), String.class),
+                                    tempTable.field(this.VALUE.getName(), String.class))
+                            .select(
+                                    Datastore2.instance().dslContext()
+                                            .select(this.SECTION, this.VARIABLE, this.VALUE)
+                                            .distinctOn(this.SECTION, this.VARIABLE).from(this))
+                            .execute();
+
+                    transaction.dsl().dropTable(this.tableName).execute();
+
+                    transaction.dsl().alterTable(tempName).renameTo(this.tableName).execute();
+
+                    Datastore2.instance().invalidateTableCache();
+                }
+            });
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.logStackTrace(ex);
+        }
+    }
+
+    /**
+     * Creates the table, if not exists
+     *
+     * @param name the table name
+     */
+    private void createTable(String name) {
+        Datastore2.instance().dslContext().createTableIfNotExists(name)
+                .column(this.SECTION)
+                .column(this.VARIABLE)
+                .column(this.VALUE)
+                .primaryKey(this.SECTION, this.VARIABLE).execute();
+    }
+
+    /**
+     * Checks if the database table for {@link SectionVariableValueTable} exists,
+     * and creates it if it is missing
      */
     private void checkAndCreateTable() {
         if (this.tableName.equals("EMPTY")) {
@@ -207,11 +271,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
 
         if (!table.isPresent()) {
             try {
-                Datastore2.instance().dslContext().createTableIfNotExists(this.tableName)
-                    .column(this.SECTION)
-                    .column(this.VARIABLE)
-                    .column(this.VALUE)
-                    .primaryKey(this.SECTION, this.VARIABLE).execute();
+                this.createTable(this.tableName);
 
                 Datastore2.instance().invalidateTableCache();
             } catch (Exception ex) {
