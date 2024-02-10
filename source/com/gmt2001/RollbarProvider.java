@@ -287,7 +287,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().contains("No route to host")) {
+                                if (error.getMessage().contains("No route to host") || error.getMessage().contains("NoRouteToHost")) {
                                     return true;
                                 }
 
