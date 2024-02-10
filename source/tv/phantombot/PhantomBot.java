@@ -1086,7 +1086,7 @@ public final class PhantomBot implements Listener {
 
         /* Load the caches for each channels */
         this.twitchTeamCache = TwitchTeamsCache.instance(this.getChannelName());
-        this.emotesCache = EmotesCache.instance(this.getChannelName());
+        this.emotesCache = EmotesCache.instance();
         this.followersCache = FollowersCache.instance();
         this.viewerListCache = ViewerListCache.instance(this.getChannelName());
 

@@ -19,8 +19,15 @@
 package tv.phantombot.cache;
 
 
-import com.gmt2001.twitch.cache.ViewerCache;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.Validate;
+
+import com.gmt2001.twitch.cache.ViewerCache;
+
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
 import tv.phantombot.twitch.emotes.BttvApiV3;
@@ -30,49 +37,30 @@ import tv.phantombot.twitch.emotes.EmoteProvider;
 import tv.phantombot.twitch.emotes.FrankerFacezApiV1;
 import tv.phantombot.twitch.emotes.SevenTVAPIv3;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 public class EmotesCache implements Runnable {
 
     private static final long LOOP_SLEEP_EMOTES = 60L * 60L * 1000L;
-    private static final Map<String, EmotesCache> instances = new ConcurrentHashMap<>();
+    private static final EmotesCache INSTANCE = new EmotesCache();
 
-    public static EmotesCache instance(String channel) {
-        EmotesCache instance = instances.get(channel);
-        if (instance == null) {
-            instance = new EmotesCache(channel);
-            instances.put(channel, instance);
-            return instance;
-        }
-        return instance;
+    public static EmotesCache instance() {
+        return INSTANCE;
     }
 
     private final List<EmoteProvider> emoteProviders;
-    private final String channel;
     private final Thread updateThread;
     private Instant timeoutExpire = Instant.now();
     private Instant lastFail = Instant.now();
-    private int numfail = 0;
+    private int numFail = 0;
     private boolean killed = false;
 
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
-    private EmotesCache(String channel) {
-        if (channel.startsWith("#")) {
-            channel = channel.substring(1);
-        }
-
+    private EmotesCache() {
         this.emoteProviders = List.of(
                 BttvApiV3.instance(),
                 FrankerFacezApiV1.instance(),
                 SevenTVAPIv3.instance()
         );
 
-        this.channel = channel;
         this.updateThread = new Thread(this, "tv.phantombot.cache.EmotesCache");
 
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
@@ -82,11 +70,11 @@ public class EmotesCache implements Runnable {
     }
 
     private void checkLastFail() {
-        this.numfail = (lastFail.isAfter(Instant.now()) ? this.numfail + 1 : 1);
+        this.numFail = (lastFail.isAfter(Instant.now()) ? this.numFail + 1 : 1);
 
         lastFail = Instant.now().plus(1, ChronoUnit.MINUTES);
 
-        if (numfail > 5) {
+        if (numFail > 5) {
             timeoutExpire = Instant.now().plus(1, ChronoUnit.MINUTES);
         }
     }
@@ -158,12 +146,6 @@ public class EmotesCache implements Runnable {
 
     public void kill() {
         killed = true;
-    }
-
-    public static void killall() {
-        instances.entrySet().forEach((instance) -> {
-            instance.getValue().kill();
-        });
     }
 
     /**
