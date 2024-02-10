@@ -43,7 +43,7 @@ $(run = function () {
         }
 
         // Update the open button to close if the queue is active.
-        if (e['isActive'] === 'true') {
+        if (helpers.isTrue(e['isActive'])) {
             $('#open-or-close-queue').html($('<i/>', {
                 'class': 'fa fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');

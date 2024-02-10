@@ -99,9 +99,9 @@ $(function () {
             keys: ['modLogs', 'customCommandLogs', 'modLogChannel']
         }, true, function (e) {
             // Mod toggle.
-            $('#twitch-mod-log').val((e['modLogs'] === 'true' ? 'Yes' : 'No'));
+            $('#twitch-mod-log').val((helpers.isTrue(e['modLogs']) ? 'Yes' : 'No'));
             // Commands toggle.
-            $('#twitch-command-log').val((e['customCommandLogs'] === 'true' ? 'Yes' : 'No'));
+            $('#twitch-command-log').val((helpers.isTrue(e['customCommandLogs']) ? 'Yes' : 'No'));
             // Log channels
             $('#discord_logs_pubsub').append(getChannelSelector('twitch-mod-channel', 'Logging Channel', '#logs', e['modLogChannel'],
                     'Which channel to post the moderation logs to.', allowedChannelTypes));

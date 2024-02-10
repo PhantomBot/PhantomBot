@@ -30,7 +30,7 @@ $(run = function () {
         }
 
         // Update the open button to close if the raffle is active.
-        if (e['isActive'] === '1' || e['isActive'] === 'true') {
+        if (helpers.isTrue(e['isActive'])) {
             $('#open-or-close-raffle').html($('<i/>', {
                 'class': 'fa fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
@@ -57,7 +57,7 @@ $(run = function () {
                     }
 
                     if (e['hasDrawn'] !== undefined) {
-                        hasDrawn = (e['hasDrawn'] === '1' || e['hasDrawn'] === 'true');
+                        hasDrawn = helpers.isTrue(e['hasDrawn']);
                         if (hasDrawn) {
                             var winners = JSON.parse(e['winner']);
                             length = (length < winners.length) ? winners.length : length;
@@ -65,14 +65,14 @@ $(run = function () {
                     }
 
                     //Update Buttons
-                    if (e['isActive'] === '0' || e['isActive'] === 'false') {
-                        $('#open-or-close-raffle').html($('<i/>', {
-                            'class': 'fa fa-unlock-alt'
-                        })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
-                    } else if (e['isActive'] === '1' || e['isActive'] === 'true') {
+                    if (helpers.isTrue(e['isActive'])) {
                         $('#open-or-close-raffle').html($('<i/>', {
                             'class': 'fa fa-lock'
                         })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
+                    } else {
+                        $('#open-or-close-raffle').html($('<i/>', {
+                            'class': 'fa fa-unlock-alt'
+                        })).append('&nbsp; Open').removeClass('btn-warning').addClass('btn-success');
                     }
 
                     // Remove current data content.
@@ -255,16 +255,16 @@ $(function () {
                             .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
                                 'role': 'form'
                             })
-                                    .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['raffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (helpers.isTrue(e['raffleOpenDraw']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If disabled, the raffle will close automatically when drawing winners.'))
                                     // Add toggle for warning messages.
-                                    .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['raffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (helpers.isTrue(e['raffleMSGToggle']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
                                     // Add toggle for repicks
-                                    .append(helpers.getDropdownGroup('draw-toggle', 'Allow Multiple Draws', (e['noRepickSame'] === 'false' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('draw-toggle', 'Allow Multiple Draws', (helpers.isTrue(e['noRepickSame']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If a user can be drawn multiple times for one raffle.'))
                                     // Add toggle for repicks
-                                    .append(helpers.getDropdownGroup('whisper-toggle', 'Whisper The Winner', (e['raffleWhisperWinner'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('whisper-toggle', 'Whisper The Winner', (helpers.isTrue(e['raffleWhisperWinner']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If the winner of the raffle should get a whisper saying they won.'))))),
                     function () {
                         let raffleTimer = $('#msg-timer'),
