@@ -150,13 +150,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLinks !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateLinks), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLinks !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateLinks), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateLinks !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateLinks), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -246,13 +246,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateCaps !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateCaps), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateCaps !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateCaps), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateCaps !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateCaps), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -348,13 +348,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSymbols !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateSymbols), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSymbols !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateSymbols), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateSymbols !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateSymbols), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -448,13 +448,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpam !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateSpam), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpam !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateSpam), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.subscribersModerateSpam !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.subscribersModerateSpam), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -544,13 +544,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateEmotes !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateEmotes), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateEmotes !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateEmotes), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateEmotes !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateEmotes), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -637,13 +637,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateColors !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateColors), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateColors !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateColors), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateColors !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateColors), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -730,13 +730,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLongMsg !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateLongMsg), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLongMsg !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateLongMsg), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateLongMsg !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateLongMsg), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -820,13 +820,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateFakePurge !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateFakePurge), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateFakePurge !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateFakePurge), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateFakePurge !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateFakePurge), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -916,13 +916,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpamTracker !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateSpamTracker), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpamTracker !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateSpamTracker), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateSpamTracker !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateSpamTracker), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
