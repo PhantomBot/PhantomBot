@@ -25,9 +25,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.zone.ZoneRulesException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1514,13 +1516,19 @@ public final class PhantomBot implements Listener {
     }
 
     public static ZoneId getTimeZoneId() {
-        ZoneId zoneId = ZoneId.of(getTimeZone());
+        try {
+            ZoneId zoneId = ZoneId.of(getTimeZone());
 
-        if (zoneId == null) {
+            if (zoneId == null) {
+                return ZoneId.systemDefault();
+            }
+
+            return zoneId;
+        } catch (DateTimeException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.println("Invalid TimeZone. Please make sure your TimeZone ID is formatted according to the 'TZ identifier' column on this Wikipedia page: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones");
             return ZoneId.systemDefault();
         }
-
-        return zoneId;
     }
 
     public static boolean isInExitState() {
