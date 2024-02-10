@@ -27,25 +27,25 @@ $(function () {
             'response_@chat', 'response_action', 'whisperMode', 'allowNonModWhispers', 'customCommandAtEnabled', 'shoutoutapi']
     }, true, function (e) {
         // Update log event toggle.
-        $('#logging-events').val((e['log.event'] === 'true' ? 'Yes' : 'No'));
+        $('#logging-events').val((helpers.isTrue(e['log.event']) ? 'Yes' : 'No'));
         // Update log error toggle.
-        $('#logging-errors').val((e['log.error'] === 'true' ? 'Yes' : 'No'));
+        $('#logging-errors').val((helpers.isTrue(e['log.error']) ? 'Yes' : 'No'));
         // Update log chat toggle.
-        $('#logging-chat').val((e['log.file'] === 'true' ? 'Yes' : 'No'));
+        $('#logging-chat').val((helpers.isTrue(e['log.file']) ? 'Yes' : 'No'));
         // Update log keep days.
         $('#log-days').val(e.log_rotate_days);
         // Set mute mode.
-        $('#bot-mute-mode').val((e['response_@chat'] === 'true' ? 'No' : 'Yes'));
+        $('#bot-mute-mode').val((helpers.isTrue(e['response_@chat']) ? 'No' : 'Yes'));
         // Set action mode.
-        $('#bot-action-mode').val((e['response_action'] === 'true' ? 'Yes' : 'No'));
+        $('#bot-action-mode').val((helpers.isTrue(e['response_action']) ? 'Yes' : 'No'));
         // Set whisper mode.
-        $('#bot-whisper-mode').val((e['whisperMode'] === 'true' ? 'Yes' : 'No'));
+        $('#bot-whisper-mode').val((helpers.isTrue(e['whisperMode']) ? 'Yes' : 'No'));
         // Allow non-mod whisper commands.
-        $('#bot-allowNonModWhispers').val((e['allowNonModWhispers'] === 'true' ? 'Yes' : 'No'));
+        $('#bot-allowNonModWhispers').val((helpers.isTrue(e['allowNonModWhispers']) ? 'Yes' : 'No'));
         // Set atEnabled.
-        $('#bot-atenabled').val((e['customCommandAtEnabled'] === 'true' ? 'Yes' : 'No'));
+        $('#bot-atenabled').val((helpers.isTrue(e['customCommandAtEnabled']) ? 'Yes' : 'No'));
         // Set shoutout mode.
-        $('#bot-shoutout-api').val((e['shoutoutapi'] === 'true' ? 'Yes' : 'No'));
+        $('#bot-shoutout-api').val((helpers.isTrue(e['shoutoutapi']) ? 'Yes' : 'No'));
     });
 });
 

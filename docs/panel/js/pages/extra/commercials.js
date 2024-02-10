@@ -26,7 +26,7 @@ $(run = function () {
             return;
         }
 
-        if (e['commercialtimer'] === 'true') {
+        if (helpers.isTrue(e['commercialtimer'])) {
             $('#commercials-autotimer-on').html($('<i/>', {
                 'class': 'fa fa-check'
             })).append('&nbsp; Update Autotimer');

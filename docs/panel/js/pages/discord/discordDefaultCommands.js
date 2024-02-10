@@ -50,7 +50,7 @@ $(run = function () {
                     }
 
                     // No loop needed here since there's just one permission for now.
-                    if (permJson.permissions[0].selected == 'true') {
+                    if (helpers.isTrue(permJson.permissions[0].selected)) {
                         perms.permissions.push(permJson.permissions[0].name);
                     }
 
