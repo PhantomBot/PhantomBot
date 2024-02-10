@@ -19,7 +19,12 @@ package com.scaniatv;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
+
+import io.netty.handler.codec.http.HttpHeaderNames;
+
 import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +70,18 @@ public class CustomAPI {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
         return new JSONObject("{}");
+    }
+
+    /*
+     * Method to get data from an API.
+     *
+     * @param  {String} url
+     * @return
+     */
+    public HttpResponse get(String url, String accept) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put(HttpHeaderNames.ACCEPT.toString(), accept);
+        return HttpRequest.getData(HttpRequest.RequestType.GET, url, "", headers);
     }
 
     /*
