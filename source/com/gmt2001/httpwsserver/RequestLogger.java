@@ -48,7 +48,13 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
             ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
         }
 
-        super.channelRead(ctx, msg);
+        try {
+            super.channelRead(ctx, msg);
+        } catch (Exception ex) {
+            if (!(ex.getClass() == IllegalAccessException.class && ex.getMessage().startsWith("Content-Length"))) {
+                throw ex;
+            }
+        }
     }
 
     @Override
