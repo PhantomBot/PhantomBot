@@ -37,6 +37,7 @@ import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.core.object.entity.channel.Channel.Type;
 import discord4j.core.object.presence.ClientActivity;
 import discord4j.core.object.presence.ClientPresence;
 import discord4j.core.object.reaction.ReactionEmoji;
@@ -63,6 +64,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import reactor.core.publisher.Flux;
@@ -221,7 +223,9 @@ public class DiscordUtil {
     }
 
     public Mono<Message> sendMessageAsync(String channelName, String message) {
-        return this.getChannelAsync(channelName).flatMap(channel -> this.sendMessageAsync(channel, message));
+        return this.getChannelAsync(channelName, c -> {
+            return c.getType() != Type.GUILD_CATEGORY;
+        }).flatMap(channel -> this.sendMessageAsync(channel, message));
     }
 
     /**
@@ -365,7 +369,9 @@ public class DiscordUtil {
     }
 
     public Mono<Message> sendMessageEmbedAsync(String channelName, EmbedCreateSpec embed) {
-        return this.getChannelAsync(channelName).flatMap(channel -> this.sendMessageEmbedAsync(channel, embed));
+        return this.getChannelAsync(channelName, c -> {
+            return c.getType() != Type.GUILD_CATEGORY;
+        }).flatMap(channel -> this.sendMessageEmbedAsync(channel, embed));
     }
 
     /**
@@ -487,7 +493,9 @@ public class DiscordUtil {
     }
 
     public Mono<Message> sendFileAsync(String channelName, String message, String fileLocation) {
-        return this.getChannelAsync(channelName).flatMap(channel -> this.sendFileAsync(channel, message, fileLocation));
+        return this.getChannelAsync(channelName, c -> {
+            return c.getType() != Type.GUILD_CATEGORY;
+        }).flatMap(channel -> this.sendFileAsync(channel, message, fileLocation));
     }
 
     /**
@@ -626,12 +634,16 @@ public class DiscordUtil {
     public GuildMessageChannel getChannel(String channelName) {
         return this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
-
     public Mono<GuildMessageChannel> getChannelAsync(String channelName) {
+        return this.getChannelAsync(channelName, c -> { return true; });
+    }
+
+    public Mono<GuildMessageChannel> getChannelAsync(String channelName, Predicate<? super GuildChannel> filter) {
         String schannelName = sanitizeChannelName(channelName);
         try {
             return DiscordAPI.getGuild().getChannels().filter(channel -> channel.getType() != Channel.Type.UNKNOWN).filter(channel -> DiscordUtil.channelName(channel).equalsIgnoreCase(schannelName)
-                    || DiscordUtil.channelIdAsString(channel).equals(schannelName)).take(1).single().map(c -> (GuildMessageChannel) c);
+                    || DiscordUtil.channelIdAsString(channel).equals(schannelName))
+                    .filter(filter).take(1).single().map(c -> (GuildMessageChannel) c);
         } catch (NoSuchElementException ex) {
             com.gmt2001.Console.err.println("Unable to find channelName [" + channelName + "]");
             throw ex;
@@ -1136,7 +1148,9 @@ public class DiscordUtil {
      */
     public void bulkDelete(String channelName, int amount) {
         try {
-            this.getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> this.bulkDelete(channel, amount));
+            this.getChannelAsync(channelName, c -> {
+                return c.getType() != Type.GUILD_CATEGORY;
+            }).onErrorReturn(null).subscribe(channel -> this.bulkDelete(channel, amount));
         } catch (NullPointerException ex) {
         }
     }
@@ -1170,7 +1184,9 @@ public class DiscordUtil {
      */
     public void bulkDeleteMessages(String channelName, Message... messages) {
         try {
-            this.getChannelAsync(channelName).onErrorReturn(null).subscribe(channel -> this.bulkDeleteMessages(channel, messages));
+            this.getChannelAsync(channelName, c -> {
+                return c.getType() != Type.GUILD_CATEGORY;
+            }).onErrorReturn(null).subscribe(channel -> this.bulkDeleteMessages(channel, messages));
         } catch (NullPointerException ex) {
         }
     }
@@ -1326,7 +1342,9 @@ public class DiscordUtil {
      * @return
      */
     public Message getMessageById(String channelName, String messageId) {
-        GuildMessageChannel channel = this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
+        GuildMessageChannel channel = this.getChannelAsync(channelName, c -> {
+            return c.getType() != Type.GUILD_CATEGORY;
+        }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
         if (channel != null) {
             return channel.getMessageById(Snowflake.of(messageId)).block();
         }
@@ -1362,7 +1380,9 @@ public class DiscordUtil {
      * @return
      */
     public List<Message> getMessagesBefore(String channelName, String messageId) {
-        GuildMessageChannel channel = this.getChannelAsync(channelName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
+        GuildMessageChannel channel = this.getChannelAsync(channelName, c -> {
+            return c.getType() != Type.GUILD_CATEGORY;
+        }).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
         List<Message> messageList = new ArrayList<>();
         if (channel != null) {
             channel.getMessagesBefore(Snowflake.of(messageId)).toIterable().forEach(message -> messageList.add(message));
