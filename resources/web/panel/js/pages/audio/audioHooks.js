@@ -275,7 +275,7 @@ $(run = function () {
 
         // Welcome the user to the new page.
         socket.getDBValue('get_audio_hook_warning', 'panelData', 'audioHookNewUser', function (e) {
-            if (e.panelData !== 'true') {
+            if (!helpers.isTrue(e.panelData)) {
                 alert('Hi there! \nWelcome to PhantomBot\'s audio hook page! This page allows you to test, listen, and add audio commands. \n' +
                         'If you\'ve used the old panel before, audio hooks used to play on this page when a user ran an audio command. This is no longer a feature. ' +
                         'Now, all audio hooks are sent through PhantomBot\'s alert page which can be used as a browser source in OBS. \n' +
