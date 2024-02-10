@@ -246,7 +246,9 @@ public final class SQLiteStore2 extends Datastore2 {
                 }
             }
         } catch (SQLException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+            if (!ex.getMessage().contains("cannot VACUUM from within a transaction")) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
         }
     }
 }

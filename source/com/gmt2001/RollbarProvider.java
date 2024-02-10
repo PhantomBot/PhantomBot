@@ -202,6 +202,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(java.time.zone.ZoneRulesException.class)) {
+                                    return true;
+                                }
+
                                 if (error.getClass().equals(discord4j.rest.http.client.ClientException.class)
                                     && error.getMessage().matches("(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found)")) {
                                     return true;
@@ -232,6 +236,10 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getMessage().startsWith("opening db")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().equals("failed to acquire connection")) {
                                     return true;
                                 }
 
@@ -287,7 +295,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().contains("No route to host")) {
+                                if (error.getMessage().contains("No route to host") || error.getMessage().contains("NoRouteToHost")) {
                                     return true;
                                 }
 

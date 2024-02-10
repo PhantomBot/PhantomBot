@@ -312,6 +312,10 @@
      * the values of the inner array represent the value of the row-column pair at that index as a js string
      */
     function sql(query, replacements) {
+        if (replacements === undefined || replacements === null) {
+            replacements = [];
+        }
+
         let result = $.inidb.query(query, replacements);
 
         let ret = [];

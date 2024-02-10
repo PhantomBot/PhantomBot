@@ -64,7 +64,7 @@ public final class HttpClient {
      */
     public static HttpClientResponse request(HttpMethod method, URI url, HttpHeaders requestHeaders, String requestBody) {
         reactor.netty.http.client.HttpClient client = reactor.netty.http.client.HttpClient.create();
-        if (url.getScheme().equals("https")) {
+        if (url.getScheme() != null && url.getScheme().equals("https")) {
             client = client.secure();
         }
 

@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.regex.Pattern;
 
 /**
  * Assists with creating a {@link URI} by automatically encoding characters that {@link URI} finds unacceptable
@@ -75,7 +76,7 @@ public final class URIUtil {
                 }
 
                 try {
-                    return create(uri.substring(0, ex.getIndex()) + uri.substring(ex.getIndex()).replaceAll(c, e), ex.getIndex());
+                    return create(uri.substring(0, ex.getIndex()) + uri.substring(ex.getIndex()).replaceAll(Pattern.quote(c), e), ex.getIndex());
                 } catch (URISyntaxException ex3) {
                     throw ex;
                 }

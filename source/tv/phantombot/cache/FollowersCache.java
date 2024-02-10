@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.gmt2001.datastore.DataStore;
+import com.gmt2001.twitch.cache.Viewer;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -217,8 +218,14 @@ public final class FollowersCache {
      * @return
      */
     public boolean follows(String loginName) {
-        JSONObject jso = Helix.instance().getChannelFollowers(ViewerCache.instance().getByLogin(loginName).id(), 1, null);
-        if (!jso.has("status")) {
+        Viewer user = ViewerCache.instance().getByLogin(loginName);
+
+        if (user == null) {
+            return false;
+        }
+
+        JSONObject jso = Helix.instance().getChannelFollowers(user.id(), 1, null);
+        if (jso != null && !jso.has("status")) {
             JSONArray jsa = jso.getJSONArray("data");
             if (jsa.length() > 0) {
                 this.addFollow(jsa.getJSONObject(0).optString("user_login"), jsa.getJSONObject(0).optString("followed_at"));

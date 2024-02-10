@@ -48,7 +48,14 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
             ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
         }
 
-        super.channelRead(ctx, msg);
+        try {
+            super.channelRead(ctx, msg);
+        } catch (Exception ex) {
+            if (!(ex.getClass() == IllegalArgumentException.class && (
+                ex.getMessage().startsWith("Content-Length") || ex.getMessage().startsWith("Invalid separator")))) {
+                throw ex;
+            }
+        }
     }
 
     @Override

@@ -474,6 +474,10 @@
         if (hookName === 'command') {
             i = getHookIndex($.getCommandScript(event.getCommand()), hookName);
 
+            if (hook.handlers[i] === undefined || hook.handlers[i] === null) {
+                return;
+            }
+
             try {
                 hook.handlers[i].handler(event);
             } catch (ex) {

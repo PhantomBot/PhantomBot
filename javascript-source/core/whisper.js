@@ -121,7 +121,7 @@
             $.say(whisperPrefix(sender) + (whisperMode ? $.lang.get('whisper.whispers.enabled') : $.lang.get('whisper.whispers.disabled')));
         }
         /**
-         * @commandpath togglewhispermode - Toggle whisper mode
+         * @commandpath togglenonmodwhispers - Toggle allowing non-mods to send commands via whisper
          */
          else if ($.equalsIgnoreCase(command, 'togglenonmodwhispers')) {
             allowNonModWhispers = !allowNonModWhispers;

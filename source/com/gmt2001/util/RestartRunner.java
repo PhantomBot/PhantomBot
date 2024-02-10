@@ -18,6 +18,7 @@ package com.gmt2001.util;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.json.JSONStringer;
@@ -153,7 +154,7 @@ public final class RestartRunner implements Listener {
                         }
                     }
                 } catch (IOException | InterruptedException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
+                    com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", false));
                     JSONStringer jsonObject = new JSONStringer();
                     jsonObject.object().key("query_id").value("restart-bot-result").key("results").object()
                             .key("success").value(false).key("code").value(-2).endObject().endObject();

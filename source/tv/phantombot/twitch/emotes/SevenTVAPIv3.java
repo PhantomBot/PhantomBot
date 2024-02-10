@@ -73,9 +73,18 @@ public class SevenTVAPIv3 implements EmoteProvider {
     @Override
     public List<EmoteEntry> getGlobalEmotes() throws EmoteApiRequestFailedException {
         HttpClientResponse response = readJsonFromUrl(APIURL + "/emote-sets/global");
+        if (response.responseCode().code() == 404) {
+            return Collections.emptyList();
+        }
         checkResponseForError(response);
         try {
-            return mapEmotesFromData(response.json().getJSONArray("emotes"));
+            JSONObject json = response.json();
+
+            if (!json.has("emotes")) {
+                return Collections.emptyList();
+            }
+
+            return mapEmotesFromData(json.getJSONArray("emotes"));
         } catch (Exception ex) {
             throw new EmoteApiRequestFailedException("Could not process returned json", ex);
         }
@@ -89,7 +98,13 @@ public class SevenTVAPIv3 implements EmoteProvider {
         }
         checkResponseForError(response);
         try {
-            return mapEmotesFromData(response.json().getJSONObject("emote_set").getJSONArray("emotes"));
+            JSONObject json = response.json();
+
+            if (!json.has("emote_set") || !json.getJSONObject("emote_set").has("emotes")) {
+                return Collections.emptyList();
+            }
+
+            return mapEmotesFromData(json.getJSONObject("emote_set").getJSONArray("emotes"));
         } catch (Exception ex) {
             throw new EmoteApiRequestFailedException("Could not process returned json", ex);
         }
