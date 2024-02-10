@@ -779,6 +779,7 @@ public final class PanelUserHandler {
         PanelUser user = PanelUser.LookupByUsername(username);
         if (user == null) {
             jsonObject.object().key(PanelMessage.UserNotFound.getJSONkey()).value(PanelMessage.UserNotFound.getMessage()).endObject();
+            return;
         }
 
         jsonObject.object().key("username").value(user.getUsername())
