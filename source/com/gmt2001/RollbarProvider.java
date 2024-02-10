@@ -239,6 +239,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().equals("failed to acquire connection")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("sql") && error.getMessage().contains("unrecognized token")) {
                                     return true;
                                 }
