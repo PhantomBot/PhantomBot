@@ -201,7 +201,7 @@ public final class ConsoleEventHandler implements Listener {
          * @consolecommand importpoints - This command imports time and points from a csv file in format (Username,Seconds,Points)
          */
         if (message.equalsIgnoreCase("importpoints")) {
-            if (argument != null && argument.length < 1) {
+            if (argument != null || argument.length < 1) {
                 com.gmt2001.Console.out.println("Command usage: import  [filename.csv in ./addons/import with header (Username,Seconds,Points)]");
                 return;
             }
