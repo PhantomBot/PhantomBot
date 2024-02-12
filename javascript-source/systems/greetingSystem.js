@@ -34,6 +34,7 @@
 
     /**
      * @event ircChannelJoin
+     * @usestransformers global twitch noevent
      */
     $.bind('ircChannelJoin', function (event) {
         if ($.isOnline($.channelName) && autoGreetEnabled && onJoin) {
@@ -42,7 +43,8 @@
     });
 
     /**
-     * @event ircChannelJoin
+     * @event ircChannelMessage
+     * @usestransformers global twitch noevent
      */
     $.bind('ircChannelMessage', function (event) {
         if ($.isOnline($.channelName) && autoGreetEnabled && !onJoin) {
