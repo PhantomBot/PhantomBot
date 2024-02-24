@@ -235,6 +235,7 @@ $(function () {
             // On edit button.
             table.on('click', '.btn-editcommand', function () {
                 let command = $(this).data('command'),
+                        row = $(this).parents('tr');
                         t = $(this);
 
                 // Get all the info about the command.
@@ -343,12 +344,14 @@ $(function () {
                                                 // Update command permission.
                                                 socket.sendCommand('edit_command_permission_cmd', 'permcomsilent ' + commandName.val() + ' ' +
                                                         helpers.getGroupIdByName(commandPermission.find(':selected').text(), true), function () {
-                                                    const $tr = t.parents('tr');
                                                     // Update the command response
-                                                    $tr.find('td:eq(1)').text(commandResponse.val());
+                                                    row.find('td:eq(1)').text(commandResponse.val());
                                                     // Update status icons
-                                                    $tr.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
-                                                    $tr.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                                                    row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
+                                                    row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                                                    row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                                                    // Update Permissions
+                                                    row.find('td:eq(2)').text(commandPermission.find(':selected').text());
                                                     // Close the modal.
                                                     $('#edit-command').modal('hide');
                                                     // Tell the user the command was edited.
