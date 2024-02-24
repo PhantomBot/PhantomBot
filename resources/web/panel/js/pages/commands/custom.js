@@ -73,11 +73,12 @@ $(function () {
 
     const loadCustomCommands = function () {
         // Query custom commands.
-        socket.getDBTablesValues('commands_get_custom', [{table: 'command'}, {table: 'disabledCommands'}, {table: 'hiddenCommands'}], function (results) {
+        socket.getDBTablesValues('commands_get_custom', [{table: 'command'}, {table: 'disabledCommands'}, {table: 'hiddenCommands'}, {table: 'permcom'}], function (results) {
             let tableData = [];
             let disabledCommands = {};
             let hiddenCommands = {};
             let commands = [];
+            let perms ={};
             for (let result of results) {
                 switch (result['table']) {
                     case 'command':
@@ -89,13 +90,17 @@ $(function () {
                     case 'hiddenCommands':
                         hiddenCommands[result.key] = true;
                         break;
+                    case 'permcom':
+                        perms[result.key] = helpers.getGroupNameById(result.value);
+                        break;
+
                 }
             }
-
             for (let command of commands) {
                 tableData.push([
                     '!' + command.key,
                     command.value,
+                    perms[command.key],
                     $('<div/>', {
                         'class': 'btn-group'
                     }).append($('<button/>', {
@@ -152,12 +157,13 @@ $(function () {
                 'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
-                    {'className': 'default-table', 'orderable': false, 'targets': [2, 3]},
+                    {'className': 'default-table', 'orderable': false, 'targets': [3, 4]},
                     {'width': '15%', 'targets': 0}
                 ],
                 'columns': [
                     {'title': 'Command'},
                     {'title': 'Response'},
+                    {'title': 'Permissions'},
                     {'title': 'Status'},
                     {'title': 'Actions'}
                 ]
