@@ -144,19 +144,14 @@ $(function () {
                 table.on('click', '.btn-disablecommand', function () {
                     let command = $(this).data('command'),
                     row = $(this).parents('tr');
-                    socket.getDBValues('custom_command_edit', {
+                    socket.getDBValues('default_command_edit', {
                     tables: ['command', 'disabledCommands'],
                     keys: [command, command]
                     }, function (e) {
-                        let commandDisabled = e.disabledCommands === null,
-                        commandHidden = e.hiddenCommands !== null;
+                        let commandDisabled = e.disabledCommands === null;
                         updateCommandDisabled(command, commandDisabled, function () {
-                        // Register the custom command with the cache.
-                        socket.wsEvent('custom_command_edit_ws', './commands/customCommands.js', null, ['edit', String(command),
-                            e.command, JSON.stringify({disabled: commandDisabled})], function () {
                             // Update status icon
                             row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
-                            });
                         });
                     });
                 });
