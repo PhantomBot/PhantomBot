@@ -283,20 +283,40 @@ $(function () {
             }
 
             // Query custom commands.
-            socket.getDBTableValues('discord_commands_get_custom', 'discordCommands', function (results) {
+            socket.getDBTablesValues('discord_commands_get_custom', [{table: 'discordCommands'}, {table: 'discordPermsObj'}, {table: 'discordPermcom'}], function (results) {
                 const tableData = [];
-
-                for (let i = 0; i < results.length; i++) {
+                let commands = [],
+                    perms = {},
+                    permsObjs = {};
+                for (let result of results) {
+                    switch (result['table']) {
+                        case 'discordCommands':
+                            commands.push(result);
+                            break;
+                        case 'discordPermcom':
+                            perms[result.key] = JSON.parse(result.value);
+                            break;
+                        case 'discordPermsObj':
+                            let roles = JSON.parse(result.value).roles;
+                            for (let role of roles) {
+                                permsObjs[role._id] = role.name
+                            }
+                            break;
+                    }
+                }
+                for (let i = 0; i < commands.length; i++) {
                     tableData.push([
-                        '!' + results[i].key,
-                        results[i].value,
+                        '!' + commands[i].key,
+                        commands[i].value,
+                        (perms[commands[i].key].roles.length > 0 ? perms[commands[i].key].roles.map(v => permsObjs[v]).join(', ') : 'None'),
+                        (perms[commands[i].key].permissions.length > 0 ? perms[commands[i].key].permissions.map(v => v.name).join(', ') : 'None'),
                         $('<div/>', {
                             'class': 'btn-group'
                         }).append($('<button/>', {
                             'type': 'button',
                             'class': 'btn btn-xs btn-danger',
                             'style': 'float: right',
-                            'data-command': results[i].key,
+                            'data-command': commands[i].key,
                             'html': $('<i/>', {
                                 'class': 'fa fa-trash'
                             })
@@ -304,7 +324,7 @@ $(function () {
                             'type': 'button',
                             'class': 'btn btn-xs btn-warning',
                             'style': 'float: right',
-                            'data-command': results[i].key,
+                            'data-command': commands[i].key,
                             'html': $('<i/>', {
                                 'class': 'fa fa-edit'
                             })
@@ -325,12 +345,14 @@ $(function () {
                     'lengthChange': false,
                     'data': tableData,
                     'columnDefs': [
-                        {'className': 'default-table', 'orderable': false, 'targets': 2},
+                        {'className': 'default-table', 'orderable': false, 'targets': 4},
                         {'width': '15%', 'targets': 0}
                     ],
                     'columns': [
                         {'title': 'Command'},
                         {'title': 'Response'},
+                        {'title': 'Allowed Roles'},
+                        {'title': 'Allowed Permissions'},
                         {'title': 'Actions'}
                     ]
                 });

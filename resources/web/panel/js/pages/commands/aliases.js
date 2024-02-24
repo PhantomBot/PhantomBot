@@ -99,18 +99,32 @@ $(function () {
                 tableData.push([
                     '!' + alias.key,
                     '!' + alias.value,
-                    $('<div/>')
-                            .append($('<i/>', {
-                                ...getDisabledIconAttr(disabledCommands.hasOwnProperty(alias.key)),
-                                'style': "margin-right: 0.5em"
-                            }))
-                            .append($('<i/>', getHiddenIconAttr(hiddenCommands.hasOwnProperty(alias.key))))
-                            .html(),
                     $('<div/>', {
                         'class': 'btn-group'
                     }).append($('<button/>', {
                         'type': 'button',
-                        'class': 'btn btn-xs btn-danger',
+                        'class': 'btn btn-xs btn-warning btn-disablealias',
+                        'style': 'float: right',
+                        'data-alias': alias.key,
+                        'html': $('<i/>', {
+                                ...getDisabledIconAttr(disabledCommands.hasOwnProperty(alias.key)),
+                                'style': "width: 9px"
+                            })
+                    })).append($('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-xs btn-warning btn-hidealias',
+                        'style': 'float: right',
+                        'data-alias': alias.key,
+                        'html': $('<i/>', {
+                                ...getHiddenIconAttr(hiddenCommands.hasOwnProperty(alias.key)),
+                                'style': "width: 9px"
+                            })
+                    })).html(),
+                    $('<div/>', {
+                        'class': 'btn-group'
+                    }).append($('<button/>', {
+                        'type': 'button',
+                        'class': 'btn btn-xs btn-danger btn-deletealias',
                         'style': 'float: right',
                         'data-alias': alias.key,
                         'html': $('<i/>', {
@@ -118,7 +132,7 @@ $(function () {
                         })
                     })).append($('<button/>', {
                         'type': 'button',
-                        'class': 'btn btn-xs btn-warning',
+                        'class': 'btn btn-xs btn-warning btn-editalias',
                         'style': 'float: right',
                         'data-alias': alias.key,
                         'html': $('<i/>', {
@@ -155,7 +169,7 @@ $(function () {
             });
 
             // On delete button.
-            table.on('click', '.btn-danger', function () {
+            table.on('click', '.btn-deletealias', function () {
                 let alias = $(this).data('alias'),
                         row = $(this).parents('tr');
 
@@ -175,8 +189,50 @@ $(function () {
                         });
             });
 
+            // On disable button.
+            table.on('click', '.btn-disablealias', function () {
+                let alias = $(this).data('alias'),
+                row = $(this).parents('tr');
+                socket.getDBValues('alias_edit', {
+                  tables: ['aliases', 'disabledCommands', 'hiddenCommands'],
+                  keys: [alias, alias, alias]
+                  }, function (e) {
+                    let disabledCommands = e.disabledCommands === null,
+                            hiddenCommands = e.hiddenCommands !== null;
+                      updateAliasVisibility(alias, disabledCommands, hiddenCommands, function () {
+                        // Register the custom command with the cache.
+                        socket.wsEvent('alias_edit_ws', './commands/customCommands.js', null, ['edit', String(alias),
+                            e.aliases, JSON.stringify({disabled: disabledCommands})], function () {
+                            // Update status icon
+                            row.find('.disabled-status-icon').attr(getDisabledIconAttr(disabledCommands));
+                            });
+                      });
+                    });
+              });
+  
+              // On hidden button.
+              table.on('click', '.btn-hidealias', function () {
+                let alias = $(this).data('alias'),
+                row = $(this).parents('tr');
+                socket.getDBValues('alias_edit', {
+                  tables: ['aliases', 'disabledCommands', 'hiddenCommands'],
+                  keys: [alias, alias, alias]
+                  }, function (e) {
+                    let commandDisabled = e.disabledCommands !== null,
+                      commandHidden = e.hiddenCommands === null;
+                    updateAliasVisibility(alias, commandDisabled, commandHidden, function () {
+                      // Register the custom command with the cache.
+                      socket.wsEvent('alias_edit_ws', './commands/customCommands.js', null, ['edit', String(alias),
+                        e.aliases, JSON.stringify({hidden: commandHidden})], function () {
+                          // Update status icon
+                          row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
+                        });
+                      });
+                    });
+              });
+
             // On edit button.
-            table.on('click', '.btn-warning', function () {
+            table.on('click', '.btn-editalias', function () {
                 let alias = $(this).data('alias'),
                         t = $(this);
 
@@ -184,7 +240,6 @@ $(function () {
                     tables: ['aliases', 'disabledCommands', 'hiddenCommands'],
                     keys: [alias, alias, alias]
                 }, function (e) {
-                    console.log(e);
                     helpers.getModal('edit-alias', 'Edit Alias', 'Save', $('<form/>', {
                         'role': 'form'
                     })
