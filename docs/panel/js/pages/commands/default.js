@@ -63,16 +63,23 @@ $(function () {
                     tableData.push([
                         '!' + results[i].key,
                         helpers.getGroupNameById(results[i].value),
-                        $('<div/>')
-                                .append($('<i/>',
-                                        getDisabledIconAttr(disabled.hasOwnProperty(results[i].key))
-                                        ))
-                                .html(),
                         $('<div/>', {
                             'class': 'btn-group'
                         }).append($('<button/>', {
                             'type': 'button',
-                            'class': 'btn btn-xs btn-danger',
+                            'class': 'btn btn-xs btn-warning btn-disablecommand',
+                            'style': 'float: right',
+                            'data-command': results[i].key,
+                            'html': $('<i/>', {
+                                        ...getDisabledIconAttr(disabled.hasOwnProperty(results[i].key)),
+                                        'style': "width: 9px"
+                                    })
+                        })).html(),
+                        $('<div/>', {
+                            'class': 'btn-group'
+                        }).append($('<button/>', {
+                            'type': 'button',
+                            'class': 'btn btn-xs btn-danger btn-deletecommand',
                             'style': 'float: right',
                             'data-toggle': 'tooltip',
                             'title': 'Deletes the command permission and resets it to default on startup. This does not remove the command unless it doesn\'t exist anymore.',
@@ -82,7 +89,7 @@ $(function () {
                             })
                         })).append($('<button/>', {
                             'type': 'button',
-                            'class': 'btn btn-xs btn-warning',
+                            'class': 'btn btn-xs btn-warning btn-editcommand',
                             'style': 'float: right',
                             'data-command': results[i].key,
                             'html': $('<i/>', {
@@ -116,7 +123,7 @@ $(function () {
                 });
 
                 // On delete button.
-                table.on('click', '.btn-danger', function () {
+                table.on('click', '.btn-deletecommand', function () {
                     let command = $(this).data('command'),
                             row = $(this).parents('tr'),
                             t = $(this);
@@ -133,8 +140,24 @@ $(function () {
                             });
                 });
 
+                // On disable button.
+                table.on('click', '.btn-disablecommand', function () {
+                    let command = $(this).data('command'),
+                    row = $(this).parents('tr');
+                    socket.getDBValues('default_command_edit', {
+                    tables: ['command', 'disabledCommands'],
+                    keys: [command, command]
+                    }, function (e) {
+                        let commandDisabled = e.disabledCommands === null;
+                        updateCommandDisabled(command, commandDisabled, function () {
+                            // Update status icon
+                            row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
+                        });
+                    });
+                });
+
                 // On edit button.
-                table.on('click', '.btn-warning', function () {
+                table.on('click', '.btn-editcommand', function () {
                     let command = $(this).data('command'),
                             t = $(this);
 
