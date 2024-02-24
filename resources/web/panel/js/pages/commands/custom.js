@@ -349,7 +349,6 @@ $(function () {
                                                     // Update status icons
                                                     row.find('.disabled-status-icon').attr(getDisabledIconAttr(commandDisabled));
                                                     row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
-                                                    row.find('.hidden-status-icon').attr(getHiddenIconAttr(commandHidden));
                                                     // Update Permissions
                                                     row.find('td:eq(2)').text(commandPermission.find(':selected').text());
                                                     // Close the modal.
