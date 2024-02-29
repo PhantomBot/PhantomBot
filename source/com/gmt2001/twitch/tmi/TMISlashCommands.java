@@ -183,13 +183,13 @@ public final class TMISlashCommands {
         String[] params = message.split(" ", 2);
 
         if (params.length < 2) {
-            com.gmt2001.Console.err.println("Failed to /timeout due to missing param");
+            com.gmt2001.Console.err.println("Failed to /shoutout due to missing param");
             return;
         }
 
         String from_user_id = ViewerCache.instance().broadcaster().id();
 
-        if (from_user_id.equals("0")) {
+        if (from_user_id == null || from_user_id.equals("0")) {
             com.gmt2001.Console.err.println("Failed to get user id for " + channel + ", can not /shoutout");
             return;
         }
