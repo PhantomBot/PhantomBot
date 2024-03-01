@@ -16,6 +16,7 @@
  */
 package com.gmt2001.Console;
 
+import com.gmt2001.util.LogFilter;
 import com.illusionaryone.Logger;
 import tv.phantombot.PhantomBot;
 
@@ -38,12 +39,24 @@ public final class out {
 
     public static void println() {
         System.out.println();
+    }public static void println(Object o) {
+        println(o, false);
     }
 
-    public static void println(Object o) {
+    public static void println(Object o, boolean logOnly) {
+        println(o, logOnly, LogFilter.filter(o.toString()));
+    }
+
+    public static void println(Object o, String log) {
+        println(o, false, log);
+    }
+
+    public static void println(Object o, boolean logOnly, Object log) {
         if (PhantomBot.getEnableDebugging()) {
-            Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + o.toString());
+            Logger.instance().log(Logger.LogType.Output, "[" + logTimestamp.log() + "] " + log.toString());
         }
-        System.out.println("[" + logTimestamp.log() + "] " + o);
+        if (!logOnly) {
+            System.out.println("[" + logTimestamp.log() + "] " + o);
+        }
     }
 }

@@ -211,6 +211,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getMessage().contains("apioauth is required")) {
+                                    return true;
+                                }
+
                                 if (error.getMessage().contains("Timeout while waiting for a free database connection")) {
                                     return true;
                                 }

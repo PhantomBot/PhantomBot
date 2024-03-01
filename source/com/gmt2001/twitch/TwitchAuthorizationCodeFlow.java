@@ -109,8 +109,8 @@ public final class TwitchAuthorizationCodeFlow {
 
         if (changed) {
             refreshTransaction.commit();
-            com.gmt2001.Console.debug.println("Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
-            com.gmt2001.Console.debug.println("Saved apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
+            com.gmt2001.Console.debug.println("Saved new oauth", "Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
+            com.gmt2001.Console.debug.println("Saved new apioauth", "Saved apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
             TwitchValidate.instance().updateChatToken(CaselessProperties.instance().getProperty("oauth"));
             TwitchValidate.instance().updateAPIToken(CaselessProperties.instance().getProperty("apioauth"));
         }
@@ -137,7 +137,7 @@ public final class TwitchAuthorizationCodeFlow {
                 this.lastBotRefresh = Instant.now();
 
                 com.gmt2001.Console.out.println("Refreshed the bot token");
-                com.gmt2001.Console.debug.println("New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
+                com.gmt2001.Console.debug.println("Got new oauth", "New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
                 changed = true;
             }
         } else {
@@ -168,7 +168,7 @@ public final class TwitchAuthorizationCodeFlow {
                 this.lastBroadcasterRefresh = Instant.now();
 
                 com.gmt2001.Console.out.println("Refreshed the broadcaster token");
-                com.gmt2001.Console.debug.println("New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
+                com.gmt2001.Console.debug.println("Got new apioauth", "New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
                 changed = true;
             }
         } else {
@@ -278,9 +278,9 @@ public final class TwitchAuthorizationCodeFlow {
                     }
 
                     if (qsd.parameters().get("type").get(0).equals("bot")) {
-                        com.gmt2001.Console.debug.println("New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
+                        com.gmt2001.Console.debug.println("New oauth", "New oauth=" + result.getString("access_token") + " refresh=" + result.getString("refresh_token") + " oauthexpires=" + c.getTimeInMillis() + "");
                     } else {
-                        com.gmt2001.Console.debug.println("New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
+                        com.gmt2001.Console.debug.println("New apioauth", "New apioauth=" + result.getString("access_token") + " apirefresh=" + result.getString("refresh_token") + " apiexpires=" + c.getTimeInMillis() + "");
                     }
 
                     newTransaction.commit();
@@ -291,9 +291,9 @@ public final class TwitchAuthorizationCodeFlow {
                     EventBus.instance().postAsync(new TwitchOAuthReauthorizedEvent(!qsd.parameters().get("type").get(0).equals("bot")));
 
                     if (qsd.parameters().get("type").get(0).equals("bot")) {
-                        com.gmt2001.Console.debug.println("Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
+                        com.gmt2001.Console.debug.println("Saved oauth", "Saved oauth=" + CaselessProperties.instance().getProperty("oauth") + " refresh=" + CaselessProperties.instance().getProperty("refresh") + " oauthexpires=" + CaselessProperties.instance().getProperty("oauthexpires"));
                     } else {
-                        com.gmt2001.Console.debug.println("Saved apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
+                        com.gmt2001.Console.debug.println("Saved apioauth", "Saved apioauth=" + CaselessProperties.instance().getProperty("apioauth") + " apirefresh=" + CaselessProperties.instance().getProperty("apirefresh") + " apiexpires=" + CaselessProperties.instance().getProperty("apiexpires"));
                     }
                     data = CaselessProperties.instance().getProperty("clientid").getBytes();
                 }

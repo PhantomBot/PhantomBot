@@ -18,6 +18,8 @@ package com.gmt2001.Console;
 
 import com.illusionaryone.Logger;
 import com.gmt2001.RollbarProvider;
+import com.gmt2001.util.LogFilter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -81,7 +83,7 @@ public final class debug {
 
     public static void printlnRhino(Object o) {
         if (PhantomBot.getEnableDebugging()) {
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + LogFilter.filter(o.toString()));
             Logger.instance().log(Logger.LogType.Debug, "");
             if (!PhantomBot.getEnableDebuggingLogOnly()) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
@@ -94,9 +96,17 @@ public final class debug {
     }
 
     public static void println(Object o, boolean force) {
+        println(o, force, LogFilter.filter(o.toString()));
+    }
+
+    public static void println(Object o, String log) {
+        println(o, false, log);
+    }
+
+    public static void println(Object o, boolean force, Object log) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo = findCallerInfo() + " ";
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + log.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
             if (!PhantomBot.getEnableDebuggingLogOnly()) {

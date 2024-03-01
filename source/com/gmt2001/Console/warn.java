@@ -18,6 +18,8 @@ package com.gmt2001.Console;
 
 import com.illusionaryone.Logger;
 import com.gmt2001.RollbarProvider;
+import com.gmt2001.util.LogFilter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -46,17 +48,21 @@ public final class warn {
     }
 
     public static void println(Object o) {
-        String stackInfo = debug.findCallerInfo() + " ";
-
-        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
-        Logger.instance().log(Logger.LogType.Warning, "");
-        System.out.println("[" + logTimestamp.log() + "] [WARN] " + stackInfo + o.toString());
+        println(o, false);
     }
 
     public static void println(Object o, boolean logOnly) {
+        println(o, logOnly, LogFilter.filter(o.toString()));
+    }
+
+    public static void println(Object o, String log) {
+        println(o, false, log);
+    }
+
+    public static void println(Object o, boolean logOnly, Object log) {
         String stackInfo = debug.findCallerInfo() + " ";
 
-        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+        Logger.instance().log(Logger.LogType.Warning, "[" + logTimestamp.log() + "] " + stackInfo + log.toString());
         Logger.instance().log(Logger.LogType.Warning, "");
         if (!logOnly) {
             System.out.println("[" + logTimestamp.log() + "] [WARN] " + stackInfo + o.toString());
