@@ -41,6 +41,10 @@ public class LogFilter {
             message = message.replace(CaselessProperties.instance().getProperty("streamlabskey"), "***");
         } else if (message.contains(CaselessProperties.instance().getProperty("youtubekey"))) {
             message = message.replace(CaselessProperties.instance().getProperty("youtubekey"), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("clientid"))) {
+            message = message.replace(CaselessProperties.instance().getProperty("clientid"), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("clientsecret"))) {
+            message = message.replace(CaselessProperties.instance().getProperty("clientsecret"), "***");
         }
         return message;
     }
