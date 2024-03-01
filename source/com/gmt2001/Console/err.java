@@ -52,17 +52,21 @@ public final class err {
     }
 
     public static void println(Object o) {
-        String stackInfo = debug.findCallerInfo();
-
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + " " + o.toString());
-        Logger.instance().log(Logger.LogType.Error, "");
-        System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + " " + o);
+        println(o, false);
     }
 
     public static void println(Object o, boolean logOnly) {
+        println(o, logOnly, o);
+    }
+
+    public static void println(Object o, String log) {
+        println(o, false, log);
+    }
+
+    public static void println(Object o, boolean logOnly, Object log) {
         String stackInfo = debug.findCallerInfo();
 
-        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + " " + o.toString());
+        Logger.instance().log(Logger.LogType.Error, "[" + logTimestamp.log() + "] " + stackInfo + " " + log.toString());
         Logger.instance().log(Logger.LogType.Error, "");
         if (!logOnly) {
             System.err.println("[" + logTimestamp.log() + "] [ERROR] " + stackInfo + " " + o);

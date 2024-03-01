@@ -94,9 +94,17 @@ public final class debug {
     }
 
     public static void println(Object o, boolean force) {
+        println(o, force, o);
+    }
+
+    public static void println(Object o, String log) {
+        println(o, false, log);
+    }
+
+    public static void println(Object o, boolean force, Object log) {
         if (PhantomBot.getEnableDebugging() || force) {
             String stackInfo = findCallerInfo() + " ";
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + o.toString());
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + stackInfo + log.toString());
             Logger.instance().log(Logger.LogType.Debug, "");
 
             if (!PhantomBot.getEnableDebuggingLogOnly()) {
