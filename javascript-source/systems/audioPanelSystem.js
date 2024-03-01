@@ -226,6 +226,12 @@
                 }
 
                 if (!audioHookExists(audioHook)) {
+                    if (audioHook.includes('.')) {
+                        audioHook = audioHook.substring(0, audioHook.lastIndexOf('.'));
+                    }
+                }
+
+                if (!audioHookExists(audioHook)) {
                     $.returnCommandCost(sender, command, isMod);
                     return;
                 }
@@ -297,6 +303,12 @@
                         $.inidb.set('audioCommands', subAction.toLowerCase(), actionArgs);
                         $.registerChatCommand('./systems/audioPanelSystem.js', subAction.toLowerCase(), $.PERMISSION.Viewer);
                         return;
+                    }
+
+                    if (!audioHookExists(actionArgs)) {
+                        if (actionArgs.includes('.')) {
+                            actionArgs = actionArgs.substring(0, actionArgs.lastIndexOf('.'));
+                        }
                     }
 
                     if (!audioHookExists(actionArgs)) {
