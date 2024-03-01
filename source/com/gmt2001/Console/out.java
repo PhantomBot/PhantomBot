@@ -16,6 +16,7 @@
  */
 package com.gmt2001.Console;
 
+import com.gmt2001.util.LogFilter;
 import com.illusionaryone.Logger;
 import tv.phantombot.PhantomBot;
 
@@ -43,7 +44,7 @@ public final class out {
     }
 
     public static void println(Object o, boolean logOnly) {
-        println(o, logOnly, o);
+        println(o, logOnly, LogFilter.filter(o.toString()));
     }
 
     public static void println(Object o, String log) {

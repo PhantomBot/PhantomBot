@@ -18,6 +18,8 @@ package com.gmt2001.Console;
 
 import com.illusionaryone.Logger;
 import com.gmt2001.RollbarProvider;
+import com.gmt2001.util.LogFilter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -50,7 +52,7 @@ public final class warn {
     }
 
     public static void println(Object o, boolean logOnly) {
-        println(o, logOnly, o);
+        println(o, logOnly, LogFilter.filter(o.toString()));
     }
 
     public static void println(Object o, String log) {
