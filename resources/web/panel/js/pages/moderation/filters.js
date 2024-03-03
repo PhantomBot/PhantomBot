@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Function that querys all of the data we need.
+// Function that queries all of the data we need.
 $(function () {
     // Get filter toggles.
     socket.getDBValues('moderation_get_toggles', {
@@ -127,10 +127,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutLinks), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLinks,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeLinks,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -220,10 +220,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutCaps), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeCaps,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeCaps,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -319,10 +319,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutSymbols), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSymbols,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSymbols,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -425,10 +425,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpam,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSpam,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -521,10 +521,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeEmotes,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeEmotes,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -617,10 +617,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeColors,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeColors,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -707,10 +707,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLongMsg,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeLongMsg,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -800,10 +800,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutFakePurge), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeFakePurge,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeFakePurge,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -890,10 +890,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpamTracker,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSpamTracker,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
