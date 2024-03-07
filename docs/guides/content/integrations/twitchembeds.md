@@ -277,16 +277,18 @@ Once both have been set up:
 
 ###### Source Section
 
-Protocol: HTTPS
+```Protocol: HTTPS
 Hostname: Your desired URL. If you followed Marius' guide, an example would be `phantombot.yourusernamehere.synology.me`
 Port: 443
 Enable HSTS: Checked
+```
 
 ###### Destination Section
 
-Protocol: HTTP
+```Protocol: HTTP
 Hostname: The IP of your Phantombot instance
 Port: The port of your Phantombot instance (default 25000)
+```
 
 Then, from below's "Bot Settings":
 
