@@ -106,7 +106,7 @@
             stories.push({
                 game: ($.lang.exists(prefix + '.' + storyId + '.game') ? $.lang.get(prefix + '.' + storyId + '.game') : null),
                 title: $.lang.get(prefix + '.' + storyId + '.title'),
-                odds: $.lang.exists(prefix + '.' + storyId + '.odds') ? parseInt($.lang.get(prefix + '.' + storyId + '.odds')) : odds,
+                odds: $.lang.exists(prefix + '.' + storyId + '.odds') ? parseInt($.lang.get(prefix + '.' + storyId + '.odds')) : null,
                 lines: lines
             });
 
@@ -194,8 +194,12 @@
     function calculateResult() {
         _currentAdventureLock.lock();
         try {
+            let lOdds = currentAdventure.story.odds;
+            if (lOdds === undefined || lOdds === null) {
+                lOdds = odds;
+            }
             for (let i in currentAdventure.users) {
-                if ($.randRange(1, 100) > currentAdventure.story.odds) {
+                if ($.randRange(1, 100) > lOdds) {
                     currentAdventure.caught.push(currentAdventure.users[i]);
                 } else {
                     currentAdventure.survivors.push(currentAdventure.users[i]);
@@ -324,25 +328,15 @@
         let game = $.getGame($.channelName);
 
         for (let i in stories) {
-            if (stories[i].game !== null) {
-                if ($.equalsIgnoreCase(game, stories[i].game)) {
-                    temp.push({
-                        title: stories[i].title,
-                        lines: stories[i].lines
-                    });
-                }
-            } else {
-                temp.push({
-                    title: stories[i].title,
-                    lines: stories[i].lines
-                });
+            if (stories[i].game === null || $.equalsIgnoreCase(game, stories[i].game)) {
+                temp.push(stories[i]);
             }
         }
 
         if (lastStory !== undefined && lastStory.title !== undefined) {
             do {
                 story = $.randElement(temp);
-            } while (story.title === lastStory.title);
+            } while (story.title === lastStory.title && temp.length > 1);
         } else {
             story = $.randElement(temp);
         }
