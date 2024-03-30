@@ -214,7 +214,7 @@ $(function () {
     // Check if Discord is enabled.
     socket.getDBValue('get_discord_status_index', 'panelData', 'hasDiscord', function (e) {
         // Remove the tab if we are not using Discord.
-        if (e.panelData !== 'true') {
+        if (!helpers.isTrue(e.panelData)) {
             $('#discord_index_tab').remove();
             return;
         }

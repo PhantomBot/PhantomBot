@@ -104,14 +104,14 @@ $(run = function () {
         }, 5e3);
 
         // Update the open button to close if the raffle is active.
-        if (e['isActive'] === '1' || e['isActive'] === 'true') {
+        if (helpers.isTrue(e['isActive'])) {
             $('#ticket-open-or-close-raffle').html($('<i/>', {
                 'class': 'fa fa-lock'
             })).append('&nbsp; Close').removeClass('btn-success').addClass('btn-warning');
         }
 
         // Raffle is over, winners were already drawn
-        if ((e['hasDrawn'] === 'true' || e['hasDrawn'] === '1') && (e['isActive'] === '0' || e['isActive'] === 'false')) {
+        if ((helpers.isTrue(e['hasDrawn'])) && (!helpers.isTrue(e['isActive']))) {
             helpers.clearTimers();
             //We're zooming wait till the table is ready
             $('#ticket-raffle-table').ready(function () {
@@ -198,7 +198,7 @@ $(function () {
                         tables: ['traffleState', 'traffleState'],
                         keys: ['isActive', 'hasDrawn']
                     }, true, function (e) {
-                        if ((e['hasDrawn'] === 'true' || e['hasDrawn'] === '1') && (e['isActive'] === '0' || e['isActive'] === 'false')) {
+                        if ((helpers.isTrue(e['hasDrawn'])) && (!helpers.isTrue(e['isActive']))) {
                             helpers.clearTimers();
 
                             $('#ticket-draw-raffle').prop('disabled', true);
@@ -265,13 +265,13 @@ $(function () {
                             .append(helpers.getCollapsibleAccordion('main-2', 'Extra Settings', $('<form/>', {
                                 'role': 'form'
                             })
-                                    .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (e['traffleOpenDraw'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('opendraw', 'Don\'t Close On Draw', (helpers.isTrue(e['traffleOpenDraw']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If disabled, the raffle will close automatically when drawing winners.'))
                                     // Add toggle for warning messages.
-                                    .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (e['traffleMSGToggle'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('warning-msg', 'Enable Warning Messages', (helpers.isTrue(e['traffleMSGToggle']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'If warning messages should be said in chat when a user already entered, or doesn\'t have enough points.'))
                                     // Add toggle for the limiter.
-                                    .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (e['traffleLimiter'] === 'true' ? 'Yes' : 'No'), ['Yes', 'No'],
+                                    .append(helpers.getDropdownGroup('limiter', 'Enable limiter', (helpers.isTrue(e['traffleLimiter']) ? 'Yes' : 'No'), ['Yes', 'No'],
                                             'ON: Limit the total amount of tickets (bought tickets + bonus tickets) to the set limit. OFF: Limit only the amount of bought tickets.'))))),
                     function () {
                         let raffleTimer = $('#msg-timer'),

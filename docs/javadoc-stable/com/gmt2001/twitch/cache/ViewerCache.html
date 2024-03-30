@@ -158,7 +158,7 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 <div class="block">Performs an asynchronous operation to lookup the users on Twitch API and add them to the cache</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lookupIdBylogin(java.lang.String)" class="member-name-link">lookupIdBylogin</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;login)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lookupIdByLogin(java.lang.String)" class="member-name-link">lookupIdByLogin</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;login)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Looks up the specified user login in the mapping database and returns the associated user id</div>
 </div>
@@ -175,7 +175,7 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onIrcModerationEvent(tv.phantombot.event.irc.message.IrcModerationEvent)" class="member-name-link">onIrcModerationEvent</a><wbr>(<a href="../../../../tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a>&nbsp;event)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Updates the cache when a TMI message is recieved</div>
+<div class="block">Updates the cache when a TMI message is received</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onPropertiesReloadedEvent(tv.phantombot.event.jvm.PropertiesReloadedEvent)" class="member-name-link">onPropertiesReloadedEvent</a><wbr>(<a href="../../../../tv/phantombot/event/jvm/PropertiesReloadedEvent.html" title="class in tv.phantombot.event.jvm">PropertiesReloadedEvent</a>&nbsp;event)</code></div>
@@ -235,7 +235,7 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 <section class="detail" id="onIrcModerationEvent(tv.phantombot.event.irc.message.IrcModerationEvent)">
 <h3>onIrcModerationEvent</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onIrcModerationEvent</span><wbr><span class="parameters">(<a href="../../../../tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a>&nbsp;event)</span></div>
-<div class="block">Updates the cache when a TMI message is recieved</div>
+<div class="block">Updates the cache when a TMI message is received</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>event</code> - The event to process</dd>
@@ -417,9 +417,9 @@ implements <a href="../../../../tv/phantombot/event/Listener.html" title="interf
 </section>
 </li>
 <li>
-<section class="detail" id="lookupIdBylogin(java.lang.String)">
-<h3>lookupIdBylogin</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lookupIdBylogin</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;login)</span></div>
+<section class="detail" id="lookupIdByLogin(java.lang.String)">
+<h3>lookupIdByLogin</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lookupIdByLogin</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;login)</span></div>
 <div class="block">Looks up the specified user login in the mapping database and returns the associated user id</div>
 <dl class="notes">
 <dt>Parameters:</dt>

@@ -261,6 +261,43 @@ If your Apache configuration is setup with a _conf.d_ folder, such as _/etc/http
     * Option 1: Setup the webserver container as above, but change references to _127.0.0.1:25000_ to point to the PhantomBot container by name (eg. _phantombot:25000_)
 
     * Option 2: Use an intermediary Docker container that auto-configures proxying and letsencrypt, such as [traefik](https://hub.docker.com/_/traefik)
+    
+##### Synology Docker/Container Manager (DSM 7)
+
+Synology's NAS units have a different way of implementing Reverse Proxies. Several steps should be followed before setting this up, assuming you are using Docker to run PhantomBot through Synology's Container Manager. 
+
+Getting a URL through Synology and an associated certificate can be done by following [this guide from MariusHosting](https://mariushosting.com/synology-how-to-enable-https-on-dsm-7/). You should then replace the default certificate for that domain through [setting up a wildcard certificate](https://mariushosting.com/synology-how-to-add-wildcard-certificate/) for reverse proxies.
+
+Once both have been set up:
+
+1. Enter Synology's Control Panel menu
+2. Go to the Login Portal menu, then "Advanced" tab.
+3. Click "Reverse Proxy".
+4. Click "Create", and enter the following settings
+
+###### Source Section
+
+```Protocol: HTTPS
+Hostname: Your desired URL. If you followed Marius' guide, an example would be `phantombot.yourusernamehere.synology.me`
+Port: 443
+Enable HSTS: Checked
+```
+
+###### Destination Section
+
+```Protocol: HTTP
+Hostname: The IP of your Phantombot instance
+Port: The port of your Phantombot instance (default 25000)
+```
+
+Then, from below's "Bot Settings":
+
+- Visit the **Bot Setup** page on the panel
+- Expand the **HTTP/WS** section
+- Set the radio button for _usehttps_ to the one on the right to enable the toggle, then set the toggle to `off/false`
+- Set the radio button for _proxybypasshttps_ to the one on the right to enable the toggle, then set the toggle to `on/true`
+- Scroll back to the top and click the **Save** button, ensure a green success bar appears
+- Restart the bot, then check the URL.
 
 #### Bot Settings
 

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// Function that querys all of the data we need.
+// Function that queries all of the data we need.
 $(function () {
     // Get filter toggles.
     socket.getDBValues('moderation_get_toggles', {
@@ -127,10 +127,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutLinks), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLinks,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeLinks,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -150,13 +150,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLinks !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateLinks), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLinks !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateLinks), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateLinks !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateLinks), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -220,10 +220,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutCaps), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeCaps,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeCaps,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -246,13 +246,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateCaps !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateCaps), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateCaps !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateCaps), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateCaps !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateCaps), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -319,10 +319,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutSymbols), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSymbols,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSymbols,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -348,13 +348,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSymbols !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateSymbols), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSymbols !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateSymbols), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateSymbols !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateSymbols), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -425,10 +425,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpam,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSpam,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -448,13 +448,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpam !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateSpam), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpam !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateSpam), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.subscribersModerateSpam !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.subscribersModerateSpam), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -521,10 +521,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeEmotes,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeEmotes,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -544,13 +544,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateEmotes !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateEmotes), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateEmotes !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateEmotes), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateEmotes !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateEmotes), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -617,10 +617,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeColors,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeColors,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -637,13 +637,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateColors !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateColors), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateColors !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateColors), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateColors !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateColors), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -707,10 +707,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeLongMsg,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeLongMsg,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -730,13 +730,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateLongMsg !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateLongMsg), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateLongMsg !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateLongMsg), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateLongMsg !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateLongMsg), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -800,10 +800,10 @@ $(function () {
                             .append(helpers.getCheckBox('timeout-message-toggle', helpers.isTrue(e.silentTimeoutFakePurge), 'Silent', 'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeFakePurge,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeFakePurge,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -820,13 +820,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateFakePurge !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateFakePurge), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateFakePurge !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateFakePurge), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateFakePurge !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateFakePurge), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
@@ -890,10 +890,10 @@ $(function () {
                                     'If the warning message should be said or not.')))
                     // Append input box for the warning time.
                     .append(helpers.getInputGroup('timeout-warning-time', 'number', 'Warning Duration (Seconds)', '0', e.warningTimeSpamTracker,
-                            'How long in seconds the user gets timed-out for on his first offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his first offense. 0 seconds will just delete the last message.'))
                     // Append input box for the timeout time.
                     .append(helpers.getInputGroup('timeout-timeout-time', 'number', 'Timeout Duration (Seconds)', '0', e.timeoutTimeSpamTracker,
-                            'How long in seconds the user gets timed-out for on his last offence. 0 seconds will just delete the last message.'))
+                            'How long in seconds the user gets timed-out for on his last offense. 0 seconds will just delete the last message.'))
                     // Add an advance section that can be opened with a button toggle.
                     .append($('<div/>', {
                         'class': 'collapse',
@@ -916,13 +916,13 @@ $(function () {
                                     'class': 'form-group'
                                 })
                                         // Tooltip to toggle for regulars to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-regulars', e.regularsModerateSpamTracker !== 'true', 'Exclude Regulars',
+                                        .append(helpers.getCheckBox('exclude-regulars', !helpers.isTrue(e.regularsModerateSpamTracker), 'Exclude Regulars',
                                                 'If regulars should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for subs to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-subscribers', e.subscribersModerateSpamTracker !== 'true', 'Exclude Subscribers',
+                                        .append(helpers.getCheckBox('exclude-subscribers', !helpers.isTrue(e.subscribersModerateSpamTracker), 'Exclude Subscribers',
                                                 'If subscribers should be allowed to bypass this filter.'))
                                         // Tooltip to toggle for vips to bypass this filter.
-                                        .append(helpers.getCheckBox('exclude-vips', e.vipsModerateSpamTracker !== 'true', 'Exclude VIPs',
+                                        .append(helpers.getCheckBox('exclude-vips', !helpers.isTrue(e.vipsModerateSpamTracker), 'Exclude VIPs',
                                                 'If vips should be allowed to bypass this filter.')))
                                 // Callback function to be called once we hit the save button on the modal.
                     })), function () {
