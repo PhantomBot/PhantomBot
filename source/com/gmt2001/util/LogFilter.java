@@ -25,26 +25,26 @@ public class LogFilter {
     private LogFilter(){}
 
     public static String filter(String message) {
-        if (message.contains(CaselessProperties.instance().getProperty("oauth"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("oauth"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("apioauth"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("apioauth"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("refresh"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("refresh"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("apirefresh"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("apirefresh"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("apptoken"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("apptoken"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("discord_token"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("discord_token"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("streamlabskey"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("streamlabskey"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("youtubekey"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("youtubekey"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("clientid"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("clientid"), "***");
-        } else if (message.contains(CaselessProperties.instance().getProperty("clientsecret"))) {
-            message = message.replace(CaselessProperties.instance().getProperty("clientsecret"), "***");
+        if (message.contains(CaselessProperties.instance().getProperty("oauth", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("oauth", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("apioauth", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("apioauth", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("refresh", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("refresh", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("apirefresh", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("apirefresh", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("apptoken", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("apptoken", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("discord_token", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("discord_token", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("streamlabskey", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("streamlabskey", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("youtubekey", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("youtubekey", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("clientid", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("clientid", ""), "***");
+        } else if (message.contains(CaselessProperties.instance().getProperty("clientsecret", ""))) {
+            message = message.replace(CaselessProperties.instance().getProperty("clientsecret", ""), "***");
         }
         return message;
     }
