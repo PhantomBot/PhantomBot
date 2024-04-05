@@ -341,6 +341,11 @@ loadScripts(document, 'script');</script>
  <br/>
  Only existing and <a href="PanelUser.html#canBeEdited()"><code>editable</code></a> <a href="PanelUser.html" title="class in tv.phantombot.panel.PanelUser"><code>panel users</code></a> can have their passwords reset</div>
 </div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#sectionConvert(java.lang.String)" class="member-name-link">sectionConvert</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Checks for alternate section names and converts them to standard section names</div>
+</div>
 </div>
 </div>
 </div>
@@ -935,6 +940,19 @@ loadScripts(document, 'script');</script>
 <dt>Returns:</dt>
 <dd><code>true</code> if the user is allowed to access the table under the
          conditions; <code>false</code> otherwise</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="sectionConvert(java.lang.String)">
+<h3>sectionConvert</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">sectionConvert</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;section)</span></div>
+<div class="block">Checks for alternate section names and converts them to standard section names</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>section</code> - The section to check</dd>
+<dt>Returns:</dt>
+<dd>The normalized section name, in lower case</dd>
 </dl>
 </section>
 </li>
