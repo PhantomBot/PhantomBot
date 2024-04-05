@@ -1005,15 +1005,44 @@ public final class PanelUserHandler {
                     .filter(kv -> kv.getValue().contains(lTableName)).findFirst();
             if (s.isPresent()) {
                 section = s.get().getKey();
+                com.gmt2001.Console.debug.println("Auto-detected section " + (section == null ? "NULL" : section));
             }
         }
 
         boolean res = checkPanelUserSectionAccess(user, section, isWriteAction);
         if (!res) {
+            com.gmt2001.Console.debug.println("Deny section " + (section == null ? "NULL" : section));
             com.gmt2001.Console.err
                     .println("Database access denied on table " + lTableName + " for user " + user.getUsername());
         }
         return res;
+    }
+
+    /**
+     * Checks for alternate section names and converts them to standard section names
+     * 
+     * @param section The section to check
+     * @return The normalized section name, in lower case
+     */
+    public static String sectionConvert(String section) {
+        if (section == null) {
+            section = "";
+        }
+
+        section = section.toLowerCase();
+
+        switch (section) {
+            case "keywords":
+                section = "keywords & emotes";
+                break;
+            case "overlay":
+                section = "stream overlay";
+                break;
+            default:
+                break;
+        }
+
+        return section;
     }
 
     /**
@@ -1045,7 +1074,7 @@ public final class PanelUserHandler {
             return false;
         }
 
-        section = section.toLowerCase();
+        section = sectionConvert(section);
         if (section.equalsIgnoreCase("dashboard")) {
             return true;
         }
@@ -1084,18 +1113,7 @@ public final class PanelUserHandler {
             section = "";
         }
 
-        section = section.toLowerCase();
-
-        switch (section) {
-            case "keywords":
-                section = "keywords & emotes";
-                break;
-            case "overlay":
-                section = "stream overlay";
-                break;
-            default:
-                break;
-        }
+        section = sectionConvert(section);
 
         if (!isWriteAction && user.getPermission().containsKey(section)
                 && (user.getPermission().get(section).equals(Permission.READ_ONLY)
