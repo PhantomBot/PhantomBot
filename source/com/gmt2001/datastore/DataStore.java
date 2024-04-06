@@ -237,7 +237,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             }
             SelectWhereStep<Record1<String>> w = dsl().select(field("variable", tbl)).from(tbl);
             SelectConnectByStep<Record1<String>> c = w;
-            if (section == null) {
+            if (section != null) {
                 if (like == null) {
                     c = w.where(field("section", tbl).eq(section));
                 } else {
