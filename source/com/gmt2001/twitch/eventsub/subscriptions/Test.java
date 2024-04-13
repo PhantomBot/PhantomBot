@@ -45,9 +45,9 @@ public final class Test extends EventSubSubscriptionType {
     /**
      * Constructor
      *
-     * @param type the subscription type
-     * @param version the subscription version
-     * @param condition the subscription condition
+     * @param type The subscription type
+     * @param version The subscription version
+     * @param condition The subscription condition
      */
     public Test(String type, String version, Map<String, String> condition) {
         this.condition = condition;
@@ -58,9 +58,9 @@ public final class Test extends EventSubSubscriptionType {
     /**
      * Constructor
      *
-     * @param type the subscription type
-     * @param version the subscription version
-     * @param condition the subscription condition as key-value pairs
+     * @param type The subscription type
+     * @param version The subscription version
+     * @param condition The subscription condition as key-value pairs
      */
     public Test(String type, String version, String[][] condition) {
         this.condition = new HashMap<>();
