@@ -26,7 +26,6 @@ import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.EventSubChannelFollowEvent;
-import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  * A specified channel receives a follow.
@@ -78,7 +77,7 @@ public final class ChannelFollow extends EventSubSubscriptionType {
      * @param broadcaster_user_id The user id of the broadcaster
      */
     public ChannelFollow(String broadcaster_user_id) {
-        this(broadcaster_user_id, TwitchValidate.instance().getAPIUserID());
+        this(broadcaster_user_id, EventSub.moderatorUserId());
     }
 
     /**

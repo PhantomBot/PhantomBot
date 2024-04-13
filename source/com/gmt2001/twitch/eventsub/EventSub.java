@@ -140,6 +140,15 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     }
 
     /**
+     * The default moderator user id
+     * 
+     * @return
+     */
+    public static String moderatorUserId() {
+        return TwitchValidate.instance().getAPIUserID();
+    }
+
+    /**
      * Indicates if EventSub debug output is enabled
      *
      * @return
