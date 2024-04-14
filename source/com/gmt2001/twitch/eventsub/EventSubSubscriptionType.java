@@ -46,7 +46,9 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
     }
 
     protected final void subscribe() {
-        EventSub.instance().subscribe(this);
+        if (!EventSub.instance().isSubscribed(this)) {
+            EventSub.instance().subscribe(this);
+        }
     }
 
     @Override
