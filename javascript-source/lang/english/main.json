@@ -50,7 +50,7 @@
     "init.module.reload.all": "All modules reloaded!",
     "init.module.reload": "Module $1 reloaded!",
     "init.module.reload.404": "Module not found in DB: $1",
-    "init.reconnect": "Reconnecting to TMI and PubSub",
+    "init.reconnect": "Reconnecting to TMI and EventSub",
     "init.disconnect": "Shutting down",
     "init.usage": "!$1 [reconnect / disconnect]",
     "init.forceonline": "Forcing status to online",

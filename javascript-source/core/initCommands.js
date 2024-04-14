@@ -66,7 +66,7 @@
             }
 
             /*
-             * @commandpath pbcore reconnect - Reconnects the bot to TMI and PubSub.
+             * @commandpath pbcore reconnect - Reconnects the bot to TMI and EventSub.
              */
             if ($.equalsIgnoreCase(action, 'reconnect')) {
                 $.say($.whisperPrefix(sender) + $.lang.get('init.reconnect'));

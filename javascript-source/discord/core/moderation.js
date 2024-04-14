@@ -177,9 +177,8 @@
      * @param {String} creator
      * @param {String} reason
      * @param {String} time
-     * @param {String} message
      */
-    function embedTimeout(username, creator, reason, time, message) {
+    function embedTimeout(username, creator, reason, time) {
         var toSend = '',
             obj = {},
             i;
@@ -187,9 +186,7 @@
         obj['**Timeout_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
-        obj['**Time:**'] = time + ' seconds.';
-
-        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
+        obj['**Expires:**'] = time;
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -206,9 +203,8 @@
      * @param {String} username
      * @param {String} creator
      * @param {String} reason
-     * @param {String} message
      */
-    function embedBanned(username, creator, reason, message) {
+    function embedBanned(username, creator, reason) {
         var toSend = '',
             obj = {},
             i;
@@ -216,7 +212,6 @@
         obj['**Ban_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
         obj['**Creator:**'] = creator;
         obj['**Reason:**'] = reason;
-        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -227,80 +222,49 @@
         $.discordAPI.sendMessageEmbed(modLogChannel, 'red', toSend);
     }
 
-    /*
-     * @event PubSubModerationDelete
-     */
-    $.bind('pubSubModerationDelete', function (event) {
-        var username = event.getUsername(),
-            creator = event.getCreator(),
-            message = event.getMessage();
+    $.bind('eventSubChannelModerate', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
+            let d = event.event();
+            let action = $.jsString(d.action());
+            let moderator = d.moderatorUserName();
 
-        if (modLogs === false || modLogChannel === '') {
-            return;
+            if (modLogs === false || modLogChannel === '') {
+                return;
+            }
+
+            if (action === 'delete') {
+                embedDelete(d.deleteData().userLogin(), moderator, d.deleteData().messageBody());
+            } else if (action === 'timeout') {
+                embedTimeout(d.timeout().userLogin(), moderator, 
+                    (d.timeout().reason() !== null && $.strlen(d.timeout().reason()) > 0 ? d.timeout().reason() : ''),
+                    d.timeout().expiresAt().toString());
+            } else if (action === 'untimeout') {
+                $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + d.untimeout().userLogin() + '](' + userLink(d.untimeout().userLogin()) + ')' + ' \r\n\r\n **Creator:** ' + moderator);
+            } else if (action === 'ban') {
+                embedBanned(d.ban().userLogin(), moderator, (d.ban().reason() !== null && $.strlen(d.ban().reason()) > 0 ? d.ban().reason() : ''));
+            } else if (action === 'unban') {
+                $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + d.unban().userLogin() + '](' + userLink(d.unban().userLogin()) + ')' + ' \r\n\r\n **Creator:** ' + moderator);
+            }
         }
-
-        embedDelete(username, creator, message);
     });
 
-    /*
-     * @event PubSubModerationTimeout
-     */
-    $.bind('pubSubModerationTimeout', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator(),
-            message = event.getMessage(),
-            reason = event.getReason(),
-            time = parseInt(event.getTime());
+    $.bind('eventSubWelcome', function (event) {
+        if (!event.isReconnect()) {
+            let subscriptions = [
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelModerate
+            ];
 
-        if (modLogs === false || modLogChannel === '') {
-            return;
+            let success = true;
+            for (let i in subscriptions) {
+                let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
+                try {
+                    newSubscription.create().block();
+                } catch (ex) {
+                    success = false;
+                    $.log.error(ex);
+                }
+            }
         }
-
-        embedTimeout(username, creator, reason, time, message);
-    });
-
-    /*
-     * @event PubSubModerationUnTimeout
-     */
-    $.bind('pubSubModerationUnTimeout', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator();
-
-        if (modLogs === false || modLogChannel === '') {
-            return;
-        }
-
-        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + username + '](' + userLink(username) + ')' + ' \r\n\r\n **Creator:** ' + creator);
-    });
-
-    /*
-     * @event PubSubModerationUnBan
-     */
-    $.bind('pubSubModerationUnBan', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator();
-
-        if (modLogs === false || modLogChannel === '') {
-            return;
-        }
-
-        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + username + '](' + userLink(username) + ')' + ' \r\n\r\n **Creator:** ' + creator);
-    });
-
-    /*
-     * @event PubSubModerationBan
-     */
-    $.bind('pubSubModerationBan', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator(),
-            message = event.getMessage(),
-            reason = event.getReason();
-
-        if (modLogs === false || modLogChannel === '') {
-            return;
-        }
-
-        embedBanned(username, creator, reason, message);
     });
 
     /**
