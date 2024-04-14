@@ -94,17 +94,21 @@
             "desc": "Send announcements in channels where you have the moderator role.",
             "tooltip": "Used to send announcements."
         },
+        "moderator:manage:automod": {
+            "desc": "Manage messages held for review by AutoMod in channels where you are a moderator.",
+            "tooltip": "Used to subscribe to AutoMod message events in EventSub."
+        },
         "moderator:manage:banned_users": {
             "desc": "Ban and unban users.",
-            "tooltip": "Used to ban, timeout, and unban users."
+            "tooltip": "Used to ban, timeout, and unban users. Used to watch for timeout/ban events in EventSub."
         },
         "moderator:manage:chat_messages": {
             "desc": "Delete chat messages in channels where you have the moderator role.",
-            "tooltip": "Used to delete individual messages or clear the entire chat."
+            "tooltip": "Used to delete individual messages or clear the entire chat. Used to watch for clear/delete events in EventSub."
         },
         "moderator:manage:chat_settings": {
             "desc": "Manage a broadcaster's chat room settings.",
-            "tooltip": "Used to enable/disable emote-only, follower-only, slow, subscriber-only, and unique (r9k) chat modes."
+            "tooltip": "Used to enable/disable emote-only, follower-only, slow, subscriber-only, and unique (r9k) chat modes. Used to watch for changes to the state of these modes in EventSub"
         },
         "moderator:manage:shield_mode": {
             "desc": "Manage a broadcaster's Shield Mode status.",
@@ -114,6 +118,10 @@
             "desc": "Manage a broadcaster's shoutouts.",
             "tooltip": "Used to send shoutouts."
         },
+        "moderator:read:blocked_terms": {
+            "desc": "View a broadcaster's list of blocked terms.",
+            "tooltip": "Used to watch for changed to the AutoMod permitted/blocked terms lists in EventSub."
+        },
         "moderator:read:chatters": {
             "desc": "View the chatters in a broadcaster's chat room.",
             "tooltip": "Used to get the chatters of the channel."
@@ -121,6 +129,18 @@
         "moderator:read:followers": {
             "desc": "Read the followers of a broadcaster.",
             "tooltip": "Used to get the followers of the channel."
+        },
+        "moderator:read:moderators": {
+            "desc": "Receieve moderator add/remove events in EventSub.",
+            "tooltip": "Used to watch for mod/unmod events in EventSub."
+        },
+        "moderator:read:unban_requests": {
+            "desc": "View a broadcaster's unban requests.",
+            "tooltip": "Used watch for unban request status updates in EventSub."
+        },
+        "moderator:read:vips": {
+            "desc": "Receieve VIP add/remove events in EventSub.",
+            "tooltip": "Used to watch for vip/unvip events in EventSub."
         }
     }
 }
