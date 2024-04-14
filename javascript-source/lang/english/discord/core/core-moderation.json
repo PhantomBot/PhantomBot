@@ -40,8 +40,9 @@
     "moderation.cleanup.failed": "Failed to perform bulk message deletion: Currently deleting messages.",
     "moderation.cleanup.failed.err": "Failed to perform bulk message deletion.",
     "moderation.cleanup.done": "Deleted $1 messages!",
-    "moderation.logs.toggle.usage": "Usage: !moderation logs [toggle / channel] - Will toggle Twitch moderation logs being posted in Discord.",
+    "moderation.logs.toggle.usage": "Usage: !moderation logs [toggle / channel / chat] - Will toggle Twitch moderation logs being posted in Discord.",
     "moderation.logs.toggle": "Twitch moderation logs have been $1. **[Requires bot restart]**",
+    "moderation.logs.togglechat": "Including the last message (within 5 minutes) sent by a timed out or banned user in Twitch moderation logs is now $1. NOTE: Only messages sent by the user after enabling will be logged",
     "moderation.logs.channel.usage": "Usage: !moderation logs channel [channel name]",
     "moderation.logs.channel.set": "Twitch moderation log announcements will now be made in channel $1"
 }
