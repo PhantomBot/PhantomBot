@@ -801,6 +801,21 @@
         }
     });
 
+    addUpdate('3.14.0.0', 'installedv3.14.0.0', function () {
+        if ($.getIniDbBoolean('discordSettings', 'modLogs', false) && $.getIniDbString('discordSettings', 'modLogChannel', '') !== '') {
+            $.consoleLn('');
+            $.consoleLn('Please update the Broadcaster OAuth to continue receiving Mod Logs in Discord');
+            $.consoleLn('');
+            $.consoleLn('Additionally, logging of the last chat message sent by a timed out or banned user to Discord mod logs is now behind a toggle');
+            $.consoleLn('It is DISABLED by default');
+            $.consoleLn('To re-enable this feature, go into Discord and use the command: !moderation logs chat');
+            $.consoleLn('');
+            $.discordAPI.sendMessageEmbed($.getIniDbString('discordSettings', 'modLogChannel', ''), 'yellow', 'Please update the **Broadcaster** OAuth to continue receiving Mod Logs in Discord\r\n\r\n'
+            + 'Additionally, logging of the last chat message sent by a timed out or banned user to Discord mod logs is now behind a toggle\r\n\r\n'
+            + 'It is **DISABLED** by default\r\n\r\nTo re-enable this feature, a user with bot admin privileges in Discord must use the command: !moderation logs chat');
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);
