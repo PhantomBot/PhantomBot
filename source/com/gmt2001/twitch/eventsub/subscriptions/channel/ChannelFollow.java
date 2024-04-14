@@ -84,7 +84,7 @@ public final class ChannelFollow extends EventSubSubscriptionType {
      * Constructor
      *
      * @param broadcaster_user_id The user id of the broadcaster
-     * @param moderator_user_id The ID of the moderator of the channel you want to get follow notifications for. If you have authorization from the broadcaster rather than a moderator, specify the broadcaster's user ID here
+     * @param moderator_user_id The ID of the moderator of the channel you want to get notifications for. If you have authorization from the broadcaster rather than a moderator, specify the broadcaster's user ID here
      */
     public ChannelFollow(String broadcaster_user_id, String moderator_user_id) {
         super();

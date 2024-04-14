@@ -76,7 +76,7 @@ public final class MessageEmote {
     /**
      * The user ID of the broadcaster who owns this emote.
      * 
-     * @return {@c null} if not available
+     * @return {@code null} if not available
      */
     public String ownerId() {
         return this.owner_id;
@@ -85,7 +85,7 @@ public final class MessageEmote {
     /**
      * The available formats for the emote, such as animated or static.
      * 
-     * @return {@c null} if not available
+     * @return {@code null} if not available
      */
     public List<String> format() {
         return Collections.unmodifiableList(this.format);
