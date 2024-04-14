@@ -384,7 +384,7 @@ public class ConfigurationManager {
         com.gmt2001.Console.out.println("  NOTE: The \"Connect With Twitch Broadcaster\" button sets up the Broadcaster/API");
         com.gmt2001.Console.out.println("          account");
         com.gmt2001.Console.out.println("        This is the account that will send requests to the API and login to");
-        com.gmt2001.Console.out.println("          PubSub/EventSub");
+        com.gmt2001.Console.out.println("          EventSub");
         com.gmt2001.Console.out.println("        You can use a moderators account instead if required, but some features");
         com.gmt2001.Console.out.println("          may not work due to restrictions by Twitch. For example, Channel Points");
         com.gmt2001.Console.out.println("        Yes, we know that viewers on the website can see some of these events,");

@@ -47,7 +47,6 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.irc.channel.IrcChannelJoinEvent;
-import tv.phantombot.event.pubsub.channelpoints.PubSubChannelPointsEvent;
 import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 import tv.phantombot.event.twitch.clip.TwitchClipEvent;
 import tv.phantombot.event.twitch.follower.TwitchFollowEvent;
@@ -321,18 +320,6 @@ public final class ConsoleEventHandler implements Listener {
                     EventBus.instance().postAsync(new IrcChannelJoinEvent(PhantomBot.instance().getSession(), PhantomBot.generateRandomString(8)));
                 }
             }
-        }
-
-        /**
-         * @consolecommand channelpointstest - Sends a fake Channel Points redemption for testing.
-         */
-        if (message.equalsIgnoreCase("channelpointstest")) {
-            EventBus.instance().postAsync(new PubSubChannelPointsEvent(
-                    "id1", "rewardid2", "12345",
-                    "thebestuser", "TheBestUser", "Uber Reward",
-                    50, "Who you gonna call?", "Ghostbusters!", "UNFULLFILLED"
-            ));
-            return;
         }
 
         /**
@@ -630,10 +617,10 @@ public final class ConsoleEventHandler implements Listener {
         }
 
         /**
-         * @consolecommand reconnect - Reconnects to TMI and PubSub.
+         * @consolecommand reconnect - Reconnects to TMI and EventSub.
          */
         if (message.equalsIgnoreCase("reconnect")) {
-            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI and PubSub reconnect");
+            com.gmt2001.Console.out.println("[CONSOLE] Executing TMI and EventSub reconnect");
 
             PhantomBot.instance().reconnect();
             return;
