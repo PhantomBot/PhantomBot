@@ -134,26 +134,6 @@
                         </div>
                         <!-- /.box -->
                     </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="oauth-tab">
-                            <div class="box-header with-border">
-                                <i class="fas fa-key"></i>
-                                <h3 class="box-title">OAuth Setup</h3>
-                                <div class="box-tools pull-right">
-                                    <!-- Buttons, labels, and many other things can be placed here! -->
-                                    <!-- Here is a label for example -->
-                                    <i class="fas fa-lock"></i>
-                                </div>
-                                <!-- /.box-tools -->
-                            </div>
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                Setup automatic OAuth refresh
-                            </div>
-                            <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
                 </div>
             </div>
             <footer class="main-footer">
@@ -200,11 +180,6 @@
                                 window.location = getWindowUrl('setup');
                             });
                             $('#setup-tab').css('cursor', 'pointer');
-
-                            $('#oauth-tab').click(function () {
-                                window.location = getWindowUrl('oauth');
-                            });
-                            $('#oauth-tab').css('cursor', 'pointer');
 
                             // Start tooltips.
                             $('[data-toggle="tooltip"]').tooltip();
