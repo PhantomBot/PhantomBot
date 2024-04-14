@@ -31,7 +31,7 @@
     $.bind('eventSubAutomodMessageHold', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             logModeration('Message ' + event.event().messageId() + ' (' + event.event().message().text() + ') from '
-                + event.event().userName() + ' has been held by automod because of level ' + event.event().level() + ' ' + event.event().category());
+                + event.event().userLogin() + ' has been held by automod because of level ' + event.event().level() + ' ' + event.event().category());
         }
     });
 
@@ -39,7 +39,7 @@
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
             let status = $.jsString(event.event().status());
             if (status === 'approved' || status === 'denied') {
-                logModeration('Message ' + event.event().messageId() + ' from ' + event.event().userName() + ' was ' + status + ' by '
+                logModeration('Message ' + event.event().messageId() + ' from ' + event.event().userLogin() + ' was ' + status + ' by '
                     + event.event().moderatorUserName());
             }
         }
@@ -53,25 +53,25 @@
             let message = null;
 
             if (action === 'delete') {
-                message = d.deleteData().userName() + '\'s message was deleted by ' + moderator;
+                message = d.deleteData().userLogin() + '\'s message was deleted by ' + moderator;
             } else if (action === 'timeout') {
-                message = d.timeout().userName() + ' has been timed out by ' + moderator + ' until ' + d.timeout().expiresAt().toString()
+                message = d.timeout().userLogin() + ' has been timed out by ' + moderator + ' until ' + d.timeout().expiresAt().toString()
                     + (d.timeout().reason() !== null && $.strlen(d.timeout().reason()) > 0 ? '. Reason: ' + d.timeout().reason() : '');
             } else if (action === 'untimeout') {
-                message = d.untimeout().userName() + ' has been un-timed out by ' + moderator;
+                message = d.untimeout().userLogin() + ' has been un-timed out by ' + moderator;
             } else if (action === 'ban') {
-                message = d.ban().userName() + ' has been banned by ' + moderator
+                message = d.ban().userLogin() + ' has been banned by ' + moderator
                     + (d.ban().reason() !== null && $.strlen(d.ban().reason()) > 0 ? '. Reason: ' + d.ban().reason() : '');
             } else if (action === 'unban') {
-                message = d.unban().userName() + ' has been un-banned out by ' + moderator;
+                message = d.unban().userLogin() + ' has been un-banned out by ' + moderator;
             } else if (action === 'mod') {
-                message = d.mod().userName() + ' has been modded by ' + moderator;
+                message = d.mod().userLogin() + ' has been modded by ' + moderator;
             } else if (action === 'unmod') {
-                message = d.unmod().userName() + ' has been un-modded by ' + moderator;
+                message = d.unmod().userLogin() + ' has been un-modded by ' + moderator;
             } else if (action === 'vip') {
-                message = d.vip().userName() + ' has been added as VIP by ' + moderator;
+                message = d.vip().userLogin() + ' has been added as VIP by ' + moderator;
             } else if (action === 'unvip') {
-                message = d.unvip().userName() + ' has been removed from VIP by ' + moderator;
+                message = d.unvip().userLogin() + ' has been removed from VIP by ' + moderator;
             }
 
             if (message !== null) {
