@@ -52,7 +52,9 @@
             let moderator = d.moderatorUserName();
             let message = null;
 
-            if (action === 'delete') {
+            if (action === 'clear') {
+                message = 'Chat was cleared by ' + moderator;
+            } else if (action === 'delete') {
                 message = d.deleteData().userLogin() + '\'s message was deleted by ' + moderator;
             } else if (action === 'timeout') {
                 message = d.timeout().userLogin() + ' has been timed out by ' + moderator + ' until ' + d.timeout().expiresAt().toString()
