@@ -19,9 +19,15 @@ package com.gmt2001.twitch.eventsub.subscriptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
+import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
+
+import tv.phantombot.event.EventBus;
+import tv.phantombot.event.eventsub.EventSubTestEvent;
 
 /**
  * Test type for development.
@@ -33,6 +39,7 @@ public final class Test extends EventSubSubscriptionType {
     private Map<String, String> condition;
     private String type;
     private String version;
+    private JSONObject payload;
 
     /**
      * Only used by EventSub for handler registration
@@ -73,6 +80,16 @@ public final class Test extends EventSubSubscriptionType {
             }
         }
     }
+    
+    /**
+     * Used by {@link onEventSubInternalNotificationEvent} to construct an object from an incoming notification
+     *
+     * @param e The event
+     */
+    public Test(EventSubInternalNotificationEvent e) {
+        super(e.subscription(), e.messageId(), e.messageTimestamp());
+        this.payload = e.event();
+    }
 
     @Override
     protected void validateParameters() throws IllegalArgumentException {
@@ -87,8 +104,8 @@ public final class Test extends EventSubSubscriptionType {
     protected void onEventSubInternalNotificationEvent(EventSubInternalNotificationEvent e) {
         try {
             if (e.subscription().type().equals(this.type)) {
-                com.gmt2001.Console.debug.println(e.subscription().type());
-                com.gmt2001.Console.debug.println(e.event().toString(4));
+                EventSub.debug(e.subscription().type());
+                EventBus.instance().postAsync(new EventSubTestEvent(new Test(e)));
             }
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -106,5 +123,14 @@ public final class Test extends EventSubSubscriptionType {
         }
 
         return match;
+    }
+
+    /**
+     * The event payload
+     * 
+     * @return
+     */
+    public JSONObject payload() {
+        return this.payload;
     }
 }
