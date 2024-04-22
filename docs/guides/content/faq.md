@@ -5,8 +5,7 @@ PhantomBot is an actively developed open source interactive Twitch bot with a vi
 entertainment and moderation for your channel, allowing you to focus on what matters the most to you - your game and
 your viewers. PhantomBot is a bot powered by Java. PhantomBot has many modern features out of the box such as a built-in
 webpanel, enhanced moderation, games, a point system, raffles, custom commands, a music player, and more! PhantomBot
-can also be integrated with many services such as [GameWisp](https://gamewisp.com/),
-[StreamTip](https://streamtip.com/) and [TwitchAlerts](https://twitchalerts.com/)!
+can also be integrated with many services such as [StreamTip](https://streamtip.com/) and [TwitchAlerts](https://twitchalerts.com/)!
 
 ## What do I need to run PhantomBot?
 As of right now, PhantomBot requires Java 11 to run. This is included with the bot for Windows, Linux, and macOS.
