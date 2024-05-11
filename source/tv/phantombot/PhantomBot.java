@@ -34,11 +34,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
+import org.json.JSONStringer;
 
 import com.gmt2001.PathValidator;
 import com.gmt2001.RollbarProvider;
@@ -53,6 +55,7 @@ import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
@@ -409,20 +412,23 @@ public final class PhantomBot implements Listener {
                     com.gmt2001.Console.warn.println("Detected new installation, starting setup process...");
                     com.gmt2001.Console.warn.println();
                     ConfigurationManager.doSetup();
-                } else {
-                    com.gmt2001.Console.warn.println();
-                    com.gmt2001.Console.warn.println("Setup not completed yet. Please set the channel to join");
-                    com.gmt2001.Console.warn.println("Scroll up in the console to see instructions and logins");
                 }
-            } else {
-                com.gmt2001.Console.warn.println();
-                com.gmt2001.Console.warn.println("Channel to join is not set");
-                com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
-                com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
-                com.gmt2001.Console.warn.println();
             }
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("Channel to join is not set");
+            com.gmt2001.Console.warn
+                    .println("Please go the the bots built-in setup page and set the Channel in the Admin section");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:"
+                    + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The current panel username is: "
+                    + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println(
+                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
-                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn
+                        .println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
                 this.initChatBackoff.BackoffAsync(() -> {
                     this.initChat();
@@ -430,12 +436,41 @@ public final class PhantomBot implements Listener {
             }
         } else if (!TwitchValidate.instance().isChatValid()) {
             com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println("OAuth was invalid, not starting TMI (Chat)");
-            com.gmt2001.Console.warn.println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
-            com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
+            com.gmt2001.Console.warn.println("The Bot (Chat) OAuth is not set or is invalid");
+            com.gmt2001.Console.warn
+                    .println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:"
+                    + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The current panel username is: "
+                    + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println(
+                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
-                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn
+                        .println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn.println();
+                this.initChatBackoff.BackoffAsync(() -> {
+                    this.initChat();
+                });
+            }
+        } else if (!TwitchValidate.instance().isAPIValid()) {
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The Broadcaster (API) OAuth is not set or is invalid");
+            com.gmt2001.Console.warn
+                    .println("Please go the the bots built-in oauth page and setup a new Broadcaster (API) token");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:"
+                    + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The current panel username is: "
+                    + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println(
+                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println();
+            if (!this.initChatBackoff.GetIsBackingOff()) {
+                com.gmt2001.Console.warn
+                        .println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
                 this.initChatBackoff.BackoffAsync(() -> {
                     this.initChat();
@@ -1130,10 +1165,12 @@ public final class PhantomBot implements Listener {
     public static void main(String[] args) throws IOException {
         System.setProperty("io.netty.noUnsafe", "true");
 
-        if (Float.parseFloat(System.getProperty("java.specification.version")) < (float) 17) {
-            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 17 or later.");
+        if (Float.parseFloat(System.getProperty("java.specification.version")) < (float) 17 || Float.parseFloat(System.getProperty("java.specification.version")) >= (float) 20) {
+            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 17, 18, or 19.");
             PhantomBot.exitError();
         }
+
+        if ()
 
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + Reflect.GetExecutionPath());
@@ -1152,6 +1189,27 @@ public final class PhantomBot implements Listener {
         }
 
         CaselessProperties startProperties = ConfigurationManager.getConfiguration();
+
+        if (startProperties.containsKey(ConfigurationManager.PROP_IS_PTERODACTYL)
+            && !CaselessCommandLineArguments.instance().getPropertyAsBoolean(ConfigurationManager.PROP_PTERODACTYL_FIX, false)) {
+                com.gmt2001.Console.warn.println("Found pterodactyl installation. The eggs have incorrect launch parameters. Restarting with the correct launch parameters");
+                com.gmt2001.Console.warn.println();
+                String cmd = "/bin/bash -c %s %s";
+                String script = Paths.get(Reflect.GetExecutionPath(), "launch-docker.sh").toString();
+                String params = ConfigurationManager.PROP_PTERODACTYL_FIX;
+
+            try {
+                Process p = Runtime.getRuntime().exec(String.format(cmd, script, params));
+                p.waitFor();
+                System.exit(p.exitValue());
+                return;
+            } catch (IOException | InterruptedException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", false));
+            }
+
+            System.exit(1);
+            return;
+        }
 
         setStaticFields(startProperties);
 
