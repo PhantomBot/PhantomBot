@@ -1197,7 +1197,9 @@ public final class PhantomBot implements Listener {
                 String params = ConfigurationManager.PROP_PTERODACTYL_FIX;
 
             try {
-                Process p = Runtime.getRuntime().exec(String.format(cmd, script, params));
+                Process p = Runtime.getRuntime().exec(String.format(cmd, "chmod +x", script));
+                p.waitFor();
+                p = Runtime.getRuntime().exec(String.format(cmd, script, params));
                 p.waitFor();
                 System.exit(p.exitValue());
                 return;
