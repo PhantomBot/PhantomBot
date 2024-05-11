@@ -1170,8 +1170,6 @@ public final class PhantomBot implements Listener {
             PhantomBot.exitError();
         }
 
-        if ()
-
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + Reflect.GetExecutionPath());
 
