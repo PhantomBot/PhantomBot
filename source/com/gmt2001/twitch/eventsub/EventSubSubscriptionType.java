@@ -104,7 +104,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
 
     /**
      * Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
-     * If a matching subscription already exists, it is deleted first
+     * If a matching subscription already exists, it is returned instead
      *
      * @return
      */
@@ -112,7 +112,7 @@ public abstract class EventSubSubscriptionType implements Flow.Subscriber<EventS
         this.validateParameters();
         try {
             if (this.isAlreadySubscribed()) {
-                return Mono.whenDelayError(this.deleteAll()).onErrorComplete().then(EventSub.instance().createSubscription(this.proposeSubscription()));
+                return Mono.just(this.getExistingSubscription());
             } else {
                 return EventSub.instance().createSubscription(this.proposeSubscription());
             }
