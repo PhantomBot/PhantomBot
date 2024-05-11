@@ -5,3 +5,18 @@
 .alert-btn-white {
 	color: white;
 }
+
+#settings {
+	margin-bottom: 35px;
+}
+
+#save-div {
+	position: fixed !important;
+	bottom: 10px !important;
+	width: 100% !important;
+}
+
+#save-button {
+	display: inline-block !important;
+	width: auto !important;
+}
