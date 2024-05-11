@@ -260,8 +260,8 @@
                 $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + d.untimeout().userLogin() + '](' + userLink(d.untimeout().userLogin()) + ')' + ' \r\n\r\n **Moderator:** ' + moderator);
             } else if (action === 'ban') {
                 embedBanned(d.ban().userLogin(), moderator, (d.ban().reason() !== null && $.strlen(d.ban().reason()) > 0 ? d.ban().reason() : ''),
-                (chat[d.timeout().userLogin()]!== undefined && chat[d.timeout().userLogin()] !== null ? 
-                    chat[d.timeout().userLogin()].message : null));
+                (chat[d.ban().userLogin()]!== undefined && chat[d.ban().userLogin()] !== null ? 
+                    chat[d.ban().userLogin()].message : null));
             } else if (action === 'unban') {
                 $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + d.unban().userLogin() + '](' + userLink(d.unban().userLogin()) + ')' + ' \r\n\r\n **Moderator:** ' + moderator);
             }
