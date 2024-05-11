@@ -1193,13 +1193,11 @@ public final class PhantomBot implements Listener {
                 com.gmt2001.Console.warn.println("Found pterodactyl installation. The eggs have incorrect launch parameters. Restarting with the correct launch parameters");
                 com.gmt2001.Console.warn.println();
                 String cmd = "/bin/bash -c %s %s";
-                String script = Paths.get(Reflect.GetExecutionPath(), "launch-docker.sh").toString();
+                String script = Paths.get(Reflect.GetExecutionPath(), "launch-service.sh").toString();
                 String params = ConfigurationManager.PROP_PTERODACTYL_FIX;
 
             try {
-                Process p = Runtime.getRuntime().exec(String.format(cmd, "chmod +x", script));
-                p.waitFor();
-                p = Runtime.getRuntime().exec(String.format(cmd, script, params));
+                Process p = Runtime.getRuntime().exec(String.format(cmd, script, params));
                 p.waitFor();
                 System.exit(p.exitValue());
                 return;
