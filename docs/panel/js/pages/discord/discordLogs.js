@@ -95,11 +95,12 @@ $(function () {
     setTimeout(function () {
         // Get Discord logging settings.
         socket.getDBValues('get_discord_logging_settings', {
-            tables: ['discordSettings', 'discordSettings', 'discordSettings'],
-            keys: ['modLogs', 'customCommandLogs', 'modLogChannel']
+            tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
+            keys: ['modLogs', 'modLogChat', 'customCommandLogs', 'modLogChannel']
         }, true, function (e) {
             // Mod toggle.
             $('#twitch-mod-log').val((helpers.isTrue(e['modLogs']) ? 'Yes' : 'No'));
+            $('#twitch-mod-log-chat').val((helpers.isTrue(e['modLogChat']) ? 'Yes' : 'No'));
             // Commands toggle.
             $('#twitch-command-log').val((helpers.isTrue(e['customCommandLogs']) ? 'Yes' : 'No'));
             // Log channels
@@ -120,6 +121,7 @@ $(function () {
     // Save button.
     $('#discord-logging-save').on('click', function () {
         let moderationLogs = $('#twitch-mod-log').find(':selected').text() === 'Yes',
+                modLogChat = $('#twitch-mod-log-chat').find(':selected').text() === 'Yes',
                 customCommandLog = $('#twitch-command-log').find(':selected').text() === 'Yes',
                 logChannel = $('#twitch-mod-channel');
 
@@ -129,9 +131,9 @@ $(function () {
                 break;
             default:
                 socket.updateDBValues('discord_logs_update', {
-                    tables: ['discordSettings', 'discordSettings', 'discordSettings'],
-                    keys: ['modLogs', 'customCommandLogs', 'modLogChannel'],
-                    values: [moderationLogs, customCommandLog, logChannel.val()]
+                    tables: ['discordSettings', 'discordSettings', 'discordSettings', 'discordSettings'],
+                    keys: ['modLogs', 'modLogChat', 'customCommandLogs', 'modLogChannel'],
+                    values: [moderationLogs, modLogChat, customCommandLog, logChannel.val()]
                 }, function () {
                     // Update the scripts variables.
                     socket.wsEvent('discord_logs', './core/logging.js', '', [], function () {

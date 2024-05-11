@@ -81,7 +81,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="subscriptions/channel/ChannelFollow.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelFollow</a></code>, <code><a href="subscriptions/channel/channel_points/redemption/ChannelPointsCustomRewardRedemptionAdd.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption">ChannelPointsCustomRewardRedemptionAdd</a></code>, <code><a href="subscriptions/channel/ChannelUpdate.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelUpdate</a></code>, <code><a href="subscriptions/channel/prediction/PredictionBegin.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionBegin</a></code>, <code><a href="subscriptions/channel/prediction/PredictionEnd.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionEnd</a></code>, <code><a href="subscriptions/channel/prediction/PredictionLock.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionLock</a></code>, <code><a href="subscriptions/channel/prediction/PredictionProgress.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionProgress</a></code>, <code><a href="subscriptions/Revocation.html" title="class in com.gmt2001.twitch.eventsub.subscriptions">Revocation</a></code>, <code><a href="subscriptions/stream/StreamOffline.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOffline</a></code>, <code><a href="subscriptions/stream/StreamOnline.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOnline</a></code></dd>
+<dd><code><a href="subscriptions/automod/message/AutomodMessage.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.automod.message">AutomodMessage</a></code>, <code><a href="subscriptions/channel/ChannelFollow.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelFollow</a></code>, <code><a href="subscriptions/channel/ChannelModerate.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelModerate</a></code>, <code><a href="subscriptions/channel/channel_points/redemption/ChannelPointsCustomRewardRedemptionAdd.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption">ChannelPointsCustomRewardRedemptionAdd</a></code>, <code><a href="subscriptions/channel/ChannelUpdate.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel">ChannelUpdate</a></code>, <code><a href="subscriptions/channel/prediction/PredictionBegin.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionBegin</a></code>, <code><a href="subscriptions/channel/prediction/PredictionEnd.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionEnd</a></code>, <code><a href="subscriptions/channel/prediction/PredictionLock.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionLock</a></code>, <code><a href="subscriptions/channel/prediction/PredictionProgress.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.prediction">PredictionProgress</a></code>, <code><a href="subscriptions/Revocation.html" title="class in com.gmt2001.twitch.eventsub.subscriptions">Revocation</a></code>, <code><a href="subscriptions/stream/StreamOffline.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOffline</a></code>, <code><a href="subscriptions/stream/StreamOnline.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.stream">StreamOnline</a></code>, <code><a href="subscriptions/Test.html" title="class in com.gmt2001.twitch.eventsub.subscriptions">Test</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">EventSubSubscriptionType</span>
@@ -402,7 +402,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 <h3>create</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="EventSubSubscription.html" title="class in com.gmt2001.twitch.eventsub">EventSubSubscription</a>&gt;</span>&nbsp;<span class="element-name">create</span>()</div>
 <div class="block">Creates a new EventSub subscription, using the parameters provided via other methods or the constructor.
- If a matching subscription already exists, it is deleted first</div>
+ If a matching subscription already exists, it is returned instead</div>
 <dl class="notes">
 <dt>Returns:</dt>
 </dl>
@@ -569,7 +569,7 @@ implements <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base
 </main>
 <footer role="contentinfo">
 <hr>
-<p class="legal-copy"><small><i>Copyright &copy; 2016-2023 phantombot.github.io/PhantomBot</i></small></p>
+<p class="legal-copy"><small><i>Copyright &copy; 2016-2024 phantombot.github.io/PhantomBot</i></small></p>
 </footer>
 </div>
 </div>

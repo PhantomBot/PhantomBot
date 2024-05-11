@@ -94,14 +94,6 @@ jointest (userName) - Sends 30 fake join events or one specific user for testing
 
 &nbsp;
 
-### channelpointstest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-channelpointstest - Sends a fake Channel Points redemption for testing.
-
-&nbsp;
-
 ### followertest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
@@ -218,7 +210,7 @@ discordreconnect - Reconnects to Discord.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-reconnect - Reconnects to TMI and PubSub.
+reconnect - Reconnects to TMI and EventSub.
 
 &nbsp;
 
