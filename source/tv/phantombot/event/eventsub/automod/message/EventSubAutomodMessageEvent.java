@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.moderation;
+package tv.phantombot.event.eventsub.automod.message;
 
-public class PubSubModerationUnBanEvent extends PubSubModerationEvent {
+import tv.phantombot.event.eventsub.automod.EventSubAutomodEvent;
 
-    /**
-     * Class constructor
-     *
-     * @param username
-     * @param creator
-     */
-    public PubSubModerationUnBanEvent(String username, String creator) {
-        super(username, creator, null);
+/**
+ * An EventSub event related to a message held by automod
+ *
+ * @author gmt2001
+ */
+public abstract class EventSubAutomodMessageEvent<T> extends EventSubAutomodEvent<T> {
+    public EventSubAutomodMessageEvent(T event) {
+        super(event);
     }
 }

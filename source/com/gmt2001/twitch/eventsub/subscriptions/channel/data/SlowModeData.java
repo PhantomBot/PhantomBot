@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,34 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.videoplayback;
+package com.gmt2001.twitch.eventsub.subscriptions.channel.data;
+
+import org.json.JSONObject;
 
 /**
- * @deprecated Stream up/down is now handeled by EventSub
+ * Slow mode data in an EventSub payload.
+ * 
+ * @author gmt2001
  */
-@Deprecated(since = "3.8.0.0", forRemoval = true)
-public class PubSubStreamUpEvent extends PubSubVideoPlaybackEvent {
-
-    private final int playDelay;
+public class SlowModeData {
+    private int wait_time_seconds;
 
     /**
-     * Constructor.
-     *
-     * @param channelId
-     * @param serverTime
-     * @param playDelay
+     * Constructor
+     * 
+     * @param o The JSON data for the object
      */
-    public PubSubStreamUpEvent(int channelId, float serverTime, int playDelay) {
-        super(channelId, serverTime);
-        this.playDelay = playDelay;
+    public SlowModeData(JSONObject o) {
+        this.wait_time_seconds = o.getInt("wait_time_seconds");
     }
 
     /**
-     * Method that returns the play delay.
-     *
-     * @return playDelay
+     * The number of seconds users must wait in between sending messages.
+     * 
+     * @return
      */
-    public int getPlayDelay() {
-        return this.playDelay;
+    public int waitTimeSeconds() {
+        return this.wait_time_seconds;
     }
 }

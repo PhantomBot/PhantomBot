@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,13 @@
  */
 
 (function() {
-    var blacklist = [],
+    let blacklist = [],
         whitelist = [],
         permitList = {},
         spam = {},
+        chat = {},
         lastMessage = 0,
+        chatCleanup = 5 * 60 * 1000,
 
         linkToggle = $.getSetIniDbBoolean('discordSettings', 'linkToggle', false),
         linkPermit = $.getSetIniDbNumber('discordSettings', 'linkPermit', 60),
@@ -36,7 +38,8 @@
         spamLimit = $.getSetIniDbNumber('discordSettings', 'spamLimit', 5),
 
         modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false),
-        modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+        modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', ''),
+        modLogChat = $.getSetIniDbBoolean('discordSettings', 'modLogChat', false);
 
     /**
      * @function reload
@@ -53,6 +56,11 @@
         spamLimit = $.getSetIniDbNumber('discordSettings', 'spamLimit', 5);
         modLogs = $.getSetIniDbBoolean('discordSettings', 'modLogs', false);
         modLogChannel = $.getSetIniDbString('discordSettings', 'modLogChannel', '');
+        modLogChat = $.getSetIniDbBoolean('discordSettings', 'modLogChat', false);
+
+        if (!modLogChat) {
+            chat = {};
+        }
     }
 
     /**
@@ -149,16 +157,16 @@
      * @function embedDelete
      *
      * @param {String} username
-     * @param {String} creator
+     * @param {String} moderator
      * @param {String} message
      */
-    function embedDelete(username, creator, message) {
+    function embedDelete(username, moderator, message) {
         var toSend = '',
             obj = {},
             i;
 
         obj['**Deleted_message_of:**'] = '[' + username + '](' + userLink(username) + ')';
-        obj['**Creator:**'] = creator;
+        obj['**Moderator:**'] = moderator;
         obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
 
         var keys = Object.keys(obj);
@@ -174,22 +182,23 @@
      * @function embedTimeout
      *
      * @param {String} username
-     * @param {String} creator
+     * @param {String} moderator
      * @param {String} reason
      * @param {String} time
      * @param {String} message
      */
-    function embedTimeout(username, creator, reason, time, message) {
+    function embedTimeout(username, moderator, reason, time, message) {
         var toSend = '',
             obj = {},
             i;
 
         obj['**Timeout_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
-        obj['**Creator:**'] = creator;
+        obj['**Moderator:**'] = moderator;
         obj['**Reason:**'] = reason;
-        obj['**Time:**'] = time + ' seconds.';
-
-        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
+        obj['**Expires:**'] = time;
+        if (message !== undefined && message !== null) {
+            obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
+        }
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -204,19 +213,21 @@
      * @function embedBanned
      *
      * @param {String} username
-     * @param {String} creator
+     * @param {String} moderator
      * @param {String} reason
      * @param {String} message
      */
-    function embedBanned(username, creator, reason, message) {
+    function embedBanned(username, moderator, reason, message) {
         var toSend = '',
             obj = {},
             i;
 
         obj['**Ban_placed_on:**'] = '[' + username + '](' + userLink(username) + ')';
-        obj['**Creator:**'] = creator;
+        obj['**Moderator:**'] = moderator;
         obj['**Reason:**'] = reason;
-        obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
+        if (message !== undefined && message !== null) {
+            obj['**Last_message:**'] = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
+        }
 
         var keys = Object.keys(obj);
         for (i in keys) {
@@ -227,80 +238,68 @@
         $.discordAPI.sendMessageEmbed(modLogChannel, 'red', toSend);
     }
 
-    /*
-     * @event PubSubModerationDelete
-     */
-    $.bind('pubSubModerationDelete', function (event) {
-        var username = event.getUsername(),
-            creator = event.getCreator(),
-            message = event.getMessage();
+    $.bind('eventSubChannelModerate', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
+            let d = event.event();
+            let action = $.jsString(d.action());
+            let moderator = d.moderatorUserName();
 
-        if (modLogs === false || modLogChannel === '') {
-            return;
+            if (modLogs === false || modLogChannel === '') {
+                return;
+            }
+
+            if (action === 'delete') {
+                embedDelete(d.deleteData().userLogin(), moderator, d.deleteData().messageBody());
+            } else if (action === 'timeout') {
+                embedTimeout(d.timeout().userLogin(), moderator, 
+                    (d.timeout().reason() !== null && $.strlen(d.timeout().reason()) > 0 ? d.timeout().reason() : ''),
+                    d.timeout().expiresAt().toString(),
+                    (chat[d.timeout().userLogin()]!== undefined && chat[d.timeout().userLogin()] !== null ? 
+                        chat[d.timeout().userLogin()].message : null));
+            } else if (action === 'untimeout') {
+                $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + d.untimeout().userLogin() + '](' + userLink(d.untimeout().userLogin()) + ')' + ' \r\n\r\n **Moderator:** ' + moderator);
+            } else if (action === 'ban') {
+                embedBanned(d.ban().userLogin(), moderator, (d.ban().reason() !== null && $.strlen(d.ban().reason()) > 0 ? d.ban().reason() : ''),
+                (chat[d.timeout().userLogin()]!== undefined && chat[d.timeout().userLogin()] !== null ? 
+                    chat[d.timeout().userLogin()].message : null));
+            } else if (action === 'unban') {
+                $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + d.unban().userLogin() + '](' + userLink(d.unban().userLogin()) + ')' + ' \r\n\r\n **Moderator:** ' + moderator);
+            }
         }
+    });
 
-        embedDelete(username, creator, message);
+    $.bind('eventSubWelcome', function (event) {
+        if (!event.isReconnect()) {
+            let subscriptions = [
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelModerate
+            ];
+
+            let success = true;
+            for (let i in subscriptions) {
+                let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
+                try {
+                    newSubscription.create().block();
+                } catch (ex) {
+                    success = false;
+                    $.log.error(ex);
+                }
+            }
+        }
     });
 
     /*
-     * @event PubSubModerationTimeout
+     * @event ircModeration
      */
-    $.bind('pubSubModerationTimeout', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator(),
-            message = event.getMessage(),
-            reason = event.getReason(),
-            time = parseInt(event.getTime());
-
-        if (modLogs === false || modLogChannel === '') {
+    $.bind('ircModeration', function (event) {
+        if (!modLogChat) {
             return;
         }
 
-        embedTimeout(username, creator, reason, time, message);
-    });
+        let sender = event.getSender(),
+            message = $.jsString(event.getMessage());
+        message = ($.strlen(message) > 50 ? message.substring(0, 50) + '...' : message);
 
-    /*
-     * @event PubSubModerationUnTimeout
-     */
-    $.bind('pubSubModerationUnTimeout', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator();
-
-        if (modLogs === false || modLogChannel === '') {
-            return;
-        }
-
-        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Timeout removed from:** ' + '[' + username + '](' + userLink(username) + ')' + ' \r\n\r\n **Creator:** ' + creator);
-    });
-
-    /*
-     * @event PubSubModerationUnBan
-     */
-    $.bind('pubSubModerationUnBan', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator();
-
-        if (modLogs === false || modLogChannel === '') {
-            return;
-        }
-
-        $.discordAPI.sendMessageEmbed(modLogChannel, 'green', '**Ban removed from:** ' + '[' + username + '](' + userLink(username) + ')' + ' \r\n\r\n **Creator:** ' + creator);
-    });
-
-    /*
-     * @event PubSubModerationBan
-     */
-    $.bind('pubSubModerationBan', function(event) {
-        var username = event.getUsername(),
-            creator = event.getCreator(),
-            message = event.getMessage(),
-            reason = event.getReason();
-
-        if (modLogs === false || modLogChannel === '') {
-            return;
-        }
-
-        embedBanned(username, creator, reason, message);
+        chat[sender] = { timestamp: $.systemTime(), message: message };
     });
 
     /**
@@ -658,13 +657,22 @@
                 }
 
                 /**
-                 * @discordcommandpath moderation logs toggle - Will toggle if Twitch moderation logs are to be said in Discord. Requires a bot restart.
+                 * @discordcommandpath moderation logs toggle - Will toggle if Twitch moderation logs are to be said in Discord. Requires bot restart.
                  */
                 if ($.equalsIgnoreCase(subAction, 'toggle')) {
                     modLogs = !modLogs;
                     $.setIniDbBoolean('discordSettings', 'modLogs', modLogs);
                     $.setIniDbBoolean('chatModerator', 'moderationLogs', modLogs);
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.toggle', (modLogs ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
+                }
+
+                /**
+                 * @discordcommandpath moderation logs chat - Will toggle if the last Twitch chat message (within 5 minutes) of a timed out or banned user is included in mod logs.
+                 */
+                if ($.equalsIgnoreCase(subAction, 'chat')) {
+                    modLogChat = !modLogChat;
+                    $.setIniDbBoolean('discordSettings', 'modLogChat', modLogChat);
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('moderation.logs.togglechat', (modLogChat ? $.lang.get('common.enabled') : $.lang.get('common.disabled'))));
                 }
 
                 /**
@@ -717,7 +725,21 @@
                         permitList = {};
                     }
                 }
-            }, 6e4, 'scripts::discord::core::moderation');
+            }, 6e4, 'scripts::discord::core::moderation::spamPermitCleanup');
+
+            setInterval(function() {
+                let remove = [];
+                for (let x in chat) {
+                    if (chat[x].timestamp + chatCleanup <= $.systemTime()) {
+                        remove.push(x);
+                    }
+                }
+
+                for (let i in remove) {
+                    chat[remove[i]] = null;
+                    delete chat[remove[i]];
+                }
+            }, chatCleanup, 'scripts::discord::core::moderation::chatCleanup');
         }
     });
 })();

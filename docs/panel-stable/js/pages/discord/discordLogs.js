@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ $(function () {
             // Commands toggle.
             $('#twitch-command-log').val((helpers.isTrue(e['customCommandLogs']) ? 'Yes' : 'No'));
             // Log channels
-            $('#discord_logs_pubsub').append(getChannelSelector('twitch-mod-channel', 'Logging Channel', '#logs', e['modLogChannel'],
+            $('#discord_logs_eventsub').append(getChannelSelector('twitch-mod-channel', 'Logging Channel', '#logs', e['modLogChannel'],
                     'Which channel to post the moderation logs to.', allowedChannelTypes));
 
             refreshChannels(function () {

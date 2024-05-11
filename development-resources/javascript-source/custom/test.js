@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -287,6 +287,36 @@
             $.consoleDebug('OVERALL RESULT ' + (pass ? 'PASS' : 'FAIL'));
             $.say('DB Test ' + (pass ? 'PASS' : 'FAIL') + '. See console for details');
         }
+    });
+
+    // Test some EventSub subscriptions
+    $.bind('eventSubWelcome', function (event) {
+        if (!event.isReconnect()) {
+            let Test = Packages.com.gmt2001.twitch.eventsub.subscriptions.Test;
+
+			let type1 = 'automod.message.hold';
+            let newSubscription1 = new Test(type1, '1', [['broadcaster_user_id', $.viewer.broadcaster().id()], ['moderator_user_id', $.viewer.broadcaster().id()]]);
+			try {
+				newSubscription1.create().block();
+				$.consoleLn('Registered ' + type1);
+			} catch (ex) {
+				$.log.error(ex);
+			}
+
+			let type2 = 'automod.message.update';
+            let newSubscription2 = new Test(type2, '1', [['broadcaster_user_id', $.viewer.broadcaster().id()], ['moderator_user_id', $.viewer.broadcaster().id()]]);
+			try {
+				newSubscription2.create().block();
+				$.consoleLn('Registered ' + type2);
+			} catch (ex) {
+				$.log.error(ex);
+			}
+        }
+    });
+
+    // Capture tested EventSub subscriptions and use JSONObject.toString(indent) to pretty-print it to console
+    $.bind('eventsubTest', function (event) {
+        $.consoleLn(event.event().payload().toString(4));
     });
 
     $.bind('initReady', function () {

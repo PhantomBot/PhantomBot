@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,10 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub;
+package tv.phantombot.event.eventsub;
 
-import tv.phantombot.event.Event;
+import com.gmt2001.twitch.eventsub.subscriptions.Test;
 
-public abstract class PubSubEvent extends Event {
-
+/**
+ * A test event for development
+ *
+ * @author gmt2001
+ */
+public class EventSubTestEvent extends EventSubEvent<Test> {
+    public EventSubTestEvent(Test subscription) {
+        super(subscription);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,67 @@
 (function () {
     let count = 1;
     let gamesPlayed;
+    let Logger = Packages.com.illusionaryone.Logger;
+
+    function logModeration(message) {
+        if ($.getIniDbBoolean('chatModerator', 'moderationLogs')) {
+            Logger.instance().log(Logger.LogType.Moderation, '[' + Logger.instance().logTimestamp() + '] ' + message);
+        }
+    }
+
+    $.bind('eventSubAutomodMessageHold', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
+            logModeration('Message ' + event.event().messageId() + ' (' + event.event().message().text() + ') from '
+                + event.event().userLogin() + ' has been held by automod because of level ' + event.event().level() + ' ' + event.event().category());
+        }
+    });
+
+    $.bind('eventSubAutomodMessageUpdate', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
+            let status = $.jsString(event.event().status());
+            if (status === 'approved' || status === 'denied') {
+                logModeration('Message ' + event.event().messageId() + ' from ' + event.event().userLogin() + ' was ' + status + ' by '
+                    + event.event().moderatorUserName());
+            }
+        }
+    });
+
+    $.bind('eventSubChannelModerate', function (event) {
+        if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
+            let d = event.event();
+            let action = $.jsString(d.action());
+            let moderator = d.moderatorUserName();
+            let message = null;
+
+            if (action === 'clear') {
+                message = 'Chat was cleared by ' + moderator;
+            } else if (action === 'delete') {
+                message = d.deleteData().userLogin() + '\'s message was deleted by ' + moderator;
+            } else if (action === 'timeout') {
+                message = d.timeout().userLogin() + ' has been timed out by ' + moderator + ' until ' + d.timeout().expiresAt().toString()
+                    + (d.timeout().reason() !== null && $.strlen(d.timeout().reason()) > 0 ? '. Reason: ' + d.timeout().reason() : '');
+            } else if (action === 'untimeout') {
+                message = d.untimeout().userLogin() + ' has been un-timed out by ' + moderator;
+            } else if (action === 'ban') {
+                message = d.ban().userLogin() + ' has been banned by ' + moderator
+                    + (d.ban().reason() !== null && $.strlen(d.ban().reason()) > 0 ? '. Reason: ' + d.ban().reason() : '');
+            } else if (action === 'unban') {
+                message = d.unban().userLogin() + ' has been un-banned out by ' + moderator;
+            } else if (action === 'mod') {
+                message = d.mod().userLogin() + ' has been modded by ' + moderator;
+            } else if (action === 'unmod') {
+                message = d.unmod().userLogin() + ' has been un-modded by ' + moderator;
+            } else if (action === 'vip') {
+                message = d.vip().userLogin() + ' has been added as VIP by ' + moderator;
+            } else if (action === 'unvip') {
+                message = d.unvip().userLogin() + ' has been removed from VIP by ' + moderator;
+            }
+
+            if (message !== null) {
+                logModeration(message);
+            }
+        }
+    });
 
     $.bind('eventSubChannelUpdate', function (event) {
         if ($.jsString(event.event().broadcasterUserId()) === $.jsString($.viewer.broadcaster().id())) {
@@ -43,6 +104,9 @@
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
             let subscriptions = [
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.automod.message.AutomodMessageHold,
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.automod.message.AutomodMessageUpdate,
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelModerate,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOnline,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOffline

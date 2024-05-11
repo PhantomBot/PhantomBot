@@ -1,5 +1,5 @@
 /**
-    Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -28,6 +28,24 @@ $(function(){
         return (String(this).match(/(default\s\`(\w+)\`)/) ? String(this).match(/(default\s\`(\w+)\`)/)[2] : '');
     }
 
+    function updateSaveButtonState(enabled) {
+        $('#save-button').prop('disabled', !enabled);
+        if (enabled) {
+            $('#save-warning').removeClass('hidden');
+        } else {
+            $('#save-warning').addClass('hidden');
+        }
+    }
+
+    function updateOAuthLinkState() {
+        let curval = $('#channel').attr('data-curval');
+        if (curval !== undefined && curval !== null && curval.length > 0) {
+            $('#oauth-link').removeClass('hidden');
+        } else {
+            $('#oauth-link').addClass('hidden');
+        }
+    }
+
     // Handles the value change of an input box.
     function onValueChangeEvent(event) {
         const key = $(this).prop('id')
@@ -42,14 +60,13 @@ $(function(){
             pendingSettings[key] = null;
         }
 
-        $('#save-button').prop('disabled', Object.keys(pendingSettings).length == 0);
+        updateSaveButtonState(Object.keys(pendingSettings).length !== 0);
     }
 
     // Creates the settings list.
     function generateAccordionSettings(json) {
         let categorySorter = [];
         let currentCategory = '';
-        let settings;
 
         for (let i in json) {
             if (!categorySorter.hasOwnProperty(json[i].category)) {
@@ -199,6 +216,7 @@ $(function(){
                     toastr.error('Failed to retrieve current settings: ' + data.status + ' ' + data.error + '!');
                 } else {
                     populateInteractableInputs(data.currentProperties);
+                    updateOAuthLinkState();
                 }
             },
             error: function (jq, status, error) {
@@ -235,7 +253,7 @@ $(function(){
     // Button that save settings.
     $('#save-button').on('click', function(event) {
         if (Object.keys(pendingSettings).length > 0) {
-            $('#save-button').prop('disabled', true);
+            updateSaveButtonState(false);
 
             $.ajax({
                 cache: false,
@@ -260,6 +278,8 @@ $(function(){
                         }
 
                         pendingSettings = {};
+
+                        updateOAuthLinkState();
                     }
                 },
                 error: function (jq, status, err) {
@@ -341,5 +361,5 @@ $(function(){
             toastr.error('Failed to retrieve current settings: ' + msg + '!');
         }
     });
-    $('#save-button').prop('disabled', true);
+    updateSaveButtonState(false);
 });

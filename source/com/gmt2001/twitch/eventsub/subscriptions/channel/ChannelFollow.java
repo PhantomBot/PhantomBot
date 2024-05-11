@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.channel.EventSubChannelFollowEvent;
-import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  * A specified channel receives a follow.
@@ -78,14 +77,14 @@ public final class ChannelFollow extends EventSubSubscriptionType {
      * @param broadcaster_user_id The user id of the broadcaster
      */
     public ChannelFollow(String broadcaster_user_id) {
-        this(broadcaster_user_id, TwitchValidate.instance().getAPIUserID());
+        this(broadcaster_user_id, EventSub.moderatorUserId());
     }
 
     /**
      * Constructor
      *
      * @param broadcaster_user_id The user id of the broadcaster
-     * @param moderator_user_id The ID of the moderator of the channel you want to get follow notifications for. If you have authorization from the broadcaster rather than a moderator, specify the broadcaster's user ID here
+     * @param moderator_user_id The ID of the moderator of the channel you want to get notifications for. If you have authorization from the broadcaster rather than a moderator, specify the broadcaster's user ID here
      */
     public ChannelFollow(String broadcaster_user_id, String moderator_user_id) {
         super();

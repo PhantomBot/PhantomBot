@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.following;
+package tv.phantombot.event.eventsub.automod.message;
+
+import com.gmt2001.twitch.eventsub.subscriptions.automod.message.AutomodMessageHold;
 
 /**
- * @deprecated This is now handeled by EventSub
+ * A message is held by automod.
+ *
+ * @author gmt2001
  */
-@Deprecated(since = "3.8.0.0", forRemoval = true)
-public class PubSubFollowEvent extends PubSubFollowingEvent {
-
-    public PubSubFollowEvent(String username, String userid, String displayname) {
-        super(username, userid, displayname);
+public class EventSubAutomodMessageHoldEvent extends EventSubAutomodMessageEvent<AutomodMessageHold> {
+    public EventSubAutomodMessageHoldEvent(AutomodMessageHold event) {
+        super(event);
     }
 }

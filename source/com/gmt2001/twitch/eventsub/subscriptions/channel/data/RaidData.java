@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,21 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.videoplayback;
+package com.gmt2001.twitch.eventsub.subscriptions.channel.data;
+
+import org.json.JSONObject;
 
 /**
- * @deprecated Stream up/down is now handeled by EventSub
+ * Raid data in an EventSub payload.
+ * 
+ * @author gmt2001
  */
-@Deprecated(since = "3.8.0.0", forRemoval = true)
-public class PubSubStreamDownEvent extends PubSubVideoPlaybackEvent {
+public class RaidData extends UserData {
+    private int viewer_count;
 
     /**
-     * Constructor.
-     *
-     * @param channelId
-     * @param serverTime
+     * Constructor
+     * 
+     * @param o The JSON data for the object
      */
-    public PubSubStreamDownEvent(int channelId, float serverTime) {
-        super(channelId, serverTime);
+    public RaidData(JSONObject o) {
+        super(o);
+        this.viewer_count = o.getInt("viewer_count");
+    }
+
+    /**
+     * The viewer count when the raid countdown was started.
+     * 
+     * @return
+     */
+    public int viewerCount() {
+        return this.viewer_count;
     }
 }

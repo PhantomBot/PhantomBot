@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -118,7 +118,7 @@
                         <div class="box box-solid box-primary" id="setup-tab">
                             <div class="box-header with-border">
                                 <i class="fas fa-cogs"></i>
-                                <h3 class="box-title">Bot Setup</h3>
+                                <h3 class="box-title">Bot Setup and OAuth</h3>
                                 <div class="box-tools pull-right">
                                     <!-- Buttons, labels, and many other things can be placed here! -->
                                     <!-- Here is a label for example -->
@@ -128,27 +128,7 @@
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
-                                Setup bot options
-                            </div>
-                            <!-- /.box-body -->
-                        </div>
-                        <!-- /.box -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="box box-solid box-primary" id="oauth-tab">
-                            <div class="box-header with-border">
-                                <i class="fas fa-key"></i>
-                                <h3 class="box-title">OAuth Setup</h3>
-                                <div class="box-tools pull-right">
-                                    <!-- Buttons, labels, and many other things can be placed here! -->
-                                    <!-- Here is a label for example -->
-                                    <i class="fas fa-lock"></i>
-                                </div>
-                                <!-- /.box-tools -->
-                            </div>
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                Setup automatic OAuth refresh
+                                Setup bot options and OAuth
                             </div>
                             <!-- /.box-body -->
                         </div>
@@ -200,11 +180,6 @@
                                 window.location = getWindowUrl('setup');
                             });
                             $('#setup-tab').css('cursor', 'pointer');
-
-                            $('#oauth-tab').click(function () {
-                                window.location = getWindowUrl('oauth');
-                            });
-                            $('#oauth-tab').css('cursor', 'pointer');
 
                             // Start tooltips.
                             $('[data-toggle="tooltip"]').tooltip();

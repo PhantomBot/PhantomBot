@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.pubsub.moderation;
+package com.gmt2001.twitch.eventsub.subscriptions.channel.data;
 
-public class PubSubModerationDeleteEvent extends PubSubModerationEvent {
+import org.json.JSONObject;
+
+/**
+ * Ban data in an EventSub payload.
+ * 
+ * @author gmt2001
+ */
+public class BanData extends UserData {
+    private String reason;
 
     /**
-     * Class constructor.
-     *
-     * @param username
-     * @param creator
-     * @param message
+     * Constructor
+     * 
+     * @param o The JSON data for the object
      */
-    public PubSubModerationDeleteEvent(String username, String creator, String message) {
-        super(username, creator, message);
+    public BanData(JSONObject o) {
+        super(o);
+        this.reason = o.optString("reason");
+    }
+
+    /**
+     * Reason given for the ban.
+     * 
+     * @return
+     */
+    public String reason() {
+        return this.reason;
     }
 }

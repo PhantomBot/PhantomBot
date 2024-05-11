@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,6 @@ import tv.phantombot.script.ScriptManager;
 import tv.phantombot.twitch.api.Helix;
 import tv.phantombot.twitch.api.TwitchValidate;
 import tv.phantombot.twitch.irc.TwitchSession;
-import tv.phantombot.twitch.pubsub.TwitchPubSub;
 import tv.phantombot.ytplayer.WsYTHandler;
 
 public final class PhantomBot implements Listener {
@@ -149,7 +148,6 @@ public final class PhantomBot implements Listener {
     private SecureRandom random;
     private boolean joined = false;
     private TwitchMessageInterface tmi;
-    private TwitchPubSub pubSubEdge;
 
     // Error codes
     // [...] by convention, a nonzero status code indicates abnormal termination. (see System.exit() JavaDoc)
@@ -483,19 +481,13 @@ public final class PhantomBot implements Listener {
         if (this.tmi != null) {
             this.tmi.reconnect();
         }
-        if (this.pubSubEdge != null) {
-            this.pubSubEdge.reconnect();
-        }
+        EventSub.instance().reconnect();
     }
 
     public void reloadProperties() {
         this.checkPanelLogin();
 
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
-
-        if (this.pubSubEdge != null) {
-            this.pubSubEdge.setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
-        }
 
         if (this.httpAuthenticatedHandler != null) {
             this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
@@ -974,10 +966,6 @@ public final class PhantomBot implements Listener {
             this.tmi.shutdown();
         }
 
-        if (this.pubSubEdge != null) {
-            this.pubSubEdge.shutdown();
-        }
-
         EventSub.instance().shutdown();
 
         /* Shutdown all caches */
@@ -1078,11 +1066,6 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.debug.println("TwitchValidate.hasAPIScope(channel:moderate)=" + (TwitchValidate.instance().hasAPIScope("channel:moderate") ? "t" : "f"));
         com.gmt2001.Console.debug.println("TwitchValidate.hasAPIScope(channel:read:redemption)=" + (TwitchValidate.instance().hasAPIScope("channel:read:redemptions") ? "t" : "f"));
-        com.gmt2001.Console.debug.println("StartPubSub=" + (CaselessProperties.instance().getProperty("apioauth", "").length() > 0 && (TwitchValidate.instance().hasAPIScope("channel:moderate") || TwitchValidate.instance().hasAPIScope("channel:read:redemptions")) ? "t" : "f"));
-        /* Start a pubsub instance here. */
-        if (CaselessProperties.instance().getProperty("apioauth", "").length() > 0 && (TwitchValidate.instance().hasAPIScope("channel:moderate") || TwitchValidate.instance().hasAPIScope("channel:read:redemptions"))) {
-            this.pubSubEdge = new TwitchPubSub(TwitchAPIv5.instance().getChannelId(this.getChannelName()), TwitchAPIv5.instance().getChannelId(this.getBotName()), CaselessProperties.instance().getProperty("apioauth", ""));
-        }
 
         /* Load the caches for each channels */
         this.twitchTeamCache = TwitchTeamsCache.instance(this.getChannelName());
@@ -1100,18 +1083,6 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
         EventSub.instance();
-    }
-
-    /**
-     * messages from Twitch chat
-     *
-     * @param event
-     */
-    @Handler
-    public void ircChannelMessage(IrcChannelMessageEvent event) {
-        if (this.pubSubEdge != null) {
-            this.pubSubEdge.ircChannelMessageEvent(event);
-        }
     }
 
     /**
@@ -1533,14 +1504,6 @@ public final class PhantomBot implements Listener {
 
     public static boolean isInExitState() {
         return isInExitState;
-    }
-
-    public TwitchPubSub getPubSub() {
-        return this.pubSubEdge;
-    }
-
-    public void setPubSub(TwitchPubSub pubSub) {
-        this.pubSubEdge = pubSub;
     }
 
     public void setSession(TwitchSession session) {

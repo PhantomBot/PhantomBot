@@ -1,5 +1,5 @@
 <!--
-    Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+    Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,18 +30,28 @@
     <section class="content">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#discord_logs_pubsub" data-toggle="tab">Twitch Moderation</a></li>
+                <li class="active"><a href="#discord_logs_eventsub" data-toggle="tab">Twitch Moderation</a></li>
                 <li><a href="#discord_logs_cmds" data-toggle="tab">Twitch Commands</a></li>
             </ul>
 
             <div class="tab-content">
                 <!-- Twitch Moderation -->
-                <div class="tab-pane active" id="discord_logs_pubsub">
+                <div class="tab-pane active" id="discord_logs_eventsub">
                     <div class="form-group">
                         <label>Enable Twitch Moderation Logs</label>
                         <div class="dropdown">
                             <select class="form-control" id="twitch-mod-log" data-toggle="tooltip"
                                 title="Enables the moderation logs for the bot." style="cursor: pointer;">
+                                <option>Yes</option>
+                                <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Enable Logging Last Message Sent By User (Within 5 Minutes) for Timeout/Ban</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="twitch-mod-log-chat" data-toggle="tooltip"
+                                title="Enables logging the last Twitch message sent (within 5 minutes) by a user who was timed out or banned." style="cursor: pointer;">
                                 <option>Yes</option>
                                 <option>No</option>
                             </select>

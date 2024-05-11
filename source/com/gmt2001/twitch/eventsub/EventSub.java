@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2023 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,6 +137,15 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      */
     public static EventSub instance() {
         return EventSub.INSTANCE;
+    }
+
+    /**
+     * The default moderator user id
+     * 
+     * @return
+     */
+    public static String moderatorUserId() {
+        return TwitchValidate.instance().getAPIUserID();
     }
 
     /**
