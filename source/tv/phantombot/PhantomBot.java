@@ -1162,8 +1162,8 @@ public final class PhantomBot implements Listener {
     public static void main(String[] args) throws IOException {
         System.setProperty("io.netty.noUnsafe", "true");
 
-        if (Float.parseFloat(System.getProperty("java.specification.version")) < (float) 17) {
-            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 17 or later.");
+        if (Float.parseFloat(System.getProperty("java.specification.version")) < (float) 17 || Float.parseFloat(System.getProperty("java.specification.version")) >= (float) 20) {
+            System.out.println("Detected Java " + System.getProperty("java.version") + ". " + "PhantomBot requires Java 17, 18, or 19.");
             PhantomBot.exitError();
         }
 
