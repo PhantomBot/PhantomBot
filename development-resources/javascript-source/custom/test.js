@@ -289,6 +289,36 @@
         }
     });
 
+    // Test some EventSub subscriptions
+    $.bind('eventSubWelcome', function (event) {
+        if (!event.isReconnect()) {
+            let Test = Packages.com.gmt2001.twitch.eventsub.subscriptions.Test;
+
+			let type1 = 'automod.message.hold';
+            let newSubscription1 = new Test(type1, '1', [['broadcaster_user_id', $.viewer.broadcaster().id()], ['moderator_user_id', $.viewer.broadcaster().id()]]);
+			try {
+				newSubscription1.create().block();
+				$.consoleLn('Registered ' + type1);
+			} catch (ex) {
+				$.log.error(ex);
+			}
+
+			let type2 = 'automod.message.update';
+            let newSubscription2 = new Test(type2, '1', [['broadcaster_user_id', $.viewer.broadcaster().id()], ['moderator_user_id', $.viewer.broadcaster().id()]]);
+			try {
+				newSubscription2.create().block();
+				$.consoleLn('Registered ' + type2);
+			} catch (ex) {
+				$.log.error(ex);
+			}
+        }
+    });
+
+    // Capture tested EventSub subscriptions and use JSONObject.toString(indent) to pretty-print it to console
+    $.bind('eventsubTest', function (event) {
+        $.consoleLn(event.event().payload().toString(4));
+    });
+
     $.bind('initReady', function () {
         $.registerChatCommand('./custom/test.js', 'testhelp', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testcmd', $.PERMISSION.Admin);
