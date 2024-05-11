@@ -50,6 +50,9 @@ public class ConfigurationManager {
     public static final String PROP_API_OAUTH = "apioauth";
     public static final String PROP_SILENTSCRIPTSLOAD = "silentscriptsload";
     public static final String PROP_USEROLLBAR = "userollbar";
+    public static final String ENV_PROP_IS_PTERODACTYL = "P_SERVER_UUID";
+    public static final String PROP_IS_PTERODACTYL = "is_pterodactyl";
+    public static final String PROP_PTERODACTYL_FIX = "--pterodactyl-fix";
     private static boolean newSetup = false;
     private static boolean setupStarted = false;
 
@@ -91,6 +94,9 @@ public class ConfigurationManager {
                 } else {
                     startProperties.putIfAbsent(key, value);
                 }
+            }
+            if (key.equalsIgnoreCase(ENV_PROP_IS_PTERODACTYL)) {
+                startProperties.setProperty(PROP_IS_PTERODACTYL, "1");
             }
         });
 

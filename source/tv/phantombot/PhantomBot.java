@@ -34,11 +34,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
+import org.json.JSONStringer;
 
 import com.gmt2001.PathValidator;
 import com.gmt2001.RollbarProvider;
@@ -53,6 +55,7 @@ import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
+import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
@@ -1167,6 +1170,8 @@ public final class PhantomBot implements Listener {
             PhantomBot.exitError();
         }
 
+        if ()
+
         /* Print the user dir */
         com.gmt2001.Console.out.println("The working directory is: " + Reflect.GetExecutionPath());
 
@@ -1184,6 +1189,27 @@ public final class PhantomBot implements Listener {
         }
 
         CaselessProperties startProperties = ConfigurationManager.getConfiguration();
+
+        if (startProperties.containsKey(ConfigurationManager.PROP_IS_PTERODACTYL)
+            && !CaselessCommandLineArguments.instance().getPropertyAsBoolean(ConfigurationManager.PROP_PTERODACTYL_FIX, false)) {
+                com.gmt2001.Console.warn.println("Found pterodactyl installation. The eggs have incorrect launch parameters. Restarting with the correct launch parameters");
+                com.gmt2001.Console.warn.println();
+                String cmd = "/bin/bash -c %s %s";
+                String script = Paths.get(Reflect.GetExecutionPath(), "launch-docker.sh").toString();
+                String params = ConfigurationManager.PROP_PTERODACTYL_FIX;
+
+            try {
+                Process p = Runtime.getRuntime().exec(String.format(cmd, script, params));
+                p.waitFor();
+                System.exit(p.exitValue());
+                return;
+            } catch (IOException | InterruptedException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", false));
+            }
+
+            System.exit(1);
+            return;
+        }
 
         setStaticFields(startProperties);
 
