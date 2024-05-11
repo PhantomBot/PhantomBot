@@ -409,20 +409,23 @@ public final class PhantomBot implements Listener {
                     com.gmt2001.Console.warn.println("Detected new installation, starting setup process...");
                     com.gmt2001.Console.warn.println();
                     ConfigurationManager.doSetup();
-                } else {
-                    com.gmt2001.Console.warn.println();
-                    com.gmt2001.Console.warn.println("Setup not completed yet. Please set the channel to join");
-                    com.gmt2001.Console.warn.println("Scroll up in the console to see instructions and logins");
                 }
-            } else {
-                com.gmt2001.Console.warn.println();
-                com.gmt2001.Console.warn.println("Channel to join is not set");
-                com.gmt2001.Console.warn.println("Please go the the bots built-in setup page and setup the Admin section");
-                com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
-                com.gmt2001.Console.warn.println();
             }
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("Channel to join is not set");
+            com.gmt2001.Console.warn
+                    .println("Please go the the bots built-in setup page and set the Channel in the Admin section");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:"
+                    + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/setup/");
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The current panel username is: "
+                    + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println(
+                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
-                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn
+                        .println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
                 this.initChatBackoff.BackoffAsync(() -> {
                     this.initChat();
@@ -430,12 +433,41 @@ public final class PhantomBot implements Listener {
             }
         } else if (!TwitchValidate.instance().isChatValid()) {
             com.gmt2001.Console.warn.println();
-            com.gmt2001.Console.warn.println("OAuth was invalid, not starting TMI (Chat)");
-            com.gmt2001.Console.warn.println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
-            com.gmt2001.Console.warn.println("The default URL is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
+            com.gmt2001.Console.warn.println("The Bot (Chat) OAuth is not set or is invalid");
+            com.gmt2001.Console.warn
+                    .println("Please go the the bots built-in oauth page and setup a new Bot (Chat) token");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:"
+                    + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The current panel username is: "
+                    + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println(
+                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
             com.gmt2001.Console.warn.println();
             if (!this.initChatBackoff.GetIsBackingOff()) {
-                com.gmt2001.Console.warn.println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn
+                        .println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
+                com.gmt2001.Console.warn.println();
+                this.initChatBackoff.BackoffAsync(() -> {
+                    this.initChat();
+                });
+            }
+        } else if (!TwitchValidate.instance().isAPIValid()) {
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The Broadcaster (API) OAuth is not set or is invalid");
+            com.gmt2001.Console.warn
+                    .println("Please go the the bots built-in oauth page and setup a new Broadcaster (API) token");
+            com.gmt2001.Console.warn.println("The default URL is http://localhost:"
+                    + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "/oauth/");
+            com.gmt2001.Console.warn.println();
+            com.gmt2001.Console.warn.println("The current panel username is: "
+                    + CaselessProperties.instance().getProperty("paneluser", "panel"));
+            com.gmt2001.Console.warn.println(
+                    "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+            com.gmt2001.Console.warn.println();
+            if (!this.initChatBackoff.GetIsBackingOff()) {
+                com.gmt2001.Console.warn
+                        .println("Will check again in " + (this.initChatBackoff.GetNextInterval() / 1000) + " seconds");
                 com.gmt2001.Console.warn.println();
                 this.initChatBackoff.BackoffAsync(() -> {
                     this.initChat();

@@ -68,7 +68,7 @@ public class ConfigurationManager {
         /* Load up the bot info from the bot login file */
         try {
             if (new File(BOTLOGIN_TXT_LOCATION).exists()) {
-                try ( FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
+                try (FileInputStream inputStream = new FileInputStream(BOTLOGIN_TXT_LOCATION)) {
                     startProperties.load(inputStream);
                 }
             }
@@ -79,7 +79,8 @@ public class ConfigurationManager {
         /* Load up the bot info from the environment */
         String prefix = "PHANTOMBOT_";
         boolean envOverrides = System.getenv().containsKey(prefix + PROP_ENVOVERRIDE)
-                && (System.getenv(prefix + PROP_ENVOVERRIDE).equalsIgnoreCase("true") || System.getenv(prefix + PROP_ENVOVERRIDE).equals("1"));
+                && (System.getenv(prefix + PROP_ENVOVERRIDE).equalsIgnoreCase("true")
+                        || System.getenv(prefix + PROP_ENVOVERRIDE).equals("1"));
         System.getenv().entrySet().forEach((v) -> {
             String key = v.getKey().toUpperCase();
             String value = v.getValue();
@@ -100,7 +101,8 @@ public class ConfigurationManager {
         changed |= generateDefaultValues(startProperties);
 
         /* Make a new botlogin with the botName, oauth or channel is not found */
-        if (startProperties.getProperty(PROP_CHANNEL, "").isBlank() && startProperties.getProperty(PROP_OAUTH, "").isBlank()) {
+        if (startProperties.getProperty(PROP_CHANNEL, "").isBlank()
+                && startProperties.getProperty(PROP_OAUTH, "").isBlank()) {
             newSetup = true;
         }
 
@@ -110,12 +112,15 @@ public class ConfigurationManager {
          * Iterate the properties and delete entries for anything that does not have a
          * value.
          */
-        changed = startProperties.stringPropertyNames().stream().map((propertyKey) -> startProperties.remove(propertyKey, "")).reduce(changed, (accumulator, _item) -> accumulator | _item);
+        changed = startProperties.stringPropertyNames().stream()
+                .map((propertyKey) -> startProperties.remove(propertyKey, ""))
+                .reduce(changed, (accumulator, _item) -> accumulator | _item);
 
         if (!startProperties.getPropertyAsBoolean("allownonascii", false)) {
             for (String propertyKey : startProperties.stringPropertyNames()) {
                 String olds = startProperties.getProperty(propertyKey, "");
-                String news = olds.codePoints().filter(x -> x >= 32 || x <= 126).collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+                String news = olds.codePoints().filter(x -> x >= 32 || x <= 126)
+                        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
                 if (!olds.equals(news)) {
                     startProperties.setProperty(propertyKey, news);
@@ -154,13 +159,17 @@ public class ConfigurationManager {
         changed |= setDefaultIfMissing(startProperties, PROP_USEROLLBAR, "true", "Enabled Rollbar");
 
         /* Check to see if there's a webOauth set */
-        changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth, "New webauth key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH, ConfigurationManager::generateWebAuth,
+                "New webauth key has been generated for " + BOTLOGIN_TXT_LOCATION);
         /* Check to see if there's a webOAuthRO set */
-        changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH_RO, ConfigurationManager::generateWebAuth, "New webauth read-only key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        changed |= setDefaultIfMissing(startProperties, PROP_WEBAUTH_RO, ConfigurationManager::generateWebAuth,
+                "New webauth read-only key has been generated for " + BOTLOGIN_TXT_LOCATION);
         /* Check to see if there's a youtubeOAuth set */
-        changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH, ConfigurationManager::generateWebAuth, "New YouTube websocket key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH, ConfigurationManager::generateWebAuth,
+                "New YouTube websocket key has been generated for " + BOTLOGIN_TXT_LOCATION);
         /* Check to see if there's a youtubeOAuthThro set */
-        changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH_RO, ConfigurationManager::generateWebAuth, "New YouTube read-only websocket key has been generated for " + BOTLOGIN_TXT_LOCATION);
+        changed |= setDefaultIfMissing(startProperties, PROP_YTAUTH_RO, ConfigurationManager::generateWebAuth,
+                "New YouTube read-only websocket key has been generated for " + BOTLOGIN_TXT_LOCATION);
         return changed;
     }
 
@@ -168,28 +177,36 @@ public class ConfigurationManager {
         boolean changed = false;
 
         /* Make sure the oauth has been set correctly */
-        if (startProperties.getProperty(PROP_OAUTH) != null && !startProperties.getProperty(PROP_OAUTH).startsWith(OUAUTH_PREFIX) && !startProperties.getProperty(PROP_OAUTH).isEmpty()) {
+        if (startProperties.getProperty(PROP_OAUTH) != null
+                && !startProperties.getProperty(PROP_OAUTH).startsWith(OUAUTH_PREFIX)
+                && !startProperties.getProperty(PROP_OAUTH).isEmpty()) {
             startProperties.setProperty(PROP_OAUTH, OUAUTH_PREFIX + startProperties.getProperty(PROP_OAUTH));
             changed = true;
         }
 
         /* Make sure the apiOAuth has been set correctly */
-        if (startProperties.getProperty(PROP_API_OAUTH) != null && !startProperties.getProperty(PROP_API_OAUTH).startsWith(OUAUTH_PREFIX) && !startProperties.getProperty(PROP_API_OAUTH).isEmpty()) {
+        if (startProperties.getProperty(PROP_API_OAUTH) != null
+                && !startProperties.getProperty(PROP_API_OAUTH).startsWith(OUAUTH_PREFIX)
+                && !startProperties.getProperty(PROP_API_OAUTH).isEmpty()) {
             startProperties.setProperty(PROP_API_OAUTH, OUAUTH_PREFIX + startProperties.getProperty(PROP_API_OAUTH));
             changed = true;
         }
 
         /* Make sure the channelName does not have a # */
-        if (startProperties.getProperty(PROP_CHANNEL) != null && startProperties.getProperty(PROP_CHANNEL).startsWith("#")) {
+        if (startProperties.getProperty(PROP_CHANNEL) != null
+                && startProperties.getProperty(PROP_CHANNEL).startsWith("#")) {
             startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL).substring(1));
             changed = true;
-        } else if (startProperties.getProperty(PROP_CHANNEL) != null && startProperties.getProperty(PROP_CHANNEL).contains(".tv")) {
-            startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL).substring(startProperties.getProperty(PROP_CHANNEL).indexOf(".tv/") + 4).replaceAll("/", ""));
+        } else if (startProperties.getProperty(PROP_CHANNEL) != null
+                && startProperties.getProperty(PROP_CHANNEL).contains(".tv")) {
+            startProperties.setProperty(PROP_CHANNEL, startProperties.getProperty(PROP_CHANNEL)
+                    .substring(startProperties.getProperty(PROP_CHANNEL).indexOf(".tv/") + 4).replaceAll("/", ""));
             changed = true;
         }
 
         /* Check for the owner after the channel check is done. */
-        if (startProperties.getProperty(PROP_OWNER) == null && startProperties.getProperty(PROP_CHANNEL) != null && !startProperties.getProperty(PROP_CHANNEL).isEmpty()) {
+        if (startProperties.getProperty(PROP_OWNER) == null && startProperties.getProperty(PROP_CHANNEL) != null
+                && !startProperties.getProperty(PROP_CHANNEL).isEmpty()) {
             startProperties.setProperty(PROP_OWNER, startProperties.getProperty(PROP_CHANNEL));
             changed = true;
         }
@@ -197,28 +214,39 @@ public class ConfigurationManager {
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does not exist
+     * Sets a default value to a properties object if the requested property does
+     * not exist
      *
-     * @param properties the properties object to be modified
+     * @param properties   the properties object to be modified
      * @param propertyName the name of the property, which should be set if null
-     * @param defaultValue the default value, to which the property is set, if the property is missing in the properties object
-     * @param setMessage the message which will be printed if the value is set to the given default value
+     * @param defaultValue the default value, to which the property is set, if the
+     *                     property is missing in the properties object
+     * @param setMessage   the message which will be printed if the value is set to
+     *                     the given default value
      * @return if the value is already present in the properties object
      */
-    private static boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, String defaultValue, String generatedMessage) {
+    private static boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, String defaultValue,
+            String generatedMessage) {
         return setDefaultIfMissing(properties, propertyName, () -> defaultValue, generatedMessage);
     }
 
     /**
-     * Sets a default value to a properties object if the requested property does not exist
+     * Sets a default value to a properties object if the requested property does
+     * not exist
      *
-     * @param properties the properties object to be modified
-     * @param propertyName the name of the property, which should be generated if null
-     * @param defaultValueGenerator the generating function, which generates the default value, if the property is missing in the properties object
-     * @param generatedMessage the message which will be printed if the value is generated
-     * @return if the value is already present in the properties object and does not have to be generated
+     * @param properties            the properties object to be modified
+     * @param propertyName          the name of the property, which should be
+     *                              generated if null
+     * @param defaultValueGenerator the generating function, which generates the
+     *                              default value, if the property is missing in the
+     *                              properties object
+     * @param generatedMessage      the message which will be printed if the value
+     *                              is generated
+     * @return if the value is already present in the properties object and does not
+     *         have to be generated
      */
-    private static boolean setDefaultIfMissing(CaselessProperties properties, String propertyName, Supplier<String> defaultValueGenerator, String generatedMessage) {
+    private static boolean setDefaultIfMissing(CaselessProperties properties, String propertyName,
+            Supplier<String> defaultValueGenerator, String generatedMessage) {
         boolean changed = false;
         if (properties.getProperty(propertyName) == null) {
             properties.setProperty(propertyName, defaultValueGenerator.get());
@@ -229,12 +257,14 @@ public class ConfigurationManager {
     }
 
     /**
-     * Gets a boolean value from the a properties object and prints a message according to the property name.
+     * Gets a boolean value from the a properties object and prints a message
+     * according to the property name.
      *
-     * @param properties the Properties object to get the boolean value from
+     * @param properties   the Properties object to get the boolean value from
      * @param propertyName the name of the property to get
-     * @param defaulValue the default value of the property
-     * @return the value of the property. If parsing the value to a boolean fails, the default value is returned.
+     * @param defaulValue  the default value of the property
+     * @return the value of the property. If parsing the value to a boolean fails,
+     *         the default value is returned.
      */
     public static boolean getBoolean(CaselessProperties properties, String propertyName, boolean defaulValue) {
         return properties.getPropertyAsBoolean(propertyName, defaulValue);
@@ -260,15 +290,18 @@ public class ConfigurationManager {
         // OS guide links
         if (RepoVersion.isDocker()) {
             com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Docker");
-            com.gmt2001.Console.out.println("We recommend using our official docker-compose.yml to setup the container:");
-            com.gmt2001.Console.out.println("    https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml");
+            com.gmt2001.Console.out
+                    .println("We recommend using our official docker-compose.yml to setup the container:");
+            com.gmt2001.Console.out
+                    .println("    https://github.com/PhantomBot/PhantomBot/blob/master/docker-compose.yml");
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("Please see the comments at the top of the file for the command to run it");
             com.gmt2001.Console.out.println();
             com.gmt2001.Console.out.println("For automatic updates, see the comments at the top of the file");
             com.gmt2001.Console.out.println("    for enabling the ouroboros profile");
             com.gmt2001.Console.out.println();
-            com.gmt2001.Console.out.println("To customize the settings within the file, see the comments throughout the file");
+            com.gmt2001.Console.out
+                    .println("To customize the settings within the file, see the comments throughout the file");
         } else if (SystemUtils.IS_OS_WINDOWS) {
             com.gmt2001.Console.out.println("PhantomBot has detected that your device is running Windows");
             com.gmt2001.Console.out.println("Here's the setup guide for Windows:");
@@ -312,21 +345,28 @@ public class ConfigurationManager {
 
         // Contribute
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("See an issue with the setup guide for your OS? We welcome all contributies via GitHub:");
-            com.gmt2001.Console.out.println("    https://github.com/PhantomBot/PhantomBot");
+        com.gmt2001.Console.out
+                .println("See an issue with the setup guide for your OS? We welcome all contributies via GitHub:");
+        com.gmt2001.Console.out.println("    https://github.com/PhantomBot/PhantomBot");
 
         // Webserver info
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("The default URL for the bots webserver is http://localhost:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000));
+        com.gmt2001.Console.out.println("The default URL for the bots webserver is http://localhost:"
+                + CaselessProperties.instance().getPropertyAsInt("baseport", 25000));
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("If you are hosting the bot remotely, please substitute \"localhost\" with the");
+        com.gmt2001.Console.out
+                .println("If you are hosting the bot remotely, please substitute \"localhost\" with the");
         com.gmt2001.Console.out.println("    appropriate IP address, hostname, or domain name");
-        com.gmt2001.Console.out.println("NOTE: The \":" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "\" part is still needed at the end");
-        com.gmt2001.Console.out.println("For example, \"http://coolstreamer.tv:" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "\"");
+        com.gmt2001.Console.out
+                .println("NOTE: The \":" + CaselessProperties.instance().getPropertyAsInt("baseport", 25000)
+                        + "\" part is still needed at the end");
+        com.gmt2001.Console.out.println("For example, \"http://coolstreamer.tv:"
+                + CaselessProperties.instance().getPropertyAsInt("baseport", 25000) + "\"");
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("NOTE: Due to automatic self-signed SSL being enabled by default, your browser may");
+        com.gmt2001.Console.out
+                .println("NOTE: Due to automatic self-signed SSL being enabled by default, your browser may");
         com.gmt2001.Console.out.println("    complain about an insecure connection");
         com.gmt2001.Console.out.println("This error appears because a global certificate authority has not verified");
         com.gmt2001.Console.out.println("    the self-signed certificate");
@@ -334,61 +374,26 @@ public class ConfigurationManager {
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("On Firefox: ");
         com.gmt2001.Console.out.println("    Message title: \"Warning: Potential Security Risk Ahead\"");
-        com.gmt2001.Console.out.println("    To continue: Click \"Advanced...\", then click \"Accept the Risk and Continue\"");
+        com.gmt2001.Console.out
+                .println("    To continue: Click \"Advanced...\", then click \"Accept the Risk and Continue\"");
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println("On Chrome/Edge: ");
         com.gmt2001.Console.out.println("    Message title: \"Your connection is not private\"");
-        com.gmt2001.Console.out.println("    To continue: Click \"Advanced\", then click \"Proceed to localhost (unsafe)\"");
-        com.gmt2001.Console.out.println("    NOTE: If you are hosting remotely, \"localhost\" in the above proceed link will");
+        com.gmt2001.Console.out
+                .println("    To continue: Click \"Advanced\", then click \"Proceed to localhost (unsafe)\"");
+        com.gmt2001.Console.out
+                .println("    NOTE: If you are hosting remotely, \"localhost\" in the above proceed link will");
         com.gmt2001.Console.out.println("    be substituted with the appropriate IP address, hostname, or domain name");
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("The current panel username is: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
-        com.gmt2001.Console.out.println("The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
+        com.gmt2001.Console.out.println(
+                "The current panel username is: " + CaselessProperties.instance().getProperty("paneluser", "panel"));
+        com.gmt2001.Console.out.println(
+                "The current panel password is: " + CaselessProperties.instance().getProperty("panelpassword", ""));
         com.gmt2001.Console.out.println();
         com.gmt2001.Console.out.println();
-
-        // Bot Setup page steps
-        int step = 0;
-        com.gmt2001.Console.out.println("Please perform these steps for first run setup:");
-        com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println(++step + ". From the webserver homepage, click the \"Bot Setup\" button and login with");
-        com.gmt2001.Console.out.println("    the credentials above");
-        com.gmt2001.Console.out.println(++step + ". In the \"Admin\" section, set the radio button for \"channel\" to the right,");
-        com.gmt2001.Console.out.println("    enabling the textbox");
-        com.gmt2001.Console.out.println(++step + ". In the textbox, fill in the name of the Twitch channel the bot will join");
-        com.gmt2001.Console.out.println(++step + ". (Optional) Expand the \"Panel Login\" section and change the login credentials");
-        com.gmt2001.Console.out.println("    for the bots webserver");
-        com.gmt2001.Console.out.println("  NOTE: All other sections are completely optional, we recommend finishing initial");
-        com.gmt2001.Console.out.println("        setup first and then returning to them later");
-        com.gmt2001.Console.out.println("  NOTE: If you change the values in some of the other sections, you may have to");
-        com.gmt2001.Console.out.println("          restart the bot for them to take effect");
-        com.gmt2001.Console.out.println("        A restart is NOT required if only changing the values specified above for");
-        com.gmt2001.Console.out.println("          initial setup");
-        com.gmt2001.Console.out.println(++step + ". Click the \"Save\" button at the top of the page, ensure a green success bar appears");
-        com.gmt2001.Console.out.println(++step + ". Click the PhantomBot logo in the top-left to return to the homepage");
-
-        // OAuth Setup page steps
-        com.gmt2001.Console.out.println(++step + ". From the webserver homepage, click the \"OAuth Setup\" button and login with");
-        com.gmt2001.Console.out.println("    the credentials above");
-        com.gmt2001.Console.out.println("  NOTE: If you changed the credentials in the \"Panel Login\" section, use the");
-        com.gmt2001.Console.out.println("          new credentials you created instead");
-        com.gmt2001.Console.out.println(++step + ". Follow the instructions on the page in order");
-        com.gmt2001.Console.out.println("  NOTE: The \"Connect With Twitch Bot\" button sets up the Bot account");
-        com.gmt2001.Console.out.println("        This is the account that will send messages to chat");
-        com.gmt2001.Console.out.println("        Please ensure the correct account is selected at the top of the Twitch");
-        com.gmt2001.Console.out.println("          authorization page");
-        com.gmt2001.Console.out.println("        For the account you would like the bot to appear as when it sends messages");
-        com.gmt2001.Console.out.println("          to chat");
-        com.gmt2001.Console.out.println();
-        com.gmt2001.Console.out.println("  NOTE: The \"Connect With Twitch Broadcaster\" button sets up the Broadcaster/API");
-        com.gmt2001.Console.out.println("          account");
-        com.gmt2001.Console.out.println("        This is the account that will send requests to the API and login to");
-        com.gmt2001.Console.out.println("          EventSub");
-        com.gmt2001.Console.out.println("        You can use a moderators account instead if required, but some features");
-        com.gmt2001.Console.out.println("          may not work due to restrictions by Twitch. For example, Channel Points");
-        com.gmt2001.Console.out.println("        Yes, we know that viewers on the website can see some of these events,");
-        com.gmt2001.Console.out.println("          but Twitch puts higher restrictions on the APIs to mitigate bad actors");
+        com.gmt2001.Console.out.println(
+                "Please open up the homepage from the bots webserver and go to the \"Bot Setup and OAuth\" page to get started");
 
         // Spacers
         com.gmt2001.Console.out.println();
