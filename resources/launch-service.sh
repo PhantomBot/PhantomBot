@@ -45,4 +45,6 @@ popd  > '/dev/null'
 
 pushd "$SCRIPT_PATH"
 
+chm=$(chmod u+x ./launch.sh 2>/dev/null)
+
 ./launch.sh --daemon "$@"

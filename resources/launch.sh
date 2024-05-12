@@ -290,14 +290,14 @@ fi
 
 function launch {
     touch java.opt.custom
-
+    
     ${JAVA} @java.opt ${tmp} ${interactive} @java.opt.custom -jar PhantomBot.jar "$@"
 
     if (( $? == 53 )); then
-        launch
+        launch "$@"
     fi
 }
 
-launch
+launch "$@"
 
 popd
