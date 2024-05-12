@@ -29,18 +29,15 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.zone.ZoneRulesException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
-import org.json.JSONStringer;
 
 import com.gmt2001.PathValidator;
 import com.gmt2001.RollbarProvider;
@@ -55,7 +52,6 @@ import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
-import com.gmt2001.httpwsserver.WebSocketFrameHandler;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
@@ -91,7 +87,6 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.complete.IrcJoinCompleteEvent;
-import tv.phantombot.event.irc.message.IrcChannelMessageEvent;
 import tv.phantombot.event.jvm.PropertiesLoadedEvent;
 import tv.phantombot.event.jvm.PropertiesReloadedEvent;
 import tv.phantombot.event.jvm.ShutdownEvent;
@@ -1192,20 +1187,24 @@ public final class PhantomBot implements Listener {
             && !CaselessCommandLineArguments.instance().getPropertyAsBoolean(ConfigurationManager.PROP_PTERODACTYL_FIX, false)) {
                 com.gmt2001.Console.warn.println("Found pterodactyl installation. The eggs have incorrect launch parameters. Restarting with the correct launch parameters");
                 com.gmt2001.Console.warn.println();
-                String cmd = "/bin/bash -c %s %s";
-                String script = Paths.get(Reflect.GetExecutionPath(), "launch-service.sh").toString();
-                String params = ConfigurationManager.PROP_PTERODACTYL_FIX;
+            List<List<String>> commands = List.of(
+                List.of("chmod", "u+x", Paths.get(Reflect.GetExecutionPath(), "launch-service.sh").toString()),
+                List.of(Paths.get(Reflect.GetExecutionPath(), "launch-service.sh").toString(), ConfigurationManager.PROP_PTERODACTYL_FIX)
+            );
+            File dir = Paths.get(Reflect.GetExecutionPath()).toFile();
 
+            int lastExit = 1;
             try {
-                Process p = Runtime.getRuntime().exec(String.format(cmd, script, params));
-                p.waitFor();
-                System.exit(p.exitValue());
-                return;
-            } catch (IOException | InterruptedException ex) {
+                for (List<String> cmd : commands) {
+                    ProcessBuilder pb = new ProcessBuilder(cmd);
+                    lastExit = pb.directory(dir).inheritIO().start().waitFor();
+                }
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", false));
+                System.exit(1);
             }
 
-            System.exit(1);
+            System.exit(lastExit);
             return;
         }
 
