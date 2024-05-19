@@ -57,6 +57,7 @@
      * @example Caster: !addcom !followage (followage)
      * User: !followage
      * Bot: @User, user has been following channel PhantomBot since March 29, 2016. (340 days)
+     * @notes The format of the date can be changed by editing the lang string `followhandler.follow.age.datefmt` in _lang/english/handlers/handlers-followHandler.json_
      * @cancels
      */
     function followage(args) {
@@ -84,6 +85,7 @@
      * @formula (followdate user:str) the date the provided user last followed this channel
      * @formula (followdate user:str channel:str) the date the provided user last followed the provided channel
      * @labels twitch commandevent channel stream
+     * @notes The format of the date can be changed by editing the lang string `followhandler.follow.age.datefmt` in _lang/english/handlers/handlers-followHandler.json_
      * @cached
      */
     function followdate(args) {
