@@ -117,7 +117,6 @@
             $.inidb.set('pollVotes', poll.options[i], 0);
             objOBS.push({
                 'label': poll.options[i],
-                'title': question,
                 'votes': 0
             });
         }
@@ -140,7 +139,8 @@
 
         var msg = JSON.stringify({
             'start_poll': 'true',
-            'data': JSON.stringify(objOBS)
+            'title': question,
+            'options': objOBS
         });
         $.alertspollssocket.sendJSONToAll(msg);
 
@@ -180,7 +180,8 @@
 
             var msg = JSON.stringify({
                 'start_poll': 'true',
-                'data': JSON.stringify(objOBS)
+                'title': poll.question,
+                'options': objOBS
             });
             $.alertspollssocket.sendJSONToAll(msg);
         }
@@ -232,7 +233,8 @@
 
             var msg = JSON.stringify({
                 'new_vote': 'true',
-                'data': JSON.stringify(objOBS)
+                'title': poll.question,
+                'options': objOBS
             });
         } finally {
             _pollLock.unlock();
@@ -420,7 +422,8 @@
             if (poll.pollRunning) {
                 var msg = JSON.stringify({
                     'start_poll': 'true',
-                    'data': JSON.stringify(objOBS)
+                    'title': poll.question,
+                    'options': objOBS
                 });
                 $.alertspollssocket.sendJSONToAll(msg);
             }

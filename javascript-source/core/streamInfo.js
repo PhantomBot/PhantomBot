@@ -474,7 +474,7 @@
         }
 
         let date = $.followers.followedDate(username);
-        let dateFinal = date.format(Packages.java.time.format.DateTimeFormatter.ofPattern("MMMM dd', 'yyyy"));
+        let dateFinal = getFollowDate(sender, username, channelName);
         let days = Packages.java.time.Duration.between(date, Packages.java.time.ZonedDateTime.now()).toDays();
 
         if (days > 0) {

@@ -229,12 +229,13 @@ $(function() {
         let idx = 1;
 
         // Add the data.
-        JSON.parse(obj.data).map(json => {
+        obj.options.map(json => {
             config.data.labels.push(json.label + ' (#' + idx++ + ')');
             config.data.datasets[0].data.push(parseInt(json.votes));
 
-            if (updateColor)
+            if (updateColor) {
                 config.data.datasets[0].backgroundColor.push(getRandomRGB());
+            }
         });
 
         return config;
