@@ -574,6 +574,9 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 **Labels:** twitch commandevent channel stream
 
 
+_NOTE: The format of the date can be changed by editing the lang string `followhandler.follow.age.datefmt` in _lang/english/handlers/handlers-followHandler.json__
+
+
 **Example:**
 ```text
 Caster: !addcom !followage (followage)
@@ -598,6 +601,9 @@ Defined in script: _./javascript-source/core/transformers/channelstream.js_
 - `(followdate user:str channel:str)` - the date the provided user last followed the provided channel
 
 **Labels:** twitch commandevent channel stream
+
+
+_NOTE: The format of the date can be changed by editing the lang string `followhandler.follow.age.datefmt` in _lang/english/handlers/handlers-followHandler.json__
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
