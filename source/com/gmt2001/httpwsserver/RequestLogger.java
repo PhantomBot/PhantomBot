@@ -27,6 +27,9 @@ import java.time.format.DateTimeFormatter;
 import com.gmt2001.PathValidator;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
@@ -45,14 +48,18 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf b) {
+            releaseBB(ctx.channel());
             ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
+            ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
+                releaseBB(f.channel());
+            });
         }
 
         try {
             super.channelRead(ctx, msg);
         } catch (Exception ex) {
-            if (!(ex.getClass() == IllegalArgumentException.class && (
-                ex.getMessage().startsWith("Content-Length") || ex.getMessage().startsWith("Invalid separator")))) {
+            if (!(ex.getClass() == IllegalArgumentException.class && (ex.getMessage().startsWith("Content-Length")
+                    || ex.getMessage().startsWith("Invalid separator")))) {
                 throw ex;
             }
         }
@@ -60,7 +67,13 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ByteBuf b = ctx.channel().attr(ATTR_BB).get();
+        releaseBB(ctx.channel());
+
+        super.channelReadComplete(ctx);
+    }
+
+    private static void releaseBB(Channel ch) {
+        ByteBuf b = ch.attr(ATTR_BB).get();
 
         while (b != null && b.refCnt() > 0) {
             try {
@@ -72,17 +85,18 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
             }
         }
 
-        ctx.channel().attr(ATTR_BB).set(null);
-
-        super.channelReadComplete(ctx);
+        ch.attr(ATTR_BB).set(null);
     }
 
     /**
-     * Logs the request stream of the provided context and prints the file path to the console
+     * Logs the request stream of the provided context and prints the file path to
+     * the console
      * <p>
-     * Requests are logged to the <i>./logs/request/</i> folder in a file with the timestamp of the request
+     * Requests are logged to the <i>./logs/request/</i> folder in a file with the
+     * timestamp of the request
      * <p>
-     * This method attempts to redact the {@code Host}, {@code Cookie}, {@code Authorization}, {@code Referrer},
+     * This method attempts to redact the {@code Host}, {@code Cookie},
+     * {@code Authorization}, {@code Referrer},
      * and any {@code Proxy} or {@code X-Proxy} headers for privacy
      *
      * @param ctx the context to log
@@ -91,7 +105,8 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
         try {
             ByteBuf b = ctx.channel().attr(ATTR_BB).get();
             if (b != null && b.isReadable()) {
-                Path p = PathValidator.getRealPath(Paths.get("./logs/request", LocalDateTime.now(PhantomBot.getTimeZoneId()).format(dtfmt) + ".txt"));
+                Path p = PathValidator.getRealPath(Paths.get("./logs/request",
+                        LocalDateTime.now(PhantomBot.getTimeZoneId()).format(dtfmt) + ".txt"));
                 Files.createDirectories(p.getParent());
 
                 StringBuilder data = new StringBuilder(b.readCharSequence(b.readableBytes(), StandardCharsets.UTF_8));
@@ -128,7 +143,8 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
                     data.replace(idx, idx2 - 1, "Authorization: <redacted>");
                 }
 
-                Files.writeString(p, data, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+                Files.writeString(p, data, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE,
+                        StandardOpenOption.TRUNCATE_EXISTING);
                 com.gmt2001.Console.out.println("Logged request to " + p.toString());
             }
         } catch (Exception e) {
