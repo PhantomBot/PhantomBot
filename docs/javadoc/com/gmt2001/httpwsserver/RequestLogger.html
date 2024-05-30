@@ -137,7 +137,8 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#log(io.netty.channel.ChannelHandlerContext)" class="member-name-link">log</a><wbr>(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Logs the request stream of the provided context and prints the file path to the console</div>
+<div class="block">Logs the request stream of the provided context and prints the file path to
+ the console</div>
 </div>
 </div>
 </div>
@@ -214,11 +215,14 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="log(io.netty.channel.ChannelHandlerContext)">
 <h3>log</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">log</span><wbr><span class="parameters">(<a href="https://netty.io/4.1/api/io/netty/channel/ChannelHandlerContext.html" title="class or interface in io.netty.channel" class="external-link">ChannelHandlerContext</a>&nbsp;ctx)</span></div>
-<div class="block">Logs the request stream of the provided context and prints the file path to the console
+<div class="block">Logs the request stream of the provided context and prints the file path to
+ the console
  <p>
- Requests are logged to the <i>./logs/request/</i> folder in a file with the timestamp of the request
+ Requests are logged to the <i>./logs/request/</i> folder in a file with the
+ timestamp of the request
  <p>
- This method attempts to redact the <code>Host</code>, <code>Cookie</code>, <code>Authorization</code>, <code>Referrer</code>,
+ This method attempts to redact the <code>Host</code>, <code>Cookie</code>,
+ <code>Authorization</code>, <code>Referrer</code>,
  and any <code>Proxy</code> or <code>X-Proxy</code> headers for privacy</div>
 <dl class="notes">
 <dt>Parameters:</dt>
