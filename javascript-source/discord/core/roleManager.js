@@ -32,7 +32,7 @@
      */
     function roleUpdateCheck() {
         if ($.discord.isConnected()) {
-            var users = $.inidb.GetKeyList('discordToTwitch', ''),
+            let users = $.inidb.GetKeyList('discordToTwitch', ''),
                 i;
 
             // If both options are disabled, stop here.
@@ -48,7 +48,10 @@
                 for (i in users) {
                     try {
                         if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
-                            updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])));
+                            let user = $.discord.getUserById(users[i]);
+                            if (user !== null) {
+                                updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i]), user));
+                            }
                         }
                     } catch (e){
                         $.log.error(e);
@@ -64,12 +67,18 @@
      * @param {Number} id
      * @param {Array}  roles
      */
-    function updateRoles(id, roles) {
-        var oldRoles = $.getIniDbString('discordRoles', id, ',').split(','),
-            currentRoles = $.discordAPI.getUserRoles(id),
+    function updateRoles(id, roles, user) {
+        let oldRoles = $.getIniDbString('discordRoles', id, ',').split(','),
+            currentRoles = null,
             newRoles = roles.join(','),
-            idx,
             i;
+        
+        try {
+            currentRoles = $.discordAPI.getUserRoles(user);
+        } catch (e){
+            $.log.error(e);
+            return;
+        }
 
         // Build our roles list.
         for (i in currentRoles) {
@@ -86,9 +95,19 @@
         // Only update the user's role if there's a new one.
         for (i in roles) {
             if (!hasRole(currentRoles, roles[i], true)) {
-                var roleObjs = $.discordAPI.getRoleObjects(roles);
-                $.discordAPI.editUserRoles(id, roleObjs);
-                $.setIniDbString('discordRoles', id, newRoles);
+                let roleObjs = null;
+                try {
+                    roleObjs = $.discordAPI.getRoleObjects(roles);
+                } catch (e){
+                    $.log.error(e);
+                    return;
+                }
+                try {
+                    $.discordAPI.editUserRoles(user, roleObjs);
+                    $.setIniDbString('discordRoles', id, newRoles);
+                } catch (e){
+                    $.log.error(e);
+                }
                 return;
             }
         }

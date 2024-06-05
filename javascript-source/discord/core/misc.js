@@ -198,6 +198,20 @@
         $.discordAPI.addRole(role, username);
     }
 
+    /**
+     * @function getUserById Gets a Discord user by their Discord User ID, if they are a member of the Discord server
+     *
+     * @param {string} userId The Discord User ID to search for
+     * @return {Packages.discord4j.core.object.entity.User} `null` if the user is not found on the Discord server; otherwise, the user object
+     * @export $.discord
+     */
+    function getUserById(userId) {
+        try {
+            return $.discordAPI.getUserByIdAsync(Packages.java.lang.Long.parseUnsignedLong(userId)).block();
+        } catch (ex) {}
+        return null;
+    }
+
     function sanitizeChannelName(channel) {
         channel = channel.trim();
 
@@ -452,6 +466,7 @@
 
     /* Export the function to the $.discord api. */
     /* There are the same functions twice in here - that's normal and wanted. */
+    $.discord.getUserById = getUserById;
     $.discord.getUserMention = getUserMention;
     $.discord.userMention = getUserMention;
     $.discord.removeGame = removeGame;
