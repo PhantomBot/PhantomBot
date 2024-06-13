@@ -335,7 +335,7 @@
     });
 
     // Capture tested EventSub subscriptions and use JSONObject.toString(indent) to pretty-print it to console
-    $.bind('eventsubTest', function (event) {
+    $.bind('eventSubTest', function (event) {
         $.consoleLn(event.event().payload().toString(4));
     });
 
