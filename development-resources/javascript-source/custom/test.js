@@ -155,6 +155,26 @@
             $.inidb.del('group', args[0].toLowerCase());
         }
 
+        // Get user from Twitch API by User ID and pretty-print to console
+        if (command.equalsIgnoreCase('getuserbyid')) {
+            if (args.length < 1) {
+                $.say('Usage: !getuserbyid userid');
+                return;
+            }
+            let data = $.helix.getUsers(Packages.java.util.List.of($.javaString(args[0])), null);
+			$.consoleLn(data.toString(4));
+        }
+
+        // Get user from Twitch API by User Login Name and pretty-print to console
+        if (command.equalsIgnoreCase('getuserbyname')) {
+            if (args.length < 1) {
+                $.say('Usage: !getuserbyname userlogin');
+                return;
+            }
+            let data = $.helix.getUsers(null, Packages.java.util.List.of($.javaString(args[0])));
+			$.consoleLn(data.toString(4));
+        }
+
         // Throws an IllegalStateException to test exception catching/logging in init.js
         if (command.equalsIgnoreCase('testexception')) {
             throw new Packages.java.lang.IllegalStateException("This is a test");
@@ -334,6 +354,8 @@
         $.registerChatCommand('./custom/test.js', 'setdonator', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'setregular', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'setviewer', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'getuserbyid', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'getuserbyname', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testexception', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testtimeout', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testinterval', $.PERMISSION.Admin);
