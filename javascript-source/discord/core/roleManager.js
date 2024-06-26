@@ -49,7 +49,7 @@
                     try {
                         if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
                             let user = $.discord.getUserById(users[i]);
-                            if (user !== null) {
+                            if (user !== null && user !== undefined) {
                                 updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i]), user));
                             }
                         }
