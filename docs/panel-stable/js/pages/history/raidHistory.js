@@ -69,7 +69,8 @@ $(function () {
                 new Date(parseInt(json.lastRaidTime)).toLocaleString(),
                 helpers.getDefaultIfNullOrUndefined(json.lastRaidViewers, '0'),
                 helpers.getDefaultIfNullOrUndefined(json.totalRaids, '1'),
-                helpers.getDefaultIfNullOrUndefined(json.totalViewers, '0')
+                helpers.getDefaultIfNullOrUndefined(json.totalViewers, '0'),
+                parseInt(json.lastRaidTime)
             ]);
         }
 
@@ -89,10 +90,11 @@ $(function () {
             ],
             'columns': [
                 {'title': 'Username'},
-                {'title': 'Last Raid', 'orderData': [1]},
+                {'title': 'Last Raid', 'orderData': [5]},
                 {'title': 'Viewers'},
                 {'title': 'Total Raids'},
-                {'title': 'Total Viewers'}
+                {'title': 'Total Viewers'},
+                {'visible': false}
             ]
         });
     });
