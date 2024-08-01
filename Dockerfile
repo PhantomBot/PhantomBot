@@ -88,7 +88,7 @@ USER root
 
 RUN set -eux;  \
     apt-get update; \
-    apt-get install -y --no-install-recommends util-linux python3 python3-pip; \
+    apt-get install -y --no-install-recommends util-linux python3 python3-pip python3-venv; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
