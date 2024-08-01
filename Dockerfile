@@ -109,7 +109,7 @@ COPY --from=builder --chown=phantombot:phantombot "${LIBDIR}" "${BASEDIR}/lib"
 COPY --from=builder "${DATADIR}/config/healthcheck/requirements.txt" "${DATADIR}/config/healthcheck/"
 
 RUN set -eux;  \
-    python3 -m venv --copies /opt/python3/venv; \
+    python3 -m venv /opt/python3/venv; \
     /opt/python3/venv/bin/pip install --no-cache-dir -r "${DATADIR}/config/healthcheck/requirements.txt"
 
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
