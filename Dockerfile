@@ -16,7 +16,7 @@
 #
 
 # Build container
-FROM --platform=linux/amd64 eclipse-temurin:17-jdk as builder
+FROM --platform=${BUILDPLATFORM} eclipse-temurin:17-jdk AS builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
@@ -75,7 +75,7 @@ RUN set -eux; \
     rm "./lib"
 
 # Application container
-FROM eclipse-temurin:17-jre as publish
+FROM eclipse-temurin:17-jre AS publish
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
