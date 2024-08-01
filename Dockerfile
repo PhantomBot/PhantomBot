@@ -16,7 +16,7 @@
 #
 
 # Build container
-FROM --platform=linux/amd64 eclipse-temurin:17-jdk as builder
+FROM --platform=${BUILDPLATFORM} eclipse-temurin:17-jdk AS builder
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
@@ -75,7 +75,7 @@ RUN set -eux; \
     rm "./lib"
 
 # Application container
-FROM eclipse-temurin:17-jre as publish
+FROM eclipse-temurin:17-jre AS publish
 
 ARG PROJECT_NAME=PhantomBot
 ARG PROJECT_VERSION
@@ -88,7 +88,7 @@ USER root
 
 RUN set -eux;  \
     apt-get update; \
-    apt-get install -y --no-install-recommends util-linux python3; \
+    apt-get install -y --no-install-recommends util-linux python3 python3-pip python3-venv; \
     apt-get clean; \
     rm -rf /var/lib/apt/lists/*; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
@@ -109,13 +109,8 @@ COPY --from=builder --chown=phantombot:phantombot "${LIBDIR}" "${BASEDIR}/lib"
 COPY --from=builder "${DATADIR}/config/healthcheck/requirements.txt" "${DATADIR}/config/healthcheck/"
 
 RUN set -eux;  \
-    apt-get update; \
-    apt-get install -y --no-install-recommends python3-pip; \
-    apt-get clean; \
-    rm -rf /var/lib/apt/lists/*; \
-    pip3 install --no-cache-dir -r "${DATADIR}/config/healthcheck/requirements.txt"; \
-    apt-get remove -y python3-pip; \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+    python3 -m venv /opt/python3/venv; \
+    /opt/python3/venv/bin/pip install --no-cache-dir -r "${DATADIR}/config/healthcheck/requirements.txt"
 
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
@@ -144,7 +139,7 @@ VOLUME "${DATADIR}"
 
 WORKDIR "${BASEDIR}"
 
-HEALTHCHECK --interval=5m --timeout=1m --start-period=2m CMD python3 /opt/PhantomBot/config/healthcheck/healthcheck.py --show-success --config-dir /opt/PhantomBot_data/config/
+HEALTHCHECK --interval=5m --timeout=1m --start-period=2m CMD /opt/python3/venv/bin/python /opt/PhantomBot/config/healthcheck/healthcheck.py --show-success --config-dir /opt/PhantomBot_data/config/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

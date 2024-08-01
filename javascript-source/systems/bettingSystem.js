@@ -43,6 +43,7 @@
             options: {},
             opt: []
         },
+        objOBS = [],
         _betLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
     /**
@@ -86,6 +87,8 @@
             return;
         }
 
+        objOBS = [];
+
         // Remove the old files.
         $.inidb.RemoveFile('bettingPanel');
         $.inidb.RemoveFile('bettingVotes');
@@ -119,9 +122,20 @@
                 bets: 0,
                 total: 0
             };
+            objOBS.push({
+                'label': split[i],
+                'votes': total
+            });
             bet.opt.push(split[i]);
             $.inidb.set('bettingVotes', (split[i] + '').replace(/\s/, '%space_option%'), 0);
         }
+
+        let msg = JSON.stringify({
+            'start_bet': 'true',
+            'title': title,
+            'options': objOBS
+        });
+        $.alertspollssocket.sendJSONToAll(msg);
 
         $.say($.lang.get('bettingsystem.open.success', title, split.join(', ')));
         $.inidb.set('bettingPanel', 'title', title);
@@ -136,14 +150,16 @@
         }
 
         let tempBet = $.getIniDbString('bettingState', 'bet'),
-                tempBets = $.getIniDbString('bettingState', 'bets');
+                tempBets = $.getIniDbString('bettingState', 'bets'),
+                tempObjOBS = $.getIniDbString('bettingState', 'objOBS');
 
-        if (tempBet === null || tempBets === null) {
+        if (tempBet === null || tempBets === null || tempObjOBS === null) {
             return;
         }
 
         bets = JSON.parse(tempBets);
         bet = JSON.parse(tempBet);
+        objOBS = JSON.parse(tempObjOBS);
 
         if (bet.status === true) {
             if (bet.timer > 0) {
@@ -156,6 +172,13 @@
             saveStateInterval = setInterval(function() {
                 saveState();
             }, 5 * 6e4);
+
+            let msg = JSON.stringify({
+                'start_bet': 'true',
+                'title': bet.title,
+                'options': objOBS
+            });
+            $.alertspollssocket.sendJSONToAll(msg);
         }
     }
 
@@ -164,6 +187,7 @@
         try {
             $.inidb.set('bettingState', 'bets', JSON.stringify(bets));
             $.inidb.set('bettingState', 'bet', JSON.stringify(bet));
+            $.inidb.set('bettingState', 'objOBS', JSON.stringify(objOBS));
         } finally {
             _betLock.unlock();
         }
@@ -206,6 +230,10 @@
             i;
 
         $.say($.lang.get('bettingsystem.close.success', option));
+        let msg = JSON.stringify({
+            'end_bet': 'true'
+        });
+        $.alertspollssocket.sendJSONToAll(msg);
 
         for (i in bets) {
             if ($.equalsIgnoreCase(bets[i].option, option)) {
@@ -285,6 +313,7 @@
             options: {},
             opt: []
         };
+        objOBS = {};
         $.inidb.set('bettingPanel', 'isActive', 'false');
         saveState();
     }
@@ -369,9 +398,21 @@
                 option: option,
                 amount: amount
             };
+            for (var i = 0; i < objOBS.length; i++) {
+                if (objOBS[i].label == option) {
+                    objOBS[i].votes = objOBS[i].votes + amount;
+                }
+            }
         } finally {
             _betLock.unlock();
         }
+
+        let msg = JSON.stringify({
+            'new_bet': 'true',
+            'title': bet.title,
+            'options': objOBS
+        });
+        $.alertspollssocket.sendJSONToAll(msg);
 
         $.inidb.decr('points', sender, amount);
         $.inidb.incr('bettingVotes', option.replace(/\s/, '%space_option%'), 1);
