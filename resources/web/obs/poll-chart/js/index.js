@@ -116,7 +116,7 @@ $(function() {
      * @param obj The object of data
      * @param slideFrom The option where to slide it from, left, right, top, bottom.
      */
-    const createChart = function(obj, slideFrom = 'right') {
+    const createChart = function(obj, slideFrom, command) {
         const poll = $('.poll'),
             height = $(window).height(),
             width = $(window).width();
@@ -136,7 +136,7 @@ $(function() {
         }, 1e3);
 
         // Make the chart.
-        chart = new Chart(poll.get(0).getContext('2d'), getChartConfig(obj));
+        chart = new Chart(poll.get(0).getContext('2d'), getChartConfig(obj, true, command));
 
         chart.update();
     };
@@ -146,7 +146,7 @@ $(function() {
      *
      * @param slideFrom The option where to slide it from, left, right, top, bottom.
      */
-    const disposeChart = function(slideFrom = 'right') {
+    const disposeChart = function(slideFrom) {
         $('.poll').toggle('slide', {
             'direction': slideFrom
         }, 1e3, () => window.location.reload());
@@ -157,8 +157,8 @@ $(function() {
      *
      * @param obj The object of data
      */
-    const updateChart = function(obj) {
-        const config = getChartConfig(obj, false);
+    const updateChart = function(obj, command) {
+        const config = getChartConfig(obj, false, command);
 
         chart.data.datasets[0].data = config.data.datasets[0].data;
 
@@ -172,7 +172,7 @@ $(function() {
      * @param updateColor If the chart colors should be updated.
      * @return The config.
      */
-    const getChartConfig = function(obj, updateColor = true) {
+    const getChartConfig = function(obj, updateColor) {
         const config = {
             'type': 'pie',
             'data': {
@@ -199,7 +199,7 @@ $(function() {
                     'display': true,
                     'fontSize': 35,
                     'fontColor': getOptionSetting('fontColor', 'black'),
-                    'text': obj.title + ' - !vote [#]'
+                    'text': obj.title + ' - !' + command
                 },
                 'plugins': {
                     'datalabels': {
@@ -288,13 +288,22 @@ $(function() {
                         logError('Failed to authenticate with the socket.');
                     }
                 } else {
-                    // Handle our stats.
-                    if (message.hasOwnProperty('start_poll')) { // New poll handle it.
-                        createChart(message, getOptionSetting('slideFromOpen', 'right'));
-                    } else if (message.hasOwnProperty('new_vote')) { // New vote, handle it.
-                        updateChart(message);
-                    } else {
-                        if (message.hasOwnProperty('end_poll')) { // End poll handle it.
+                    if (getOptionSetting('polls', 'true').toLowerCase() === 'true') {
+                        if (message.hasOwnProperty('start_poll')) { // New poll handle it.
+                            createChart(message, getOptionSetting('slideFromOpen', 'right'), 'vote [#]');
+                        } else if (message.hasOwnProperty('new_vote')) { // New vote, handle it.
+                            updateChart(message, 'vote [#]');
+                        } else if (message.hasOwnProperty('end_poll')) { // End poll handle it.
+                            disposeChart(getOptionSetting('slideFromClose', 'right'));
+                        }
+                    }
+                    
+                    if (getOptionSetting('bets', 'true').toLowerCase() === 'true') {
+                        if (message.hasOwnProperty('start_bet')) {
+                            createChart(message, getOptionSetting('slideFromOpen', 'right'), 'bet [amount] [option]');
+                        } else if (message.hasOwnProperty('new_bet')) {
+                            updateChart(message, 'bet [amount] [option]');
+                        } else if (message.hasOwnProperty('end_bet')) {
                             disposeChart(getOptionSetting('slideFromClose', 'right'));
                         }
                     }
