@@ -20,6 +20,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +46,8 @@ import org.jooq.impl.SQLDataType;
 import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.datastore2.H2Store2;
 import com.gmt2001.datastore2.SQLiteStore2;
+
+import tv.phantombot.PhantomBot;
 
 /**
  * Provides access to the database in a key-value store style
@@ -687,11 +691,13 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
 
     /**
      * Returns the record for the given table, section, and key
+     * <p>
+     * If a JOOQ constraint failure occurs due to duplicate (SECTION, VARIABLE), a backup is created, duplicates are dropped, and the SQL constraint is added
      *
      * @param table the table to search
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
-     * @param isRetry if {@code false}, a {@link TooManyRowsException} triggers a table rebuild; otherwise, the exception is re-thrown up the stack
+     * @param isRetry if {@code false}, a {@link TooManyRowsException} triggers dropping duplicate data; otherwise, the exception is re-thrown up the stack
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     private Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key, boolean isRetry) {
@@ -707,7 +713,9 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             if (isRetry) {
                 throw ex;
             } else {
-                table.rebuildTable();
+                String timestamp = LocalDateTime.now(PhantomBot.getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
+                this.backupDB("before_duplicate_drop_" + table.getName() + "_" + timestamp);
+                table.dropDuplicateData();
                 return this.OptRecord(table, section, key, true);
             }
         }
