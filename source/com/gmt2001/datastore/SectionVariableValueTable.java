@@ -202,43 +202,22 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
     }
 
     /**
-     * Re-creates the table, de-duplicating data
+     * Drops duplicate data from the table by (SECTION, VARIABLE), then adds the SQL PRIMARY KEY constraint
+     * <p>
+     * Both actions are executed from within a transaction, so a rollback will occur if the SQL PRIMARY KEY constraint fails
      */
-    void rebuildTable() {
-        String tempName = this.tableName + "______TEMP";
-
-        try {
-            Datastore2.instance().dslContext().dropTableIfExists(tempName).execute();
-        } catch (Exception ex) {
-            com.gmt2001.Console.err.logStackTrace(ex);
-        }
-
-        this.createTable(tempName);
-
+    void dropDuplicateData() {
         try {
             Datastore2.instance().dslContext().transaction(transaction -> {
-                Optional<Table<?>> tempOTable = transaction.dsl().meta().getTables().stream()
-                        .filter(t -> t.getName().equals(tempName)).findFirst();
+                transaction.dsl().deleteFrom(this)
+                        .where(DSL.row(this.SECTION, this.VARIABLE, this.VALUE).notIn(
+                                transaction.dsl()
+                                        .select(this.SECTION, this.VARIABLE, this.VALUE)
+                                        .distinctOn(this.SECTION, this.VARIABLE).from(this)))
+                        .execute();
 
-                if (tempOTable.isPresent()) {
-                    Table<?> tempTable = tempOTable.get();
-
-                    transaction.dsl().insertInto(tempTable)
-                            .columns(tempTable.field(this.SECTION.getName(), String.class),
-                                    tempTable.field(this.VARIABLE.getName(), String.class),
-                                    tempTable.field(this.VALUE.getName(), String.class))
-                            .select(
-                                    Datastore2.instance().dslContext()
-                                            .select(this.SECTION, this.VARIABLE, this.VALUE)
-                                            .distinctOn(this.SECTION, this.VARIABLE).from(this))
-                            .execute();
-
-                    transaction.dsl().dropTable(this.tableName).execute();
-
-                    transaction.dsl().alterTable(tempName).renameTo(this.tableName).execute();
-
-                    Datastore2.instance().invalidateTableCache();
-                }
+                transaction.dsl().alterTable(this)
+                        .add(DSL.primaryKey(this.SECTION, this.VARIABLE)).execute();
             });
         } catch (Exception ex) {
             com.gmt2001.Console.err.logStackTrace(ex);

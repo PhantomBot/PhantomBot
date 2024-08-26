@@ -652,10 +652,10 @@
                         handleException('command', e, true);
                         return;
                     }
-                    let command = event.getCommand(),
-                            args = event.getArgs(),
-                            subCommand = $.getSubCommandFromArguments(command, args),
-                            isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
+                    let command = event.getCommand();
+                    let args = event.getArgs();
+                    let subCommand = $.getSubCommandFromArguments(command, args);
+                    let isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
                     if (isReady === false && ($.equalsIgnoreCase(command, 'pbcore') || $.equalsIgnoreCase(command, $.botName)) && args[0].equalsIgnoreCase('moderate')) {
                         Packages.tv.phantombot.PhantomBot.instance().getSession().getModerationStatus();
