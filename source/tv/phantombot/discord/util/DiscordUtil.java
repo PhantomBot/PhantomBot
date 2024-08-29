@@ -16,41 +16,6 @@
  */
 package tv.phantombot.discord.util;
 
-import com.gmt2001.PathValidator;
-import com.gmt2001.ratelimiters.ExponentialBackoff;
-import com.gmt2001.util.concurrent.ExecutorService;
-
-import discord4j.common.util.Snowflake;
-import discord4j.core.object.entity.Guild;
-import discord4j.core.object.entity.GuildEmoji;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.core.object.entity.Role;
-import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.channel.Category;
-import discord4j.core.object.entity.channel.Channel;
-import discord4j.core.object.entity.channel.GuildChannel;
-import discord4j.core.object.entity.channel.GuildMessageChannel;
-import discord4j.core.object.entity.channel.MessageChannel;
-import discord4j.core.object.entity.channel.NewsChannel;
-import discord4j.core.object.entity.channel.PrivateChannel;
-import discord4j.core.object.entity.channel.StoreChannel;
-import discord4j.core.object.entity.channel.TextChannel;
-import discord4j.core.object.entity.channel.VoiceChannel;
-import discord4j.core.object.entity.channel.Channel.Type;
-import discord4j.core.object.presence.ClientActivity;
-import discord4j.core.object.presence.ClientPresence;
-import discord4j.core.object.reaction.ReactionEmoji;
-import discord4j.core.spec.EmbedCreateSpec;
-import discord4j.core.spec.GuildMemberEditSpec;
-import discord4j.core.spec.MessageCreateFields;
-import discord4j.core.spec.MessageCreateSpec;
-import discord4j.core.spec.MessageEditSpec;
-import discord4j.core.spec.RoleCreateSpec;
-import discord4j.rest.http.client.ClientException;
-import discord4j.rest.json.response.ErrorResponse;
-import discord4j.rest.util.Color;
-import discord4j.rest.util.Permission;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -67,12 +32,47 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.gmt2001.PathValidator;
+import com.gmt2001.ratelimiters.ExponentialBackoff;
+import com.gmt2001.util.concurrent.ExecutorService;
+
+import discord4j.common.util.Snowflake;
+import discord4j.core.object.entity.Guild;
+import discord4j.core.object.entity.GuildEmoji;
+import discord4j.core.object.entity.Member;
+import discord4j.core.object.entity.Message;
+import discord4j.core.object.entity.Role;
+import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.Category;
+import discord4j.core.object.entity.channel.Channel;
+import discord4j.core.object.entity.channel.Channel.Type;
+import discord4j.core.object.entity.channel.GuildChannel;
+import discord4j.core.object.entity.channel.GuildMessageChannel;
+import discord4j.core.object.entity.channel.MessageChannel;
+import discord4j.core.object.entity.channel.NewsChannel;
+import discord4j.core.object.entity.channel.PrivateChannel;
+import discord4j.core.object.entity.channel.StoreChannel;
+import discord4j.core.object.entity.channel.TextChannel;
+import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.core.object.presence.ClientActivity;
+import discord4j.core.object.presence.ClientPresence;
+import discord4j.core.object.reaction.ReactionEmoji;
+import discord4j.core.spec.EmbedCreateSpec;
+import discord4j.core.spec.GuildMemberEditSpec;
+import discord4j.core.spec.MessageCreateFields;
+import discord4j.core.spec.MessageCreateSpec;
+import discord4j.core.spec.MessageEditSpec;
+import discord4j.core.spec.RoleCreateSpec;
+import discord4j.rest.http.client.ClientException;
+import discord4j.rest.json.response.ErrorResponse;
+import discord4j.rest.util.Color;
+import discord4j.rest.util.Permission;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.discord.DiscordAPI;
-import tv.phantombot.discord.util.DiscordUtil.MessageCreateFile;
 
 /**
  * Has all of the methods to work with Discord4J.
