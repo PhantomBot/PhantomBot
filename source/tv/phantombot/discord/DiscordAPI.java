@@ -505,9 +505,10 @@ public class DiscordAPI extends DiscordUtil {
                 return;
             }
 
+            Mono.delay(Duration.ofMillis(250)).block();
             com.gmt2001.Console.out.println("Successfully authenticated with Discord.");
-
             DiscordAPI.updateGuildId();
+            Mono.delay(Duration.ofMillis(250)).block();
             DiscordAPI.instance().ready = true;
             synchronized (DiscordAPI.instance().mutex) {
                 DiscordAPI.instance().connectionState = ConnectionState.CONNECTED;
@@ -533,6 +534,13 @@ public class DiscordAPI extends DiscordUtil {
             final long targetGuildId = getTargetGuildId();
             if (targetGuildId > 0L && targetGuildId != getGuildId(event.getGuild())) {
                 return;
+            }
+            if (DiscordAPI.instance().getConnectionState() == ConnectionState.CONNECTING) {
+                Mono.delay(Duration.ofMillis(250)).block();
+                if (DiscordAPI.instance().getConnectionState() == ConnectionState.CONNECTING) {
+                    Mono.delay(Duration.ofMillis(250)).block();
+                }
+                Mono.delay(Duration.ofMillis(250)).block();
             }
             Optional.ofNullable(event.getGuild().getRoles()).map(Flux<Role>::collectList).orElseGet(() -> {
                 return Flux.<Role>empty().collectList();
