@@ -22,6 +22,7 @@ import java.sql.Statement;
 import java.util.Map;
 
 import org.jooq.DataType;
+import org.jooq.Meta;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
@@ -101,5 +102,10 @@ public final class MariaDBStore2 extends Datastore2 {
         super.prepareConnection(connection);
         connection.setCatalog(this.schema);
         connection.setSchema(this.schema);
+    }
+
+    @Override
+    public Meta meta() {
+        return super.meta().filterCatalogs(c -> c.getName().equals(this.schema));
     }
 }
