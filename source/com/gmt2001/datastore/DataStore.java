@@ -133,7 +133,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an array of table names
      */
     public String[] GetFileList() {
-        return dsl().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+        return Datastore2.instance().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
             .map(t -> t.getName().replaceFirst("(?i)phantombot_", "")).collect(Collectors.toList()).toArray(new String[0]);
     }
 
