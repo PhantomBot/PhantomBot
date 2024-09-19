@@ -90,8 +90,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             tableName = "phantombot_" + tableName;
         }
         return TABLES.computeIfAbsent(tableName, lTableName -> {
-            Optional<Table<?>> cTable = Datastore2.instance().tables().stream()
-                    .filter(t -> t.getName().equalsIgnoreCase(lTableName)).findFirst();
+            Optional<Table<?>> cTable = DataStore.instance().findTable(lTableName);
 
             if (cTable.isPresent()) {
                 return new SectionVariableValueTable(cTable.get().getName(), cTable.get().field(0).getName(),
@@ -246,7 +245,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
             return;
         }
 
-        Optional<Table<?>> table = Datastore2.instance().findTable(this.tableName);
+        Optional<Table<?>> table = DataStore.instance().findTable(this.tableName);
 
         if (!table.isPresent()) {
             try {
