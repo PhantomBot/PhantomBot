@@ -244,25 +244,21 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
         if (this.tableName.equals("EMPTY")) {
             return;
         }
+       
+        try {
+            this.createTable(this.tableName);
 
-        Optional<Table<?>> table = DataStore.instance().findTable(this.tableName);
+            Datastore2.instance().invalidateTableCache();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
 
-        if (!table.isPresent()) {
-            try {
-                this.createTable(this.tableName);
-
-                Datastore2.instance().invalidateTableCache();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
-
-            try {
-                TableVersionRecord record = new TableVersionRecord();
-                record.values(this.tableName, SectionVariableValueRecord.serialVersionUID);
-                record.merge();
-            } catch (Exception ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
-            }
+        try {
+            TableVersionRecord record = new TableVersionRecord();
+            record.values(this.tableName, SectionVariableValueRecord.serialVersionUID);
+            record.merge();
+        } catch (Exception ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 }
