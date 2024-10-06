@@ -252,9 +252,12 @@
 
             if (timer.noticeToggle
                     && $.bot.isModuleEnabled('./systems/noticeSystem.js')
-                    && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)
-                    && (timer.noticeOfflineToggle || $.isOnline($.channelName))) {
-                res = sendNotice(idx);
+                    && (timer.reqMessages < 0 || messageCount >= timer.reqMessages)) {
+                    if (timer.noticeOfflineToggle || $.isOnline($.channelName)) {
+                        res = sendNotice(idx);
+                    } else if (!timer.noticeOfflineToggle) {
+                        lastTimeNoticesSent[idx] = $.systemTime();
+                    }
             }
             return res;
         } finally {

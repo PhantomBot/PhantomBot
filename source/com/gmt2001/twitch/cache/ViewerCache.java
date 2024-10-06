@@ -109,7 +109,7 @@ public final class ViewerCache implements Listener {
      */
     private Mono<List<Viewer>> updateBroadcasterBot() {
         return this.lookupAsync(null, List.of(TwitchValidate.instance().getChatLogin().toLowerCase(),
-            CaselessProperties.instance().getProperty("channel").toLowerCase())).doOnSuccess(viewers -> {
+            CaselessProperties.instance().getProperty("channel", "").toLowerCase())).doOnSuccess(viewers -> {
             for (Viewer viewer: viewers) {
                 this.add(viewer.attributes());
 

@@ -524,9 +524,17 @@ public class WsPanelHandler implements WsFrameHandler {
         jsonObject.key("query_id").value(uniqueID);
 
         if (query.equalsIgnoreCase("panelSettings")) {
-            jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
-            jsonObject.key("botName").value(PhantomBot.instance().getBotName());
-            jsonObject.key("displayName").value(TwitchCache.instance().getDisplayName());
+            if (PhantomBot.instance().getChannelName().isBlank() && PhantomBot.instance().getBotName().isBlank()) {
+                jsonObject.key("error").value("Bot setup not completed, please go back to <a href=\"/setup/\" style=\"color: blue\">Bot Setup</a>, set and save the channel name, then click the link for OAuth setup");
+            } else if (PhantomBot.instance().getChannelName().isBlank()) {
+                jsonObject.key("error").value("Bot setup not completed, please go back to <a href=\"/setup/\" style=\"color: blue\">Bot Setup</a>, then set and save the channel name");
+            } else if (PhantomBot.instance().getBotName().isBlank()) {
+                jsonObject.key("error").value("Bot setup not completed, please go back to <a href=\"/oauth/\" style=\"color: blue\">OAuth Setup</a>, then complete OAuth setup");
+            } else {
+                jsonObject.key("channelName").value(PhantomBot.instance().getChannelName());
+                jsonObject.key("botName").value(PhantomBot.instance().getBotName());
+                jsonObject.key("displayName").value(TwitchCache.instance().getDisplayName());
+            }
         } else if (query.equalsIgnoreCase("sslSettings")) {
             jsonObject.key("sslEnabled").value(HTTPWSServer.instance().isSsl());
             jsonObject.key("autoSSL").value(HTTPWSServer.instance().isAutoSsl());

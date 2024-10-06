@@ -799,13 +799,17 @@ $(function () {
 
             if (message.id !== undefined) {
                 if (message.id === 'initLoad.panelSettings') {
-                    helpers.isAuth = true;
-                    window.panelSettings.channelName = message.channelName;
-                    window.panelSettings.botName = message.botName;
-                    window.panelSettings.displayName = message.displayName;
-                    helpers.loadCurrentUserInfo();
-                    $.loadPage('dashboard', 'dashboard.html');
-                    helpers.getUserLogo();
+                    if (message.error !== undefined && message.error !== null) {
+                        toastr.error(message.error, '', {timeOut: 0, extendedTimeOut: 0, tapToDismiss: false});
+                    } else {
+                        helpers.isAuth = true;
+                        window.panelSettings.channelName = message.channelName;
+                        window.panelSettings.botName = message.botName;
+                        window.panelSettings.displayName = message.displayName;
+                        helpers.loadCurrentUserInfo();
+                        $.loadPage('dashboard', 'dashboard.html');
+                        helpers.getUserLogo();
+                    }
                 }
             }
 
