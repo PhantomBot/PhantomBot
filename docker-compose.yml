@@ -19,7 +19,7 @@
 # docker compose up --pull always -d
 #
 # To bring up the container, and also bring up ouroboros for auto-updates
-# docker compose up --pull always --profile ouroboros -d
+# docker compose --profile ouroboros up --pull always -d
 
 services:
   # Service name, used internally by Docker Compose. Can be changed but does not matter
