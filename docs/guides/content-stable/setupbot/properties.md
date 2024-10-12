@@ -318,6 +318,14 @@ if `true`, the bots current discord activity (_playing foo_) is restored on star
 
 &nbsp;
 
+#### discord_guildid
+
+Data Type: _Long_
+
+if `0`, the bot will print detected discord guild ids to console on startup. if set to a valid guild id, the bot will use that guild for all discord functions. if unset, the first found guild is used. default `unset`
+
+&nbsp;
+
 ### StreamElements
 #### streamelementsid
 
