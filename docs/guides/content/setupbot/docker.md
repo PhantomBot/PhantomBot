@@ -31,7 +31,7 @@ The fastest way to get online with Docker is using Compose
 3. Start the bot
     * _NOTE: These commands must be run from the folder containing the `docker-compose.yml` file_
     * To launch the bot only: `docker compose up --pull always -d`
-    * To launch the bot and enable _ouroboros_ for automatic updates: `docker compose up --pull always --profile ouroboros -d`
+    * To launch the bot and enable _ouroboros_ for automatic updates: `docker compose --profile ouroboros up --pull always -d`
 4. Perform first-run setup
     * You can access the bot to perform setup and use the panel by going to `http://ip_or_domain:25000`
       * List all running PhantomBot containers with `docker ps --filter ancestor=ghcr.io/phantombot/phantombot`
@@ -76,7 +76,7 @@ The example demonstrates
 * Setting the `NOTIFIERS` so _ouroboros_ posts to a Discord webhook when an update is installed
 * Setting the `TZ` so that _ouroboros_ runs the `CRON` relative to the `America/New_York` timezone, and also uses that timezone when posting the update notification to the `NOTIFIERS`
 
-This example configuration can be deployed by running `docker compose up --pull always --profile ouroboros -d`
+This example configuration can be deployed by running `docker compose --profile ouroboros up --pull always -d`
 * _coolperson_ can access their bot to perform setup and use the panel by going to `http://ip_or_domain:25000`
 * _awesomeperson_ can access their bot to perform setup and use the panel by going to `http://ip_or_domain:25001`
 * The administrator will have to provide the initial panel username/password by reading the docker logs
@@ -180,4 +180,4 @@ After some updates, there may be an update to the OAuth scopes, which requires m
 To manually pull an update:
   * _NOTE: These commands must be run from the folder containing the `docker-compose.yml` file_
   * Update and launch the bot only: `docker compose up --pull always -d`
-  * Update and launch the bot and enable _ouroboros_ for automatic updates: `docker compose up --pull always --profile ouroboros -d`
+  * Update and launch the bot and enable _ouroboros_ for automatic updates: `docker compose --profile ouroboros up --pull always -d`

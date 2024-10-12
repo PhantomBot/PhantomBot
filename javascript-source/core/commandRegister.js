@@ -628,8 +628,11 @@
      * @param {String[]} args
      */
     function getSubCommandFromArguments(command, args) {
+        if (command === undefined || command === null) {
+            command = '';
+        }
         command = $.jsString(command).toLowerCase();
-        if (!commandExists(command) || args[0] === undefined) {
+        if (!commandExists(command) || args === undefined || args === null || args[0] === undefined || args[0] === null) {
             return '';
         } else {
             var subCommand = args[0].toLowerCase();
