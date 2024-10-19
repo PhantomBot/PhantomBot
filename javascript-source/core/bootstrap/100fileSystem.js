@@ -51,6 +51,30 @@
         }
         return lines;
     }
+
+    /**
+     * @function readFileRandLine
+     * @export $
+     * @param {string} path
+     * @returns {String}
+     */
+    function readFileRandLine(path) {
+        if (!fileExists(path)) {
+            return '';
+        }
+
+        if (invalidLocation(path)) {
+            $.consoleLn('[' + $.findCaller() + '] Blocked readFileRandLine() target outside of validPaths: ' + path);
+            return '';
+        }
+
+        try {
+            return Packages.com.gmt2001.JSFileSystem.ReadFileRandLine($.javaString(path));
+        } catch (e) {
+            $.log.error('[' + $.findCaller() + '] Failed to open \'' + path + '\': ' + e);
+        }
+    }
+
     /**
      * @function readFileString
      * @export $
@@ -300,6 +324,7 @@
     $.moveFile = moveFile;
     $.moveRenameFile = moveRenameFile;
     $.readFile = readFile;
+    $.readFileRandLine = readFileRandLine;
     $.readFileString = readFileString;
     $.saveArray = saveArray;
     $.touchFile = touchFile;

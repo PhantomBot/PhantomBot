@@ -84,7 +84,7 @@
      * @formula (readfilerand filename:str) random line of the specified file
      * @labels twitch discord noevent file
      * @notes files will be read from the addons folder, or a subfolder therein specified by the filename parameter
-     * @notes file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed.
+     * @notes file contents are returned with parenthesis `( )` escaped, preventing command tags in the files from being processed.
      * Use `(unescape (readfilerand filename))` to enable processing the returned tags
      */
     function readfilerand(args) {
@@ -94,9 +94,8 @@
             if (!$.fileExists(fileName)) {
                 return {result: $.lang.get('customcommands.file.404', fileName)};
             }
-            let temp = $.readFile(fileName);
             return {
-                result: $.randElement(temp) || '',
+                result: $.readFileRandLine(fileName),
                 cache: false
             };
         }

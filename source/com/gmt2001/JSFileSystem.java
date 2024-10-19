@@ -16,7 +16,9 @@
  */
 package com.gmt2001;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
@@ -27,6 +29,7 @@ import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 /**
@@ -90,6 +93,41 @@ public final class JSFileSystem {
         }
 
         return Files.readString(Paths.get(path));
+    }
+
+    /**
+     * Reads a single randomly chosen line from an file into a string
+     *
+     * @param path The path to the file to read
+     * @return A randomly chosen line from the file; {@code null} if not an allowed location
+     * @throws IOException If an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read
+     */
+    public static String ReadFileRandLine(String path) throws IOException {
+        if (!PathValidator.isValidPathScript(path)) {
+            return null;
+        }
+
+        final File file = new File(path);
+        String line = "";
+        if (file.length() == 0L) {
+            return line;
+        }
+
+        try (RandomAccessFile rFile = new RandomAccessFile(file, "r")) { 
+            final Random random = new Random();
+            final long rndPos = random.nextLong(file.length());
+            rFile.seek(rndPos);
+            rFile.readLine(); //Disregard this partial line to ensure we start reading at a line beginning
+            line = rFile.readLine();
+
+            // EoF reached seek to start of file, read first line fully
+            if (line == null) {
+                rFile.seek(0);
+                line = rFile.readLine();
+            }
+
+            return line;
+        }
     }
 
     /**
