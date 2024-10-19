@@ -1323,7 +1323,7 @@ Defined in script: _./javascript-source/core/transformers/file.js_
 
 _NOTE: files will be read from the addons folder, or a subfolder therein specified by the filename parameter_
 
-_NOTE: file contents are returned with parenthasis `( )` escaped, preventing command tags in the files from being processed._
+_NOTE: file contents are returned with parenthesis `( )` escaped, preventing command tags in the files from being processed._
 
 _Use `(unescape (readfilerand filename))` to enable processing the returned tags_
 
