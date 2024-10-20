@@ -399,7 +399,6 @@ public final class PhantomBot implements Listener {
     }
 
     private void initChat() {
-        this.validateOAuth();
         if (CaselessProperties.instance().getProperty("channel", "").isBlank()) {
             if (ConfigurationManager.newSetup()) {
                 if (!ConfigurationManager.setupStarted()) {
