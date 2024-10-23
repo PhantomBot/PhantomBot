@@ -725,8 +725,8 @@ jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize < 1024, \
 # Example:
 #   jdk.tls.disabledAlgorithms=MD5, SSLv3, DSA, RSA keySize < 2048, \
 #       rsa_pkcs1_sha1, secp224r1
-jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1, RC4, DES, MD5withRSA, \
-    DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL
+jdk.tls.disabledAlgorithms=SSLv3, TLSv1, TLSv1.1, DTLSv1.0, RC4, DES, \
+    MD5withRSA, DH keySize < 1024, EC keySize < 224, 3DES_EDE_CBC, anon, NULL
 
 #
 # Legacy algorithms for Secure Socket Layer/Transport Layer Security (SSL/TLS)
@@ -972,6 +972,23 @@ jdk.xml.dsig.secureValidationPolicy=\
     noDuplicateIds,\
     noRetrievalMethodLoops
 
+#
+# Support for the here() function
+#
+# This security property determines whether the here() XPath function is
+# supported in XML Signature generation and verification.
+#
+# If this property is set to false, the here() function is not supported.
+# Generating an XML Signature that uses the here() function will throw an
+# XMLSignatureException. Validating an existing XML Signature that uses the
+# here() function will also throw an XMLSignatureException.
+#
+# The default value for this property is true.
+#
+# Note: This property is currently used by the JDK Reference implementation.
+# It is not guaranteed to be examined and used by other implementations.
+#
+#jdk.xml.dsig.hereFunctionSupported=true
 
 #
 # Deserialization JVM-wide filter factory
