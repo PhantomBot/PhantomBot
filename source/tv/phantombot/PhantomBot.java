@@ -989,9 +989,7 @@ public final class PhantomBot implements Listener {
         /* Gonna need a way to pass this to all channels */
         if (this.getSession() != null) {
             this.getSession().close();
-        }
-
-        if (this.tmi != null) {
+        } else if (this.tmi != null) {
             this.tmi.shutdown();
         }
 
