@@ -400,10 +400,10 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * @param reason The textual close reason
      */
     public void onClose(int code, String reason) {
-        com.gmt2001.Console.warn.println("Connection to TMI closed [" + code + ", " + reason + "]");
         this.submit(new TMIMessage(TMIMessageType.CLOSE));
 
         if (!this.closing) {
+            com.gmt2001.Console.warn.println("Connection to TMI closed [" + code + ", " + reason + "]");
             PhantomBot.instance().getSession().reconnect();
         }
     }
@@ -425,7 +425,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
 
     @Override
     public void onClose() {
-        this.onClose(0, "channel closed");
+        this.onClose((this.closing ? 1000 : 0), "channel closed");
     }
 
     /**
@@ -451,6 +451,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
      * Closes the connection normally. Exceptions are discarded
      */
     public void shutdown() {
+        this.closing = true;
         try {
             this.sendRaw("QUIT");
         } catch (Exception e) {
