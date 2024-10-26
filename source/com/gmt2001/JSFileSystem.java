@@ -126,7 +126,7 @@ public final class JSFileSystem {
                 line = rFile.readLine();
             }
 
-            return line;
+            return new String(line.getBytes("ISO-8859-1"), "UTF-8");
         }
     }
 
