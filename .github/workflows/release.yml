@@ -157,6 +157,7 @@ jobs:
     - name: Download Artifacts
       uses: actions/download-artifact@v4
       with:
+        pattern: docs*
         path: /tmp/docartifacts
     - name: Copy Files
       run: for d in /tmp/docartifacts/docs*; do while read p; do echo ::group::update $p; rm -rf $p; cp -rv $d/$p $p; echo ::endgroup::; done < $d/paths.txt; done
