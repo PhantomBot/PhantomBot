@@ -71,6 +71,8 @@
             return;
         }
 
+        clear();
+
         if (max) {
             maxEntries = parseInt(max);
         }
@@ -97,14 +99,8 @@
 
     function openRaffle(maxEntries, cost, a, user) {
         $.say($.lang.get('ticketrafflesystem.raffle.opened', maxEntries, $.getPointsString(cost), a));
-        lastWinners = [];
+        
         raffleStatus = true;
-        hasDrawn = false;
-        $.inidb.RemoveFile('ticketsList');
-        $.inidb.RemoveFile('entered');
-        $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
-        entries = "";
-        entries = [];
 
         if (messageInterval !== 0) {
             interval = setInterval(function () {
@@ -195,6 +191,12 @@
     function clear() {
         clearInterval(interval);
         clearInterval(saveStateInterval);
+
+        lastWinners = [];
+        $.inidb.RemoveFile('ticketsList');
+        $.inidb.RemoveFile('entered');
+        $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
+        entries = [];
 
         raffleStatus = false;
         followers = false;
@@ -554,11 +556,6 @@
              */
             if ($.equalsIgnoreCase(action, 'reset')) {
                 clear();
-                $.inidb.RemoveFile('ticketsList');
-                $.inidb.RemoveFile('entered');
-                $.inidb.set('traffleresults', 'ticketRaffleEntries', 0);
-                entries = [];
-                saveState();
                 if (!$.equalsIgnoreCase(sender, $.botName)) {
                     $.say($.whisperPrefix(sender) + $.lang.get('ticketrafflesystem.reset'));
                 }
