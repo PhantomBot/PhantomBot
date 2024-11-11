@@ -33,6 +33,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -404,6 +406,23 @@ public class HTTPAuthenticatedHandler implements HttpRequestHandler {
             com.gmt2001.Console.debug.println("500" + req.method().asciiName() + ": lang " + req.headers().get("lang-path"));
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, j.getJSONArray("errors").getJSONObject(0).getString("detail").getBytes(Charset.forName("UTF-8")), "plain"));
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authHandler);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HTTPAuthenticatedHandler other = (HTTPAuthenticatedHandler) obj;
+        return Objects.equals(authHandler, other.authHandler);
     }
 
 }

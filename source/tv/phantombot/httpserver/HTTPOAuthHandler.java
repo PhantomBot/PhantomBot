@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 
@@ -139,6 +141,25 @@ public class HTTPOAuthHandler implements HttpRequestHandler {
 
     public boolean validateBroadcasterToken(String token) {
         return this.token.equals(token);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authHandler, authHandlerBroadcaster, token);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HTTPOAuthHandler other = (HTTPOAuthHandler) obj;
+        return Objects.equals(authHandler, other.authHandler)
+                && Objects.equals(authHandlerBroadcaster, other.authHandlerBroadcaster)
+                && Objects.equals(token, other.token);
     }
 
 }

@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import tv.phantombot.PhantomBot;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Provides a {@link HttpAuthenticationHandler} that implements password and token-based authentication
@@ -123,5 +124,22 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
         String auth2 = headers.get("webauth");
 
         return (auth1 != null && (auth1.equals(password) || auth1.equals("oauth:" + password))) || (auth2 != null && auth2.equals(token));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token, password);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HttpSharedTokenOrPasswordAuthenticationHandler other = (HttpSharedTokenOrPasswordAuthenticationHandler) obj;
+        return Objects.equals(token, other.token) && Objects.equals(password, other.password);
     }
 }

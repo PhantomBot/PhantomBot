@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * An IRCv3 formatted message from TMI
@@ -444,6 +445,33 @@ public final class TMIMessage {
          */
         public int length() {
             return (this.end - this.start) + 1;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getEnclosingInstance().hashCode();
+            result = prime * result + Objects.hash(start, end);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            EmoteLocation other = (EmoteLocation) obj;
+            if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+                return false;
+            return start == other.start && end == other.end;
+        }
+
+        private TMIMessage getEnclosingInstance() {
+            return TMIMessage.this;
         }
     }
 }

@@ -17,6 +17,7 @@
 package com.gmt2001.datastore;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -260,5 +261,26 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(tableName, SECTION, VARIABLE);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SectionVariableValueTable other = (SectionVariableValueTable) obj;
+        return Objects.equals(tableName, other.tableName) && Objects.equals(SECTION, other.SECTION)
+                && Objects.equals(VARIABLE, other.VARIABLE);
     }
 }
