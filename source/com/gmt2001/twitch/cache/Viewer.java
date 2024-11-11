@@ -18,6 +18,7 @@
 package com.gmt2001.twitch.cache;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Contains information about a specific viewer in a {@link ViewerCache}
@@ -356,5 +357,22 @@ public final class Viewer {
      */
     public boolean vip() {
         return this.vip;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Viewer other = (Viewer) obj;
+        return Objects.equals(id, other.id);
     }
 }

@@ -19,6 +19,7 @@ package tv.phantombot.cache;
 import com.gmt2001.TwitchAPIv5;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -231,6 +232,33 @@ public class TwitchTeamsCache implements Runnable {
          */
         public JSONObject getObject() {
             return obj;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getEnclosingInstance().hashCode();
+            result = prime * result + Objects.hash(obj);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Team other = (Team) obj;
+            if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+                return false;
+            return Objects.equals(this.obj, other.obj);
+        }
+
+        private TwitchTeamsCache getEnclosingInstance() {
+            return TwitchTeamsCache.this;
         }
     }
 }

@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
@@ -212,5 +213,22 @@ public class Script {
         doDestroyables();
         od.setDisconnected(true);
         killed = true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Script other = (Script) obj;
+        return Objects.equals(file, other.file);
     }
 }

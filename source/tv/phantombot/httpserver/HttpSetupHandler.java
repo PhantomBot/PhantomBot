@@ -34,6 +34,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -186,5 +188,23 @@ public class HttpSetupHandler implements HttpRequestHandler {
             com.gmt2001.Console.debug.println("405");
             HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.METHOD_NOT_ALLOWED, js.toString(), "json"));
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authHandler, authHandlerToken, token);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HttpSetupHandler other = (HttpSetupHandler) obj;
+        return Objects.equals(authHandler, other.authHandler)
+                && Objects.equals(authHandlerToken, other.authHandlerToken) && Objects.equals(token, other.token);
     }
 }

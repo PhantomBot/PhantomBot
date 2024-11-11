@@ -32,6 +32,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
@@ -394,5 +395,23 @@ public class WsYTHandler implements WsFrameHandler {
 
     public void sendJSONToAll(String jsonString) {
         WebSocketFrameHandler.broadcastWsFrame("/ws/ytplayer", WebSocketFrameHandler.prepareTextWebSocketResponse(jsonString));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authHandler, currentState, clientConnected, bufferCounter);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WsYTHandler other = (WsYTHandler) obj;
+        return Objects.equals(authHandler, other.authHandler) && currentState == other.currentState
+                && clientConnected == other.clientConnected && bufferCounter == other.bufferCounter;
     }
 }

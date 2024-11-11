@@ -18,6 +18,7 @@ package tv.phantombot.panel;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.json.JSONException;
@@ -264,5 +265,22 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
      */
     public void sendMacro(String macroJson) {
         sendJSONToAll(macroJson);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authHandler);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WsAlertsPollsHandler other = (WsAlertsPollsHandler) obj;
+        return Objects.equals(authHandler, other.authHandler);
     }
 }

@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Objects;
 
 import com.gmt2001.httpwsserver.HttpServerPageHandler;
 import com.gmt2001.security.Digest;
@@ -200,5 +201,24 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(realm, user, pass, allowPaneluser, loginUri);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        HttpBasicAuthenticationHandler other = (HttpBasicAuthenticationHandler) obj;
+        return Objects.equals(realm, other.realm) && Objects.equals(user, other.user)
+                && Objects.equals(pass, other.pass) && allowPaneluser == other.allowPaneluser
+                && Objects.equals(loginUri, other.loginUri);
     }
 }

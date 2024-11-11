@@ -17,6 +17,7 @@
 package com.gmt2001;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -167,6 +168,34 @@ public class JSTimers {
                     }
                 }
             }
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getEnclosingInstance().hashCode();
+            result = prime * result + Objects.hash(name, callback, isInterval);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            JSTimer other = (JSTimer) obj;
+            if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+                return false;
+            return Objects.equals(name, other.name) && Objects.equals(callback, other.callback)
+                    && isInterval == other.isInterval;
+        }
+
+        private JSTimers getEnclosingInstance() {
+            return JSTimers.this;
         }
     }
 }

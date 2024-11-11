@@ -27,6 +27,8 @@ import tv.phantombot.PhantomBot;
 import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
 
+import java.util.Objects;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -256,5 +258,25 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(readOnlyToken, readWriteToken, maxAttempts, authenticatedCallback, allowPaneluser);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WsSharedRWTokenAuthenticationHandler other = (WsSharedRWTokenAuthenticationHandler) obj;
+        return Objects.equals(readOnlyToken, other.readOnlyToken)
+                && Objects.equals(readWriteToken, other.readWriteToken) && maxAttempts == other.maxAttempts
+                && Objects.equals(authenticatedCallback, other.authenticatedCallback)
+                && allowPaneluser == other.allowPaneluser;
     }
 }
