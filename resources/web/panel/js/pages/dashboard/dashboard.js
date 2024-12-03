@@ -57,15 +57,27 @@ $(function () {
 
                 // This should never be null unless the user removes the DB table.
                 if (events !== null) {
+                    for (let i = 0; i < events.length; i++) {
+						if (isNaN(events[i].date)) {
+							try {
+								events[i]._date = Date.parse(events[i].date);
+							} catch (e) {
+								helpers.logError(e);
+								events[i]._date = 0;
+							}
+						} else {
+							events[i]._date = events[i].date;
+						}
+					}
 
                     // Sort events if needed.
                     if (helpers.isReverseSortEvents) {
                         events.sort(function (a, b) {
-                            return b.date - a.date;
+                            return b._date - a._date;
                         });
                     } else {
                         events.sort(function (a, b) {
-                            return a.date - b.date;
+                            return a._date - b._date;
                         });
                     }
 
