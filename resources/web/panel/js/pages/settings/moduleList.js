@@ -81,7 +81,6 @@ $(run = function () {
             let table = $('#twitchModuleTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': true,
                 'data': twitchTable,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 1}
@@ -180,7 +179,6 @@ $(run = function () {
             let table = $('#discordModuleTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': true,
                 'data': discordTable,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 1}

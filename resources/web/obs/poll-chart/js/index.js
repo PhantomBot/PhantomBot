@@ -172,7 +172,7 @@ $(function() {
      * @param updateColor If the chart colors should be updated.
      * @return The config.
      */
-    const getChartConfig = function(obj, updateColor) {
+    const getChartConfig = function(obj, updateColor, command) {
         const config = {
             'type': 'pie',
             'data': {

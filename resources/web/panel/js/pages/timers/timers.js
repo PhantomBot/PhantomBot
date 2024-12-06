@@ -173,7 +173,6 @@
                 let table = $groupTable.DataTable({
                     'searching': true,
                     'autoWidth': false,
-                    'lengthChange': false,
                     'data': tableData,
                     'columnDefs': [
                         {'className': 'default-table', 'width': '70px', 'orderable': false, 'targets': 2},
@@ -342,7 +341,6 @@
             let table = $messagesTable.DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'order': [[1, 'asc']],
                 'columnDefs': [
