@@ -116,7 +116,6 @@ $(function () {
             userPermissionTable.DataTable({
                 'searching': false,
                 'autoWidth': false,
-                'lengthChange': false,
                 'bPaginate': true,
                 'pageLength': 6,
                 'data': [],
@@ -337,7 +336,6 @@ $(function () {
             let table = panelUsersTable.DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': [6, 7]},

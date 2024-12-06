@@ -224,7 +224,6 @@ $(function () {
         let table = $('#langTable').DataTable({
             'searching': true,
             'autoWidth': false,
-            'lengthChange': false,
             'paging': false,
             'data': tableData,
             'columnDefs': [

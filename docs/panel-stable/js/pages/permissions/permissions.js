@@ -72,7 +72,6 @@ $(run = function () {
         let table = $('#permissionsTable').DataTable({
             'searching': true,
             'autoWidth': false,
-            'lengthChange': false,
             'data': tableData,
             'columnDefs': [
                 {'className': 'default-table', 'orderable': false, 'targets': 2},

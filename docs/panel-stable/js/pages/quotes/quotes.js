@@ -71,7 +71,6 @@ $(run = function () {
             let table = $('#quotesTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 5},
