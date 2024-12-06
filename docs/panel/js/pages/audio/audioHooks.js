@@ -73,7 +73,6 @@ $(run = function () {
             let table = $('#audioHooksTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 1}
@@ -158,7 +157,6 @@ $(run = function () {
             let table = $('#audioHookCommandsTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 2},

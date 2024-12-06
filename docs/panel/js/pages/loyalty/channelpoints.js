@@ -153,7 +153,6 @@ $(function () {
                 let table = $('#channelpointsRewardsTable').DataTable({
                     'searching': true,
                     'autoWidth': false,
-                    'lengthChange': true,
                     'ordering': true,
                     'order': [[0, 'asc']],
                     'data': tableData,
@@ -330,7 +329,6 @@ $(function () {
                         let table = $('#channelpointsRedeemablesTable').DataTable({
                             'searching': true,
                             'autoWidth': false,
-                            'lengthChange': true,
                             'ordering': true,
                             'order': [[0, 'asc']],
                             'data': tableData,

@@ -39,7 +39,6 @@ $(function () {
         $('#leaderboard-points').DataTable({
             'searching': true,
             'autoWidth': false,
-            'lengthChange': false,
             'data': tableData,
             'pageLength': 15,
             'columnDefs': [
@@ -79,7 +78,6 @@ $(function () {
         $('#leaderboard-time').DataTable({
             'searching': true,
             'autoWidth': false,
-            'lengthChange': false,
             'data': tableData,
             'pageLength': 15,
             'columnDefs': [
