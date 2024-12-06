@@ -52,7 +52,6 @@ $(function () {
             let table = $externalCommandsTable.DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {

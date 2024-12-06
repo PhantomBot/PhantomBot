@@ -66,7 +66,6 @@ $(run = function () {
             let table = $('#greetingsTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'width': '5%', 'orderable': false, 'targets': 3},

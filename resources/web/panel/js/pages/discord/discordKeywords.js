@@ -64,7 +64,6 @@ $(run = function () {
             const table = $('#discordKeywordTable').DataTable({
                 'searching': true,
                 'autoWidth': false,
-                'lengthChange': false,
                 'data': tableData,
                 'columnDefs': [
                     {'className': 'default-table', 'orderable': false, 'targets': 2},

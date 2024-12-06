@@ -342,7 +342,6 @@ $(function () {
                 const table = $('#discordCustomCommandsTable').DataTable({
                     'searching': true,
                     'autoWidth': false,
-                    'lengthChange': false,
                     'data': tableData,
                     'columnDefs': [
                         {'className': 'default-table', 'orderable': false, 'targets': 4},
