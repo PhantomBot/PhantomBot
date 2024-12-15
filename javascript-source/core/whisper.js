@@ -57,7 +57,7 @@
      * @returns {string}
      */
     function whisperPrefix(username, force) {
-        if (username.toLowerCase() === $.botName.toLowerCase()) {
+        if ($.equalsIgnoreCase(username, $.botName)) {
             return '';
         }
         if (whisperMode || force) {
