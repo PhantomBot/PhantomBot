@@ -22,7 +22,8 @@ REM PhantomBot Service Restart - Windows
 REM
 REM To enable this script:
 REM % Stop the bot
-REM % Add the following line to botlogin.txt: restartcmd=C:\path\to\restartbot.bat
+REM % Add the following line to botlogin.txt: restartcmd=C\:\\path\\to\\restartbot.bat
+REM % Note that the `:` and `\` characters must be escaped by adding an extra `\` in front of them
 REM % Replace the path as appropriate, the full path must be used
 REM % Start the bot
 REM
