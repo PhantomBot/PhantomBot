@@ -64,6 +64,7 @@ import discord4j.core.spec.MessageCreateFields;
 import discord4j.core.spec.MessageCreateSpec;
 import discord4j.core.spec.MessageEditSpec;
 import discord4j.core.spec.RoleCreateSpec;
+import discord4j.core.util.OrderUtil;
 import discord4j.rest.http.client.ClientException;
 import discord4j.rest.json.response.ErrorResponse;
 import discord4j.rest.util.Color;
@@ -819,12 +820,16 @@ public class DiscordUtil {
      * Search for Discord roles by display name or mention and return a Flux
      * <br />
      * Matching is performed case insensitively
+     * <br />
+     * The Flux is sorted so the roles are returned in permission order,
+     * as displayed in the Discord roles list of the Guild settings.
+     * The sort starts with the cloest role to @everyone, and then continues up
      *
      * @param roleNames The role names or mentions to find
      * @return a Flux containing matching roles
      */
     public Flux<Role> getRolesAsync(String... roleNames) {
-        Flux<Role> roles = DiscordAPI.getGuild().getRoles();
+        Flux<Role> roles = DiscordAPI.getGuild().getRoles().transform(OrderUtil::orderRoles);
 
         if (PhantomBot.getEnableDebugging()) {
             com.gmt2001.Console.debug.println(roleNames);
