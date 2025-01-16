@@ -815,6 +815,41 @@ public class DiscordUtil {
         }
     }
 
+    /**
+     * Search for Discord roles by display name or mention and return a Flux
+     * <br />
+     * Matching is performed case insensitively
+     *
+     * @param roleNames The role names or mentions to find
+     * @return a Flux containing matching roles
+     */
+    public Flux<Role> getRolesAsync(String... roleNames) {
+        Flux<Role> roles = DiscordAPI.getGuild().getRoles();
+
+        if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(roleNames);
+            com.gmt2001.Console.debug.println(roles.count().block());
+        }
+
+        Flux<Role> filteredRoles = roles.filter(role -> {
+            String targetRoleName = role.getName();
+            String targetRoleMention = role.getMention();
+            for (String roleName: roleNames) {
+                if (targetRoleName.equalsIgnoreCase(roleName) || targetRoleMention.equalsIgnoreCase(roleName)) {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+        if (PhantomBot.getEnableDebugging()) {
+            com.gmt2001.Console.debug.println(filteredRoles.count().block());
+        }
+
+        return filteredRoles;
+    }
+
     public Role getRole(String roleName) {
         return this.getRoleAsync(roleName).doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).block();
     }
@@ -826,20 +861,7 @@ public class DiscordUtil {
      * @return
      */
     public Mono<Role> getRoleAsync(String roleName) {
-        Flux<Role> roles = DiscordAPI.getGuild().getRoles();
-
-        if (PhantomBot.getEnableDebugging()) {
-            com.gmt2001.Console.debug.println(roleName);
-            com.gmt2001.Console.debug.println(roles.count().block());
-        }
-
-        Flux<Role> filteredRoles = roles.filter(role -> role.getName().equalsIgnoreCase(roleName) || role.getMention().equalsIgnoreCase(roleName));
-
-        if (PhantomBot.getEnableDebugging()) {
-            com.gmt2001.Console.debug.println(filteredRoles.count().block());
-        }
-
-        return filteredRoles.take(1)
+        return this.getRolesAsync(roleName).take(1)
                             .singleOrEmpty()
                             .switchIfEmpty(Mono.error(new NoSuchElementException("Unable to find roleName [" + roleName + "]")))
                             .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e));
@@ -875,9 +897,7 @@ public class DiscordUtil {
     }
 
     public Mono<Role[]> getRoleObjectsAsync(String... roles) {
-        return Mono.fromCallable(() -> {
-            return Flux.fromArray(roles).map(r -> this.getRoleAsync(r).block()).toStream().toArray(i -> new Role[i]);
-        });
+        return Mono.fromCallable(() -> this.getRolesAsync(roles).toStream().toArray(i -> new Role[i]));
     }
 
     /**
