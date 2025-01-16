@@ -123,14 +123,14 @@
         let roles = $.discordAPI.getGuild().getRoles().replay();
 
         if (autoSetPermissions === true) {
-            var keys = $.inidb.GetKeyList('groups', ''),
+            let keys = $.inidb.GetKeyList('groups', ''),
                 group = '',
                 i;
 
             for (i in keys) {
                 group = $.getIniDbString('groups', keys[i]).trim();
 
-                var hasTheRole = false;
+                let hasTheRole = false;
 
                 try {
                     hasTheRole = roles.filter(function(role) {
@@ -147,7 +147,7 @@
         }
 
         if (autoSetRanks === true) {
-            var keys = $.inidb.GetKeyList('ranksMapping', ''),
+            let keys = $.inidb.GetKeyList('ranksMapping', ''),
                 rank = '',
                 i;
 
@@ -157,7 +157,7 @@
             for (i in keys) {
                 rank = $.getIniDbString('ranksMapping', keys[i]).trim();
 
-                var hasTheRole = false;
+                let hasTheRole = false;
 
                 try {
                     hasTheRole = roles.filter(function(role) {
