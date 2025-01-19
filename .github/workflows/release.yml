@@ -523,10 +523,39 @@ jobs:
         VERSION: ${{ needs.workflowvars.outputs.version }}
       run: |
         curl -X POST $URL -H "x-access-token: $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" -d "{\"type\":\"stable_docker\",\"version\":\"$VERSION\"}"
+  set_release:
+    name: Set Latest Release
+    runs-on: ubuntu-latest
+    needs: [build, docker]
+    steps:
+    - name: Set latest Release
+      uses: actions/github-script@v7
+      with:
+        script: |
+          let {status: getStatus, data} = await octokit.rest.repos.getReleaseByTag({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag: context.ref.substring(context.ref.lastIndexOf("/") + 1),
+          });
+
+          if (getStatus !== 200) {
+            core.error("Failed to get the release..." + getStatus);
+          } else {
+            let {status: updateStatus} = await octokit.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: data.id,
+              make_latest: 'true'
+            });
+
+            if (updateStatus !== 200) {
+              core.error("Failed to update the release..." + updateStatus);
+            }
+          }
   cleanup:
     name: Cleanup Cache
     runs-on: ubuntu-latest
-    needs: [dockertest, docker]
+    needs: [dockertest, docker, set_release]
     if: always()
     steps:
     - name: Cleanup Cache

@@ -1548,7 +1548,7 @@ public final class PhantomBot implements Listener {
 
             return zoneId;
         } catch (DateTimeException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
+            com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", false));
             com.gmt2001.Console.err.println("Invalid TimeZone. Please make sure your TimeZone ID is formatted according to the 'TZ identifier' column on this Wikipedia page: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones");
             return ZoneId.systemDefault();
         }

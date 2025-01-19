@@ -84,7 +84,7 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
             Files.write(Paths.get(LOG_PATHS.get(item.type), this.logFileTimestamp() + ".txt"), item.lines,
                     StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND, StandardOpenOption.WRITE);
         } catch (IOException ex) {
-            RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item));
+            RollbarProvider.instance().error(ex, Collections.singletonMap("LogItem", item.toString()));
             ex.printStackTrace(System.err);
         }
         this.subscription.request(1);
@@ -115,6 +115,28 @@ public final class Logger extends SubmissionPublisher<Logger.LogItem> implements
         private LogItem(LogType type, List<String> lines) {
             this.type = type;
             this.lines = Collections.unmodifiableList(lines);
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("LogItem[");
+            sb.append(type.name());
+            sb.append("] ");
+
+            if (this.lines == null) {
+                sb.append(">>NULL");
+            } else {
+                boolean first = true;
+                for (String line: lines) {
+                    if (!first) {
+                        sb.append("\\n");
+                    }
+                    first = false;
+                    sb.append(line);
+                }
+            }
+
+            return sb.toString();
         }
     }
 

@@ -53,8 +53,18 @@
             return;
         }
 
-        if (s.match(/\(name\)/g)) {
-            s = $.replace(s, '(name)', follower);
+        if (s.match(/\(name\)/)) {
+            let name = $.viewer.getByLogin(follower);
+            if (name !== null) {
+                try {
+                    name = name.name();
+                } catch (e) {
+                    name = follower;
+                }
+            } else {
+                name = follower;
+            }
+            s = $.replace(s, '(name)', name);
         }
 
         $.discordAPI.sendMessageEmbed(channelName, new Packages.tv.phantombot.discord.util.EmbedBuilder()

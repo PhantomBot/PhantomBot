@@ -77,7 +77,17 @@
             let message = followMessage;
 
             if (message.match(/\(name\)/)) {
-                message = $.replace(message, '(name)', $.viewer.getByLogin(follower).name());
+                let name = $.viewer.getByLogin(follower);
+                if (name !== null) {
+                    try {
+                        name = name.name();
+                    } catch (e) {
+                        name = follower;
+                    }
+                } else {
+                    name = follower;
+                }
+                message = $.replace(message, '(name)', name);
             }
 
             if (message.match(/\(reward\)/)) {

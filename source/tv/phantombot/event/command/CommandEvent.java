@@ -21,6 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.gmt2001.twitch.tmi.TMIMessage;
+import com.gmt2001.twitch.tmi.processors.PrivMsgTMIProcessor;
+
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.Event;
 
@@ -41,12 +44,7 @@ public class CommandEvent extends Event {
      * @param arguments
      */
     public CommandEvent(String sender, String command, String arguments) {
-        super();
-        this.sender = sender;
-        this.command = command;
-        this.arguments = arguments;
-        this.args = this.parse();
-        this.tags = new HashMap<>();
+        this(sender, command, arguments, new HashMap<>());
     }
 
     /**
@@ -58,6 +56,13 @@ public class CommandEvent extends Event {
      * @param tags
      */
     public CommandEvent(String sender, String command, String arguments, Map<String, String> tags) {
+        super();
+        if (sender == null) {
+            throw new NullPointerException("sender");
+        }
+        if (command == null) {
+            throw new NullPointerException("command");
+        }
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;
@@ -115,6 +120,20 @@ public class CommandEvent extends Event {
         }
 
         return tmpArgs;
+    }
+
+    /**
+     * Indicates if the given message appears to be a command, defined as exclamation point {@code !} followed by any character except for a space
+     *
+     * @param message The message to check
+     * @return {@code true} if the message appears to be a command; false if nick or parameters is {@code null}, or the message does not appear to be a command
+     */
+    public static boolean isCommand(TMIMessage message) {
+        if (message.nick() == null || message.parameters() == null) {
+            return false;
+        }
+
+        return isCommand(PrivMsgTMIProcessor.stripAction(message.parameters()));
     }
 
     /**

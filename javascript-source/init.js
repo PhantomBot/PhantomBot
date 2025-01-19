@@ -644,14 +644,7 @@
              */
             $api.on($script, 'command', function (event) {
                 try {
-                    let sender;
-                    try {
-                        sender = event.getSender();
-                    } catch (e) {
-                        $.consoleLn('Rejected an invalid CommandEvent');
-                        handleException('command', e, true);
-                        return;
-                    }
+                    let sender = event.getSender();
                     let command = event.getCommand();
                     let args = event.getArgs();
                     let subCommand = $.getSubCommandFromArguments(command, args);

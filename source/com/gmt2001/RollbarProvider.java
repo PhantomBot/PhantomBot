@@ -275,6 +275,10 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
+                                if (error.getClass().equals(java.nio.channels.ClosedChannelException.class) || error.getMessage().contains("java.nio.channels.ClosedChannelException")) {
+                                    return true;
+                                }
+
                                 if (error.getClass().equals(java.net.SocketException.class) && error.getMessage().equals("Operation not permitted")) {
                                     return true;
                                 }
@@ -318,16 +322,16 @@ public final class RollbarProvider implements AutoCloseable {
                                 if (error.getClass().equals(javax.net.ssl.SSLHandshakeException.class)) {
                                     return true;
                                 }
+                                
+                                if (error.getClass().equals(io.netty.handler.ssl.NotSslRecordException.class) || error.getMessage().contains("io.netty.handler.ssl.NotSslRecordException")) {
+                                    return true;
+                                }
 
                                 if (error.getClass().equals(java.io.IOException.class) && error.getMessage().contains("Input/output error")) {
                                     return true;
                                 }
 
                                 if (error.getClass().equals(java.io.IOException.class) && error.getMessage().contains("Stream closed")) {
-                                    return true;
-                                }
-
-                                if (error.getMessage().contains("Address already in use")) {
                                     return true;
                                 }
 
