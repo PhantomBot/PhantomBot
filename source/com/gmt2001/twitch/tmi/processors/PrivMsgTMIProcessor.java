@@ -18,6 +18,7 @@ package com.gmt2001.twitch.tmi.processors;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
@@ -46,13 +47,19 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
         super("PRIVMSG");
     }
 
+    public static String stripAction(String message) {
+        if (message.charAt(0) == (char) 1 && message.startsWith("ACTION", 1)) {
+            message = "/me " + message.substring(7).trim();
+        }
+
+        return message;
+    }
+
     @Override
     protected void onMessage(TMIMessage item) {
         String message = item.parameters();
 
-        if (message.charAt(0) == (char) 1 && message.startsWith("ACTION", 1)) {
-            message = "/me " + message.substring(7).trim();
-        }
+        message = stripAction(message);
 
         com.gmt2001.Console.out.println(item.nick() + ": " + message);
 
@@ -78,25 +85,32 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
 
         final String fmessage = message;
         modEvent.mono().timeout(Duration.ofSeconds(5)).onErrorReturn(Boolean.FALSE).doOnSuccess(moderated -> {
-            if (moderated) {
-                com.gmt2001.Console.debug.println("Message was moderated");
-                return;
-            }
-            if (item.tags().containsKey("subscriber") && item.tags().get("subscriber").equals("1")) {
-                EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv",
-                        "SPECIALUSER " + item.nick() + " subscriber", item.tags()));
-            }
+            try {
+                if (moderated) {
+                    com.gmt2001.Console.debug.println("Message was moderated");
+                    return;
+                }
+                if (item.tags().containsKey("subscriber") && item.tags().get("subscriber").equals("1")) {
+                    EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv",
+                            "SPECIALUSER " + item.nick() + " subscriber", item.tags()));
+                }
 
-            if (item.tags().containsKey("bits")) {
-                EventBus.instance().postAsync(new TwitchBitsEvent(item.nick(), item.tags().get("bits"), fmessage));
-            }
+                if (item.tags().containsKey("bits")) {
+                    EventBus.instance().postAsync(new TwitchBitsEvent(item.nick(), item.tags().get("bits"), fmessage));
+                }
 
-            if (CommandEvent.isCommand(fmessage)) {
-                EventBus.instance().postAsync(CommandEvent.asCommand(item.nick(), fmessage, item.tags()));
-            }
+                if (CommandEvent.isCommand(item)) {
+                    EventBus.instance().postAsync(CommandEvent.asCommand(item.nick(), fmessage, item.tags()));
+                }
 
-            EventBus.instance()
-                    .postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags(), item));
+                EventBus.instance()
+                        .postAsync(new IrcChannelMessageEvent(this.session(), item.nick(), fmessage, item.tags(), item));
+            } catch (Exception ex) {
+                Map<String,Object> data = Map.of(
+                    "nick", item.nick() == null ? ">>null" : item.nick(),
+                    "message", fmessage == null ? ">>null" : fmessage);
+                com.gmt2001.Console.err.printStackTrace(ex, data, false);
+            }
         }).subscribe();
 
         modEvent.completedMono().doFinally(sig -> {
