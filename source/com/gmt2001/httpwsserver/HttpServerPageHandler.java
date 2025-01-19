@@ -83,6 +83,8 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
             if (cause.getMessage().contains("Content-Length value is not a number")) {
                 com.gmt2001.Console.warn.println("Unable to decode oversized POST/PUT payload");
                 com.gmt2001.Console.warn.println(cause.getMessage() + " is greater than " + Long.MAX_VALUE);
+            } else if (cause.getMessage().contains("Illegal character in request line")) {
+                com.gmt2001.Console.warn.println(cause.getMessage());
             } else {
                 com.gmt2001.Console.err.printStackTrace(cause);
             }
