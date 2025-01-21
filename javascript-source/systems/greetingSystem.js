@@ -24,13 +24,15 @@
  * - (name) The username corresponding to the target user
  */
 (function () {
-    var autoGreetEnabled = $.getSetIniDbBoolean('greetingSettings', 'autoGreetEnabled', false),
+    let autoGreetEnabled = $.getSetIniDbBoolean('greetingSettings', 'autoGreetEnabled', false),
             defaultJoinMessage = $.getSetIniDbString('greetingSettings', 'defaultJoin', '(name) joined!'),
             greetingCooldown = $.getSetIniDbNumber('greetingSettings', 'cooldown', (6 * 36e5)),
             /* 6 Hours */
             greetingQueue = new Packages.java.util.concurrent.ConcurrentLinkedQueue,
             onJoin = $.getSetIniDbBoolean('greetingSettings', 'onJoin', true),
             userSelfService = $.getSetIniDbBoolean('greetingSettings', 'userSelfService', false);
+
+    $.inidb.RemoveFile('greetingCoolDown');
 
     /**
      * @event ircChannelJoin
@@ -53,7 +55,7 @@
     });
 
     function addToQueue(sender) {
-        var rankStr = $.resolveRank(sender),
+        let rankStr = $.resolveRank(sender),
             message = $.optIniDbString('greeting', sender),
             lastUserGreeting = $.getIniDbNumber('greetingCoolDown', sender, 0),
             now = $.systemTime();
@@ -105,7 +107,7 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 command = event.getCommand(),
                 args = event.getArgs(),
                 action = args[0],
