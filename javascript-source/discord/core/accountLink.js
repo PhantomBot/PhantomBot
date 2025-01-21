@@ -20,27 +20,47 @@
  *
  */
 (function () {
-    var accounts = {},
-            interval;
+    let accounts = {};
 
     /**
      * @function resolveTwitchName
-     * @function discordToTwitch
      *
      * @export $.discord
      * @param {string} userId (snowflake)
      * @return {string or null}
      */
     function resolveTwitchName(userId) {
-        return $.getIniDbString('discordToTwitch', userId);
+        let id = $.optIniDbString('discordToTwitch', userId);
+
+        if (id.isPresent()) {
+            return $.viewer.lookupLoginById(id.get());
+        }
+
+        return null;
+    }
+
+    /**
+     * @function twitchToDiscord
+     *
+     * @export $.discord
+     * @param {string} name Twitch login name
+     * @return {string or null} (snowflake)
+     */
+    function twitchToDiscord(username) {
+        let id = $.viewer.lookupIdByLogin(username);
+
+        if (id === null) {
+            return null;
+        }
+
+        return $.getIniDbString('discordToTwitch', id);
     }
 
     /**
      * @event discordChannelCommand
      */
     $.bind('discordChannelCommand', function (event) {
-        var sender = event.getSender(),
-                user = event.getDiscordUser(),
+        let user = event.getDiscordUser(),
                 channel = event.getDiscordChannel(),
                 command = event.getCommand(),
                 mention = event.getMention(),
@@ -51,12 +71,13 @@
          * @discordcommandpath account - Checks the current account linking status of the sender.
          */
         if ($.equalsIgnoreCase(command, 'account')) {
-            var userId = event.getSenderId(),
-                    name = $.optIniDbString('discordToTwitch', userId);
+            let userId = event.getSenderId(),
+                    id = $.optIniDbString('discordToTwitch', userId);
 
             if (action === undefined) {
-                if (name.isPresent()) {
-                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.link', name.get()));
+                if (id.isPresent()) {
+                    let name = $.viewer.lookupLoginById(id.get());
+                    $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.link', name));
                 } else {
                     $.discord.say(channel, $.discord.userPrefix(mention) + $.lang.get('discord.accountlink.usage.nolink'));
                 }
@@ -65,7 +86,7 @@
                  * @discordcommandpath account link - Starts the process of linking an account. Completing this will overwrite existing links
                  */
             } else if ($.equalsIgnoreCase(action, 'link')) {
-                var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+',
+                let code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_+',
                         text = '',
                         i;
 
@@ -79,7 +100,7 @@
                     code: text
                 };
 
-                if (name.isPresent()) {
+                if (id.isPresent()) {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.relink', $.channelName, text));
                 } else {
                     $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link', $.channelName, text));
@@ -88,8 +109,13 @@
                  * @discordcommandpath account remove - Removes account links from the sender.
                  */
             } else if ($.equalsIgnoreCase(action, 'remove')) {
-                $.inidb.del('discordToTwitch', userId);
-                $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.remove'));
+                if (id.isPresent()) {
+                    $.inidb.del('discordToTwitch', userId);
+                    $.inidb.del('twitchToDiscord', id.get());
+                    $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.link.remove'));
+                } else {
+                    $.discordAPI.sendPrivateMessage(user, $.lang.get('discord.accountlink.usage.nolink'));
+                }
             }
         }
     });
@@ -98,7 +124,7 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
                 command = event.getCommand(),
                 args = event.getArgs(),
                 action = args[0];
@@ -113,12 +139,14 @@
                     return;
                 }
 
-                var keys = Object.keys(accounts),
+                let keys = Object.keys(accounts),
                         i;
 
                 for (i in keys) {
                     if (accounts[keys[i]].code === $.jsString(args[1]) && (accounts[keys[i]].time + 6e5) > $.systemTime()) {
-                        $.inidb.set('discordToTwitch', keys[i], sender.toLowerCase());
+                        let id = $.viewer.lookupIdByLogin(sender);
+                        $.inidb.set('discordToTwitch', keys[i], id);
+                        $.inidb.set('twitchToDiscord', id, keys[i]);
 
                         $.discordAPI.sendPrivateMessage(accounts[keys[i]].userObj, $.lang.get('discord.accountlink.link.success', sender.toLowerCase()));
                         delete accounts[keys[i]];
@@ -143,8 +171,8 @@
 
 
         // Interval to clear our old codes that have not yet been registered.
-        interval = setInterval(function () {
-            var keys = Object.keys(accounts),
+        setInterval(function () {
+            let keys = Object.keys(accounts),
                     i;
 
             for (i in keys) {
@@ -157,4 +185,5 @@
 
     /* Export the function to the $.discord api. */
     $.discord.resolveTwitchName = resolveTwitchName;
+    $.discord.twitchToDiscord = twitchToDiscord;
 })();

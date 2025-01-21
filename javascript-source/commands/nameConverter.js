@@ -16,8 +16,54 @@
  */
 
 (function() {
+    let tables = ['points', 'time', 'followed', 'followedDate', 'subscribed', 'greeting', 'greetingCoolDown', 'visited', 'lastseen', 'group', 'preSubGroup', 'viewerRanks', 'welcome_disabled_users'];
+
+    /**
+     * @function changeName Re-associates viewer-specific database entries to a new username
+     *
+     * @export $.nameConverter
+     * @param {string} oldName Old Twitch Name
+     * @param {string} newName New Twitch Name
+     * @return {number} 0 if not found; otherwise number of tables updated
+     */
+    function changeName(oldName, newName) {
+        if (oldName === undefined || oldName === null || newName === undefined || newName === null) {
+            return 0;
+        }
+
+        let changed = 0,
+                i;
+
+        oldName = $.jsString(oldName).toLowerCase();
+        newName = $.jsString(newName);
+        let newNameL = $.jsString(newName).toLowerCase();
+
+        // Update the default tables with that users new name if it's currently in any tables.
+        for (i in tables) {
+            let entry = $.optIniDbString(tables[i], oldName);
+            if (entry.isPresent()) {
+                $.inidb.set(tables[i], newNameL, entry.get());
+                $.inidb.del(tables[i], oldName);
+                changed++;
+            }
+        }
+
+        // Update the username in the quotes table.
+        let keys = $.inidb.GetKeyList('quotes', ''),
+            jsonArr;
+
+        for (i in keys) {
+            if ($.getIniDbString('quotes', keys[i]).toLowerCase().indexOf(oldName) > -1) {
+                jsonArr = JSON.parse($.getIniDbString('quotes', keys[i]));
+                $.inidb.set('quotes', keys[i], JSON.stringify([String(newName), String(jsonArr[1]), String(jsonArr[2]), String(jsonArr[3])]));
+            }
+        }
+
+        return changed;
+    }
+
     $.bind('command', function(event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
             action = args[0],
@@ -33,32 +79,9 @@
                 return;
             }
 
-            var tables = ['points', 'time', 'followed', 'followedDate', 'subscribed', 'greeting', 'greetingCoolDown', 'visited', 'lastseen', 'group', 'preSubGroup', 'viewerRanks', 'welcome_disabled_users'],
-                changed = 0,
-                i;
-
             $.say($.whisperPrefix(sender) + $.lang.get('namechange.updating', action, subAction));
 
-            // Update the default tables with that users new name if it's currently in any tables.
-            for (i in tables) {
-                let entry = $.optIniDbString(tables[i], action.toLowerCase());
-                if (entry.isPresent()) {
-                    $.inidb.set(tables[i], subAction.toLowerCase(), entry.get());
-                    $.inidb.del(tables[i], action.toLowerCase());
-                    changed++;
-                }
-            }
-
-            // Update the username in the quotes table.
-            var keys = $.inidb.GetKeyList('quotes', ''),
-                jsonArr;
-
-            for (i in keys) {
-                if ($.getIniDbString('quotes', keys[i]).toLowerCase().indexOf(action.toLowerCase()) > -1) {
-                    jsonArr = JSON.parse($.getIniDbString('quotes', keys[i]));
-                    $.inidb.set('quotes', keys[i], JSON.stringify([String(subAction), String(jsonArr[1]), String(jsonArr[2]), String(jsonArr[3])]));
-                }
-            }
+            let changed = changeName(action, subAction)
 
             // Announce in chat once done.
             if (changed > 0) {
@@ -72,4 +95,6 @@
     $.bind('initReady', function() {
         $.registerChatCommand('./commands/nameConverter.js', 'namechange', $.PERMISSION.Admin);
     });
+
+    $.nameConverter.changeName = changeName;
 })();

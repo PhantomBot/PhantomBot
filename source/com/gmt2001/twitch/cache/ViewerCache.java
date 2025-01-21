@@ -139,7 +139,6 @@ public final class ViewerCache implements Listener {
         String existing = PhantomBot.instance().getDataStore().GetString("idToLogin", "", id);
 
         if (existing == null || !existing.equals(login)) {
-
             PhantomBot.instance().getDataStore().SetString("idToLogin", "", id, login);
             if (existing != null && !existing.isBlank()) {
                 PhantomBot.instance().getDataStore().RemoveKey("loginToId", "", existing);

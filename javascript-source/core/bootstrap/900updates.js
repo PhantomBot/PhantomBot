@@ -816,6 +816,24 @@
         }
     });
 
+    addUpdate('3.14.3.0', 'installedv3.14.3.0', function () {
+        let links = $.inidb.GetKeyList('discordToTwitch', '');
+        for (let i in links) {
+            let link = $.getIniDbString('discordToTwitch', links[i]);
+            let id = $.viewer.lookupIdByLogin(link);
+            if (id === null) {
+                let viewer = $.viewer.getByLogin(link);
+                if (viewer !== null) {
+                    id = viewer.id();
+                }
+            }
+            if (id !== null) {
+                $.setIniDbString('discordToTwitch', links[i], id);
+                $.setIniDbString('twitchToDiscord', id, links[i]);
+            }
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);

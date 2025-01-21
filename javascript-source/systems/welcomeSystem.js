@@ -24,7 +24,7 @@
  * - (name) The username corresponding to the target user
  */
 (function () {
-    var welcomeEnabled = $.getSetIniDbBoolean('welcome', 'welcomeEnabled', false),
+    let welcomeEnabled = $.getSetIniDbBoolean('welcome', 'welcomeEnabled', false),
             welcomeMessage = $.getSetIniDbString('welcome', 'welcomeMessage', 'Welcome back, (names)!'),
             welcomeMessageFirst = $.getSetIniDbString('welcome', 'welcomeMessageFirst', '(names) (1 is)(2 are) new here. Give them a warm welcome!'),
             welcomeCooldown = $.getSetIniDbNumber('welcome', 'cooldown', (6 * 36e5)), // 6 Hours
@@ -34,11 +34,13 @@
             // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
             welcomeLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
+    $.inidb.RemoveFile('greetingCoolDown');
+
     /*
      * @event ircChannelMessage
      */
     $.bind('ircChannelMessage', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 now = $.systemTime();
         if ($.equalsIgnoreCase(sender, $.channelName)) {
             return;
@@ -54,7 +56,7 @@
                 return;
             }
 
-            var lastUserMessage = $.optIniDbNumber('greetingCoolDown', sender),
+            let lastUserMessage = $.optIniDbNumber('greetingCoolDown', sender),
                     firstTimeChatter = !lastUserMessage.isPresent(),
                     queue = firstTimeChatter ? welcomeQueueFirst : welcomeQueue;
 
@@ -91,7 +93,7 @@
      * @bind ircChannelMessage
      */
     function buildMessage(message, names) {
-        var match,
+        let match,
                 namesString;
         if (!names.length || !message) {
             return null;
@@ -184,7 +186,7 @@
                 welcomeTimer = null;
             } else {
                 if (welcomeEnabled) {
-                    var names = [],
+                    let names = [],
                             message = welcomeMessageFirst ? welcomeMessageFirst : welcomeMessage;
                     while (names.length < 15 && !welcomeQueueFirst.isEmpty()) {
                         names.push(welcomeQueueFirst.poll());
@@ -245,7 +247,7 @@
      * @event command
      */
     $.bind('command', function (event) {
-        var sender = event.getSender().toLowerCase(),
+        let sender = event.getSender().toLowerCase(),
                 command = event.getCommand(),
                 args = event.getArgs(),
                 action = args[0],
