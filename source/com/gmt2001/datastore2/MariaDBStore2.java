@@ -17,6 +17,7 @@
 package com.gmt2001.datastore2;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
@@ -76,6 +77,13 @@ public final class MariaDBStore2 extends Datastore2 {
         try (Connection connection = dataSource.getConnection()) {
             try (Statement statement = connection.createStatement()) {
                 statement.execute("CREATE DATABASE IF NOT EXISTS `" + dbname.replaceAll("`", "``") + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
+            }
+            DatabaseMetaData metadata = connection.getMetaData();
+            int major = metadata.getDatabaseMajorVersion();
+            int minor = metadata.getDatabaseMinorVersion();
+            String product = metadata.getDatabaseProductVersion();
+            if (!SQLDialect.MARIADB.supportsDatabaseVersion(major, minor, product)) {
+                throw new IllegalStateException("Detected MariaDB (" + major + "." + minor + "." + product + "), but MariaDBStore2 requires a newer version");
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", Boolean.FALSE));

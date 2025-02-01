@@ -17,6 +17,7 @@
 package com.gmt2001.datastore2;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -126,6 +127,13 @@ public final class MySQLStore2 extends Datastore2 {
                         throw new IllegalStateException("Detected MariaDB (" + rs.getString("VERSION") + "), but MySQLStore2 is selected. Please shutdown the bot, open botlogin.txt, and change the datastore to datastore=MariaDBStore2");
                     }
                 }
+            }
+            DatabaseMetaData metadata = connection.getMetaData();
+            int major = metadata.getDatabaseMajorVersion();
+            int minor = metadata.getDatabaseMinorVersion();
+            String product = metadata.getDatabaseProductVersion();
+            if (!SQLDialect.MYSQL.supportsDatabaseVersion(major, minor, product)) {
+                throw new IllegalStateException("Detected MySQL (" + major + "." + minor + "." + product + "), but MySQLStore2 requires a newer version");
             }
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex, Map.of("_____report", Boolean.FALSE));
