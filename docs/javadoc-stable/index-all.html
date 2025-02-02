@@ -1203,6 +1203,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/httpserver/HttpSetupHandler.html#checkTokenAuthorization(java.lang.String,java.lang.String)" class="member-name-link">checkTokenAuthorization(String, String)</a> - Method in class tv.phantombot.httpserver.<a href="tv/phantombot/httpserver/HttpSetupHandler.html" title="class in tv.phantombot.httpserver">HttpSetupHandler</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/Datastore2.html#checkVersion(org.jooq.SQLDialect,java.sql.Connection,java.lang.String)" class="member-name-link">checkVersion(SQLDialect, Connection, String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
+<dd>
+<div class="block">Checks if JOOQ supports the software version of the connected database</div>
+</dd>
 <dt><a href="com/gmt2001/twitch/eventsub/subscriptions/channel/chat/data/MessageFragment.html#cheermote()" class="member-name-link">cheermote()</a> - Method in class com.gmt2001.twitch.eventsub.subscriptions.channel.chat.data.<a href="com/gmt2001/twitch/eventsub/subscriptions/channel/chat/data/MessageFragment.html" title="class in com.gmt2001.twitch.eventsub.subscriptions.channel.chat.data">MessageFragment</a></dt>
 <dd>
 <div class="block">The cheermote data if this is a cheermote fragment.</div>
@@ -4977,6 +4981,15 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="tv/phantombot/event/discord/ready/DiscordGuildCreateEvent.html#getRoles()" class="member-name-link">getRoles()</a> - Method in class tv.phantombot.event.discord.ready.<a href="tv/phantombot/event/discord/ready/DiscordGuildCreateEvent.html" title="class in tv.phantombot.event.discord.ready">DiscordGuildCreateEvent</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="tv/phantombot/discord/util/DiscordUtil.html#getRolesAsync(java.lang.String...)" class="member-name-link">getRolesAsync(String...)</a> - Method in class tv.phantombot.discord.util.<a href="tv/phantombot/discord/util/DiscordUtil.html" title="class in tv.phantombot.discord.util">DiscordUtil</a></dt>
+<dd>
+<div class="block">Search for Discord roles by display name or mention and return a Flux
+ <br/>
+ Matching is performed case insensitively
+ <br/>
+ The Flux is sorted so the roles are returned in permission order,
+ as displayed in the Discord roles list of the Guild settings.</div>
+</dd>
 <dt><a href="com/gmt2001/RollbarProvider.html#getRollbar()" class="member-name-link">getRollbar()</a> - Method in class com.gmt2001.<a href="com/gmt2001/RollbarProvider.html" title="class in com.gmt2001">RollbarProvider</a></dt>
 <dd>
 <div class="block">Returns the underlying <code>Rollbar</code> object</div>
@@ -6610,6 +6623,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="tv/phantombot/event/irc/message/IrcModerationEvent.html#isCommand()" class="member-name-link">isCommand()</a> - Method in class tv.phantombot.event.irc.message.<a href="tv/phantombot/event/irc/message/IrcModerationEvent.html" title="class in tv.phantombot.event.irc.message">IrcModerationEvent</a></dt>
 <dd>
 <div class="block">Indicates if this message appears to be a command, defined as exclamation point <code>!</code> followed by any character except for a space</div>
+</dd>
+<dt><a href="tv/phantombot/event/command/CommandEvent.html#isCommand(com.gmt2001.twitch.tmi.TMIMessage)" class="member-name-link">isCommand(TMIMessage)</a> - Static method in class tv.phantombot.event.command.<a href="tv/phantombot/event/command/CommandEvent.html" title="class in tv.phantombot.event.command">CommandEvent</a></dt>
+<dd>
+<div class="block">Indicates if the given message appears to be a command, defined as exclamation point <code>!</code> followed by any character except for a space</div>
 </dd>
 <dt><a href="tv/phantombot/event/command/CommandEvent.html#isCommand(java.lang.String)" class="member-name-link">isCommand(String)</a> - Static method in class tv.phantombot.event.command.<a href="tv/phantombot/event/command/CommandEvent.html" title="class in tv.phantombot.event.command">CommandEvent</a></dt>
 <dd>
@@ -10117,6 +10134,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Stream types</div>
 </dd>
+<dt><a href="com/gmt2001/twitch/tmi/processors/PrivMsgTMIProcessor.html#stripAction(java.lang.String)" class="member-name-link">stripAction(String)</a> - Static method in class com.gmt2001.twitch.tmi.processors.<a href="com/gmt2001/twitch/tmi/processors/PrivMsgTMIProcessor.html" title="class in com.gmt2001.twitch.tmi.processors">PrivMsgTMIProcessor</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/util/concurrent/ExecutorService.html#submit(java.lang.Runnable)" class="member-name-link">submit(Runnable)</a> - Static method in class com.gmt2001.util.concurrent.<a href="com/gmt2001/util/concurrent/ExecutorService.html" title="class in com.gmt2001.util.concurrent">ExecutorService</a></dt>
 <dd>
 <div class="block">Submits a Runnable task for execution and returns a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html" title="class or interface in java.util.concurrent" class="external-link"><code>Future</code></a> representing that task, whose <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Future.html#get()" title="class or interface in java.util.concurrent" class="external-link"><code>Future.get()</code></a> method will return <code>null</code>
@@ -10494,6 +10513,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 &nbsp;</dd>
+<dt><a href="com/illusionaryone/Logger.LogItem.html#toString()" class="member-name-link">toString()</a> - Method in class com.illusionaryone.<a href="com/illusionaryone/Logger.LogItem.html" title="class in com.illusionaryone">Logger.LogItem</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueTable.html#toString()" class="member-name-link">toString()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore">SectionVariableValueTable</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/SectionVariableValueRecord.html#toString()" class="member-name-link">toString()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/SectionVariableValueRecord.html" title="class in com.gmt2001.datastore">SectionVariableValueRecord</a></dt>
