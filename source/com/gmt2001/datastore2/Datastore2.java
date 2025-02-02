@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -321,6 +322,25 @@ public abstract class Datastore2 {
             }
         })).set(SettingsTools.defaultSettings().withReturnIdentityOnUpdatableRecord(false));
         this.dslContext = DSL.using(configuration);
+    }
+
+    /**
+     * Checks if JOOQ supports the software version of the connected database
+     * 
+     * @param dialect the {@link SQLDialect} to check againse
+     * @param connection a valid {@link Connection} to the database
+     * @param className the name of the Datastore2 subclass that is requesting the check
+     * @throws IllegalStateException if the detected software version of the database is not supported by JOOQ
+     * @throws SQLException if a database access error occurs
+     */
+    protected void checkVersion(SQLDialect dialect, Connection connection, String className) throws IllegalStateException, SQLException {
+        DatabaseMetaData metadata = connection.getMetaData();
+        int major = metadata.getDatabaseMajorVersion();
+        int minor = metadata.getDatabaseMinorVersion();
+        String product = metadata.getDatabaseProductVersion();
+        if (!dialect.supportsDatabaseVersion(major, minor, product)) {
+            throw new IllegalStateException("Detected " + dialect.getName() + " (" + major + "." + minor + "." + product + "), but " + className + " requires a newer version");
+        }
     }
 
     /**

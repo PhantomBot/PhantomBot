@@ -17,6 +17,7 @@
 package com.gmt2001.datastore2;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
@@ -74,6 +75,14 @@ public final class MariaDBStore2 extends Datastore2 {
         }
 
         try (Connection connection = dataSource.getConnection()) {
+            try (Statement statement = connection.createStatement()) {
+                try (ResultSet rs = statement.executeQuery("SELECT VERSION() AS VERSION;")) {
+                    if (rs.next() && !rs.getString("VERSION").contains("-MariaDB")) {
+                        com.gmt2001.Console.warn.println("This looks like MySQL (" + rs.getString("VERSION") + "), but MariaDBStore2 is selected. If this is MariaDB, you can ignore this message. If this is MySQL, please shutdown the bot, open botlogin.txt, and change the datastore to datastore=MySQLStore2");
+                    }
+                }
+            }
+            this.checkVersion(SQLDialect.MARIADB, connection, MariaDBStore2.class.getSimpleName());
             try (Statement statement = connection.createStatement()) {
                 statement.execute("CREATE DATABASE IF NOT EXISTS `" + dbname.replaceAll("`", "``") + "` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
             }
