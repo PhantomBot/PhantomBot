@@ -96,5 +96,6 @@
         $.registerChatCommand('./commands/nameConverter.js', 'namechange', $.PERMISSION.Admin);
     });
 
+    $.nameConverter = {};
     $.nameConverter.changeName = changeName;
 })();
