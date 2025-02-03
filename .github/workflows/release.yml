@@ -532,7 +532,7 @@ jobs:
       uses: actions/github-script@v7
       with:
         script: |
-          let {status: getStatus, data} = await octokit.rest.repos.getReleaseByTag({
+          let {status: getStatus, data} = await github.rest.repos.getReleaseByTag({
             owner: context.repo.owner,
             repo: context.repo.repo,
             tag: context.ref.substring(context.ref.lastIndexOf("/") + 1),
@@ -541,7 +541,7 @@ jobs:
           if (getStatus !== 200) {
             core.error("Failed to get the release..." + getStatus);
           } else {
-            let {status: updateStatus} = await octokit.rest.repos.updateRelease({
+            let {status: updateStatus} = await github.rest.repos.updateRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               release_id: data.id,
