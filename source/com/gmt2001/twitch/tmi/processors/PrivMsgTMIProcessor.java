@@ -65,6 +65,11 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
 
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + item.tags());
 
+        if (item.tags().containsKey("source-room-id") && !item.tags().get("source-room-id").equals(item.tags().get("room-id"))) {
+            com.gmt2001.Console.debug.println("Ignored due to source-room-id != room-id");
+            return;
+        }
+
         if (!item.nick().equalsIgnoreCase(this.user())) {
             if (item.tags().get("mod").equals("1") || !item.tags().get("user-type").isEmpty()) {
                 if (!this.moderators.contains(item.nick())) {
@@ -90,6 +95,7 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
                     com.gmt2001.Console.debug.println("Message was moderated");
                     return;
                 }
+                
                 if (item.tags().containsKey("subscriber") && item.tags().get("subscriber").equals("1")) {
                     EventBus.instance().postAsync(new IrcPrivateMessageEvent(this.session(), "jtv",
                             "SPECIALUSER " + item.nick() + " subscriber", item.tags()));

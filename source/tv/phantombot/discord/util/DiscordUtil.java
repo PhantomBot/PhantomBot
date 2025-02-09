@@ -832,7 +832,6 @@ public class DiscordUtil {
         Flux<Role> roles = DiscordAPI.getGuild().getRoles().transform(OrderUtil::orderRoles);
 
         if (PhantomBot.getEnableDebugging()) {
-            com.gmt2001.Console.debug.println(roleNames);
             com.gmt2001.Console.debug.println(roles.count().block());
         }
 
@@ -1073,7 +1072,7 @@ public class DiscordUtil {
     public void deleteRole(Role role) {
         this.validateParams(role);
         role.delete().doOnError(e -> {
-            com.gmt2001.Console.err.println("Unable to delete role" + role.getName() + " (" + DiscordAPI.getGuild().getName() + ")");
+            com.gmt2001.Console.err.println("Unable to delete role " + role.getName() + " (" + DiscordAPI.getGuild().getName() + ")");
             com.gmt2001.Console.err.printStackTrace(e);
         }).subscribe();
     }

@@ -16,7 +16,7 @@
  */
 
 (function() {
-    var autoSetPermissions = $.getSetIniDbBoolean('discordSettings', 'autoSetPermissions', false),
+    let autoSetPermissions = $.getSetIniDbBoolean('discordSettings', 'autoSetPermissions', false),
         autoSetRanks = $.getSetIniDbBoolean('discordSettings', 'autoSetRanks', false);
 
     /*
@@ -45,22 +45,12 @@
 
             // Wait a bit to create the roles.
             setTimeout(function() {
-                let roleObjs = null;
-                try {
-                    roleObjs = $.discordAPI.getRoleObjects(roles);
-                } catch (e){
-                    $.log.error(e);
-                    return;
-                }
-                if (roleObjs === null) {
-                    return;
-                }
                 for (i in users) {
                     try {
                         if (hasRankOrPermission($.getIniDbString('discordToTwitch', users[i]))) {
                             let user = $.discord.getUserById(users[i]);
                             if (user !== null && user !== undefined) {
-                                updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])), user, roleObjs);
+                                updateRoles(users[i], getRanksAndPermissions($.getIniDbString('discordToTwitch', users[i])), user);
                             }
                         }
                     } catch (e){
@@ -77,7 +67,7 @@
      * @param {Number} id
      * @param {Array}  roles
      */
-    function updateRoles(id, roles, user, roleObjs) {
+    function updateRoles(id, roles, user) {
         let oldRoles = $.getIniDbString('discordRoles', id, ',').split(','),
             currentRoles = null,
             newRoles = roles.join(','),
@@ -105,6 +95,13 @@
         // Only update the user's role if there's a new one.
         for (i in roles) {
             if (!hasRole(currentRoles, roles[i], true)) {
+                let roleObjs = null;
+                try {
+                    roleObjs = $.discordAPI.getRoleObjects(roles);
+                } catch (e){
+                    $.log.error(e);
+                    return;
+                }
                 try {
                     $.discordAPI.editUserRoles(user, roleObjs);
                     $.setIniDbString('discordRoles', id, newRoles);
@@ -120,7 +117,7 @@
      * @function createRoles
      */
     function createRoles() {
-        let roles = $.discordAPI.getGuild().getRoles().replay();
+        let roles = $.discordAPI.getGuildRoles();
 
         if (autoSetPermissions === true) {
             let keys = $.inidb.GetKeyList('groups', ''),
@@ -130,18 +127,30 @@
             for (i in keys) {
                 group = $.getIniDbString('groups', keys[i]).trim();
 
-                let hasTheRole = false;
+                let found = [];
 
                 try {
-                    hasTheRole = roles.filter(function(role) {
-                        return $.equalsIgnoreCase(role.getName(), group);
-                    }).count() > 0;
+                    for (let x = 0; x < roles.size(); x++) {
+                        if ($.equalsIgnoreCase(roles.get(x).getName(), group)) {
+                            found.push(roles.get(x));
+                        }
+                    }
                 } catch(e){}
 
-                if (!$.inidb.exists('blacklistedDiscordRoles', group.toLowerCase()) && !hasTheRole) {
+                if (!$.inidb.exists('blacklistedDiscordRoles', group.toLowerCase()) && found.length === 0) {
                     $.discordAPI.createRole(group);
-                } else if (hasTheRole && $.inidb.exists('blacklistedDiscordRoles', group.toLowerCase())) {
-                    $.discordAPI.deleteRole(group);
+                } else if (found.length > 0 && $.inidb.exists('blacklistedDiscordRoles', group.toLowerCase())) {
+                    for (let x in found) {
+                        $.discordAPI.deleteRole(found[x]);
+                    }
+                } else if (found.length > 1) {
+                    let first = true;
+                    for (let x in found) {
+                        if (!first) {
+                            $.discordAPI.deleteRole(found[x]);
+                        }
+                        first = false;
+                    }
                 }
             }
         }
@@ -156,21 +165,31 @@
 
             for (i in keys) {
                 rank = $.getIniDbString('ranksMapping', keys[i]).trim();
-
-                let hasTheRole = false;
+                
+                let found = [];
 
                 try {
-                    hasTheRole = roles.filter(function(role) {
-                        return $.equalsIgnoreCase(role.getName(), rank);
-                    }).count() > 0;
+                    for (let x = 0; x < roles.size(); x++) {
+                        if ($.equalsIgnoreCase(roles.get(x).getName(), rank)) {
+                            found.push(roles.get(x));
+                        }
+                    }
                 } catch(e){}
 
-                if (!$.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase()) && !hasTheRole) {
+                if (!$.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase()) && found.length === 0) {
                     $.discordAPI.createRole(rank);
-                    $.setIniDbString('discordRanks', rank, keys[i]);
-                } else if (hasTheRole && $.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase())) {
-                    $.discordAPI.deleteRole(rank);
-                    $.inidb.del('discordRanks', rank);
+                } else if (found.length > 0 && $.inidb.exists('blacklistedDiscordRoles', rank.toLowerCase())) {
+                    for (let x in found) {
+                        $.discordAPI.deleteRole(found[x]);
+                    }
+                } else if (found.length > 1) {
+                    let first = true;
+                    for (let x in found) {
+                        if (!first) {
+                            $.discordAPI.deleteRole(found[x]);
+                        }
+                        first = false;
+                    }
                 }
             }
         }
