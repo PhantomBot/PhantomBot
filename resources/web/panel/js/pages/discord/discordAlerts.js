@@ -499,7 +499,7 @@ $(function () {
                                         'onlineDelay', 'offlineDelay'],
                                     values: [onlineToggle, onlinePublish, onlineMessage.val(), offlineToggle, offlinePublish, offlineMessage.val(),
                                         gameToggle, gamePublish, gameMessage.val(), statusToggle, channel.val(), deleteMessageToggle,
-                                        onlineDelay, offlineDelay]
+                                        onlineDelay.val(), offlineDelay.val()]
                                 }, function () {
                                     socket.wsEvent('discord', './discord/handlers/streamHandler.js', '', [], function () {
                                         // Close the modal.
