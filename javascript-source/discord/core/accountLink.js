@@ -53,7 +53,7 @@
             return null;
         }
 
-        return $.getIniDbString('discordToTwitch', id);
+        return $.getIniDbString('twitchToDiscord', id);
     }
 
     /**
