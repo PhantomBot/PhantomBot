@@ -34,8 +34,6 @@
             // used to synchronize access to welcomeQueue, welcomeQueueFirst, and welcomeTimer
             welcomeLock = new Packages.java.util.concurrent.locks.ReentrantLock();
 
-    $.inidb.RemoveFile('greetingCoolDown');
-
     /*
      * @event ircChannelMessage
      */

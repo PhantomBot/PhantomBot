@@ -32,7 +32,28 @@
             onJoin = $.getSetIniDbBoolean('greetingSettings', 'onJoin', true),
             userSelfService = $.getSetIniDbBoolean('greetingSettings', 'userSelfService', false);
 
-    $.inidb.RemoveFile('greetingCoolDown');
+    function resetGreetingCooldowns() {
+        let table = Packages.com.gmt2001.datastore.SectionVariableValueTable.instance("phantombot_greetingCoolDown");
+
+        if (table !== null) {
+            $.inidb.dsl().batched(function (c) {
+                try {
+                    c.dsl().startTransaction().execute();
+                } catch (ex) {
+                    if (!ex.getMessage().contains("cannot start a transaction within a transaction")) {
+                        throw ex;
+                    }
+                }
+
+                c.dsl().update(table)
+                    .set(Packages.java.util.Collections.singletonMap(table.VALUE, 0)).execute();
+
+                c.dsl().commit().execute();
+            });
+        }
+    }
+
+    resetGreetingCooldowns();
 
     /**
      * @event ircChannelJoin
