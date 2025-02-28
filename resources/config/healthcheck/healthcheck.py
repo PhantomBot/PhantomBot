@@ -136,7 +136,7 @@ def getconfigfile(args):
     else:
         result = subprocess.run(["docker", "exec", "-it", args.service_name, "cat", getconfigdir(args) + "botlogin.txt"], capture_output=True)
         if result.returncode != 0:
-            dofailure(args, "noconfig", "Unable to find botlogin.txt (" + result.returncode + ")")
+            dofailure(args, "noconfig", "Unable to find botlogin.txt (" + str(result.returncode) + ")")
         else:
             return result.stdout.splitlines()
 
@@ -167,7 +167,7 @@ def main(args):
             dofailure(args, "noauth", "No webauth in botlogin.txt")
         resp = requests.get(scheme + "://" + iphostname + ":" + port + "/presence", headers = { "User-Agent": "phantombot.healthcheck/2022" }, verify = False)
         if resp.status_code != 200:
-            dofailure(args, "nopresencecode", "Presence check failed with HTTP " + resp.status_code)
+            dofailure(args, "nopresencecode", "Presence check failed with HTTP " + str(resp.status_code))
         elif resp.text.strip() != "PBok":
             dofailure(args, "nopresence", "Presence check returned an unknown response")
         resp = requests.put(scheme + "://" + iphostname + ":" + port + "/dbquery", headers = { "User-Agent": "phantombot.healthcheck/2022", "webauth": webauth, "user": "healthcheck", "message": "!pbinternalping" }, verify = False)
@@ -178,7 +178,7 @@ def main(args):
         time.sleep(5)
         resp = requests.get(scheme + "://" + iphostname + ":" + port + "/addons/healthcheck.txt", headers = { "User-Agent": "phantombot.healthcheck/2022" }, verify = False)
         if resp.status_code != 200:
-            dofailure(args, "nohealthcheckcode", "Retrieve health check failed with HTTP " + resp.status_code)
+            dofailure(args, "nohealthcheckcode", "Retrieve health check failed with HTTP " + str(resp.status_code))
         try:
             lastaliveI = int(resp.text.strip())
         except:
