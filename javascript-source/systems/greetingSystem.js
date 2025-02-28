@@ -46,7 +46,7 @@
                 }
 
                 c.dsl().update(table)
-                    .set(Packages.java.util.Collections.singletonMap(table.VALUE, 0)).execute();
+                    .set(Packages.java.util.Collections.singletonMap(table.VALUE, '0')).execute();
 
                 c.dsl().commit().execute();
             });
