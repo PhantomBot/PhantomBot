@@ -599,7 +599,13 @@ public class DiscordAPI extends DiscordUtil {
                     return;
                 }
 
-                com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
+                /**
+                 * @botproperty printdiscordchattoconsole - If `true`, Discord chat is printed to the console. Default `true`
+                 * @botpropertycatsort printdiscordchattoconsole 900 150 Discord
+                 */
+                if (CaselessProperties.instance().getPropertyAsBoolean("printdiscordchattoconsole", true)) {
+                        com.gmt2001.Console.out.println("[DISCORD] [" + channel + "] " + username + ": " + message);
+                }
 
                 boolean isAdmin = DiscordAPI.instance().isAdministratorAsync(iUser).or(Mono.delay(Duration.ofSeconds(DiscordAPI.ISADMINTIMEOUT)).thenReturn(false)).onErrorReturn(false).block();
 
