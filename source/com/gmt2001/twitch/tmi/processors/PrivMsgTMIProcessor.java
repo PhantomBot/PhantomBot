@@ -24,7 +24,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.gmt2001.twitch.tmi.TMIMessage;
 import com.gmt2001.twitch.tmi.TMISlashCommands;
 
+import io.netty.resolver.DefaultAddressResolverGroup;
 import reactor.core.publisher.SignalType;
+import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
@@ -61,7 +63,13 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
 
         message = stripAction(message);
 
-        com.gmt2001.Console.out.println(item.nick() + ": " + message);
+        /**
+         * @botproperty printtwitchchattoconsole - If `true`, Twitch chat is printed to the console. Default `true`
+         * @botpropertycatsort printtwitchchattoconsole 900 20 Twitch
+         */
+        if (CaselessProperties.instance().getPropertyAsBoolean("printtwitchchattoconsole", true)) {
+            com.gmt2001.Console.out.println(item.nick() + ": " + message);
+        }
 
         com.gmt2001.Console.debug.println("IRCv3 Tags: " + item.tags());
 
