@@ -41,6 +41,7 @@ import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import com.gmt2001.PathValidator;
+import com.gmt2001.datastore.DataStore;
 
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
@@ -49,8 +50,7 @@ import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 
 public final class LangFileUpdater {
 
-    private static final String CUSTOM_LANG_ROOT = "./scripts/lang/custom/";
-    private static final String DEFAULT_LANG_ROOT = "./scripts/lang/english/";
+    private static final String LANG_ROOT = "./scripts/lang/";
 
     /**
      * Class constructor.
@@ -68,12 +68,20 @@ public final class LangFileUpdater {
     public static String getCustomLang(String langFile) throws JSONException {
         String stringArray;
 
-        if (PathValidator.isValidPathLang(CUSTOM_LANG_ROOT + langFile)) {
-            Tuple2<String, Boolean> defaultLang = getLang(DEFAULT_LANG_ROOT + sanitizePath(langFile));
-            Tuple2<String, Boolean> customLang = getLang(CUSTOM_LANG_ROOT + sanitizePath(langFile));
+        if (PathValidator.isValidPathLang(LANG_ROOT + "custom/" + langFile)) {
+            String currentLangName = DataStore.instance().GetString("settings", "", "lang");
+            Tuple2<String, Boolean> defaultLang = getLang(LANG_ROOT + "english/" + sanitizePath(langFile));
+            Tuple2<String, Boolean> currentLang;
+            if (currentLangName != null && !currentLangName.equalsIgnoreCase("english")) {
+                currentLang = getLang(LANG_ROOT + currentLangName + "/" + sanitizePath(langFile));
+            } else {
+                currentLang = Tuples.of("", false);
+            }
+            Tuple2<String, Boolean> customLang = getLang(LANG_ROOT + "custom/" + sanitizePath(langFile));
             stringArray = convertLangMapToJSONArray(
-                    getCustomAndDefaultLangMap(
+                    getLangMap(
                             defaultLang.getT1(), defaultLang.getT2(),
+                            currentLang.getT1(), currentLang.getT2(),
                             customLang.getT1(), customLang.getT2()
                     )
             );
@@ -94,7 +102,7 @@ public final class LangFileUpdater {
         boolean success = true;
 
         try {
-            langFile = CUSTOM_LANG_ROOT + sanitizePath(langFile);
+            langFile = LANG_ROOT + "custom/" + sanitizePath(langFile);
 
             if (!PathValidator.isValidPathLang(langFile)) {
                 jso.object().key("errors").array().object()
@@ -181,7 +189,7 @@ public final class LangFileUpdater {
      */
     public static String[] getLangFiles() {
         List<String> fileNames = new ArrayList<>();
-        Path langRoot = Paths.get(DEFAULT_LANG_ROOT);
+        Path langRoot = Paths.get(LANG_ROOT + "english/");
 
         try ( Stream<Path> fileStream = Files.find(langRoot, Integer.MAX_VALUE, (p, a) -> p.getFileName().toString().endsWith(".js") || p.getFileName().toString().endsWith(".json"), FileVisitOption.FOLLOW_LINKS)) {
             fileStream.forEach(p -> fileNames.add(langRoot.relativize(p).toString()));
@@ -255,7 +263,7 @@ public final class LangFileUpdater {
      * @param customLang
      * @return
      */
-    private static HashMap<String, String> getCustomAndDefaultLangMap(String defaultLang, boolean defaultJson, String customLang, boolean customJson) {
+    private static HashMap<String, String> getLangMap(String defaultLang, boolean defaultJson, String currentLang, boolean currentJson, String customLang, boolean customJson) {
         // Create a new patter that will match if the default lang ID is also in the custom one.
         final Pattern pattern = Pattern.compile("^\\$\\.lang\\.register\\((\\'|\\\")([a-zA-Z0-9,.-]+)(\\'|\\\")\\,\\s(\\'|\\\")(.*)(\\'|\\\")\\);", Pattern.MULTILINE);
 
@@ -271,6 +279,18 @@ public final class LangFileUpdater {
             }
         }
 
+        // Get all matches for the current lang.
+        final HashMap<String, String> currentMatches = new HashMap<>();
+        final JSONObject jsoS = jsonOrNull(currentLang, currentJson);
+        if (jsoS != null) {
+            jsoS.keySet().stream().forEach(k -> currentMatches.put(k, jsoS.optString(k)));
+        } else {
+            final Matcher m2 = pattern.matcher(currentLang);
+            while (m2.find()) {
+                currentMatches.put(m2.group(2), m2.group(5));
+            }
+        }
+
         // Get all matches for the custom lang.
         final HashMap<String, String> customMatches = new HashMap<>();
         final JSONObject jsoC = jsonOrNull(customLang, customJson);
@@ -282,6 +302,13 @@ public final class LangFileUpdater {
                 customMatches.put(m2.group(2), m2.group(5));
             }
         }
+
+        // Check if any is missing in the custom one.
+        currentMatches.forEach((String key, String value) -> {
+            if (!customMatches.containsKey(key)) {
+                customMatches.put(key, value);
+            }
+        });
 
         // Check if any is missing in the custom one.
         defaultMatches.forEach((String key, String value) -> {
