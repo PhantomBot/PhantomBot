@@ -644,181 +644,186 @@ $(function () {
     async function handleGifAlert(json) {
         // Make sure we can allow alerts.
         if (getOptionSetting(CONF_ENABLE_GIF_ALERTS, 'true') === 'true') {
-            let defaultPath = '/config/gif-alerts/',
-                    gifData = json.alert_image,
-                    gifDuration = 3000,
-                    gifVolume = getOptionSetting(CONF_GIF_ALERT_VOLUME, '0.8'),
-                    gifFile = '',
-                    gifCss = '',
-                    gifText = '',
-                    htmlObj,
-                    audio,
-                    isVideo = false,
-                    hasAudio = false;
+            try {
+                let defaultPath = '/config/gif-alerts/',
+                        gifData = json.alert_image,
+                        gifDuration = 3000,
+                        gifVolume = getOptionSetting(CONF_GIF_ALERT_VOLUME, '0.8'),
+                        gifFile = '',
+                        gifCss = '',
+                        gifText = '',
+                        htmlObj,
+                        audio,
+                        isVideo = false,
+                        hasAudio = false;
 
-            // If a comma is found, that means there are custom settings.
-            if (gifData.indexOf(',') !== -1) {
-                let gifSettingParts = gifData.split(',');
+                // If a comma is found, that means there are custom settings.
+                if (gifData.indexOf(',') !== -1) {
+                    let gifSettingParts = gifData.split(',');
 
-                // Loop through each setting and set it if found.
-                gifSettingParts.forEach(function (value, index) {
-                    switch (index) {
-                        case 0:
-                            gifFile = value;
-                            break;
-                        case 1:
-                            gifDuration = (parseInt(value) * 1000);
-                            break;
-                        case 2:
-                            gifVolume = value;
-                            break;
-                        case 3:
-                            gifCss = value;
-                            break;
-                        case 4:
-                            gifText = value;
-                            break;
-                        default:
-                            gifText = gifText + ',' + value;
-                            break;
-                    }
-                });
-            } else {
-                gifFile = gifData;
-            }
-
-            // Check if the file is a gif, or video.
-            if (gifFile.match(/\.(webm|mp4|ogg|ogv)$/) !== null) {
-                htmlObj = $('<video/>', {
-                    'src': defaultPath + gifFile,
-                    'style': gifCss,
-                    'preload': 'auto'
-                });
-
-                htmlObj.prop('volume', gifVolume);
-                isVideo = true;
-
-                let ext = gifFile.substring(gifFile.lastIndexOf('.') + 1);
-                if (!videoFormats.probably.includes(ext) && !videoFormats.maybe.includes(ext)) {
-                    printDebug('Video format ' + ext + ' was not supported by the browser!', true);
+                    // Loop through each setting and set it if found.
+                    gifSettingParts.forEach(function (value, index) {
+                        switch (index) {
+                            case 0:
+                                gifFile = value;
+                                break;
+                            case 1:
+                                gifDuration = (parseInt(value) * 1000);
+                                break;
+                            case 2:
+                                gifVolume = value;
+                                break;
+                            case 3:
+                                gifCss = value;
+                                break;
+                            case 4:
+                                gifText = value;
+                                break;
+                            default:
+                                gifText = gifText + ',' + value;
+                                break;
+                        }
+                    });
+                } else {
+                    gifFile = gifData;
                 }
-                printDebug('Gif is video: ' + defaultPath + gifFile);
-            } else {
-                htmlObj = $('<img/>', {
-                    'src': defaultPath + gifFile,
-                    'style': gifCss,
-                    'alt': "Video"
-                });
-                printDebug('Loading gif: ' + defaultPath + gifFile);
-                await htmlObj[0].decode();
-                printDebug('Loading complete');
-            }
 
-            let audioPath = getAudioFile(gifFile.slice(0, gifFile.indexOf('.')), defaultPath);
-
-            if (audioPath.length > 0 && gifFile.substring(gifFile.lastIndexOf('.') + 1) !== audioPath.substring(audioPath.lastIndexOf('.') + 1)) {
-                printDebug('Gif has audio: ' + audioPath);
-                hasAudio = true;
-                audio = new Audio(audioPath);
-            }
-
-            // p object to hold custom gif alert text and style
-            textObj = $('<p/>', {
-                'style': gifCss
-            }).html(gifText);
-
-            await sleep(500);
-
-            if (isVideo) {
-                let isReady = false;
-                htmlObj[0].oncanplay = (event) => {
-                    isReady = true;
-                };
-                htmlObj[0].oncanplaythrough = (event) => {
-                    isReady = true;
-                };
-                const videoIsReady = () => {
-                    return isReady;
-                };
-                printDebug('Loading gif video');
-                htmlObj[0].load();
-                await promisePoll(() => videoIsReady(), {pollIntervalMs: 250});
-                printDebug('Loading complete');
-            }
-            if (hasAudio) {
-                let isReady = false;
-                audio.oncanplay = (event) => {
-                    isReady = true;
-                };
-                audio.oncanplaythrough = (event) => {
-                    isReady = true;
-                };
-                const audioIsReady = () => {
-                    return isReady;
-                };
-
-                printDebug('Loading gif audio');
-                audio.load();
-                await promisePoll(() => audioIsReady(), {pollIntervalMs: 250});
-                audio.volume = gifVolume;
-                printDebug('Loading complete');
-            }
-
-            await sleep(500);
-
-            printDebug('Animating the gif');
-
-            // Append the custom text object to the page
-            $('#alert-text').append(textObj).fadeIn(1e2).delay(gifDuration)
-                    .fadeOut(1e2, function () { //Remove the text with a fade out.
-                        let t = $(this);
-
-                        // Remove the p tag
-                        t.find('p').remove();
+                // Check if the file is a gif, or video.
+                if (gifFile.match(/\.(webm|mp4|ogg|ogv)$/) !== null) {
+                    htmlObj = $('<video/>', {
+                        'src': defaultPath + gifFile,
+                        'style': gifCss,
+                        'preload': 'auto'
                     });
 
-            // Append a new the image.
-            $('#alert').append(htmlObj).fadeIn(1e2, async function () {// Set the volume.
+                    htmlObj.prop('volume', gifVolume);
+                    isVideo = true;
+
+                    let ext = gifFile.substring(gifFile.lastIndexOf('.') + 1);
+                    if (!videoFormats.probably.includes(ext) && !videoFormats.maybe.includes(ext)) {
+                        printDebug('Video format ' + ext + ' was not supported by the browser!', true);
+                    }
+                    printDebug('Gif is video: ' + defaultPath + gifFile);
+                } else {
+                    htmlObj = $('<img/>', {
+                        'src': defaultPath + gifFile,
+                        'style': gifCss,
+                        'alt': "Video"
+                    });
+                    printDebug('Loading gif: ' + defaultPath + gifFile);
+                    await htmlObj[0].decode();
+                    printDebug('Loading complete');
+                }
+
+                let audioPath = getAudioFile(gifFile.slice(0, gifFile.indexOf('.')), defaultPath);
+
+                if (audioPath.length > 0 && gifFile.substring(gifFile.lastIndexOf('.') + 1) !== audioPath.substring(audioPath.lastIndexOf('.') + 1)) {
+                    printDebug('Gif has audio: ' + audioPath);
+                    hasAudio = true;
+                    audio = new Audio(audioPath);
+                }
+
+                // p object to hold custom gif alert text and style
+                textObj = $('<p/>', {
+                    'style': gifCss
+                }).html(gifText);
+
+                await sleep(500);
+
                 if (isVideo) {
-                    // Play the sound.
-                    htmlObj[0].play().catch(function () {
-                        // Ignore.
-                    });
+                    let isReady = false;
+                    htmlObj[0].oncanplay = (event) => {
+                        isReady = true;
+                    };
+                    htmlObj[0].oncanplaythrough = (event) => {
+                        isReady = true;
+                    };
+                    const videoIsReady = () => {
+                        return isReady;
+                    };
+                    printDebug('Loading gif video');
+                    htmlObj[0].load();
+                    await promisePoll(() => videoIsReady(), {pollIntervalMs: 250});
+                    printDebug('Loading complete');
                 }
                 if (hasAudio) {
-                    audio.play().catch(function () {
-                        // Ignore.
-                    });
+                    let isReady = false;
+                    audio.oncanplay = (event) => {
+                        isReady = true;
+                    };
+                    audio.oncanplaythrough = (event) => {
+                        isReady = true;
+                    };
+                    const audioIsReady = () => {
+                        return isReady;
+                    };
+
+                    printDebug('Loading gif audio');
+                    audio.load();
+                    await promisePoll(() => audioIsReady(), {pollIntervalMs: 250});
+                    audio.volume = gifVolume;
+                    printDebug('Loading complete');
                 }
-            }).delay(gifDuration) // Wait this time before removing this image.
-                    .fadeOut(1e2, function () { // Remove the image with a fade out.
-                        let t = $(this);
 
-                        // Remove either the img tag or video tag.
-                        if (!isVideo) {
-                            // Remove the image.
-                            t.find('img').remove();
-                        } else {
-                            // Remove the video.
-                            t.find('video').remove();
-                        }
+                await sleep(500);
 
-                        if (hasAudio) {
-                            printDebug('Audio duration: ' + audio.duration);
-                            // Stop the audio.
-                            audio.pause();
-                            // Reset the duration.
-                            audio.currentTime = 0;
-                        }
-                        if (isVideo) {
-                            printDebug('Video duration: ' + htmlObj[0].duration);
-                            htmlObj[0].pause();
-                            htmlObj[0].currentTime = 0;
-                        }
-                        printDebug('Gif complete');
-                        // Mark as done playing.
-                        isPlaying = false;
-                    });
+                printDebug('Animating the gif');
+
+                // Append the custom text object to the page
+                $('#alert-text').append(textObj).fadeIn(1e2).delay(gifDuration)
+                        .fadeOut(1e2, function () { //Remove the text with a fade out.
+                            let t = $(this);
+
+                            // Remove the p tag
+                            t.find('p').remove();
+                        });
+
+                // Append a new the image.
+                $('#alert').append(htmlObj).fadeIn(1e2, async function () {// Set the volume.
+                    if (isVideo) {
+                        // Play the sound.
+                        htmlObj[0].play().catch(function () {
+                            // Ignore.
+                        });
+                    }
+                    if (hasAudio) {
+                        audio.play().catch(function () {
+                            // Ignore.
+                        });
+                    }
+                }).delay(gifDuration) // Wait this time before removing this image.
+                        .fadeOut(1e2, function () { // Remove the image with a fade out.
+                            let t = $(this);
+
+                            // Remove either the img tag or video tag.
+                            if (!isVideo) {
+                                // Remove the image.
+                                t.find('img').remove();
+                            } else {
+                                // Remove the video.
+                                t.find('video').remove();
+                            }
+
+                            if (hasAudio) {
+                                printDebug('Audio duration: ' + audio.duration);
+                                // Stop the audio.
+                                audio.pause();
+                                // Reset the duration.
+                                audio.currentTime = 0;
+                            }
+                            if (isVideo) {
+                                printDebug('Video duration: ' + htmlObj[0].duration);
+                                htmlObj[0].pause();
+                                htmlObj[0].currentTime = 0;
+                            }
+                            printDebug('Gif complete');
+                            // Mark as done playing.
+                            isPlaying = false;
+                        });
+                } catch (e) {
+                    console.error(e);
+                    isPlaying = false;
+                }
         } else {
             isPlaying = false;
         }
