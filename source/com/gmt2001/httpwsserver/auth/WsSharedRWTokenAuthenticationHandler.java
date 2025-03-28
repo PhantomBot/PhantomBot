@@ -164,7 +164,7 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
                 JSONObject jso = new JSONObject(tframe.text());
 
                 if (jso.has("authenticate") || jso.has("readauth")) {
-                    com.gmt2001.Console.debug.println("TryAuth " + tframe.text());
+                    com.gmt2001.Console.debug.println("TryAuth");
                     if (jso.has("authenticate")) {
                         astr = jso.getString("authenticate");
                     }
@@ -216,9 +216,6 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
 
         if (!ctx.channel().attr(ATTR_AUTHENTICATED).get()) {
             com.gmt2001.Console.debug.println("wsauthfail");
-            com.gmt2001.Console.debug.println("Expected (rw): >" + readWriteToken + "<");
-            com.gmt2001.Console.debug.println("Expected (r): >" + readOnlyToken + "<");
-            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
             if (ctx.channel().attr(ATTR_AUTH_ATTEMPTS).get() >= maxAttempts) {
                 WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
                 ctx.close();
@@ -246,7 +243,6 @@ public class WsSharedRWTokenAuthenticationHandler implements WsAuthenticationHan
      */
     @Override
     public boolean checkAuthorizationHeaders(ChannelHandlerContext ctx, HttpHeaders headers) {
-        com.gmt2001.Console.debug.println("HeaderAuth " + (HttpBasicAuthenticationHandler.getAuthorizationString(headers) == null ? "null" : HttpBasicAuthenticationHandler.getAuthorizationString(headers)));
         if (this.allowPaneluser && PhantomBot.instance().getHTTPPanelAndYTHandler().getAuthHandler().isAuthorized(ctx, headers)) {
             PanelUser user = PanelUserHandler.checkLoginAndGetUserB64(HttpBasicAuthenticationHandler.getAuthorizationString(headers), null);
             com.gmt2001.Console.debug.println("user=" + (user == null ? "null" : user.getUsername() + (user.isConfigUser() ? " (config)" : "")));

@@ -126,10 +126,6 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             }
 
             com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
-            com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
-            if (auth != null) {
-                com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
-            }
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         } else {
@@ -138,10 +134,6 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
             res.headers().set(HttpHeaderNames.LOCATION, this.loginUri + (this.loginUri.contains("?") ? "&" : "?") + "kickback=" + URLEncoder.encode(req.uri(), StandardCharsets.UTF_8));
 
             com.gmt2001.Console.debug.println("303 " + req.method().asciiName() + ": " + qsd.path());
-            com.gmt2001.Console.debug.println("Expected: >" + user + ":" + pass + "<");
-            if (auth != null) {
-                com.gmt2001.Console.debug.println("Got: >" + new String(Base64.getDecoder().decode(auth)) + "<");
-            }
 
             HttpServerPageHandler.sendHttpResponse(ctx, req, res);
         }
