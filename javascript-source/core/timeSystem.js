@@ -27,6 +27,7 @@
 (function () {
     let levelWithTime = $.getSetIniDbBoolean('timeSettings', 'timeLevel', false),
             timeLevelWarning = $.getSetIniDbBoolean('timeSettings', 'timeLevelWarning', true),
+            alertActiveOnly = $.getSetIniDbBoolean('timeSettings', 'alertActiveOnly', true),
             keepTimeWhenOffline = $.getSetIniDbBoolean('timeSettings', 'keepTimeWhenOffline', true),
             onlyModsCanCheckUsers = $.getSetIniDbBoolean('timeSettings', 'onlyModsCanCheckUsers', false),
             hoursForLevelUp = $.getSetIniDbNumber('timeSettings', 'timePromoteHours', 50);
@@ -465,6 +466,15 @@
                 }
 
                 /**
+                 * @commandpath time notifyactiveonly - Toggles if the chat announcement is only made for active users.
+                 */
+                if ($.equalsIgnoreCase(action, 'notifyactiveonly')) {
+                    alertActiveOnly = !alertActiveOnly;
+                    $.setIniDbBoolean('timeSettings', 'alertActiveOnly', alertActiveOnly);
+                    $.say($.whisperPrefix(sender) + (alertActiveOnly ? $.lang.get('timesystem.autolevel.chat.activeonly.enabled') : $.lang.get('timesystem.autolevel.chat.activeonly.disabled')));
+                }
+
+                /**
                  * @commandpath time offlinetime - Toggle logging a user's time when the channel is offline
                  */
                 if ($.equalsIgnoreCase(action, 'offlinetime')) {
@@ -528,29 +538,26 @@
 
     // Interval for auto level to regular
     setInterval(function () {
-        let username,
-            i;
-
         if (levelWithTime) {
-            for (i in $.users) {
-                if ($.users[i] !== null) {
-                    username = $.users[i].toLowerCase();
-                    let time = $.optIniDbNumber('time', username);
-                    // Only level viewers to regulars and ignore TwitchBots
-                    if (!$.isTwitchBot(username)
-                        && (!$.hasPermissionLevel(username) || $.isViewer(username)) //Assume users without permissions level are viewers, if they are too new the check will fail in the next condition
-                        && time.isPresent()
-                        && Math.floor(time.get() / 3600) >= hoursForLevelUp) {
-                        if (!$.isMod(username)) { // Added a second check here to be 100% sure the user is not a mod.
-                            $.setUserGroupById(username, $.PERMISSION.Regular);
-                            if (timeLevelWarning) {
-                                $.say($.lang.get(
-                                    'timesystem.autolevel.promoted',
-                                    $.viewer.getByLogin(username).name(),
-                                    $.getGroupNameById($.PERMISSION.Regular).toLowerCase(),
-                                    hoursForLevelUp
-                                )); //No whisper mode needed here.
-                            }
+            let chatList = $.viewer.chatters();
+            let active = $.viewer.activeChatters();
+            for (let i = 0; i < chatList.size(); i++) {
+                let username = $.jsString(chatList.get(i).login().toLowerCase());
+                let time = $.optIniDbNumber('time', username);
+                // Only level viewers to regulars and ignore TwitchBots
+                if (!$.isTwitchBot(username)
+                    && (!$.hasPermissionLevel(username) || $.isViewer(username)) //Assume users without permissions level are viewers, if they are too new the check will fail in the next condition
+                    && time.isPresent()
+                    && Math.floor(time.get() / 3600) >= hoursForLevelUp) {
+                    if (!$.isMod(username)) { // Added a second check here to be 100% sure the user is not a mod.
+                        $.setUserGroupById(username, $.PERMISSION.Regular);
+                        if (timeLevelWarning && (!alertActiveOnly || active.contains(chatList.get(i)))) {
+                            $.say($.lang.get(
+                                'timesystem.autolevel.promoted',
+                                $.viewer.getByLogin(username).name(),
+                                $.getGroupNameById($.PERMISSION.Regular).toLowerCase(),
+                                hoursForLevelUp
+                            )); //No whisper mode needed here.
                         }
                     }
                 }
@@ -572,6 +579,7 @@
         $.registerChatSubcommand('time', 'autolevel', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'promotehours', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'autolevelnotification', $.PERMISSION.Admin);
+        $.registerChatSubcommand('time', 'notifyactiveonly', $.PERMISSION.Admin);
         $.registerChatSubcommand('time', 'modonlyusercheck', $.PERMISSION.Admin);
     });
 
