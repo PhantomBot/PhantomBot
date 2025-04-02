@@ -83,15 +83,7 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
             HttpHeaders headers = req.headers();
             QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
-            String auth1 = headers.get("password");
-            String auth2 = headers.get("webauth");
-            String auth3 = qsd.parameters().getOrDefault("webauth", NOARG).get(0);
-            String astr = auth1 != null ? auth1 : (auth2 != null ? auth2 : (auth3 != null ? auth3 : ""));
-
             com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());
-            com.gmt2001.Console.debug.println("Expected (p): >oauth:" + password + "<");
-            com.gmt2001.Console.debug.println("Expected (t): >" + token + "<");
-            com.gmt2001.Console.debug.println("Got: >" + astr + "<");
         }
 
         HttpServerPageHandler.sendHttpResponse(ctx, req, res);

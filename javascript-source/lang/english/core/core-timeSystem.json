@@ -27,6 +27,8 @@
     "timesystem.take.usage": "Usage: \"!time take [name] [amount]\"",
     "timesystem.autolevel.chat.enabled": "Auto level chat announcements are now enabled!",
     "timesystem.autolevel.chat.disabled": "Auto level chat announcements are now disabled.",
+    "timesystem.autolevel.chat.activeonly.enabled": "Auto level chat announcements are now only sent for active chatters!",
+    "timesystem.autolevel.chat.activeonly.disabled": "Auto level chat announcements are now sent for all chatters, including lurkers.",
     "timesystem.modonlyusercheck.disabled": "Anyone can view other's time earned in chat.",
     "timesystem.modonlyusercheck.enabled": "Only mods can request other's time earned in chat.",
     "get.long.time.string.short": " $1 days, $2 hours and $3 minutes.",
