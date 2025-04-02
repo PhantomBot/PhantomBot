@@ -835,7 +835,9 @@
     });
 
     addUpdate('3.14.5.0', 'installedv3.14.5.0', function () {
-        $.getSetIniDbBoolean('timeSettings', 'alertActiveOnly', false);
+        if ($.getIniDbBoolean('timeSettings', 'timeLevel', false)) {
+            $.getSetIniDbBoolean('timeSettings', 'alertActiveOnly', false);
+        }
     });
 
     // ------ Add updates above this line in execution order ------
