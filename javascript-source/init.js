@@ -644,9 +644,15 @@
              */
             $api.on($script, 'command', function (event) {
                 try {
+                    if (event.getCommand().equalsIgnoreCase("pbinternalping")) {
+                        return;
+                    }
+                } catch(e){}
+                try {
                     let sender = event.getSender();
                     let command = event.getCommand();
                     let args = event.getArgs();
+
                     let subCommand = $.getSubCommandFromArguments(command, args);
                     let isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
