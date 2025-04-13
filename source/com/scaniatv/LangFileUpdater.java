@@ -136,7 +136,7 @@ public final class LangFileUpdater {
                 JSONObject obj = array.getJSONObject(i);
 
                 jss.key(obj.getString("id"));
-                jss.value(sanitizeResponse(obj.getString("response")));
+                jss.value(obj.getString("response"));
             }
 
             jss.endObject();
@@ -166,16 +166,6 @@ public final class LangFileUpdater {
         }
 
         jso.object().key("success").value(success).endObject();
-    }
-
-    /**
-     * Method that replaces ' with \'.
-     *
-     * @param response
-     * @return
-     */
-    private static String sanitizeResponse(String response) {
-        return response.replaceAll("'", "\\\\'");
     }
 
     private static String sanitizePath(String path) {
