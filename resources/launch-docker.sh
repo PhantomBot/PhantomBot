@@ -47,8 +47,10 @@ wait_term()
         kill -TERM "${term_child_pid}" 2>/dev/null
     fi
     wait ${term_child_pid} 2>/dev/null
+    echo $?
     trap - TERM INT
     wait ${term_child_pid} 2>/dev/null
+    echo $?
 }
 
 prep_term
