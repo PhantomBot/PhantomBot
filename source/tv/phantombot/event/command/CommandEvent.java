@@ -81,44 +81,85 @@ public class CommandEvent extends Event {
      * @param arguments The arguments as a single string
      * @param delimiter The delimiter by which arguments are split. Can be any char except double-quote or backslash
      * @param limit The maximum number of arguments to return. -1 indicates unlimited. Once limit is reached, the delimiter is automatically escaped
-     * @param limitNoEscape If set true and limit &gt; 0, the argument at position limit is treated as a literal string, as if all quotes,
+     * @param limitNoEscape If set true and limit > 0, the argument at position limit is treated as a literal string, as if all quotes,
      * backslashes, and delimiters are already escaped
      *
-     * @return A List&lt;String&gt; of arguments
+     * @return A List<String> of arguments
      */
     public static List<String> parseArgs(String arguments, char delimiter, int limit, boolean limitNoEscape) {
         if (delimiter == '"' || delimiter == '\\') {
-            throw new IllegalArgumentException("Can not use double-quote(\") or backslash(\\) as a delimiter");
+            throw new IllegalArgumentException("Cannot use double-quote(\") or backslash(\\\\) as a delimiter");
+        }
+
+        if (limit == 0) {
+            return new LinkedList<>();
         }
 
         List<String> tmpArgs = new LinkedList<>();
         boolean inquote = false;
         boolean escape = false;
+        boolean quoteJustClosed = false; // Initialize quoteJustClosed flag
         StringBuilder tmpStr = new StringBuilder();
-        if (limit > 0) {
-            limit--;
-        }
+        
+        int internalLimit = (limit > 0) ? limit - 1 : -1;
 
         for (char c : arguments.toCharArray()) {
-            if (c == '\\' && !escape && (limit == -1 || tmpArgs.size() < limit || !limitNoEscape)) {
+            if (c == '\\' && !escape && (internalLimit == -1 || tmpArgs.size() < internalLimit || !limitNoEscape)) {
                 escape = true;
-            } else if (c == '"' && !escape && (limit == -1 || tmpArgs.size() < limit || !limitNoEscape)) {
-                inquote = !inquote;
-            } else if (!inquote && c == delimiter && (limit == -1 || tmpArgs.size() < limit)) {
-                if (tmpStr.length() > 0) {
+                quoteJustClosed = false; // Any escape sequence start resets this
+            } else if (c == '"' && !escape && (internalLimit == -1 || tmpArgs.size() < internalLimit || !limitNoEscape)) {
+                if (inquote) { // This is a closing quote
                     tmpArgs.add(tmpStr.toString());
                     tmpStr.setLength(0);
                 }
+                inquote = !inquote;
+                if (!inquote) { // A quote was just closed
+                    quoteJustClosed = true;
+                } else { // A quote was just opened
+                    quoteJustClosed = false;
+                }
+                escape = false;
+            } else if (!inquote && c == delimiter && (internalLimit == -1 || tmpArgs.size() < internalLimit)) {
+                if (escape) {
+                    escape = false; 
+                }
+                if (quoteJustClosed && tmpStr.length() == 0) {
+                    // Do not add an empty tmpStr if it's empty *because* a quote just closed.
+                } else {
+                    tmpArgs.add(tmpStr.toString());
+                }
+                tmpStr.setLength(0);
+                quoteJustClosed = false; // Any delimiter processing resets this flag.
             } else {
                 tmpStr.append(c);
-                escape = false;
+                quoteJustClosed = false; // Appending a character means tmpStr is not empty due to a quote closing.
+                escape = false; // Reset escape status.
             }
         }
 
-        if (tmpStr.length() > 0) {
-            tmpArgs.add(tmpStr.toString());
+        // After the main loop, if a trailing backslash was detected (escape flag is true)
+        if (escape) { // Note: quoteJustClosed might be true here if input is e.g. "\"\\"
+            if (limitNoEscape && limit > 0 && tmpArgs.size() == internalLimit) {
+                tmpStr.append('\\'); // Append literal backslash
+            }
+            // Else, the trailing backslash is dropped.
         }
 
+        // Add the final part (current tmpStr or an implied empty string if arguments ended with delimiter)
+        boolean addFinalPart = false;
+        if (tmpStr.length() > 0) {
+            addFinalPart = true;
+        } else if (!quoteJustClosed && arguments.length() > 0 && arguments.charAt(arguments.length() - 1) == delimiter) {
+            // Only consider adding an empty part for a trailing delimiter if a quote didn't just close.
+            addFinalPart = true;
+        }
+        
+        if (addFinalPart) {
+            if (limit == -1 || tmpArgs.size() < limit) {
+                tmpArgs.add(tmpStr.toString());
+            }
+        }
+        
         return tmpArgs;
     }
 
