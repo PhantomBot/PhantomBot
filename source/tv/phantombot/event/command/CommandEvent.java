@@ -119,7 +119,7 @@ public class CommandEvent extends Event {
                     quoteJustClosed = false;
                 }
                 escape = false;
-            } else if (!inquote && c == delimiter && (internalLimit == -1 || tmpArgs.size() < internalLimit)) {
+            } else if (!inquote && c == delimiter && (limit == -1 || tmpArgs.size() < limit)) { // Changed internalLimit to limit
                 if (escape) {
                     escape = false; 
                 }
