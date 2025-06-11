@@ -112,6 +112,8 @@ RUN set -eux;  \
     python3 -m venv /opt/python3/venv; \
     /opt/python3/venv/bin/pip install --no-cache-dir -r "${DATADIR}/config/healthcheck/requirements.txt"
 
+COPY --from=builder "${DATADIR}/config/healthcheck/healthcheck.py" "${BASEDIR}/"
+
 COPY --from=builder --chown=phantombot:phantombot "${DATADIR}/." "${DATADIR}/"
 
 COPY --from=builder --chown=phantombot:phantombot "${BUILDDIR}/dist/${PROJECT_NAME}-${PROJECT_VERSION}/." "${BASEDIR}/"
@@ -139,7 +141,7 @@ VOLUME "${DATADIR}"
 
 WORKDIR "${BASEDIR}"
 
-HEALTHCHECK --interval=5m --timeout=1m --start-period=2m CMD /opt/python3/venv/bin/python /opt/PhantomBot/config/healthcheck/healthcheck.py --show-success --config-dir /opt/PhantomBot_data/config/
+HEALTHCHECK --interval=5m --timeout=1m --start-period=2m CMD /opt/python3/venv/bin/python /opt/PhantomBot/healthcheck.py --show-success --config-dir /opt/PhantomBot_data/config/ --hook-dir /opt/PhantomBot_data/config/healthcheck/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

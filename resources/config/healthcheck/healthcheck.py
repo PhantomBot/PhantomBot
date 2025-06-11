@@ -109,7 +109,7 @@ def dosuccess(args):
 
 
 def run_hook(hookname, globals=None, locals=None):
-    pathlist = Path(getscriptdir() + hookname).rglob('*.py')
+    pathlist = Path((args.hook_dir + "/" if args.hook_dir else getscriptdir()) + hookname).rglob('*.py')
     for path in pathlist:
         execfile(str(path), globals, locals)
 
@@ -205,6 +205,7 @@ def parseargs():
     scripts_group.add_argument("--hook-arg3", action="store", help="A custom argument to pass to hooks")
     override_group = parser.add_argument_group("Overrides")
     override_group.add_argument("--config-dir", action="store", help="Overrides the location of the PhantomBot config directory")
+    override_group.add_argument("--hook-dir", action="store", help="Overrides the location of the healthcheck hooks directory")
     override_group.add_argument("--ip-hostname", action="store", help="Overrides the IP address/hostname of the PhantomBot server")
     override_group.add_argument("--use-https", action="store_true", help="Overrides the HTTP queries to use https")
     output_group = parser.add_argument_group("Output")
