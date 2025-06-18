@@ -92,6 +92,25 @@
     }
 
     /*
+     * @transformer requireargs
+     * @formula (requireargs count:int) cancels the command if the user does not provide at least the specified number of args
+     * @labels twitch commandevent meta
+     * @example Caster: !addcom !hugs (sender) hugs (touser)(requireargs 1)
+     * @cancels sometimes
+     */
+    function requireargs(args) {
+        if (args.args) {
+            let n = parseInt(args.args);
+            let arg = args.event.getArgs()[n - 1];
+            if (arg === undefined) {
+                $.returnCommandCost(args.event.getSender(), args.event.getCommand(), $.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Mod));
+                return {cancel: true};
+            }
+        }
+        return {result: ''};
+    }
+
+    /*
      * @transformer useronly
      * @formula (useronly name:str) only allows the given user to use the command; multiple users separated by spaces is allowed; if another user attempts to use the command, an error is sent to chat (if permComMsg is enabled) and the command is canceled
      * @labels twitch commandevent meta
