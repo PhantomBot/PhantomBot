@@ -19,6 +19,7 @@
 
 (function () {
     let accept_json = Packages.io.netty.handler.codec.http.HttpHeaderValues.APPLICATION_JSON.toString();
+
     /*
      * @function getCustomAPIValue
      *
@@ -37,6 +38,31 @@
         if (res.content !== null) {
             $.consoleDebug(res.toString());
             return res.content;
+        } else {
+            $.log.error(res.toString());
+            throw res.toString();
+        }
+    }
+
+    /*
+     * @function postCustomAPIValue
+     *
+     * @param {string} url
+     * @returns {string}
+     */
+    function postCustomAPIValue(url, data) {
+        if (data === undefined || data === null) {
+            data = '';
+        }
+
+        let res = $.customAPI.post(url, data);
+
+        if (res.content !== null) {
+            $.consoleDebug(res.toString());
+            return res.content;
+        } else if (res.httpCode >= 200 && res.httpCode < 300) {
+            $.consoleDebug(res.toString());
+            return '';
         } else {
             $.log.error(res.toString());
             throw res.toString();
@@ -97,7 +123,7 @@
      */
     let reCustomAPITextTag = new RegExp(/{([\w\W]+)}/);
     let JSONObject = Packages.org.json.JSONObject;
-    function customapijson(args, event) {
+    function customapijson(args) {
         let match,
                 customJSONStringTag,
                 jsonCheckList,
@@ -127,6 +153,7 @@
             } catch (ex) {
                 return {result: $.lang.get('customcommands.customapijson.err')};
             }
+
             jsonItems = match[2].split(' ');
             for (let j = 0; j < jsonItems.length; j++) {
                 if (jsonItems[j].startsWith('{') && jsonItems[j].endsWith('}')) {
@@ -196,9 +223,56 @@
         }
     }
 
+    /*
+     * @transformer customapipost
+     * @formula (customapipost url:str) http POST url and output returned text
+     * @formula (customapipost url:str data:str) http POST url with body and output returned text
+     * @labels twitch discord noevent commandevent customapi
+     * @notes the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel
+     * @notes if any args, $1-$9, are used in the url, the input event must be a CommandEvent, and the args are required to be provided by the user issuing the command or the tag will abort and return an error message instead
+     * @notes this will output the full response from the remote url, so be careful not to cause spam or lock up the bot with a webpage
+     * @example Caster: !addcom !addjoke (customapipost http://not.real.com/joke.php?name=$1 jokeBody=$2)
+     * User: !addjoke bear These jokes are un-bear-able
+     * Bot: Added joke with key 'bear'
+     */
+    function customapipost(args) {
+        if (args.args) {
+            let flag = false;
+            if (args.event !== undefined && args.event.getArgs !== undefined) {
+                args.args = args.args.replace(/\$([1-9])/g, function (m) {
+                    let i = parseInt(m[1]);
+                    if (!args.event.getArgs()[i - 1]) {
+                        flag = true;
+                        return m[0];
+                    }
+                    return args.event.getArgs()[i - 1];
+                });
+            }
+
+            if (flag) {
+                return {result: $.lang.get('customcommands.customapi.404')};
+            }
+
+            let response;
+            try {
+                let newArgs = $.parseArgs(args.args, ' ', 2);
+                response = postCustomAPIValue(newArgs[0], newArgs[1]);
+            } catch (ex) {
+                $.consoleDebug(ex);
+                return {result: $.lang.get('customcommands.customapijson.err')};
+            }
+
+            return {
+                result: response,
+                cache: false
+            };
+        }
+    }
+
     let transformers = [
         new $.transformers.transformer('customapi', ['twitch', 'discord', 'noevent', 'commandevent', 'customapi'], customapi),
-        new $.transformers.transformer('customapijson', ['twitch', 'discord', 'noevent', 'commandevent', 'customapi'], customapijson)
+        new $.transformers.transformer('customapijson', ['twitch', 'discord', 'noevent', 'commandevent', 'customapi'], customapijson),
+        new $.transformers.transformer('customapipost', ['twitch', 'discord', 'noevent', 'commandevent', 'customapi'], customapipost)
     ];
 
     $.transformers.addTransformers(transformers);
