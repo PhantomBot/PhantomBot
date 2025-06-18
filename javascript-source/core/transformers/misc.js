@@ -17,6 +17,19 @@
 
 (function () {
     /*
+     * @transformer cancel
+     * @formula (cancel) cancels the current command
+     * @labels twitch discord noevent misc
+     * @cancels
+     */
+    function cancel(args) {
+        $.returnCommandCost(args.event.getSender(), args.event.getCommand(), $.checkUserPermission(args.event.getSender(), args.event.getTags(), $.PERMISSION.Mod));
+        return {
+            cancel: true
+        };
+    }
+
+    /*
      * @transformer code
      * @formula (code length:int) random code of the given length composed of a-zA-Z0-9
      * @labels twitch discord noevent misc
@@ -197,6 +210,7 @@
     }
 
     let transformers = [
+        new $.transformers.transformer('cancel', ['twitch', 'discord', 'noevent', 'misc'], cancel),
         new $.transformers.transformer('code', ['twitch', 'discord', 'noevent', 'misc'], code),
         new $.transformers.transformer('encodeurl', ['twitch', 'discord', 'noevent', 'misc'], encodeurl),
         new $.transformers.transformer('encodeurlparam', ['twitch', 'discord', 'noevent', 'misc'], encodeurlparam),
