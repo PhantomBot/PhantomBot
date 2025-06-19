@@ -1060,6 +1060,38 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+#### customapipost
+
+Defined in script: _./javascript-source/core/transformers/customapi.js_
+
+**Formulas:**
+
+- `(customapipost url:str)` - http POST url and output returned text
+- `(customapipost url:str data:str)` - http POST url with body and output returned text
+
+**Labels:** twitch discord noevent commandevent customapi
+
+
+_NOTE: the command tag (token) can be placed in the url for a secret token saved via !tokencom or the panel_
+
+_NOTE: if any args, $1-$9, are used in the url, the input event must be a CommandEvent, and the args are required to be provided by the user issuing the command or the tag will abort and return an error message instead_
+
+_NOTE: this will output the full response from the remote url, so be careful not to cause spam or lock up the bot with a webpage_
+
+
+**Example:**
+```text
+Caster: !addcom !addjoke (customapipost http://not.real.com/joke.php?name=$1 jokeBody=$2)
+User: !addjoke bear These jokes are un-bear-able
+Bot: Added joke with key 'bear'
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### discord
 #### cleardiscordactivity
 
@@ -1445,6 +1477,28 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
+#### requireargs
+
+Defined in script: _./javascript-source/core/transformers/meta.js_
+
+**Formulas:**
+
+- `(requireargs count:int)` - cancels the command if the user does not provide at least the specified number of args
+
+**Labels:** twitch commandevent meta
+
+
+**Example:**
+```text
+Caster: !addcom !hugs (sender) hugs (touser)(requireargs 1)
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
+
+&nbsp;
+
 #### useronly
 
 Defined in script: _./javascript-source/core/transformers/meta.js_
@@ -1467,6 +1521,22 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 &nbsp;
 
 ### misc
+#### cancel
+
+Defined in script: _./javascript-source/core/transformers/misc.js_
+
+**Formulas:**
+
+- `(cancel)` - cancels the current command
+
+**Labels:** twitch discord noevent misc
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Yes
+
+&nbsp;
+
 #### code
 
 Defined in script: _./javascript-source/core/transformers/misc.js_
