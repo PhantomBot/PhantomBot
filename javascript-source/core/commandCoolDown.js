@@ -138,8 +138,7 @@
         var isGlobal = false,
             maxCoolDown = 0;
 
-
-        if (canIgnore(username, isMod)) {
+        if ($.disablecomBlocked().includes(command) || canIgnore(username, isMod)) {
             return [maxCoolDown, isGlobal];
         }
 
