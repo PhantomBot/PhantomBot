@@ -28,7 +28,7 @@
         aliases = {},
         _aliasesLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
         _commandsLock = new Packages.java.util.concurrent.locks.ReentrantLock(),
-        disablecomBlocked = ['disablecom', 'enablecom', 'pausecommands'];
+        disablecomBlocked = ['disablecom', 'enablecom', 'pausecommands', 'setcommandrestriction'];
 
     const RESTRICTION = {
         NONE: -1,
