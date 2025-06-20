@@ -661,9 +661,29 @@
                     }
 
                     // Check if the command exists or if the module is disabled or if the command is restricted.
-                    if (!$.commandExists(command) || !isModuleEnabled($.getCommandScript(command)) || !$.commandRestrictionMet(command, subCommand)) {
-                        if (!event.isHandeled() && !$.equalsIgnoreCase(command, 'pbinternalping')) {
-                            $.log.error("Command doesn't exist or is disabled/restricted: " + command);
+                    if (!$.commandExists(command)) {
+                        if (!event.isHandeled()) {
+                            if ($.inidb.exists('disabledCommands', command)) {
+                                $.log.error("Command is disabled:" + command);
+                            } else {
+                                $.log.error("Command doesn't exist:" + command);
+                            }
+                        }
+                        return;
+                    }
+
+                    // Check if the command exists or if the module is disabled or if the command is restricted.
+                    if (!isModuleEnabled($.getCommandScript(command))) {
+                        if (!event.isHandeled()) {
+                            $.log.error("Module is disabled:" + command);
+                        }
+                        return;
+                    }
+
+                    // Check if the command exists or if the module is disabled or if the command is restricted.
+                    if (!$.commandRestrictionMet(command, subCommand)) {
+                        if (!event.isHandeled()) {
+                            $.log.error("Command is restricted:" + command);
                         }
                         return;
                     }
