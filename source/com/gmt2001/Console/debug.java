@@ -83,11 +83,17 @@ public final class debug {
 
     public static void printlnRhino(Object o) {
         if (PhantomBot.getEnableDebugging()) {
-            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + LogFilter.filter(o.toString()));
-            Logger.instance().log(Logger.LogType.Debug, "");
+            loglnRhino(o);
             if (!PhantomBot.getEnableDebuggingLogOnly()) {
                 System.out.println("[" + logTimestamp.log() + "] [DEBUG] " + o);
             }
+        }
+    }
+
+    public static void loglnRhino(Object o) {
+        if (PhantomBot.getEnableDebugging()) {
+            Logger.instance().log(Logger.LogType.Debug, "[" + logTimestamp.log() + "] " + LogFilter.filter(o.toString()));
+            Logger.instance().log(Logger.LogType.Debug, "");
         }
     }
 

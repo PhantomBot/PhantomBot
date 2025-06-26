@@ -840,6 +840,15 @@
         }
     });
 
+    addUpdate('3.14.7.3', 'installedv3.14.7.3', function () {
+        let twitchBots = $.readFile('./addons/ignorebots.txt');
+
+        for (let i in twitchBots) {
+            $.inidb.del('points', twitchBots[i].toLowerCase());
+            $.inidb.del('time', twitchBots[i].toLowerCase());
+        }
+    });
+
     // ------ Add updates above this line in execution order ------
     if ($.inidb.FileExists('updates') && $.getIniDbBoolean('updates', updates[0].variable)) {
         $.inidb.SetBoolean('updates', '', 'installedNewBot', true);

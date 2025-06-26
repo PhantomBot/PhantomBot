@@ -165,7 +165,7 @@
                 amount += pointsBonusAmount;
             }
 
-            if (!getUserPenalty(username)) {
+            if (!getUserPenalty(username) && !$.isTwitchBot(username)) {
                 if ((isOnline && onlineGain > 0 && amount === onlineGain) || (!isOnline && offlineGain > 0 && amount === offlineGain)) {
                     normalPayoutUsers.push($.javaString(username));
                 } else if (amount > 0) {
