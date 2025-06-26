@@ -196,6 +196,12 @@
         }
     }
 
+    function logDebug(message) {
+        if (Packages.tv.phantombot.PhantomBot.getEnableDebugging()) {
+            Packages.com.gmt2001.Console.debug.loglnRhino(Packages.java.util.Objects.toString('[' + findCaller() + '] ' + message));
+        }
+    }
+
     /*
      * @function generateJavaTrampolines
      */
@@ -665,8 +671,10 @@
                         if (!event.isHandeled()) {
                             if ($.inidb.exists('disabledCommands', command)) {
                                 $.log.error("Command is disabled:" + command);
+                                logDebug("Command is disabled:" + command);
                             } else {
                                 $.log.error("Command doesn't exist:" + command);
+                                logDebug("Command doesn't exist:" + command);
                             }
                         }
                         return;
@@ -676,6 +684,7 @@
                     if (!isModuleEnabled($.getCommandScript(command))) {
                         if (!event.isHandeled()) {
                             $.log.error("Module is disabled:" + command);
+                            logDebug("Module is disabled:" + command);
                         }
                         return;
                     }
@@ -684,12 +693,14 @@
                     if (!$.commandRestrictionMet(command, subCommand)) {
                         if (!event.isHandeled()) {
                             $.log.error("Command is restricted:" + command);
+                            logDebug("Command is restricted:" + command);
                         }
                         return;
                     }
 
                     // Check if commands are paused but allow for the pausecommand to be run
                     if ($.commandPause.isPaused() && !command.equalsIgnoreCase('pausecommands')) {
+                        consoleDebug("Commands are paused:" + command);
                         return;
                     }
 
@@ -705,6 +716,7 @@
                             $.inidb.del('aliases', command);
                         } else {
                             event.handeled();
+                            consoleDebug("Command is alias: " + command + " <> " + alias);
                             if (alias.indexOf(';') === -1) {
                                 parts = alias.split(' ');
                                 aliasCommand = parts.shift();
