@@ -74,37 +74,6 @@
     }
 
     /*
-     * @function getCommandPrice
-     *
-     * @export $
-     * @param {string} command
-     * @param {string} subCommand
-     * @param {string} subCommandAction
-     * @returns {Number}
-     */
-    function getCommandPrice(command, subCommand, subCommandAction) {
-        command = command.toLowerCase();
-        subCommand = subCommand.toLowerCase();
-        subCommandAction = subCommandAction.toLowerCase();
-
-        let cost = $.optIniDbNumber('pricecom', command + ' ' + subCommand + ' ' + subCommandAction);
-        if (cost.isPresent()) {
-            return cost.get();
-        }
-
-        cost = $.optIniDbNumber('pricecom', command + ' ' + subCommand);
-        if (cost.isPresent()) {
-            return cost.get();
-        }
-
-        cost = $.optIniDbNumber('pricecom', command);
-        if (cost.isPresent()) {
-            return cost.get();
-        }
-        return 0;
-    }
-
-    /*
      * @function getCommandPay
      *
      * @export $
@@ -919,7 +888,6 @@
     $.addComRegisterCommands = addComRegisterCommands;
     $.addComRegisterAliases = addComRegisterAliases;
     $.returnCommandCost = returnCommandCost;
-    $.getCommandPrice = getCommandPrice;
     $.getCommandPay = getCommandPay;
     $.payCom = payCom;
     $.command = {
