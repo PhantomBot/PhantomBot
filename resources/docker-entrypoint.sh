@@ -1,11 +1,17 @@
 #!/bin/bash
 set -e
 
-if [[ ${UID+x} && ${GID+x} ]]; then
-	if [[ "$(id -u phantombot)" != $UID ]]; then
+if [[ ${UID+x} ]] || [[ ${GID+x} ]]; then
+	if [ -z "$GID" ]; then
+		GID=$UID
+	fi
+	if [ -z "$UID" ]; then
+		UID=$GID
+	fi
+	if [[ "$(id -u phantombot)" != $UID ]] || [[ "$(id -g phantombot)" != $GID ]]; then
 		echo "Setting user to UID/GID: $UID / $GID"
-		groupmod -g $GID phantombot
-		usermod -u $UID -g $GID phantombot
+		groupmod -o -g $GID phantombot
+		usermod -o -u $UID -g $GID phantombot
 	fi
 fi
 
