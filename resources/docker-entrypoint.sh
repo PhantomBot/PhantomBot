@@ -8,10 +8,12 @@ if [[ ${UID+x} ]] || [[ ${GID+x} ]]; then
 	if [ -z "$UID" ]; then
 		UID=$GID
 	fi
-	if [[ "$(id -u phantombot)" != $UID ]] || [[ "$(id -g phantombot)" != $GID ]]; then
-		echo "Setting user to UID/GID: $UID / $GID"
-		groupmod -o -g $GID phantombot
-		usermod -o -u $UID -g $GID phantombot
+	if (( $UID > 0 )) && (( $GID > 0 )); then
+		if [[ "$(id -u phantombot)" != $UID ]] || [[ "$(id -g phantombot)" != $GID ]]; then
+			echo "Setting user to UID/GID: $UID / $GID"
+			groupmod -o -g $GID phantombot
+			usermod -o -u $UID -g $GID phantombot
+		fi
 	fi
 fi
 
