@@ -59,6 +59,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus;
+import tv.phantombot.twitch.api.Helix.PredictionStatus;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
@@ -1359,6 +1361,72 @@ public class Helix {
 
         return this.handleMutatorAsync(endpoint + js.toString(), () -> {
             return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), this.chooseModeratorOAuth("moderator:manage:announcements"));
+        });
+    }
+
+    /**
+     * Gets all users that the broadcaster banned or put in a timeout.
+     * 
+     * If user_id is specified, only users who are banned or timed out will be in the result object.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose list of banned users you want to get.
+     * @param user_id A list of user IDs used to filter the results. You may specify a maximum of 100 IDs.
+     * @param first The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page.
+     * @param before The cursor used to get the previous page of results.
+     * @param after The cursor used to get the next page of results.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject getBannedUsers(String broadcaster_id, @Nullable List<String> user_id, int first,
+            @Nullable String before, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        return this.getBannedUsersAsync(broadcaster_id, user_id, first, before, after).block();
+    }
+
+    /**
+     * Gets all users that the broadcaster banned or put in a timeout.
+     * 
+     * If user_id is specified, only users who are banned or timed out will be in the result object.
+     *
+     * @param broadcaster_id The ID of the broadcaster whose list of banned users you want to get.
+     * @param user_id TA list of user IDs used to filter the results. You may specify a maximum of 100 IDs.
+     * @param first The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page.
+     * @param before The cursor used to get the previous page of results.
+     * @param after The cursor used to get the next page of results.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> getBannedUsersAsync(String broadcaster_id, @Nullable List<String> user_id, int first,
+            @Nullable String before, @Nullable String after)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        String userIds = null;
+
+        if (user_id != null && !user_id.isEmpty()) {
+            userIds = user_id.stream().limit(100).collect(Collectors.joining("&user_id="));
+        }
+
+        if (before != null && !before.isBlank() && after != null && !after.isBlank()) {
+            throw new IllegalArgumentException("can not use before and after at the same time");
+        }
+
+        if (first <= 0) {
+            first = 20;
+        }
+
+        first = Math.max(1, Math.min(100, first));
+
+        String endpoint = "/moderation/banned?first=" + first + this.qspValid("&broadcaster_id", broadcaster_id)
+            + this.qspValid("&user_id", userIds) + this.qspValid("&after", after)
+            + this.qspValid("&before", before);
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
         });
     }
 

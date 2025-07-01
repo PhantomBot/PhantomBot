@@ -94,6 +94,7 @@ RUN set -eux;  \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 
 RUN set -eux; \
+    userdel -r ubuntu; \
     groupadd -r phantombot -g 900; \
     useradd -u 901 -r -g phantombot -s /sbin/nologin -c "PhantomBot Daemon User" phantombot
 
