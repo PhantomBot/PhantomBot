@@ -19,7 +19,7 @@
 
 $(function() {
     window.updateCookie();
-    var socket = new WebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer'),
+    var socket = new ReconnectingWebSocket((getProtocol() === 'https://' || window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/ytplayer', null, { reconnectInterval: 500 }),
         listeners = [],
         player = {},
         hasAPIKey = true,
@@ -310,15 +310,20 @@ $(function() {
     socket.onopen = (e) => {
         console.info('Connection established with the websocket.');
 
+        if (e.isReconnect) {
+            listeners['reconnect'](null);
+        }
         // Send the auth to the bot.
         sendToSocket({
             authenticate: getAuth()
         });
 
-        // Load the YouTube iframe.
-        $('body').append($('<script/>', {
-            src: 'https://www.youtube.com/iframe_api'
-        }));
+        if (!e.isReconnect) {
+            // Load the YouTube iframe.
+            $('body').append($('<script/>', {
+                src: 'https://www.youtube.com/iframe_api'
+            }));
+        }
     };
 
     /*
@@ -330,7 +335,7 @@ $(function() {
         if (secondConnection) {
             toastr.error('PhantomBot has closed the WebSocket.', '', {timeOut: 0});
         } else {
-            toastr.error('Connection with WebSocket was lost. Refresh once reestablished.', '', {timeOut: 0});
+            toastr.error('Connection with WebSocket was lost.', '', {timeOut: 15});
         }
     };
 
@@ -355,6 +360,7 @@ $(function() {
                     toastr.error('PhantomBot rejected the connection due to a player window already being open.', '',
                                  {timeOut: 0, extendedTimeOut: 0});
                     console.error('Only one instance allowed.');
+                    socket.close();
                 }
                 return;
             }
@@ -363,6 +369,7 @@ $(function() {
             if (message.authresult !== undefined) {
                 if (message.authresult === false) {
                     console.error('Failed to auth with the socket.');
+                    socket.close();
                 }
                 return;
             }
@@ -376,6 +383,7 @@ $(function() {
                                  '<a href="https://phantombot.dev/guides/#guide=content/integrations/youtubesetup">here' +
                                  '</a>.', 'Missing YouTube API Key',
                                  {timeOut: 0, extendedTimeOut: 0});
+                    socket.close();
                 }
                 return;
             }

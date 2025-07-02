@@ -352,7 +352,7 @@ public class WsYTHandler implements WsFrameHandler {
         this.currentState = currentState;
     }
 
-    public void play(String youtubeID, String songTitle, String duration, String requester) throws JSONException {
+    public void play(String youtubeID, String songTitle, String duration, String requester, int index) throws JSONException {
         JSONStringer jso = new JSONStringer();
 
         jso.object();
@@ -362,6 +362,7 @@ public class WsYTHandler implements WsFrameHandler {
         jso.key("duration").value(duration);
         jso.key("title").value(songTitle);
         jso.key("requester").value(requester);
+        jso.key("index").value(index);
         jso.endObject();
         jso.endObject();
         sendJSONToAll(jso.toString());

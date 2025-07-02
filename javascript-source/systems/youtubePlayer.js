@@ -623,7 +623,7 @@
                 }
             }
 
-            connectedPlayerClient.play(currentVideo);
+            connectedPlayerClient.play(currentVideo, playlistPosition + 1);
             this.updateCurrentSongFile(currentVideo);
 
             if (announceInChat) {
@@ -646,6 +646,7 @@
          * @return (boolean}
          */
         this.findSongByTitle = function(songTitle) {
+            let index = 0;
             if (!requests.isEmpty()) {
                 var videoTitle = null,
                     requestsArray = requests.toArray(),
@@ -658,6 +659,7 @@
                         try {
                             currentVideo = currentPlaylist.getRequestAtIndex(i);
                             match = true;
+                            index = i;
                         } catch (ex) {
                             $.log.error("YoutubeVideo::exception: " + ex);
                             return false;
@@ -677,6 +679,7 @@
                             previousVideo = currentVideo;
                             currentVideo = new YoutubeVideo($.getIniDbString(playListDbId, defaultPlaylistReadOnly[i]), playlistDJname);
                             match = true;
+                            index = i;
                             break;
                         }
                     } catch (ex) {
@@ -690,7 +693,7 @@
                 return false;
             }
 
-            connectedPlayerClient.play(currentVideo);
+            connectedPlayerClient.play(currentVideo, index);
             this.updateCurrentSongFile(currentVideo);
 
             if (announceInChat) {
@@ -767,7 +770,7 @@
                 }
             }
 
-            connectedPlayerClient.play(currentVideo);
+            connectedPlayerClient.play(currentVideo, 0);
             this.updateCurrentSongFile(currentVideo);
 
             if (announceInChat) {
@@ -1102,8 +1105,11 @@
          * @function play
          * @param {YoutubeVideo} youtubeVideo
          */
-        this.play = function(youtubeVideo) {
-            client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner());
+        this.play = function(youtubeVideo, index) {
+            if (index === undefined || index === null) {
+                index = 0;
+            }
+            client.play(youtubeVideo.getVideoId(), youtubeVideo.getVideoTitle(), youtubeVideo.getVideoLengthMMSS(), youtubeVideo.getOwner(), index);
         };
 
         /**

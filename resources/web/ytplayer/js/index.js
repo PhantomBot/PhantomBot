@@ -99,6 +99,10 @@ $(function() {
         player.canSlide = true;
         // Set a var for the first load.
         player.firstLoad = true;
+        player.isPlaylist = false;
+        player.playlist = null;
+        player.index = 0;
+        player.videoId = null;
 
         // Check if the player is disabled right away.
         player.dbQuery('get_module_status', 'modules', (data) => {
@@ -112,8 +116,21 @@ $(function() {
             }
         });
 
+        player.addListener('reconnect', (e) => {
+            if (player.isPlaylist) {
+                const lastPlaylist = player.playlist;
+                const lastIndex = player.index;
+                setTimeout(function() {
+                    player.loadPlaylist(lastPlaylist);
+                    player.updateSong(lastIndex);
+                }, 1000);
+            }
+        });
+
         // Add a listener to load the main playlist.
         player.addListener('playlist', (e) => {
+            player.isPlaylist = true;
+            player.playlist = e.playlistname;
             let table = [],
                 playlist = e.playlist;
 
@@ -223,6 +240,7 @@ $(function() {
 
         // Add a listener for the songrequest queue.
         player.addListener('songlist', (e) => {
+            player.isPlaylist = false;
             let table = $('#queue-table-content'),
                 songlist = e.songlist;
 
@@ -343,6 +361,11 @@ $(function() {
 
         // Add a listener for the play event.
         player.addListener('play', (e) => {
+            if (player.index === e.index && player.API.getPlayerState() === 1 && player.videoId === e.play) {
+                return;
+            }
+            player.index = e.index;
+            player.videoId = e.play;
             // If this is the first load, start the player paused.
             if (player.firstLoad === true) {
                 // Queue the first video
