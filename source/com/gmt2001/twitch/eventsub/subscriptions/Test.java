@@ -16,16 +16,21 @@
  */
 package com.gmt2001.twitch.eventsub.subscriptions;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.eventsub.EventSubInternalNotificationEvent;
 import com.gmt2001.twitch.eventsub.EventSubSubscription;
 import com.gmt2001.twitch.eventsub.EventSubSubscriptionType;
 
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.eventsub.EventSubTestEvent;
 
@@ -132,5 +137,27 @@ public final class Test extends EventSubSubscriptionType {
      */
     public JSONObject payload() {
         return this.payload;
+    }
+
+    /**
+     * Allows sending a test payload to the EventSub handler
+     * 
+     * @param type Subscription Type
+     * @param version Subscription Version
+     * @param payload EventSub payload
+     */
+    public static void sendTestEvent(String type, String version, String payload) {
+        JSONStringer meta = new JSONStringer();
+        meta.object()
+            .key("metadata").object()
+                .key("message_id").value(UUID.randomUUID().toString())
+                .key("message_type").value("notification")
+                .key("message_timestamp").value(ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .key("subscription_type").value(type)
+                .key("subscription_version").value(version)
+            .endObject()
+            .key("payload").value(new JSONObject(payload))
+        .endObject();
+        EventSub.instance().handleFrame(null, new TextWebSocketFrame(meta.toString()));
     }
 }
