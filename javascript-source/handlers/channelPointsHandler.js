@@ -215,8 +215,9 @@
             }
 
             lock.lock();
+            let data;
             try {
-                let data = {
+                data = {
                     'id': rewardID,
                     'title': rewardTitle,
                     'command': commandConfig
