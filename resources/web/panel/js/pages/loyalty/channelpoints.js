@@ -771,9 +771,11 @@ $(function () {
                     commandSelector = helpers.getDropdownGroup('redemption-select', 'Linked Redeemable', '', options, 'The linked Channel Points redeemable.');
                 }
 
+                let manualMode = false;
                 if (redeemables.length === 0 || commandSelector === null) {
                     commandSelector = helpers.getInputGroup('redemption-select', 'text', 'Linked Redeemable', '', 'Unable to Load. Manual Setup Enabled',
                             'Unable to load the Channel Points redeemable list, using manual linking mode.', true);
+                    manualMode = true;
                 }
 
                 // Get advance modal from our util functions in /utils/helpers.js
@@ -807,7 +809,7 @@ $(function () {
 
                     // Handle each input to make sure they have a value.
                     switch (false) {
-                        case helpers.handleInput(redemptionSelect.find(':selected'), validateRedemptionSelect):
+                        case helpers.handleInput(redemptionSelect.find(':selected'), validateRedemptionSelect, manualMode):
                         case helpers.handleInputString(redemptionResponse):
                             break;
                         default:
@@ -815,7 +817,7 @@ $(function () {
                                 socket.updateDBValues('channelpoints_manual', {
                                     tables: ['channelPointsSettings'],
                                     keys: ['commandConfig'],
-                                    values: [redemptionResponse]
+                                    values: [redemptionResponse.val()]
                                 }, function () {
                                     reloadRewards(function () {
                                         swal({
