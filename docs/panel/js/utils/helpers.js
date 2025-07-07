@@ -196,8 +196,11 @@ $(function () {
      *
      * Validator takes obj as argument should return null if the input is valid or else an error message.
      */
-    helpers.handleInput = function (obj, validator) {
+    helpers.handleInput = function (obj, validator, allowNull) {
         if (obj.length === 0) {
+            if (allowNull === true) {
+                return true;
+            }
             helpers.logError('Failed to validate input due to the object being null.', helpers.LOG_TYPE.FORCE);
             return;
         }
