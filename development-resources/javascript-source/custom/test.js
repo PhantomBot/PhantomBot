@@ -29,7 +29,7 @@
         // Lists the test commands
         if (command.equalsIgnoreCase('testhelp')) {
             $.say('Test Commands: !testcmd | !addmon | !delmod | !addsub | !delsub | !setcaster | !setadmin | !setvip | !setdonator | !setregular'
-                    + ' | !setviewer | !testexception | !testtimeout | !testinterval | !testcleartimeout | !testclearinterval | !testdb');
+                    + ' | !setviewer | !testexception | !testtimeout | !testinterval | !testcleartimeout | !testclearinterval | !testdb | !testlistbans | !testeventsub');
         }
 
         // Runs a command as another (real or fake) user
@@ -307,6 +307,55 @@
             $.consoleDebug('OVERALL RESULT ' + (pass ? 'PASS' : 'FAIL'));
             $.say('DB Test ' + (pass ? 'PASS' : 'FAIL') + '. See console for details');
         }
+
+        // Test grabbing current timeouts/bans from API and printing to console
+        if (command.equalsIgnoreCase('testlistbans')) {
+            $.consoleLn($.helix.getBannedUsers($.viewer.broadcaster().id(), null, 20, null, null).toString(4));
+        }
+
+        // Test an EventSub notification for a Channel Points Redeem
+        if (command.equalsIgnoreCase('testeventsub')) {
+            let rra = Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.channel_points.redemption.ChannelPointsCustomRewardRedemptionAdd;
+            let Test = Packages.com.gmt2001.twitch.eventsub.subscriptions.Test;
+            
+            let payload = JSON.stringify({
+                "subscription": {
+                    "id": "f1c2a387-161a-49f9-a165-0f21d7a4e1c4",
+                    "type": rra.TYPE,
+                    "version": rra.VERSION,
+                    "status": "enabled",
+                    "cost": 0,
+                    "condition": {
+                        "broadcaster_user_id": "1337"
+                    },
+                     "transport": {
+                        "method": "websocket",
+                        "session_id": "null"
+                    },
+                    "created_at": "2019-11-16T10:11:12.634234626Z"
+                },
+                "event": {
+                    "id": "17fa2df1-ad76-4804-bfa5-a40ef63efe63",
+                    "broadcaster_user_id": "1337",
+                    "broadcaster_user_login": "cool_user",
+                    "broadcaster_user_name": "Cool_User",
+                    "user_id": "9001",
+                    "user_login": "cooler_user",
+                    "user_name": "Cooler_User",
+                    "user_input": "pogchamp",
+                    "status": "unfulfilled",
+                    "reward": {
+                        "id": "92af127c-7326-4483-a52b-b0da0be61c01",
+                        "title": "title",
+                        "cost": 100,
+                        "prompt": "reward prompt"
+                    },
+                    "redeemed_at": "2020-07-15T17:16:03.17106713Z"
+                }
+            });
+            
+            Test.sendTestEvent(rra.TYPE, rra.VERSION, payload);
+        }
     });
 
     // Test some EventSub subscriptions
@@ -362,5 +411,7 @@
         $.registerChatCommand('./custom/test.js', 'testcleartimeout', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testclearinterval', $.PERMISSION.Admin);
         $.registerChatCommand('./custom/test.js', 'testdb', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testlistbans', $.PERMISSION.Admin);
+        $.registerChatCommand('./custom/test.js', 'testeventsub', $.PERMISSION.Admin);
     });
 })();

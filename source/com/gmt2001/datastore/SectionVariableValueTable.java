@@ -86,10 +86,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      *         {@code create} was {@code false}
      */
     public static SectionVariableValueTable instance(String tableName, boolean create) {
-        tableName = tableName.toLowerCase();
-        if (!tableName.startsWith("phantombot_")) {
-            tableName = "phantombot_" + tableName;
-        }
+        tableName = normalizeTableName(tableName);
         return TABLES.computeIfAbsent(tableName, lTableName -> {
             Optional<Table<?>> cTable = DataStore.instance().findTable(lTableName);
 
@@ -184,7 +181,7 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
      * @return
      */
     public Table<SectionVariableValueRecord> rename(String newName) {
-        newName = newName.toLowerCase();
+        newName = normalizeTableName(newName);
         Datastore2.instance().dslContext().alterTable(this).renameTo(newName).execute();
         Datastore2.instance().invalidateTableCache();
         TABLES.remove(this.tableName.toLowerCase());
@@ -224,12 +221,21 @@ public final class SectionVariableValueTable extends TableImpl<SectionVariableVa
         }
     }
 
+    private static String normalizeTableName(String name) {
+        name = name.toLowerCase();
+        if (!name.startsWith("phantombot_")) {
+            name = "phantombot_" + name;
+        }
+        return name;
+    }
+
     /**
      * Creates the table, if not exists
      *
      * @param name the table name
      */
     private void createTable(String name) {
+        name = normalizeTableName(name);
         Datastore2.instance().dslContext().createTableIfNotExists(name)
                 .column(this.SECTION)
                 .column(this.VARIABLE)
