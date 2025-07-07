@@ -280,6 +280,24 @@ loadScripts(document, 'script');</script>
 <div class="block">Locks, resolves, or cancels a Channel Points Prediction.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBannedUsers(java.lang.String,java.util.List,int,java.lang.String,java.lang.String)" class="member-name-link">getBannedUsers</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;before,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets all users that the broadcaster banned or put in a timeout.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBannedUsersAsync(java.lang.String,java.util.List,int,java.lang.String,java.lang.String)" class="member-name-link">getBannedUsersAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;before,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets all users that the broadcaster banned or put in a timeout.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBroadcasterSubscriptions(java.lang.String,java.util.List,int,java.lang.String)" class="member-name-link">getBroadcasterSubscriptions</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;user_id,
  int&nbsp;first,
@@ -1785,6 +1803,68 @@ loadScripts(document, 'script');</script>
  longer than 500 characters are truncated.</dd>
 <dd><code>color</code> - The color used to highlight the announcement. If color is set to primary, the channel's accent color is used to highlight the
  announcement (see Profile Accent Color under profile settings, Channel and Videos, and Brand).</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getBannedUsers(java.lang.String,java.util.List,int,java.lang.String,java.lang.String)">
+<h3>getBannedUsers</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">getBannedUsers</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;before,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
+                          throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Gets all users that the broadcaster banned or put in a timeout.
+ 
+ If user_id is specified, only users who are banned or timed out will be in the result object.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>broadcaster_id</code> - The ID of the broadcaster whose list of banned users you want to get.</dd>
+<dd><code>user_id</code> - A list of user IDs used to filter the results. You may specify a maximum of 100 IDs.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page.</dd>
+<dd><code>before</code> - The cursor used to get the previous page of results.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getBannedUsersAsync(java.lang.String,java.util.List,int,java.lang.String,java.lang.String)">
+<h3>getBannedUsersAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">getBannedUsersAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;user_id,
+ int&nbsp;first,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;before,
+ <a href="https://projectreactor.io/docs/core/release/api/reactor/util/annotation/Nullable.html" title="class or interface in reactor.util.annotation" class="external-link">@Nullable</a>
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;after)</span>
+                                     throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Gets all users that the broadcaster banned or put in a timeout.
+ 
+ If user_id is specified, only users who are banned or timed out will be in the result object.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>broadcaster_id</code> - The ID of the broadcaster whose list of banned users you want to get.</dd>
+<dd><code>user_id</code> - TA list of user IDs used to filter the results. You may specify a maximum of 100 IDs.</dd>
+<dd><code>first</code> - The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page.</dd>
+<dd><code>before</code> - The cursor used to get the previous page of results.</dd>
+<dd><code>after</code> - The cursor used to get the next page of results.</dd>
 <dt>Returns:</dt>
 <dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
