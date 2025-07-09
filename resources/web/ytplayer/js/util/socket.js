@@ -23,7 +23,8 @@ $(function() {
         listeners = [],
         player = {},
         hasAPIKey = true,
-        secondConnection = false;
+        secondConnection = false,
+        k = null;
 
     /*
      * @function sends data to the socket, this should only be used in this script.
@@ -309,13 +310,15 @@ $(function() {
      */
     socket.onopen = (e) => {
         console.info('Connection established with the websocket.');
+        toastr.remove();
 
         if (e.isReconnect) {
             listeners['reconnect'](null);
         }
         // Send the auth to the bot.
         sendToSocket({
-            authenticate: getAuth()
+            authenticate: getAuth(),
+            k: k
         });
 
         if (!e.isReconnect) {
@@ -376,6 +379,7 @@ $(function() {
 
             // Check to ensure that there is an API key.
             if (message.ytkeycheck !== undefined) {
+                k = message.k;
                 if (message.ytkeycheck === false) {
                     hasAPIKey = false;
                     console.error("Missing YouTube API Key.");
