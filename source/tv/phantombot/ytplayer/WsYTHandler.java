@@ -30,6 +30,9 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketCloseStatus;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.util.AttributeKey;
+import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
@@ -74,6 +77,7 @@ public class WsYTHandler implements WsFrameHandler {
     private int currentVolume;
     private int currentState = -10;
     private boolean clientConnected;
+    private String k = null;
     private int bufferCounter;
 
     public WsYTHandler(String ytAuthRO, String ytAuth) {
@@ -126,16 +130,30 @@ public class WsYTHandler implements WsFrameHandler {
         if (frame instanceof TextWebSocketFrame tframe) {
             PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
             if (clientConnected && !ctx.channel().attr(ATTR_IS_PLAYER).get() && !ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get()) {
-                JSONStringer jso = new JSONStringer();
-                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("secondconnection").value(true).endObject().toString()));
-                ctx.close();
+                JSONObject jsoo = new JSONObject(tframe.text());
+                if (this.k != null && jsoo.has("authenticate") && jsoo.has("k") && !jsoo.isNull("k") && jsoo.getString("k").equals(this.k)) {
+                    WebSocketFrameHandler.getWsSessions("/ws/ytplayer").forEach((c) -> {
+                        if (c.attr(ATTR_IS_PLAYER).get()) {
+                            WebSocketFrameHandler.sendWsFrame(c, null, WebSocketFrameHandler.prepareCloseWebSocketFrame(WebSocketCloseStatus.POLICY_VIOLATION));
+                            c.close();
+                        }
+                    });
+                    Mono.delay(Duration.ofSeconds(1)).block();
+                    JSONStringer jsonObject = new JSONStringer();
+                    WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.object().key("ping").value("ping").endObject().toString()));
+                } else {
+                    JSONStringer jso = new JSONStringer();
+                    WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("secondconnection").value(true).endObject().toString()));
+                    ctx.close();
+                }
                 return;
             } else if (!clientConnected && ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_IS_READ_ONLY).get() && (user == null || !user.isConfigUser())) {
                 return;
             } else if (!clientConnected) {
                 boolean hasYTKey = !PhantomBot.instance().isYouTubeKeyEmpty();
+                this.k = PhantomBot.generateRandomString(12, false);
                 JSONStringer jso = new JSONStringer();
-                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("ytkeycheck").value(hasYTKey).endObject().toString()));
+                WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jso.object().key("ytkeycheck").value(hasYTKey).key("k").value(this.k).endObject().toString()));
 
                 if (!hasYTKey) {
                     com.gmt2001.Console.err.println("A YouTube API key has not been configured. Please review the instructions in the guides at "
