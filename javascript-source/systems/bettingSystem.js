@@ -21,7 +21,7 @@
  *
  */
 (function() {
-    var bets = {},
+    let bets = {},
         timeout,
         gain = $.getSetIniDbNumber('bettingSettings', 'gain', 40),
         saveBets = $.getSetIniDbBoolean('bettingSettings', 'save', true),
@@ -82,8 +82,9 @@
             $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.error.opened'));
             return;
         }
-        if (!options.includes(', ')) {
-            $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.usage'));
+        options = $.jsString(options);
+        if (!options.includes(',')) {
+            $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.open.error.options'));
             return;
         }
 
@@ -112,22 +113,23 @@
         }, 5 * 6e4);
 
         // Trim first spaces.
-        var split = options.trim().split(', ');
+        let split = options.trim().split(',');
 
         for (var i = 0; i < split.length; i++) {
             // Trim other spaces.
-            split[i] = split[i].trim().toLowerCase();
-
-            bet.options[split[i]] = {
+            split[i] = split[i].trim();
+            let loption = split[i].toLowerCase();
+            bet.options[loption] = {
+                label: split[i],
                 bets: 0,
                 total: 0
             };
             objOBS.push({
                 'label': split[i],
-                'votes': total
+                'votes': 0
             });
             bet.opt.push(split[i]);
-            $.inidb.set('bettingVotes', (split[i] + '').replace(/\s/, '%space_option%'), 0);
+            $.inidb.set('bettingVotes', loption.replace(/\s/, '%space_option%'), 0);
         }
 
         let msg = JSON.stringify({
@@ -163,7 +165,7 @@
 
         if (bet.status === true) {
             if (bet.timer > 0) {
-                var timeleft = bet.timer - (($.systemTime() - bet.startTime) / 6e4);
+                let timeleft = bet.timer - (($.systemTime() - bet.startTime) / 6e4);
                 timeout = setTimeout(function() {
                     stop();
                 }, timeleft * 6e4);
@@ -211,7 +213,8 @@
             $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.close.usage'));
             return;
         }
-        if (bet.options[option] === undefined) {
+        let loption = option.toLowerCase();
+        if (bet.options[loption] === undefined) {
             $.say($.whisperPrefix(sender) + $.lang.get('bettingsystem.bet.null'));
             return;
         }
@@ -224,7 +227,9 @@
         bet.status = false;
         bet.opened = false;
 
-        var winners = [],
+        option = bet.options[loption].label;
+
+        let winners = [],
             total = 0,
             give = 0,
             i;
@@ -238,7 +243,7 @@
         for (i in bets) {
             if ($.equalsIgnoreCase(bets[i].option, option)) {
                 winners.push(i.toLowerCase());
-                give = (((bet.total / bet.options[option].bets) * parseFloat(gain / 100)) + parseInt(bets[i].amount));
+                give = (((bet.total / bet.options[loption].bets) * parseFloat(gain / 100)) + parseInt(bets[i].amount));
                 total += give;
                 $.inidb.incr('points', i.toLowerCase(), Math.floor(give));
             }
@@ -270,12 +275,12 @@
      */
     function save() {
         if (saveBets) {
-            var date = Packages.java.time.ZonedDateTime.now().format(Packages.java.time.format.DateTimeFormatter.ofPattern(saveFormat));
+            let date = Packages.java.time.ZonedDateTime.now().format(Packages.java.time.format.DateTimeFormatter.ofPattern(saveFormat));
 
             if (!$.inidb.exists('bettingResults', date)) {
                 $.inidb.set('bettingResults', date, $.lang.get('bettingsystem.save.format', bet.title, bet.opt.join(', '), bet.total, bet.entries, bet.pointsWon));
             } else {
-                var keys = $.inidb.GetKeyList('bettingResults', ''),
+                let keys = $.inidb.GetKeyList('bettingResults', ''),
                     a = 1,
                     i;
                 for (i in keys) {
@@ -326,7 +331,7 @@
      */
     function reset(refund) {
         if (refund) {
-            var betters = Object.keys(bets);
+            let betters = Object.keys(bets);
 
             for (var i = 0; i < betters.length; i++) {
                 $.inidb.incr('points', betters[i], bets[betters[i]].amount);
@@ -383,7 +388,8 @@
             message(sender, $.lang.get('bettingsystem.bet.betplaced', $.getPointsString(bets[sender].amount), bets[sender].option));
             return;
         }
-        if (bet.options[option] === undefined) {
+        let loption = option.toLowerCase();
+        if (bet.options[loption] === undefined) {
             message(sender, $.lang.get('bettingsystem.bet.null'));
             return;
         }
@@ -392,14 +398,14 @@
         try {
             bet.entries++;
             bet.total += parseInt(amount);
-            bet.options[option].bets++;
-            bet.options[option].total += parseInt(amount);
+            bet.options[loption].bets++;
+            bet.options[loption].total += parseInt(amount);
             bets[sender] = {
                 option: option,
                 amount: amount
             };
             for (var i = 0; i < objOBS.length; i++) {
-                if (objOBS[i].label == option) {
+                if ($.equalsIgnoreCase(objOBS[i].label, option)) {
                     objOBS[i].votes = objOBS[i].votes + amount;
                 }
             }
@@ -415,7 +421,7 @@
         $.alertspollssocket.sendJSONToAll(msg);
 
         $.inidb.decr('points', sender, amount);
-        $.inidb.incr('bettingVotes', option.replace(/\s/, '%space_option%'), 1);
+        $.inidb.incr('bettingVotes', loption.replace(/\s/, '%space_option%'), 1);
     }
 
     /**
@@ -425,7 +431,7 @@
      * @param {object} event
      */
     $.bind('command', function(event) {
-        var sender = event.getSender(),
+        let sender = event.getSender(),
             command = event.getCommand(),
             args = event.getArgs(),
             action = args[0],
@@ -449,7 +455,7 @@
              * @commandpath bet close ["winning option"] - Closes the current bet.
              */
             if ($.equalsIgnoreCase(action, 'close')) {
-                close(sender, (args[1] === undefined ? undefined : args.slice(1).join(' ').toLowerCase().trim()));
+                close(sender, (args[1] === undefined ? undefined : args.slice(1).join(' ').trim()));
                 return;
             }
 
@@ -543,13 +549,13 @@
                  * @commandpath bet [amount] [option] - Bets on that option.
                  */
             } else {
-                var option = args.splice(1).join(' ').toLowerCase().trim();
-                if(option.length === 0) {
+                let option = args.splice(1).join(' ').trim();
+                if (option.length === 0) {
                     message(sender, $.lang.get('bettingsystem.bet.usage'));
                     return;
                 }
 
-                var points;
+                let points;
                 if ($.equalsIgnoreCase(action, "all") || $.equalsIgnoreCase(action, "allin") || $.equalsIgnoreCase(action, "all-in")){
                     points = $.getUserPoints(sender);
                 } else if ($.equalsIgnoreCase(action, "half")){

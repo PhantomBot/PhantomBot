@@ -2,6 +2,7 @@
     "bettingsystem.open.usage": "Usage: !bet open [\"title\"] [\"option1, option2, etc.\"] [minimum bet] [maximum bet] [close timer mins] - The quotes are needed for the title and options.",
     "bettingsystem.open.error": "You must chose a winning option on the previous bet before you can open a new one. Use !bet close [option]",
     "bettingsystem.open.error.opened": "A bet is already opened.",
+    "bettingsystem.open.error.options": "Must provide 2 or more options to bet on. Usage: !bet open [\"title\"] [\"option1, option2, etc.\"] [minimum bet] [maximum bet] [close timer mins]",
     "bettingsystem.open.success": "A bet is now opened! \"$1\". Bet options: \"$2\". Bet with: !bet [amount] [option]",
     "bettingsystem.close.error.usage": "The bet is now closed! Waiting on winning result. Use !bet close [winning option]",
     "bettingsystem.close.usage": "Usage: !bet close [winning option]",
