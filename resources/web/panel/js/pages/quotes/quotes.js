@@ -211,7 +211,7 @@ $(function () {
                 'role': 'form'
             })
                     // Quote input.
-                    .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e.settings, '[(id)] "(quote)", by (user) ((date))'),
+                    .append(helpers.getInputGroup('quote-msg', 'text', 'Quote Response', '', helpers.getDefaultIfNullOrUndefined(e['quoteMessage'], '[(id)] "(quote)", by (user) ((date))'),
                             'Message said in chat when someone uses the quote command. Tags: (id), (quote), (user), (game) and (date)'))
                     .append(helpers.getDropdownGroup('quote-twitch-names-toggle', 'Force Twitch Names', (helpers.isTrue(e['quoteTwitchNamesToggle']) ? 'Yes' : 'No'), ['Yes', 'No'],
                             'If names for quotes should be validated against Twitch usernames. If not, names can be anything.')),
