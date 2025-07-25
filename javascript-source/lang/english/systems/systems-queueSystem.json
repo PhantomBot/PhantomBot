@@ -8,6 +8,8 @@
     "queuesystem.close.error": "There is no queue opened.",
     "queuesystem.close.success": "The queue is now closed!",
     "queuesystem.clear.success": "The queue has been reset and cleared.",
+    "queuesystem.join.success": "You have been added to the queue! You are in position $1",
+    "queuesystem.join.toggle": "The queue join success message is now $1",
     "queuesystem.join.error.joined": "You are already in the queue.",
     "queuesystem.join.error.full": "The queue is currently full.",
     "queuesystem.remove.usage": "Usage: !queue remove [username]",

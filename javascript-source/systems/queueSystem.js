@@ -19,6 +19,7 @@
 
 (function() {
     var isOpened = false,
+        msgOnJoin = $.getSetIniDbBoolean('settings', 'queueSystemMsgOnJoin', false),
         info = {},
         queue = {},
         _queueLock = new Packages.java.util.concurrent.locks.ReentrantLock();
@@ -124,13 +125,17 @@
                 username: username
             };
 
+            let position = String(Object.keys(queue).length);
             var temp = {
                 'tag': String((action === undefined ? '' : action)),
                 'time': String(date(new Date(), true)),
-                'position': String(Object.keys(queue).length),
+                'position': position,
                 'username': String(username)
             };
             $.inidb.set('queue', username, JSON.stringify(temp));
+            if (msgOnJoin) {
+                $.say($.whisperPrefix(username) + $.lang.get('queuesystem.join.success', position));
+            }
         } finally {
             _queueLock.unlock();
         }
@@ -382,6 +387,16 @@
             }
 
             /*
+             * @commandpath queue togglemsg - Toggles if the bot posts a success resonse to !joinqueue.
+             */
+            if ($.equalsIgnoreCase(action, 'togglemsg')) {
+                msgOnJoin = !msgOnJoin;
+                $.setIniDbBoolean('settings', 'queueSystemMsgOnJoin', msgOnJoin);
+                $.say($.whisperPrefix(sender) + $.lang.get('queuesystem.join.toggle', msgOnJoin ? $.lang.get('common.enabled') : $.lang.get('common.disabled')));
+                return;
+            }
+
+            /*
              * @commandpath queue remove [username] - Removes that username from the queue.
              */
             if ($.equalsIgnoreCase(action, 'remove')) {
@@ -453,6 +468,7 @@
         $.registerChatSubcommand('queue', 'open', $.PERMISSION.Admin);
         $.registerChatSubcommand('queue', 'close', $.PERMISSION.Admin);
         $.registerChatSubcommand('queue', 'clear', $.PERMISSION.Admin);
+        $.registerChatSubcommand('queue', 'togglemsg', $.PERMISSION.Admin);
         $.registerChatSubcommand('queue', 'remove', $.PERMISSION.Admin);
         $.registerChatSubcommand('queue', 'pick', $.PERMISSION.Admin);
         $.registerChatSubcommand('queue', 'random', $.PERMISSION.Admin);
