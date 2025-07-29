@@ -148,6 +148,22 @@ public final class TMISlashCommands {
             case ".w":
                 whisper(message);
                 break;
+            case "/mod":
+            case ".mod":
+                mod(message);
+                break;
+            case "/unmod":
+            case ".unmod":
+                unmod(message);
+                break;
+            case "/vip":
+            case ".vip":
+                vip(message);
+                break;
+            case "/unvip":
+            case ".unvip":
+                unvip(message);
+                break;
             default:
                 return false;
         }
@@ -598,6 +614,114 @@ public final class TMISlashCommands {
                 .doOnSuccess(jso -> {
                     if (jso.getInt("_http") != 204) {
                         com.gmt2001.Console.err.println("Failed to /w " + params[1] + ": " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void mod(String message) {
+        String[] params = message.split(" ", 3);
+
+        if (params.length < 2) {
+            com.gmt2001.Console.err.println("Failed to /mod due to missing param");
+            return;
+        }
+
+        Viewer user = ViewerCache.instance().getByLogin(params[1]);
+
+        if (user == null || user.id().equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /mod");
+            return;
+        }
+
+        String user_id = user.id();
+
+        Helix.instance()
+                .addChannelModeratorAsync(ViewerCache.instance().broadcaster().id(), user_id)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") != 204) {
+                        com.gmt2001.Console.err.println("Failed to /mod " + params[1] + ": " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void unmod(String message) {
+        String[] params = message.split(" ", 3);
+
+        if (params.length < 2) {
+            com.gmt2001.Console.err.println("Failed to /unmod due to missing param");
+            return;
+        }
+
+        Viewer user = ViewerCache.instance().getByLogin(params[1]);
+
+        if (user == null || user.id().equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /unmod");
+            return;
+        }
+
+        String user_id = user.id();
+
+        Helix.instance()
+                .removeChannelModeratorAsync(ViewerCache.instance().broadcaster().id(), user_id)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") != 204) {
+                        com.gmt2001.Console.err.println("Failed to /unmod " + params[1] + ": " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void vip(String message) {
+        String[] params = message.split(" ", 3);
+
+        if (params.length < 2) {
+            com.gmt2001.Console.err.println("Failed to /vip due to missing param");
+            return;
+        }
+
+        Viewer user = ViewerCache.instance().getByLogin(params[1]);
+
+        if (user == null || user.id().equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /vip");
+            return;
+        }
+
+        String user_id = user.id();
+
+        Helix.instance()
+                .addChannelVIPAsync(ViewerCache.instance().broadcaster().id(), user_id)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") != 204) {
+                        com.gmt2001.Console.err.println("Failed to /vip " + params[1] + ": " + jso.toString());
+                    }
+                })
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
+    }
+
+    private static void unvip(String message) {
+        String[] params = message.split(" ", 3);
+
+        if (params.length < 2) {
+            com.gmt2001.Console.err.println("Failed to /unvip due to missing param");
+            return;
+        }
+
+        Viewer user = ViewerCache.instance().getByLogin(params[1]);
+
+        if (user == null || user.id().equals("0")) {
+            com.gmt2001.Console.err.println("Failed to get user id for " + params[1] + ", can not /unvip");
+            return;
+        }
+
+        String user_id = user.id();
+
+        Helix.instance()
+                .removeChannelVIPAsync(ViewerCache.instance().broadcaster().id(), user_id)
+                .doOnSuccess(jso -> {
+                    if (jso.getInt("_http") != 204) {
+                        com.gmt2001.Console.err.println("Failed to /unvip " + params[1] + ": " + jso.toString());
                     }
                 })
                 .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e)).subscribe();
