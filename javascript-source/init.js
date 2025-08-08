@@ -659,6 +659,8 @@
                     let command = event.getCommand();
                     let args = event.getArgs();
 
+                    consoleDebug("Start command trace: " + command);
+
                     let subCommand = $.getSubCommandFromArguments(command, args);
                     let isMod = $.checkUserPermission(sender, event.getTags(), $.PERMISSION.Mod);
 
