@@ -722,7 +722,7 @@
                                 aliasCommand = parts.shift();
                                 aliasArguments = parts.join(' ');
 
-                                $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                                $.command.run(sender, aliasCommand, aliasArguments + ($.strlen(aliasArguments) > 0 && args.length > 0 ? ' ' : '') + args.join(' '), event.getTags());
                             } else {
                                 parts = alias.split(';');
 
