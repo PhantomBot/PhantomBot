@@ -3151,6 +3151,166 @@ public class Helix {
         });
     }
 
+    /**
+     * Adds a moderator to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to add as a moderator in the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject addChannelModerator(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.addChannelModeratorAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Adds a moderator to the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to add as a moderator in the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> addChannelModeratorAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/moderation/moderators?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, "", this.chooseModeratorOAuth("channel:manage:moderators"));
+        });
+    }
+
+    /**
+     * Removes a moderator from the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to remove as a moderator from the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject removeChannelModerator(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.removeChannelModeratorAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Removes a moderator from the broadcaster’s chat room.
+     *
+     * @param broadcaster_id The ID of the broadcaster that owns the chat room. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to remove as a moderator from the broadcaster’s chat room.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> removeChannelModeratorAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/moderation/moderators?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("channel:manage:moderators"));
+        });
+    }
+
+    /**
+     * Adds the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster that’s adding the user as a VIP. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to give VIP status to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject addChannelVIP(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.addChannelVIPAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Adds the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster that’s adding the user as a VIP. This ID must match the user ID in the access token.
+     * @param user_id The ID of the user to give VIP status to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> addChannelVIPAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/channels/vips?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, "", this.chooseModeratorOAuth("channel:manage:vips"));
+        });
+    }
+
+    /**
+     * Removes the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster who owns the channel where the user has VIP status.
+     * @param user_id The ID of the user to remove VIP status from.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject removeChannelVIP(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        return this.removeChannelVIPAsync(broadcaster_id, user_id).block();
+    }
+
+    /**
+     * Removes the specified user as a VIP in the broadcaster’s channel.
+     *
+     * @param broadcaster_id The ID of the broadcaster who owns the channel where the user has VIP status.
+     * @param user_id The ID of the user to remove VIP status from.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> removeChannelVIPAsync(String broadcaster_id, String user_id)
+            throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (user_id == null || user_id.isBlank()) {
+            throw new IllegalArgumentException("user_id");
+        }
+
+        String endpoint = "/channels/vips?" + this.qspValid("broadcaster_id", broadcaster_id) + this.qspValid("&user_id", user_id);
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("channel:manage:vips"));
+        });
+    }
+
     private String chooseModeratorId(String scope) {
         /**
          * @botproperty usebroadcasterforchatcommands - If `true`, certain redirected chat commands are sent as the broadcaster. Default `false`

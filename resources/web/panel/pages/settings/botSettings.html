@@ -32,6 +32,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#bot_logging" data-toggle="tab">Logging</a></li>
                 <li><a href="#bot_out" data-toggle="tab">Message Input/Output</a></li>
+                <li><a href="#op_mode_policy" data-toggle="tab">Op Mode Policy</a></li>
             </ul>
 
             <div class="tab-content">
@@ -148,6 +149,23 @@
                                 title="!shoutout triggers Twitch /shoutout command">
                                 <option>Yes</option>
                                 <option>No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OP mode policy -->
+                <div class="tab-pane" id="op_mode_policy">
+                    <!-- OP mode mod policy mode. -->
+                    <div class="form-group">
+                        <label>Mod policy mode</label>
+                        <div class="dropdown">
+                            <select class="form-control" id="op-mode-mod-policy" style="cursor: pointer;" data-toggle="tooltip"
+                                title="Promote/Demote user to/from moderator based on IRC op mode.">
+                                <option value="3">Promote & Demote</option>
+                                <option value="1">Promote</option>
+                                <option value="2">Demote</option>
+                                <option value="0">None</option>
                             </select>
                         </div>
                     </div>

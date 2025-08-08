@@ -928,6 +928,43 @@
         return PERMISSION.VIP;
     }
 
+    let OP_MODE_MOD_POLICY = {
+        None: 0,
+        Promote: 1,
+        Demote: 2,
+        Sync: 3
+    };
+
+    /**
+     * @function getOpModePolicy
+     * @returns {Number}
+     */
+    function getOpModeModPolicy() {
+        return $.getIniDbNumber('settings', 'op_mode_mod_policy', OP_MODE_MOD_POLICY.Sync);
+    }
+
+    /**
+     * @function shouldPromoteFromOpMode
+     * @returns {boolean}
+     *
+     * Should moderator permissions be lowered based on op mode.
+     */
+    function shouldPromoteModFromOpMode() {
+        const policy = getOpModeModPolicy();
+        return (policy === OP_MODE_MOD_POLICY.Promote || policy === OP_MODE_MOD_POLICY.Sync);
+    }
+
+    /**
+     * @function shouldDemoteFromOpMode
+     * @returns {boolean}
+     *
+     * Should moderator permissions be raised based on op mode.
+     */
+    function shouldDemoteModFromOpMode() {
+        const policy = getOpModeModPolicy();
+        return (policy === OP_MODE_MOD_POLICY.Demote || policy === OP_MODE_MOD_POLICY.Sync);
+    }
+
     /**
      * @event ircChannelJoinUpdate
      */
@@ -1038,7 +1075,7 @@
 
         if ($.equalsIgnoreCase(event.getMode(), 'o')) {
             if (event.getAdd().toString().equals('true')) {
-                if (!hasModeO(username)) {
+                if (!hasModeO(username) && shouldPromoteModFromOpMode()) {
                     addModeratorToCache(username.toLowerCase());
                     modeOUsers.addIfAbsent($.javaString(username.toLowerCase()));
                     if (isOwner(username)) {
@@ -1049,7 +1086,7 @@
                         setUserGroupById(username, PERMISSION.Mod);
                     }
                 }
-            } else if (hasModeO(username)) {
+            } else if (hasModeO(username) && shouldDemoteModFromOpMode()) {
                 removeModeratorFromCache(username);
                 modeOUsers.remove($.javaString(username.toLowerCase()));
                 if (isSub(username) && isVIP(username)) {

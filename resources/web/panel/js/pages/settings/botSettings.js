@@ -22,9 +22,10 @@ $(function () {
     // Get logging settings.
     socket.getDBValues('get_logging_settings', {
         tables: ['settings', 'settings', 'settings', 'settings', 'settings',
-            'settings', 'settings', 'settings', 'settings', 'settings'],
+            'settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
         keys: ['log.file', 'log.event', 'log.error', 'log_rotate_days',
-            'response_@chat', 'response_action', 'whisperMode', 'allowNonModWhispers', 'customCommandAtEnabled', 'shoutoutapi']
+            'response_@chat', 'response_action', 'whisperMode', 'allowNonModWhispers',
+            'customCommandAtEnabled', 'shoutoutapi', 'op_mode_mod_policy']
     }, true, function (e) {
         // Update log event toggle.
         $('#logging-events').val((helpers.isTrue(e['log.event']) ? 'Yes' : 'No'));
@@ -46,6 +47,8 @@ $(function () {
         $('#bot-atenabled').val((helpers.isTrue(e['customCommandAtEnabled']) ? 'Yes' : 'No'));
         // Set shoutout mode.
         $('#bot-shoutout-api').val((helpers.isTrue(e['shoutoutapi']) ? 'Yes' : 'No'));
+        // Set op mode mod policy mode.
+        $('#op-mode-mod-policy').val(Number(e['op_mode_mod_policy']) || 3);
     });
 });
 
@@ -62,7 +65,8 @@ $(function () {
                 allowNonModWhispers = $('#bot-allowNonModWhispers').find(':selected').text() === 'Yes',
                 atEnabled = $('#bot-atenabled').find(':selected').text() === 'Yes',
                 shoutoutMode = $('#bot-shoutout-api').find(':selected').text() === 'Yes',
-                logDays = $('#log-days');
+                logDays = $('#log-days'),
+                opModeModPolicy = Number($('#op-mode-mod-policy').val());
 
         switch (false) {
             case helpers.handleInputNumber(logDays):
@@ -70,12 +74,13 @@ $(function () {
             default:
                 socket.updateDBValues('update_logging_settings', {
                     tables: ['settings', 'settings', 'settings', 'settings', 'settings',
-                        'settings', 'settings', 'settings', 'settings', 'settings'],
+                        'settings', 'settings', 'settings', 'settings', 'settings', 'settings'],
                     keys: ['log.file', 'log.event', 'log.error', 'log_rotate_days',
                         'response_@chat', 'response_action', 'whisperMode', 'allowNonModWhispers',
-                        'customCommandAtEnabled', 'shoutoutapi'],
+                        'customCommandAtEnabled', 'shoutoutapi', 'op_mode_mod_policy'],
                     values: [logChat, logEvents, logErrors, logDays.val(),
-                        muteMode, actionMode, whisperMode, allowNonModWhispers, atEnabled, shoutoutMode]
+                        muteMode, actionMode, whisperMode, allowNonModWhispers,
+                        atEnabled, shoutoutMode, opModeModPolicy]
                 }, function () {
                     socket.sendCommand('update_logging_settings_cmd', 'reloadlogs', function () {
                         socket.sendCommand('update_misc_settings_cmd', 'reloadmisc', function () {

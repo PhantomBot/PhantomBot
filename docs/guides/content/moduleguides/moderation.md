@@ -24,6 +24,10 @@ PhantomBot provides a number of standard methods for properly sending a moderati
 - `$.untimeoutUser(loginName)` - Cancels a time out on a user, restoring their ability to chat in the channel
 - `$.banUser(loginName, reason)` - Bans the user from the channel. They are permenately blocked from speaking until an un-ban is issued. `reason` is optional
 - `$.unbanUser(loginName)` - Un-bans the user, restoring their ability to chat in the channel
+- `$.modUser(loginName)` - Adds the user as a moderator in the channel
+- `$.unmodUser(loginName)` - Removes the user as a moderator in the channel
+- `$.vipUser(loginName)` - Adds the user as a VIP in the channel
+- `$.unvipUser(loginName)` - Removes the user as a VIP in the channel
 
 ## Usage
 
