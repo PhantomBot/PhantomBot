@@ -731,7 +731,7 @@
                                     aliasCommand = subcmd.shift();
                                     aliasArguments = subcmd.join(' ');
 
-                                    $.command.run(sender, aliasCommand, aliasArguments + ' ' + args.join(' '), event.getTags());
+                                    $.command.run(sender, aliasCommand, aliasArguments + (aliasArguments.length > 0 ? ' ' : '') + args.join(' '), event.getTags());
                                 }
                             }
                             return;
