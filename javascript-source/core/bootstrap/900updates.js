@@ -34,6 +34,7 @@
         let modules = [
             './commands/dualstreamCommand.js',
             './commands/highlightCommand.js',
+            './commands/toggleModCommand.js',
             './discord/games/8ball.js',
             './discord/games/gambling.js',
             './discord/games/kill.js',

@@ -62,6 +62,14 @@
             "desc": "Manage Channel Points custom rewards and their redemptions on a channel.",
             "tooltip": "Used to create and manage custom Channel Points rewards."
         },
+        "channel:manage:moderators": {
+            "desc": "Add or remove the moderator role from users in your channel.",
+            "tooltip": "Used to add/remove Moderators."
+        },
+        "channel:manage:vips": {
+            "desc": "Add or remove the VIP role from users in your channel.",
+            "tooltip": "Used to add/remove VIPs."
+        },
         "channel:moderate": {
             "desc": "Perform moderation actions in a channel.",
             "tooltip": "Used to watch for moderation actions in PubSub."
