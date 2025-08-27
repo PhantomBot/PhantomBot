@@ -94,8 +94,11 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 **Formulas:**
 
 - `(n:int)` - the n-th argument (escaped by default)
+- `(n:int!)` - the n-th argument, with trailing escape characters stripped (escaped by default)
 - `(n:int=tag:str)` - the n-th argument, if given, else another tag to replace this one
+- `(n:int!=tag:str)` - the n-th argument, if given, with trailing escape characters stripped, else another tag to replace this one
 - `(n:int|default:str)` - the n-th argument, if given, else a provided default value
+- `(n:int!|default:str)` - the n-th argument, if given, with trailing escape characters stripped, else a provided default value
 
 **Labels:** twitch discord commandevent basic
 
@@ -154,6 +157,7 @@ Defined in script: _./javascript-source/core/transformers/basic.js_
 **Formulas:**
 
 - `(echo)` - all arguments passed to the command
+- `(echo!)` - all arguments passed to the command, with trailing escape characters stripped
 
 **Labels:** twitch discord commandevent basic
 
@@ -365,6 +369,7 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 **Formulas:**
 
 - `(cpinput)` - the input supplied by the redeeming user, if set
+- `(cpinput!)` - the input supplied by the redeeming user, if set, with trailing escape characters stripped
 
 **Labels:** twitch channelpointsevent channelpoints
 
@@ -384,6 +389,7 @@ Defined in script: _./javascript-source/core/transformers/channelpoints.js_
 **Formulas:**
 
 - `(cpinputraw)` - the raw input supplied by the redeeming user, if set
+- `(cpinputraw!)` - the raw input supplied by the redeeming user, if set, with trailing escape characters stripped
 
 **Labels:** twitch channelpointsevent channelpoints
 
