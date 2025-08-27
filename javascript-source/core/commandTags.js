@@ -324,7 +324,7 @@
      * @returns {string}
      */
     function escapeTags(args) {
-        return args.replace(/([\\()])/g, '\\$1');
+        return $.jsString(args).replace(/([\\()])/g, '\\$1');
     }
 
     /*
@@ -335,7 +335,7 @@
      * @returns {string}
      */
     function unescapeTags(args) {
-        return args.replace(/\\([\\()])/g, '$1');
+        return $.jsString(args).replace(/\\([\\()])/g, '$1');
     }
 
     /*
