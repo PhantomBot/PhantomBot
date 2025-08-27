@@ -19,7 +19,7 @@
 
 (function () {
     let transformers = {},
-            tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|=()]*)([\\s=\\|])?((?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
+            tagPattern = Packages.java.util.regex.Pattern.compile("(?:[^\\\\]|^)(\\(([^\\\\\\s\\|!=()]*)([!]?[\\s!=\\|])?((?:\\\\\\(|\\\\\\)|[^()])*)?(?<!\\\\)\\))"),
             _lock = new Packages.java.util.concurrent.locks.ReentrantLock(),
             debugon = false;
 
@@ -317,6 +317,17 @@
     }
 
     /*
+     * @function stripTrailingEscape
+     * @description strips trailing escape characters to prevent escaping an outer tag
+     * @export $.transformers
+     * @param {string} args - a string to strip escapes from
+     * @returns {string}
+     */
+    function stripTrailingEscape(args) {
+        return $.jsString(args).replace(/[\\]+$/g, '');
+    }
+
+    /*
      * @function escapeTags
      * @description escapes tags to prevent processing
      * @export $.transformers
@@ -324,7 +335,7 @@
      * @returns {string}
      */
     function escapeTags(args) {
-        return args.replace(/([\\()])/g, '\\$1');
+        return $.jsString(args).replace(/([\\()])/g, '\\$1');
     }
 
     /*
@@ -335,7 +346,7 @@
      * @returns {string}
      */
     function unescapeTags(args) {
-        return args.replace(/\\([\\()])/g, '$1');
+        return $.jsString(args).replace(/\\([\\()])/g, '$1');
     }
 
     /*
@@ -500,6 +511,7 @@
         transformer: Transformer,
         addTransformer: addTransformer,
         addTransformers: addTransformers,
+        stripTrailingEscape: stripTrailingEscape,
         escapeTags: escapeTags,
         unescapeTags: unescapeTags,
         getTransformers: getTransformers,

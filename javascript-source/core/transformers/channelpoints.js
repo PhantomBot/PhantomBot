@@ -96,13 +96,15 @@
     /*
      * @transformer cpinput
      * @formula (cpinput) the input supplied by the redeeming user, if set
+     * @formula (cpinput!) the input supplied by the redeeming user, if set, with trailing escape characters stripped
      * @labels twitch channelpointsevent channelpoints
      * @notes All newline characters `\n` are URL-encoded as `%0A`
      * @cached
      */
     function cpinput(args) {
+        let input = $.replace($.jsString(args.customArgs.redemption.userInput()), '\n', '%0A');
         return {
-            result: $.replace($.jsString(args.customArgs.redemption.userInput()), '\n', '%0A'),
+            result: args.argsep === '!' ? $.transformers.stripTrailingEscape(input) : input,
             cache: true
         };
     }
@@ -110,12 +112,13 @@
     /*
      * @transformer cpinputraw
      * @formula (cpinputraw) the raw input supplied by the redeeming user, if set
+     * @formula (cpinputraw!) the raw input supplied by the redeeming user, if set, with trailing escape characters stripped
      * @labels twitch channelpointsevent channelpoints
      * @cached
      */
     function cpinputraw(args) {
         return {
-            result: $.jsString(args.customArgs.redemption.userInput()),
+            result: args.argsep === '!' ? $.transformers.stripTrailingEscape(args.customArgs.redemption.userInput()) : $.jsString(args.customArgs.redemption.userInput()),
             cache: true
         };
     }
