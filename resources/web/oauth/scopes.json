@@ -1,13 +1,5 @@
 {
     "app": {
-        "user:bot": {
-            "desc": "Join a specified chat channel as your user and appear as a bot, and perform chat-related actions as your user.",
-            "tooltip": "Used to send responses in chat, appearing as a bot."
-        },
-        "user:write:chat": {
-            "desc": "Send chat messages to a chatroom.",
-            "tooltip": "Used to send responses in chat, appearing as a bot."
-        }
     },
     "bot": {
         "chat:edit": {
@@ -34,9 +26,17 @@
             "desc": "Manage a broadcaster's chat room settings.",
             "tooltip": "Used to enable/disable emote-only, follower-only, slow, subscriber-only, and unique (r9k) chat modes."
         },
+        "user:bot": {
+            "desc": "Join a specified chat channel as your user and appear as a bot, and perform chat-related actions as your user.",
+            "tooltip": "Used to send responses in chat, appearing as a bot."
+        },
         "user:manage:whispers": {
             "desc": "Read whispers that you send and receive, and send whispers on your behalf.",
             "tooltip": "Used to send whispers from the bot."
+        },
+        "user:write:chat": {
+            "desc": "Send chat messages to a chatroom.",
+            "tooltip": "Used to send responses in chat, appearing as a bot."
         },
         "whispers:read": {
             "desc": "View your whisper messages.",
