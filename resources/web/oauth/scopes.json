@@ -1,4 +1,14 @@
 {
+    "app": {
+        "user:bot": {
+            "desc": "Join a specified chat channel as your user and appear as a bot, and perform chat-related actions as your user.",
+            "tooltip": "Used to send responses in chat, appearing as a bot."
+        },
+        "user:write:chat": {
+            "desc": "Send chat messages to a chatroom.",
+            "tooltip": "Used to send responses in chat, appearing as a bot."
+        }
+    },
     "bot": {
         "chat:edit": {
             "desc": "Send live Stream Chat and Rooms messages.",
@@ -37,6 +47,10 @@
         "bits:read": {
             "desc": "Read access to bits cheers in your channel.",
             "tooltip": "Used by EventSub to subscribe to bits notifications."
+        },
+        "channel:bot": {
+            "desc": "Joins your channel's chatroom as a bot user, and perform chat-related actions as that user",
+            "tooltip": "Authorizes the bot to send messages in your chat, appearing as a bot."
         },
         "channel:manage:broadcast": {
             "desc": "Manage a channel's broadcast configuration, including updating channel configuration and managing stream markers and stream tags.",

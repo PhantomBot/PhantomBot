@@ -54,6 +54,7 @@ import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
@@ -111,6 +112,7 @@ public final class PhantomBot implements Listener {
 
     /* Bot Information */
     private TwitchAuthorizationCodeFlow authflow;
+    private TwitchClientCredentialsFlow appflow;
 
     /* Caches */
     private FollowersCache followersCache;
@@ -317,6 +319,8 @@ public final class PhantomBot implements Listener {
 
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
+        this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
+        this.appflow.checkAndRefreshToken();
         if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
@@ -501,6 +505,10 @@ public final class PhantomBot implements Listener {
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
         return this.authflow;
+    }
+
+    public TwitchClientCredentialsFlow getAppFlow() {
+        return this.appflow;
     }
 
     public void reconnect() {
