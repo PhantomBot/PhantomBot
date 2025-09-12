@@ -59,6 +59,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
+import tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus;
+import tv.phantombot.twitch.api.Helix.PredictionStatus;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.
@@ -3362,6 +3364,69 @@ public class Helix {
 
         return this.handleMutatorAsync(endpoint, () -> {
             return this.handleRequest(HttpMethod.DELETE, endpoint, "", this.chooseModeratorOAuth("channel:manage:vips"));
+        });
+    }
+
+    /**
+     * Sends a message to the broadcaster’s chat room.
+     * 
+     * @param use_app_token If {@c true}, uses the app (appoauth) token to send the message, and appears as a bot; otherwise, uses the bot (oauth) token.
+     * @param broadcaster_id The ID of the broadcaster whose chat room the message will be sent to.
+     * @param message The message to send. The message is limited to a maximum of 500 characters.
+     * @param for_source_only When using an app token, set {@c true} to only send the message to the chat room of the specified broadcaster;
+     * {@c false} to also send to other chats when shared chat is active. Ignored for user tokens.
+     * @param reply_parent_message_id The ID of the chat message being replied to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject sendChatMessage(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id) {
+        return this.sendChatMessageAsync(use_app_token, broadcaster_id, message, for_source_only, reply_parent_message_id).block();
+    }
+
+    /**
+     * Sends a message to the broadcaster’s chat room.
+     * 
+     * @param use_app_token If {@c true}, uses the app (appoauth) token to send the message, and appears as a bot; otherwise, uses the bot (oauth) token.
+     * @param broadcaster_id The ID of the broadcaster whose chat room the message will be sent to.
+     * @param message The message to send. The message is limited to a maximum of 500 characters.
+     * @param for_source_only When using an app token, set {@c true} to only send the message to the chat room of the specified broadcaster;
+     * {@c false} to also send to other chats when shared chat is active. Ignored for user tokens.
+     * @param reply_parent_message_id The ID of the chat message being replied to.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> sendChatMessageAsync(boolean use_app_token, String broadcaster_id, String message, boolean for_source_only, @Nullable String reply_parent_message_id) {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        if (message == null || message.isBlank()) {
+            throw new IllegalArgumentException("message");
+        }
+
+        JSONStringer js = new JSONStringer();
+
+        js.object()
+            .key("broadcaster_id").value(broadcaster_id)
+            .key("sender_id").value(TwitchValidate.instance().getChatUserID())
+            .key("message").value(message.substring(0, Math.min(message.length(), 500)));
+        
+        if (reply_parent_message_id != null && !reply_parent_message_id.isBlank()) {
+            js.key("reply_parent_message_id").value(reply_parent_message_id);
+        }
+
+        if (use_app_token) {
+            js.key("for_source_only").value(for_source_only);
+        }
+
+        js.endObject();
+
+        String endpoint = "/chat/messages";
+
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint, js.toString(), use_app_token ? CaselessProperties.instance().getProperty("appoauth").replaceFirst("oauth:", "") : null);
         });
     }
 
