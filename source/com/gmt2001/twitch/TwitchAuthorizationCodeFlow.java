@@ -45,6 +45,7 @@ import tv.phantombot.httpserver.HTTPOAuthHandler;
 import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
+ * Provider for Twitch Authorization Code Grant Flow (User Tokens)
  *
  * @author gmt2001
  */
