@@ -404,6 +404,56 @@ public class Helix {
     }
 
     /**
+     * Sends a custom GET request to the specified endpoint.
+     * 
+     * Responses may be cached for a short time (see {@link Helix.CACHE_TIME}).
+     *
+     * @param endpoint The API endpoint to query, such as "/channels?broadcaster_id=123456".
+     * @return A {@link JSONObject} with the response
+     * @throws JSONException
+     */
+    public Mono<JSONObject> customQueryAsync(String endpoint)
+            throws JSONException {
+
+        return this.handleQueryAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.GET, endpoint);
+        });
+    }
+
+    /**
+     * Sends a custom mutation request to the specified endpoint.
+     * 
+     * Responses may be cached for a short time (see {@link Helix.MUTATOR_CACHE_TIME}).
+     * 
+     * @param method The {@link HttpMethod} to use.
+     * @param endpoint The API endpoint to mutate, such as {@c "/channels?broadcaster_id=123456"}.
+     * @return A {@link JSONObject} with the response
+     * @throws JSONException
+     */
+    public Mono<JSONObject> customMutatorAsync(HttpMethod method, String endpoint) throws JSONException {
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(method, endpoint);
+        });
+    }
+
+    /**
+     * Sends a custom mutation request to the specified endpoint.
+     * 
+     * Responses may be cached for a short time (see {@link Helix.MUTATOR_CACHE_TIME}).
+     * 
+     * @param method The {@link HttpMethod} to use.
+     * @param endpoint The API endpoint to mutate, such as {@c "/channels?broadcaster_id=123456"}.
+     * @param js A {@link JSONObject} containing the HTTP body.
+     * @return A {@link JSONObject} with the response
+     * @throws JSONException
+     */
+    public Mono<JSONObject> customMutatorAsync(HttpMethod method, String endpoint, JSONObject js) throws JSONException {
+        return this.handleMutatorAsync(endpoint + js.toString(), () -> {
+            return this.handleRequest(method, endpoint, js.toString());
+        });
+    }
+
+    /**
      * Gets channel information for users.
      *
      * @param broadcaster_id ID of the channel to be retrieved.
