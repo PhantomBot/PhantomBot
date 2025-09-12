@@ -73,8 +73,14 @@ public class Helix {
     // The base URL for Twitch API Helix.
     private static final String BASE_URL = "https://api.twitch.tv/helix";
     private static final int QUEUE_TIME = 5000;
-    private static final int CACHE_TIME = 30000;
-    private static final int MUTATOR_CACHE_TIME = 1000;
+    /**
+     * Cache time for queries, in ms.
+     */
+    public static final int CACHE_TIME = 30000;
+    /**
+     * Cache time for mutators, in ms.
+     */
+    public static final int MUTATOR_CACHE_TIME = 1000;
     private static final int RATELIMIT_DEFMAX = 120;
     private static final int WARNING_INTERVAL_MINS = 5;
 
