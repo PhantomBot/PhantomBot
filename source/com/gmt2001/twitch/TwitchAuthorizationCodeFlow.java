@@ -123,7 +123,7 @@ public final class TwitchAuthorizationCodeFlow {
         boolean changed = false;
         boolean minExpired = this.lastBotRefresh.plus(minRefreshInterval).isBefore(Instant.now());
         if (minExpired && CaselessProperties.instance().containsKey("refresh") && !CaselessProperties.instance().getProperty("refresh").isBlank()) {
-            JSONObject result = tryRefresh(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"), CaselessProperties.instance().getProperty("refresh"));
+            JSONObject result = tryRefresh(CaselessProperties.instance().getProperty("refresh"));
 
             if (result.has("error")) {
                 com.gmt2001.Console.err.println(result.toString());
@@ -154,7 +154,7 @@ public final class TwitchAuthorizationCodeFlow {
         boolean changed = false;
         boolean minExpired = this.lastBroadcasterRefresh.plus(minRefreshInterval).isBefore(Instant.now());
         if (CaselessProperties.instance().containsKey("apirefresh") && !CaselessProperties.instance().getProperty("apirefresh").isBlank()) {
-            JSONObject result = tryRefresh(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"), CaselessProperties.instance().getProperty("apirefresh"));
+            JSONObject result = tryRefresh(CaselessProperties.instance().getProperty("apirefresh"));
 
             if (result.has("error")) {
                 com.gmt2001.Console.err.println(result.toString());
@@ -237,6 +237,7 @@ public final class TwitchAuthorizationCodeFlow {
                 newTransaction.commit();
                 data = qsd.parameters().get("clientid").get(0).getBytes();
                 PhantomBot.instance().getAuthFlow().startup(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
+                PhantomBot.instance().getAppFlow().startup(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
             }
 
             com.gmt2001.Console.debug.println(new String(data), "Try save idsecret");
@@ -316,10 +317,10 @@ public final class TwitchAuthorizationCodeFlow {
         return doRequest("/token", query);
     }
 
-    private static JSONObject tryRefresh(String clientid, String clientsecret, String refresh_token) {
+    private static JSONObject tryRefresh(String refresh_token) {
         Map<String, String> query = new HashMap<>();
-        query.put("client_id", clientid);
-        query.put("client_secret", clientsecret);
+        query.put("client_id", CaselessProperties.instance().getProperty("clientid"));
+        query.put("client_secret", CaselessProperties.instance().getProperty("clientsecret"));
         query.put("refresh_token", refresh_token);
         query.put("grant_type", "refresh_token");
 
