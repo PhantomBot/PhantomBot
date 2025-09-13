@@ -238,6 +238,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
              * @botproperty sendmessagesasapp - If `true`, send chat messages using Twitch API and an app token if possible, instead of IRC. Default `true`
              * @botpropertycatsort sendmessagesasapp  850 20 Twitch
              */
+            com.gmt2001.Console.debug.println((CaselessProperties.instance().getPropertyAsBoolean("sendmessagesasapp", true) ? "t": "f") + (TwitchValidate.instance().isAppValid() ? "t" : "f") + (TwitchValidate.instance().hasChatScope("user:bot") ? "t" : "f"));
             if (CaselessProperties.instance().getPropertyAsBoolean("sendmessagesasapp", true)
                 && TwitchValidate.instance().isAppValid() && TwitchValidate.instance().hasChatScope("user:bot")) {
                 try {
@@ -247,7 +248,7 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
                     com.gmt2001.Console.err.printStackTrace(ex);
                 }
             }
-            
+
             this.sendFullCommand(replyToId == null || replyToId.isBlank() ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
         }
     }
