@@ -108,6 +108,14 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 &nbsp;
 
+#### sendmessagesasapp
+
+Data Type: _Boolean_
+
+if `true`, send chat messages using twitch api and an app token if possible, instead of irc. default `true`
+
+&nbsp;
+
 #### printtwitchchattoconsole
 
 Data Type: _Boolean_
@@ -629,6 +637,22 @@ _NOTE: A restart is required for this property to take effect_
 &nbsp;
 
 ### Uncategorized
+#### appexpires
+
+Data Type: _Long_
+
+No definition
+
+&nbsp;
+
+#### appoauth
+
+Data Type: _String_
+
+No definition
+
+&nbsp;
+
 #### commandprefix
 
 Data Type: _Char_
