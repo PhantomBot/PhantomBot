@@ -238,11 +238,15 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
              * @botproperty sendmessagesasapp - If `true`, send chat messages using Twitch API and an app token if possible, instead of IRC. Default `true`
              * @botpropertycatsort sendmessagesasapp  850 20 Twitch
              */
+            /**
+             * @botproperty sendmessagestocasterchatonly - If `true`, chat messages sent using Twitch API and an app token are only sent to the broadcasters chat, not to shared chats. Default `true`
+             * @botpropertycatsort sendmessagestocasterchatonly  840 20 Twitch
+             */
             com.gmt2001.Console.debug.println((CaselessProperties.instance().getPropertyAsBoolean("sendmessagesasapp", true) ? "t": "f") + (TwitchValidate.instance().isAppValid() ? "t" : "f") + (TwitchValidate.instance().hasChatScope("user:bot") ? "t" : "f"));
             if (CaselessProperties.instance().getPropertyAsBoolean("sendmessagesasapp", true)
                 && TwitchValidate.instance().isAppValid() && TwitchValidate.instance().hasChatScope("user:bot")) {
                 try {
-                    Helix.instance().sendChatMessageAsync(true, ViewerCache.instance().broadcaster().id(), message, true, replyToId).subscribe();
+                    Helix.instance().sendChatMessageAsync(true, ViewerCache.instance().broadcaster().id(), message, CaselessProperties.instance().getPropertyAsBoolean("sendmessagestocasterchatonly", true), replyToId).subscribe();
                     return;
                 } catch (Exception ex) {
                     com.gmt2001.Console.err.printStackTrace(ex);
