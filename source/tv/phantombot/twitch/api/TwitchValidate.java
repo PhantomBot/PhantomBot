@@ -296,7 +296,7 @@ public class TwitchValidate {
 
     public void updateAppToken(String token) {
         if (this.validaterT == null) {
-            this.validateApp(token, "App (appoauth)");
+            this.validateApp(token, "APP (appoauth)");
         } else {
             this.validaterT.updateToken(token);
             ExecutorService.execute(() -> this.doValidationT());
@@ -426,7 +426,7 @@ public class TwitchValidate {
                     return;
                 }
 
-                if (requestObj.has("scopes")) {
+                if (requestObj.has("scopes") && !requestObj.isNull("scopes")) {
                     JSONArray scopesa = requestObj.getJSONArray("scopes");
                     (tokenType == 1 ? scopesC : scopesA).clear();
                     scopesa.iterator().forEachRemaining(obj -> {
@@ -511,7 +511,7 @@ public class TwitchValidate {
                 } else {
                     com.gmt2001.Console.debug.println("Validated Twitch " + type + " OAUTH Token.");
                 }
-            } catch (JSONException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         }
