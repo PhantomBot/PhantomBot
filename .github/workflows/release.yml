@@ -529,7 +529,7 @@ jobs:
     needs: [build, docker]
     steps:
     - name: Set latest Release
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           let {status: getStatus, data} = await github.rest.repos.getReleaseByTag({
