@@ -108,6 +108,14 @@ if `true`, certain redirected chat commands are sent as the broadcaster. default
 
 &nbsp;
 
+#### sendmessagestocasterchatonly
+
+Data Type: _Boolean_
+
+if `true`, chat messages sent using twitch api and an app token are only sent to the broadcasters chat, not to shared chats. default `true`
+
+&nbsp;
+
 #### sendmessagesasapp
 
 Data Type: _Boolean_
