@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import com.gmt2001.httpclient.URIUtil;
 import com.gmt2001.httpwsserver.HTTPWSServer;
 import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.twitch.TwitchAuthorizationCodeFlow;
+import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
@@ -111,6 +112,7 @@ public final class PhantomBot implements Listener {
 
     /* Bot Information */
     private TwitchAuthorizationCodeFlow authflow;
+    private TwitchClientCredentialsFlow appflow;
 
     /* Caches */
     private FollowersCache followersCache;
@@ -317,6 +319,8 @@ public final class PhantomBot implements Listener {
 
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
+        this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
+        this.appflow.checkAndRefreshToken();
         if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
@@ -395,6 +399,11 @@ public final class PhantomBot implements Listener {
             TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
             TwitchValidate.instance().checkOAuthInconsistencies(this.getChannelName());
+        }
+
+        if (!CaselessProperties.instance().getProperty("appoauth", "").isEmpty()) {
+            /* Validate the chat OAUTH token. */
+            TwitchValidate.instance().validateApp(CaselessProperties.instance().getProperty("appoauth"), "APP (appoauth)");
         }
     }
 
@@ -501,6 +510,10 @@ public final class PhantomBot implements Listener {
 
     public TwitchAuthorizationCodeFlow getAuthFlow() {
         return this.authflow;
+    }
+
+    public TwitchClientCredentialsFlow getAppFlow() {
+        return this.appflow;
     }
 
     public void reconnect() {

@@ -68,6 +68,13 @@ public class TwitchValidate {
     public boolean validA = false;
     private Thread validateA = null;
     private ValidateRunnable validaterA = null;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final List<String> scopesT = new CopyOnWriteArrayList<>();
+    private final List<String> scopesMT = new CopyOnWriteArrayList<>();
+    private String clientidT = "";
+    public boolean validT = false;
+    private Thread validateT = null;
+    private ValidateRunnable validaterT = null;
 
     /**
      * This class constructor.
@@ -100,9 +107,21 @@ public class TwitchValidate {
         }
     }
 
+    private void doValidationT() {
+        if (validaterT != null) {
+            if (validateT != null && validateT.isAlive()) {
+                validateT.interrupt();
+                validateT = null;
+            }
+
+            validaterT.run();
+        }
+    }
+
     private void doValidations() {
         this.doValidationA();
         this.doValidationC();
+        this.doValidationT();
     }
 
     /**
@@ -166,6 +185,16 @@ public class TwitchValidate {
             validaterC = new ValidateRunnable(oAuthToken, type, 1);
             validateC = new Thread(validaterC, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
             validateC.start();
+        } catch (Exception ex) {
+            com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
+        }
+    }
+
+    public void validateApp(String oAuthToken, String type) {
+        try {
+            validaterT = new ValidateRunnable(oAuthToken, type, 2);
+            validateT = new Thread(validaterT, "tv.phantombot.twitch.api.TwitchValidate::ValidateRunnable");
+            validateT.start();
         } catch (Exception ex) {
             com.gmt2001.Console.out.println("Unable to validate Twitch " + type + " OAUTH Token.");
         }
@@ -245,6 +274,35 @@ public class TwitchValidate {
         }
     }
 
+    public boolean hasAppScope(String scope) {
+        return scopesT.contains(scope);
+    }
+
+    public List<String> getAppScopes() {
+        return new ArrayList<>(scopesT);
+    }
+
+    public List<String> getMissingAppScopes() {
+        return new ArrayList<>(scopesMT);
+    }
+
+    public String getAppClientID() {
+        return this.clientidT;
+    }
+
+    public boolean isAppValid() {
+        return this.validT;
+    }
+
+    public void updateAppToken(String token) {
+        if (this.validaterT == null) {
+            this.validateApp(token, "APP (appoauth)");
+        } else {
+            this.validaterT.updateToken(token);
+            ExecutorService.execute(() -> this.doValidationT());
+        }
+    }
+
     public void checkOAuthInconsistencies(String channelName) {
         if (validateA != null && validateA.isAlive()) {
             try {
@@ -257,6 +315,14 @@ public class TwitchValidate {
         if (validateC != null && validateC.isAlive()) {
             try {
                 validateC.join(TIMEOUT_TIME);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        if (validateT != null && validateT.isAlive()) {
+            try {
+                validateT.join(TIMEOUT_TIME);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
@@ -287,6 +353,14 @@ public class TwitchValidate {
         if (validateC != null && validateC.isAlive()) {
             try {
                 validateC.join(TIMEOUT_TIME);
+            } catch (InterruptedException ex) {
+                com.gmt2001.Console.err.logStackTrace(ex);
+            }
+        }
+
+        if (validateT != null && validateT.isAlive()) {
+            try {
+                validateT.join(TIMEOUT_TIME);
             } catch (InterruptedException ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
@@ -327,14 +401,18 @@ public class TwitchValidate {
                 com.gmt2001.Console.debug.println(type + requestObj.toString(4));
 
                 if (requestObj.has("message") && requestObj.getString("message").equals("invalid access token")) {
-                    if (lastFail || tokenType == 2) {
+                    if (lastFail) {
                         com.gmt2001.Console.err.println("Twitch reports your " + type + " OAUTH token as invalid. It may have expired, "
                                 + "been disabled, or the Twitch API is experiencing issues.");
                         com.gmt2001.Console.debug.println(requestObj.toString(4));
                     } else {
                         lastFail = true;
                         if (PhantomBot.instance() != null) {
-                            PhantomBot.instance().getAuthFlow().refresh(tokenType == 1, tokenType == 0);
+                            if (tokenType < 2) {
+                                PhantomBot.instance().getAuthFlow().refresh(tokenType == 1, tokenType == 0);
+                            } else {
+                                PhantomBot.instance().getAppFlow().refresh();
+                            }
                         }
                     }
                     return;
@@ -348,7 +426,7 @@ public class TwitchValidate {
                     return;
                 }
 
-                if (requestObj.has("scopes")) {
+                if (requestObj.has("scopes") && !requestObj.isNull("scopes")) {
                     JSONArray scopesa = requestObj.getJSONArray("scopes");
                     (tokenType == 1 ? scopesC : scopesA).clear();
                     scopesa.iterator().forEachRemaining(obj -> {
@@ -357,10 +435,10 @@ public class TwitchValidate {
 
                     try {
                         JSONObject scopes = new JSONObject(Files.readString(Paths.get("./web/oauth/scopes.json")));
-                        (tokenType == 1 ? scopesMC : scopesMA).clear();
-                        scopes.getJSONObject(tokenType == 1 ? "bot" : "broadcaster").keys().forEachRemaining(scope -> {
-                            if (!((tokenType == 1 ? scopesC : scopesA).contains(scope))) {
-                                (tokenType == 1 ? scopesMC : scopesMA).add(scope);
+                        (tokenType == 1 ? scopesMC : (tokenType == 0 ? scopesMA : scopesMT)).clear();
+                        scopes.getJSONObject(tokenType == 1 ? "bot" : (tokenType == 0 ? "broadcaster" : "app")).keys().forEachRemaining(scope -> {
+                            if (!((tokenType == 1 ? scopesC : (tokenType == 0 ? scopesA : scopesT)).contains(scope))) {
+                                (tokenType == 1 ? scopesMC :  (tokenType == 0 ? scopesMA : scopesMT)).add(scope);
                             }
                         });
                     } catch (JSONException | IOException e) {
@@ -370,46 +448,61 @@ public class TwitchValidate {
 
                 if (requestObj.has("client_id")) {
                     switch (tokenType) {
+                        case 0:
+                            clientidA = requestObj.getString("client_id");
+                            break;
                         case 1:
                             clientidC = requestObj.getString("client_id");
                             break;
-                        default:
-                            clientidA = requestObj.getString("client_id");
+                        case 2:
+                            clientidT = requestObj.getString("client_id");
                             break;
+                        default:
+                        break;
                     }
                 }
 
                 if (requestObj.has("login")) {
                     switch (tokenType) {
+                        case 0:
+                            loginA = requestObj.getString("login");
+                            break;
                         case 1:
                             loginC = requestObj.getString("login");
                             break;
                         default:
-                            loginA = requestObj.getString("login");
-                            break;
+                        break;
                     }
                 }
 
                 if (requestObj.has("user_id")) {
                     switch (tokenType) {
+                        case 0:
+                            useridA = requestObj.getString("user_id");
+                            break;
                         case 1:
                             useridC = requestObj.getString("user_id");
                             break;
                         default:
-                            useridA = requestObj.getString("user_id");
-                            break;
+                        break;
                     }
                 }
 
                 if (requestObj.has("user_id")) {
                     switch (tokenType) {
+                        case 0:
+                            validA = true;
+                            break;
                         case 1:
                             validC = true;
                             break;
                         default:
-                            validA = true;
-                            break;
+                        break;
                     }
+                }
+
+                if (tokenType == 2 && requestObj.has("expires_in")) {
+                    validT = true;
                 }
 
                 if (firstRun) {
@@ -418,7 +511,7 @@ public class TwitchValidate {
                 } else {
                     com.gmt2001.Console.debug.println("Validated Twitch " + type + " OAUTH Token.");
                 }
-            } catch (JSONException ex) {
+            } catch (Exception ex) {
                 com.gmt2001.Console.err.logStackTrace(ex);
             }
         }

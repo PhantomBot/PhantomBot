@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 package com.gmt2001.twitch.tmi;
 
 import com.gmt2001.ratelimiters.WindowedSwitchingRateLimiter;
+import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.tmi.TMIMessage.TMIMessageType;
 import com.gmt2001.twitch.tmi.processors.AbstractTMIProcessor;
 import com.gmt2001.util.Reflect;
@@ -42,6 +43,7 @@ import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.twitch.api.Helix;
+import tv.phantombot.twitch.api.TwitchValidate;
 
 /**
  * A client for the Twitch Message Interface
@@ -231,6 +233,22 @@ public final class TwitchMessageInterface extends SubmissionPublisher<TMIMessage
             if (!channel.startsWith("#")) {
                 channel = "#" + channel;
             }
+
+            /**
+             * @botproperty sendmessagesasapp - If `true`, send chat messages using Twitch API and an app token if possible, instead of IRC. Default `true`
+             * @botpropertycatsort sendmessagesasapp  850 20 Twitch
+             */
+            com.gmt2001.Console.debug.println((CaselessProperties.instance().getPropertyAsBoolean("sendmessagesasapp", true) ? "t": "f") + (TwitchValidate.instance().isAppValid() ? "t" : "f") + (TwitchValidate.instance().hasChatScope("user:bot") ? "t" : "f"));
+            if (CaselessProperties.instance().getPropertyAsBoolean("sendmessagesasapp", true)
+                && TwitchValidate.instance().isAppValid() && TwitchValidate.instance().hasChatScope("user:bot")) {
+                try {
+                    Helix.instance().sendChatMessageAsync(true, ViewerCache.instance().broadcaster().id(), message, true, replyToId).subscribe();
+                    return;
+                } catch (Exception ex) {
+                    com.gmt2001.Console.err.printStackTrace(ex);
+                }
+            }
+
             this.sendFullCommand(replyToId == null || replyToId.isBlank() ? null : Collections.singletonMap("reply-parent-msg-id", replyToId), "PRIVMSG", channel, message);
         }
     }
