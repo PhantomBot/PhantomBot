@@ -28,8 +28,10 @@ import com.gmt2001.twitch.tmi.TMIMessage;
 import com.gmt2001.twitch.tmi.TMISlashCommands;
 import com.gmt2001.util.concurrent.ExecutorService;
 
+import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.command.CommandEvent;
 import tv.phantombot.event.irc.channel.IrcChannelUserModeEvent;
@@ -83,6 +85,9 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
 
     @Override
     protected void onMessage(TMIMessage item) {
+        if (item.nick().equalsIgnoreCase(PhantomBot.instance().getBotName())) {
+            Mono.delay(Duration.ofSeconds(1)).block();
+        }
         if (item.tags().containsKey("id") && selfMessages.containsKey(item.tags().get("id"))) {
             return;
         }
