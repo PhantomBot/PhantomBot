@@ -105,10 +105,10 @@
                      * @commandpath channelpoints get - Given a channel point reward id, returns the custom command definition that will be parsed
                      */
                 } else if (action === 'get') {
-                    if (args[2] === undefined || $.jsString(args[2]).length === 0) {
+                    if (args[1] === undefined || $.jsString(args[1]).length === 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.get.usage'));
                     } else {
-                        let target = $.jsString(args[2]);
+                        let target = $.jsString(args[1]);
                         let cmd = findRewardCommand(target);
 
                         if (cmd === null) {
@@ -121,7 +121,7 @@
                      * @commandpath channelpoints add - Starts the process of adding a "command" type redemption reward
                      */
                 } else if (action === 'add') {
-                    if (args[2] === undefined || $.jsString(args[2]).length === 0) {
+                    if (args[1] === undefined || $.jsString(args[1]).length === 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage1'));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage2', $.botName));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage3'));
@@ -139,12 +139,12 @@
                      * @commandpath channelpoints edit - Changes the command definition for a "command" type reward
                      */
                 } else if (action === 'edit') {
-                    if (args[2] === undefined || $.jsString(args[2]).length === 0 || args[3] === undefined || $.jsString(args[3]).length === 0) {
+                    if (args[1] === undefined || $.jsString(args[1]).length === 0 || args[2] === undefined || $.jsString(args[2]).length === 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.edit.usage1'));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage2', $.botName));
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.add.usage3'));
                     } else {
-                        let target = $.jsString(args[2]);
+                        let target = $.jsString(args[1]);
                         let cmdid = findRewardCommandIndex(target);
 
                         if (cmdid === null) {
@@ -168,10 +168,10 @@
                      * @commandpath channelpoints remove - Removes a "command" type reward
                      */
                 } else if (action === 'remove') {
-                    if (args[2] === undefined || $.jsString(args[2]).length === 0) {
+                    if (args[1] === undefined || $.jsString(args[1]).length === 0) {
                         $.say($.whisperPrefix(sender) + $.lang.get('channelPointsHandler.command.remove.usage'));
                     } else {
-                        let target = $.jsString(args[2]);
+                        let target = $.jsString(args[1]);
                         let cmdid = findRewardCommandIndex(target);
 
                         if (cmdid === null) {
