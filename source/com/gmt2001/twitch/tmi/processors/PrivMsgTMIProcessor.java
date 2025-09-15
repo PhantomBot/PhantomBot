@@ -17,14 +17,17 @@
 package com.gmt2001.twitch.tmi.processors;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import com.gmt2001.twitch.tmi.TMIMessage;
 import com.gmt2001.twitch.tmi.TMISlashCommands;
+import com.gmt2001.util.concurrent.ExecutorService;
 
-import io.netty.resolver.DefaultAddressResolverGroup;
 import reactor.core.publisher.SignalType;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.event.EventBus;
@@ -44,6 +47,18 @@ import tv.phantombot.event.twitch.bits.TwitchBitsEvent;
 public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
 
     private final List<String> moderators = new CopyOnWriteArrayList<>();
+    private static final Map<String, Instant> selfMessages = new ConcurrentHashMap<>();
+
+    static {
+        ExecutorService.scheduleAtFixedRate(()->{
+            final Instant now = Instant.now();
+            selfMessages.forEach((k,v) -> {
+                if (v.isBefore(now)) {
+                    selfMessages.remove(k);
+                }
+            });
+        }, 10, 10, TimeUnit.SECONDS);
+    }
 
     public PrivMsgTMIProcessor() {
         super("PRIVMSG");
@@ -57,8 +72,21 @@ public final class PrivMsgTMIProcessor extends AbstractTMIProcessor {
         return message;
     }
 
+    /**
+     * Caches a message GUID for 10 seconds to prevent self-triggering.
+     * 
+     * @param messageid The message GUID to cache.
+     */
+    public static void preventSelfTrigger(String messageid) {
+        selfMessages.computeIfAbsent(messageid, k -> Instant.now().plusSeconds(10));
+    }
+
     @Override
     protected void onMessage(TMIMessage item) {
+        if (item.tags().containsKey("id") && selfMessages.containsKey(item.tags().get("id"))) {
+            return;
+        }
+        
         String message = item.parameters();
 
         message = stripAction(message);
