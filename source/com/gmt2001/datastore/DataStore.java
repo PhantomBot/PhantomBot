@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.jooq.Configuration;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.InsertValuesStep3;
@@ -690,7 +691,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key) {
-        return this.OptRecord(table, section, key, false);
+        return this.OptRecord(dsl(), table, section, key, false);
     }
 
     /**
@@ -698,20 +699,21 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * <p>
      * If a JOOQ constraint failure occurs due to duplicate (SECTION, VARIABLE), a backup is created, duplicates are dropped, and the SQL constraint is added
      *
+     * @param context the {@link DSLContext} to execute on
      * @param table the table to search
      * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
      * @param key the value of the {@code variable} column to retrieve
      * @param isRetry if {@code false}, a {@link TooManyRowsException} triggers dropping duplicate data; otherwise, the exception is re-thrown up the stack
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
-    private Optional<SectionVariableValueRecord> OptRecord(SectionVariableValueTable table, String section, String key, boolean isRetry) {
+    private Optional<SectionVariableValueRecord> OptRecord(DSLContext context, SectionVariableValueTable table, String section, String key, boolean isRetry) {
         Optional<SectionVariableValueRecord> res;
 
         try {
             if (section == null) {
-                res = dsl().fetchOptional(table, table.VARIABLE.eq(key));
+                res = context.fetchOptional(table, table.VARIABLE.eq(key));
             } else {
-                res = dsl().fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
+                res = context.fetchOptional(table, table.SECTION.eq(section), table.VARIABLE.eq(key));
             }
         } catch (TooManyRowsException ex) {
             if (isRetry) {
@@ -720,7 +722,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
                 String timestamp = LocalDateTime.now(PhantomBot.getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
                 this.backupDB("before_duplicate_drop_" + table.getName() + "_" + timestamp);
                 table.dropDuplicateData();
-                return this.OptRecord(table, section, key, true);
+                return this.OptRecord(context, table, section, key, true);
             }
         }
 
@@ -957,6 +959,41 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
         String sval = Long.toString(value);
 
         SetString(fName, section, key, sval);
+    }
+
+    /**
+     * Changes the value of the {@code value} column for the given table, section, and key as a long,
+     * only if the record is unmodified from {@code orig} or does not exist
+     *
+     * @param fName a table name, without the {@code phantombot_} prefix
+     * @param section a section name. {@code ""} (empty string) for the default section; {@code null} for all sections
+     * @param key the value of the {@code variable} column to retrieve
+     * @param orig the original value of the {@code value} column. Any value if the record does not exist
+     * @param value the new value to store in the {@code value} column
+     * 
+     * @return {@code true} on success
+     */
+    public boolean SafeChangeLong(String fName, String section, String key, long orig, long value) {
+        String origsval = Long.toString(orig);
+        String sval = Long.toString(value);
+        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+
+        if (table == null) {
+            return false;
+        }
+
+        Configuration c = dsl().configuration().derive();
+        c.settings().setExecuteWithOptimisticLocking(true);
+        c.settings().setExecuteWithOptimisticLockingExcludeUnversioned(false);
+        SectionVariableValueRecord record = this.OptRecord(c.dsl(), table, section, key, false)
+            .orElseGet(() -> new SectionVariableValueRecord(table, section, key, origsval));
+        long origdval = Long.valueOf(record.value());
+        if (origdval != orig) {
+            return false;
+        }
+        record.value(sval);
+        record.changed(true);
+        return record.merge() == 1;
     }
 
     /**
