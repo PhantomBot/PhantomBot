@@ -1760,7 +1760,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
@@ -1877,7 +1877,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
@@ -1910,7 +1910,7 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
