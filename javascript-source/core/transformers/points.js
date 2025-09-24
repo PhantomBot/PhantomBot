@@ -152,12 +152,42 @@
 
     /*
      * @transformer takepoints
-     * @formula (takepoints amount:int) take points from the sender
-     * @formula (takepoints amount:int user:str) take points from the given user
+     * @formula (takepoints amount:int) take points from the sender; zero out if they don't have enough
+     * @formula (takepoints amount:int user:str) take points from the given user; zero out if they don't have enough
+     * @labels twitch commandevent points
+     */
+    function takepoints(args) {
+        let pargs = $.parseArgs(args.args, ' ');
+
+        if (pargs !== null && !isNaN(pargs[0])) {
+            let user = args.event.getSender();
+            let amount = parseInt(pargs[0]);
+
+            if (pargs.length > 1) {
+                user = pargs[1].toLowerCase();
+                if (!$.username.exists(user)) {
+                    user = null;
+                }
+            }
+
+            if (user !== null) {
+                $.points.take(user, amount, true);
+            }
+        }
+
+        return {
+            result: ''
+        };
+    }
+
+    /*
+     * @transformer takepointsorcancel
+     * @formula (takepointsorcancel amount:int) take points from the sender; cancel if they don't have enough
+     * @formula (takepointsorcancel amount:int user:str) take points from the given user; cancel if they don't have enough
      * @labels twitch commandevent points
      * @cancels sometimes
      */
-    function takepoints(args) {
+    function takepointsorcancel(args) {
         let pargs = $.parseArgs(args.args, ' ');
         let cancel = true;
 
@@ -253,6 +283,7 @@
         new $.transformers.transformer('points', ['twitch', 'commandevent', 'points'], points),
         new $.transformers.transformer('price', ['twitch', 'commandevent', 'points'], price),
         new $.transformers.transformer('takepoints', ['twitch', 'commandevent', 'points'], takepoints),
+        new $.transformers.transformer('takepointsorcancel', ['twitch', 'commandevent', 'points'], takepointsorcancel),
         new $.transformers.transformer('takepointsfromall', ['twitch', 'commandevent', 'points'], takepointsfromall),
         new $.transformers.transformer('transferpoints', ['twitch', 'commandevent', 'points'], transferpoints)
     ];
