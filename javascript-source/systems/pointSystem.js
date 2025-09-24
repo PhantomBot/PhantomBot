@@ -101,8 +101,8 @@
     /**
      * @function getUserPoints
      * @export $
-     * @param {string} username
-     * @returns {number}
+     * @param {string} username the username to lookup
+     * @returns {number} the number of points the user has
      */
     function getUserPoints(username) {
         return $.getIniDbNumber('points', username.toLowerCase(), 0);
@@ -166,7 +166,7 @@
      * @returns {number|null} the new value on success; `null` on failure
      */
     function updateUserPoints(username, orig, value, calcfunc) {
-        function calcfuncInternal(username, current, value, retry){
+        function calcfuncInternal(username, current, value, retry) {
             let newval = calcfunc(username, current, value);
             if (newval !== undefined && newval !== null) {
                 return updateUserPointsInternal(username, current, newval, calcfuncInternal, retry);
@@ -176,6 +176,87 @@
         }
 
         return updateUserPointsInternal(username, orig, value, calcfuncInternal, 0);
+    }
+
+    /**
+     * Attempts to take points from a user, if they have enough balance to support it
+     * 
+     * @param {string} username the username to take points from
+     * @param {number} points the number of points to take from the user
+     * @returns {number|null} the users new point balance on success; `null` on failure
+     */
+    function takePoints(username, points) {
+        let current = getUserPoints(username);
+
+        if (current < points) {
+            return null;
+        }
+
+        function takePointsCalc(username, current, value) {
+            if (current < points) {
+                return null;
+            }
+
+            return current - points;
+        }
+
+        return updateUserPoints(username, current, current - points, takePointsCalc);
+    }
+
+    /**
+     * Attempts to give points to a user
+     * 
+     * @param {string} username the username to give points to
+     * @param {number} points the number of points to give to the user
+     * @returns {number|null} the users new point balance on success; `null` on failure
+     */
+    function givePoints(username, points) {
+        let current = getUserPoints(username);
+
+        function givePointsCalc(username, current, value) {
+            return current + points;
+        }
+
+        return updateUserPoints(username, current, current + points, givePointsCalc);
+    }
+
+    /**
+     * Attempts to transfer points from one user to another
+     * 
+     * To increase chances of success, this function tries 10 times to give the taken points to `toUsername`.
+     * On failure, this function tries 10 times to return them back to `fromUsername`
+     * 
+     * @param {string} fromUsername the username to take points from
+     * @param {string} toUsername the username to give points to
+     * @param {number} points the number of points to transfer
+     * @returns {Object.<string, number|null>} an object mapping the usernames to their new balances on success; usernames mapped to `null` on failure
+     * @throws if points were successfully taken from `fromUsername` but then failed to either give them to `toUsername` or return them back to `fromUsername`
+     */
+    function transferPoints(fromUsername, toUsername, points) {
+        let take = takePoints(fromUsername, points);
+        let give = null;
+        let giveback = null;
+
+        if (take !== null) {
+            for (let i = 0; i < 10 && give === null; i++) {
+                give = givePoints(toUsername, points);
+            }
+        }
+
+        if (take !== null && give === null) {
+            for (let i = 0; i < 10 && give === null; i++) {
+                giveback = givePoints(fromUsername, points);
+            }
+            
+            if (giveback === null) {
+                throw new Error('Took ' + points + ' points from ' + fromUsername + ' but failed to give them to ' + toUsername + ' or return them back to ' + fromUsername);
+            }
+        }
+
+        return {
+            fromUsername: giveback === null ? take : giveback,
+            toUsername: give
+        }
     }
 
     /**
@@ -982,6 +1063,38 @@
          * @param {Function} calcfunc a function, as described in the description, that recalculates the change on failure
          * @returns {number|null} the new value on success; `null` on failure
          */
-        update: updateUserPoints
+        update: updateUserPoints,
+        /**
+         * Attempts to take points from a user, if they have enough balance to support it
+         * 
+         * @export $.points
+         * @param {string} username the username to take points from
+         * @param {number} points the number of points to take from the user
+         * @returns {number|null} the users new point balance on success; `null` on failure
+         */
+        take: takePoints,
+        /**
+         * Attempts to give points to a user
+         * 
+         * @export $.points
+         * @param {string} username the username to give points to
+         * @param {number} points the number of points to give to the user
+         * @returns {number|null} the users new point balance on success; `null` on failure
+         */
+        give: givePoints,
+        /**
+         * Attempts to transfer points from one user to another
+         * 
+         * To increase chances of success, this function tries 10 times to give the taken points to `toUsername`.
+         * On failure, this function tries 10 times to return them back to `fromUsername`
+         * 
+         * @export $.points
+         * @param {string} fromUsername the username to take points from
+         * @param {string} toUsername the username to give points to
+         * @param {number} points the number of points to transfer
+         * @returns {Object.<string, number|null>} an object mapping the usernames to their new balances on success; usernames mapped to `null` on failure
+         * @throws if points were successfully taken from `fromUsername` but then failed to either give them to `toUsername` or return them back to `fromUsername`
+         */
+        transfer: transferPoints
     };
 })();
