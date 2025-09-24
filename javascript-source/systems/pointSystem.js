@@ -183,18 +183,28 @@
      * 
      * @param {string} username the username to take points from
      * @param {number} points the number of points to take from the user
+     * @param {boolean|null|undefined} zero `true` to zero out points instead of failing if user does not have enough points. default `false`
      * @returns {number|null} the users new point balance on success; `null` on failure
      */
-    function takePoints(username, points) {
+    function takePoints(username, points, zero) {
+        if (zero === undefined || zero === null) {
+            zero = false;
+        }
+
         let current = getUserPoints(username);
 
         if (current < points) {
+            if (zero) {
+                zeroUserPoints(username);
+                return 0;
+            }
+
             return null;
         }
 
         function takePointsCalc(username, current, value) {
             if (current < points) {
-                return null;
+                return zero ? 0 : null;
             }
 
             return current - points;
@@ -1111,11 +1121,12 @@
          */
         update: updateUserPoints,
         /**
-         * Attempts to take points from a user, if they have enough balance to support it
+         * Attempts to take points from a user, if they have enough
          * 
          * @export $.points
          * @param {string} username the username to take points from
          * @param {number} points the number of points to take from the user
+         * @param {boolean|null|undefined} zero `true` to zero out points instead of failing if user does not have enough points. default `false`
          * @returns {number|null} the users new point balance on success; `null` on failure
          */
         take: takePoints,
