@@ -260,6 +260,62 @@
     }
 
     /**
+     * Sets the users points to `0`
+     * 
+     * @param {string} username the username to set 
+     */
+    function zeroUserPoints(username) {
+        $.setIniDbNumber('points', username, 0);
+    }
+
+    /**
+     * Gives points to all users
+     * 
+     * @param {number} points the number of points to give
+     * @param {Array<string>|null|undefined} users the users to give points to; `null` or `undefined` to use he list of users currently recognized as being in chat
+     */
+    function giveToAll(points, users) {
+        if (users === undefined || users === null) {
+            users = [];
+            for (let i in $.users) {
+                users.push($.users[i].toLowerCase());
+            }
+        }
+
+        $.inidb.IncreaseBatchString('points', '', users, points);
+    }
+
+    /**
+     * Takes points from all users currently recognized as being in chat
+     * 
+     * Any user whose points would go negative is instead set to `0`
+     * 
+     * @param {number} points the number of points to take 
+     * @param {Array<string>|null|undefined} users the users to take points from; `null` or `undefined` to use he list of users currently recognized as being in chat
+     */
+    function takeFromAll(points, users) {
+        if (users === undefined || users === null) {
+            users = [];
+            for (let i in $.users) {
+                users.push($.users[i].toLowerCase());
+            }
+        }
+        
+        let takeUsers = [];
+
+        for (let i in users) {
+            let user = users[i];
+            if (getUserPoints(user) >= points) {
+                takeUsers.push(user);
+            } else {
+                zeroUserPoints(user);
+            }
+        }
+
+        $.inidb.IncreaseBatchString('points', '', takeUsers, -points);
+    }
+
+    /**
      * @function getPointsString
      * @export $
      * @param {Number} points
@@ -449,9 +505,7 @@
             return;
         }
 
-        for (let i in $.users) {
-            $.inidb.incr('points', $.users[i].toLowerCase(), amount);
-        }
+        giveToAll(amount);
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
     }
@@ -466,15 +520,7 @@
             return;
         }
 
-
-        for (let i in $.users) {
-            if (getUserPoints($.users[i].toLowerCase()) > amount) {
-                $.inidb.decr('points', $.users[i].toLowerCase(), amount);
-            } else {
-                $.inidb.set('points', $.users[i].toLowerCase(), '0');
-            }
-        }
-
+        takeFromAll(amount);
 
         $.say($.lang.get('pointsystem.take.all.success', getPointsString(amount)));
     }
@@ -1095,6 +1141,31 @@
          * @returns {Object.<string, number|null>} an object mapping the usernames to their new balances on success; usernames mapped to `null` on failure
          * @throws if points were successfully taken from `fromUsername` but then failed to either give them to `toUsername` or return them back to `fromUsername`
          */
-        transfer: transferPoints
+        transfer: transferPoints,
+        /**
+         * Sets the users points to `0`
+         * 
+         * @export $.points
+         * @param {string} username the username to set 
+         */
+        zero: zeroUserPoints,
+        /**
+         * Gives points to all users currently recognized as being in chat
+         * 
+         * @export $.points
+         * @param {number} points the number of points to give
+         * @param {Array<string>|null|undefined} users the users to give points to; `null` or `undefined` to use he list of users currently recognized as being in chat
+         */
+        giveToAll: giveToAll,
+        /**
+         * Takes points from all users currently recognized as being in chat
+         * 
+         * Any user whose points would go negative is instead set to `0`
+         * 
+         * @export $.points
+         * @param {number} points the number of points to take
+         * @param {Array<string>|null|undefined} users the users to take points from; `null` or `undefined` to use he list of users currently recognized as being in chat
+         */
+        takeFromAll: takeFromAll
     };
 })();
