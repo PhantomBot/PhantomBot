@@ -1870,14 +1870,14 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 
 **Formulas:**
 
-- `(takepoints amount:int)` - take points from the sender
-- `(takepoints amount:int user:str)` - take points from the given user
+- `(takepoints amount:int)` - take points from the sender; zero out if they don't have enough
+- `(takepoints amount:int user:str)` - take points from the given user; zero out if they don't have enough
 
 **Labels:** twitch commandevent points
 
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
-No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
@@ -1894,6 +1894,23 @@ Defined in script: _./javascript-source/core/transformers/points.js_
 Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
 -------|-----------|----------
 No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### takepointsorcancel
+
+Defined in script: _./javascript-source/core/transformers/points.js_
+
+**Formulas:**
+
+- `(takepointsorcancel amount:int)` - take points from the sender; cancel if they don't have enough
+- `(takepointsorcancel amount:int user:str)` - take points from the given user; cancel if they don't have enough
+
+**Labels:** twitch commandevent points
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | Sometimes
 
 &nbsp;
 
