@@ -37,7 +37,8 @@
             pointNameMultiple = $.getSetIniDbString('pointSettings', 'pointNameMultiple', 'points'),
             pointsMessage = $.getSetIniDbString('pointSettings', 'pointsMessage', '(userprefix) you currently have (pointsstring) and you have been in the chat for (time).'),
             payoutInterval,
-            currentPayoutIntervalTime = -1;
+            currentPayoutIntervalTime = -1,
+            maxUpdateRetries = 3;
 
     /**
      * @function updateSettings
@@ -84,13 +85,234 @@
     }
 
     /**
+     * @returns {string} the singular name of points
+     */
+    function getPointNameSingle() {
+        return pointNameSingle;
+    }
+
+    /**
+     * @returns {string} the plural name of points
+     */
+    function getPointNameMultiple() {
+        return pointNameMultiple;
+    }
+
+    /**
      * @function getUserPoints
      * @export $
-     * @param {string} username
-     * @returns {*}
+     * @param {string} username the username to lookup
+     * @returns {number} the number of points the user has
      */
     function getUserPoints(username) {
         return $.getIniDbNumber('points', username.toLowerCase(), 0);
+    }
+
+    /**
+     * Attempts to perform a safe update of the users points.
+     * If the current value is not `orig` at the time of writing, the `calcfunc` is called to recalculate and retry.
+     * After retrying `maxUpdateRetries` times, the call fails
+     * 
+     * `calcfunc` must be defined as `function(username, current, value, retry)`, where `current`
+     * is the new current value that caused the previous attempt to fail and `value` is the new target value
+     * that failed to be written during the previous attempt
+     * 
+     * `calcfunc` must recurse to `updateUserPointsInternal` and return the result
+     * if a retry is possible; otherwise, it should return `null` if a retry is not possible
+     * (ie. due to a negative constraint failing on the new current value)
+     * 
+     * `retry` will be updated by this function when calling `calcfunc`, therefore it should not be modified by `calcfunc` but passed as-is
+     * 
+     * @param {string} username the username to update points for
+     * @param {number} orig the original value
+     * @param {number} value the new value
+     * @param {Function} calcfunc a function, as described in the description, that recalculates the change on failure
+     * @param {number} retry the retry count
+     * @returns {number|null} the new value on success; `null` on failure
+     */
+    function updateUserPointsInternal(username, orig, value, calcfunc, retry) {
+        if (retry === undefined || retry === null || retry < 0) {
+            retry = 0;
+        }
+
+        if ($.inidb.SafeChangeLong('points', '', username.toLowerCase(), orig, value)) {
+            return value;
+        } else if (retry < maxUpdateRetries) {
+            return calcfunc(username, getUserPoints(username), value, retry + 1);
+        }
+
+        return null;
+    }
+
+    /**
+     * Attempts to perform a safe update of the users points.
+     * If the current value is not `orig` at the time of writing, the `calcfunc` is called to recalculate.
+     * After retrying `maxUpdateRetries` times, the call fails
+     * 
+     * `calcfunc` must be defined as `function(username, current, value)`, where `current`
+     * is the new current value that caused the previous attempt to fail and `value` is the new target value
+     * that failed to be written during the previous attempt
+     * 
+     * `calcfunc` must return the new value for the `value` param if it wants to attempt a retry, it should return `null` 
+     * if a retry is not possible (ie. due to a negative constraint failing on the new current value)
+     * 
+     * `calcfunc` must NOT attempt to call `updateUserPoints` again, as it could cause
+     * infinite looping and race conditions. Retry logic is handled internally
+     * 
+     * @param {string} username the username to update points for
+     * @param {number} orig the original value
+     * @param {number} value the new value
+     * @param {Function} calcfunc a function, as described in the description, that recalculates the change on failure
+     * @returns {number|null} the new value on success; `null` on failure
+     */
+    function updateUserPoints(username, orig, value, calcfunc) {
+        function calcfuncInternal(username, current, value, retry) {
+            let newval = calcfunc(username, current, value);
+            if (newval !== undefined && newval !== null) {
+                return updateUserPointsInternal(username, current, newval, calcfuncInternal, retry);
+            }
+            
+            return null;
+        }
+
+        return updateUserPointsInternal(username, orig, value, calcfuncInternal, 0);
+    }
+
+    /**
+     * Attempts to take points from a user, if they have enough balance to support it
+     * 
+     * @param {string} username the username to take points from
+     * @param {number} points the number of points to take from the user
+     * @returns {number|null} the users new point balance on success; `null` on failure
+     */
+    function takePoints(username, points) {
+        let current = getUserPoints(username);
+
+        if (current < points) {
+            return null;
+        }
+
+        function takePointsCalc(username, current, value) {
+            if (current < points) {
+                return null;
+            }
+
+            return current - points;
+        }
+
+        return updateUserPoints(username, current, current - points, takePointsCalc);
+    }
+
+    /**
+     * Attempts to give points to a user
+     * 
+     * @param {string} username the username to give points to
+     * @param {number} points the number of points to give to the user
+     * @returns {number|null} the users new point balance on success; `null` on failure
+     */
+    function givePoints(username, points) {
+        let current = getUserPoints(username);
+
+        function givePointsCalc(username, current, value) {
+            return current + points;
+        }
+
+        return updateUserPoints(username, current, current + points, givePointsCalc);
+    }
+
+    /**
+     * Attempts to transfer points from one user to another
+     * 
+     * To increase chances of success, this function tries 10 times to give the taken points to `toUsername`.
+     * On failure, this function tries 10 times to return them back to `fromUsername`
+     * 
+     * @param {string} fromUsername the username to take points from
+     * @param {string} toUsername the username to give points to
+     * @param {number} points the number of points to transfer
+     * @returns {Object.<string, number|null>} an object mapping the usernames to their new balances on success; usernames mapped to `null` on failure
+     * @throws if points were successfully taken from `fromUsername` but then failed to either give them to `toUsername` or return them back to `fromUsername`
+     */
+    function transferPoints(fromUsername, toUsername, points) {
+        let take = takePoints(fromUsername, points);
+        let give = null;
+        let giveback = null;
+
+        if (take !== null) {
+            for (let i = 0; i < 10 && give === null; i++) {
+                give = givePoints(toUsername, points);
+            }
+        }
+
+        if (take !== null && give === null) {
+            for (let i = 0; i < 10 && give === null; i++) {
+                giveback = givePoints(fromUsername, points);
+            }
+            
+            if (giveback === null) {
+                throw new Error('Took ' + points + ' points from ' + fromUsername + ' but failed to give them to ' + toUsername + ' or return them back to ' + fromUsername);
+            }
+        }
+
+        return {
+            fromUsername: giveback === null ? take : giveback,
+            toUsername: give
+        }
+    }
+
+    /**
+     * Sets the users points to `0`
+     * 
+     * @param {string} username the username to set 
+     */
+    function zeroUserPoints(username) {
+        $.setIniDbNumber('points', username, 0);
+    }
+
+    /**
+     * Gives points to all users
+     * 
+     * @param {number} points the number of points to give
+     * @param {Array<string>|null|undefined} users the users to give points to; `null` or `undefined` to use he list of users currently recognized as being in chat
+     */
+    function giveToAll(points, users) {
+        if (users === undefined || users === null) {
+            users = [];
+            for (let i in $.users) {
+                users.push($.users[i].toLowerCase());
+            }
+        }
+
+        $.inidb.IncreaseBatchString('points', '', users, points);
+    }
+
+    /**
+     * Takes points from all users currently recognized as being in chat
+     * 
+     * Any user whose points would go negative is instead set to `0`
+     * 
+     * @param {number} points the number of points to take 
+     * @param {Array<string>|null|undefined} users the users to take points from; `null` or `undefined` to use he list of users currently recognized as being in chat
+     */
+    function takeFromAll(points, users) {
+        if (users === undefined || users === null) {
+            users = [];
+            for (let i in $.users) {
+                users.push($.users[i].toLowerCase());
+            }
+        }
+        
+        let takeUsers = [];
+
+        for (let i in users) {
+            let user = users[i];
+            if (getUserPoints(user) >= points) {
+                takeUsers.push(user);
+            } else {
+                zeroUserPoints(user);
+            }
+        }
+
+        $.inidb.IncreaseBatchString('points', '', takeUsers, -points);
     }
 
     /**
@@ -283,9 +505,7 @@
             return;
         }
 
-        for (let i in $.users) {
-            $.inidb.incr('points', $.users[i].toLowerCase(), amount);
-        }
+        giveToAll(amount);
 
         $.say($.lang.get('pointsystem.add.all.success', getPointsString(amount)));
     }
@@ -300,15 +520,7 @@
             return;
         }
 
-
-        for (let i in $.users) {
-            if (getUserPoints($.users[i].toLowerCase()) > amount) {
-                $.inidb.decr('points', $.users[i].toLowerCase(), amount);
-            } else {
-                $.inidb.set('points', $.users[i].toLowerCase(), '0');
-            }
-        }
-
+        takeFromAll(amount);
 
         $.say($.lang.get('pointsystem.take.all.success', getPointsString(amount)));
     }
@@ -844,4 +1056,116 @@
     $.setTempBonus = setTempBonus;
     $.giveAll = giveAll;
     $.takeAll = takeAll;
+    /**
+     * Functions for working with pointSystem
+     * @export $
+     */
+    $.points = {
+        /**
+         * @export $.points
+         * @returns {string} the singular name of points
+         */
+        nameSingle: getPointNameSingle,
+        /**
+         * @export $.points
+         * @returns {string} the plural name of points
+         */
+        nameMultiple: getPointNameMultiple,
+        /**
+         * @export $.points
+         * @param {string} username the username to lookup
+         * @returns {number} the number of points the user has
+         */
+        get: getUserPoints,
+        /**
+         * Returns the number of points the user has, with the points name appended on the end
+         * 
+         * ex. `"25 cool points"`
+         * 
+         * @export $.points
+         * @param {string} username the username to lookup
+         * @returns {string} the number of points the user has
+         */
+        getString: getPointsString,
+        /**
+         * Attempts to perform a safe update of the users points.
+         * If the current value is not `orig` at the time of writing, the `calcfunc` is called to recalculate.
+         * After retrying `maxUpdateRetries` times, the call fails
+         * 
+         * `calcfunc` must be defined as `function(username, current, value)`, where `current`
+         * is the new current value that caused the previous attempt to fail and `value` is the new target value
+         * that failed to be written during the previous attempt
+         * 
+         * `calcfunc` must return the new value for the `value` param if it wants to attempt a retry, it should return `null` 
+         * if a retry is not possible (ie. due to a negative constraint failing on the new current value)
+         * 
+         * `calcfunc` must NOT attempt to call `updateUserPoints` again, as it could cause
+         * infinite looping and race conditions. Retry logic is handled internally
+         * 
+         * @export $.points
+         * @param {string} username the username to update points for
+         * @param {number} orig the original value
+         * @param {number} value the new value
+         * @param {Function} calcfunc a function, as described in the description, that recalculates the change on failure
+         * @returns {number|null} the new value on success; `null` on failure
+         */
+        update: updateUserPoints,
+        /**
+         * Attempts to take points from a user, if they have enough balance to support it
+         * 
+         * @export $.points
+         * @param {string} username the username to take points from
+         * @param {number} points the number of points to take from the user
+         * @returns {number|null} the users new point balance on success; `null` on failure
+         */
+        take: takePoints,
+        /**
+         * Attempts to give points to a user
+         * 
+         * @export $.points
+         * @param {string} username the username to give points to
+         * @param {number} points the number of points to give to the user
+         * @returns {number|null} the users new point balance on success; `null` on failure
+         */
+        give: givePoints,
+        /**
+         * Attempts to transfer points from one user to another
+         * 
+         * To increase chances of success, this function tries 10 times to give the taken points to `toUsername`.
+         * On failure, this function tries 10 times to return them back to `fromUsername`
+         * 
+         * @export $.points
+         * @param {string} fromUsername the username to take points from
+         * @param {string} toUsername the username to give points to
+         * @param {number} points the number of points to transfer
+         * @returns {Object.<string, number|null>} an object mapping the usernames to their new balances on success; usernames mapped to `null` on failure
+         * @throws if points were successfully taken from `fromUsername` but then failed to either give them to `toUsername` or return them back to `fromUsername`
+         */
+        transfer: transferPoints,
+        /**
+         * Sets the users points to `0`
+         * 
+         * @export $.points
+         * @param {string} username the username to set 
+         */
+        zero: zeroUserPoints,
+        /**
+         * Gives points to all users currently recognized as being in chat
+         * 
+         * @export $.points
+         * @param {number} points the number of points to give
+         * @param {Array<string>|null|undefined} users the users to give points to; `null` or `undefined` to use he list of users currently recognized as being in chat
+         */
+        giveToAll: giveToAll,
+        /**
+         * Takes points from all users currently recognized as being in chat
+         * 
+         * Any user whose points would go negative is instead set to `0`
+         * 
+         * @export $.points
+         * @param {number} points the number of points to take
+         * @param {Array<string>|null|undefined} users the users to take points from; `null` or `undefined` to use he list of users currently recognized as being in chat
+         */
+        takeFromAll: takeFromAll
+    };
 })();
