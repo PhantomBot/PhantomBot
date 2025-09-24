@@ -155,9 +155,11 @@
      * @formula (takepoints amount:int) take points from the sender; zero out if they don't have enough
      * @formula (takepoints amount:int user:str) take points from the given user; zero out if they don't have enough
      * @labels twitch commandevent points
+     * @cancels sometimes
      */
     function takepoints(args) {
         let pargs = $.parseArgs(args.args, ' ');
+        let cancel = true;
 
         if (pargs !== null && !isNaN(pargs[0])) {
             let user = args.event.getSender();
@@ -171,11 +173,12 @@
             }
 
             if (user !== null) {
-                $.points.take(user, amount, true);
+               cancel =  $.points.take(user, amount, true) === null;
             }
         }
 
         return {
+            cancel: cancel,
             result: ''
         };
     }
