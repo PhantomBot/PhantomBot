@@ -30,11 +30,11 @@
 #  * @cancels?[| sometimes]
 #  */
 
-# types: str, int, bool
+# types: str, int, number, bool
 
 # separators: " " (space), "=" (equals), "|" (pipe)
 
-# custom arg types: str, int, bool, array, dictionary, javaObject[className]
+# custom arg types: str, int, number, bool, array, dictionary, javaObject[className]
 
 # Uses Doc-comment definition
 
