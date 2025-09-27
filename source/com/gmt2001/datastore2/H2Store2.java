@@ -267,19 +267,7 @@ public final class H2Store2 extends Datastore2 {
         try (Stream<Path> backupStream = Files.find(Paths.get("./config/"), 1, (path, attr) -> attr.isRegularFile() && path.toString().endsWith(".h2.sql.gz"))) {
             Optional<Path> backup = backupStream.findFirst();
             if (backup.isPresent()) {
-                com.gmt2001.Console.out.print("Restoring H2 database from backup at " + backup.get().toString() + "...");
-                Path dbfile = Paths.get("./config/", getDbFile() + ".mv.db");
-                JdbcDataSource dataSource = new JdbcDataSource();
-                dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
-                try (Connection con = dataSource.getConnection();
-                        Statement st = con.createStatement()) {
-                    st.execute("DROP ALL OBJECTS");
-                    st.execute("RUNSCRIPT FROM '" + backup.get().toString() + "' COMPRESSION GZIP");
-                } catch (SQLException ex) {
-                    com.gmt2001.Console.err.printStackTrace(ex);
-                }
-                Files.delete(backup.get());
-                com.gmt2001.Console.out.println("done");
+                this.restoreBackup(backup.get());
             }
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -317,19 +305,26 @@ public final class H2Store2 extends Datastore2 {
 
     @Override
     public void restoreBackup(String fileName) throws FileNotFoundException {
-        Path p = PathValidator.getRealPath(Paths.get("./dbbackup/"));
+        Path p = PathValidator.getRealPath(Paths.get("./dbbackup/", fileName));
 
         if (!Files.exists(p)) {
             throw new FileNotFoundException(p.toString());
         }
 
-        try ( Connection connection = this.getConnection()) {
-            try ( Statement statement = connection.createStatement()) {
-                statement.execute("RUNSCRIPT FROM '" + p.toString() + "' COMPRESSION GZIP");
-                com.gmt2001.Console.debug.println("Restored H2 backup from " + p.toString());
-            }
+        this.restoreBackup(p);
+    }
+
+    private void restoreBackup(Path p) {
+        com.gmt2001.Console.out.print("Restoring H2 database from backup at " + p.toString() + "...");
+        JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:./config/" + getDbFile() + ";DB_CLOSE_ON_EXIT=FALSE;MAX_LENGTH_INPLACE_LOB=2048");
+        try (Connection con = dataSource.getConnection();
+                Statement st = con.createStatement()) {
+            st.execute("DROP ALL OBJECTS");
+            st.execute("RUNSCRIPT FROM '" + p.toString() + "' COMPRESSION GZIP");
         } catch (SQLException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+        com.gmt2001.Console.out.println("done");
     }
 }
