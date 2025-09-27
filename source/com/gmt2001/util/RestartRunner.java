@@ -163,7 +163,6 @@ public final class RestartRunner implements Listener {
                 }
             });
         } else if (!RepoVersion.isDocker()) {
-            PhantomBot.instance().onExit();
             System.exit(53);
         }
     }
