@@ -28,7 +28,7 @@
      * Bot: User, the absolute value of -2.1 is: 2.1
      */
     function abs(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -56,7 +56,7 @@
      * Bot: User, adding 1, 3, and 5 gives: 9
      */
     function add(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -91,7 +91,7 @@
      * Bot: User, rounding up 2.1 gives: 3
      */
     function ceil(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -120,7 +120,7 @@
      * Bot: User, dividing 20 and 4 gives: 5
      */
     function divide(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -155,7 +155,7 @@
      * Bot: User, raising 10 to the power of -2 gives: 0.01
      */
     function exponentiation(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -190,7 +190,7 @@
      * Bot: User, rounding down 2.1 gives: 2
      */
     function floor(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -218,7 +218,7 @@
      * Bot: User, the maximum value of 8, 1, and 9 is: 9
      */
     function max(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -253,7 +253,7 @@
      * Bot: User, the minimum value of 8, 1, and 9 is: 1
      */
     function min(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -288,7 +288,7 @@
      * Bot: User, multiplying 5 and 4 gives: 20
      */
     function multiply(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -324,7 +324,7 @@
      * Bot: User, dividing 5 and 4 gives a remainder of: 1
      */
     function remainder(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -359,7 +359,7 @@
      * Bot: User, rounding 1.5 gives: 2
      */
     function round(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
@@ -387,7 +387,7 @@
      * Bot: User, subtracting 1, 3, and 5 gives: -7
      */
     function subtract(args) {
-        let pargs = $.parseArgs(args.args, ' ', 2, true);
+        let pargs = $.parseArgs(args.args, ' ');
         let result = null;
 
         if (pargs !== null) {
