@@ -28,6 +28,7 @@ import com.gmt2001.util.concurrent.ExecutorService;
 
 import net.engio.mbassy.listener.Handler;
 import tv.phantombot.CaselessProperties;
+import tv.phantombot.PhantomBot;
 import tv.phantombot.RepoVersion;
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.Listener;
@@ -162,6 +163,7 @@ public final class RestartRunner implements Listener {
                 }
             });
         } else if (!RepoVersion.isDocker()) {
+            PhantomBot.instance().onExit();
             System.exit(53);
         }
     }
