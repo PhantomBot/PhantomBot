@@ -25,15 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
+import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.gmt2001.util.GamesListUpdater;
 import com.gmt2001.util.Reflect;
@@ -300,10 +300,39 @@ public final class ConsoleEventHandler implements Listener {
          * @consolecommand backupdb - Creates a backup of the current database.
          */
         if (message.equalsIgnoreCase("backupdb")) {
+            if (!Datastore2.instance().supportsBackup()) {
+                com.gmt2001.Console.err.println("[CONSOLE] Current database type does not support backup/restore from PhantomBot");
+                return;
+            }
+
             com.gmt2001.Console.out.println("[CONSOLE] Executing backupdb");
             String timestamp = LocalDateTime.now(PhantomBot.getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
 
-            PhantomBot.instance().getDataStore().backupDB("phantombot.manual.backup." + timestamp + ".db");
+            Datastore2.instance().backup("phantombot.manual.backup." + timestamp + ".db");
+            com.gmt2001.Console.out.println("[CONSOLE] Created database backup at ./dbbackup/phantombot.manual.backup." + timestamp + ".db");
+            return;
+        }
+
+        /**
+         * @consolecommand restoredb (filename) - Restores a backup of the database.
+         */
+        if (message.equalsIgnoreCase("restoredb")) {
+            if (!Datastore2.instance().supportsBackup()) {
+                com.gmt2001.Console.err.println("[CONSOLE] Current database type does not support backup/restore from PhantomBot");
+                return;
+            }
+
+            if (argument == null || argument.length == 0 || argument[0].isBlank()) {
+                com.gmt2001.Console.err.println("[CONSOLE] Please provide a filename in the dbbackup folder to restore from");
+                return;
+            }
+
+            com.gmt2001.Console.out.println("[CONSOLE] Executing restoredb");
+            try {
+                Datastore2.instance().restoreBackup(argument[0]);
+            } catch (FileNotFoundException e) {
+                com.gmt2001.Console.err.println("[CONSOLE] Could not find file " + e.getMessage());
+            }
             return;
         }
 
