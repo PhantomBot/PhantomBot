@@ -86,6 +86,14 @@ backupdb - Creates a backup of the current database.
 
 &nbsp;
 
+### restoredb
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+restoredb (filename) - Restores a backup of the database.
+
+&nbsp;
+
 ### jointest
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_

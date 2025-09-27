@@ -1396,6 +1396,335 @@ No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
 
 &nbsp;
 
+### math
+#### abs
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(abs arg:number)` - return the absolute value of the given number
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: if the argument returns `true` for `isNaN`, `0` is returned_
+
+
+**Example:**
+```text
+Caster: !addcom !abs (sender), the absolute value of (1) is: (abs (1))
+User: !abs -2.1
+Bot: User, the absolute value of -2.1 is: 2.1
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### add
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(add arg1:number arg2:number ...)` - add the given numbers and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !add (sender), adding (1), (2), and (3) gives: (add (1) (2) (3))
+User: !add 1 3 5
+Bot: User, adding 1, 3, and 5 gives: 9
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### ceil
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(ceil arg:number)` - round up the given number and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: if the argument returns `true` for `isNaN`, `0` is returned_
+
+
+**Example:**
+```text
+Caster: !addcom !ceil (sender), rounding (1) up gives: (ceil (1))
+User: !ceil 2.1
+Bot: User, rounding up 2.1 gives: 3
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### divide
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(divide arg1:number arg2:number ...)` - divide the given numbers and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+_NOTE: any argument, except for the first, which is `0` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !divide (sender), dividing (1) and (2) gives: (divide (1) (2))
+User: !divide 20 4
+Bot: User, dividing 20 and 4 gives: 5
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### exponentiation
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(exponentiation arg1:number arg2:number ...)` - raise the given numbers via exponentiation and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !exponentiation (sender), raising (1) to the power of (2) gives: (exponentiation (1) (2))
+User: !exponentiation 10 -2
+Bot: User, raising 10 to the power of -2 gives: 0.01
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### floor
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(floor arg:number)` - round down the given number and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: if the argument returns `true` for `isNaN`, `0` is returned_
+
+
+**Example:**
+```text
+Caster: !addcom !floor (sender), rounding (1) down gives: (floor (1))
+User: !floor 2.1
+Bot: User, rounding down 2.1 gives: 2
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### max
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(max arg1:number arg2:number ...)` - return the highest value of the given numbers
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !min (sender), the maximum value of (1), (2), and (3) is: (max (1) (2) (3))
+User: !max 8 1 9
+Bot: User, the maximum value of 8, 1, and 9 is: 9
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### min
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(min arg1:number arg2:number ...)` - return the lowest value of the given numbers
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !min (sender), the minimum value of (1), (2), and (3) is: (min (1) (2) (3))
+User: !min 8 1 9
+Bot: User, the minimum value of 8, 1, and 9 is: 1
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### multiply
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(multiply arg1:number arg2:number ...)` - multiply the given numbers and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !multiply (sender), multiplying (1) and (2) gives: (multiply (1) (2))
+User: !multiply 5 4
+Bot: User, multiplying 5 and 4 gives: 20
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### remainder
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(remainder arg1:number arg2:number ...)` - calculate the remainder after dividing the given numbers and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+_NOTE: any argument, except for the first, which is `0` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !remainder (sender), dividing (1) and (2) gives a remainder of: (remainder (1) (2))
+User: !remainder 5 4
+Bot: User, dividing 5 and 4 gives a remainder of: 1
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### round
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(round arg:number)` - round the given number and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: if the argument returns `true` for `isNaN`, `0` is returned_
+
+
+**Example:**
+```text
+Caster: !addcom !round (sender), rounding (1) gives: (round (1))
+User: !round 1.5
+Bot: User, rounding 1.5 gives: 2
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
+#### subtract
+
+Defined in script: _./javascript-source/core/transformers/math.js_
+
+**Formulas:**
+
+- `(subtract arg1:number arg2:number ...)` - suntract the given numbers and return the result
+
+**Labels:** twitch discord noevent math
+
+
+_NOTE: any argument which returns `true` for `isNaN` is skipped_
+
+
+**Example:**
+```text
+Caster: !addcom !subtract (sender), subtracting (1), (2), and (3) gives: (subtract (1) (2) (3))
+User: !subtract 1 3 5
+Bot: User, subtracting 1, 3, and 5 gives: -7
+```
+
+Raw?[^raw]&nbsp;&nbsp; | Cached?[^cached]&nbsp;&nbsp; | Cancels?[^cancels]
+-------|-----------|----------
+No&nbsp;&nbsp; | No&nbsp;&nbsp; | No
+
+&nbsp;
+
 ### meta
 #### adminonlyedit
 
