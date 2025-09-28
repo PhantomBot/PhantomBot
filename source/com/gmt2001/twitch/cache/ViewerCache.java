@@ -54,11 +54,13 @@ import tv.phantombot.twitch.api.TwitchValidate;
 public final class ViewerCache implements Listener {
     private static final ViewerCache INSTANCE = new ViewerCache();
     private static final Duration ACTIVE_TIMEOUT = Duration.ofMinutes(5);
+    private static final Duration WARN_INTERVAL = Duration.ofMinutes(15);
     private boolean registered = false;
     private boolean chattersUpdated = false;
     private final ConcurrentMap<String, Viewer> viewers = new ConcurrentHashMap<>();
     private Viewer bot;
     private Viewer broadcaster;
+    private Instant nextWarn = null;
 
     /**
      * Singleton method
@@ -179,6 +181,24 @@ public final class ViewerCache implements Listener {
      * Updates the list of chatters from the API
      */
     private void getChatters() {
+        if (!TwitchValidate.instance().isAPIValid()) {
+            if (nextWarn == null) {
+                nextWarn = Instant.now().plus(WARN_INTERVAL);
+            } else if (nextWarn.isBefore(Instant.now())) {
+                nextWarn = Instant.now().plus(WARN_INTERVAL);
+                com.gmt2001.Console.warn.println("Unable to update active chatter list from Twitch API due to invalid Broadcaster OAuth token");
+            }
+            return;
+        }
+        if (!TwitchValidate.instance().hasAPIScope("moderator:read:chatters")) {
+            if (nextWarn == null) {
+                nextWarn = Instant.now().plus(WARN_INTERVAL);
+            } else if (nextWarn.isBefore(Instant.now())) {
+                nextWarn = Instant.now().plus(WARN_INTERVAL);
+                com.gmt2001.Console.warn.println("Unable to update active chatter list from Twitch API due to missing scope on Broadcaster OAuth token");
+            }
+            return;
+        }
         Mono.<List<JSONObject>>create(emitter -> {
             final List<JSONObject> newChatters = new ArrayList<>();
             String cursor = null;
@@ -244,7 +264,14 @@ public final class ViewerCache implements Listener {
 
             this.chattersUpdated(true);
         }).doOnError(ex -> {
-            com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getChattersAsync");
+            if (ex.getMessage().contains("does not have moderator permissions")) {
+                if (nextWarn == null || nextWarn.isBefore(Instant.now())) {
+                    nextWarn = Instant.now().plus(WARN_INTERVAL);
+                    com.gmt2001.Console.warn.println("Unable to update active chatter list from Twitch API due to not being a moderator in the channel");
+                }
+            } else {
+                com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getChattersAsync");
+            }
         }).subscribe();
     }
 
