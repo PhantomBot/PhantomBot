@@ -62,7 +62,8 @@ $(function () {
             opus: 'audio/ogg; codecs="opus"',
             ogg: 'audio/ogg; codecs="vorbis"',
             oga: 'audio/ogg; codecs="vorbis"',
-            webm: 'audio/webm; codecs="vorbis"'
+            webm: 'audio/webm; codecs="vorbis"',
+            flac: 'audio/flac'
         };
 
         for (let x in formats) {
