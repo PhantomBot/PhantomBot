@@ -59,8 +59,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.annotation.Nullable;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
-import tv.phantombot.twitch.api.Helix.CustomRewardRedemptionStatus;
-import tv.phantombot.twitch.api.Helix.PredictionStatus;
 
 /**
  * Start of the Helix API. This class will handle the rate limits.

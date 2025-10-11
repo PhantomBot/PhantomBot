@@ -164,11 +164,15 @@ public final class GitHubAPIv3 {
             p = Pattern.compile(".*PhantomBot-([0-9]+\\.?)+\\.zip", Pattern.CASE_INSENSITIVE);
             for (i = 0; i < assetsArray.length(); i++) {
                 if (assetsArray.getJSONObject(i).has("browser_download_url") && p.matcher(assetsArray.getJSONObject(i).getString("browser_download_url")).matches()) {
+                    found = true;
                     break;
                 }
             }
         }
 
-        return new String[]{tagName, assetsArray.getJSONObject(i).getString("browser_download_url")};
+        if (found) {
+            return new String[]{tagName, assetsArray.getJSONObject(i).getString("browser_download_url")};
+        }
+        return null;
     }
 }
