@@ -198,7 +198,7 @@ $(function() {
     player.updateSong = (id) => {
         sendToSocket({
             status: {
-                currentid: id
+                currentid: '' + id
             }
         });
     };
