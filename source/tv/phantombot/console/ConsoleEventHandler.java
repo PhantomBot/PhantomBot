@@ -971,7 +971,10 @@ public final class ConsoleEventHandler implements Listener {
             }
 
             try {
-                olddb.backup();
+                if (olddb.supportsBackup()) {
+                    com.gmt2001.Console.out.println("[convertdb] Creating a backup of the " + oldtype +" DB before starting...");
+                    olddb.backup();
+                }
                 olddb.invalidateTableCache();
                 olddb.tables().stream().filter(t -> t.getName().startsWith("phantombot_")).forEach(oldtable -> {
                     com.gmt2001.Console.out.println("[convertdb] Converting table " + oldtable.getName() + "...");
@@ -1015,6 +1018,9 @@ public final class ConsoleEventHandler implements Listener {
                         com.gmt2001.Console.err.printStackTrace(ex);
                     }
                 });
+                com.gmt2001.Console.out.println("");
+                com.gmt2001.Console.out.println("[convertdb] Conversion complete...");
+                com.gmt2001.Console.out.println("");
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
