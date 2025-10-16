@@ -931,6 +931,7 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("convertdb")) {
             if (argument == null || argument.length == 0 || argument[0].isBlank() || !List.of("h2", "mysql", "mariadb", "sqlite").contains(argument[0].toLowerCase())) {
+                com.gmt2001.Console.err.println("[convertdb] Usage: convertdb (oldDBType)");
                 com.gmt2001.Console.err.println("[convertdb] Must specify the old DB type to convert from: H2, MySQL, MariaDB, or SQLite");
                 return;
             }
