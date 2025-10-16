@@ -43,10 +43,6 @@ import com.gmt2001.PathValidator;
 import com.gmt2001.RollbarProvider;
 import com.gmt2001.TwitchAPIv5;
 import com.gmt2001.datastore.DataStore;
-import com.gmt2001.datastore.DataStoreConverter;
-import com.gmt2001.datastore.H2Store;
-import com.gmt2001.datastore.MariaDBStore;
-import com.gmt2001.datastore.MySQLStore;
 import com.gmt2001.datastore.SqliteStore;
 import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.httpclient.HttpClient;
@@ -342,32 +338,6 @@ public final class PhantomBot implements Listener {
 
         /* Load the datastore */
         Datastore2.init();
-        String oldds = CaselessProperties.instance().getProperty("datastore", "h2store").toLowerCase();
-        if (!oldds.startsWith("sqlite")) {
-            if (Datastore2.instance() != null && DataStore.instance().GetFileList().length == 0 && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
-                && SqliteStore.instance().GetFileList().length > 0) {
-                    if (oldds.startsWith("mysql")) {
-                        String mySqlConn;
-                        if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-                            mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        } else {
-                            mySqlConn = "jdbc:mysql://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        }
-                        DataStoreConverter.convertDataStore(MySQLStore.instance(mySqlConn), SqliteStore.instance());
-                    } else if (oldds.startsWith("mariadb")) {
-                        String mariaDBConn;
-                        if (CaselessProperties.instance().getProperty("mysqlport", "").isEmpty()) {
-                            mariaDBConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        } else {
-                            mariaDBConn = "jdbc:mariadb://" + CaselessProperties.instance().getProperty("mysqlhost", "") + ":" + CaselessProperties.instance().getProperty("mysqlport", "") + "/" + CaselessProperties.instance().getProperty("mysqlname", "") + "?useSSL=" + (CaselessProperties.instance().getPropertyAsBoolean("mysqlssl", false) ? "true" : "false") + "&user=" + CaselessProperties.instance().getProperty("mysqluser", "") + "&password=" + CaselessProperties.instance().getProperty("mysqlpass", "");
-                        }
-                        DataStoreConverter.convertDataStore(MariaDBStore.instance(mariaDBConn), SqliteStore.instance());
-                    } else if (oldds.startsWith("h2")) {
-                        DataStoreConverter.convertDataStore(H2Store.instance(CaselessProperties.instance().getProperty("datastoreconfig", "")), SqliteStore.instance());
-                    }
-                }
-        }
 
         /* Set the oauth key in the Twitch api and perform a validation. */
         this.validateOAuth();

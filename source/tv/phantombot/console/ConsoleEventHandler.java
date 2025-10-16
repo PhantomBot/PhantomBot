@@ -16,6 +16,11 @@
  */
 package tv.phantombot.console;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,17 +28,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
+import com.gmt2001.datastore.DataStore;
+import com.gmt2001.datastore.SectionVariableValueRecord;
+import com.gmt2001.datastore.SectionVariableValueTable;
 import com.gmt2001.datastore2.Datastore2;
+import com.gmt2001.datastore2.H2Store2;
+import com.gmt2001.datastore2.MariaDBStore2;
+import com.gmt2001.datastore2.MySQLStore2;
+import com.gmt2001.datastore2.SQLiteStore2;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
 import com.gmt2001.util.GamesListUpdater;
 import com.gmt2001.util.Reflect;
@@ -59,7 +67,10 @@ import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
+import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
+import tv.phantombot.panel.PanelUser.PanelUserTable;
+import tv.phantombot.panel.PanelUser.PermissionMap;
 import tv.phantombot.script.Script;
 
 public final class ConsoleEventHandler implements Listener {
@@ -914,6 +925,100 @@ public final class ConsoleEventHandler implements Listener {
                 }
             }
         }
+
+        /**
+         * @consolecommand convertdb (old db type) - Converts an existing DB to the current DB type. Parameter should be one of: H2, MySQL, MariaDB, SQLite
+         */
+        if (message.equalsIgnoreCase("convertdb")) {
+            if (argument == null || argument.length == 0 || argument[0].isBlank() || !List.of("h2", "mysql", "mariadb", "sqlite").contains(argument[0].toLowerCase())) {
+                com.gmt2001.Console.err.println("[convertdb] Must specify the old DB type to convert from: H2, MySQL, MariaDB, or SQLite");
+                return;
+            }
+            String oldtype = argument[0].trim().toLowerCase();
+            String datastoretype = CaselessProperties.instance().getProperty("datastore", "h2store");
+            String datastoretypel = datastoretype.toLowerCase();
+            if ((datastoretypel.startsWith("mysql") && oldtype.equals("mariadb")) || (datastoretypel.startsWith("maria") && oldtype.equals("mysql"))) {
+                com.gmt2001.Console.err.println("[convertdb] Can not convert directly between MySQL and Maria DB. Please convert to H2 first");
+                return;
+            }
+
+            if (datastoretypel.startsWith(oldtype)) {
+                com.gmt2001.Console.err.println("[convertdb] Can not convert " + datastoretype + " to itself");
+                return;
+            }
+
+            com.gmt2001.Console.out.println("[convertdb] Converting " + oldtype +" to " + datastoretype + ". This may take some time...");
+
+            Datastore2 newdb = Datastore2.instance();
+            Datastore2 olddb;
+
+            switch (oldtype) {
+                case "h2":
+                    olddb = H2Store2.instance();
+                    break;
+                case "mysql":
+                    olddb = MySQLStore2.instance();
+                    break;
+                case "mariadb":
+                    olddb = MariaDBStore2.instance();
+                    break;
+                case "sqlite":
+                    olddb = SQLiteStore2.instance();
+                    break;
+                default:
+                    com.gmt2001.Console.err.println("[convertdb] Failed to find a DataStore2 type for " + oldtype);
+                    return;
+            }
+
+            try {
+                olddb.backup();
+                olddb.invalidateTableCache();
+                olddb.tables().stream().filter(t -> t.getName().startsWith("phantombot_")).forEach(oldtable -> {
+                    com.gmt2001.Console.out.println("[convertdb] Converting table " + oldtable.getName() + "...");
+                    try {
+                    final SectionVariableValueTable newtable = SectionVariableValueTable.instance(oldtable);
+                    olddb.dslContext().select(DataStore.instance().field("section", oldtable), DataStore.instance().field("variable", oldtable),
+                        DataStore.instance().field("value", oldtable)).from(oldtable).fetch().stream().forEach(oldrecord -> {
+                            try {
+                                final SectionVariableValueRecord newrecord = new SectionVariableValueRecord(newtable, oldrecord.value1(), oldrecord.value2(), oldrecord.value3());
+                                newrecord.changed(true);
+                                newrecord.merge();
+                            } catch (Exception ex) {
+                                com.gmt2001.Console.err.printStackTrace(ex);
+                            }
+                        });
+                    } catch (Exception ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
+                });
+                olddb.tables().stream().filter(t -> t.getName().equals(Datastore2.PREFIX + "PanelUser")).forEach(oldtable -> {
+                    com.gmt2001.Console.out.println("[convertdb] Converting table " + oldtable.getName() + "...");
+                    try {
+                        final PanelUserTable newtable = PanelUserTable.instance();
+                        olddb.dslContext().select(newtable.USERNAME, newtable.PASSWORD, newtable.TOKEN, DataStore.instance().field("permissions", oldtable), newtable.ENABLED,
+                            newtable.CREATIONDATE, newtable.LASTLOGIN, newtable.HASSETPASSWORD).from(oldtable).fetch().stream().forEach(oldrecord -> {
+                                try {
+                                    PanelUser.create(oldrecord.value1(), PermissionMap.fromJSON(oldrecord.value4()), oldrecord.value5());
+                                    final PanelUser newrecord = PanelUser.LookupByUsername(oldrecord.value1());
+                                    newrecord.setPassword(oldrecord.value2());
+                                    newrecord.setToken(oldrecord.value3());
+                                    newrecord.setCreationDate(oldrecord.value6());
+                                    newrecord.setLastLogin(oldrecord.value7());
+                                    newrecord.setHasSetPassword(oldrecord.value8());
+                                    newrecord.changed(true);
+                                    newrecord.merge();
+                                } catch (Exception ex) {
+                                    com.gmt2001.Console.err.printStackTrace(ex);
+                                }
+                            });
+                    } catch (Exception ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
+                });
+            } catch (Exception ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        } 
 
         // Check to see if any settings have been changed.
         if (changed) {
