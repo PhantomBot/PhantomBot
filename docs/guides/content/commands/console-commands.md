@@ -355,3 +355,11 @@ paneluser resetpassword username - Resets a panel users password if the user exi
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
 paneluser resetpermission username - Gives a panel user full access to all panel sections if the user exists
+
+&nbsp;
+
+### convertdb
+
+Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
+
+convertdb (old db type) - Converts an existing DB to the current DB type. Parameter should be one of: H2, MySQL, MariaDB, SQLite
