@@ -1787,6 +1787,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      *
      * @return {@code true} if backups are supported
      */
+    @Deprecated(since = "3.15.3.0")
     public boolean canBackup() {
         return Datastore2.instance().supportsBackup();
     }
@@ -1796,6 +1797,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      *
      * @param filename The filename for the backup, without extension
      */
+    @Deprecated(since = "3.15.3.0")
     public void backupDB(String filename) {
         Datastore2.instance().backup(filename);
     }
