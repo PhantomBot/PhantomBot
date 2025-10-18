@@ -60,6 +60,10 @@ import tv.phantombot.PhantomBot;
 public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteStore {
     private static final DataStore INSTANCE = new DataStore(null);
     /**
+     * Table name prefix for all tables created as {@link SectionVariableValueTable}
+     */
+    public static final String PREFIX = "phantombot_";
+    /**
      * Provides an instance of {@link DataStore}
      *
      * @return an instance of {@link DataStore}
@@ -103,11 +107,11 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} which contains the matching {@link Table}, if found
      */
     public Optional<Table<?>> findTable(String fName) {
-        if (fName.startsWith("phantombot_")) {
+        if (fName.startsWith(DataStore.PREFIX)) {
             fName = fName.substring(11);
         }
         final String ffName = fName;
-        return Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase("phantombot_" + ffName)).findFirst();
+        return Datastore2.instance().tables().stream().filter(t -> t.getName().equalsIgnoreCase(DataStore.PREFIX + ffName)).findFirst();
     }
 
     /**
@@ -138,7 +142,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an array of table names
      */
     public String[] GetFileList() {
-        return Datastore2.instance().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+        return Datastore2.instance().meta().getTables().stream().filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX))
             .map(t -> t.getName().replaceFirst("(?i)phantombot_", "")).collect(Collectors.toList()).toArray(new String[0]);
     }
 
@@ -673,7 +677,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @return an {@link Optional} that may contain a {@link SectionVariableValueRecord} if the row exists
      */
     public Optional<SectionVariableValueRecord> OptRecord(String fName, String section, String key) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
 
         if (table == null) {
             return Optional.empty();
@@ -780,7 +784,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param value the new value of the {@code value} column
      */
     public void SetString(String fName, String section, String key, String value) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
         SectionVariableValueRecord record = this.OptRecord(table, section, key)
             .orElseGet(() -> new SectionVariableValueRecord(table, section, key, value));
         record.value(value);
@@ -817,7 +821,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             return;
         }
 
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName, false);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName, false);
 
         if (table != null) {
             final int famount = amount;
@@ -874,7 +878,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
      * @param values the new values to set the {@code value} column to
      */
     public void SetBatchString(String fName, String section, String[] keys, String[] values) {
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
 
         if (table != null) {
             dsl().batched(c -> {
@@ -976,7 +980,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
     public boolean SafeChangeLong(String fName, String section, String key, long orig, long value) {
         String origsval = Long.toString(orig);
         String sval = Long.toString(value);
-        SectionVariableValueTable table = SectionVariableValueTable.instance("phantombot_" + fName);
+        SectionVariableValueTable table = SectionVariableValueTable.instance(DataStore.PREFIX + fName);
 
         if (table == null) {
             return false;

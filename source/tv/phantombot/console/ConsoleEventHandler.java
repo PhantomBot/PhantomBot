@@ -28,15 +28,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.jooq.CreateIndexIncludeStep;
+import org.jooq.CreateIndexStep;
+import org.jooq.CreateTableElementListStep;
+import org.jooq.DDLQuery;
+import org.jooq.Index;
+import org.jooq.Table;
+import org.jooq.UniqueKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.gmt2001.HttpRequest;
 import com.gmt2001.HttpResponse;
 import com.gmt2001.datastore.DataStore;
-import com.gmt2001.datastore.SectionVariableValueRecord;
-import com.gmt2001.datastore.SectionVariableValueTable;
 import com.gmt2001.datastore2.Datastore2;
 import com.gmt2001.datastore2.H2Store2;
 import com.gmt2001.datastore2.MariaDBStore2;
@@ -67,10 +73,7 @@ import tv.phantombot.event.twitch.subscriber.TwitchPrimeSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchReSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriberEvent;
 import tv.phantombot.event.twitch.subscriber.TwitchSubscriptionGiftEvent;
-import tv.phantombot.panel.PanelUser.PanelUser;
 import tv.phantombot.panel.PanelUser.PanelUserHandler;
-import tv.phantombot.panel.PanelUser.PanelUserTable;
-import tv.phantombot.panel.PanelUser.PermissionMap;
 import tv.phantombot.script.Script;
 
 public final class ConsoleEventHandler implements Listener {
@@ -1055,81 +1058,58 @@ public final class ConsoleEventHandler implements Listener {
                                     "[convertdb] Creating a backup of the " + datastoretype + " DB before starting...");
                     newdb.backup();
                 }
-                olddb.invalidateTableCache();
-                olddb.tables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+                olddb.tables().stream().filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase()) || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
                         .forEach(oldtable -> {
                             com.gmt2001.Console.out
                                     .println("[convertdb] Wiping old table data from " + oldtable.getName() + " in "
                                             + datastoretype + "...");
                             try {
-                                final SectionVariableValueTable newtable = SectionVariableValueTable.instance(oldtable);
-                                newdb.dslContext().deleteFrom(newtable).execute();
+                                newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst().ifPresent(t -> newdb.dslContext().deleteFrom(t).execute());
                             } catch (Exception ex) {
                                 com.gmt2001.Console.err.printStackTrace(ex);
                             }
                         });
-                olddb.tables().stream().filter(t -> t.getName().toLowerCase().startsWith("phantombot_"))
+                olddb.tables().stream().filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase()) || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
                         .forEach(oldtable -> {
                             com.gmt2001.Console.out
                                     .println("[convertdb] Converting table " + oldtable.getName() + "...");
                             try {
-                                final SectionVariableValueTable newtable = SectionVariableValueTable.instance(oldtable);
-                                olddb.dslContext()
-                                        .select(DataStore.instance().field("section", oldtable),
-                                                DataStore.instance().field("variable", oldtable),
-                                                DataStore.instance().field("value", oldtable))
-                                        .from(oldtable).fetch().stream().forEach(oldrecord -> {
-                                            try {
-                                                final SectionVariableValueRecord newrecord = new SectionVariableValueRecord(
-                                                        newtable, oldrecord.value1(), oldrecord.value2(),
-                                                        oldrecord.value3());
-                                                newrecord.changed(true);
-                                                newrecord.merge();
-                                            } catch (Exception ex) {
-                                                com.gmt2001.Console.err.printStackTrace(ex);
+                                Optional<Table<?>> onewtable = newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
+                                if (!onewtable.isPresent()) {
+                                    CreateTableElementListStep cr = newdb.dslContext().createTableIfNotExists(oldtable.getName()).columns(oldtable.fields());
+                                    UniqueKey<?> primaryKey = oldtable.getPrimaryKey();
+                                    if (primaryKey != null && !primaryKey.getFields().isEmpty()) {
+                                        cr = cr.primaryKey(primaryKey.getFields());
+                                    }
+                                    cr.execute();
+                                    List<Index> indexes = oldtable.getIndexes();
+                                    if (!indexes.isEmpty()) {
+                                        indexes.forEach(index -> {
+                                            CreateIndexStep cii;
+                                            if (index.getUnique()) {
+                                                cii = newdb.dslContext().createUniqueIndexIfNotExists(index.getName());
+                                            } else {
+                                                cii = newdb.dslContext().createIndexIfNotExists(index.getName());
                                             }
+                                            CreateIndexIncludeStep ci = cii.on(oldtable.getName(), index.getFields().stream().map(f -> f.getName()).toList());
+                                            DDLQuery cid = ci;
+                                            if (index.getWhere() != null) {
+                                                cid = ci.where(index.getWhere());
+                                            }
+                                            cid.execute();
                                         });
-                            } catch (Exception ex) {
-                                com.gmt2001.Console.err.printStackTrace(ex);
-                            }
-                        });
-                olddb.tables().stream()
-                        .filter(t -> t.getName().toLowerCase().equals((Datastore2.PREFIX + "PanelUser").toLowerCase()))
-                        .forEach(oldtable -> {
-                            com.gmt2001.Console.out
-                                    .println("[convertdb] Wiping old table data from " + oldtable.getName() + " in "
-                                            + datastoretype + "...");
-                            try {
-                                final PanelUserTable newtable = PanelUserTable.instance();
-                                newdb.dslContext().deleteFrom(newtable).execute();
-                            } catch (Exception ex) {
-                                com.gmt2001.Console.err.printStackTrace(ex);
-                            }
-                        });
-                olddb.tables().stream()
-                        .filter(t -> t.getName().toLowerCase().equals((Datastore2.PREFIX + "PanelUser").toLowerCase()))
-                        .forEach(oldtable -> {
-                            com.gmt2001.Console.out
-                                    .println("[convertdb] Converting table " + oldtable.getName() + "...");
-                            try {
-                                final PanelUserTable newtable = PanelUserTable.instance();
+                                    }
+                                    newdb.invalidateTableCache();
+                                    onewtable = newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
+                                }
+                                final Table<?> newtable = onewtable.get();
                                 olddb.dslContext()
-                                        .select(newtable.USERNAME, newtable.PASSWORD, newtable.TOKEN,
-                                                DataStore.instance().field("permissions", oldtable), newtable.ENABLED,
-                                                newtable.CREATIONDATE, newtable.LASTLOGIN, newtable.HASSETPASSWORD)
-                                        .from(oldtable).fetch().stream().forEach(oldrecord -> {
+                                        .selectFrom(oldtable).fetch().stream().forEach(oldrecord -> {
                                             try {
-                                                PanelUser.create(oldrecord.value1(),
-                                                        PermissionMap.fromJSON(oldrecord.value4()), oldrecord.value5());
-                                                final PanelUser newrecord = PanelUser
-                                                        .LookupByUsername(oldrecord.value1());
-                                                newrecord.setPassword(oldrecord.value2());
-                                                newrecord.setToken(oldrecord.value3());
-                                                newrecord.setCreationDate(oldrecord.value6());
-                                                newrecord.setLastLogin(oldrecord.value7());
-                                                newrecord.setHasSetPassword(oldrecord.value8());
+                                                final org.jooq.Record newrecord = newdb.dslContext().newRecord(newtable);
+                                                newrecord.fromArray(oldrecord.intoArray());
                                                 newrecord.changed(true);
-                                                newrecord.merge();
+                                                newdb.dslContext().insertInto(newtable).set(newrecord).execute();
                                             } catch (Exception ex) {
                                                 com.gmt2001.Console.err.printStackTrace(ex);
                                             }
