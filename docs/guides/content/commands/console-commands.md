@@ -18,7 +18,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-forceoauthrefresh - Force a refresh of both Twitch OAuth tokens.
+forceoauthrefresh - Force a refresh of both Twitch OAuth
 
 &nbsp;
 
@@ -42,7 +42,7 @@ raidtest (raiderName) (numViewers) - Tests the raid event.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-checkytquota - This command checks the quota points used by YouTube.
+checkytquota - This command checks the quota points used by
 
 &nbsp;
 
@@ -50,7 +50,7 @@ checkytquota - This command checks the quota points used by YouTube.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-exportpoints - This command exports points and time to a CSV file.
+exportpoints - This command exports points and time to a CSV
 
 &nbsp;
 
@@ -58,7 +58,7 @@ exportpoints - This command exports points and time to a CSV file.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-importpoints - This command imports time and points from a csv file in format (Username,Seconds,Points)
+importpoints - This command imports time and points from a
 
 &nbsp;
 
@@ -66,7 +66,7 @@ importpoints - This command imports time and points from a csv file in format (U
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-createcmdlist - Creates a list of all commands with their permissions as a CSV.
+createcmdlist - Creates a list of all commands with their
 
 &nbsp;
 
@@ -98,7 +98,7 @@ restoredb (filename) - Restores a backup of the database.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-jointest (userName) - Sends 30 fake join events or one specific user for testing.
+jointest (userName) - Sends 30 fake join events or one
 
 &nbsp;
 
@@ -122,7 +122,7 @@ followerstest [amount] - Sends a fake follower events.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-subscribertest (userName) (tier) (months) (message) - Sends a fake subscriber events.
+subscribertest (userName) (tier) (months) (message) - Sends a
 
 &nbsp;
 
@@ -130,7 +130,7 @@ subscribertest (userName) (tier) (months) (message) - Sends a fake subscriber ev
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-primesubscribertest (userName) (months) - Sends a fake Prime subscriber events.
+primesubscribertest (userName) (months) - Sends a fake Prime
 
 &nbsp;
 
@@ -138,7 +138,7 @@ primesubscribertest (userName) (months) - Sends a fake Prime subscriber events.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-resubscribertest (userName) (tier) (months) (message) - Sends a fake re-subscriber events.
+resubscribertest (userName) (tier) (months) (message) - Sends
 
 &nbsp;
 
@@ -146,7 +146,7 @@ resubscribertest (userName) (tier) (months) (message) - Sends a fake re-subscrib
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-giftsubtest (userName) (tier) (months) - Sends a fake gift subscriber events.
+giftsubtest (userName) (tier) (months) - Sends a fake gift
 
 &nbsp;
 
@@ -154,7 +154,7 @@ giftsubtest (userName) (tier) (months) - Sends a fake gift subscriber events.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-massanonsubgifttest (amount) (tier) - Test a mass anonymous gift subscription.
+massanonsubgifttest (amount) (tier) - Test a mass anonymous
 
 &nbsp;
 
@@ -162,7 +162,7 @@ massanonsubgifttest (amount) (tier) - Test a mass anonymous gift subscription.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-masssubgifttest (amount) (tier) - Test a mass sub gift subscription.
+masssubgifttest (amount) (tier) - Test a mass sub gift
 
 &nbsp;
 
@@ -170,7 +170,7 @@ masssubgifttest (amount) (tier) - Test a mass sub gift subscription.
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-anonsubgifttest (userName) (tier) (months) - Test an anonymous gift subscription
+anonsubgifttest (userName) (tier) (months) - Test an
 
 &nbsp;
 
@@ -314,7 +314,7 @@ dumpthreads - Creates a thread dump
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-paneluser add username - Creates a new panel user with full access to all panel sections if the user does not exist and prints the randomly generated password
+paneluser add username - Creates a new panel user with full
 
 &nbsp;
 
@@ -322,7 +322,7 @@ paneluser add username - Creates a new panel user with full access to all panel 
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-paneluser delete username - Deletes a panel user if the user exists
+paneluser delete username - Deletes a panel user if the user
 
 &nbsp;
 
@@ -330,7 +330,7 @@ paneluser delete username - Deletes a panel user if the user exists
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-paneluser enable username - Enables a panel user if the user exists
+paneluser enable username - Enables a panel user if the user
 
 &nbsp;
 
@@ -338,7 +338,7 @@ paneluser enable username - Enables a panel user if the user exists
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-paneluser enable username - Disables a panel user if the user exists
+paneluser enable username - Disables a panel user if the user
 
 &nbsp;
 
@@ -346,7 +346,7 @@ paneluser enable username - Disables a panel user if the user exists
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-paneluser resetpassword username - Resets a panel users password if the user exists and prints the new and randomly generated password
+paneluser resetpassword username - Resets a panel users
 
 &nbsp;
 
@@ -354,7 +354,7 @@ paneluser resetpassword username - Resets a panel users password if the user exi
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-paneluser resetpermission username - Gives a panel user full access to all panel sections if the user exists
+paneluser resetpermission username - Gives a panel user full
 
 &nbsp;
 
@@ -362,4 +362,4 @@ paneluser resetpermission username - Gives a panel user full access to all panel
 
 Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
 
-convertdb (old db type) - Converts an existing DB to the current DB type. Parameter should be one of: H2, MySQL, MariaDB, SQLite
+convertdb (old db type) - Converts an existing DB to the
