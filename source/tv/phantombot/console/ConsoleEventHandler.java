@@ -1058,25 +1058,32 @@ public final class ConsoleEventHandler implements Listener {
                                     "[convertdb] Creating a backup of the " + datastoretype + " DB before starting...");
                     newdb.backup();
                 }
-                olddb.tables().stream().filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase()) || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
+                olddb.tables().stream()
+                        .filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase())
+                                || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
                         .forEach(oldtable -> {
                             com.gmt2001.Console.out
                                     .println("[convertdb] Wiping old table data from " + oldtable.getName() + " in "
                                             + datastoretype + "...");
                             try {
-                                newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst().ifPresent(t -> newdb.dslContext().deleteFrom(t).execute());
+                                newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName()))
+                                        .findFirst().ifPresent(t -> newdb.dslContext().deleteFrom(t).execute());
                             } catch (Exception ex) {
                                 com.gmt2001.Console.err.printStackTrace(ex);
                             }
                         });
-                olddb.tables().stream().filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase()) || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
+                olddb.tables().stream()
+                        .filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase())
+                                || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
                         .forEach(oldtable -> {
                             com.gmt2001.Console.out
                                     .println("[convertdb] Converting table " + oldtable.getName() + "...");
                             try {
-                                Optional<Table<?>> onewtable = newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
+                                Optional<Table<?>> onewtable = newdb.tables().stream()
+                                        .filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
                                 if (!onewtable.isPresent()) {
-                                    CreateTableElementListStep cr = newdb.dslContext().createTableIfNotExists(oldtable.getName()).columns(oldtable.fields());
+                                    CreateTableElementListStep cr = newdb.dslContext()
+                                            .createTableIfNotExists(oldtable.getName()).columns(oldtable.fields());
                                     UniqueKey<?> primaryKey = oldtable.getPrimaryKey();
                                     if (primaryKey != null && !primaryKey.getFields().isEmpty()) {
                                         cr = cr.primaryKey(primaryKey.getFields());
@@ -1091,7 +1098,8 @@ public final class ConsoleEventHandler implements Listener {
                                             } else {
                                                 cii = newdb.dslContext().createIndexIfNotExists(index.getName());
                                             }
-                                            CreateIndexIncludeStep ci = cii.on(oldtable.getName(), index.getFields().stream().map(f -> f.getName()).toList());
+                                            CreateIndexIncludeStep ci = cii.on(oldtable.getName(),
+                                                    index.getFields().stream().map(f -> f.getName()).toList());
                                             DDLQuery cid = ci;
                                             if (index.getWhere() != null) {
                                                 cid = ci.where(index.getWhere());
@@ -1100,13 +1108,15 @@ public final class ConsoleEventHandler implements Listener {
                                         });
                                     }
                                     newdb.invalidateTableCache();
-                                    onewtable = newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
+                                    onewtable = newdb.tables().stream()
+                                            .filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
                                 }
                                 final Table<?> newtable = onewtable.get();
                                 olddb.dslContext()
                                         .selectFrom(oldtable).fetch().stream().forEach(oldrecord -> {
                                             try {
-                                                final org.jooq.Record newrecord = newdb.dslContext().newRecord(newtable);
+                                                final org.jooq.Record newrecord = newdb.dslContext()
+                                                        .newRecord(newtable);
                                                 newrecord.fromArray(oldrecord.intoArray());
                                                 newrecord.changed(true);
                                                 newdb.dslContext().insertInto(newtable).set(newrecord).execute();
@@ -1118,9 +1128,12 @@ public final class ConsoleEventHandler implements Listener {
                                 com.gmt2001.Console.err.printStackTrace(ex);
                             }
                         });
-                com.gmt2001.Console.out.println("");
-                com.gmt2001.Console.out.println("[convertdb] Conversion complete...");
-                com.gmt2001.Console.out.println("");
+                for (int i = 0; i < 5; i++) {
+                    com.gmt2001.Console.out.println("");
+                    com.gmt2001.Console.out.println("[convertdb] Conversion complete...");
+                    com.gmt2001.Console.out.println("[convertdb] Please restart the bot to load the new data");
+                    com.gmt2001.Console.out.println("");
+                }
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
