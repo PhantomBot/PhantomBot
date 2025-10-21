@@ -133,24 +133,29 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the default backup filename, which is usually the database name with <a href="Datastore2.html#timestamp()"><code>Datastore2.timestamp()</code></a> appended</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDbFile()" class="member-name-link">getDbFile</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultBackupPreference()" class="member-name-link">defaultBackupPreference</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Indicates if this driver prefers automatic backups to be enabled by default</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getDbFile()" class="member-name-link">getDbFile</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns the name of the H2 database file, without the trailing <code>.mv.db</code></div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link">DataType</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#longTextDataType()" class="member-name-link">longTextDataType</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link">DataType</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#longTextDataType()" class="member-name-link">longTextDataType</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the <a href="https://www.jooq.org/javadoc/latest/org.jooq/org/jooq/DataType.html" title="class or interface in org.jooq" class="external-link"><code>DataType</code></a> representing the <code>LONGTEXT</code> equivalent SQL data type for the driver</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;fileName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Restores a database from the specified backup file, which must be in the <code>dbbackup</code> folder</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#supportsBackup()" class="member-name-link">supportsBackup</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#supportsBackup()" class="member-name-link">supportsBackup</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Indicates if this driver supports making backups without an external tool</div>
 </div>
 </div>
@@ -210,6 +215,20 @@ loadScripts(document, 'script');</script>
 <dd><code><a href="Datastore2.html#longTextDataType()">longTextDataType</a></code>&nbsp;in class&nbsp;<code><a href="Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></code></dd>
 <dt>Returns:</dt>
 <dd>the DataType</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="defaultBackupPreference()">
+<h3>defaultBackupPreference</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">defaultBackupPreference</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="Datastore2.html#defaultBackupPreference()">Datastore2</a></code></span></div>
+<div class="block">Indicates if this driver prefers automatic backups to be enabled by default</div>
+<dl class="notes">
+<dt>Overrides:</dt>
+<dd><code><a href="Datastore2.html#defaultBackupPreference()">defaultBackupPreference</a></code>&nbsp;in class&nbsp;<code><a href="Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></code></dd>
+<dt>Returns:</dt>
+<dd><code>true</code> if enabled by default</dd>
 </dl>
 </section>
 </li>

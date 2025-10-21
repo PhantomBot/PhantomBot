@@ -237,7 +237,7 @@ _NOTE: A restart is required for this property to take effect_
 
 Data Type: _Boolean_
 
-if `true`, the database is backed up to the ./backups folder every so often. default `true`
+if `true`, the database is backed up to the ./backups folder every so often. default is based on preference of the driver. sqlitestore2 and h2store2 defeault to `true`
 
 &nbsp;
 
