@@ -1050,15 +1050,23 @@ public final class ConsoleEventHandler implements Listener {
 
             try {
                 if (olddb.supportsBackup()) {
-                    com.gmt2001.Console.out
-                            .println("[convertdb] Creating a backup of the " + oldtype + " DB before starting...");
-                    olddb.backup();
+                    try {
+                        com.gmt2001.Console.out
+                                .println("[convertdb] Creating a backup of the " + oldtype + " DB before starting...");
+                        olddb.backup();
+                    } catch (Exception ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
                 if (newdb.supportsBackup()) {
-                    com.gmt2001.Console.out
-                            .println(
-                                    "[convertdb] Creating a backup of the " + datastoretype + " DB before starting...");
-                    newdb.backup();
+                    try {
+                        com.gmt2001.Console.out
+                                .println(
+                                        "[convertdb] Creating a backup of the " + datastoretype + " DB before starting...");
+                        newdb.backup();
+                    } catch (Exception ex) {
+                        com.gmt2001.Console.err.printStackTrace(ex);
+                    }
                 }
                 olddb.tables().stream()
                         .filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase())
