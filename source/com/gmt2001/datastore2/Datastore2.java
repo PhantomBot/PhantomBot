@@ -510,6 +510,15 @@ public abstract class Datastore2 {
     }
 
     /**
+     * Indicates if this driver prefers automatic backups to be enabled by default
+     *
+     * @return {@code true} if enabled by default
+     */
+    public boolean defaultBackupPreference() {
+        return false;
+    }
+
+    /**
      * Returns the default backup filename, which is usually the database name with {@link #timestamp()} appended
      *
      * @return the filename

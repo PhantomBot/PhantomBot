@@ -26,9 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.security.SecureRandom;
 import java.time.DateTimeException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -938,11 +936,11 @@ public final class PhantomBot implements Listener {
 
         /* Perform SQLite datbase backups. */
         /**
-         * @botproperty backupdbauto - If `true`, the database is backed up to the ./backups folder every so often. Default `true`
+         * @botproperty backupdbauto - If `true`, the database is backed up to the ./backups folder every so often. Default is based on preference of the driver. SQLiteStore2 and H2Store2 defeault to `true`
          * @botpropertycatsort backupdbauto 400 30 Datastore
          *
          */
-        if (CaselessProperties.instance().getPropertyAsBoolean("backupdbauto", CaselessProperties.instance().getPropertyAsBoolean("backupsqliteauto", true))) {
+        if (CaselessProperties.instance().getPropertyAsBoolean("backupdbauto", CaselessProperties.instance().getPropertyAsBoolean("backupsqliteauto", Datastore2.instance().defaultBackupPreference()))) {
             this.doBackupDB();
         }
 
@@ -1397,19 +1395,17 @@ public final class PhantomBot implements Listener {
      * Backup the database, keeping so many days.
      */
     private void doBackupDB() {
-        if (!this.getDataStore().canBackup()) {
+        if (!Datastore2.instance().supportsBackup()) {
             return;
         }
 
         ExecutorService.scheduleAtFixedRate(() -> {
             Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
 
-            String timestamp = LocalDateTime.now(getTimeZoneId()).format(DateTimeFormatter.ofPattern("ddMMyyyy.hhmmss"));
-
-            this.getDataStore().backupDB("phantombot.auto.backup." + timestamp);
+            Datastore2.instance().backup("phantombot.auto." + Datastore2.instance().backupFileName());
 
             try {
-                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), new WildcardFileFilter("phantombot.auto.*"), null);
+                Iterator<File> dirIterator = FileUtils.iterateFiles(new File("./dbbackup"), WildcardFileFilter.builder().setWildcards("phantombot.auto.*").get(), null);
                 while (dirIterator.hasNext()) {
                     File backupFile = dirIterator.next();
                     /**

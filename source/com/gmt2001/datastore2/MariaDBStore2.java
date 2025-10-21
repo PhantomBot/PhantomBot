@@ -16,17 +16,36 @@
  */
 package com.gmt2001.datastore2;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-
+import java.util.stream.Collectors;
+import org.jooq.CreateIndexIncludeStep;
+import org.jooq.CreateIndexStep;
+import org.jooq.CreateTableElementListStep;
+import org.jooq.DDLQuery;
 import org.jooq.DataType;
+import org.jooq.Index;
+import org.jooq.InsertSetMoreStep;
+import org.jooq.InsertSetStep;
 import org.jooq.SQLDialect;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DefaultDataType;
 import org.jooq.impl.SQLDataType;
 import org.mariadb.jdbc.MariaDbDataSource;
+
+import com.gmt2001.PathValidator;
+import com.gmt2001.datastore.DataStore;
 
 import tv.phantombot.CaselessProperties;
 
@@ -96,5 +115,95 @@ public final class MariaDBStore2 extends Datastore2 {
     @Override
     public DataType<String> longTextDataType() {
         return LONGTEXT;
+    }
+
+    @Override
+    public boolean supportsBackup() {
+        return true;
+    }
+
+    @Override
+    public String backupFileName() {
+        return "mariadb." + Datastore2.timestamp() + ".sql";
+    }
+
+    @Override
+    public void backup(String fileName) {
+        try {
+            Files.createDirectories(PathValidator.getRealPath(Paths.get("./dbbackup/")));
+            final List<String> lines = new ArrayList<>();
+            this.tables().stream()
+                    .filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase())
+                            || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
+                    .forEach(oldtable -> {
+                        lines.add(this.dslContext().dropTableIfExists(oldtable.getName()).cascade().getSQL());
+                        CreateTableElementListStep cr = this.dslContext()
+                                .createTableIfNotExists(oldtable.getName()).columns(oldtable.fields());
+                        UniqueKey<?> primaryKey = oldtable.getPrimaryKey();
+                        if (primaryKey != null && !primaryKey.getFields().isEmpty()) {
+                            cr = cr.primaryKey(primaryKey.getFields());
+                        }
+                        lines.add(cr.getSQL());
+                        List<Index> indexes = oldtable.getIndexes();
+                        if (!indexes.isEmpty()) {
+                            indexes.forEach(index -> {
+                                CreateIndexStep cii;
+                                if (index.getUnique()) {
+                                    cii = this.dslContext().createUniqueIndexIfNotExists(index.getName());
+                                } else {
+                                    cii = this.dslContext().createIndexIfNotExists(index.getName());
+                                }
+                                CreateIndexIncludeStep ci = cii.on(oldtable.getName(),
+                                        index.getFields().stream().map(f -> f.getName()).toList());
+                                DDLQuery cid = ci;
+                                if (index.getWhere() != null) {
+                                    cid = ci.where(index.getWhere());
+                                }
+                                lines.add(cid.getSQL());
+                            });
+                        }
+                        InsertSetStep<?> is = this.dslContext().insertInto(oldtable);
+                        InsertSetMoreStep<?> ism = null;
+                        for (org.jooq.Record record: this.dslContext()
+                                .selectFrom(oldtable).fetch().stream().collect(Collectors.toList())) {
+                                    record.changed(true);
+                                    if (ism == null) {
+                                        ism = is.set(record);
+                                    } else {
+                                        ism = ism.set(record);
+                                    }
+                                }
+                        lines.add(ism.getSQL());
+                    });
+                    Files.write(PathValidator.getRealPath(Paths.get("./dbbackup/", fileName)), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    public void restoreBackup(String fileName) throws FileNotFoundException {
+        Path p = PathValidator.getRealPath(Paths.get("./dbbackup/", fileName));
+
+        if (!Files.exists(p)) {
+            throw new FileNotFoundException(p.toString());
+        }
+
+        this.restoreBackup(p);
+    }
+
+    private void restoreBackup(Path p) {
+        com.gmt2001.Console.out.print("Restoring MariaDB database from backup at " + p.toString() + "...");
+        try {
+            List<String> lines = Files.readAllLines(p);
+            this.dslContext().transaction(c -> {
+                lines.forEach(line -> {
+                    c.dsl().execute(line);
+                });
+            });
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        com.gmt2001.Console.out.println("done");
     }
 }

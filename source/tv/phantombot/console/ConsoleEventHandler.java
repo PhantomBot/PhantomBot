@@ -34,9 +34,11 @@ import org.jooq.CreateIndexIncludeStep;
 import org.jooq.CreateIndexStep;
 import org.jooq.CreateTableElementListStep;
 import org.jooq.DDLQuery;
+import org.jooq.DataType;
 import org.jooq.Index;
 import org.jooq.Table;
 import org.jooq.UniqueKey;
+import org.jooq.impl.SQLDataType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -1063,31 +1065,27 @@ public final class ConsoleEventHandler implements Listener {
                                 || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
                         .forEach(oldtable -> {
                             com.gmt2001.Console.out
-                                    .println("[convertdb] Wiping old table data from " + oldtable.getName() + " in "
-                                            + datastoretype + "...");
-                            try {
-                                newdb.tables().stream().filter(t -> t.getName().equalsIgnoreCase(oldtable.getName()))
-                                        .findFirst().ifPresent(t -> newdb.dslContext().deleteFrom(t).execute());
-                            } catch (Exception ex) {
-                                com.gmt2001.Console.err.printStackTrace(ex);
-                            }
-                        });
-                olddb.tables().stream()
-                        .filter(t -> t.getName().toLowerCase().startsWith(DataStore.PREFIX.toLowerCase())
-                                || t.getName().toLowerCase().startsWith(Datastore2.PREFIX.toLowerCase()))
-                        .forEach(oldtable -> {
-                            com.gmt2001.Console.out
                                     .println("[convertdb] Converting table " + oldtable.getName() + "...");
                             try {
                                 Optional<Table<?>> onewtable = newdb.tables().stream()
                                         .filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
                                 if (!onewtable.isPresent()) {
                                     CreateTableElementListStep cr = newdb.dslContext()
-                                            .createTableIfNotExists(oldtable.getName()).columns(oldtable.fields());
+                                            .createTableIfNotExists(oldtable.getName());
+                                    org.jooq.Field<?>[] fields = oldtable.fields();
+                                    for (org.jooq.Field<?> field : fields) {
+                                        DataType<?> type = field.getDataType();
+                                        if (type.getSQLDataType() == SQLDataType.VARCHAR && type.length() > 2000) {
+                                            cr.column(field.getName(), Datastore2.instance().longTextDataType());
+                                        } else {
+                                            cr.column(field);
+                                        }
+                                    }
                                     UniqueKey<?> primaryKey = oldtable.getPrimaryKey();
                                     if (primaryKey != null && !primaryKey.getFields().isEmpty()) {
                                         cr = cr.primaryKey(primaryKey.getFields());
                                     }
+                                    com.gmt2001.Console.debug.println(cr.getSQL());
                                     cr.execute();
                                     List<Index> indexes = oldtable.getIndexes();
                                     if (!indexes.isEmpty()) {
@@ -1112,18 +1110,25 @@ public final class ConsoleEventHandler implements Listener {
                                             .filter(t -> t.getName().equalsIgnoreCase(oldtable.getName())).findFirst();
                                 }
                                 final Table<?> newtable = onewtable.get();
-                                olddb.dslContext()
-                                        .selectFrom(oldtable).fetch().stream().forEach(oldrecord -> {
-                                            try {
-                                                final org.jooq.Record newrecord = newdb.dslContext()
-                                                        .newRecord(newtable);
-                                                newrecord.fromArray(oldrecord.intoArray());
-                                                newrecord.changed(true);
-                                                newdb.dslContext().insertInto(newtable).set(newrecord).execute();
-                                            } catch (Exception ex) {
-                                                com.gmt2001.Console.err.printStackTrace(ex);
-                                            }
-                                        });
+                                newdb.dslContext().transaction(c -> {
+                                    try {
+                                        c.dsl().deleteFrom(newtable).execute();
+                                        olddb.dslContext()
+                                                .selectFrom(oldtable).fetch().stream().forEach(oldrecord -> {
+                                                    try {
+                                                        final org.jooq.Record newrecord = newdb.dslContext()
+                                                                .newRecord(newtable);
+                                                        newrecord.fromArray(oldrecord.intoArray());
+                                                        newrecord.changed(true);
+                                                        c.dsl().insertInto(newtable).set(newrecord).execute();
+                                                    } catch (Exception ex) {
+                                                        com.gmt2001.Console.err.printStackTrace(ex);
+                                                    }
+                                                });
+                                    } catch (Exception ex) {
+                                        com.gmt2001.Console.err.printStackTrace(ex);
+                                    }
+                                });
                             } catch (Exception ex) {
                                 com.gmt2001.Console.err.printStackTrace(ex);
                             }

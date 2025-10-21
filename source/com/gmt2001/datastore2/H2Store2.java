@@ -278,6 +278,11 @@ public final class H2Store2 extends Datastore2 {
     public DataType<String> longTextDataType() {
         return LONGTEXT;
     }
+    
+    @Override
+    public boolean defaultBackupPreference() {
+        return true;
+    }
 
     @Override
     public boolean supportsBackup() {
