@@ -215,7 +215,9 @@ public final class MySQLStore2 extends Datastore2 {
                                         ism = ism.set(record);
                                     }
                                 }
-                        lines.add(ism.getSQL());
+                        if (ism != null) {
+                            lines.add(ism.getSQL());
+                        }
                     });
                     Files.write(PathValidator.getRealPath(Paths.get("./dbbackup/", fileName)), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException ex) {
