@@ -719,6 +719,7 @@
                         } else {
                             event.handeled();
                             consoleDebug("Command is alias: " + command + " <> " + alias);
+                            alias = alias.trim();
                             if (alias.indexOf(';') === -1) {
                                 parts = alias.split(' ');
                                 aliasCommand = parts.shift();
@@ -729,7 +730,8 @@
                                 parts = alias.split(';');
 
                                 for (let i = 0; i < parts.length; i++) {
-                                    subcmd = parts[i].split(' ');
+                                    let salias = parts[i].trim();
+                                    subcmd = salias.split(' ');
                                     aliasCommand = subcmd.shift();
                                     aliasArguments = subcmd.join(' ');
 
