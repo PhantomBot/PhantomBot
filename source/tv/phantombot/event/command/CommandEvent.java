@@ -63,6 +63,9 @@ public class CommandEvent extends Event {
         if (command == null) {
             throw new NullPointerException("command");
         }
+        if (command.charAt(0) == CaselessProperties.instance().getPropertyAsChar("commandprefix", '!')) {
+            command = command.substring(1);
+        }
         this.sender = sender;
         this.command = command;
         this.arguments = arguments;

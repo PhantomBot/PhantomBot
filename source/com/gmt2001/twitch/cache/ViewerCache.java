@@ -269,6 +269,11 @@ public final class ViewerCache implements Listener {
                     nextWarn = Instant.now().plus(WARN_INTERVAL);
                     com.gmt2001.Console.warn.println("Unable to update active chatter list from Twitch API due to not being a moderator in the channel");
                 }
+            } else if (ex.getMessage().contains("\"status\":401")) {
+                if (nextWarn == null || nextWarn.isBefore(Instant.now())) {
+                    nextWarn = Instant.now().plus(WARN_INTERVAL);
+                    com.gmt2001.Console.warn.println("Unable to update active chatter list from Twitch API due to invalid Broadcaster OAuth token");
+                }
             } else {
                 com.gmt2001.Console.err.printStackTrace(ex, "Exception parsing getChattersAsync");
             }
