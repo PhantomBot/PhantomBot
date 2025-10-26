@@ -33,7 +33,7 @@ def parse_file(fpath, lines):
     state = 0
     for line in lines:
         line = line.strip()
-        if line == "/**" and state == 0:
+        if line == "/*" and state == 0:
             state = 1
         if line == "*/" and state > 0:
             state = 0
