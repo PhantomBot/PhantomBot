@@ -49,12 +49,15 @@ ignoreproperties = [
     "apiexpires",
     "apioauth",
     "apirefresh",
+    "appoauth",
+    "appexpires",
     "appsecret",
     "apptoken",
     "apptokenexpires",
     "backupsqliteauto",
     "backupsqlitehourfrequency",
     "backupsqlitekeepdays",
+    "datastoreconfig",
     "newsetup",
     "oauth",
     "oauthexpires",
@@ -76,7 +79,7 @@ def parse_file(lines):
     state = 0
     for line in lines:
         line = line.strip()
-        if line == "/**" and state == 0:
+        if line.startsWith("/*") and state == 0:
             state = 1
         if line == "*/" and state > 0:
             state = 0

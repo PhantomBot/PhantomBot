@@ -96,7 +96,7 @@ def parse_file(fpath, lines):
     usestransformer_index = next((i for i,x in enumerate(usestransformers) if fpath.replace('\\', '/') == x["script"]), -1)
     for line in lines:
         line = line.strip()
-        if line == "/*" and state == 0:
+        if line.startsWith("/*") and state == 0:
             state = 1
         if line == "*/" and state > 0:
             if state == 3 or state == 6:

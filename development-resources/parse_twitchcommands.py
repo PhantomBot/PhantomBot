@@ -16,12 +16,12 @@
 # Doc-comment description
 
 # /**
-#  * @consolecommand commandName [requiredParameter] (optionalParameter) - Description
+#  * @commandpath commandName [requiredParameter] (optionalParameter) - Description
 #  */
 
 import os
 
-md_path = "./docs/guides/content/commands/console-commands.md"
+md_path = "./docs/guides/content/commands/commands.md"
 
 commands = []
 
@@ -33,6 +33,8 @@ def parse_file(fpath, lines):
     state = 0
     cmd = ""
     description  = ""
+    if fpath.startsWith("./javascript-source"):
+        fpath = "." + fpath[19:]
     for line in lines:
         line = line.strip()
         if line.startsWith("/*") and state == 0:
@@ -44,8 +46,8 @@ def parse_file(fpath, lines):
             state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
-            if line.startswith("@consolecommand"):
-                line = line[16:].strip()
+            if line.startswith("@commandpath"):
+                line = line[13:].strip()
                 cmd_pos = line.find("-")
                 if cmd_pos == -1:
                     cmd_pos = len(line)
@@ -54,31 +56,27 @@ def parse_file(fpath, lines):
             else:
                 description += line
 
-for subdir, dirs, files in os.walk("./source"):
+for subdir, dirs, files in os.walk("./javascript-source"):
     for fname in files:
         fpath = subdir + os.sep + fname
-        if fpath.endswith(".java"):
-            with open(fpath, encoding="utf8") as java_file:
-                parse_file(fpath, [line.rstrip('\n') for line in java_file])
+        if fpath.endswith(".js"):
+            with open(fpath, encoding="utf8") as js_file:
+                parse_file(fpath, [line.rstrip('\n') for line in js_file])
 
 lines = []
 
-lines.append("## Console Commands" + '\n')
-lines.append('\n')
-lines.append("**These console commands are available directly in the bot console when not running as a service.**" + '\n')
-lines.append('\n')
-lines.append("&nbsp;" + '\n')
+lines.append("## Twitch Command List" + '\n')
 lines.append('\n')
 lines.append("Parameters enclosed in square brackets `[ ]` are required when using the command" + '\n')
 lines.append('\n')
 lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n')
 lines.append('\n')
 lines.append("<!-- table -->" + '\n')
-lines.append("|Command|Description|" + '\n')
-lines.append("|:---|:---|" + '\n')
+lines.append("|Module|Command|Description|" + '\n')
+lines.append("|:---|:---|:---|" + '\n')
 
 for command in commands:
-    lines.append("|" + command["command"] + "|" + command["description"] + "|" + '\n')
+    lines.append("|" + command["source"] + "|" + command["command"] + "|" + command["description"] + "|" + '\n')
 
 lines = lines[:len(lines) - 3]
 
