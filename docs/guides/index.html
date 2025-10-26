@@ -393,6 +393,7 @@
                             'cache': false,
                             'success': function (data) {
                                 const hasTable = data.includes('<!-- table -->');
+                                data = data.replace(/<!-- table -->/, '');
                                 data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
                                 data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
                                 data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
