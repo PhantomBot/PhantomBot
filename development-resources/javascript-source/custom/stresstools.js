@@ -79,7 +79,7 @@
      * - Current used and committed heap memory
      * - Current used and committed non-heap memory
      */
-    function doStatus() {
+    function doStats() {
         let memHeap = Packages.com.gmt2001.util.Reflect.getHeapMemoryUsage();
         let memNonHeap = Packages.com.gmt2001.util.Reflect.getNonHeapMemoryUsage();
         let line1 = 'uptime=' + Packages.java.time.Duration.between(start, Packages.java.time.Instant.now()).toString();
@@ -115,7 +115,7 @@
     /**
      * Log startup stats
      */
-    doStatus();
+    doStats();
 
     /**
      * Sends a PING to TMI every 5 minutes
@@ -129,7 +129,7 @@
      * Reports stats every 10 minutes
      */
     let status = setInterval(function() {
-        doStatus();
+        doStats();
     }, 600000);
 
     /**
@@ -155,7 +155,7 @@
     $.bind('shutdown', function () {
         clearInterval(pinger);
         clearInterval(status);
-        doStatus();
+        doStats();
         $.consoleLn('');
         $.consoleLn('End of session');
         $.consoleLn('');
