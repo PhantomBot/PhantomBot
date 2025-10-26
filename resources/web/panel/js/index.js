@@ -210,6 +210,15 @@ $(function () {
         });
     };
 
+    socket.consoleCommand = function (callback_id, command, callback) {
+        generateCallBack(callback_id, [], falsee, true, callback);
+
+        sendToSocket({
+            console_command: callback_id,
+            command: command
+        });
+    }
+
     socket.getDiscordChannelList = function (callback_id, callback) {
         // Genetate a callback.
         generateCallBack(callback_id, [], false, true, callback);
