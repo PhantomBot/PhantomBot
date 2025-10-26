@@ -140,7 +140,7 @@
 
         if (numMessages >= 1000000) {
             numMessagesExt ++;
-            numMessages = 0;
+            numMessages -= 1000000;
         }
 
         if (!$.inidb.exists('stress_seen', event.getSender())) {
