@@ -64,6 +64,58 @@ jobs:
           paths.txt
         if-no-files-found: error
         retention-days: 1
+  parsetwitchcommands:
+    name: Parse Twitch Commands on ubuntu-latest with Python 3.x
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v5
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
+    - name: Execute Script
+      run: python3 development-resources/parse_twitchcommands.py
+    - name: Make Path File
+      run: |
+        echo docs/guides/content/commands/commands.md >> paths.txt
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: docstwitchcommands
+        path: |
+          docs/guides/content/commands/commands.md
+          paths.txt
+        if-no-files-found: error
+        retention-days: 1
+  parsediscordcommands:
+    name: Parse Discord Commands on ubuntu-latest with Python 3.x
+    if: github.repository == 'PhantomBot/PhantomBot'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v5
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
+    - name: Execute Script
+      run: python3 development-resources/parse_discordcommands.py
+    - name: Make Path File
+      run: |
+        echo docs/guides/content/commands/discord-commands.md >> paths.txt
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: docsdiscordcommands
+        path: |
+          docs/guides/content/commands/discord-commands.md
+          paths.txt
+        if-no-files-found: error
+        retention-days: 1
   parseconsolecommands:
     name: Parse Console Commands on ubuntu-latest with Python 3.x
     if: github.repository == 'PhantomBot/PhantomBot'
@@ -178,7 +230,7 @@ jobs:
   commit:
     name: Commit Docs
     runs-on: ubuntu-latest
-    needs: [updateremotepanel, parsecommandtags, parseconsolecommands, parsebotproperties, javadoc]
+    needs: [updateremotepanel, parsecommandtags, parsetwitchcommands, parsediscordcommands, parseconsolecommands, parsebotproperties, javadoc]
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v5
