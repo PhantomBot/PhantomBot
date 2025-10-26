@@ -35,7 +35,7 @@ def parse_file(fpath, lines):
     description  = ""
     for line in lines:
         line = line.strip()
-        if line.startsWith("/*") and state == 0:
+        if line.startswith("/*") and state == 0:
             cmd = ""
             state = 1
         if line == "*/" and state > 0:
