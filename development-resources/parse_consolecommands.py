@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Doc-comment definition
+# Doc-comment description
 
 # /**
 #  * @consolecommand commandName [requiredParameter] (optionalParameter) - Description
@@ -32,7 +32,7 @@ def parse_file(fpath, lines):
     global commands
     state = 0
     cmd = ""
-    definition  = ""
+    description  = ""
     for line in lines:
         line = line.strip()
         if line.startsWith("/*") and state == 0:
@@ -40,7 +40,7 @@ def parse_file(fpath, lines):
             state = 1
         if line == "*/" and state > 0:
             if cmd != "":
-                commands.append({"command": cmd, "definition": definition, "source": fpath})
+                commands.append({"command": cmd.replace('|', '&#124;'), "description": description.replace('|', '&#124;'), "source": fpath})
             state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
@@ -50,25 +50,9 @@ def parse_file(fpath, lines):
                 if cmd_pos == -1:
                     cmd_pos = len(line)
                 cmd = line[0:cmd_pos].strip()
-                definition = line[cmd_pos + 1:].strip()
+                description = line[cmd_pos + 1:].strip()
             else:
-                definition += line
-                
-
-def output_command(command, hlevel):
-    lines = []
-    h = "#"
-    while len(h) < hlevel:
-        h = h + "#"
-    lines.append(h + " " + command["command"] + '\n')
-    lines.append('\n')
-    lines.append("Defined in source file: _" + command["source"] + "_" + '\n')
-    lines.append('\n')
-    lines.append(command["definition"] + '\n')
-    lines.append('\n')
-    lines.append("&nbsp;" + '\n')
-    lines.append('\n')
-    return lines
+                description += line
 
 for subdir, dirs, files in os.walk("./source"):
     for fname in files:
@@ -85,19 +69,15 @@ lines.append("**These console commands are available directly in the bot console
 lines.append('\n')
 lines.append("&nbsp;" + '\n')
 lines.append('\n')
-lines.append("<!-- toc -->" + '\n')
-lines.append('\n')
-lines.append("<!-- tocstop -->" + '\n')
-lines.append('\n')
-lines.append("&nbsp;" + '\n')
-lines.append('\n')
 lines.append("Parameters enclosed in square brackets `[ ]` are required when using the command" + '\n')
 lines.append('\n')
 lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n')
 lines.append('\n')
+lines.append("|Command|Description|" + '\n')
+lines.append("|:---|:---|" + '\n')
 
 for command in commands:
-    lines.extend(output_command(command, 3))
+    lines.append("|" + command["command"] + "|" + command["description"] + "|" + '\n')
 
 lines = lines[:len(lines) - 3]
 
