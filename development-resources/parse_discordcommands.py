@@ -71,6 +71,7 @@ lines.append("Parameters enclosed in square brackets `[ ]` are required when usi
 lines.append('\n')
 lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n')
 lines.append('\n')
+lines.append("<!-- table -->" + '\n')
 lines.append("|Module|Command|Description|" + '\n')
 lines.append("|:---|:---|:---|" + '\n')
 
