@@ -146,7 +146,7 @@ public class CommandEvent extends Event {
      * @return {@code true} if the message appears to be a command
      */
     public static boolean isCommand(String message) {
-        /*
+        /**
          * @botproperty commandprefix - A single character, used as the command prefix for Twitch. Default `'!'`
          * @botpropertycatsort commandprefix 100 20 Twitch
          */
