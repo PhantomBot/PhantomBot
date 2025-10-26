@@ -42,7 +42,7 @@ def parse_file(fpath, lines):
             state = 1
         if line == "*/" and state > 0:
             if cmd != "":
-                commands.append({"command": cmd.replace('|', '&#124;'), "description": description.replace('|', '&#124;'), "source": fpath})
+                commands.append({"command": "!" + cmd.replace('|', '&#124;'), "description": description.replace('|', '&#124;'), "source": fpath})
             state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
