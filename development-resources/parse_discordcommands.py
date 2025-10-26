@@ -72,11 +72,11 @@ lines.append('\n')
 lines.append("Parameters enclosed in parenthesis `( )` are optional when using the command" + '\n')
 lines.append('\n')
 lines.append("<!-- table -->" + '\n')
-lines.append("|Module|Command|Description|" + '\n')
-lines.append("|:---|:---|:---|" + '\n')
+lines.append("| Module | Command | Description |" + '\n')
+lines.append("| :--- | :--- | :--- |" + '\n')
 
 for command in commands:
-    lines.append("|" + command["source"] + "|" + command["command"] + "|" + command["description"] + "|" + '\n')
+    lines.append("| " + command["source"] + " | " + command["command"] + " | " + command["description"] + " |" + '\n')
 
 lines = lines[:len(lines) - 3]
 
