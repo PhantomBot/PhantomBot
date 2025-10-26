@@ -33,8 +33,8 @@
         <link rel="stylesheet" href="../common/css/AdminLTE.dark.min.css" />
         <link rel="stylesheet" href="../common/css/skin-purple.dark.min.css" />
         <link rel="stylesheet" href="../common/css/pace.min.css" />
-        <link rel="stylesheet" href="../common/css/tables-alternating.dark.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" integrity="sha256-VU5niyfQ3bzKmyYpZcVfq76hPpAmc9QCoLhjhN3L0GQ=" crossorigin="anonymous" />
+        <link href="https://cdn.datatables.net/v/dt/dt-2.3.4/datatables.min.css" rel="stylesheet" integrity="sha384-pmGS6IIcXhAVIhcnh9X/mxffzZNHbuxboycGuQQoP3pAbb0SwlSUUHn2v22bOenI" crossorigin="anonymous" />
         <style>
             #back2Top {
                 width: 40px;
@@ -189,6 +189,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
+        <script src="https://cdn.datatables.net/v/dt/dt-2.3.4/datatables.min.js" integrity="sha384-X2pTSfom8FUa+vGQ+DgTCSyBZYkC1RliOduHa0X96D060s7Q//fnOh3LcazRNHyo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" integrity="sha256-blWQoMt0+lqHvv7q7wShOwoWOiQITkNA/Bssik2U/08=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/gh/noticeable-app/remarkable-iframify@3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
@@ -391,6 +392,7 @@
                             'dataType': 'text',
                             'cache': false,
                             'success': function (data) {
+                                const hasTable = data.includes('<!-- table -->');
                                 data = data.replace(/<!-- toc -->/, '<!-- realtoc -->').replace(/<!-- tocstop -->/, '<!-- realtocstop -->');
                                 data = data.replace(/<!-- toc -->/ig, '<!-- faketoc -->').replace(/<!-- tocstop -->/ig, '<!-- faketocstop -->');
                                 data = data.replace(/<!-- realtoc -->/, '<!-- toc -->').replace(/<!-- realtocstop -->/, '<!-- tocstop -->');
@@ -436,6 +438,14 @@
                                 window.location.hash = 'guide=' + path + '&channel=' + currentChannel;
                                 $('#' + lastPage + '-menuitem').addClass('active');
                                 jumpToHeader();
+                                if (hasTable) {
+                                    $('table').DataTable({
+                                        paging: false,
+                                        search: {
+                                            smart: false
+                                        }
+                                    });
+                                }
                             }
                         });
                     });
