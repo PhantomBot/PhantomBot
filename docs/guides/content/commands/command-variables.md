@@ -3180,6 +3180,28 @@ Yes&nbsp;&nbsp; | Yes
 
 &nbsp;
 
+### greetingSystem.js
+
+Defined in script: _./javascript-source/systems/greetingSystem.js_
+
+#### Hook: ircChannelJoin
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch noevent
+
+#### Hook: ircChannelMessage
+
+Global&nbsp;&nbsp; | Local
+-------|-------
+Yes&nbsp;&nbsp; | No
+
+**Labels Used:** twitch noevent
+
+&nbsp;
+
 ### welcomeSystem.js
 
 Defined in script: _./javascript-source/systems/welcomeSystem.js_

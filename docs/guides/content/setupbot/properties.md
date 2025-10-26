@@ -76,6 +76,14 @@ the twitch developer application client secret
 
 &nbsp;
 
+#### commandprefix
+
+Data Type: _Char_
+
+a single character, used as the command prefix for twitch. default `'!'`
+
+&nbsp;
+
 #### offlinedelay
 
 Data Type: _Int_
@@ -339,6 +347,14 @@ _NOTE: A restart is required for this property to take effect_
 Data Type: _Boolean_
 
 if `true`, the bots current discord activity (_playing foo_) is restored on startup. default `true`
+
+&nbsp;
+
+#### discordcommandprefix
+
+Data Type: _Char_
+
+a single character, used as the command prefix for discord. default `'!'`
 
 &nbsp;
 
@@ -641,44 +657,3 @@ Data Type: _Boolean_
 if `true`, enables the rhino debugger console. default `false`
 
 _NOTE: A restart is required for this property to take effect_
-
-&nbsp;
-
-### Uncategorized
-#### appexpires
-
-Data Type: _Long_
-
-No definition
-
-&nbsp;
-
-#### appoauth
-
-Data Type: _String_
-
-No definition
-
-&nbsp;
-
-#### commandprefix
-
-Data Type: _Char_
-
-No definition
-
-&nbsp;
-
-#### datastoreconfig
-
-Data Type: _String_
-
-No definition
-
-&nbsp;
-
-#### discordcommandprefix
-
-Data Type: _Char_
-
-No definition
