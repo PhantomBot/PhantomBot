@@ -31,21 +31,29 @@ commands = []
 def parse_file(fpath, lines):
     global commands
     state = 0
+    cmd = ""
+    definition  = ""
     for line in lines:
         line = line.strip()
-        if line == "/*" and state == 0:
+        if line.startsWith("/*") and state == 0:
+            cmd = ""
             state = 1
         if line == "*/" and state > 0:
+            if cmd != "":
+                commands.append({"command": cmd, "definition": definition, "source": fpath})
             state = 0
         if line.startswith("* ") and len(line) > 2 and state > 0:
             line = line[2:].strip()
             if line.startswith("@consolecommand"):
                 line = line[16:].strip()
-                cmd_pos = line.find(" ")
+                cmd_pos = line.find("-")
                 if cmd_pos == -1:
                     cmd_pos = len(line)
                 cmd = line[0:cmd_pos].strip()
-                commands.append({"command": cmd, "definition": line, "source": fpath})
+                definition = line[cmd_pos + 1:].strip()
+            else:
+                definition += line
+                
 
 def output_command(command, hlevel):
     lines = []
