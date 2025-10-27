@@ -27,15 +27,18 @@
     <!-- Main content -->
     <section class="content">
     	<div class="box box-solid">
-            <form role="form" id="consoleModule">
-                <div class="form-group">
-                    <label for="console-command-run">Run Console Command</label>
-                    <input type="text" class="form-control" id="console-command-run" placeholder="Console Command" data-toggle="tooltip" title="Enter a console command.">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary pull-right" id="btn-console-command-run" data-candisable="true">Run</button>
-                    </span>
-                </div>
-            </form>
+            <div class="box-body">
+                <form role="form" id="consoleModule">
+                    <div class="form-group">
+                        <label for="console-command-run">Run Console Command</label>
+                        <div>Responses will show in the console. Commands that require additionl input, such as mysqlsetup can not be executed</div>
+                        <input type="text" class="form-control" id="console-command-run" placeholder="Console Command" data-toggle="tooltip" title="Enter a console command.">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary pull-right" id="btn-console-command-run" data-candisable="true">Run</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
 
