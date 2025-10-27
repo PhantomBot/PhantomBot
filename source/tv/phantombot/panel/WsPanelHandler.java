@@ -53,6 +53,7 @@ import tv.phantombot.RepoVersion;
 import tv.phantombot.cache.TwitchCache;
 import tv.phantombot.discord.DiscordAPI;
 import tv.phantombot.event.EventBus;
+import tv.phantombot.event.console.ConsoleInputEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketConnectEvent;
 import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 import tv.phantombot.panel.PanelUser.PanelUser;
@@ -120,6 +121,8 @@ public class WsPanelHandler implements WsFrameHandler {
         try {
             if (jso.has("command") || jso.has("command_sync")) {
                 handleCommand(ctx, frame, jso);
+            } else if (jso.has("console_command")) {
+                handleConsoleCommand(ctx, frame, jso);
             } else if (jso.has("dbupdate")) {
                 handleDBUpdate(ctx, frame, jso);
             } else if (jso.has("dbincr")) {
@@ -174,6 +177,29 @@ public class WsPanelHandler implements WsFrameHandler {
         } else {
             PhantomBot.instance().handleCommandSync(username, command);
         }
+
+        if (!uniqueID.isEmpty()) {
+            JSONStringer jsonObject = new JSONStringer();
+            jsonObject.object().key("query_id").value(uniqueID).endObject();
+            WebSocketFrameHandler.sendWsFrame(ctx, frame, WebSocketFrameHandler.prepareTextWebSocketResponse(jsonObject.toString()));
+        }
+    }
+
+    private void handleConsoleCommand(ChannelHandlerContext ctx, WebSocketFrame frame, JSONObject jso) {
+        if (PhantomBot.instance() == null) {
+            return;
+        }
+
+        String command = jso.has("command") ? jso.getString("command") : "";
+        String uniqueID = jso.has("console_command") ? jso.getString("console_command") : "";
+
+        PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
+        if (user != null && !PanelUserHandler.checkPanelUserSectionAccess(user, "consolecommands", true)) {
+            this.panelNotification(ctx, "permission", PanelUserHandler.PanelMessage.InsufficientPermissions.getMessage(), "Permissions error");
+            return;
+        }
+
+        EventBus.instance().postAsync(new ConsoleInputEvent(command));
 
         if (!uniqueID.isEmpty()) {
             JSONStringer jsonObject = new JSONStringer();

@@ -44,6 +44,7 @@ public final class PanelUserHandler {
             "alerts",
             "audio",
             "commands",
+            "consolecommands",
             "dashboard",
             "discord",
             "extra",
