@@ -211,11 +211,11 @@ $(function () {
     };
 
     socket.consoleCommand = function (callback_id, command, callback) {
-        generateCallBack(callback_id, [], falsee, true, callback);
+        generateCallBack(callback_id, [], false, true, callback);
 
         sendToSocket({
             console_command: callback_id,
-            command: command
+            message: command
         });
     }
 
