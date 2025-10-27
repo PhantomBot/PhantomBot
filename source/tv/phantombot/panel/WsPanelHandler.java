@@ -190,7 +190,7 @@ public class WsPanelHandler implements WsFrameHandler {
             return;
         }
 
-        String command = jso.has("command") ? jso.getString("command") : "";
+        String command = jso.has("message") ? jso.getString("message") : "";
         String uniqueID = jso.has("console_command") ? jso.getString("console_command") : "";
 
         PanelUser user = ctx.channel().attr(WsSharedRWTokenAuthenticationHandler.ATTR_AUTH_USER).get();
