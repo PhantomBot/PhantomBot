@@ -4,354 +4,51 @@
 
 &nbsp;
 
-<!-- toc -->
-
-<!-- tocstop -->
-
-&nbsp;
-
 Parameters enclosed in square brackets `[ ]` are required when using the command
 
 Parameters enclosed in parenthesis `( )` are optional when using the command
 
-### forceoauthrefresh
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-forceoauthrefresh - Force a refresh of both Twitch OAuth tokens.
-
-&nbsp;
-
-### updategameslist
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-updategameslist - Force a full update of the games list.
-
-&nbsp;
-
-### raidtest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-raidtest (raiderName) (numViewers) - Tests the raid event.
-
-&nbsp;
-
-### checkytquota
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-checkytquota - This command checks the quota points used by YouTube.
-
-&nbsp;
-
-### exportpoints
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-exportpoints - This command exports points and time to a CSV file.
-
-&nbsp;
-
-### importpoints
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-importpoints - This command imports time and points from a csv file in format (Username,Seconds,Points)
-
-&nbsp;
-
-### createcmdlist
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-createcmdlist - Creates a list of all commands with their permissions as a CSV.
-
-&nbsp;
-
-### botinfo
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-botinfo - Prints the bot information in the console.
-
-&nbsp;
-
-### backupdb
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-backupdb - Creates a backup of the current database.
-
-&nbsp;
-
-### restoredb
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-restoredb (filename) - Restores a backup of the database.
-
-&nbsp;
-
-### jointest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-jointest (userName) - Sends 30 fake join events or one specific user for testing.
-
-&nbsp;
-
-### followertest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-followertest [username] - Sends a fake follower event.
-
-&nbsp;
-
-### followerstest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-followerstest [amount] - Sends a fake follower events.
-
-&nbsp;
-
-### subscribertest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-subscribertest (userName) (tier) (months) (message) - Sends a fake subscriber events.
-
-&nbsp;
-
-### primesubscribertest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-primesubscribertest (userName) (months) - Sends a fake Prime subscriber events.
-
-&nbsp;
-
-### resubscribertest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-resubscribertest (userName) (tier) (months) (message) - Sends a fake re-subscriber events.
-
-&nbsp;
-
-### giftsubtest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-giftsubtest (userName) (tier) (months) - Sends a fake gift subscriber events.
-
-&nbsp;
-
-### massanonsubgifttest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-massanonsubgifttest (amount) (tier) - Test a mass anonymous gift subscription.
-
-&nbsp;
-
-### masssubgifttest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-masssubgifttest (amount) (tier) - Test a mass sub gift subscription.
-
-&nbsp;
-
-### anonsubgifttest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-anonsubgifttest (userName) (tier) (months) - Test an anonymous gift subscription
-
-&nbsp;
-
-### onlinetest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-onlinetest - Sends a fake online event.
-
-&nbsp;
-
-### offlinetest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-offlinetest - Sends a fake offline event.
-
-&nbsp;
-
-### cliptest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-cliptest - Sends a fake clip event.
-
-&nbsp;
-
-### bitstest
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-bitstest (user) (amount) (message) - Sends a fake bits event.
-
-&nbsp;
-
-### discordreconnect
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-discordreconnect - Reconnects to Discord.
-
-&nbsp;
-
-### reconnect
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-reconnect - Reconnects to TMI and EventSub.
-
-&nbsp;
-
-### debugon
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-debugon - Enables debug mode.
-
-&nbsp;
-
-### debugoff
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-debugoff - Disables debug mode.
-
-&nbsp;
-
-### debuglog
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-debuglog - Prints all debug lines to a file.
-
-&nbsp;
-
-### exit
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-exit - Shuts down the bot.
-
-&nbsp;
-
-### mysqlsetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-mysqlsetup - Sets up MySQL.
-
-&nbsp;
-
-### streamlabssetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-streamlabssetup - Sets up StreamLabs.
-
-&nbsp;
-
-### tipeeestreamsetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-tipeeestreamsetup - Sets up TipeeeStream.
-
-&nbsp;
-
-### panelsetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-panelsetup - Sets up the panel.
-
-&nbsp;
-
-### ytsetup
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-ytsetup - Sets up YouTube API Key
-
-&nbsp;
-
-### dumpheap
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-dumpheap - Creates a heap dump
-
-&nbsp;
-
-### dumpthreads
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-dumpthreads - Creates a thread dump
-
-&nbsp;
-
-### paneluser
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-paneluser add username - Creates a new panel user with full access to all panel sections if the user does not exist and prints the randomly generated password
-
-&nbsp;
-
-### paneluser
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-paneluser delete username - Deletes a panel user if the user exists
-
-&nbsp;
-
-### paneluser
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-paneluser enable username - Enables a panel user if the user exists
-
-&nbsp;
-
-### paneluser
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-paneluser enable username - Disables a panel user if the user exists
-
-&nbsp;
-
-### paneluser
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-paneluser resetpassword username - Resets a panel users password if the user exists and prints the new and randomly generated password
-
-&nbsp;
-
-### paneluser
-
-Defined in source file: _./source/tv/phantombot/console/ConsoleEventHandler.java_
-
-paneluser resetpermission username - Gives a panel user full access to all panel sections if the user exists
+<!-- table -->
+| Command | Description |
+| :--- | :--- |
+| forceoauthrefresh | Force a refresh of both Twitch OAuthtokens. |
+| updategameslist | Force a full update of the games list. |
+| raidtest (raiderName) (numViewers) | Tests the raid event. |
+| checkytquota | This command checks the quota points used byYouTube. |
+| exportpoints | This command exports points and time to a CSVfile. |
+| importpoints | This command imports time and points from acsv file in format (Username,Seconds,Points) |
+| createcmdlist | Creates a list of all commands with theirpermissions as a CSV. |
+| botinfo | Prints the bot information in the console. |
+| backupdb | Creates a backup of the current database. |
+| restoredb (filename) | Restores a backup of the database. |
+| jointest (userName) | Sends 30 fake join events or onespecific user for testing. |
+| followertest [username] | Sends a fake follower event. |
+| followerstest [amount] | Sends a fake follower events. |
+| subscribertest (userName) (tier) (months) (message) | Sends afake subscriber events. |
+| primesubscribertest (userName) (months) | Sends a fake Primesubscriber events. |
+| resubscribertest (userName) (tier) (months) (message) | Sendsa fake re-subscriber events. |
+| giftsubtest (userName) (tier) (months) | Sends a fake giftsubscriber events. |
+| massanonsubgifttest (amount) (tier) | Test a mass anonymousgift subscription. |
+| masssubgifttest (amount) (tier) | Test a mass sub giftsubscription. |
+| anonsubgifttest (userName) (tier) (months) | Test ananonymous gift subscription |
+| onlinetest | Sends a fake online event. |
+| offlinetest | Sends a fake offline event. |
+| cliptest | Sends a fake clip event. |
+| bitstest (user) (amount) (message) | Sends a fake bits event. |
+| discordreconnect | Reconnects to Discord. |
+| reconnect | Reconnects to TMI and EventSub. |
+| debugon | Enables debug mode. |
+| debugoff | Disables debug mode. |
+| debuglog | Prints all debug lines to a file. |
+| exit | Shuts down the bot. |
+| mysqlsetup | Sets up MySQL. |
+| streamlabssetup | Sets up StreamLabs. |
+| tipeeestreamsetup | Sets up TipeeeStream. |
+| panelsetup | Sets up the panel. |
+| ytsetup | Sets up YouTube API Key |
+| dumpheap | Creates a heap dump |
+| dumpthreads | Creates a thread dump |
+| paneluser add username | Creates a new panel user with fullaccess to all panel sections if the user does not exist andprints the randomly generated password |
+| paneluser delete username | Deletes a panel user if the userexists |
+| paneluser enable username | Enables a panel user if the userexists |
+| paneluser enable username | Disables a panel user if the userexists |

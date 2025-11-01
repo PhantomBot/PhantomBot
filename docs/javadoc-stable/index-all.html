@@ -498,11 +498,15 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="com/gmt2001/datastore2/H2Store2.html#backup(java.lang.String)" class="member-name-link">backup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/H2Store2.html" title="class in com.gmt2001.datastore2">H2Store2</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MariaDBStore2.html#backup(java.lang.String)" class="member-name-link">backup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MariaDBStore2.html" title="class in com.gmt2001.datastore2">MariaDBStore2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MySQLStore2.html#backup(java.lang.String)" class="member-name-link">backup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MySQLStore2.html" title="class in com.gmt2001.datastore2">MySQLStore2</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/SQLiteStore2.html#backup(java.lang.String)" class="member-name-link">backup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/SQLiteStore2.html" title="class in com.gmt2001.datastore2">SQLiteStore2</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/DataStore.html#backupDB(java.lang.String)" class="member-name-link">backupDB(String)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
-<div class="block">Backs up the database to the specified filename in the <code>dbbackup</code> folder</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </dd>
 <dt><a href="com/gmt2001/datastore/H2Store.html#backupDB(java.lang.String)" class="member-name-link">backupDB(String)</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/H2Store.html" title="class in com.gmt2001.datastore">H2Store</a></dt>
 <dd>
@@ -517,6 +521,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the default backup filename, which is usually the database name with <a href="com/gmt2001/datastore2/Datastore2.html#timestamp()"><code>Datastore2.timestamp()</code></a> appended</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/H2Store2.html#backupFileName()" class="member-name-link">backupFileName()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/H2Store2.html" title="class in com.gmt2001.datastore2">H2Store2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MariaDBStore2.html#backupFileName()" class="member-name-link">backupFileName()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MariaDBStore2.html" title="class in com.gmt2001.datastore2">MariaDBStore2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MySQLStore2.html#backupFileName()" class="member-name-link">backupFileName()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MySQLStore2.html" title="class in com.gmt2001.datastore2">MySQLStore2</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/SQLiteStore2.html#backupFileName()" class="member-name-link">backupFileName()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/SQLiteStore2.html" title="class in com.gmt2001.datastore2">SQLiteStore2</a></dt>
 <dd>&nbsp;</dd>
@@ -791,7 +799,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore/DataStore.html#canBackup()" class="member-name-link">canBackup()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
 <dd>
-<div class="block">Indicates if this database type supports generating backup files</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 </dd>
 <dt><a href="com/gmt2001/datastore/H2Store.html#canBackup()" class="member-name-link">canBackup()</a> - Method in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/H2Store.html" title="class in com.gmt2001.datastore">H2Store</a></dt>
 <dd>
@@ -2015,6 +2023,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Decreases the value of the <code>value</code> column as a long in the given table, section, and key</div>
 </dd>
+<dt><a href="com/gmt2001/datastore2/Datastore2.html#defaultBackupPreference()" class="member-name-link">defaultBackupPreference()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
+<dd>
+<div class="block">Indicates if this driver prefers automatic backups to be enabled by default</div>
+</dd>
+<dt><a href="com/gmt2001/datastore2/H2Store2.html#defaultBackupPreference()" class="member-name-link">defaultBackupPreference()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/H2Store2.html" title="class in com.gmt2001.datastore2">H2Store2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/SQLiteStore2.html#defaultBackupPreference()" class="member-name-link">defaultBackupPreference()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/SQLiteStore2.html" title="class in com.gmt2001.datastore2">SQLiteStore2</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/module/Module.html#defaultEnabledState()" class="member-name-link">defaultEnabledState()</a> - Method in class com.gmt2001.module.<a href="com/gmt2001/module/Module.html" title="class in com.gmt2001.module">Module</a></dt>
 <dd>
 <div class="block">Indicates the default enabled state of the module on a new installation</div>
@@ -8330,6 +8346,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">The prefix for using this cheermote.</div>
 </dd>
+<dt><a href="com/gmt2001/datastore/DataStore.html#PREFIX" class="member-name-link">PREFIX</a> - Static variable in class com.gmt2001.datastore.<a href="com/gmt2001/datastore/DataStore.html" title="class in com.gmt2001.datastore">DataStore</a></dt>
+<dd>
+<div class="block">Table name prefix for all tables created as <a href="com/gmt2001/datastore/SectionVariableValueTable.html" title="class in com.gmt2001.datastore"><code>SectionVariableValueTable</code></a></div>
+</dd>
 <dt><a href="com/gmt2001/datastore2/Datastore2.html#PREFIX" class="member-name-link">PREFIX</a> - Static variable in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/Datastore2.html" title="class in com.gmt2001.datastore2">Datastore2</a></dt>
 <dd>
 <div class="block">Table name prefix for all tables created as POJOs</div>
@@ -9273,6 +9293,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Restores a database from the specified backup file, which must be in the <code>dbbackup</code> folder</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/H2Store2.html#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/H2Store2.html" title="class in com.gmt2001.datastore2">H2Store2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MariaDBStore2.html#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MariaDBStore2.html" title="class in com.gmt2001.datastore2">MariaDBStore2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MySQLStore2.html#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MySQLStore2.html" title="class in com.gmt2001.datastore2">MySQLStore2</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/SQLiteStore2.html#restoreBackup(java.lang.String)" class="member-name-link">restoreBackup(String)</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/SQLiteStore2.html" title="class in com.gmt2001.datastore2">SQLiteStore2</a></dt>
 <dd>&nbsp;</dd>
@@ -10305,6 +10329,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Indicates if this driver supports making backups without an external tool</div>
 </dd>
 <dt><a href="com/gmt2001/datastore2/H2Store2.html#supportsBackup()" class="member-name-link">supportsBackup()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/H2Store2.html" title="class in com.gmt2001.datastore2">H2Store2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MariaDBStore2.html#supportsBackup()" class="member-name-link">supportsBackup()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MariaDBStore2.html" title="class in com.gmt2001.datastore2">MariaDBStore2</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="com/gmt2001/datastore2/MySQLStore2.html#supportsBackup()" class="member-name-link">supportsBackup()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/MySQLStore2.html" title="class in com.gmt2001.datastore2">MySQLStore2</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/gmt2001/datastore2/SQLiteStore2.html#supportsBackup()" class="member-name-link">supportsBackup()</a> - Method in class com.gmt2001.datastore2.<a href="com/gmt2001/datastore2/SQLiteStore2.html" title="class in com.gmt2001.datastore2">SQLiteStore2</a></dt>
 <dd>&nbsp;</dd>
