@@ -53,7 +53,7 @@
                 if (match[1].includes('.')) {
                     match[1] = match[1].substring(0, match[1].lastIndexOf('.'));
                 }
-                if (!match[1].includes('.') || !$.audioHookExists(match[1])) {
+                if (!$.audioHookExists(match[1])) {
                     $.log.error('Could not play audio hook: Audio hook does not exist.');
                     return {result: $.lang.get('customcommands.playsound.404', match[1])};
                 }
