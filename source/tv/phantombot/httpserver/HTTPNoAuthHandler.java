@@ -236,7 +236,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                         + "<span>" + data.substring(0, Math.min(data.length(), len)) + "&nbsp;</span>"
                         + "</div></div></body></html>";
             } else {
-                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + Files.readString(p) + "</body></html>";
+                ret = "<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><body>" + (qsd.parameters().containsKey("span") ? "<span>" : "") + Files.readString(p) + (qsd.parameters().containsKey("span") ? "</span>" : "") + "</body></html>";
             }
 
             com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
