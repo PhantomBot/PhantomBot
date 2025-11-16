@@ -788,7 +788,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
         SectionVariableValueRecord record = this.OptRecord(table, section, key)
             .orElseGet(() -> new SectionVariableValueRecord(table, section, key, value));
         record.value(value);
-        record.changed(true);
+        record.changed(table.VALUE, true);
         record.merge();
     }
 
@@ -996,7 +996,7 @@ public sealed class DataStore permits H2Store, MySQLStore, MariaDBStore, SqliteS
             return false;
         }
         record.value(sval);
-        record.changed(true);
+        record.changed(table.VALUE, true);
         return record.merge() == 1;
     }
 
