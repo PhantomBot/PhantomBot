@@ -314,7 +314,7 @@ public final class PhantomBot implements Listener {
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
         this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
-        this.appflow.checkAndRefreshToken();
+        this.appflow.checkAndRefreshToken(true);
         if (authflowrefreshed) {
             ConfigurationManager.getConfiguration();
         }
