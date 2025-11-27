@@ -129,6 +129,25 @@
             var url = $.getIniDbString('streamInfo', 'most_viewed_clip_url', $.lang.get('cliphandler.noclip'));
             $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.topclip', url));
         }
+
+        /*
+         * @commandpath clipit - Creates a clip.
+         */
+        if ($.equalsIgnoreCase(command, 'clipit')) {
+            let clipdata = $.twitch.createClip($.viewer.broadcaster().id(), false);
+            if (clipdata.getInt('_http') == 202) {
+                clipdata = clipdata.getJSONArray('data').getJSONObject(0);
+                let creator = $.viewer.getByLogin(sender);
+                $.inidb.set(clipdata.getString('id'), JSON.stringify({
+                    'timestamp': $.systemTime(),
+                    'edit_url': clipdata.getString('edit_url'),
+                    'creator_login': creator.login(),
+                    'creator_displayname': creator.name(),
+                    'creator_id': creator.id()
+                }));
+                $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit'));
+            }
+        }
     });
 
     /*
@@ -139,6 +158,7 @@
         $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', $.PERMISSION.Viewer);
         $.registerChatCommand('./handlers/clipHandler.js', 'topclip', $.PERMISSION.Viewer);
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipip', $.PERMISSION.Mod);
     });
 
     $.reloadClips = reloadClips;
