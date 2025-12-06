@@ -138,7 +138,7 @@
             if (clipdata.getInt('_http') == 202) {
                 clipdata = clipdata.getJSONArray('data').getJSONObject(0);
                 let creator = $.viewer.getByLogin(sender);
-                $.inidb.set(clipdata.getString('id'), JSON.stringify({
+                $.inidb.set('clips', clipdata.getString('id'), JSON.stringify({
                     'timestamp': $.systemTime(),
                     'edit_url': clipdata.getString('edit_url'),
                     'creator_login': creator.login(),
