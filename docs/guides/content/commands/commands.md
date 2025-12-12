@@ -82,6 +82,7 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | ./handlers/clipHandler.js | !clipsmessage | Sets a message for when someone creates a clip. |
 | ./handlers/clipHandler.js | !lastclip | Displays information about the last clip captured. |
 | ./handlers/clipHandler.js | !topclip | Displays the top clip from the past day. |
+| ./handlers/clipHandler.js | !clipit | Creates a clip. |
 | ./handlers/keywordHandler.js | !keyword | Base command for keyword options |
 | ./handlers/keywordHandler.js | !keyword add [keyword] [response] | Adds a keyword and a response, use regex: at the start of the response to use regex. |
 | ./handlers/keywordHandler.js | !keyword remove [keyword] | Removes a given keyword |

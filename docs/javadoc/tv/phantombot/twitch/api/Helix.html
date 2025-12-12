@@ -197,6 +197,18 @@ loadScripts(document, 'script');</script>
 <div class="block">Cancel a pending raid.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createClip(java.lang.String,boolean)" class="member-name-link">createClip</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ boolean&nbsp;has_delay)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Create a clip on the specified channel.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createClipAsync(java.lang.String,boolean)" class="member-name-link">createClipAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ boolean&nbsp;has_delay)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Create a clip on the specified channel.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createCustomReward(java.lang.String,int,java.lang.Boolean,java.lang.String,java.lang.Boolean,java.lang.String,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean,java.lang.Integer,java.lang.Boolean)" class="member-name-link">createCustomReward</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;title,
  int&nbsp;cost,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Boolean.html" title="class or interface in java.lang" class="external-link">Boolean</a>&nbsp;is_enabled,
@@ -1911,6 +1923,46 @@ loadScripts(document, 'script');</script>
  should be specified; otherwise, the ended_at date/time will be 1 week after the started_at value.</dd>
 <dd><code>ended_at</code> - Ending date/time for returned clips, in RFC3339 format. (Note that the seconds value is ignored.) If this is specified,
  started_at also must be specified; otherwise, the time period is ignored.</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createClip(java.lang.String,boolean)">
+<h3>createClip</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a></span>&nbsp;<span class="element-name">createClip</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ boolean&nbsp;has_delay)</span>
+                      throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Create a clip on the specified channel.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>broadcaster_id</code> - ID of the channel to clip.</dd>
+<dd><code>has_delay</code> - "false" to capture the clip at the moment of the request (like clipping on the Twitch website); "true" to delay for a short time determined by Twitch.</dd>
+<dt>Returns:</dt>
+<dd>A JSONObject with the response</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a></code></dd>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="createClipAsync(java.lang.String,boolean)">
+<h3>createClipAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://stleary.github.io/JSON-java/org/json/JSONObject.html" title="class or interface in org.json" class="external-link">JSONObject</a>&gt;</span>&nbsp;<span class="element-name">createClipAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;broadcaster_id,
+ boolean&nbsp;has_delay)</span>
+                                 throws <span class="exceptions"><a href="https://stleary.github.io/JSON-java/org/json/JSONException.html" title="class or interface in org.json" class="external-link">JSONException</a>,
+<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/IllegalArgumentException.html" title="class or interface in java.lang" class="external-link">IllegalArgumentException</a></span></div>
+<div class="block">Create a clip on the specified channel.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>broadcaster_id</code> - ID of the channel to clip.</dd>
+<dd><code>has_delay</code> - "false" to capture the clip at the moment of the request (like clipping on the Twitch website); "true" to delay for a short time determined by Twitch.</dd>
 <dt>Returns:</dt>
 <dd>A JSONObject with the response</dd>
 <dt>Throws:</dt>
