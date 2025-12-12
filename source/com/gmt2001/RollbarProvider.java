@@ -291,7 +291,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.net.UnknownHostException.class)) {
+                                if (error.getClass().equals(java.net.UnknownHostException.class) || error.getMessage().contains("java.net.UnknownHostException")) {
                                     return true;
                                 }
 
@@ -400,6 +400,98 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getClass().equals(java.io.IOException.class) && error.getMessage().equals("There is not enough space on the disk")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("text is empty (possibly HTTP/0.9)")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("invalid version format")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("SQLITE_BUSY")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.IllegalArgumentException.class) && error.getMessage().equals("command")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.lang.IllegalArgumentException.class) && error.getMessage().equals("message")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Database may be already in use")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Content-Length value is not a number")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("a header name can only contain")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Illegal character in HTTP Method")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Illegal character in request line")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("No colon found")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Chunk size overflow")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Connection reset")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Invalid separator")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("An HTTP line is larger than 4096 bytes")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("HTTP header is larger than 8192 bytes")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("PKIX path building failed")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Input length =")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Too many open files")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Failed to open a socket")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("Read-only file system")) {
+                                    return true;
+                                }
+
+                                if (error.getMessage().contains("SQLITE_IOERR_WRITE")) {
+                                    return true;
+                                }
+
+                                if (error.getClass().equals(java.util.MissingResourceException.class)) {
                                     return true;
                                 }
                             }

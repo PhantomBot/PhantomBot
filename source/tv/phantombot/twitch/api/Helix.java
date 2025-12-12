@@ -1293,6 +1293,40 @@ public class Helix {
     }
 
     /**
+     * Create a clip on the specified channel.
+     *
+     * @param broadcaster_id ID of the channel to clip.
+     * @param has_delay "false" to capture the clip at the moment of the request (like clipping on the Twitch website); "true" to delay for a short time determined by Twitch.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public JSONObject createClip(String broadcaster_id, boolean has_delay) throws JSONException, IllegalArgumentException {
+        return this.createClipAsync(broadcaster_id, has_delay).block();
+    }
+
+    /**
+     * Create a clip on the specified channel.
+     *
+     * @param broadcaster_id ID of the channel to clip.
+     * @param has_delay "false" to capture the clip at the moment of the request (like clipping on the Twitch website); "true" to delay for a short time determined by Twitch.
+     * @return A JSONObject with the response
+     * @throws JSONException
+     * @throws IllegalArgumentException
+     */
+    public Mono<JSONObject> createClipAsync(String broadcaster_id, boolean has_delay) throws JSONException, IllegalArgumentException {
+        if (broadcaster_id == null || broadcaster_id.isBlank()) {
+            throw new IllegalArgumentException("broadcaster_id");
+        }
+
+        String endpoint = "/clips?" + this.qspValid("broadcaster_id", broadcaster_id) + "&has_delay=" + (has_delay ? "true" : "false");
+
+        return this.handleMutatorAsync(endpoint, () -> {
+            return this.handleRequest(HttpMethod.POST, endpoint);
+        });
+    }
+
+    /**
      * Colors to be used with {@link sendChatAnnouncement}
      */
     public enum AnnouncementColors {

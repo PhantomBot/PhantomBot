@@ -63,7 +63,14 @@
         if (whisperMode || force) {
             return '/w ' + username + ' ';
         }
-        return '@' + $.viewer.getByLogin(username).name() + ', ';
+        let viewer = $.viewer.getByLogin(username);
+        if (viewer !== null) {
+            let name = viewer.name();
+            if (name !== null) {
+                username = name;
+            }
+        }
+        return '@' + username + ', ';
     }
 
     /**
