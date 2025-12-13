@@ -399,7 +399,7 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
      */
     private void cleanupSubscriptions() {
         this.subscriptions.forEach((id, subscription) -> {
-            if (subscription.status() != SubscriptionStatus.ENABLED) {
+            if (subscription.status() != SubscriptionStatus.ENABLED || !subscription.transport().sessionId().equals(this.session_id)) {
                 this.subscriptions.remove(id);
             }
         });
