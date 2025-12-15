@@ -155,7 +155,7 @@ jobs:
     - name: Prep Artifact Dir
       run: mkdir -p /tmp/docartifacts
     - name: Download Artifacts
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v7
       with:
         pattern: docs*
         path: /tmp/docartifacts
