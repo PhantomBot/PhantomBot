@@ -319,6 +319,7 @@ public final class TMIMessage {
                     case "admin":
                     case "broadcaster":
                     case "moderator":
+                    case "lead_moderator":
                         rbadges.put("user-type", badge);
                         break;
                     case "subscriber":
