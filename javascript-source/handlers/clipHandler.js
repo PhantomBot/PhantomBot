@@ -134,7 +134,7 @@
          * @commandpath clipit - Creates a clip.
          */
         if ($.equalsIgnoreCase(command, 'clipit')) {
-            let clipdata = $.twitch.createClip($.viewer.broadcaster().id(), false);
+            let clipdata = $.helix.createClip($.viewer.broadcaster().id(), false);
             if (clipdata.getInt('_http') == 202) {
                 clipdata = clipdata.getJSONArray('data').getJSONObject(0);
                 let creator = $.viewer.getByLogin(sender);
@@ -158,7 +158,7 @@
         $.registerChatCommand('./handlers/clipHandler.js', 'clipsmessage', $.PERMISSION.Admin);
         $.registerChatCommand('./handlers/clipHandler.js', 'lastclip', $.PERMISSION.Viewer);
         $.registerChatCommand('./handlers/clipHandler.js', 'topclip', $.PERMISSION.Viewer);
-        $.registerChatCommand('./handlers/clipHandler.js', 'clipip', $.PERMISSION.Mod);
+        $.registerChatCommand('./handlers/clipHandler.js', 'clipit', $.PERMISSION.Mod);
     });
 
     $.reloadClips = reloadClips;
