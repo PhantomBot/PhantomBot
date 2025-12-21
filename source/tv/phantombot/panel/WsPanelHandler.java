@@ -625,28 +625,23 @@ public class WsPanelHandler implements WsFrameHandler {
             jsonObject.endArray();
         } else if (query.equalsIgnoreCase("games")) {
             jsonObject.key("results").object().key("results").array();
-            try {
-                List<String> data = Files.readAllLines(Paths.get("./web/panel/js/utils/gamesList.txt"));
-                boolean hasSearch = jso.getJSONObject("params").has("search") && jso.getJSONObject("params").getString("search").length() > 0;
-                String search = hasSearch ? jso.getJSONObject("params").getString("search").toLowerCase() : "";
-
-                int i = 0;
-                for (String g : data) {
-                    if (!hasSearch || g.toLowerCase().startsWith(search)) {
+            boolean hasSearch = jso.getJSONObject("params").has("search") && jso.getJSONObject("params").getString("search").length() > 0;
+            if (hasSearch) {
+                JSONObject data = Helix.instance().searchCategories(jso.getJSONObject("params").getString("search"), 20, null);
+                
+                if (data.getInt("_http") == 200 && data.has("data")) {
+                    JSONArray jsa = data.getJSONArray("data");
+                    for (int i = 0; i < jsa.length(); i++) {
+                        String g = jsa.getJSONObject(i).getString("name");
                         jsonObject.object().key("id").value(g).key("text").value(g).endObject();
-                        i++;
                     }
-                    if (i >= 30) {
-                        break;
-                    }
-                }
-            } catch (IOException ex) {
-                jsonObject.object().key("errors").array().object()
-                        .key("status").value("500")
-                        .key("title").value("Internal Server Error")
-                        .key("detail").value("IOException: " + ex.getMessage())
+                } else {
+                    jsonObject.object().key("errors").array().object()
+                        .key("status").value("" + data.getInt("_http"))
+                        .key("title").value("API Error")
+                        .key("detail").value(data.toString(0))
                         .endObject().endArray().endObject();
-                com.gmt2001.Console.err.printStackTrace(ex);
+                }
             }
             jsonObject.endArray().key("pagination").object().key("more").value(false).endObject().endObject();
         } else if (query.equalsIgnoreCase("sha256")) {

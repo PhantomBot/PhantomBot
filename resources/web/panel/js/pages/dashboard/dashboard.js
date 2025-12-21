@@ -279,6 +279,7 @@ $(function () {
 
     $('#stream-game').select2({
         ajax: {
+            delay: 500,
             transport: async function(params, success, failure) {
                 getGames(params);
 
@@ -291,6 +292,7 @@ $(function () {
                 }
             }
         },
+        minimumInputLength: 1,
         tags: true,
         width: '100%'
     });
