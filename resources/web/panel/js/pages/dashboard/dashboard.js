@@ -293,7 +293,7 @@ $(function () {
             }
         },
         minimumInputLength: 1,
-        tags: true,
+        tags: false,
         width: '100%'
     });
 
