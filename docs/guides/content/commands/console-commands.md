@@ -12,7 +12,6 @@ Parameters enclosed in parenthesis `( )` are optional when using the command
 | Command | Description |
 | :--- | :--- |
 | forceoauthrefresh | Force a refresh of both Twitch OAuthtokens. |
-| updategameslist | Force a full update of the games list. |
 | raidtest (raiderName) (numViewers) | Tests the raid event. |
 | checkytquota | This command checks the quota points used byYouTube. |
 | exportpoints | This command exports points and time to a CSVfile. |
