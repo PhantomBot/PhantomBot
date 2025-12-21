@@ -108,6 +108,10 @@
             "desc": "View a list of all subscribers to a channel and check if a user is subscribed to a channel.",
             "tooltip": "Used to watch for new subscribers that haven't shared with chat."
         },
+        "clips:edit": {
+            "desc": "Manage Clips for a channel.",
+            "tooltip": "Used to create clips."
+        },
         "moderation:read": {
             "desc": "Read the list of channel moderators.",
             "tooltip": "Used to watch for moderator add/remove events in EventSub."
