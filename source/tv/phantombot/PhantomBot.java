@@ -52,7 +52,6 @@ import com.gmt2001.twitch.TwitchClientCredentialsFlow;
 import com.gmt2001.twitch.cache.ViewerCache;
 import com.gmt2001.twitch.eventsub.EventSub;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
-import com.gmt2001.util.GamesListUpdater;
 import com.gmt2001.util.Reflect;
 import com.gmt2001.util.RestartRunner;
 import com.gmt2001.util.concurrent.ExecutorService;
@@ -1372,13 +1371,6 @@ public final class PhantomBot implements Listener {
                 } catch (JSONException ex) {
                     com.gmt2001.Console.err.logStackTrace(ex);
                 }
-            }
-
-            try {
-                Thread.sleep(30000);
-                GamesListUpdater.update();
-            } catch (InterruptedException | JSONException ex) {
-                com.gmt2001.Console.err.logStackTrace(ex);
             }
         }, 0, 24, TimeUnit.HOURS);
     }

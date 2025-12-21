@@ -51,7 +51,6 @@ import com.gmt2001.datastore2.MariaDBStore2;
 import com.gmt2001.datastore2.MySQLStore2;
 import com.gmt2001.datastore2.SQLiteStore2;
 import com.gmt2001.twitch.tmi.TwitchMessageInterface;
-import com.gmt2001.util.GamesListUpdater;
 import com.gmt2001.util.Reflect;
 
 import net.engio.mbassy.listener.Handler;
@@ -143,13 +142,6 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("forceoauthrefresh")) {
             PhantomBot.instance().getAuthFlow().refresh();
-        }
-
-        /**
-         * @consolecommand updategameslist - Force a full update of the games list.
-         */
-        if (message.equalsIgnoreCase("updategameslist")) {
-            GamesListUpdater.update(true);
         }
 
         /**
