@@ -1300,21 +1300,6 @@ public class Helix {
      * Creates a clip from the broadcaster's stream.
      *
      * @param broadcaster_id The ID of the broadcaster whose stream you want to create a clip from.
-     * @param has_delay Deprecated
-     * @return A JSONObject with the response
-     * @throws JSONException
-     * @throws IllegalArgumentException
-     * @deprecated Please use {@link Helix#createClip(String, Float, String)} instead
-     */
-    @Deprecated(forRemoval = true, since = "v3.16.1.0")
-    public JSONObject createClip(String broadcaster_id, boolean has_delay) throws JSONException, IllegalArgumentException {
-        return this.createClip(broadcaster_id, null, null);
-    }
-
-    /**
-     * Creates a clip from the broadcaster's stream.
-     *
-     * @param broadcaster_id The ID of the broadcaster whose stream you want to create a clip from.
      * @param duration The length of the clip in seconds. Possible values range from 5 to 60 inclusively with a precision of 0.1. The default is 30.
      * @param title The title of the clip.
      * @return A JSONObject with the response
@@ -1323,21 +1308,6 @@ public class Helix {
      */
     public JSONObject createClip(String broadcaster_id, @Nullable Float duration, @Nullable String title) throws JSONException, IllegalArgumentException {
         return this.createClipAsync(broadcaster_id, duration, title).block();
-    }
-
-    /**
-     * Creates a clip from the broadcaster's stream.
-     *
-     * @param broadcaster_id The ID of the broadcaster whose stream you want to create a clip from.
-     * @param has_delay Deprecated
-     * @return A JSONObject with the response
-     * @throws JSONException
-     * @throws IllegalArgumentException
-     * @deprecated Please use {@link Helix#createClipAsync(String, Float, String)} instead
-     */
-    @Deprecated(forRemoval = true, since = "v3.16.1.0")
-    public Mono<JSONObject> createClipAsync(String broadcaster_id, boolean has_delay) throws JSONException, IllegalArgumentException {
-        return this.createClipAsync(broadcaster_id, null, null);
     }
 
     /**
