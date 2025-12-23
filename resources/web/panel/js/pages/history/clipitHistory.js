@@ -52,12 +52,12 @@ $(function () {
             'data': clipit,
             'order': [[6, 'desc']],
             'columns': [
-                {'title': 'Username'},
-                {'title': 'Date', 'orderData': [6]},
+                {'title': 'Username', 'width': '20%'},
+                {'title': 'Date', 'orderData': [6], 'width': '1px'},
                 {'title': 'Title'},
-                {'title': 'Duration'},
-                {'title': 'Edit URL'},
-                {'title': 'View URL'},
+                {'title': 'Duration', 'width': '1px'},
+                {'title': 'Edit URL', 'width': '1px'},
+                {'title': 'View URL', 'width': '1px'},
                 {'visible': false}
             ]
         });
