@@ -153,7 +153,9 @@
                     'edit_url': clipdata.getString('edit_url'),
                     'creator_login': creator.login(),
                     'creator_displayname': creator.name(),
-                    'creator_id': creator.id()
+                    'creator_id': creator.id(),
+                    'title': title,
+                    'duration': duration
                 }));
                 $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit.success', clipdata.getString('id')));
             } else {

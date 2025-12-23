@@ -33,6 +33,8 @@ $(function () {
                     clipit.push([
                             '<abbr title="' + (json.creator_login.replaceAll('"', '')) + ' (' + json.creator_id + ')">' + json.creator_displayname + '</abbr>',
                             helpers.getPaddedDateString(new Date(parseInt(json.timestamp)).toLocaleString()),
+                            json.title === null ? '' : json.title,
+                            json.duration === null ? '30s' : json.duration + 's',
                             parseInt(json.timestamp) + 86400000 >= Date.now() ? '<a href="' + json.edit_url + '" target="_blank">Edit</a>' : 'Expired',
                             '<a href="https://clips.twitch.tv/' + id + '" target="_blank">' + id + '</a>',
                             parseInt(json.timestamp)
@@ -48,10 +50,12 @@ $(function () {
             'searching': true,
             'autoWidth': false,
             'data': clipit,
-            'order': [[4, 'desc']],
+            'order': [[6, 'desc']],
             'columns': [
                 {'title': 'Username'},
-                {'title': 'Date', 'orderData': [4]},
+                {'title': 'Date', 'orderData': [6]},
+                {'title': 'Title'},
+                {'title': 'Duration'},
                 {'title': 'Edit URL'},
                 {'title': 'View URL'},
                 {'visible': false}
