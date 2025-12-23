@@ -48,7 +48,7 @@ $(function () {
             'searching': true,
             'autoWidth': false,
             'data': clipit,
-            'order': [[4, desc]],
+            'order': [[4, 'desc']],
             'columns': [
                 {'title': 'Username'},
                 {'title': 'Date', 'orderData': [4]},
