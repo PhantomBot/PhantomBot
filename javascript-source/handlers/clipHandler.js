@@ -155,7 +155,7 @@
                     'creator_displayname': creator.name(),
                     'creator_id': creator.id()
                 }));
-                $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit.success'));
+                $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit.success', clipdata.getString('id')));
             } else {
                 $.say($.whisperPrefix(sender) + $.lang.get('cliphandler.clipit.' + clipdata.getInt('_http')));
             }

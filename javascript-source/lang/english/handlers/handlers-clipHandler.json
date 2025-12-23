@@ -8,7 +8,7 @@
     "cliphandler.noclip": "No clip found",
     "cliphandler.lastclip": "Last Clip: $1",
     "cliphandler.topclip": "Today's Most Viewed Clip: $1",
-    "cliphandler.clipit.success": "Clip created!",
+    "cliphandler.clipit.success": "Clip created! You can view the clip at https://clips.twitch.tv/$1",
     "cliphandler.clipit.400": "Clip creation failed. Likely causes: Twitch blocked clipping this game/category or title blocked by automod",
     "cliphandler.clipit.401": "Clip creation failed. Likely cause: Broadcaster OAuth not updated",
     "cliphandler.clipit.403": "Clip creation failed. Likely cause: Broadcaster disabled clips",
