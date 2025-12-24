@@ -131,7 +131,7 @@
         }
 
         /*
-         * @commandpath clipit [-d duration] [title] - Creates a clip, optionally setting the initial duration and title.
+         * @commandpath clipit (-d duration) (title) - Creates a clip, optionally setting the initial duration and title.
          */
         if ($.equalsIgnoreCase(command, 'clipit')) {
             let duration = null;
