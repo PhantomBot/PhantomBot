@@ -197,8 +197,7 @@ public class DiscordUtil {
 
         if (channel.getType() == Channel.Type.DM || channel.getType() == Channel.Type.GROUP_DM) {
             com.gmt2001.Console.debug.println("Type is DM");
-            this.sendPrivateMessage((PrivateChannel) channel, message);
-            return null;
+            return this.sendPrivateMessageAsync((PrivateChannel) channel, message);
         }
 
         com.gmt2001.Console.debug.println("Type is Guild");
@@ -235,11 +234,30 @@ public class DiscordUtil {
      * @param user
      * @param message
      */
-    public void sendPrivateMessage(User user, String message) {
+    public Message sendPrivateMessage(User user, String message) {
+        return this.sendPrivateMessageAsync(user, message).block();
+    }
+
+    /**
+     * Method to send private messages to a user.
+     *
+     * @param user
+     * @param message
+     */
+    public Mono<Message> sendPrivateMessageAsync(User user, String message) {
         this.validateParams(user, message);
-        user.getPrivateChannel().doOnError(e -> {
+        return user.getPrivateChannel().doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
-        }).doOnSuccess(channel -> this.sendPrivateMessage(channel, message)).subscribe();
+        }).flatMap(channel -> this.sendPrivateMessageAsync(channel, message));
+    }
+    /**
+     * Method to send private messages to a user.
+     *
+     * @param userName
+     * @param message
+     */
+    public Message sendPrivateMessage(String userName, String message) {
+        return this.sendPrivateMessageAsync(userName, message).block();
     }
 
     /**
@@ -248,12 +266,8 @@ public class DiscordUtil {
      * @param userName
      * @param message
      */
-    public void sendPrivateMessage(String userName, String message) {
-        this.getUserAsync(userName).doOnSuccess(user -> this.sendPrivateMessage(user, message)).subscribe();
-    }
-
-    public void sendPrivateMessage(PrivateChannel channel, String message) {
-        this.sendPrivateMessage(channel, message, false);
+    public Mono<Message> sendPrivateMessageAsync(String userName, String message) {
+        return this.getUserAsync(userName).flatMap(user -> this.sendPrivateMessageAsync(user, message));
     }
 
     /**
@@ -261,17 +275,45 @@ public class DiscordUtil {
      *
      * @param channel
      * @param message
-     * @param iteration
      */
-    private void sendPrivateMessage(PrivateChannel channel, String message, boolean isRetry) {
-        this.sendPrivateMessage(channel, message, isRetry, null);
+    public Message sendPrivateMessage(PrivateChannel channel, String message) {
+        return this.sendPrivateMessageAsync(channel, message).block();
     }
 
-    private void sendPrivateMessage(PrivateChannel channel, String message, boolean isRetry, Throwable ex) {
+    /**
+     * Method to send private messages to a user.
+     *
+     * @param channel
+     * @param message
+     */
+    public Mono<Message> sendPrivateMessageAsync(PrivateChannel channel, String message) {
+        return this.sendPrivateMessageAsync(channel, message, false);
+    }
+
+    /**
+     * Method to send private messages to a user.
+     *
+     * @param channel
+     * @param message
+     * @param isRetry
+     */
+    private Mono<Message> sendPrivateMessageAsync(PrivateChannel channel, String message, boolean isRetry) {
+        return this.sendPrivateMessageAsync(channel, message, isRetry, null);
+    }
+
+    /**
+     * Method to send private messages to a user.
+     *
+     * @param channel
+     * @param message
+     * @param isRetry
+     * @param ex
+     */
+    private Mono<Message> sendPrivateMessageAsync(PrivateChannel channel, String message, boolean isRetry, Throwable ex) {
         this.validateParams(channel, message);
 
         if (RepoVersion.isStressTest()) {
-            return;
+            return Mono.empty();
         }
 
         if (isRetry && this.sendBackoff.IsAtMaxInterval()) {
@@ -296,14 +338,14 @@ public class DiscordUtil {
             uname = "";
         }
 
-        channel.createMessage(message).doOnError(e -> {
+        return channel.createMessage(message).doOnError(e -> {
             com.gmt2001.Console.err.printStackTrace(e);
         }).doOnSuccess(m -> {
             if (isRetry) {
                 this.sendBackoff.Reset();
             }
             com.gmt2001.Console.out.println("[DISCORD] [@" + uname +"] [DM] " + message);
-        }).doOnError(e -> this.sendPrivateMessage(channel, message, true, e)).subscribe();
+        }).doOnError(e -> this.sendPrivateMessageAsync(channel, message, true, e));
     }
 
     public Message sendMessageEmbed(GuildMessageChannel channel, EmbedCreateSpec embed) {
