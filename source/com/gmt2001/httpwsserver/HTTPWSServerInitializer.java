@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
  * Initializes {@link SocketChannel} objects for a {@link HTTPWSServer}
@@ -59,11 +60,12 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new HttpContentCompressor());
         pipeline.addLast(new HttpObjectAggregator(65536));
+        pipeline.addLast(new WebSocketFrameAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true));
-        pipeline.addLast(new WebSocketFrameAggregator(65536));
+        pipeline.addLast(new HttpContentCompressor());
+        pipeline.addLast(new ChunkedWriteHandler());   
         pipeline.addLast("pagehandler", new HttpServerPageHandler());
         pipeline.addLast("wshandler", new WebSocketFrameHandler());
     }

@@ -183,8 +183,7 @@ public class HTTPNoAuthHandler implements HttpRequestHandler {
                 } else {
                     com.gmt2001.Console.debug.println("200 " + req.method().asciiName() + ": " + p.toString() + " (" + p.getFileName().toString() + " = "
                             + HttpServerPageHandler.detectContentType(p.getFileName().toString()) + ")");
-                    HttpServerPageHandler.sendHttpResponse(ctx, req, HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.OK,
-                            req.method().equals(HttpMethod.HEAD) ? null : Files.readAllBytes(p), p.getFileName().toString()));
+                    HttpServerPageHandler.sendFile(ctx, req, p);
                 }
             }
         } catch (IOException ex) {

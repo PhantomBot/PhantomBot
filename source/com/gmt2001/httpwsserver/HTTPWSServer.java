@@ -51,6 +51,7 @@ import com.gmt2001.util.concurrent.ExecutorService;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -197,6 +198,7 @@ public final class HTTPWSServer {
             ServerBootstrap b = new ServerBootstrap();
             b.group(this.group)
                     .channel(EventLoopDetector.getServerChannelClass())
+                    .childOption(ChannelOption.TCP_NODELAY, true)
                     .childHandler(new HTTPWSServerInitializer());
 
             if (ipOrHostname.isBlank()) {
