@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2025 phantombot.github.io/PhantomBot
+ * Copyright (C) 2016-2024 phantombot.github.io/PhantomBot
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,16 @@
  */
 package tv.phantombot.panel;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -44,6 +49,7 @@ import tv.phantombot.event.webpanel.websocket.WebPanelSocketUpdateEvent;
 public class WsAlertsPollsHandler implements WsFrameHandler {
 
     private static final String KEY_EVENT_TYPE = "type";
+    private static final String[] AUDIO_EXTS = {"mp3", "aac", "ogg", "wav", "m4a"};
 
     private final WsAuthenticationHandler authHandler;
 
@@ -101,17 +107,7 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     public void triggerAudioPanel(String audioHook, boolean ignoreIsPlaying) {
-        try {
-            com.gmt2001.Console.debug.println("triggerAudioPanel: " + audioHook);
-            JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object()
-                    .key("audio_panel_hook").value(audioHook)
-                    .key("ignoreIsPlaying").value(ignoreIsPlaying)
-                    .endObject();
-            sendJSONToAll(jsonObject.toString());
-        } catch (JSONException ex) {
-            com.gmt2001.Console.err.printStackTrace(ex);
-        }
+        triggerAudioPanel(audioHook, -1, ignoreIsPlaying);
     }
 
     public void triggerAudioPanel(String audioHook, float volume) {
@@ -121,12 +117,19 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     public void triggerAudioPanel(String audioHook, float volume, boolean ignoreIsPlaying) {
         try {
             com.gmt2001.Console.debug.println("triggerAudioPanel: " + audioHook);
+            List<String> audioCandidates = findAvailableAudioCandidates(audioHook.split(",", 2)[0].trim(), "./config/audio-hooks/");
+  
+            if (audioCandidates.isEmpty()) {
+                com.gmt2001.Console.err.println("triggerAudioPanel: no candidates found for: " + audioHook);
+                return;
+            }
             JSONStringer jsonObject = new JSONStringer();
-            jsonObject.object()
-                    .key("audio_panel_hook").value(audioHook)
-                    .key("audio_panel_volume").value(volume)
-                    .key("ignoreIsPlaying").value(ignoreIsPlaying)
-                    .endObject();
+            jsonObject.object().key("audio_panel_hook").array();
+            audioCandidates.forEach(candiate -> { jsonObject.value(candiate);});
+            jsonObject.endArray()
+                .key("audio_panel_volume").value(volume)
+                .key("ignoreIsPlaying").value(ignoreIsPlaying)
+                .endObject();
             sendJSONToAll(jsonObject.toString());
         } catch (JSONException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -149,21 +152,50 @@ public class WsAlertsPollsHandler implements WsFrameHandler {
     }
 
     public void alertImage(String imageInfo) {
-        this.alertImage(imageInfo, false);
+        this.alertImage(imageInfo, null, false, true);
     }
 
-    public void alertImage(String imageInfo, boolean ignoreIsPlaying) {
+    public void alertImage(String imageInfo, String basePath, boolean ignoreIsPlaying, boolean includeAudio) {
+        if (basePath == null) {
+            basePath = "./config/gif-alerts/";
+        }
+
         try {
             com.gmt2001.Console.debug.println("alertImage: " + imageInfo);
             JSONStringer jsonObject = new JSONStringer();
             jsonObject.object()
                     .key("alert_image").value(imageInfo)
-                    .key("ignoreIsPlaying").value(ignoreIsPlaying)
-                    .endObject();
+                    .key("ignoreIsPlaying").value(ignoreIsPlaying);
+                
+            if (includeAudio){
+                List<String> audioCandidates = findAvailableAudioCandidates(imageInfo.split(",", 2)[0].trim(), basePath);
+
+                if (!audioCandidates.isEmpty()) {
+                    jsonObject.key("audioCandidates").array();
+                    audioCandidates.forEach(candiate -> { jsonObject.value(candiate);});
+                    jsonObject.endArray();
+                }
+            }
+
+            jsonObject.endObject();
             sendJSONToAll(jsonObject.toString());
         } catch (JSONException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
+    }
+
+    private List<String> findAvailableAudioCandidates(String imageInfo, String basePathString) {
+        imageInfo = FilenameUtils.getBaseName(imageInfo);
+        Path basePath = Path.of(basePathString);
+
+        List<String> found = new ArrayList<>();
+        for (String ext : AUDIO_EXTS) {
+            Path candidate = basePath.resolve(imageInfo + "." + ext);
+            if (Files.exists(candidate) && Files.isRegularFile(candidate)) {
+                found.add(imageInfo + "." + ext);
+            }
+        }
+        return found;
     }
 
     public void playVideo(String filename){

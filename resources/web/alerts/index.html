@@ -77,6 +77,15 @@
         .animatedEmote {
             position: fixed;
         }
+        
+        .fade-in {
+          opacity: 1 !important;
+          transition: opacity 200ms ease-in;
+        }
+        .fade-out {
+          opacity: 0 !important;
+          transition: opacity 200ms ease-out;
+        }
     </style>
 
     <!-- Load our favicon -->
@@ -86,6 +95,7 @@
 <!-- Main body -->
 <body>
     <div id="main-video-clips">
+        <video id="alertVideo" autoplay="false"></video>
         <!-- Where the video clips are played. -->
     </div>
     <div id="main-emotes">
@@ -93,7 +103,8 @@
     </div>
     <div class="main-alert">
         <!-- Where the gif gets played. -->
-        <div id="alert"></div>
+        <img id="alert" class="fade-out"></img>
+        <audio id="alertAudio" autoplay="false"></audio>
     </div>
     <div class="main-text-alert">
         <!-- Where the custom gif text is displayed. -->
