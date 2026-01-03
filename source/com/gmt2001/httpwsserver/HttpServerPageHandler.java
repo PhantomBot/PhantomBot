@@ -19,28 +19,44 @@ package com.gmt2001.httpwsserver;
 import com.gmt2001.PathValidator;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.DefaultFileRegion;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.DateFormatter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.EmptyHttpHeaders;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpChunkedInput;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.CharsetUtil;
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +74,7 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
      * A map of registered {@link HttpRequestHandler} for handling HTTP Requests
      */
     static Map<String, HttpRequestHandler> httpRequestHandlers = new ConcurrentHashMap<>();
+    static final int HTTP_CACHE_SECONDS = 3600;
 
     /**
      * Default Constructor
@@ -371,6 +388,269 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 HTTPWSServer.releaseObj(res);
             });
         }
+    }
+
+    /**
+     * Sends a static file, supporting range requests, conditional requests, zero‑copy transfers, and optional compression.
+     * 
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param path The {@link Path} of the file to be served
+     * @throws IOException if the file cannot be opened or read
+     * @implNote
+     * <ul>
+     *   <li>Zero‑copy transfer uses {@link DefaultFileRegion} and requires no SSL handler in the pipeline.</li>
+     *   <li>Chunked transfer uses {@link HttpChunkedInput} and {@link ChunkedFile}.</li>
+     *   <li>Compression is only applied to text‑like content when the client supports it and the request is not ranged.</li>
+     * </ul>
+     */
+    public static void sendFile(ChannelHandlerContext ctx, FullHttpRequest req, Path path) throws IOException {
+        File file = path.toFile();
+        long fileLength = file.length();
+        boolean keepAlive = HttpUtil.isKeepAlive(req);
+        long rangeStart = 0;
+        long rangeEnd = fileLength - 1;
+        boolean isRange = false;
+        
+        // Range requests
+        try {
+            long[] rangeBoundaries = parseRangeRequest(ctx, req, fileLength);
+            if (rangeBoundaries != null) {
+                rangeStart = rangeBoundaries[0];
+                rangeEnd = rangeBoundaries[1];
+                isRange = true;
+            }
+        } catch (Exception e) {
+            //Invalid range request client has been informed channel closed
+            return;
+        }
+
+        HttpResponseStatus status = isRange ? HttpResponseStatus.PARTIAL_CONTENT
+                                        : HttpResponseStatus.OK;
+        HttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, status);
+
+        //Content header
+        String contentType = detectContentType(path.getFileName().toString());
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, contentType);
+        response.headers().set(HttpHeaderNames.ACCEPT_RANGES, "bytes");
+        response.headers().set(HttpHeaderNames.VARY, "Accept-Encoding");
+        response.headers().set(HttpHeaderNames.CONNECTION, keepAlive ? HttpHeaderValues.KEEP_ALIVE : HttpHeaderValues.CLOSE);
+
+
+        //Cache matches send HTTP 304
+        if (checkIfClientCacheMatches(req, response, file)) {  
+            ctx.write(response);
+            ChannelFuture f = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            if (!keepAlive) f.addListener(ChannelFutureListener.CLOSE);
+            return;
+        }
+
+        
+        // Compute content length and Content-Range if needed
+        long contentLen = isRange ? (rangeEnd - rangeStart + 1) : fileLength;
+        HttpUtil.setContentLength(response, contentLen);
+        if (isRange) {
+            response.headers().set(HttpHeaderNames.CONTENT_RANGE,
+                    "bytes " + rangeStart + "-" + rangeEnd + "/" + fileLength);
+        }
+
+        boolean isTextLike = contentType.startsWith("text/") 
+                                || contentType.contains("application/json")
+                                || contentType.startsWith("application/javascript")
+                                || contentType.equals("image/svg+xml")
+                                || contentType.equals("application/x-www-form-urlencoded");
+
+        // For non-text (e.g., video/audio/images) and range request, explicitly disable compression
+        if (!isTextLike || isRange) {
+            response.headers().set(HttpHeaderNames.CONTENT_ENCODING, HttpHeaderValues.IDENTITY);
+        }
+
+        // Response to HEAD without content
+        if (req.method() == HttpMethod.HEAD) {
+            sendResponseForHEAD(ctx, req, response);
+            return;
+        }
+
+        // Decide if what transfer type we should be using
+        String acceptEnc = req.headers().get(HttpHeaderNames.ACCEPT_ENCODING, "");
+        // Brotli and ZSTD need additional libraries 
+        boolean clientAcceptsCompression = acceptEnc.contains("gzip") || acceptEnc.contains("deflate")  ;
+        boolean hasSSL = ctx.channel().pipeline().get(SslHandler.class) != null;
+        boolean preferCompression = clientAcceptsCompression && isTextLike && !isRange;
+        boolean useZeroCopy = !hasSSL && !preferCompression;
+        
+        RandomAccessFile raf = new RandomAccessFile(file, "r");
+        ChannelFuture lastContentFuture;
+        if (useZeroCopy) {
+            ctx.write(response);
+            ctx.write(new DefaultFileRegion(raf.getChannel(), rangeStart, contentLen),
+                                                        ctx.newProgressivePromise());
+            lastContentFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
+            lastContentFuture.addListener(f -> {
+                            raf.close();
+                    });
+        } else {
+            HttpUtil.setTransferEncodingChunked(response, true);
+            ctx.write(response);
+            lastContentFuture = ctx.writeAndFlush(
+                new HttpChunkedInput(new ChunkedFile(raf, rangeStart, contentLen, 8192)),
+                                        ctx.newProgressivePromise()
+            );
+        }
+
+        if (!keepAlive) lastContentFuture.addListener(ChannelFutureListener.CLOSE);
+    }
+
+    /**
+     * Parses {@link HttpHeaderNames.RANGE} from the given request and determines the
+     * byte range to serve for the requested file based on the given file length
+     * 
+     * <p>If the range is valid but out of bounds the method sends a
+     * {@link HttpResponseStatus.REQUESTED_RANGE_NOT_SATISFIABLE} response and throws an exception to inform the callee.
+     *
+     * <p>If the header is missing or does not begin with {@code bytes=}, the method
+     * returns {@code null}, indicating that the full file should be served.
+
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param fileLength fileLength the total length of the file being requested
+     * @return {@null} if the request was not a range request, 
+     *          otherwise a {@code long[]} where index 0 is the startByte and index 1 the endByte for the range
+     * @throws Exception if range request was {@link HttpResponseStatus.REQUESTED_RANGE_NOT_SATISFIABLE} to inform callee
+     */
+    private static long[] parseRangeRequest(ChannelHandlerContext ctx, FullHttpRequest req, long fileLength) throws Exception{
+        String rangeHeader = req.headers().get(HttpHeaderNames.RANGE);
+        long rangeStart = 0;
+        long rangeEnd = fileLength - 1;
+        
+        if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
+            String spec = rangeHeader.substring("bytes=".length()).trim();
+            int dash = spec.indexOf('-');
+            if (dash >= 0) {
+                String startPart = spec.substring(0, dash).trim();
+                String endPart = spec.substring(dash + 1).trim();
+
+                try {
+                    if (!startPart.isEmpty()) {
+                        rangeStart = Long.parseLong(startPart);
+                    }
+                    if (!endPart.isEmpty()) {
+                        rangeEnd = Long.parseLong(endPart);
+                    }
+                    if (startPart.isEmpty() && !endPart.isEmpty()) {
+                        // suffix range: bytes=-500  -> last 500 bytes
+                        long suffix = Long.parseLong(endPart);
+                        if (suffix > fileLength) suffix = fileLength;
+                        rangeStart = fileLength - suffix;
+                        rangeEnd = fileLength - 1;
+                    }
+                    if (rangeStart < 0 || rangeEnd < rangeStart || rangeEnd >= fileLength) {
+                        // Invalid range -> 416
+                        DefaultFullHttpResponse res = new DefaultFullHttpResponse(
+                                HttpVersion.HTTP_1_1, HttpResponseStatus.REQUESTED_RANGE_NOT_SATISFIABLE);
+                        res.headers().set(HttpHeaderNames.CONTENT_RANGE, "bytes */" + fileLength);
+                        sendHttpResponse(ctx, req, res);
+                        throw new Exception("Invalid range request");
+                    }
+                } catch (NumberFormatException ignore) {
+                    // Ignore malformed range -> fall back to full response
+                }
+            }
+        } else {
+            return null;
+        }
+
+        long[] rangeBoundaries = new long[2];
+        rangeBoundaries[0] = rangeStart;
+        rangeBoundaries[1] = rangeEnd;
+        return rangeBoundaries;
+    }
+
+    /**
+     * Checks whether the client's cached version of the requested file is still valid.
+     * 
+     * <p>This method generated and sets HTTP caching headers on the response,
+     * including:
+     * <ul>
+     *   <li>{@link HttpHeaderNames.DATE}</li>
+     *   <li>{@link HttpHeaderNames.EXPIRES}</li>
+     *   <li>{@link HttpHeaderNames.ETAG}</li>
+     *   <li>{@link HttpHeaderNames.LAST_MODIFIED}</li>
+     *   <li>{@link HttpHeaderNames.CACHE_CONTROL}</li>
+     * </ul>
+     *
+     * <p>The ETag is is to be considered strong and allows for byte ranged caching 
+     * 
+     * <p>If the resource is determined to be unmodified, the method updates the response to:
+     * <ul>
+     *   <li>set the {@link HttpResponseStatus} to {@link HttpResponseStatus.NOT_MODIFIED}</li>
+     *   <li>set the {@link HttpHeaderNames.CONTENT_LENGTH} to {@code 0}</li>
+     * </ul>
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param res The {@link HttpResponse} currently intended to be sent to the client after later
+     * @param file The requested file
+     * @return {@true} if the client has an up-to-date cache, {@false} otherwise
+     */
+    private static boolean checkIfClientCacheMatches(FullHttpRequest req, HttpResponse response, File file) {
+        long fileLength = file.length();
+        long lastModified = file.lastModified();
+        String eTag = "\"" + fileLength + "-" + lastModified + "\"";
+        String ifNoneMatch = req.headers().get(HttpHeaderNames.IF_NONE_MATCH);
+        String ifModifiedSince = req.headers().get(HttpHeaderNames.IF_MODIFIED_SINCE);
+        boolean notModified = false;
+
+        // Add cache headers
+        Calendar time = new GregorianCalendar();
+        response.headers().set(HttpHeaderNames.DATE, DateFormatter.format(time.getTime()));        
+        time.add(Calendar.SECOND, HTTP_CACHE_SECONDS);
+        response.headers().set(HttpHeaderNames.EXPIRES, DateFormatter.format(time.getTime())); ;
+        response.headers().set(HttpHeaderNames.ETAG, eTag);
+        response.headers().set(HttpHeaderNames.LAST_MODIFIED, DateFormatter.format(new Date(lastModified)));
+        response.headers().set(HttpHeaderNames.CACHE_CONTROL, "private, max-age=" + HTTP_CACHE_SECONDS  + ", no-transform");
+
+        if (ifNoneMatch != null && ifNoneMatch.equals(eTag)) {
+            notModified = true;
+        } else if (ifModifiedSince != null) {
+            Date ifModSinceDate = DateFormatter.parseHttpDate(ifModifiedSince);
+            if (ifModSinceDate != null) {
+                long ifModSinceTime = ifModSinceDate.getTime();
+                if (ifModSinceTime >= (lastModified / 1000) * 1000) {
+                    notModified = true;
+                }
+            }
+        }
+
+        if (notModified) {
+            // No body for 304; ensure message is delimited on a keep-alive connection
+            HttpUtil.setContentLength(response, 0);
+            response.setStatus(HttpResponseStatus.NOT_MODIFIED);
+        }
+
+        return notModified;
+    }
+
+    /**
+     * Sends an HTTP {@code HEAD} response that mirrors the metadata of the corresponding
+     * {@code GET} response represented by the provided {@link HttpResponse} object.
+     * <p>
+     * All status information, protocol version, and headers from the supplied {@code response}
+     * are copied so that the HEAD reply exposes exactly the same metadata the GET response
+     * would have sent—except for the message body
+     * <p> 
+     * @param ctx The {@link ChannelHandlerContext} of the session
+     * @param req The {@link FullHttpRequest} containing the request
+     * @param response The {@link HttpResponse} for {@code req} already pre-compiled as if the the content would be server
+     * @implNote
+     * <p> No content is served to the client. Purely the header information is send 
+     */
+    private static void sendResponseForHEAD(ChannelHandlerContext ctx, FullHttpRequest req, HttpResponse response) {
+        DefaultFullHttpResponse headResponse = new DefaultFullHttpResponse(response.protocolVersion(),
+                                                                                response.status(),
+                                                                                Unpooled.EMPTY_BUFFER,
+                                                                                response.headers(),
+                                                                                EmptyHttpHeaders.INSTANCE);
+        ChannelFuture f = ctx.writeAndFlush(headResponse);
+        if (!HttpUtil.isKeepAlive(req)) f.addListener(ChannelFutureListener.CLOSE);
     }
 
     /**
