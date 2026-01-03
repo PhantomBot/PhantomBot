@@ -544,9 +544,10 @@ $(function () {
         if (getOptionSetting('enableAudioHooks', getOptionSetting('allow-audio-hooks', 'false')) === 'false') {
             return;
         }
+        const MEDIA_URL_BASE = '/config/audio-hooks/';
 
         // Create a new audio file.
-        audioEl.src = chooseBestCandidate(json.audio_panel_hook);
+        audioEl.src = MEDIA_URL_BASE + encodeURIComponent(chooseBestCandidate(json.audio_panel_hook));
         // Set the volume.
         audioEl.volume = getOptionSetting('audioHookVolume', getOptionSetting('audio-hook-volume', '1'));
 
