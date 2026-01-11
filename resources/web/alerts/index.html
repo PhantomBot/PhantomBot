@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="/alerts/css/animate.min.css"/>
     <!-- Main styles. -->
     <style>
+        :root {
+            --fadeTime: 200ms;
+        }
         body {
             background-color: transparent;
         }
@@ -80,11 +83,11 @@
         
         .fade-in {
           opacity: 1 !important;
-          transition: opacity 200ms ease-in;
+          transition: opacity var(--fadeTime) ease-in;
         }
         .fade-out {
           opacity: 0 !important;
-          transition: opacity 200ms ease-out;
+          transition: opacity var(--fadeTime) ease-out;
         }
     </style>
 

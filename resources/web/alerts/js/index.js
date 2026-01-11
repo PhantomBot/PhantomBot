@@ -25,7 +25,8 @@ $(function () {
         videoEl = document.getElementById('alertVideo'),
         SILENT_WAV =
             'data:audio/wav;base64,' +
-            'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        fadeTime = 4e2; // 400ms
 
     let isPlaying = false,
         audioUnlocked = false,
@@ -422,10 +423,13 @@ $(function () {
 
         imgEl.setAttribute('style', gifCss);
         imgEl.src = gifUrl;
-        addAlertText(gifText, gifCss);
+        if (gifText) {
+            addAlertText(gifText, gifCss);
+        }
         imgEl.className = 'fade-in';
 
         gifDuration = gifDuration === null ? 3000 : gifDuration
+        gifDuration -= fadeTime;
         playTimeout = setTimeout(() => {
             printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
             stopMedia(false, false, true);
@@ -441,7 +445,7 @@ $(function () {
         playTimeout = setTimeout(() => {
             printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
             stopMedia(true, false, true);
-        }, gifDuration ? 3000 : gifDuration);
+        }, gifDuration);
 
         playAudio();
     }
@@ -456,27 +460,40 @@ $(function () {
             'style': alertCSS ? alertCSS : ''
         }).html(alertText);
         // Append the custom text object to the page
-        $('#alert-text').append(textObj).fadeIn(2e2).delay(gifDuration)
-                .fadeOut(2e2, function () { //Remove the text with a fade out.
-                    let t = $(this);
+        $('#alert-text').append(textObj).fadeIn(fadeTime);
+    }
 
-                    // Remove the p tag
-                    t.find('p').remove();
-                });
+    async function removeAlertText() {
+        $('#alert-text').fadeOut(fadeTime, function () { //Remove the text with a fade out.
+            let t = $(this);
+            // Remove the p tag
+            t.find('p').remove();
+        });
     }
 
     async function stopMedia(stopAudio, stopVideo, stopGif) {
         if (!isPlaying) {
             return;
         }
+
+        let shouldSleep = false;
  
         printDebug('Stopping media: (Audio: ' + stopAudio + ') (Video: ' + stopVideo + ') (Gif: ' + stopGif + ')');
+
+        if ($('#alert-text').children().length > 0) {
+            removeAlertText();
+            shouldSleep = true;
+        }
 
         if (stopGif) {
             try {
                 if (imgEl.className = 'fade-in') {
                     imgEl.className = 'fade-out';
-                    await sleep(2e2);
+                    shouldSleep = true;
+                }
+                if (shouldSleep) {
+                    await sleep(fadeTime);
+                    shouldSleep = false;
                 }
                 imgEl.removeAttribute('src');
                 imgEl.removeAttribute('style')
@@ -502,7 +519,10 @@ $(function () {
             try {
                 if (videoEl.className = 'fade-in') {
                     videoEl.className = 'fade-out';
-                    await sleep(2e2);
+                    shouldSleep = true;
+                }
+                if (shouldSleep) {
+                    await sleep(fadeTime);
                 }
                 if (!videoEl.paused) {
                     videoEl.pause();
@@ -733,10 +753,12 @@ $(function () {
             videoEl.className = 'fullscreen';
         } else {
             videoEl.className = 'fade-in';
+            duration -= fadeTime;
         }
 
         if (additionalText) {
             addAlertText(additionalText, additionalCSS)
+            duration -= fadeTime;
         }
 
         printDebug('Loading video: ' + videoEl.src);
@@ -744,7 +766,7 @@ $(function () {
 
         if (duration != null && duration > 0) {
             setTimeout(() => {
-                printDebug('Video complete (duration), after: ' + (gifDuration/1000) + ' seconds');
+                printDebug('Video complete (duration), after: ' + (duration/1000) + ' seconds');
                 stopMedia(false, true, false);
             }, duration);
         }
@@ -862,6 +884,8 @@ $(function () {
             printDebug('Failed to parse socket message [' + e.data + ']: ' + e.stack);
         }
     };
+
+    document.querySelector(':root').style.setProperty('--fadeTime', fadeTime + 'ms');
 
     // Handle processing the queue.
     setInterval(handleQueue, 5e2);
