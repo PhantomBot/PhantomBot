@@ -779,23 +779,6 @@ $(function () {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    //https://stackoverflow.com/a/57380742
-    promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
-        const startPoll = async resolve => {
-            const startTime = new Date();
-            const result = await promiseFunction();
-
-            if (result) {
-                return resolve();
-            }
-
-            const timeUntilNext = Math.max(pollIntervalMs - (new Date() - startTime), 0);
-            setTimeout(() => startPoll(resolve), timeUntilNext);
-        };
-
-        return new Promise(startPoll);
-    };
-
     async function handleMacro(json) {
         printDebug('Playing Macro: ' + json.macroName);
         for (let i = 0; i < json.script.length; i++) {
