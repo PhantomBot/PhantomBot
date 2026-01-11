@@ -33,6 +33,7 @@ $(function () {
     const enableVideoClips = 'enableVideoClips';
     const videoClipVolume = 'videoClipVolume';
     const enableDebug = 'enableDebug';
+    const fadeDuration = 'fadeDuration';
 
     // members
     let inputElements = null;
@@ -45,14 +46,16 @@ $(function () {
             tables: [
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable, moduleConfigTable, moduleConfigTable
+                moduleConfigTable, moduleConfigTable, moduleConfigTable,
+                moduleConfigTable
             ],
             keys: [
                 enableAudioHooks, audioHookVolume, enableFlyingEmotes,
                 enableGifAlerts, gifAlertVolume, enableDebug,
-                enableVideoClips, videoClipVolume, flyingEmotesSize
+                enableVideoClips, videoClipVolume, flyingEmotesSize,
+                fadeDuration
             ]
-        }, true, function (config) {
+        }, true, function(config) {
             // handle boolean values
             [
                 enableAudioHooks,
@@ -71,7 +74,7 @@ $(function () {
                 }
             });
             // handle decimals
-            [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize].forEach((key) => {
+            [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize, fadeDuration].forEach((key) => {
                 let inputNode = document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1));
                 // Convert the value to a String and then to number to validate it
                 // and use the default value, if it's invalid
@@ -121,10 +124,10 @@ $(function () {
 
     function save() {
         // Collect values from the form with special caution to checkbox elements
-        let keysStrings = [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize];
+        let keysStrings = [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize, fadeDuration];
         let keysCheckboxes = [enableAudioHooks, enableFlyingEmotes, enableGifAlerts, enableVideoClips, enableDebug];
-        let valuesStrings = keysStrings.map(key => inputElements[moduleId + key[0].toUpperCase() + key.slice(1)].value);
-        let valuesCheckboxes = keysCheckboxes.map(key => inputElements[moduleId + key[0].toUpperCase() + key.slice(1)].checked);
+        let valuesStrings = keysStrings.map(key => document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1)).value );
+        let valuesCheckboxes = keysCheckboxes.map(key => document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1)).checked );
         let keys = keysStrings.concat(keysCheckboxes);
         let values = valuesStrings.concat(valuesCheckboxes);
         // Save the values in the database omitting the success callback because value changes can happen often and fast
@@ -132,11 +135,13 @@ $(function () {
             tables: [
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable, moduleConfigTable, moduleConfigTable
+                moduleConfigTable, moduleConfigTable, moduleConfigTable,
+                moduleConfigTable
             ],
             keys: keys,
             values: values
         }, () => {
+            toastr.success('Successfully saved settings!');
         });
     }
 

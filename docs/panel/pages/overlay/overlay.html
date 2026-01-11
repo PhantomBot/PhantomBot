@@ -69,8 +69,8 @@
                 <!-- Box content -->
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="overlayflyingEmoteSize">Flying emotes size</label>
-                        <input type="number" class="form-control trigger-update" id="overlayflyingEmoteSize" placeholder="112"
+                        <label for="overlayFlyingEmotesSize">Flying emotes size</label>
+                        <input type="number" class="form-control trigger-update" id="overlayFlyingEmotesSize" placeholder="112"
                                value="112" min="10"
                                step="1" max="1000"/>
                         <span class="help-block">Defines the flying emote's size in pixel (The default is 112).</span>
@@ -116,6 +116,22 @@
                                value="0.8" min="0.0"
                                step=".05" max="1.0"/>
                         <span class="help-block">Sets the volume of video clips where 1.0 full volume and 0.0 is silent.</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Fade duration -->
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Element fade in/out control</h3>
+                </div>
+                <!-- Box content -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="overlayFadeDuration">Fade duration in ms</label>
+                        <input type="number" class="form-control trigger-update" id="overlayFadeDuration" placeholder="300"
+                               value="300" min="0"
+                               step="1" max="1000"/>
+                        <span class="help-block">Set the duration in milliseconds it takes GIFs, alert text and video to fade in and out of the view</span>
                     </div>
                 </div>
             </div>
