@@ -25,15 +25,15 @@ $(function () {
         videoEl = document.getElementById('alertVideo'),
         SILENT_WAV =
             'data:audio/wav;base64,' +
-            'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-        fadeTime = 4e2; // 400ms
+            'UklGRmQGAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YUAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
     let isPlaying = false,
         audioUnlocked = false,
         unlocking = false,
         queue = [],
         queueProcessing = false,
-        playTimeout;
+        playTimeout,
+        fadeTime;
 
     imgEl.onload = () => printDebug('GIF loaded');
     imgEl.onerror = (e) => printDebug('Error: GIF failed to load: ' + e, true);
@@ -59,6 +59,7 @@ $(function () {
     const CONF_ENABLE_VIDEO_CLIPS = 'enableVideoClips';
     const CONF_VIDEO_CLIP_VOLUME = 'videoClipVolume';
     const CONF_GIF_ALERT_VOLUME = 'gifAlertVolume';
+    const CONF_FADE_DURTAION = 'fadeDuration';
 
     const PROVIDER_TWITCH = 'twitch';
     const PROVIDER_LOCAL = 'local';
@@ -423,10 +424,10 @@ $(function () {
 
         imgEl.setAttribute('style', gifCss);
         imgEl.src = gifUrl;
+        imgEl.className = 'fade-in';
         if (gifText) {
             addAlertText(gifText, gifCss);
         }
-        imgEl.className = 'fade-in';
 
         gifDuration = gifDuration === null ? 3000 : gifDuration
         gifDuration -= fadeTime;
@@ -885,6 +886,7 @@ $(function () {
         }
     };
 
+    fadeTime = getOptionSetting(CONF_FADE_DURTAION, 3e2);
     document.querySelector(':root').style.setProperty('--fadeTime', fadeTime + 'ms');
 
     // Handle processing the queue.
