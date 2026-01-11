@@ -754,13 +754,13 @@ $(function () {
             videoEl.className = 'fullscreen';
         } else {
             videoEl.className = 'fade-in';
+            if (additionalText) {
+                addAlertText(additionalText, additionalCSS)
+            }
             duration -= fadeTime;
         }
 
-        if (additionalText) {
-            addAlertText(additionalText, additionalCSS)
-            duration -= fadeTime;
-        }
+        
 
         printDebug('Loading video: ' + videoEl.src);
         printDebug('Playing video, duration: ' + videoEl.duration);
