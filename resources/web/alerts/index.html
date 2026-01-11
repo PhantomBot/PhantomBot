@@ -27,6 +27,9 @@
     <link rel="stylesheet" href="/alerts/css/animate.min.css"/>
     <!-- Main styles. -->
     <style>
+        :root {
+            --fadeTime: 200ms;
+        }
         body {
             background-color: transparent;
         }
@@ -72,6 +75,7 @@
             left: 0;
             height: 100%;
             width: 100%;
+            opacity: 1 !important;
         }
 
         .animatedEmote {
@@ -80,11 +84,11 @@
         
         .fade-in {
           opacity: 1 !important;
-          transition: opacity 200ms ease-in;
+          transition: opacity var(--fadeTime) ease-in;
         }
         .fade-out {
           opacity: 0 !important;
-          transition: opacity 200ms ease-out;
+          transition: opacity var(--fadeTime) ease-out;
         }
     </style>
 
@@ -108,7 +112,7 @@
     </div>
     <div class="main-text-alert">
         <!-- Where the custom gif text is displayed. -->
-        <div id="alert-text"></div>
+        <div id="alert-text" style="display:none"></div>
     </div>
 
     <!-- jQuery -->

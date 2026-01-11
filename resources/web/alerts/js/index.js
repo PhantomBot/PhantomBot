@@ -32,7 +32,8 @@ $(function () {
         unlocking = false,
         queue = [],
         queueProcessing = false,
-        playTimeout;
+        playTimeout,
+        fadeTime;
 
     imgEl.onload = () => printDebug('GIF loaded');
     imgEl.onerror = (e) => printDebug('Error: GIF failed to load: ' + e, true);
@@ -58,6 +59,7 @@ $(function () {
     const CONF_ENABLE_VIDEO_CLIPS = 'enableVideoClips';
     const CONF_VIDEO_CLIP_VOLUME = 'videoClipVolume';
     const CONF_GIF_ALERT_VOLUME = 'gifAlertVolume';
+    const CONF_FADE_DURTAION = 'fadeDuration';
 
     const PROVIDER_TWITCH = 'twitch';
     const PROVIDER_LOCAL = 'local';
@@ -422,10 +424,13 @@ $(function () {
 
         imgEl.setAttribute('style', gifCss);
         imgEl.src = gifUrl;
-        addAlertText(gifText, gifCss);
         imgEl.className = 'fade-in';
+        if (gifText) {
+            addAlertText(gifText, gifCss);
+        }
 
         gifDuration = gifDuration === null ? 3000 : gifDuration
+        gifDuration -= fadeTime;
         playTimeout = setTimeout(() => {
             printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
             stopMedia(false, false, true);
@@ -441,7 +446,7 @@ $(function () {
         playTimeout = setTimeout(() => {
             printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
             stopMedia(true, false, true);
-        }, gifDuration ? 3000 : gifDuration);
+        }, gifDuration);
 
         playAudio();
     }
@@ -456,27 +461,40 @@ $(function () {
             'style': alertCSS ? alertCSS : ''
         }).html(alertText);
         // Append the custom text object to the page
-        $('#alert-text').append(textObj).fadeIn(2e2).delay(gifDuration)
-                .fadeOut(2e2, function () { //Remove the text with a fade out.
-                    let t = $(this);
+        $('#alert-text').append(textObj).fadeIn(fadeTime);
+    }
 
-                    // Remove the p tag
-                    t.find('p').remove();
-                });
+    async function removeAlertText() {
+        $('#alert-text').fadeOut(fadeTime, function () { //Remove the text with a fade out.
+            let t = $(this);
+            // Remove the p tag
+            t.find('p').remove();
+        });
     }
 
     async function stopMedia(stopAudio, stopVideo, stopGif) {
         if (!isPlaying) {
             return;
         }
+
+        let shouldSleep = false;
  
         printDebug('Stopping media: (Audio: ' + stopAudio + ') (Video: ' + stopVideo + ') (Gif: ' + stopGif + ')');
+
+        if ($('#alert-text').children().length > 0) {
+            removeAlertText();
+            shouldSleep = true;
+        }
 
         if (stopGif) {
             try {
                 if (imgEl.className = 'fade-in') {
                     imgEl.className = 'fade-out';
-                    await sleep(2e2);
+                    shouldSleep = true;
+                }
+                if (shouldSleep) {
+                    await sleep(fadeTime);
+                    shouldSleep = false;
                 }
                 imgEl.removeAttribute('src');
                 imgEl.removeAttribute('style')
@@ -502,7 +520,10 @@ $(function () {
             try {
                 if (videoEl.className = 'fade-in') {
                     videoEl.className = 'fade-out';
-                    await sleep(2e2);
+                    shouldSleep = true;
+                }
+                if (shouldSleep) {
+                    await sleep(fadeTime);
                 }
                 if (!videoEl.paused) {
                     videoEl.pause();
@@ -733,18 +754,20 @@ $(function () {
             videoEl.className = 'fullscreen';
         } else {
             videoEl.className = 'fade-in';
+            if (additionalText) {
+                addAlertText(additionalText, additionalCSS)
+            }
+            duration -= fadeTime;
         }
 
-        if (additionalText) {
-            addAlertText(additionalText, additionalCSS)
-        }
+        
 
         printDebug('Loading video: ' + videoEl.src);
         printDebug('Playing video, duration: ' + videoEl.duration);
 
         if (duration != null && duration > 0) {
             setTimeout(() => {
-                printDebug('Video complete (duration), after: ' + (gifDuration/1000) + ' seconds');
+                printDebug('Video complete (duration), after: ' + (duration/1000) + ' seconds');
                 stopMedia(false, true, false);
             }, duration);
         }
@@ -755,23 +778,6 @@ $(function () {
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
-    //https://stackoverflow.com/a/57380742
-    promisePoll = (promiseFunction, { pollIntervalMs = 2000 } = {}) => {
-        const startPoll = async resolve => {
-            const startTime = new Date();
-            const result = await promiseFunction();
-
-            if (result) {
-                return resolve();
-            }
-
-            const timeUntilNext = Math.max(pollIntervalMs - (new Date() - startTime), 0);
-            setTimeout(() => startPoll(resolve), timeUntilNext);
-        };
-
-        return new Promise(startPoll);
-    };
 
     async function handleMacro(json) {
         printDebug('Playing Macro: ' + json.macroName);
@@ -862,6 +868,9 @@ $(function () {
             printDebug('Failed to parse socket message [' + e.data + ']: ' + e.stack);
         }
     };
+
+    fadeTime = getOptionSetting(CONF_FADE_DURTAION, 3e2);
+    document.querySelector(':root').style.setProperty('--fadeTime', fadeTime + 'ms');
 
     // Handle processing the queue.
     setInterval(handleQueue, 5e2);
