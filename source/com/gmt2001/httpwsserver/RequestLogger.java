@@ -33,7 +33,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.AttributeKey;
-import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ReferenceCountUtil;
 import tv.phantombot.PhantomBot;
 
 /**
@@ -72,20 +72,9 @@ public final class RequestLogger extends ChannelInboundHandlerAdapter {
         super.channelReadComplete(ctx);
     }
 
-    private static void releaseBB(Channel ch) {
-        ByteBuf b = ch.attr(ATTR_BB).get();
-
-        while (b != null && b.refCnt() > 0) {
-            try {
-                if (b.release()) {
-                    break;
-                }
-            } catch (IllegalReferenceCountException ex) {
-                break;
-            }
-        }
-
-        ch.attr(ATTR_BB).set(null);
+    private static void releaseBB(Channel ch) {  
+        ByteBuf b = ch.attr(ATTR_BB).getAndSet(null);
+        ReferenceCountUtil.safeRelease(b);
     }
 
     /**

@@ -19,7 +19,7 @@ package tv.phantombot.event.discord.reaction;
 import discord4j.core.event.domain.message.MessageEvent;
 import discord4j.core.event.domain.message.ReactionAddEvent;
 import discord4j.core.event.domain.message.ReactionRemoveEvent;
-import discord4j.core.object.reaction.ReactionEmoji;
+import discord4j.core.object.emoji.Emoji;
 
 /**
  *
@@ -69,7 +69,7 @@ public class DiscordMessageReactionEvent extends DiscordReactionEvent {
      *
      * @return
      */
-    public ReactionEmoji getReactionEmoji() {
+    public Emoji getReactionEmoji() {
         if (type == ReactionType.ADD) {
             return ((ReactionAddEvent) event).getEmoji();
         } else {

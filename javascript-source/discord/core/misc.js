@@ -239,7 +239,7 @@
      * @export $.discord
      */
     function handleDeleteReaction(user, message, commandMessage) {
-        var xEmoji = Packages.discord4j.core.object.reaction.ReactionEmoji.unicode('❌');
+        var xEmoji = Packages.discord4j.core.object.reaction.Emoji.unicode('❌');
         message.addReaction(xEmoji);
 
         messageDeleteArray[message.getId().asString()] = {

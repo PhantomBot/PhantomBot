@@ -38,12 +38,14 @@ import com.gmt2001.ratelimiters.ExponentialBackoff;
 import com.gmt2001.util.concurrent.ExecutorService;
 
 import discord4j.common.util.Snowflake;
+import discord4j.core.object.emoji.Emoji;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.GuildEmoji;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.AudioChannel;
 import discord4j.core.object.entity.channel.Category;
 import discord4j.core.object.entity.channel.Channel;
 import discord4j.core.object.entity.channel.Channel.Type;
@@ -54,10 +56,8 @@ import discord4j.core.object.entity.channel.NewsChannel;
 import discord4j.core.object.entity.channel.PrivateChannel;
 import discord4j.core.object.entity.channel.StoreChannel;
 import discord4j.core.object.entity.channel.TextChannel;
-import discord4j.core.object.entity.channel.VoiceChannel;
 import discord4j.core.object.presence.ClientActivity;
 import discord4j.core.object.presence.ClientPresence;
-import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.GuildMemberEditSpec;
 import discord4j.core.spec.MessageCreateFields;
@@ -569,11 +569,11 @@ public class DiscordUtil {
      * @param message The message object
      * @param emoji The reaction object
      */
-    public void addReaction(Message message, ReactionEmoji emoji) {
+    public void addReaction(Message message, Emoji emoji) {
         if (message != null && emoji != null) {
-            message.addReaction(emoji).doOnError(e -> {
-                com.gmt2001.Console.err.printStackTrace(e);
-            }).subscribe();
+            message.addReaction(emoji)
+                .doOnError(e -> com.gmt2001.Console.err.printStackTrace(e))
+                .subscribe();
         } else {
             throw new IllegalArgumentException("message or emoji object was null");
         }
@@ -585,8 +585,8 @@ public class DiscordUtil {
      * @param message The message object
      * @param emojis The reaction objects
      */
-    public void addReactions(Message message, ReactionEmoji... emojis) {
-        for (ReactionEmoji emoji : emojis) {
+    public void addReactions(Message message, Emoji... emojis) {
+        for (Emoji emoji : emojis) {
             this.addReaction(message, emoji);
         }
     }
@@ -598,23 +598,28 @@ public class DiscordUtil {
      * @param emoji The emoji unicode
      */
     public void addReaction(Message message, String emoji) {
-        DiscordAPI.getGuild().getEmojis().collectList().doOnSuccess(gel -> {
-            ReactionEmoji re = null;
+        DiscordAPI.getGuild().getEmojis().collectList().subscribe(guildEmojis -> {
+            Emoji result = null;
 
-            if (gel != null) {
-                for (GuildEmoji ge : gel) {
+            if (guildEmojis != null) {
+                for (GuildEmoji ge : guildEmojis) {
                     if (ge.getName().equalsIgnoreCase(emoji)) {
-                        re = ReactionEmoji.custom(ge);
+                        result = Emoji.custom(
+                            ge.getId(),
+                            ge.getName(),
+                            ge.isAnimated()
+                        );
+                        break;
                     }
                 }
             }
 
-            if (re == null) {
-                re = ReactionEmoji.unicode(emoji);
+            if (result == null) {
+                result = Emoji.unicode(emoji);
             }
 
-            this.addReaction(message, re);
-        }).subscribe();
+            this.addReaction(message, result);
+        });
     }
 
     /**
@@ -624,26 +629,30 @@ public class DiscordUtil {
      * @param emojis The emoji unicodes
      */
     public void addReactions(Message message, String... emojis) {
-        DiscordAPI.getGuild().getEmojis().collectList().doOnSuccess(gel -> {
-            ReactionEmoji re;
+        DiscordAPI.getGuild().getEmojis().collectList().subscribe(guildEmojis -> {
             for (String emoji : emojis) {
-                re = null;
+                Emoji result = null;
 
-                if (gel != null) {
-                    for (GuildEmoji ge : gel) {
+                if (guildEmojis != null) {
+                    for (GuildEmoji ge : guildEmojis) {
                         if (ge.getName().equalsIgnoreCase(emoji)) {
-                            re = ReactionEmoji.custom(ge);
+                            result = Emoji.custom(
+                                ge.getId(),
+                                ge.getName(),
+                                ge.isAnimated()
+                            );
+                            break;
                         }
                     }
                 }
 
-                if (re == null) {
-                    re = ReactionEmoji.unicode(emoji);
+                if (result == null) {
+                    result = Emoji.unicode(emoji);
                 }
 
-                this.addReaction(message, re);
+                this.addReaction(message, result);
             }
-        }).subscribe();
+        });
     }
 
     /**
@@ -719,8 +728,9 @@ public class DiscordUtil {
 
                         data.get(rn.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rn.getId().asString(), rn.getType().name() + ":" + rn.getName());
                         break;
+                    case GUILD_VOICE:
                     case GUILD_STAGE_VOICE:
-                        VoiceChannel rsv = (VoiceChannel) channel;
+                        AudioChannel rsv = (AudioChannel) channel;
                         if (!data.containsKey(rsv.getCategoryId().map(c -> c.asString()).orElse(""))) {
                             data.putIfAbsent(rsv.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
                         }
@@ -742,14 +752,6 @@ public class DiscordUtil {
                         }
 
                         data.get(rt.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rt.getId().asString(), rt.getType().name() + ":" + rt.getName());
-                        break;
-                    case GUILD_VOICE:
-                        VoiceChannel rv = (VoiceChannel) channel;
-                        if (!data.containsKey(rv.getCategoryId().map(c -> c.asString()).orElse(""))) {
-                            data.putIfAbsent(rv.getCategoryId().map(c -> c.asString()).orElse(""), new HashMap<>());
-                        }
-
-                        data.get(rv.getCategoryId().map(c -> c.asString()).orElse("")).putIfAbsent(rv.getId().asString(), rv.getType().name() + ":" + rv.getName());
                         break;
                     default:
                         break;
@@ -1481,14 +1483,13 @@ public class DiscordUtil {
                     return Optional.of(((Category) channel).getId());
                 case GUILD_NEWS:
                     return Optional.of(((NewsChannel) channel).getId());
+                case GUILD_VOICE:
                 case GUILD_STAGE_VOICE:
-                    return Optional.of(((VoiceChannel) channel).getId());
+                    return Optional.of(((AudioChannel) channel).getId());
                 case GUILD_STORE:
                     return Optional.of(((StoreChannel) channel).getId());
                 case GUILD_TEXT:
                     return Optional.of(((TextChannel) channel).getId());
-                case GUILD_VOICE:
-                    return Optional.of(((VoiceChannel) channel).getId());
                 default:
                     break;
             }
@@ -1517,14 +1518,13 @@ public class DiscordUtil {
                     return ((Category) channel).getName();
                 case GUILD_NEWS:
                     return ((NewsChannel) channel).getName();
+                case GUILD_VOICE:
                 case GUILD_STAGE_VOICE:
-                    return ((VoiceChannel) channel).getName();
+                    return ((AudioChannel) channel).getName();
                 case GUILD_STORE:
                     return ((StoreChannel) channel).getName();
                 case GUILD_TEXT:
                     return ((TextChannel) channel).getName();
-                case GUILD_VOICE:
-                    return ((VoiceChannel) channel).getName();
                 default:
                     break;
             }

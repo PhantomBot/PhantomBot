@@ -19,14 +19,14 @@ package tv.phantombot.event.discord;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.Channel;
-import discord4j.core.object.entity.channel.VoiceChannel;
+import discord4j.core.object.entity.channel.AudioChannel;
 import tv.phantombot.discord.util.DiscordUtil;
 import tv.phantombot.event.Event;
 
 public abstract class DiscordEvent extends Event {
 
     private final User user;
-    private final VoiceChannel voicechannel;
+    private final AudioChannel audiochannel;
     private final Channel channel;
     private final Message message;
     private final String username;
@@ -71,7 +71,7 @@ public abstract class DiscordEvent extends Event {
     protected DiscordEvent(User user, Channel channel, Message message) {
         this.user = user;
         this.channel = channel;
-        this.voicechannel = null;
+        this.audiochannel = null;
         this.message = message;
 
         if (channel != null) {
@@ -99,10 +99,10 @@ public abstract class DiscordEvent extends Event {
      * @param user
      * @param channel
      */
-    protected DiscordEvent(User user, VoiceChannel voicechannel) {
+    protected DiscordEvent(User user, AudioChannel audiochannel) {
         this.user = user;
         this.channel = null;
-        this.voicechannel = voicechannel;
+        this.audiochannel = audiochannel;
         this.message = null;
         this.channelName = DiscordUtil.channelName(channel);
         this.channelId = DiscordUtil.channelIdAsString(channel);
@@ -215,8 +215,8 @@ public abstract class DiscordEvent extends Event {
      *
      * @return
      */
-    public Channel getDiscordVoiceChannel() {
-        return this.voicechannel;
+    public Channel getDiscordAudioChannel() {
+        return this.audiochannel;
     }
 
     /**

@@ -23,7 +23,6 @@ import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.kqueue.KQueueDatagramChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
-import io.netty.channel.nio.NioEventLoop;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.resolver.AddressResolver;
@@ -34,6 +33,9 @@ import io.netty.resolver.dns.DnsNameResolverBuilder;
 import io.netty.resolver.dns.DnsServerAddressStreamProviders;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.StringUtil;
+import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.ChannelFactory;
 
 /**
  * An {@link AddressResolverGroup} that uses a {@link CompositeInetNameResolver} to service DNS queries
@@ -65,20 +67,75 @@ public final class CompositeAddressResolverGroup extends AddressResolverGroup<In
     protected AddressResolver<InetSocketAddress> newResolver(EventExecutor executor) throws Exception {
         if (!(executor instanceof EventLoop)) {
             throw new IllegalStateException(
-                    "unsupported executor type: " + StringUtil.simpleClassName(executor)
-                    + " (expected: " + StringUtil.simpleClassName(EventLoop.class));
+                "unsupported executor type: " + StringUtil.simpleClassName(executor)
+                + " (expected: " + StringUtil.simpleClassName(EventLoop.class) + ")"
+            );
         }
 
-        DnsNameResolverBuilder odnsResolverBuilder = this.dnsResolverBuilder.copy();
+        DnsNameResolverBuilder builder = this.dnsResolverBuilder.copy();
 
-        if (executor instanceof NioEventLoop) {
-            odnsResolverBuilder = odnsResolverBuilder.channelType(NioDatagramChannel.class).socketChannelType(NioSocketChannel.class);
-        } else if (EventLoopDetector.ISEPOLLAVAILABLE) {
-            odnsResolverBuilder = odnsResolverBuilder.channelType(EpollDatagramChannel.class).socketChannelType(EpollSocketChannel.class);
-        } else if (EventLoopDetector.ISKQUEUEAVAILABLE) {
-            odnsResolverBuilder = odnsResolverBuilder.channelType(KQueueDatagramChannel.class).socketChannelType(KQueueSocketChannel.class);
+        // Helper to create ChannelFactory instances for given channel classes
+        ChannelFactory<DatagramChannel> nioDatagramFactory = new ChannelFactory<DatagramChannel>() {
+            @Override public DatagramChannel newChannel() { return new NioDatagramChannel(); }
+        };
+        ChannelFactory<SocketChannel> nioSocketFactory = new ChannelFactory<SocketChannel>() {
+            @Override public SocketChannel newChannel() { return new NioSocketChannel(); }
+        };
+
+        // Try to use native factories only if native transport classes are present and executor looks native
+        boolean useEpoll = false;
+        boolean useKQueue = false;
+        try {
+            Class.forName("io.netty.channel.epoll.Epoll");
+            useEpoll = true;
+        } catch (ClassNotFoundException ignored) {}
+        try {
+            Class.forName("io.netty.channel.kqueue.KQueue");
+            useKQueue = true;
+        } catch (ClassNotFoundException ignored) {}
+
+        String execClass = executor.getClass().getName().toLowerCase();
+
+        try {
+            if (execClass.contains("nio")) {
+                // NIO executor -> use NIO factories
+                builder = builder.datagramChannelFactory(nioDatagramFactory).socketChannelFactory(nioSocketFactory);
+            } else if (useEpoll && execClass.contains("epoll")) {
+                // Epoll available and executor looks epoll -> use epoll factories
+                ChannelFactory<DatagramChannel> epollDatagramFactory = new ChannelFactory<DatagramChannel>() {
+                    @Override public DatagramChannel newChannel() { return new EpollDatagramChannel(); }
+                };
+                ChannelFactory<SocketChannel> epollSocketFactory = new ChannelFactory<SocketChannel>() {
+                    @Override public SocketChannel newChannel() { return new EpollSocketChannel(); }
+                };
+                builder = builder.datagramChannelFactory(epollDatagramFactory).socketChannelFactory(epollSocketFactory);
+            } else if (useKQueue && execClass.contains("kqueue")) {
+                // KQueue available and executor looks kqueue -> use kqueue factories
+                ChannelFactory<DatagramChannel> kqueueDatagramFactory = new ChannelFactory<DatagramChannel>() {
+                    @Override public DatagramChannel newChannel() { return new KQueueDatagramChannel(); }
+                };
+                ChannelFactory<SocketChannel> kqueueSocketFactory = new ChannelFactory<SocketChannel>() {
+                    @Override public SocketChannel newChannel() { return new KQueueSocketChannel(); }
+                };
+                builder = builder.datagramChannelFactory(kqueueDatagramFactory).socketChannelFactory(kqueueSocketFactory);
+            } else {
+                // Default to NIO factories
+                builder = builder.datagramChannelFactory(nioDatagramFactory).socketChannelFactory(nioSocketFactory);
+            }
+
+            // Build the DNS resolver (this may still throw if something else is wrong)
+            DnsNameResolver dnsResolver = builder.eventLoop((EventLoop) executor).build();
+
+            // Composite resolver: prefer DNS resolver, fallback to DefaultNameResolver
+            return new CompositeInetNameResolver(executor, dnsResolver, new DefaultNameResolver(executor)).asAddressResolver();
+
+        } catch (Throwable t) {
+            // Log and fallback to OS resolver only
+            com.gmt2001.Console.err.println("DnsNameResolver build failed: " + t.getClass().getName() + ": " + t.getMessage());
+            com.gmt2001.Console.err.printStackTrace(t);
+
+            // Fallback: use DefaultNameResolver only
+            return new CompositeInetNameResolver(executor, null, new DefaultNameResolver(executor)).asAddressResolver();
         }
-
-        return new CompositeInetNameResolver(executor, odnsResolverBuilder.eventLoop((EventLoop) executor).build(), new DefaultNameResolver(executor)).asAddressResolver();
     }
 }

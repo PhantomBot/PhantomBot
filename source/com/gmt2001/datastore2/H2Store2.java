@@ -62,7 +62,10 @@ public final class H2Store2 extends Datastore2 {
      */
     private static final Map<Integer, String> UPGRADES = Map.of(
         1, "1.4.200",
-        2, "2.1.214"
+        2, "2.1.214",
+        3, "2.2.224",
+        4, "2.3.232",
+        5, "2.4.240"
     );
     /**
      * The current format of H2 database

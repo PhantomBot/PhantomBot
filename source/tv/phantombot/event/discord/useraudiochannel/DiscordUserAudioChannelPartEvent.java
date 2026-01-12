@@ -14,30 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tv.phantombot.event.discord.uservoicechannel;
+package tv.phantombot.event.discord.useraudiochannel;
 
 import discord4j.core.object.entity.User;
-import discord4j.core.object.entity.channel.VoiceChannel;
-import tv.phantombot.event.discord.DiscordEvent;
+import discord4j.core.object.entity.channel.AudioChannel;
 
-public abstract class DiscordUserVoiceChannelEvent extends DiscordEvent {
+public class DiscordUserAudioChannelPartEvent extends DiscordUserAudioChannelEvent {
 
     /**
-     * Abstract constructor.
+     * Class constructor.
      *
      * @param user
      */
-    protected DiscordUserVoiceChannelEvent(User user) {
+    public DiscordUserAudioChannelPartEvent(User user) {
         super(user);
     }
 
     /**
-     * Abstract constructor.
+     * Class constructor.
      *
      * @param user
-     * @param voicechannel
+     * @param audiochannel
      */
-    protected DiscordUserVoiceChannelEvent(User user, VoiceChannel voicechannel) {
-        super(user, voicechannel);
+    public DiscordUserAudioChannelPartEvent(User user, AudioChannel audiochannel) {
+        super(user, audiochannel);
     }
+
 }

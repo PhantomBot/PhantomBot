@@ -67,6 +67,6 @@ else
     export JAVA_TOOL_OPTIONS="-Djdk.lang.Process.launchMechanism=vfork"
     mv ${jdk_home} /opt/build/jdk
     cd /opt/build/jdk/bin
-    ./jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument,jdk.unsupported,jdk.zipfs --output /opt/build/jre
+    ./jlink --no-header-files --no-man-pages --compress=2 --strip-debug --add-modules java.base,java.compiler,java.desktop,java.management,java.sql,java.naming,jdk.crypto.cryptoki,jdk.crypto.ec,jdk.jdwp.agent,jdk.management.agent,jdk.management,jdk.management.jfr,java.instrument,jdk.unsupported,jdk.zipfs,java.scripting,jdk.dynalink --output /opt/build/jre
     mv /opt/build/jre/* /opt/phantombot/${out_folder}/
 fi

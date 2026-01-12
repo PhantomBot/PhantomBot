@@ -384,9 +384,9 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             }
 
-            ctx.writeAndFlush(res).addListener((p) -> {
+             ctx.writeAndFlush(res).addListener((p) -> {
                 HTTPWSServer.releaseObj(res);
-            });
+            });;
         }
     }
 

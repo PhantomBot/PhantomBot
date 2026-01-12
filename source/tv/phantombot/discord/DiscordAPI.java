@@ -55,10 +55,10 @@ import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
 import discord4j.rest.request.RequestQueueFactory;
 import discord4j.rest.request.RouteMatcher;
+import reactor.util.retry.Retry;
 import discord4j.rest.request.RouterOptions;
 import discord4j.rest.response.ResponseFunction;
 import io.netty.resolver.DefaultAddressResolverGroup;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -68,7 +68,6 @@ import java.util.concurrent.TimeUnit;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.retry.Retry;
 import reactor.util.concurrent.Queues;
 import tv.phantombot.CaselessProperties;
 import tv.phantombot.PhantomBot;
@@ -84,8 +83,8 @@ import tv.phantombot.event.discord.ready.DiscordReadyEvent;
 import tv.phantombot.event.discord.role.DiscordRoleCreatedEvent;
 import tv.phantombot.event.discord.role.DiscordRoleDeletedEvent;
 import tv.phantombot.event.discord.role.DiscordRoleUpdatedEvent;
-import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelJoinEvent;
-import tv.phantombot.event.discord.uservoicechannel.DiscordUserVoiceChannelPartEvent;
+import tv.phantombot.event.discord.useraudiochannel.DiscordUserAudioChannelJoinEvent;
+import tv.phantombot.event.discord.useraudiochannel.DiscordUserAudioChannelPartEvent;
 
 /**
  * Communicates with the Discord API.
@@ -150,7 +149,12 @@ public class DiscordAPI extends DiscordUtil {
      */
     public void connect(String token) {
         if (DiscordAPI.builder == null) {
-            DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordClientBuilder.create(token).onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.anyOf(IOException.class).exponentialBackoffWithJitter(Duration.ofSeconds(1), Duration.ofMinutes(15)).retryMax(10)));
+            DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordClientBuilder.create(token)
+                                                                                                            .onClientResponse(ResponseFunction.retryWhen(RouteMatcher.any(), Retry.backoff(10, Duration.ofSeconds(1)) 
+                                                                                                                                                                                .maxBackoff(Duration.ofMinutes(15))
+                                                                                                                                                                                .jitter(0.5)
+                                                                                                                                                        )
+                                                                                                                            );
 
             if (CaselessProperties.instance().getPropertyAsBoolean("usedefaultdnsresolver", false)) {
                 DiscordAPI.builder = (DiscordClientBuilder<DiscordClient, RouterOptions>) DiscordAPI.builder.setReactorResources(ReactorResources.builder().httpClient(ReactorResources.DEFAULT_HTTP_CLIENT.get().resolver(DefaultAddressResolverGroup.INSTANCE)).build());
@@ -692,16 +696,16 @@ public class DiscordAPI extends DiscordUtil {
                 event.getCurrent().getUser().doOnSuccess(user -> {
                     if (event.getOld().isPresent()) {
                         event.getOld().get().getChannel().doOnSuccess(channel -> {
-                            EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user, channel));
+                            EventBus.instance().postAsync(new DiscordUserAudioChannelPartEvent(user, channel));
                         }).subscribe();
                     } else {
-                        EventBus.instance().postAsync(new DiscordUserVoiceChannelPartEvent(user));
+                        EventBus.instance().postAsync(new DiscordUserAudioChannelPartEvent(user));
                     }
                 }).subscribe();
             } else {
                 event.getCurrent().getUser().doOnSuccess(user -> {
                     event.getCurrent().getChannel().doOnSuccess(channel -> {
-                        EventBus.instance().postAsync(new DiscordUserVoiceChannelJoinEvent(user, channel));
+                        EventBus.instance().postAsync(new DiscordUserAudioChannelJoinEvent(user, channel));
                     }).subscribe();
                 }).subscribe();
             }
