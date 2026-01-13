@@ -42,6 +42,17 @@
         buildEmotesCache(event.getEmotesSet());
     });
 
+    function regexescape(str) {
+        str = $.jsString(str);
+        str = $.replace(str, '(', '\\(');
+        str = $.replace(str, '[', '\\[');
+        str = $.replace(str, ')', '\\)');
+        str = $.replace(str, ']', '\\]');
+        str = $.replace(str, '|', '\\|');
+        str = $.replace(str, '-', '\\-');
+        return str;
+    }
+
     /**
      * @function buildEmotesCache
      **/
@@ -58,7 +69,7 @@
                 global:  convertEmoteEntryList(currentSet.getGlobalEmotes())
             };
             providerEmotes.local.concat(providerEmotes.shared, providerEmotes.global).forEach(emote => {
-                newEmotesRegExpList.push('\\b' + emote.code + '\\b');
+                newEmotesRegExpList.push('\\b' + regexescape(emote.code) + '\\b');
             });
             providerEmoteMap[String(currentSet.getProvider())] = providerEmotes;
             $.consoleDebug("Loaded Emotes from " + currentSet.getProvider() + ": " + providerEmotes.global.length + " global, " + providerEmotes.shared.length + " shared, " + providerEmotes.local.length + " local");
