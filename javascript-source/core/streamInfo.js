@@ -106,7 +106,18 @@
             let subscriptions = [
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.automod.message.AutomodMessageHold,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.automod.message.AutomodMessageUpdate,
-                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelModerate,
+                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelModerate
+            ];
+
+            for (let i in subscriptions) {
+                let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
+                try {
+                    newSubscription.create().block();
+                } catch (ex) {
+                    $.log.error(ex);
+                }
+            }
+            subscriptions = [
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelUpdate,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOnline,
                 Packages.com.gmt2001.twitch.eventsub.subscriptions.stream.StreamOffline
