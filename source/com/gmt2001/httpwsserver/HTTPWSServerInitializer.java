@@ -27,6 +27,7 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import tv.phantombot.CaselessProperties;
 
 /**
  * Initializes {@link SocketChannel} objects for a {@link HTTPWSServer}
@@ -51,7 +52,6 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new RequestLogger());
 
         SslContext sslCtx = HTTPWSServer.instance().getSslContext();
         if (sslCtx != null) {
@@ -61,6 +61,13 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
 
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
+        /**
+         * @botproperty httpwsserverdebug - If `true`, requests at the webserver are logged in `./logs/request`. default `false`
+         * @botpropertycatsort httpwsserverdebug 1100 900 Debug
+         */
+        if (CaselessProperties.instance().getPropertyAsBoolean("httpwsserverdebug", false)) {
+            pipeline.addLast(new RequestLogger());
+        }
         pipeline.addLast(new WebSocketFrameAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true));

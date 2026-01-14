@@ -134,6 +134,7 @@ The following values are sent from _botlogin.txt_:
 - _userollbar_ - Indicates if Rollbar exception reporting is enabled
 - _webenable_ - Indicates if the bots built-in webserver is enabled
 - _wsdebug_ - Enables debug output of WebSocket messages from the panel
+- _httpwsserverdebug_ - Enables requests to the webserver to be logged to _./logs/request_
 
 For all other values in _botlogin.txt_, only an indicator of whether the value exists will be sent, but not the actual value itself.
 

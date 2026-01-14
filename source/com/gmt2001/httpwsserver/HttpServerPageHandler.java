@@ -106,7 +106,6 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 com.gmt2001.Console.err.printStackTrace(cause);
             }
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
-            RequestLogger.log(ctx);
             return;
         }
 

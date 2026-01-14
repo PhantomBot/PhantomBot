@@ -23,119 +23,77 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.Set;
 
 import com.gmt2001.PathValidator;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.AttributeKey;
-import io.netty.util.ReferenceCountUtil;
-import tv.phantombot.PhantomBot;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 
+import tv.phantombot.PhantomBot;
 /**
  * Provides a method to log a request stream
  *
- * @author gmt2001
+ * @author Sartharon
  */
 public final class RequestLogger extends ChannelInboundHandlerAdapter {
-    private static final AttributeKey<ByteBuf> ATTR_BB = AttributeKey.valueOf("BB");
-    private static final DateTimeFormatter dtfmt = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss_n");
+
+    // Redact these headers (case-insensitive)
+    private static final Set<String> REDACT_HEADERS = Set.of(
+            "authorization", "referer", "x-proxy", "proxy", "cookie", "host"
+    );
+
+    private static final DateTimeFormatter FILE_TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm");
+    private static final DateTimeFormatter REQUEST_TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss.n");
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ByteBuf b) {
-            releaseBB(ctx.channel());
-            ctx.channel().attr(ATTR_BB).set(b.retainedDuplicate());
-            ctx.channel().closeFuture().addListener((ChannelFutureListener) (ChannelFuture f) -> {
-                releaseBB(f.channel());
-            });
-        }
-
         try {
-            super.channelRead(ctx, msg);
-        } catch (Exception ex) {
-            if (!(ex.getClass() == IllegalArgumentException.class && (ex.getMessage().startsWith("Content-Length")
-                    || ex.getMessage().startsWith("Invalid separator")))) {
-                throw ex;
+            if (msg instanceof FullHttpRequest) {
+                logHttpRequest(ctx, (FullHttpRequest) msg);
             }
+        } catch (Exception e) {
+            com.gmt2001.Console.err.logStackTrace(e, "HTTP request logging failed: ");
+        } finally {
+            ctx.fireChannelRead(msg);
         }
     }
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        releaseBB(ctx.channel());
+    private void logHttpRequest(ChannelHandlerContext ctx, FullHttpRequest req) {
+        StringBuilder sb = new StringBuilder(1024);
 
-        super.channelReadComplete(ctx);
-    }
+        LocalDateTime now = LocalDateTime.now(PhantomBot.getTimeZoneId());
+        String remote = String.valueOf(ctx.channel().remoteAddress());
+        if (ctx.channel().remoteAddress() instanceof InetSocketAddress) {
+            InetSocketAddress isa = (InetSocketAddress) ctx.channel().remoteAddress();
+            remote = isa.getAddress().getHostAddress() + ":" + isa.getPort();
+        }
 
-    private static void releaseBB(Channel ch) {  
-        ByteBuf b = ch.attr(ATTR_BB).getAndSet(null);
-        ReferenceCountUtil.safeRelease(b);
-    }
+        sb.append("=== HTTP REQUEST === ")
+          .append(now.format(REQUEST_TIMESTAMP_FORMATTER))
+          .append(" === HTTP REQUEST ===\n")
+          .append("Remote: ").append(remote).append('\n')
+          .append("Protocol: ").append(req.protocolVersion()).append('\n')
+          .append("Method: ").append(req.method()).append('\n')
+          .append("URI: ").append(req.uri()).append('\n');
 
-    /**
-     * Logs the request stream of the provided context and prints the file path to
-     * the console
-     * <p>
-     * Requests are logged to the <i>./logs/request/</i> folder in a file with the
-     * timestamp of the request
-     * <p>
-     * This method attempts to redact the {@code Host}, {@code Cookie},
-     * {@code Authorization}, {@code Referrer},
-     * and any {@code Proxy} or {@code X-Proxy} headers for privacy
-     *
-     * @param ctx the context to log
-     */
-    public static void log(ChannelHandlerContext ctx) {
+        // Headers (redacted)
+        sb.append("Headers:\n");
+        HttpHeaders headers = req.headers();
+        for (Map.Entry<String, String> h : headers) {
+            String name = h.getKey();
+            String value = REDACT_HEADERS.contains(name.toLowerCase()) ? "<REDACTED>" : h.getValue();
+            sb.append("  ").append(name).append(": ").append(value).append('\n');
+        }
+
         try {
-            ByteBuf b = ctx.channel().attr(ATTR_BB).get();
-            if (b != null && b.isReadable()) {
-                Path p = PathValidator.getRealPath(Paths.get("./logs/request",
-                        LocalDateTime.now(PhantomBot.getTimeZoneId()).format(dtfmt) + ".txt"));
-                Files.createDirectories(p.getParent());
-
-                StringBuilder data = new StringBuilder(b.readCharSequence(b.readableBytes(), StandardCharsets.UTF_8));
-                int idx;
-                int idx2;
-                idx = data.indexOf("Host:");
-                if (idx >= 0) {
-                    idx2 = data.indexOf(Character.toString('\n'), idx);
-                    data.replace(idx, idx2 - 1, "Host: <redacted>");
-                }
-                idx = data.indexOf("Cookie:");
-                if (idx >= 0) {
-                    idx2 = data.indexOf(Character.toString('\n'), idx);
-                    data.replace(idx, idx2 - 1, "Cookie: <redacted>");
-                }
-                idx = data.indexOf("Referer:");
-                if (idx >= 0) {
-                    idx2 = data.indexOf(Character.toString('\n'), idx);
-                    data.replace(idx, idx2 - 1, "Referer: <redacted>");
-                }
-                idx = data.indexOf("Prox");
-                if (idx >= 0) {
-                    idx2 = data.indexOf(Character.toString('\n'), idx);
-                    data.replace(idx, idx2 - 1, "Proxy: <redacted>");
-                }
-                idx = data.indexOf("X-Prox");
-                if (idx >= 0) {
-                    idx2 = data.indexOf(Character.toString('\n'), idx);
-                    data.replace(idx, idx2 - 1, "X-Proxy: <redacted>");
-                }
-                idx = data.indexOf("Authorization:");
-                if (idx >= 0) {
-                    idx2 = data.indexOf(Character.toString('\n'), idx);
-                    data.replace(idx, idx2 - 1, "Authorization: <redacted>");
-                }
-
-                Files.writeString(p, data, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE,
-                        StandardOpenOption.TRUNCATE_EXISTING);
-                com.gmt2001.Console.out.println("Logged request to " + p.toString());
-            }
+            Path p = PathValidator.getRealPath(Paths.get("./logs/request", now.format(FILE_TIMESTAMP_FORMATTER) + ".txt"));
+            Files.createDirectories(p.getParent());        
+            Files.writeString(p, sb.append("\n"), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.APPEND);
         } catch (Exception e) {
             com.gmt2001.Console.debug.printStackTrace(e);
         }
