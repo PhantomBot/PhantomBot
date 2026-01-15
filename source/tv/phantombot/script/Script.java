@@ -126,7 +126,6 @@ public class Script {
         /* Create Debugger Instance - this opens for only init.js */
         Main debugger = null;
         if (PhantomBot.getEnableRhinoDebugger()) {
-            context.setGeneratingDebug(true);
             if (file.getName().endsWith("init.js")) {
                 debugger = new Main(file.getName());
                 debugger.attachTo(ctxFactory);
@@ -142,6 +141,7 @@ public class Script {
 
         /* Configure debugger. */
         if (PhantomBot.getEnableRhinoDebugger() && debugger != null) {
+            context.setGeneratingDebug(true);
             if (file.getName().endsWith("init.js")) {
                 debugger.setBreakOnEnter(false);
                 debugger.setScope(scope);
