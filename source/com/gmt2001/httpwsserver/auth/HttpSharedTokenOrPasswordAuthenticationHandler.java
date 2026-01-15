@@ -80,7 +80,6 @@ public class HttpSharedTokenOrPasswordAuthenticationHandler implements HttpAuthe
         FullHttpResponse res = HttpServerPageHandler.prepareHttpResponse(HttpResponseStatus.UNAUTHORIZED);
 
         if (PhantomBot.getEnableDebugging()) {
-            HttpHeaders headers = req.headers();
             QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
             com.gmt2001.Console.debug.println("401 " + req.method().asciiName() + ": " + qsd.path());

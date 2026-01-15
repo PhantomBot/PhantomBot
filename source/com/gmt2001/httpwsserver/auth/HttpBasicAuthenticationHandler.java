@@ -108,8 +108,6 @@ public class HttpBasicAuthenticationHandler implements HttpAuthenticationHandler
      */
     @Override
     public boolean checkAuthorization(ChannelHandlerContext ctx, FullHttpRequest req) {
-        HttpHeaders headers = req.headers();
-
         QueryStringDecoder qsd = new QueryStringDecoder(req.uri());
 
         if (this.isAuthorized(ctx, req)) {
