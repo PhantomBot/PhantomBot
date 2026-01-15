@@ -39,6 +39,12 @@ import io.netty.handler.ssl.SslHandler;
 class WSClientInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
+     * How large of websocket frames we expect
+     * (64KB)
+     */
+    public static final int MAX_WS_FRAME_SIZE = 64*1024;
+
+    /**
      * Reference to the attached {@link WSClient}
      */
     private final WSClient client;
@@ -77,11 +83,11 @@ class WSClientInitializer extends ChannelInitializer<SocketChannel> {
         }
 
         pipeline.addLast(new HttpClientCodec());
-        pipeline.addLast(new HttpObjectAggregator(65536));
+        pipeline.addLast(new HttpObjectAggregator(MAX_WS_FRAME_SIZE));
         pipeline.addLast(WsClientCompressionHandler.INSTANCE);
         pipeline.addLast(new WebSocketClientProtocolHandler(WebSocketClientHandshakerFactory
                 .newHandshaker(this.client.uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders())));
-        pipeline.addLast(new WebSocketFrameAggregator(65536));
+        pipeline.addLast(new WebSocketFrameAggregator(MAX_WS_FRAME_SIZE));
         pipeline.addLast("wshandler", this.client.frameHandler);
     }
 }

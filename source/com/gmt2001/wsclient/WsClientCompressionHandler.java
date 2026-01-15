@@ -37,8 +37,8 @@ public final class WsClientCompressionHandler extends WebSocketClientExtensionHa
      * Constructor
      */
     private WsClientCompressionHandler() {
-        super(new PerMessageDeflateClientExtensionHandshaker(6, ZlibCodecFactory.isSupportingWindowSizeAndMemLevel(), PerMessageDeflateServerExtensionHandshaker.MAX_WINDOW_SIZE, true, true),
-                new DeflateFrameClientExtensionHandshaker(false),
-                new DeflateFrameClientExtensionHandshaker(true));
+        super(new PerMessageDeflateClientExtensionHandshaker(6, ZlibCodecFactory.isSupportingWindowSizeAndMemLevel(), PerMessageDeflateServerExtensionHandshaker.MAX_WINDOW_SIZE, true, true, WSClientInitializer.MAX_WS_FRAME_SIZE),
+                new DeflateFrameClientExtensionHandshaker(false, WSClientInitializer.MAX_WS_FRAME_SIZE),
+                new DeflateFrameClientExtensionHandshaker(true, WSClientInitializer.MAX_WS_FRAME_SIZE));
     }
 }

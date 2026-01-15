@@ -37,6 +37,12 @@ import tv.phantombot.CaselessProperties;
 class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
 
     /**
+     * How large of websocket frames we expect
+     * (64KB)
+     */
+    public static final int MAX_WS_FRAME_SIZE = 64*1024;
+    
+    /**
      * Constructor
      */
     public HTTPWSServerInitializer() {
@@ -68,8 +74,8 @@ class HTTPWSServerInitializer extends ChannelInitializer<SocketChannel> {
         if (CaselessProperties.instance().getPropertyAsBoolean("httpwsserverdebug", false)) {
             pipeline.addLast(new RequestLogger());
         }
-        pipeline.addLast(new WebSocketFrameAggregator(65536));
-        pipeline.addLast(new WebSocketServerCompressionHandler());
+        pipeline.addLast(new WebSocketFrameAggregator(MAX_WS_FRAME_SIZE));
+        pipeline.addLast(new WebSocketServerCompressionHandler(4*MAX_WS_FRAME_SIZE));
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws", null, true, 65536, false, true));
         pipeline.addLast(new HttpContentCompressor());
         pipeline.addLast(new ChunkedWriteHandler());   
