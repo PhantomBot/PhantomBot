@@ -53,10 +53,10 @@ Additional functionality is enabled through the use of third-party modules.
   - If accessing remotely, configure your firewall/port forwarding as needed to allow access to port 25000
   - It is normal for the browser to give a security warning, as we use self-signed SSL certificates by default
 - Click **Bot Setup and OAuth**
-- When the login page appears, look in your console window for the auto-generated username and password
+- When the login page appears, look in your terminal window for the auto-generated username and password
 - Fill in the name of the Twitch channel to join
   - Optionally, also expand the **Panel Login** section and set a new username and password for the admin user
-- Click the floating **Save Configuration** button to save the changes
+- Click the floating **Save Configuration** button near the bottom-left to save the changes
 - Click the **OAuth Setup** link at the top of the page
 - Follow instructions to setup OAuth
   - Remember to perform both the **Bot OAuth** (Set user that the bot will post as) and the **Broadcaster OAuth** (Authorization for using the Twitch API)
