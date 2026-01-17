@@ -488,8 +488,10 @@
 
                 function loadGuideJump(guidePlusJumpto) {
                     window.location.hash = guidePlusJumpto;
-                    parseHashMap();
-                    loadURLGuide();
+                    setTimeout(function() {
+                        parseHashMap();
+                        loadURLGuide();
+                    }, 500);
                 }
 
                 function checkURLChannel() {
