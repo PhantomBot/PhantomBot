@@ -15,7 +15,7 @@ If you selected **I will authorize only the Bot, the Broadcaster will authorize 
   - This is the account that you want to appear in Twitch chat when the bot sends messages
   - If the wrong account is displayed, click the **not you? log out** link and then login with the desired bot account
 - Review the requested permissions and then click **Authorize**
-- After you are redirected back to the PhantomBot OAuth page, ensure you get a green success message near the top of the screen
+- After you are redirected back to the PhantomBot OAuth page, ensure you get a green success message near the top of the page
 - Scroll to the bottom and click **Connect with Twitch Broadcaster**
   
   ![Connect with Twitch Buttons](./images/oauth/oauth_buttons.png)
@@ -23,7 +23,7 @@ If you selected **I will authorize only the Bot, the Broadcaster will authorize 
   - This is your personal account and is used to authorize API calls on your behalf
   - If the wrong account is displayed, click the **not you? log out** link and then login with the desired broadcaster account
 - Review the requested permissions and then click **Authorize**
-- After you are redirected back to the PhantomBot OAuth page, ensure you get a green success message near the top of the screen
+- After you are redirected back to the PhantomBot OAuth page, ensure you get a green success message near the top of the page
 
 ### Enjoy PhantomBot!
 The bot will now connect to your chat and be ready for use
