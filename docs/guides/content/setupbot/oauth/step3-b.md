@@ -32,7 +32,7 @@ If you selected **I will authorize both the Bot and the Broadcaster**, continue 
 ### Authorize the Broadcaster OAuth
 - On the PhantomBot OAuth page, click the **Generate Broadcaster Temporary Password** button (Step 7-8)
   
-  ![Broadcaster OAuth URL and Login](./images/oauth/twitch_app_manage3.png)
+  ![Broadcaster OAuth URL and Login](./images/oauth/oauth_broadcaster_login.png)
 - Give the broadcaster the URL (Step 7-9) and Username/Password (Step 7-10)
   - Note that this temporary login will only work once
 - The broadcaster can review the list of Authorization Scopes (permissions) that PhantomBot requests for the bot account and the use for each scope on the PhantomBot OAuth page
