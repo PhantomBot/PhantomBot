@@ -250,11 +250,11 @@
                         return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugifyHeader() + '\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
                     };
                     md.renderer.rules.old_link_open = md.renderer.rules.link_open;
-                    md.renderer.rules.link_open = function (tokens, idx) {
+                    md.renderer.rules.link_open = function (tokens, idx, options) {
                         if (tokens[idx].title && tokens[idk].title.toLowerCase() == '##guide_link') {
                             return '<a href="#" onclick="window.loadGuideJump(\'' + tokens[idx].href + '&channel=' + currentChannel + '\')">';
                         } else {
-                            return md.renderer.rules.old_link_open(tokens, idx);
+                            return md.renderer.rules.old_link_open(tokens, idx, options);
                         }
                     };
                 });
