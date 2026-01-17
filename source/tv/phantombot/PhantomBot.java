@@ -254,6 +254,13 @@ public final class PhantomBot implements Listener {
      */
     @SuppressWarnings({"removal"})
     public PhantomBot() {
+        PhantomBot.enableDebugging = CaselessProperties.instance().getPropertyAsBoolean("debugon", false);
+
+        /* Set the exeption handler */
+        com.gmt2001.Console.debug.println("Set uncaught exception handler");
+        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+
+        com.gmt2001.Console.debug.println("Disable netty resolver warnings");
         java.util.logging.Logger l = java.util.logging.Logger.getLogger("io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider");
         l.setLevel(java.util.logging.Level.OFF);
 
@@ -263,6 +270,7 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart reactordebug
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("reactordebug", false)) {
+            com.gmt2001.Console.debug.println("Enable reactor debug");
             Loggers.useVerboseConsoleLoggers();
         }
 
@@ -272,12 +280,10 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart internaldebug
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("internaldebug", false)) {
+            com.gmt2001.Console.debug.println("Enable JDK debug");
             setLevel(java.util.logging.Level.ALL);
             InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.INSTANCE);
         }
-
-        /* Set the default bot variables */
-        PhantomBot.enableDebugging = CaselessProperties.instance().getPropertyAsBoolean("debugon", false);
 
         /**
          * @botproperty userollbar - If `true`, Exceptions thrown during operation may be sent to Rollbar exception tracking. Default `true`
@@ -285,11 +291,9 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart userollbar
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("userollbar", true)) {
+            com.gmt2001.Console.debug.println("Enable rollbar");
             RollbarProvider.instance().enable();
         }
-
-        /* Set the exeption handler */
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
 
         /* Start loading the bot information */
         this.print("");
@@ -310,11 +314,14 @@ public final class PhantomBot implements Listener {
             Files.deleteIfExists(Paths.get("./logs/.placeholder"));
         } catch (IOException ex) {}
 
+        com.gmt2001.Console.debug.println("Check and refresh User tokens");
         this.authflow = new TwitchAuthorizationCodeFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         boolean authflowrefreshed = this.authflow.checkAndRefreshTokens();
+        com.gmt2001.Console.debug.println("Check and refresh App token");
         this.appflow = new TwitchClientCredentialsFlow(CaselessProperties.instance().getProperty("clientid"), CaselessProperties.instance().getProperty("clientsecret"));
         this.appflow.checkAndRefreshToken(true);
         if (authflowrefreshed) {
+            com.gmt2001.Console.debug.println("Reload configuration");
             ConfigurationManager.getConfiguration();
         }
 
@@ -328,20 +335,24 @@ public final class PhantomBot implements Listener {
             && SqliteStore.hasDatabase(CaselessProperties.instance().getProperty("datastoreconfig", ""))
             && SqliteStore.isAvailable(CaselessProperties.instance().getProperty("datastoreconfig", ""))
             && SqliteStore.instance().GetFileList().length > 0) {
+                com.gmt2001.Console.debug.println("Switch to SQLiteStore2");
             Transaction t = CaselessProperties.instance().startTransaction(CaselessProperties.Transaction.PRIORITY_MAX);
             t.setProperty("datastore", "SQLiteStore2");
             t.commit();
         }
 
         /* Load the datastore */
+        com.gmt2001.Console.debug.println("Init Datastore2");
         Datastore2.init();
 
         /* Set the oauth key in the Twitch api and perform a validation. */
+        com.gmt2001.Console.debug.println("Validate OAuths");
         this.validateOAuth();
 
         /* Check if the OS is Linux. */
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
+                com.gmt2001.Console.debug.println("Write PID");
                 long pid = Reflect.pid();
 
                 Files.write(Paths.get(Reflect.GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"), Long.toString(pid).getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE,
@@ -352,17 +363,20 @@ public final class PhantomBot implements Listener {
         }
 
         /* Start things and start loading the scripts. */
+        com.gmt2001.Console.debug.println("Schedule init");
         ExecutorService.schedule(this::init, 250, TimeUnit.MILLISECONDS);
     }
 
     public void validateOAuth() {
         if (!CaselessProperties.instance().getProperty("apioauth", "").isEmpty()) {
+            com.gmt2001.Console.debug.println("Validate API OAuth");
             Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
             TwitchValidate.instance().validateAPI(CaselessProperties.instance().getProperty("apioauth", ""), "API (apioauth)");
         }
 
         if (!CaselessProperties.instance().getProperty("oauth", "").isEmpty()) {
             /* Validate the chat OAUTH token. */
+            com.gmt2001.Console.debug.println("Validate Chat OAuth");
             TwitchValidate.instance().validateChat(CaselessProperties.instance().getProperty("oauth"), "CHAT (oauth)");
 
             TwitchValidate.instance().checkOAuthInconsistencies(this.getChannelName());
@@ -370,12 +384,14 @@ public final class PhantomBot implements Listener {
 
         if (!CaselessProperties.instance().getProperty("appoauth", "").isEmpty()) {
             /* Validate the chat OAUTH token. */
+            com.gmt2001.Console.debug.println("Validate App OAuth");
             TwitchValidate.instance().validateApp(CaselessProperties.instance().getProperty("appoauth"), "APP (appoauth)");
         }
     }
 
     private void initChat() {
         if (CaselessProperties.instance().getProperty("channel", "").isBlank()) {
+            com.gmt2001.Console.debug.println("Channel not set");
             if (ConfigurationManager.newSetup()) {
                 if (!ConfigurationManager.setupStarted()) {
                     com.gmt2001.Console.warn.println();
@@ -405,6 +421,7 @@ public final class PhantomBot implements Listener {
                 });
             }
         } else if (!TwitchValidate.instance().isChatValid()) {
+            com.gmt2001.Console.debug.println("Bot OAuth not set");
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("The Bot (Chat) OAuth is not set or is invalid");
             com.gmt2001.Console.warn
@@ -426,6 +443,7 @@ public final class PhantomBot implements Listener {
                 });
             }
         } else if (!TwitchValidate.instance().isAPIValid()) {
+            com.gmt2001.Console.debug.println("API OAuth not set");
             com.gmt2001.Console.warn.println();
             com.gmt2001.Console.warn.println("The Broadcaster (API) OAuth is not set or is invalid");
             com.gmt2001.Console.warn
@@ -450,9 +468,11 @@ public final class PhantomBot implements Listener {
             this.initAPIsWebConfigs();
             this.initScripts();
             /* Start a session instance and then connect to WS-IRC @ Twitch. */
+            com.gmt2001.Console.debug.println("Init Session");
             this.session = new TwitchSession(this.getChannelName(), this.getBotName());
             this.session.doSubscribe();
 
+            com.gmt2001.Console.debug.println("Init TMI");
             this.tmi = new TwitchMessageInterface();
         }
     }
@@ -485,35 +505,47 @@ public final class PhantomBot implements Listener {
 
     public void reconnect() {
         if (this.session != null) {
+            com.gmt2001.Console.debug.println("Reconnect session");
             this.session.reconnect();
         }
+
         if (this.tmi != null) {
+            com.gmt2001.Console.debug.println("Reconnect TMI");
             this.tmi.reconnect();
         }
+
+        com.gmt2001.Console.debug.println("Reconnect EventSub");
         EventSub.instance().reconnect();
     }
 
     public void reloadProperties() {
+        com.gmt2001.Console.debug.println("Check Panel Login");
         this.checkPanelLogin();
 
+        com.gmt2001.Console.debug.println("Set OAuth");
         Helix.instance().setOAuth(CaselessProperties.instance().getProperty("apioauth", ""));
 
         if (this.httpAuthenticatedHandler != null) {
+            com.gmt2001.Console.debug.println("Update Authenticated handler");
             this.httpAuthenticatedHandler.updateAuth(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
         }
 
         if (this.oauthHandler != null) {
+            com.gmt2001.Console.debug.println("Update OAuth handler");
             this.oauthHandler.updateAuth();
         }
 
         if (this.httpPanelHandler != null) {
+            com.gmt2001.Console.debug.println("Update Panel handler");
             this.httpPanelHandler.updateAuth();
         }
 
         if (this.httpSetupHandler != null) {
+            com.gmt2001.Console.debug.println("Update Setup handler");
             this.httpSetupHandler.updateAuth();
         }
 
+        com.gmt2001.Console.debug.println("Post PropertiesReloaded");
         EventBus.instance().postAsync(new PropertiesReloadedEvent());
     }
 
@@ -686,6 +718,7 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort panelpassword 30 40 Panel Login
          */
         if (CaselessProperties.instance().getProperty("paneluser", "").contains(":")) {
+            com.gmt2001.Console.debug.println("Fix colon");
             Transaction t = CaselessProperties.instance().startTransaction();
             t.setProperty("paneluser", CaselessProperties.instance().getProperty("paneluser", "").replace(":", ""));
             t.commit();
@@ -695,6 +728,7 @@ public final class PhantomBot implements Listener {
             com.gmt2001.Console.warn.println("");
         }
         if (CaselessProperties.instance().getProperty("panelpassword", "").isBlank()) {
+            com.gmt2001.Console.debug.println("Generate password");
             String pass = PhantomBot.generateRandomString(12);
             Transaction t = CaselessProperties.instance().startTransaction();
             t.setProperty("panelpassword", pass);
@@ -726,19 +760,29 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart webenable
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
+            com.gmt2001.Console.debug.println("Check Panel Login");
             this.checkPanelLogin();
+            com.gmt2001.Console.debug.println("Init Web Server");
             HTTPWSServer.instance();
+            com.gmt2001.Console.debug.println("Register NoAuth handler");
             new HTTPNoAuthHandler().register();
+            com.gmt2001.Console.debug.println("Register Setup handler");
             this.httpSetupHandler = new HttpSetupHandler();
             this.httpSetupHandler.register();
+            com.gmt2001.Console.debug.println("Register Authenticated handler");
             this.httpAuthenticatedHandler = new HTTPAuthenticatedHandler(CaselessProperties.instance().getProperty("webauth"), this.getPanelOAuth().replace("oauth:", ""));
             this.httpAuthenticatedHandler.register();
+            com.gmt2001.Console.debug.println("Register Panel handler");
             this.httpPanelHandler = new HTTPPanelAndYTHandler();
             this.httpPanelHandler.register();
+            com.gmt2001.Console.debug.println("Register OAuth handler");
             this.oauthHandler = new HTTPOAuthHandler();
             this.oauthHandler.register();
+            com.gmt2001.Console.debug.println("Register WS Panel handler");
             this.panelHandler = (WsPanelHandler) new WsPanelHandler(CaselessProperties.instance().getProperty("webauthro"), CaselessProperties.instance().getProperty("webauth")).register();
+            com.gmt2001.Console.debug.println("Register WS Remote handler");
             new WsPanelRemoteLoginHandler().register();
+            com.gmt2001.Console.debug.println("Register RestartRunner");
             RestartRunner.instance().register();
         }
     }
@@ -746,24 +790,30 @@ public final class PhantomBot implements Listener {
     private void initConsoleEventBus() {
         /* check if the console is interactive */
         if (System.getProperty("interactive") != null) {
+            com.gmt2001.Console.debug.println("Init input listener");
             ConsoleInputListener consoleIL = new ConsoleInputListener();
             /* Start the Console Input Listener */
             consoleIL.start();
         }
 
         /* Register PhantomBot (this) with the event bus. */
+        com.gmt2001.Console.debug.println("Register PhantomBot EventBus");
         EventBus.instance().register(this);
         /* Register the script manager with the event bus. */
+        com.gmt2001.Console.debug.println("Register ScriptEventManager EventBus");
         EventBus.instance().register(ScriptEventManager.instance());
         /* Register the console event handler */
+        com.gmt2001.Console.debug.println("Register ConsoleEventHandler EventBus");
         EventBus.instance().register(ConsoleEventHandler.instance());
     }
 
     private void initAPIsWebConfigs() {
         if (!TwitchValidate.instance().isChatValid()) {
+            com.gmt2001.Console.debug.println("Bot OAuth not set");
             return;
         }
 
+        com.gmt2001.Console.debug.println("Register Alerts handler");
         this.alertsPollsHandler = (WsAlertsPollsHandler) new WsAlertsPollsHandler(CaselessProperties.instance().getProperty("webauthro"),
                 CaselessProperties.instance().getProperty("webauth")).register();
 
@@ -774,6 +824,7 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart musicenable
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("musicenable", true)) {
+            com.gmt2001.Console.debug.println("Register YT handler");
             this.ytHandler = (WsYTHandler) new WsYTHandler(CaselessProperties.instance().getProperty("ytauthro"), CaselessProperties.instance().getProperty("ytauth")).register();
         }
         /* Connect to Discord if the data is present. */
@@ -783,6 +834,7 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart discord_token
          */
         if (!CaselessProperties.instance().getProperty("discord_token", "").isEmpty()) {
+            com.gmt2001.Console.debug.println("Init Discord");
             DiscordAPI.instance().connect(CaselessProperties.instance().getProperty("discord_token", ""));
         }
 
@@ -793,6 +845,7 @@ public final class PhantomBot implements Listener {
          * @botpropertyrestart youtubekey
          */
         if (!CaselessProperties.instance().getProperty("youtubekey", "").isEmpty()) {
+            com.gmt2001.Console.debug.println("Init YT API");
             YouTubeAPIv3.instance().SetAPIKey(CaselessProperties.instance().getProperty("youtubekey", ""));
         }
 
@@ -804,6 +857,7 @@ public final class PhantomBot implements Listener {
         String http = (CaselessProperties.instance().getPropertyAsBoolean("usehttps", true) ? "https://" : "http://");
 
         try {
+            com.gmt2001.Console.debug.println("Generate YT Player Config");
             data += "// Configuration for YTPlayer\r\n";
             data += "// Automatically Generated by PhantomBot at Startup\r\n";
             data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
@@ -828,6 +882,7 @@ public final class PhantomBot implements Listener {
         /* Create configuration for YTPlayer Playlist v2.0 for the WS port. */
         data = "";
         try {
+            com.gmt2001.Console.debug.println("Generate YT Playlist Config");
             data += "//Configuration for YTPlayer\r\n";
             data += "//Automatically Generated by PhantomBot at Startup\r\n";
             data += "//Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
@@ -852,6 +907,7 @@ public final class PhantomBot implements Listener {
         /* Create configuration for Read-Only Access to WS port. */
         data = "";
         try {
+            com.gmt2001.Console.debug.println("Generate Panel Config");
             data += "// Configuration for Control Panel\r\n";
             data += "// Automatically Generated by PhantomBot at Startup\r\n";
             data += "// Do NOT Modify! Overwritten when PhantomBot is restarted!\r\n";
@@ -879,6 +935,7 @@ public final class PhantomBot implements Listener {
     @SuppressWarnings({"removal"})
     private void initScripts() {
         if (!TwitchValidate.instance().isChatValid()) {
+            com.gmt2001.Console.debug.println("Bot OAuth not set");
             return;
         }
         /* Export all these to the $. api in the scripts. */
@@ -887,6 +944,7 @@ public final class PhantomBot implements Listener {
          * @botpropertycatsort owner 40 10 Admin
          * @botpropertyrestart owner
          */
+        com.gmt2001.Console.debug.println("Init globals");
         Script.global.defineProperty("inidb", DataStore.instance(), 0);
         Script.global.defineProperty("datastore", Datastore2.instance(), 0);
         Script.global.defineProperty("username", UsernameCache.instance(), 0);
@@ -915,6 +973,7 @@ public final class PhantomBot implements Listener {
 
         /* And finally try to load init, that will then load the scripts */
         try {
+            com.gmt2001.Console.debug.println("Load init.js");
             ScriptManager.loadScript(new File("./scripts/init.js"), "init.js");
         } catch (IOException ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
@@ -923,6 +982,7 @@ public final class PhantomBot implements Listener {
 
     private void init() {
         /* open a new thread for when the bot is exiting */
+        com.gmt2001.Console.debug.println("Set exit handler");
         Thread thread = new Thread(() -> {
             this.onExit();
         }, "tv.phantombot.PhantomBot::onExit");
@@ -931,6 +991,7 @@ public final class PhantomBot implements Listener {
         Runtime.getRuntime().addShutdownHook(thread);
 
         /* Check for a update with PhantomBot */
+        com.gmt2001.Console.debug.println("Check update");
         this.doCheckPhantomBotUpdate();
 
         /* Perform SQLite datbase backups. */
@@ -940,6 +1001,7 @@ public final class PhantomBot implements Listener {
          *
          */
         if (CaselessProperties.instance().getPropertyAsBoolean("backupdbauto", CaselessProperties.instance().getPropertyAsBoolean("backupsqliteauto", Datastore2.instance().defaultBackupPreference()))) {
+            com.gmt2001.Console.debug.println("Backup on boot");
             this.doBackupDB();
         }
 
@@ -957,49 +1019,60 @@ public final class PhantomBot implements Listener {
         this.print(this.getBotName() + " is shutting down...");
 
         this.print("Sending the shutdown event to scripts...");
+        com.gmt2001.Console.debug.println("Send Shutdown event");
         EventBus.instance().post(new ShutdownEvent());
 
         this.isExiting = true;
         PhantomBot.isInExitState = true;
 
         this.print("Stopping all events and message dispatching...");
+        com.gmt2001.Console.debug.println("Kill file watcher and event manager");
         ScriptFileWatcher.instance().kill();
         ScriptEventManager.instance().kill();
 
         /* Gonna need a way to pass this to all channels */
         if (this.getSession() != null) {
+            com.gmt2001.Console.debug.println("Close session");
             this.getSession().close();
         } else if (this.tmi != null) {
+            com.gmt2001.Console.debug.println("Close TMI");
             this.tmi.shutdown();
         }
 
+        com.gmt2001.Console.debug.println("Shutdown EventSub");
         EventSub.instance().shutdown();
 
         /* Shutdown all caches */
         if (this.twitchCache != null) {
             this.print("Terminating the Twitch status cache...");
+            com.gmt2001.Console.debug.println("Kill TwitchCache");
             TwitchCache.instance().kill();
         }
 
         if (this.followersCache != null) {
             this.print("Terminating the Twitch channel follower cache...");
+            com.gmt2001.Console.debug.println("Kill FollowersCache");
             FollowersCache.instance().kill();
         }
 
         this.print("Terminating the Streamlabs cache...");
+        com.gmt2001.Console.debug.println("Kill DonationsCache");
         DonationsCache.instance().kill();
 
         if (this.tipeeeStreamCache != null) {
             this.print("Terminating the TipeeeStream cache...");
+            com.gmt2001.Console.debug.println("Kill TipeeeStreamCache");
             TipeeeStreamCache.instance().kill();
         }
 
         if (this.streamElementCache != null) {
             this.print("Terminating the StreamElementsCache cache...");
+            com.gmt2001.Console.debug.println("Kill StreamElementsCache");
             StreamElementsCache.instance().kill();
         }
 
         this.print("Terminating all script modules...");
+        com.gmt2001.Console.debug.println("Kill scripts");
         Map<String, Script> scripts = ScriptManager.getScripts();
         scripts.entrySet().forEach((script) -> {
             script.getValue().kill();
@@ -1008,6 +1081,7 @@ public final class PhantomBot implements Listener {
         /* Check to see if web is enabled */
         if (CaselessProperties.instance().getPropertyAsBoolean("webenable", true)) {
             this.print("Shutting down all web socket/http servers...");
+            com.gmt2001.Console.debug.println("Shutdown HTTP server");
             HTTPWSServer.instance().close();
         }
 
@@ -1023,12 +1097,15 @@ public final class PhantomBot implements Listener {
 
         com.gmt2001.Console.out.print("\r\n");
         this.print("Closing the database...");
+        com.gmt2001.Console.debug.println("Close DB");
         Datastore2.instance().dispose();
 
+        com.gmt2001.Console.debug.println("Save botlogin");
         CaselessProperties.instance().store(false);
 
         if (SystemUtils.IS_OS_LINUX && System.getProperty("interactive") == null) {
             try {
+                com.gmt2001.Console.debug.println("Delete PID");
                 Files.deleteIfExists(Paths.get(Reflect.GetExecutionPath(), "PhantomBot." + this.getBotName() + ".pid"));
             } catch (IOException ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
@@ -1036,11 +1113,13 @@ public final class PhantomBot implements Listener {
         }
 
         try {
+            com.gmt2001.Console.debug.println("Close Rollbar");
             RollbarProvider.instance().close();
         } catch (Exception ex) {
             com.gmt2001.Console.err.printStackTrace(ex);
         }
 
+        com.gmt2001.Console.debug.println("Kill ExecutorService");
         ExecutorService.shutdown();
 
         this.print(this.getBotName() + " is exiting.");
@@ -1077,6 +1156,7 @@ public final class PhantomBot implements Listener {
         com.gmt2001.Console.debug.println("TwitchValidate.hasAPIScope(channel:read:redemption)=" + (TwitchValidate.instance().hasAPIScope("channel:read:redemptions") ? "t" : "f"));
 
         /* Load the caches for each channels */
+        com.gmt2001.Console.debug.println("Init Caches");
         this.twitchTeamCache = TwitchTeamsCache.instance(this.getChannelName());
         this.emotesCache = EmotesCache.instance();
         this.followersCache = FollowersCache.instance();
@@ -1091,6 +1171,8 @@ public final class PhantomBot implements Listener {
         Script.global.defineProperty("emotes", this.emotesCache, 0);
         Script.global.defineProperty("followers", this.followersCache, 0);
         Script.global.defineProperty("usernameCache", this.viewerListCache, 0);
+
+        com.gmt2001.Console.debug.println("Init EventSub");
         EventSub.instance();
     }
 
