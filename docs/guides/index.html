@@ -254,7 +254,7 @@
                         if (tokens[idx].title && tokens[idk].title.toLowerCase() == '##guide_link') {
                             return '<a href="#" onclick="window.loadGuideJump(\'' + tokens[idx].href + '&channel=' + currentChannel + '\')">';
                         } else {
-                            return md.renderer.rules.old_link_open;
+                            return md.renderer.rules.old_link_open(tokens, idx);
                         }
                     };
                 });
