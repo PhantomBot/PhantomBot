@@ -6,17 +6,6 @@ This page is for users who selected **I will authorize only the Bot, the Broadca
 
 If you selected **I will authorize both the Bot and the Broadcaster**, continue to [Both OAuth](guide=content/setupbot/oauth/step3-a "##guide_link") instead
 
-### Authorize the Bot OAuth
-- You can review the list of Authorization Scopes (permissions) that PhantomBot requests for the bot account and the use for each scope on the PhantomBot OAuth page
-- Scroll to the bottom and click **Connect with Twitch Bot**
-  
-  ![Connect with Twitch Bot Button](./images/oauth/oauth_bot_button.png)
-- When the Twitch authorization page loads, ensure it is showing your **bot** account at the top
-  - This is the account that you want to appear in Twitch chat when the bot sends messages
-  - If the wrong account is displayed, click the **not you? log out** link and then login with the desired bot account
-- Review the requested permissions and then click **Authorize**
-- After you are redirected back to the PhantomBot OAuth page, ensure you get a green success message near the top of the screen
-
 ### Prepare for Broadcaster Authorization
 - Return to the **Manage** page for your application on the Twitch Developer Portal
 - Next to the original OAuth URL, click the **Add** button
@@ -28,6 +17,17 @@ If you selected **I will authorize both the Bot and the Broadcaster**, continue 
   - If the URL does not perfectly match, OAuth will fail later
   - If the URL ever changes, such as if you get a new IP address or domain name, you will need to update this later
 - Click **Save**
+
+### Authorize the Bot OAuth
+- You can review the list of Authorization Scopes (permissions) that PhantomBot requests for the bot account and the use for each scope on the PhantomBot OAuth page
+- Scroll to the bottom and click **Connect with Twitch Bot**
+  
+  ![Connect with Twitch Bot Button](./images/oauth/oauth_bot_button.png)
+- When the Twitch authorization page loads, ensure it is showing your **bot** account at the top
+  - This is the account that you want to appear in Twitch chat when the bot sends messages
+  - If the wrong account is displayed, click the **not you? log out** link and then login with the desired bot account
+- Review the requested permissions and then click **Authorize**
+- After you are redirected back to the PhantomBot OAuth page, ensure you get a green success message near the top of the page
 
 ### Authorize the Broadcaster OAuth
 - On the PhantomBot OAuth page, click the **Generate Broadcaster Temporary Password** button (Step 7-8)
@@ -43,7 +43,7 @@ If you selected **I will authorize both the Bot and the Broadcaster**, continue 
   - This is their personal account and is used to authorize API calls on their behalf
   - If the wrong account is displayed, click the **not you? log out** link and then login with the desired broadcaster account
 - After they review the requested permissions, they should click **Authorize**
-- After they are redirected back to the PhantomBot OAuth page, ensure they get a green success message near the top of the screen
+- After they are redirected back to the PhantomBot OAuth page, ensure they get a green success message near the top of the page
 
 ### Enjoy PhantomBot!
 The bot will now connect to the broadcasters chat and be ready for use

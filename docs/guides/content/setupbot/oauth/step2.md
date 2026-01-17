@@ -23,7 +23,7 @@ The next step is to generate and save our Client ID and Secret
   - Copy the Secret into the textbox for step 4-3
   - Ensure you do not accidentally introduce any extra characters, such as spaces
 - Click the **Save Client ID and Secret** button on the PhantomBot OAuth page
-  - A green success message should appear near the top of the screen
+  - If you scroll to the top, a green success message should appear
   - The rest of the PhantomBot OAuth page should become visible
 - Continue to the Next Step, based on which option you selected at the top of the PhantomBot OAuth page
   - If you selected **I will authorize both the Bot and the Broadcaster**, continue to [Both OAuth](guide=content/setupbot/oauth/step3-a "##guide_link")
