@@ -79,6 +79,26 @@ ___Bold Italic___
 
 &nbsp;
 
+#### Link to Another Guide Page
+**Syntax:**
+```markdown
+[FAQ](guide=content-stable/faq "##guide_link")
+```
+
+**Output:** [FAQ](guide=content-stable/faq "##guide_link")
+
+&nbsp;
+
+#### Link to Another Guide Page with Jump to Header
+**Syntax:**
+```markdown
+[FAQ - What is PhantomBot](guide=content/faq&jumpto=faq_what-is-phantombot "##guide_link")
+```
+
+**Output:** [FAQ - What is PhantomBot](guide=content/faq&jumpto=faq_what-is-phantombot "##guide_link")
+
+&nbsp;
+
 #### Image
 **Syntax:**
 ```markdown

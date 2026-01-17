@@ -249,6 +249,14 @@
                         updateHeaders(tokens[idx].hLevel, tokens[idx - 1].content, true);
                         return ' <a style="cursor: pointer;" onclick="$(\'#copy-box\').css(\'top\', $(this).parent().offset().top + $(this).parent().outerHeight() + 5); $(\'#copy-box-input\').val(\'' + window.renderdata + '&jumpto=' + slugifyHeader() + '\'); $(\'#copy-box\').show();"><i class="fas fa-link"></i></a></h' + tokens[idx].hLevel + '>\n';
                     };
+                    md.renderer.rules.old_link_open = md.renderer.rules.link_open;
+                    md.renderer.rules.link_open = function (tokens, idx) {
+                        if (tokens[idx].title && tokens[idk].title.toLowerCase() == '##guide_link') {
+                            return '<a href="#" onclick="window.loadGuideJump(\'' + tokens[idx].href + '&channel=' + currentChannel + '\')">';
+                        } else {
+                            return md.renderer.rules.old_link_open;
+                        }
+                    };
                 });
                 md.use(function (md) {
                     let footnoterefs = {};
@@ -470,12 +478,20 @@
                         checkURLChannel();
                         if (currentChannel === 'stable' && hashmap['guide'].startsWith('content/')) {
                             hashmap['guide'] = hashmap['guide'].replace('content/', 'content-stable/')
+                        } else if (currentChannel === 'nightly' && hashmap['guide'].startsWith('content-stable/')) {
+                            hashmap['guide'] = hashmap['guide'].replace('content-stable/', 'content/')
                         }
                         loadGuide(hashmap['guide']);
                         return true;
                     }
 
                     return false;
+                }
+
+                function loadGuideJump(guidePlusJumpto) {
+                    window.location.hash = guidePlusJumpto;
+                    parseHashMap();
+                    loadURLGuide();
                 }
 
                 function checkURLChannel() {
@@ -555,6 +571,7 @@
                 }
 
                 window.loadGuide = loadGuide;
+                window.loadGuideJump = loadGuideJump;
 
                 $(window).bind('hashchange', function () {
                     parseHashMap();
