@@ -315,18 +315,6 @@ _See the top of this guide for an example output_
 
 &nbsp;
 
-#### YouTube Embed
-**Syntax:**
-```markdown
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
-```
-
-**Output:**
-
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
-
-&nbsp;
-
 #### Heading
 **Syntax:**
 ```markdown

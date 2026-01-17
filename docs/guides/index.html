@@ -192,7 +192,6 @@
         <script src="https://cdn.datatables.net/v/dt/dt-2.3.4/datatables.min.js" integrity="sha384-X2pTSfom8FUa+vGQ+DgTCSyBZYkC1RliOduHa0X96D060s7Q//fnOh3LcazRNHyo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/2.0.1/remarkable.min.js" integrity="sha256-blWQoMt0+lqHvv7q7wShOwoWOiQITkNA/Bssik2U/08=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/gh/noticeable-app/remarkable-iframify@3f504ce11a587010cd4d098be18c931064c62861/index.js"></script>
         <script src="markdown-toc.js"></script>
         <script>
             'use strict';
@@ -239,7 +238,6 @@
                     }
                 });
                 md.use(linkify);
-                md.use(window.iframify);
                 md.use(function (md) {
                     md.renderer.rules.heading_open = function (tokens, idx) {
                         updateHeaders(tokens[idx].hLevel, tokens[idx + 1].content, true);
