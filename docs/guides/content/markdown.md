@@ -82,10 +82,10 @@ ___Bold Italic___
 #### Link to Another Guide Page
 **Syntax:**
 ```markdown
-[FAQ](guide=content-stable/faq "##guide_link")
+[FAQ](guide=content/faq "##guide_link")
 ```
 
-**Output:** [FAQ](guide=content-stable/faq "##guide_link")
+**Output:** [FAQ](guide=content/faq "##guide_link")
 
 &nbsp;
 

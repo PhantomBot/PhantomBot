@@ -1,5 +1,6 @@
 {
     "subfolders": {
+        "oauth": "OAuth Setup"
     },
     "pages": {
         "properties": "Properties for botlogin.txt",

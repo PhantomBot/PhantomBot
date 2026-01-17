@@ -1,0 +1,11 @@
+{
+    "subfolders": {
+    },
+    "pages": {
+        "start": "START: OAuth Setup",
+        "step1": "Step 1: Register Application",
+        "step2": "Step 2: Client ID and Secret",
+        "step3-a": "Step 3-A: Both OAuth",
+        "step3-b": "Step 3-B: Separate OAuth"
+    }
+}
