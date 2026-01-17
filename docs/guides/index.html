@@ -102,6 +102,10 @@
             .hljs-built_in, .hljs-builtin-name {
                 color:#00a6b3 !important;
             }
+            img {
+                height: 75%;
+                width: 75%;
+            }
         </style>
     </head>
 
@@ -458,8 +462,10 @@
                     });
                 }
 
-                function parseHashMap() {
-                    let hash = window.location.hash.slice(1);
+                function parseHashMap(hash) {
+                    if (hash === undefined || hash === null) {
+                        hash = window.location.hash.slice(1);
+                    }
                     let kvs = hash.split('&');
                     let spl;
 
@@ -487,11 +493,8 @@
                 }
 
                 function loadGuideJump(guidePlusJumpto) {
-                    window.location.hash = guidePlusJumpto;
-                    setTimeout(function() {
-                        parseHashMap();
-                        loadURLGuide();
-                    }, 500);
+                    parseHashMap(guidePlusJumpto);
+                    loadURLGuide();
                 }
 
                 function checkURLChannel() {
