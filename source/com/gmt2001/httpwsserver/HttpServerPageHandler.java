@@ -106,7 +106,6 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
                 com.gmt2001.Console.err.printStackTrace(cause);
             }
             sendHttpResponse(ctx, req, prepareHttpResponse(HttpResponseStatus.BAD_REQUEST));
-            RequestLogger.log(ctx);
             return;
         }
 
@@ -376,17 +375,13 @@ public class HttpServerPageHandler extends SimpleChannelInboundHandler<FullHttpR
         boolean isError = res.status().codeClass() == HttpStatusClass.CLIENT_ERROR || res.status().codeClass() == HttpStatusClass.SERVER_ERROR || res.status().codeClass() == HttpStatusClass.UNKNOWN;
         if (!HttpUtil.isKeepAlive(req) || isError || forceclose) {
             res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-            ctx.writeAndFlush(res).addListeners((p) -> {
-                HTTPWSServer.releaseObj(res);
-            }, ChannelFutureListener.CLOSE);
+            ctx.writeAndFlush(res).addListeners(ChannelFutureListener.CLOSE);
         } else {
             if (req.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
                 res.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             }
 
-            ctx.writeAndFlush(res).addListener((p) -> {
-                HTTPWSServer.releaseObj(res);
-            });
+             ctx.writeAndFlush(res);
         }
     }
 

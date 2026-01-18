@@ -18,16 +18,18 @@ package com.gmt2001.dns;
 
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
-import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollIoHandler;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.kqueue.KQueue;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
+import io.netty.channel.kqueue.KQueueIoHandler;
 import io.netty.channel.kqueue.KQueueServerSocketChannel;
 import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
@@ -88,12 +90,12 @@ public final class EventLoopDetector {
      */
     public static EventLoopGroup createEventLoopGroup() {
         if (ISEPOLLAVAILABLE) {
-            return new EpollEventLoopGroup();
+            return new MultiThreadIoEventLoopGroup(EpollIoHandler.newFactory());
         } else if (ISKQUEUEAVAILABLE) {
-            return new KQueueEventLoopGroup();
+            return new MultiThreadIoEventLoopGroup(KQueueIoHandler.newFactory());
         }
 
-        return new NioEventLoopGroup();
+        return new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
     }
 
     /**

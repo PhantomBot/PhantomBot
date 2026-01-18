@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptableObject;
@@ -134,11 +133,6 @@ public class Script {
         }
 
         context = ctxFactory.enterContext();
-        context.setLanguageVersion(Context.VERSION_ES6);
-
-        if (!PhantomBot.getEnableRhinoDebugger()) {
-            context.setOptimizationLevel(9);
-        }
 
         scope = context.initStandardObjects(vars, false);//Normal scripting object.
         scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
@@ -147,6 +141,7 @@ public class Script {
 
         /* Configure debugger. */
         if (PhantomBot.getEnableRhinoDebugger() && debugger != null) {
+            context.setGeneratingDebug(true);
             if (file.getName().endsWith("init.js")) {
                 debugger.setBreakOnEnter(false);
                 debugger.setScope(scope);
@@ -157,8 +152,13 @@ public class Script {
 
         try {
             context.evaluateString(scope, Files.readString(file.toPath()), file.getName(), 1, null);
-        } catch (EvaluatorException | IOException ex) {
+        } catch (IOException | RhinoException ex) {
+            com.gmt2001.Console.err.println(ex.getMessage());
             com.gmt2001.Console.err.printStackTrace(ex, Map.of("file", this.getPath()));
+        } catch (Throwable t) { // catch byte-code errors (After Rhino Compilation)
+            com.gmt2001.Console.err.printStackTrace(t, Map.of("file", this.getPath()));
+        } finally {
+            Context.exit();
         }
     }
 
@@ -209,7 +209,6 @@ public class Script {
         ObservingDebugger od = new ObservingDebugger();
         context.setDebugger(od, 0);
         context.setGeneratingDebug(true);
-        context.setOptimizationLevel(-1);
         doDestroyables();
         od.setDisconnected(true);
         killed = true;
