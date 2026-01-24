@@ -291,7 +291,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.net.UnknownHostException.class) || error.getMessage().contains("java.net.UnknownHostException")) {
+                                if (error.getClass().equals(java.net.UnknownHostException.class) || error.getMessage().contains("UnknownHostException")) {
                                     return true;
                                 }
 
