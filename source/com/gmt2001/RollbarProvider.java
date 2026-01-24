@@ -207,7 +207,7 @@ public final class RollbarProvider implements AutoCloseable {
                                 }
 
                                 if (error.getClass().equals(discord4j.rest.http.client.ClientException.class)
-                                    && error.getMessage().matches("(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found)")) {
+                                    && error.getMessage().matches(".*(400 Bad Request|401 Unauthorized|403 Forbidden|404 Not Found).*")) {
                                     return true;
                                 }
 
@@ -235,7 +235,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().matches("SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB|FULL)")) {
+                                if (error.getMessage().matches(".*SQLITE_(BUSY|CORRUPT|READONLY|CONSTRAINT|CANTOPEN|PROTOCOL|IOERR|NOTADB|FULL|LOCKED).*")) {
                                     return true;
                                 }
 
@@ -291,7 +291,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getClass().equals(java.net.UnknownHostException.class) || error.getMessage().contains("java.net.UnknownHostException")) {
+                                if (error.getClass().equals(java.net.UnknownHostException.class) || error.getMessage().contains("UnknownHostException")) {
                                     return true;
                                 }
 
@@ -359,7 +359,7 @@ public final class RollbarProvider implements AutoCloseable {
                                     return true;
                                 }
 
-                                if (error.getMessage().matches("\\\"status\\\":[45][0-9]{2}")) {
+                                if (error.getMessage().matches(".*\\\"status\\\":[45][0-9]{2}.*")) {
                                     return true;
                                 }
 
