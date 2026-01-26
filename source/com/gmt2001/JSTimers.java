@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.gmt2001.util.concurrent.ExecutorService;
 
@@ -133,8 +134,8 @@ public class JSTimers {
         private final String name;
         private final Runnable callback;
         private final boolean isInterval;
-        private boolean isCancelled = false;
-        private ScheduledFuture<?> future = null;
+        private AtomicBoolean  isCancelled = new AtomicBoolean(false);
+        private volatile ScheduledFuture<?> future = null;
 
         public JSTimer(String name, boolean isInterval, Runnable callback) {
             this.name = name + (isInterval ? " [interval]" : "");
@@ -147,25 +148,31 @@ public class JSTimers {
         }
 
         public void cancel() {
-            this.isCancelled = true;
-            if (this.future != null) {
-                this.future.cancel(false);
+            if (isCancelled.compareAndSet(false, true)) {
+                ScheduledFuture<?> f = this.future;
+                if (f != null) {
+                    f.cancel(false);
+                }
             }
         }
 
         public boolean isCancelled() {
-            return this.isCancelled;
+            return this.isCancelled.get();
         }
 
         public void run() {
-            Thread.currentThread().setName("com.gmt2001.JSTimers(" + this.name + ")");
-            if (!this.isCancelled) {
-                try {
-                    this.callback.run();
-                } finally {
-                    if (!this.isInterval) {
-                        this.isCancelled = true;
-                    }
+            Thread t = Thread.currentThread();
+            String oldThreadName = t.getName();
+            t.setName("com.gmt2001.JSTimers(" + this.name + ")");
+            try {
+                if (this.isCancelled.get()) {
+                    return;
+                }
+                this.callback.run();
+            } finally {
+                t.setName(oldThreadName);
+                if (!this.isInterval) {
+                    this.isCancelled.set(true);
                 }
             }
         }

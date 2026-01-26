@@ -99,6 +99,28 @@ public final class ConsoleEventHandler implements Listener {
     }
 
     /**
+     * Starts a new transaction if none is setup
+     */
+    private void startTransaction() {
+        if (transaction == null || transaction.isCommitted()) {
+            transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
+        }
+    }
+
+    /**
+     * Finishes previously started transaction.
+     * Saving the settings, informing the user
+     * and shutting down the bot
+     */
+    private void finishTransaction() {
+        transaction.commit();
+        com.gmt2001.Console.out.println("");
+        com.gmt2001.Console.out.println("Changes have been saved, now exiting PhantomBot.");
+        com.gmt2001.Console.out.println("");
+        PhantomBot.exitOK();
+    }
+
+    /**
      * Method that is triggered when the console event fires.
      *
      * @param event
@@ -108,8 +130,6 @@ public final class ConsoleEventHandler implements Listener {
     public void onConsoleInput(ConsoleInputEvent event) throws JSONException {
         // The message said in the console.
         String message = event.getMessage();
-        // If settings were changed.
-        boolean changed = false;
         // Arguments of the message string.
         String arguments = "";
         // Split arguments of the message string.
@@ -118,10 +138,6 @@ public final class ConsoleEventHandler implements Listener {
         // If the message is null, or empty ignore everything below.
         if (message == null || message.isEmpty()) {
             return;
-        }
-
-        if (transaction == null || transaction.isCommitted()) {
-            transaction = CaselessProperties.instance().startTransaction(Transaction.PRIORITY_MAX);
         }
 
         if (message.startsWith("!")) {
@@ -142,6 +158,7 @@ public final class ConsoleEventHandler implements Listener {
          */
         if (message.equalsIgnoreCase("forceoauthrefresh")) {
             PhantomBot.instance().getAuthFlow().refresh();
+            return;
         }
 
         /**
@@ -378,6 +395,7 @@ public final class ConsoleEventHandler implements Listener {
                             PhantomBot.generateRandomString(8)));
                 }
             }
+            return;
         }
 
         /**
@@ -752,6 +770,7 @@ public final class ConsoleEventHandler implements Listener {
          * @consolecommand mysqlsetup - Sets up MySQL.
          */
         if (message.equalsIgnoreCase("mysqlsetup")) {
+            startTransaction();
             System.out.println("");
             System.out.println("PhantomBot MySQL setup.");
             System.out.println("");
@@ -780,7 +799,8 @@ public final class ConsoleEventHandler implements Listener {
             transaction.setProperty("datastore", dataStoreType);
 
             com.gmt2001.Console.out.println("PhantomBot MySQL setup done, PhantomBot will exit.");
-            changed = true;
+            finishTransaction();
+            return;
         }
 
         /**
@@ -842,10 +862,11 @@ public final class ConsoleEventHandler implements Listener {
             if (res.success) {
                 JSONObject j = new JSONObject(res.content);
                 String twitchAlertsKey = j.getString("access_token");
+                startTransaction();
                 transaction.setProperty("twitchalertskey", twitchAlertsKey);
 
                 System.out.println("PhantomBot StreamLabs setup done, PhantomBot will exit.");
-                changed = true;
+                finishTransaction();
             } else if (res.httpCode == 400) {
                 JSONObject e = new JSONObject(res.content);
                 System.out.println("PhantomBot StreamLabs setup failed");
@@ -858,6 +879,7 @@ public final class ConsoleEventHandler implements Listener {
                 System.err.println(res.content);
                 System.err.println(res.exception);
             }
+            return;
         }
 
         /**
@@ -870,10 +892,12 @@ public final class ConsoleEventHandler implements Listener {
 
             System.out.print("Please enter your TipeeeStream Api OAuth: ");
             String tipeeeStreamOAuth = com.gmt2001.Console.in.readLine().trim();
+            startTransaction();
             transaction.setProperty("tipeeestreamkey", tipeeeStreamOAuth);
 
             System.out.println("PhantomBot TipeeeStream setup done, PhantomBot will exit.");
-            changed = true;
+            finishTransaction();
+            return;
         }
 
         /**
@@ -887,6 +911,7 @@ public final class ConsoleEventHandler implements Listener {
 
             System.out.print("Please enter a username of your choice: ");
             String panelUsername = com.gmt2001.Console.in.readLine().trim();
+            startTransaction();
             transaction.setProperty("paneluser", panelUsername);
 
             System.out.print("Please enter a password of your choice: ");
@@ -894,7 +919,8 @@ public final class ConsoleEventHandler implements Listener {
             transaction.setProperty("panelpassword", panelPassword);
 
             System.out.println("PhantomBot Web Panel setup done, PhantomBot will exit.");
-            changed = true;
+            finishTransaction();
+            return;
         }
 
         /**
@@ -906,9 +932,11 @@ public final class ConsoleEventHandler implements Listener {
             System.out.println("");
             System.out.println("Please enter the YouTube API key that you have acquired: ");
             String youtubeKey = com.gmt2001.Console.in.readLine().trim();
+            startTransaction();
             transaction.setProperty("youtubekey", youtubeKey);
             System.out.println("PhantomBot YouTube API key setup done, PhantomBot will exit.");
-            changed = true;
+            finishTransaction();
+            return;
         }
 
         /**
@@ -917,6 +945,7 @@ public final class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("dumpheap")) {
             Reflect.dumpHeap();
             com.gmt2001.Console.out.println("Heap Dump Completed");
+            return;
         }
 
         /**
@@ -925,67 +954,78 @@ public final class ConsoleEventHandler implements Listener {
         if (message.equalsIgnoreCase("dumpthreads")) {
             Reflect.dumpThreads();
             com.gmt2001.Console.out.println("Thread Dump Completed");
+            return;
         }
 
         if (message.equalsIgnoreCase("paneluser")) {
-            if (argument != null && argument.length > 1 && !argument[0].isBlank() && !argument[1].isBlank()) {
-                /**
-                 * @consolecommand paneluser add username - Creates a new panel user with full
-                 *                 access to all panel sections if the user does not exist and
-                 *                 prints the randomly generated password
-                 */
-                if (argument[0].equalsIgnoreCase("add")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(argument[1], false);
-                    com.gmt2001.Console.out.println("Password for new user " + argument[1] + " is:");
-                    com.gmt2001.Console.out.println(response.getMessage());
-                }
-                /**
-                 * @consolecommand paneluser delete username - Deletes a panel user if the user
-                 *                 exists
-                 */
-                else if (argument[0].equalsIgnoreCase("delete")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.deleteUser(argument[1]);
-                    com.gmt2001.Console.out.println(response.getMessage());
-                }
-                /**
-                 * @consolecommand paneluser enable username - Enables a panel user if the user
-                 *                 exists
-                 */
-                else if (argument[0].equalsIgnoreCase("enable")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null,
-                            (Map<String, PanelUserHandler.Permission>) null, true);
-                    com.gmt2001.Console.out.println(response.getMessage());
-                }
-                /**
-                 * @consolecommand paneluser enable username - Disables a panel user if the user
-                 *                 exists
-                 */
-                else if (argument[0].equalsIgnoreCase("disable")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null,
-                            (Map<String, PanelUserHandler.Permission>) null, false);
-                    com.gmt2001.Console.out.println(response.getMessage());
-                }
-                /**
-                 * @consolecommand paneluser resetpassword username - Resets a panel users
-                 *                 password if the user exists and prints the new and randomly
-                 *                 generated password
-                 */
-                else if (argument[0].equalsIgnoreCase("resetpassword")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(argument[1]);
-                    com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
-                    com.gmt2001.Console.out.println(response.getMessage());
-                }
-                /**
-                 * @consolecommand paneluser resetpermission username - Gives a panel user full
-                 *                 access to all panel sections if the user exists
-                 */
-                else if (argument[0].equalsIgnoreCase("resetpermission")) {
-                    PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null,
-                            PanelUserHandler.getFullAccessPermissions(), false);
-                    com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
-                    com.gmt2001.Console.out.println(response.getMessage());
-                }
+            if (argument == null || argument.length < 1 || argument[0].isBlank() || argument[1].isBlank()) {
+                com.gmt2001.Console.out.println("Invalid paneluser command");
+                com.gmt2001.Console.out.println("Usage: paneluser add/delete/enable/disable/resetpassword/resetpermission username");
+                return;
             }
+            /**
+             * @consolecommand paneluser add username - Creates a new panel user with full
+             *                 access to all panel sections if the user does not exist and
+             *                 prints the randomly generated password
+             */
+            if (argument[0].equalsIgnoreCase("add")) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.createNewUser(argument[1], false);
+                com.gmt2001.Console.out.println("Password for new user " + argument[1] + " is:");
+                com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            /**
+             * @consolecommand paneluser delete username - Deletes a panel user if the user
+             *                 exists
+             */
+            else if (argument[0].equalsIgnoreCase("delete")) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.deleteUser(argument[1]);
+                com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            /**
+             * @consolecommand paneluser enable username - Enables a panel user if the user
+             *                 exists
+             */
+            else if (argument[0].equalsIgnoreCase("enable")) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null,
+                        (Map<String, PanelUserHandler.Permission>) null, true);
+                com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            /**
+             * @consolecommand paneluser enable username - Disables a panel user if the user
+             *                 exists
+             */
+            else if (argument[0].equalsIgnoreCase("disable")) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null,
+                        (Map<String, PanelUserHandler.Permission>) null, false);
+                com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            /**
+             * @consolecommand paneluser resetpassword username - Resets a panel users
+             *                 password if the user exists and prints the new and randomly
+             *                 generated password
+             */
+            else if (argument[0].equalsIgnoreCase("resetpassword")) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.resetPassword(argument[1]);
+                com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
+                com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            /**
+             * @consolecommand paneluser resetpermission username - Gives a panel user full
+             *                 access to all panel sections if the user exists
+             */
+            else if (argument[0].equalsIgnoreCase("resetpermission")) {
+                PanelUserHandler.PanelMessage response = PanelUserHandler.editUser(argument[1], null,
+                        PanelUserHandler.getFullAccessPermissions(), false);
+                com.gmt2001.Console.out.println("New password for user " + argument[1] + " is:");
+                com.gmt2001.Console.out.println(response.getMessage());
+                return;
+            }
+            return;
         }
 
         /**
@@ -1142,16 +1182,7 @@ public final class ConsoleEventHandler implements Listener {
             } catch (Exception ex) {
                 com.gmt2001.Console.err.printStackTrace(ex);
             }
-        }
 
-        // Check to see if any settings have been changed.
-        if (changed) {
-            transaction.commit();
-
-            com.gmt2001.Console.out.println("");
-            com.gmt2001.Console.out.println("Changes have been saved, now exiting PhantomBot.");
-            com.gmt2001.Console.out.println("");
-            PhantomBot.exitOK();
             return;
         }
 

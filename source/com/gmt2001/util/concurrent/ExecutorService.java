@@ -22,7 +22,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Provides an interface to a shared {@link ScheduledExecutorService}
@@ -31,7 +33,19 @@ import java.util.concurrent.TimeUnit;
  */
 public final class ExecutorService {
 
-    private static final ScheduledExecutorService SCHEDULEDEXECUTOR = Executors.newScheduledThreadPool(4);
+    private static final AtomicInteger POOL_THREAD_ID = new AtomicInteger(1);
+    private static final ThreadFactory NAMED_THREAD_FACTORY = r -> {
+        Thread t = new Thread(r);
+        t.setName("Phantombot-Executor-Thread-" + POOL_THREAD_ID.getAndIncrement());
+        t.setUncaughtExceptionHandler((thread, ex) -> {
+                com.gmt2001.Console.err.println("Uncaught exception in " + thread.getName());
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        );
+        return t;
+    };
+
+    private static final ScheduledExecutorService SCHEDULEDEXECUTOR = Executors.newScheduledThreadPool(4, NAMED_THREAD_FACTORY);
     private static boolean shutdown = false;
 
     private ExecutorService() {

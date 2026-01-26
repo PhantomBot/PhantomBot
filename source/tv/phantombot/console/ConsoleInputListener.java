@@ -22,18 +22,16 @@ import tv.phantombot.event.console.ConsoleInputEvent;
 public class ConsoleInputListener extends Thread {
 
     @Override
-    @SuppressWarnings("SleepWhileInLoop")
     public void run() {
         Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
+        Thread.currentThread().setName("ConsoleInputListener::runner");
 
         while (true) {
-            try {
-                String msg = com.gmt2001.Console.in.readLine();
-                EventBus.instance().postAsync(new ConsoleInputEvent(msg));
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                com.gmt2001.Console.err.printStackTrace(e);
+            String msg = com.gmt2001.Console.in.readLine();
+            if (msg == null || msg.isEmpty()) {
+                continue;
             }
+            EventBus.instance().postAsync(new ConsoleInputEvent(msg));
         }
     }
 }

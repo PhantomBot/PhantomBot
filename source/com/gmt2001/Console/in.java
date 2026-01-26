@@ -44,12 +44,9 @@ public final class in {
 
             return s;
         } catch (IOException ex) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex2) {
-            }
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
 
-        return "";
+        return null;
     }
 }
