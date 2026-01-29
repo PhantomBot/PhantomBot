@@ -62,7 +62,7 @@ public class EmotesCache {
                 SevenTVAPIv3.instance()
         );
 
-        update = ExecutorService.scheduleAtFixedRate(() -> {
+       this.update = ExecutorService.scheduleAtFixedRate(() -> {
             this.run();
         }, 0, INTERVAL_MINUTES, TimeUnit.MINUTES);
     }

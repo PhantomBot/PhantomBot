@@ -64,7 +64,7 @@ public class TwitchTeamsCache {
     private TwitchTeamsCache(String channelName) {
         this.channelName = channelName;
 
-        update = ExecutorService.scheduleAtFixedRate(() -> {
+       this.update = ExecutorService.scheduleAtFixedRate(() -> {
             this.run();
         }, 0, INTERVAL_MINUTES, TimeUnit.MINUTES);
     }

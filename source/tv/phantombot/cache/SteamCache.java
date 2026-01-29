@@ -39,7 +39,7 @@ public class SteamCache {
      * Class constructor.
      */
     private SteamCache() {
-        update = ExecutorService.scheduleAtFixedRate(() -> {
+       this.update = ExecutorService.scheduleAtFixedRate(() -> {
             this.run();
         }, 0, INTERVAL_MINUTES, TimeUnit.MINUTES);
     }
