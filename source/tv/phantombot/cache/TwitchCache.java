@@ -137,7 +137,6 @@ public final class TwitchCache implements Listener {
             }
             this.syncStreamStatus(true);
             this.streamUpdate = ExecutorService.scheduleAtFixedRate(() -> {
-                Thread.currentThread().setName("TwitchCache::updateCache");
                 com.gmt2001.Console.debug.println("TwitchCache::updateCache");
                 try {
                     this.updateCache();
@@ -146,7 +145,6 @@ public final class TwitchCache implements Listener {
                 }
             }, 0, 30, TimeUnit.SECONDS);
             this.clipUpdate = ExecutorService.scheduleAtFixedRate(() -> {
-                Thread.currentThread().setName("TwitchCache::updateClips");
                 com.gmt2001.Console.debug.println("TwitchCache::updateClips");
                 try {
                     this.updateClips();

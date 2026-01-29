@@ -53,8 +53,8 @@ public final class FollowersCache {
 
     private static final FollowersCache INSTANCE = new FollowersCache();
     private boolean firstUpdate = true;
-    private ScheduledFuture<?> update;
-    private Future<?> fullUpdate;
+    private final ScheduledFuture<?> update;
+    private final Future<?> fullUpdate;
     private ScheduledFuture<?> fullUpdateTimeout = null;
     private int total = 0;
     private boolean killed = false;
@@ -68,7 +68,6 @@ public final class FollowersCache {
 
     private FollowersCache() {
         this.update = ExecutorService.scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("FollowersCache::updateCache");
             com.gmt2001.Console.debug.println("FollowersCache::updateCache");
             try {
                 this.updateCache(false, null, 0);
@@ -83,7 +82,6 @@ public final class FollowersCache {
             });
         }, 30, 30, TimeUnit.SECONDS);
         this.fullUpdate = ExecutorService.submit(() -> {
-            Thread.currentThread().setName("FollowersCache::fullUpdateCache");
             com.gmt2001.Console.debug.println("FollowersCache::fullUpdateCache");
             try {
                 this.updateCache(true, null, 0);
