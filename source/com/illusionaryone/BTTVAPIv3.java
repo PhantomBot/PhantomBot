@@ -38,7 +38,6 @@ public class BTTVAPIv3 {
     }
 
     private BTTVAPIv3() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @SuppressWarnings("UseSpecificCatch")

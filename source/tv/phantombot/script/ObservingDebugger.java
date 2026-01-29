@@ -40,7 +40,6 @@ public class ObservingDebugger implements Debugger {
     }
 
     public ObservingDebugger() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @Override
@@ -69,7 +68,6 @@ class ObservingDebugFrame implements DebugFrame {
     }
 
     ObservingDebugFrame(boolean isDisconnected) {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         this.isDisconnected = isDisconnected;
     }
 

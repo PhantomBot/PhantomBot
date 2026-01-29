@@ -39,9 +39,6 @@ public abstract class MessageQueue extends SubmissionPublisher<Message> implemen
     protected MessageQueue(String channelName) {
         super();
         this.channelName = channelName;
-
-        // Set the default thread uncaught exception handler.
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /**

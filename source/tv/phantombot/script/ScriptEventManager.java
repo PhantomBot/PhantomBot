@@ -50,8 +50,6 @@ public final class ScriptEventManager implements Listener {
      * Class constructor.
      */
     private ScriptEventManager() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
         registerClasses();
     }
 

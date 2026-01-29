@@ -107,7 +107,6 @@ public class Helix {
     private Instant nextWarning = Instant.now();
 
     private Helix() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         ExecutorService.schedule(() -> {
             ExecutorService.scheduleWithFixedDelay(Helix.instance()::processQueue, QUEUE_TIME, QUEUE_TIME, TimeUnit.MILLISECONDS);
         }, 1000, TimeUnit.MILLISECONDS);

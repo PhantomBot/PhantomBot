@@ -128,7 +128,6 @@ public class DiscordAPI extends DiscordUtil {
      */
     private DiscordAPI() {
         super();
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /**

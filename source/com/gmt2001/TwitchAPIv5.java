@@ -57,7 +57,6 @@ public class TwitchAPIv5 {
     }
 
     private TwitchAPIv5() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /**

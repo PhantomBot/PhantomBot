@@ -49,7 +49,6 @@ public class SevenTVAPIv3 implements EmoteProvider {
     }
 
     private SevenTVAPIv3() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     private static HttpClientResponse readJsonFromUrl(String urlAddress) {

@@ -49,7 +49,6 @@ public class CustomAPI {
      * Class constructor.
      */
     private CustomAPI() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /*

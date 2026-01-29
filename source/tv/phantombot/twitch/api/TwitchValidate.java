@@ -81,7 +81,6 @@ public class TwitchValidate {
      */
     private TwitchValidate() {
         // Set the default exception handler thread.
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
         ExecutorService.scheduleAtFixedRate(() -> this.doValidations(), REFRESH_INTERVAL, REFRESH_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
