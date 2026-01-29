@@ -1027,7 +1027,11 @@ public final class PhantomBot implements Listener {
 
         this.print("Stopping all events and message dispatching...");
         com.gmt2001.Console.debug.println("Kill file watcher and event manager");
-        ScriptFileWatcher.instance().kill();
+        try {
+            ScriptFileWatcher.instance().kill();
+        } catch (IOException e) {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
         ScriptEventManager.instance().kill();
 
         /* Gonna need a way to pass this to all channels */
