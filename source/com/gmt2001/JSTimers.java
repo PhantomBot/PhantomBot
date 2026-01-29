@@ -161,16 +161,12 @@ public class JSTimers {
         }
 
         public void run() {
-            Thread t = Thread.currentThread();
-            String oldThreadName = t.getName();
-            t.setName("com.gmt2001.JSTimers(" + this.name + ")");
             try {
                 if (this.isCancelled.get()) {
                     return;
                 }
                 this.callback.run();
             } finally {
-                t.setName(oldThreadName);
                 if (!this.isInterval) {
                     this.isCancelled.set(true);
                 }

@@ -1416,8 +1416,6 @@ public final class PhantomBot implements Listener {
         ExecutorService.scheduleAtFixedRate(() -> {
             if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
                 try {
-                    Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
-
                     if (RepoVersion.isNightlyBuild()) {
                         String latestNightly = HttpClient.get(URIUtil.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
@@ -1486,8 +1484,6 @@ public final class PhantomBot implements Listener {
         }
 
         ExecutorService.scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
-
             Datastore2.instance().backup("phantombot.auto." + Datastore2.instance().backupFileName());
 
             try {
