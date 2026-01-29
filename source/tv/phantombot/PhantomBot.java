@@ -1027,7 +1027,11 @@ public final class PhantomBot implements Listener {
 
         this.print("Stopping all events and message dispatching...");
         com.gmt2001.Console.debug.println("Kill file watcher and event manager");
-        ScriptFileWatcher.instance().kill();
+        try {
+            ScriptFileWatcher.instance().kill();
+        } catch (IOException e) {
+            com.gmt2001.Console.err.printStackTrace(e);
+        }
         ScriptEventManager.instance().kill();
 
         /* Gonna need a way to pass this to all channels */
@@ -1047,6 +1051,12 @@ public final class PhantomBot implements Listener {
             this.print("Terminating the Twitch status cache...");
             com.gmt2001.Console.debug.println("Kill TwitchCache");
             TwitchCache.instance().kill();
+        }
+
+        if (this.twitchTeamCache != null) {
+            this.print("Terminating the Twitch Team cache...");
+            com.gmt2001.Console.debug.println("Kill TwitchTeamsCache");
+            this.twitchTeamCache.kill();
         }
 
         if (this.followersCache != null) {
@@ -1406,8 +1416,6 @@ public final class PhantomBot implements Listener {
         ExecutorService.scheduleAtFixedRate(() -> {
             if (!RepoVersion.isEdgeBuild() && !RepoVersion.isCustomBuild()) {
                 try {
-                    Thread.currentThread().setName("tv.phantombot.PhantomBot::doCheckPhantomBotUpdate");
-
                     if (RepoVersion.isNightlyBuild()) {
                         String latestNightly = HttpClient.get(URIUtil.create("https://raw.githubusercontent.com/PhantomBot/nightly-build/master/last_repo_version")).responseBody().trim();
                         if (latestNightly.equalsIgnoreCase(RepoVersion.getRepoVersion().trim())) {
@@ -1476,8 +1484,6 @@ public final class PhantomBot implements Listener {
         }
 
         ExecutorService.scheduleAtFixedRate(() -> {
-            Thread.currentThread().setName("tv.phantombot.PhantomBot::doBackupDB");
-
             Datastore2.instance().backup("phantombot.auto." + Datastore2.instance().backupFileName());
 
             try {

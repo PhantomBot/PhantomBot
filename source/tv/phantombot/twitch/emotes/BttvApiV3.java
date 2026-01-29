@@ -50,7 +50,6 @@ public class BttvApiV3 implements EmoteProvider {
     }
 
     private BttvApiV3() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     private static HttpClientResponse readJsonFromUrl(String urlAddress) {

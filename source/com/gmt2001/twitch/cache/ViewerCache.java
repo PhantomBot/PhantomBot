@@ -158,8 +158,6 @@ public final class ViewerCache implements Listener {
      * Garbage Collects viewers that have not been seen in a while
      */
     private void doGC() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        Thread.currentThread().setName("ViewerCache::GC");
         final Instant expiresBefore = Instant.now().minus(15, ChronoUnit.MINUTES);
         this.viewers.forEach((k, v) -> {
             if (v.lastSeen().isBefore(expiresBefore) && !v.bot() && !v.broadcaster()) {

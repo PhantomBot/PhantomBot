@@ -52,7 +52,6 @@ public class TipeeeStreamAPIv1 {
      * Builds the instance for this class.
      */
     private TipeeeStreamAPIv1() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /*

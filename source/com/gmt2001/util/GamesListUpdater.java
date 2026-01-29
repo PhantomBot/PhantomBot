@@ -85,8 +85,6 @@ public final class GamesListUpdater {
      * perform a smart update
      */
     public static void update(boolean force) {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
         if (!Files.exists(Paths.get("./web/panel/js/utils/gamesList.txt"))) {
             force = true;
         }

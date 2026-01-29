@@ -56,8 +56,6 @@ public final class HttpRequest {
 
     @SuppressWarnings("UseSpecificCatch")
     public static HttpResponse getData(RequestType type, URI uri, String post, Map<String, String> headers, boolean isJson) {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
         HttpResponse r = new HttpResponse();
         r.url = uri.toASCIIString();
         r.headers = headers;

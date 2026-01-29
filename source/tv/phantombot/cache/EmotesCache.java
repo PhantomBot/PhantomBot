@@ -22,11 +22,14 @@ package tv.phantombot.cache;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Validate;
 
 import com.gmt2001.twitch.cache.ViewerCache;
+import com.gmt2001.util.concurrent.ExecutorService;
 
 import tv.phantombot.event.EventBus;
 import tv.phantombot.event.emotes.EmotesGetEvent;
@@ -37,9 +40,9 @@ import tv.phantombot.twitch.emotes.EmoteProvider;
 import tv.phantombot.twitch.emotes.FrankerFacezApiV1;
 import tv.phantombot.twitch.emotes.SevenTVAPIv3;
 
-public class EmotesCache implements Runnable {
+public class EmotesCache {
 
-    private static final long LOOP_SLEEP_EMOTES = 60L * 60L * 1000L;
+    private static final long INTERVAL_MINUTES = 60;
     private static final EmotesCache INSTANCE = new EmotesCache();
 
     public static EmotesCache instance() {
@@ -47,13 +50,11 @@ public class EmotesCache implements Runnable {
     }
 
     private final List<EmoteProvider> emoteProviders;
-    private final Thread updateThread;
     private Instant timeoutExpire = Instant.now();
     private Instant lastFail = Instant.now();
     private int numFail = 0;
-    private boolean killed = false;
+    private final ScheduledFuture<?> update;
 
-    @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
     private EmotesCache() {
         this.emoteProviders = List.of(
                 BttvApiV3.instance(),
@@ -61,12 +62,9 @@ public class EmotesCache implements Runnable {
                 SevenTVAPIv3.instance()
         );
 
-        this.updateThread = new Thread(this, "tv.phantombot.cache.EmotesCache");
-
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.updateThread.setUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
-        updateThread.start();
+       this.update = ExecutorService.scheduleAtFixedRate(() -> {
+            this.run();
+        }, 0, INTERVAL_MINUTES, TimeUnit.MINUTES);
     }
 
     private void checkLastFail() {
@@ -79,24 +77,14 @@ public class EmotesCache implements Runnable {
         }
     }
 
-    @Override
-    @SuppressWarnings("SleepWhileInLoop")
-    public void run() {
-        while (!killed) {
-            try {
-                if (Instant.now().isAfter(timeoutExpire)) {
-                    this.updateCache();
-                }
-            } catch (Exception ex) {
-                checkLastFail();
-                com.gmt2001.Console.err.printStackTrace(ex);
+    private void run() {
+        try {
+            if (Instant.now().isAfter(timeoutExpire)) {
+                this.updateCache();
             }
-
-            try {
-                Thread.sleep(LOOP_SLEEP_EMOTES);
-            } catch (InterruptedException ex) {
-                com.gmt2001.Console.debug.println("EmotesCache.run: Failed to execute initial sleep: [InterruptedException] " + ex.getMessage());
-            }
+        } catch (Exception ex) {
+            checkLastFail();
+            com.gmt2001.Console.err.printStackTrace(ex);
         }
     }
 
@@ -145,7 +133,7 @@ public class EmotesCache implements Runnable {
     }
 
     public void kill() {
-        killed = true;
+        this.update.cancel(false);
     }
 
     /**

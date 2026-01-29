@@ -51,7 +51,6 @@ public class YouTubeAPIv3 {
     }
 
     private YouTubeAPIv3() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @SuppressWarnings({"SleepWhileInLoop", "UseSpecificCatch"})

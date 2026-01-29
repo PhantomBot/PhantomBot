@@ -1200,7 +1200,6 @@ public class DiscordUtil {
 
         com.gmt2001.Console.debug.println("Attempting to delete " + amount + " messages from " + DiscordUtil.channelName(channel));
         ExecutorService.submit(() -> {
-            Thread.currentThread().setName("tv.phantombot.discord.util.DiscordUtil::bulkDelete");
             channel.getMessagesBefore(channel.getLastMessageId().orElseThrow()).take(amount).collectList().doOnSuccess(msgs -> {
                 com.gmt2001.Console.debug.println("Found " + msgs.size() + " messages to delete");
                 channel.bulkDelete(Flux.fromIterable(msgs).map(msg -> msg.getId())).doOnNext(s -> com.gmt2001.Console.err.println("Rejected message " + s.asString() + " from delete operation for being too old")).doOnError(e -> com.gmt2001.Console.debug.printStackTrace(e)).doOnComplete(() -> com.gmt2001.Console.debug.println("Bulk delete complete")).subscribe();

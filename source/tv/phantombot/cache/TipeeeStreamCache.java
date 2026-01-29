@@ -32,7 +32,7 @@ import tv.phantombot.event.EventBus;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationEvent;
 import tv.phantombot.event.tipeeestream.donate.TipeeeStreamDonationInitializedEvent;
 
-public class TipeeeStreamCache implements Runnable {
+public class TipeeeStreamCache {
 
     private static TipeeeStreamCache instance = null;
     private Map<String, String> cache = new ConcurrentHashMap<>();
@@ -70,7 +70,7 @@ public class TipeeeStreamCache implements Runnable {
         return cache.size();
     }
 
-    public void run() {
+    private void run() {
         try {
             if (TipeeeStreamAPIv1.hasOauth()) {
                 this.updateCache();

@@ -45,7 +45,6 @@ public class FrankerZAPIv1 {
     }
 
     private FrankerZAPIv1() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     @SuppressWarnings("UseSpecificCatch")

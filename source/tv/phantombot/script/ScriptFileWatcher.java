@@ -18,22 +18,38 @@ package tv.phantombot.script;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.nio.file.ClosedWatchServiceException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-public class ScriptFileWatcher implements Runnable {
+import com.gmt2001.util.concurrent.ExecutorService;
 
+public class ScriptFileWatcher {
+
+    private static final long INTERVAL_SECONDS = 5;
     private static ScriptFileWatcher instance;
-    private final List<Script> scripts = new CopyOnWriteArrayList<>();
-    private final Thread thread;
-    private boolean isKilled = false;
+    private final Map<String, Script> scripts = new ConcurrentHashMap<>();
+    private final Map<Path, WatchKey> paths = new ConcurrentHashMap<>();
+    private final ScheduledFuture<?> update;
+    private final WatchService watchService;
 
     /**
      * Method that returns this object.
      *
      * @return
+     * @throws IOException 
      */
-    public static synchronized ScriptFileWatcher instance() {
+    public static synchronized ScriptFileWatcher instance() throws IOException {
         if (instance == null) {
             instance = new ScriptFileWatcher();
         }
@@ -42,13 +58,13 @@ public class ScriptFileWatcher implements Runnable {
 
     /**
      * Class constructor.
+     * @throws IOException 
      */
-    private ScriptFileWatcher() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-
-        this.thread = new Thread(this, "tv.phantombot.script.ScriptFileWatcher::run");
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
-        this.thread.start();
+    private ScriptFileWatcher() throws IOException {
+        this.watchService = Paths.get(".").getFileSystem().newWatchService();
+        this.update = ExecutorService.scheduleAtFixedRate(() -> {
+            this.run();
+        }, INTERVAL_SECONDS, INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
@@ -56,44 +72,77 @@ public class ScriptFileWatcher implements Runnable {
      *
      * @param script - Script to be reloaded.
      */
-    public void addScript(Script script) {
-        scripts.add(script);
+    public synchronized void addScript(Script script) {
+        Path scriptPath = Paths.get(script.getPath()).toAbsolutePath();
+        scripts.put(scriptPath.toString().replace('\\', '/'), script);
+        Path path = scriptPath.getParent();
+        if (!paths.containsKey(path)) {
+            try {
+                WatchKey key = path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+                paths.put(path, key);
+            } catch (IOException | ClosedWatchServiceException ex) {
+                com.gmt2001.Console.err.printStackTrace(ex);
+            }
+        }
     }
 
     /**
      * Method to kill this instance.
      */
     public void kill() {
-        this.isKilled = true;
+        try {
+            this.watchService.close();
+        } catch (IOException ex) {
+            com.gmt2001.Console.err.printStackTrace(ex);
+        }
+        this.update.cancel(false);
     }
 
     /**
      * Method that runs on a new thread to reload scripts.
      */
-    @SuppressWarnings("SleepWhileInLoop")
-    @Override
-    public void run() {
-        while (!isKilled) {
-            try {
-                for (int i = 0; i < scripts.size(); i++) {
-                    Script script = scripts.get(i);
-                    File file = script.getFile();
+    private void run() {
+        boolean isValid = true;
+        try {
+            while (isValid) {
+                WatchKey key = this.watchService.poll();
+                
+                if (key != null) {
+                    for (final WatchEvent<?> event: key.pollEvents()) {
+                        if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
+                            @SuppressWarnings("unchecked")
+                            WatchEvent<Path> watchEvent = (WatchEvent<Path>)event;
+                            Path fileName = watchEvent.context();
+                            Optional<Entry<Path, WatchKey>> pathEntry = paths.entrySet().stream().filter(e -> e.getValue().equals(key)).findFirst();
 
-                    if (script.isKilled()) {
-                        scripts.remove(i);
-                    } else {
-                        if (file.lastModified() != script.getLastModified()) {
-                            script.setLastModified(file.lastModified());
-                            script.reload();
+                            if (pathEntry.isPresent()) {
+                                try {
+                                    Path basePath = pathEntry.get().getKey();
+                                    String scriptPath = basePath.resolve(fileName).toString().replace('\\', '/');
+                                    if (scripts.containsKey(scriptPath)) {
+                                        Script script = scripts.get(scriptPath);
+                                        if (script.isKilled()) {
+                                            scripts.remove(scriptPath);
+                                        } else {
+                                            File file = script.getFile();
+                                            if (file.lastModified() != script.getLastModified()) {
+                                                script.setLastModified(file.lastModified());
+                                                script.reload();
+                                            }
+                                        }
+                                    }
+                                } catch (Exception ex) {
+                                    com.gmt2001.Console.err.printStackTrace(ex);
+                                }
+                            }
                         }
                     }
-                    // Sleep a bit here to not grind the user's CPU.
-                    Thread.sleep(1);
+
+                    key.reset();
+                } else {
+                    isValid = false;
                 }
-                Thread.sleep(100);
-            } catch (IOException | InterruptedException ex) {
-                com.gmt2001.Console.err.printStackTrace(ex);
             }
-        }
+        } catch (ClosedWatchServiceException ex) {}
     }
 }

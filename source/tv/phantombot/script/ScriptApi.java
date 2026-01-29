@@ -35,7 +35,6 @@ public final class ScriptApi {
     }
 
     private ScriptApi() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     public void on(Script script, String eventName, ScriptEventHandler handler) {

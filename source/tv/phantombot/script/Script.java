@@ -53,7 +53,11 @@ public class Script {
         this.lastModified = file.lastModified();
 
         if (PhantomBot.getReloadScripts()) {
-            ScriptFileWatcher.instance().addScript(this);
+            try {
+                ScriptFileWatcher.instance().addScript(this);
+            } catch (IOException e) {
+                com.gmt2001.Console.err.printStackTrace(e);
+            }
         }
     }
 

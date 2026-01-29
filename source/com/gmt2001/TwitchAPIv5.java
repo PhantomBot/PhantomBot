@@ -20,6 +20,8 @@ import com.gmt2001.datastore.DataStore;
 import com.gmt2001.httpclient.HttpClient;
 import com.gmt2001.httpclient.HttpClientResponse;
 import com.gmt2001.httpclient.URIUtil;
+import com.gmt2001.util.concurrent.ExecutorService;
+
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -55,7 +57,6 @@ public class TwitchAPIv5 {
     }
 
     private TwitchAPIv5() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     /**
@@ -1339,7 +1340,7 @@ public class TwitchAPIv5 {
 
         try {
             FixFollowedTableRunnable fixFollowedTableRunnable = new FixFollowedTableRunnable(this.getIDFromChannel(channel), dataStore, followerCount);
-            new Thread(fixFollowedTableRunnable, "com.gmt2001.TwitchAPIv5::fixFollowedTable").start();
+            ExecutorService.execute(fixFollowedTableRunnable);
         } catch (Exception ex) {
             com.gmt2001.Console.err.println("Failed to start thread for updating followed table.");
         }

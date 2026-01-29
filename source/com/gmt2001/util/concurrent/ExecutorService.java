@@ -24,7 +24,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Provides an interface to a shared {@link ScheduledExecutorService}
@@ -33,9 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class ExecutorService {
 
-    private static final AtomicInteger POOL_THREAD_ID = new AtomicInteger(1);
+    private static final AtomicLong POOL_THREAD_ID = new AtomicLong(0);
     private static final ThreadFactory NAMED_THREAD_FACTORY = r -> {
-        Thread t = new Thread(r);
+        Thread t = Executors.defaultThreadFactory().newThread(r);
         t.setName("Phantombot-Executor-Thread-" + POOL_THREAD_ID.getAndIncrement());
         t.setUncaughtExceptionHandler((thread, ex) -> {
                 com.gmt2001.Console.err.println("Uncaught exception in " + thread.getName());

@@ -51,7 +51,6 @@ public class FrankerFacezApiV1 implements EmoteProvider {
     }
 
     private FrankerFacezApiV1() {
-        Thread.setDefaultUncaughtExceptionHandler(com.gmt2001.UncaughtExceptionHandler.instance());
     }
 
     private static HttpClientResponse readJsonFromUrl(String urlAddress) {
