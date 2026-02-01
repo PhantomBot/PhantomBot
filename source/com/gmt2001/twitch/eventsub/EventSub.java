@@ -273,7 +273,9 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
 
                 for (int i = 0; i < jsa.length(); i++) {
                     EventSubSubscription subscription = EventSubSubscription.fromJSON(jsa.getJSONObject(i));
-                    this.updateSubscription(subscription);
+                    if (!this.shouldCleanupSubscription(subscription)) {
+                        this.updateSubscription(subscription);
+                    }
                 }
 
                 JSONObject pagination = response.getJSONObject("pagination");
@@ -395,11 +397,21 @@ public final class EventSub extends SubmissionPublisher<EventSubInternalEvent> i
     }
 
     /**
+     * Determines if the provided subscription should be cleaned up
+     * 
+     * @param subscription The subscription to check
+     * @return {@c true} if the subscription should be cleaned up
+     */
+    private boolean shouldCleanupSubscription(EventSubSubscription subscription) {
+        return subscription.status() != SubscriptionStatus.ENABLED || !subscription.transport().sessionId().equals(this.session_id);
+    }
+
+    /**
      * Removes non-enabled subscriptions from the subscription list
      */
     private void cleanupSubscriptions() {
         this.subscriptions.forEach((id, subscription) -> {
-            if (subscription.status() != SubscriptionStatus.ENABLED || !subscription.transport().sessionId().equals(this.session_id)) {
+            if (this.shouldCleanupSubscription(subscription)) {
                 this.subscriptions.remove(id);
             }
         });

@@ -127,7 +127,10 @@
             for (let i in subscriptions) {
                 let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
                 try {
-                    newSubscription.create().block();
+                    let result = newSubscription.create().block();
+                    if (!result.isEnabled()) {
+                        success = false;
+                    }
                 } catch (ex) {
                     success = false;
                     $.log.error(ex);
