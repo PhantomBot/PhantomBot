@@ -25,12 +25,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.StackStyle;
-import org.mozilla.javascript.tools.debugger.Main;
 
 import tv.phantombot.PhantomBot;
 
@@ -113,30 +110,7 @@ public class Script {
             return;
         }
 
-        /* Enable Error() in JS to provide an object with fileName and lineNumber. */
-        final ContextFactory ctxFactory = new ContextFactory() {
-            @Override
-            protected boolean hasFeature(Context cx, int featureIndex) {
-                switch (featureIndex) {
-                    case Context.FEATURE_LOCATION_INFORMATION_IN_ERROR:
-                        return true;
-                    default:
-                        return super.hasFeature(cx, featureIndex);
-                }
-            }
-        };
-        RhinoException.setStackStyle(StackStyle.MOZILLA);
-
-        /* Create Debugger Instance - this opens for only init.js */
-        Main debugger = null;
-        if (PhantomBot.getEnableRhinoDebugger()) {
-            if (file.getName().endsWith("init.js")) {
-                debugger = new Main(file.getName());
-                debugger.attachTo(ctxFactory);
-            }
-        }
-
-        context = ctxFactory.enterContext();
+        context = RhinoRuntime.factory().enterContext();
 
         scope = context.initStandardObjects(vars, false);//Normal scripting object.
         scope.defineProperty("$", global, 0);// Global functions that can only be accessed and replaced with $.
@@ -144,13 +118,13 @@ public class Script {
         scope.defineProperty("$script", this, 0);
 
         /* Configure debugger. */
-        if (PhantomBot.getEnableRhinoDebugger() && debugger != null) {
+        if (RhinoRuntime.debugger() != null) {
             context.setGeneratingDebug(true);
-            if (file.getName().endsWith("init.js")) {
-                debugger.setBreakOnEnter(false);
-                debugger.setScope(scope);
-                debugger.setSize(640, 480);
-                debugger.setVisible(true);
+            if (file.getName().endsWith("init.js") ) {
+                RhinoRuntime.debugger().setBreakOnEnter(false);
+                RhinoRuntime.debugger().setScope(scope);
+                RhinoRuntime.debugger().setSize(640, 480);
+                RhinoRuntime.debugger().setVisible(true);
             }
         }
 
