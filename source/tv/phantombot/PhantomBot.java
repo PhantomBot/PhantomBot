@@ -92,6 +92,7 @@ import tv.phantombot.httpserver.HttpSetupHandler;
 import tv.phantombot.panel.WsAlertsPollsHandler;
 import tv.phantombot.panel.WsPanelHandler;
 import tv.phantombot.panel.WsPanelRemoteLoginHandler;
+import tv.phantombot.script.RhinoRuntime;
 import tv.phantombot.script.Script;
 import tv.phantombot.script.ScriptEventManager;
 import tv.phantombot.script.ScriptFileWatcher;
@@ -973,6 +974,7 @@ public final class PhantomBot implements Listener {
 
         /* And finally try to load init, that will then load the scripts */
         try {
+            RhinoRuntime.init(getEnableRhinoDebugger());
             com.gmt2001.Console.debug.println("Load init.js");
             ScriptManager.loadScript(new File("./scripts/init.js"), "init.js");
         } catch (IOException ex) {

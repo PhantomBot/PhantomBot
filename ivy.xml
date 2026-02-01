@@ -64,7 +64,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <dependency org="commons-io" name="commons-io" rev="2.21.0"/>
         <dependency org="org.apache.commons" name="commons-text" rev="1.15.0"/>
         <dependency org="org.json" name="json" rev="20251224"/>
-        <dependency org="org.mozilla" name="rhino-all" rev="1.9.0"/>
+        <dependency org="org.mozilla" name="rhino" rev="1.9.0"/>
+        <dependency org="org.mozilla" name="rhino-tools" rev="1.9.0"/>
         <dependency org="org.slf4j" name="slf4j-nop" rev="2.0.17"/>
         <!-- Conflict Resolvers -->
         <conflict org="com.h2database" manager="all"/>
