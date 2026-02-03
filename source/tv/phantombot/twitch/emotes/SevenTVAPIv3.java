@@ -99,12 +99,13 @@ public class SevenTVAPIv3 implements EmoteProvider {
         try {
             JSONObject json = response.json();
 
-            if (!json.has("emote_set") || !json.getJSONObject("emote_set").has("emotes")) {
+            if (!json.has("emote_set") || json.isNull("emote_set") || !json.getJSONObject("emote_set").has("emotes") || json.getJSONObject("emote_set").isNull("emotes")) {
                 return Collections.emptyList();
             }
 
             return mapEmotesFromData(json.getJSONObject("emote_set").getJSONArray("emotes"));
         } catch (Exception ex) {
+            com.gmt2001.Console.debug.printStackTrace(ex);
             throw new EmoteApiRequestFailedException("Could not process returned json", ex);
         }
     }
