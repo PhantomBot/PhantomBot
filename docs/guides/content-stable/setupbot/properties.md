@@ -657,3 +657,11 @@ Data Type: _Boolean_
 if `true`, enables the rhino debugger console. default `false`
 
 _NOTE: A restart is required for this property to take effect_
+
+&nbsp;
+
+#### httpwsserverdebug
+
+Data Type: _Boolean_
+
+if `true`, requests at the webserver are logged in `./logs/request`. default `false`

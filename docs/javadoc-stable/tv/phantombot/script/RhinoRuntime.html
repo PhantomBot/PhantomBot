@@ -1,10 +1,10 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-<title>ScriptFileWatcher (PhantomBot JavaDoc)</title>
+<title>RhinoRuntime (PhantomBot JavaDoc)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<meta name="description" content="declaration: package: tv.phantombot.script, class: ScriptFileWatcher">
+<meta name="description" content="declaration: package: tv.phantombot.script, class: RhinoRuntime">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../script-dir/jquery-ui.min.css" title="Style">
@@ -69,15 +69,20 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">tv.phantombot.script</a></div>
-<h1 title="Class ScriptFileWatcher" class="title">Class ScriptFileWatcher</h1>
+<h1 title="Class RhinoRuntime" class="title">Class RhinoRuntime</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">tv.phantombot.script.ScriptFileWatcher</div>
+<div class="inheritance">tv.phantombot.script.RhinoRuntime</div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
-<div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ScriptFileWatcher</span>
+<div class="type-signature"><span class="modifiers">public final class </span><span class="element-name type-name-label">RhinoRuntime</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">Rhino runtime environment configuration and management.</div>
+<dl class="notes">
+<dt>Author:</dt>
+<dd>sartharon</dd>
+</dl>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -86,26 +91,26 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addScript(tv.phantombot.script.Script)" class="member-name-link">addScript</a><wbr>(<a href="Script.html" title="class in tv.phantombot.script">Script</a>&nbsp;script)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method to add scripts to the array list.</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.mozilla.javascript.tools.debugger.Main</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#debugger()" class="member-name-link">debugger</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Get the Rhino GUI debugger instance</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ScriptFileWatcher.html" title="class in tv.phantombot.script">ScriptFileWatcher</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#instance()" class="member-name-link">instance</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static org.mozilla.javascript.ContextFactory</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#factory()" class="member-name-link">factory</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Method that returns this object.</div>
+<div class="block">Get the Rhino ContextFactory instance.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#kill()" class="member-name-link">kill</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method to kill this instance.</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#init(boolean)" class="member-name-link">init</a><wbr>(boolean&nbsp;enableGuiDebugger)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Initialize the Rhino runtime environment with optional GUI debugger.</div>
 </div>
 </div>
 </div>
@@ -125,34 +130,31 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="instance()">
-<h3>instance</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ScriptFileWatcher.html" title="class in tv.phantombot.script">ScriptFileWatcher</a></span>&nbsp;<span class="element-name">instance</span>()
-                                  throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
-<div class="block">Method that returns this object.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dt>Throws:</dt>
-<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code></dd>
-</dl>
+<section class="detail" id="factory()">
+<h3>factory</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.mozilla.javascript.ContextFactory</span>&nbsp;<span class="element-name">factory</span>()</div>
+<div class="block">Get the Rhino ContextFactory instance.</div>
 </section>
 </li>
 <li>
-<section class="detail" id="addScript(tv.phantombot.script.Script)">
-<h3>addScript</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addScript</span><wbr><span class="parameters">(<a href="Script.html" title="class in tv.phantombot.script">Script</a>&nbsp;script)</span></div>
-<div class="block">Method to add scripts to the array list.</div>
+<section class="detail" id="init(boolean)">
+<h3>init</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">init</span><wbr><span class="parameters">(boolean&nbsp;enableGuiDebugger)</span></div>
+<div class="block">Initialize the Rhino runtime environment with optional GUI debugger.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>script</code> - - Script to be reloaded.</dd>
+<dd><code>enableGuiDebugger</code> - true to enable the GUI debugger, false otherwise.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="kill()">
-<h3>kill</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">kill</span>()</div>
-<div class="block">Method to kill this instance.</div>
+<section class="detail" id="debugger()">
+<h3>debugger</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">org.mozilla.javascript.tools.debugger.Main</span>&nbsp;<span class="element-name">debugger</span>()</div>
+<div class="block">Get the Rhino GUI debugger instance</div>
+<dl class="notes">
+<dt>Returns:</dt>
+</dl>
 </section>
 </li>
 </ul>

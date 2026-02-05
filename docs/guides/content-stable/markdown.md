@@ -79,6 +79,26 @@ ___Bold Italic___
 
 &nbsp;
 
+#### Link to Another Guide Page
+**Syntax:**
+```markdown
+[FAQ](guide=content/faq "##guide_link")
+```
+
+**Output:** [FAQ](guide=content/faq "##guide_link")
+
+&nbsp;
+
+#### Link to Another Guide Page with Jump to Header
+**Syntax:**
+```markdown
+[FAQ - What is PhantomBot](guide=content/faq&jumpto=faq_what-is-phantombot "##guide_link")
+```
+
+**Output:** [FAQ - What is PhantomBot](guide=content/faq&jumpto=faq_what-is-phantombot "##guide_link")
+
+&nbsp;
+
 #### Image
 **Syntax:**
 ```markdown
@@ -292,18 +312,6 @@ _See the top of this guide for an example output_
 **NOTE:** There must be a blank line under the tag
 
 **NOTE:** Any headers above the tag will **not** be included
-
-&nbsp;
-
-#### YouTube Embed
-**Syntax:**
-```markdown
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
-```
-
-**Output:**
-
-https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 &nbsp;
 

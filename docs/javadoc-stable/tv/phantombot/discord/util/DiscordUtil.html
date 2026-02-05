@@ -130,8 +130,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addReaction(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji)" class="member-name-link">addReaction</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/reaction/ReactionEmoji.html" title="class or interface in discord4j.core.object.reaction" class="external-link">ReactionEmoji</a>&nbsp;emoji)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addReaction(discord4j.core.object.entity.Message,discord4j.core.object.emoji.Emoji)" class="member-name-link">addReaction</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message,
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/emoji/Emoji.html" title="class or interface in discord4j.core.object.emoji" class="external-link">Emoji</a>&nbsp;emoji)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that adds a reaction to a message.</div>
 </div>
@@ -142,8 +142,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that adds a reaction to a message.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addReactions(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji...)" class="member-name-link">addReactions</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/reaction/ReactionEmoji.html" title="class or interface in discord4j.core.object.reaction" class="external-link">ReactionEmoji</a>...&nbsp;emojis)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addReactions(discord4j.core.object.entity.Message,discord4j.core.object.emoji.Emoji...)" class="member-name-link">addReactions</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message,
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/emoji/Emoji.html" title="class or interface in discord4j.core.object.emoji" class="external-link">Emoji</a>...&nbsp;emojis)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that adds multiple reactions to a message.</div>
 </div>
@@ -544,49 +544,69 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendMessageEmbedAsync(java.lang.String,discord4j.core.spec.EmbedCreateSpec)" class="member-name-link">sendMessageEmbedAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;channelName,
  <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/spec/EmbedCreateSpec.html" title="class or interface in discord4j.core.spec" class="external-link">EmbedCreateSpec</a>&nbsp;embed)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivateMessage(discord4j.core.object.entity.channel.PrivateChannel,java.lang.String)" class="member-name-link">sendPrivateMessage</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/PrivateChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">PrivateChannel</a>&nbsp;channel,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method to send private messages to a user.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivateMessage(discord4j.core.object.entity.User,java.lang.String)" class="member-name-link">sendPrivateMessage</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method to send private messages to a user.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivateMessage(java.lang.String,java.lang.String)" class="member-name-link">sendPrivateMessage</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method to send private messages to a user.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCompeting(java.lang.String)" class="member-name-link">setCompeting</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;competingIn)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setGame(java.lang.String)" class="member-name-link">setGame</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;game)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivateMessageAsync(discord4j.core.object.entity.channel.PrivateChannel,java.lang.String)" class="member-name-link">sendPrivateMessageAsync</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/PrivateChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">PrivateChannel</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method to send private messages to a user.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivateMessageAsync(discord4j.core.object.entity.User,java.lang.String)" class="member-name-link">sendPrivateMessageAsync</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method to send private messages to a user.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sendPrivateMessageAsync(java.lang.String,java.lang.String)" class="member-name-link">sendPrivateMessageAsync</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method to send private messages to a user.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setCompeting(java.lang.String)" class="member-name-link">setCompeting</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;competingIn)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setGame(java.lang.String)" class="member-name-link">setGame</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;game)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method to set the current game.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setListening(java.lang.String)" class="member-name-link">setListening</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listeningTo)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPlaying(java.lang.String)" class="member-name-link">setPlaying</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;game)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setListening(java.lang.String)" class="member-name-link">setListening</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;listeningTo)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setStream(java.lang.String,java.lang.String)" class="member-name-link">setStream</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;game,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setPlaying(java.lang.String)" class="member-name-link">setPlaying</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;game)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setStream(java.lang.String,java.lang.String)" class="member-name-link">setStream</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;game,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method to set the current game and stream.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setStreaming(java.lang.String,java.lang.String)" class="member-name-link">setStreaming</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;streaming,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setWatching(java.lang.String)" class="member-name-link">setWatching</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;watching)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setStreaming(java.lang.String,java.lang.String)" class="member-name-link">setStreaming</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;streaming,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;url)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setWatching(java.lang.String)" class="member-name-link">setWatching</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;watching)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -674,7 +694,20 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="sendPrivateMessage(discord4j.core.object.entity.User,java.lang.String)">
 <h3>sendPrivateMessage</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendPrivateMessage</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></span>&nbsp;<span class="element-name">sendPrivateMessage</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+<div class="block">Method to send private messages to a user.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>user</code> - </dd>
+<dd><code>message</code> - </dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="sendPrivateMessageAsync(discord4j.core.object.entity.User,java.lang.String)">
+<h3>sendPrivateMessageAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&gt;</span>&nbsp;<span class="element-name">sendPrivateMessageAsync</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
 <div class="block">Method to send private messages to a user.</div>
 <dl class="notes">
@@ -687,7 +720,20 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="sendPrivateMessage(java.lang.String,java.lang.String)">
 <h3>sendPrivateMessage</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendPrivateMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userName,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></span>&nbsp;<span class="element-name">sendPrivateMessage</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userName,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+<div class="block">Method to send private messages to a user.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>userName</code> - </dd>
+<dd><code>message</code> - </dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="sendPrivateMessageAsync(java.lang.String,java.lang.String)">
+<h3>sendPrivateMessageAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&gt;</span>&nbsp;<span class="element-name">sendPrivateMessageAsync</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;userName,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
 <div class="block">Method to send private messages to a user.</div>
 <dl class="notes">
@@ -700,8 +746,27 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="sendPrivateMessage(discord4j.core.object.entity.channel.PrivateChannel,java.lang.String)">
 <h3>sendPrivateMessage</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">sendPrivateMessage</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/PrivateChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">PrivateChannel</a>&nbsp;channel,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></span>&nbsp;<span class="element-name">sendPrivateMessage</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/PrivateChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">PrivateChannel</a>&nbsp;channel,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+<div class="block">Method to send private messages to a user.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>channel</code> - </dd>
+<dd><code>message</code> - </dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="sendPrivateMessageAsync(discord4j.core.object.entity.channel.PrivateChannel,java.lang.String)">
+<h3>sendPrivateMessageAsync</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html" title="class or interface in reactor.core.publisher" class="external-link">Mono</a>&lt;<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&gt;</span>&nbsp;<span class="element-name">sendPrivateMessageAsync</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/PrivateChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">PrivateChannel</a>&nbsp;channel,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;message)</span></div>
+<div class="block">Method to send private messages to a user.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>channel</code> - </dd>
+<dd><code>message</code> - </dd>
+</dl>
 </section>
 </li>
 <li>
@@ -856,10 +921,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="addReaction(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji)">
+<section class="detail" id="addReaction(discord4j.core.object.entity.Message,discord4j.core.object.emoji.Emoji)">
 <h3>addReaction</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addReaction</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/reaction/ReactionEmoji.html" title="class or interface in discord4j.core.object.reaction" class="external-link">ReactionEmoji</a>&nbsp;emoji)</span></div>
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/emoji/Emoji.html" title="class or interface in discord4j.core.object.emoji" class="external-link">Emoji</a>&nbsp;emoji)</span></div>
 <div class="block">Method that adds a reaction to a message.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -869,10 +934,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="addReactions(discord4j.core.object.entity.Message,discord4j.core.object.reaction.ReactionEmoji...)">
+<section class="detail" id="addReactions(discord4j.core.object.entity.Message,discord4j.core.object.emoji.Emoji...)">
 <h3>addReactions</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addReactions</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/reaction/ReactionEmoji.html" title="class or interface in discord4j.core.object.reaction" class="external-link">ReactionEmoji</a>...&nbsp;emojis)</span></div>
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/emoji/Emoji.html" title="class or interface in discord4j.core.object.emoji" class="external-link">Emoji</a>...&nbsp;emojis)</span></div>
 <div class="block">Method that adds multiple reactions to a message.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

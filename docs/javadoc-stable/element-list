@@ -46,7 +46,7 @@ tv.phantombot.event.discord.channel
 tv.phantombot.event.discord.reaction
 tv.phantombot.event.discord.ready
 tv.phantombot.event.discord.role
-tv.phantombot.event.discord.uservoicechannel
+tv.phantombot.event.discord.useraudiochannel
 tv.phantombot.event.emotes
 tv.phantombot.event.eventsub
 tv.phantombot.event.eventsub.automod

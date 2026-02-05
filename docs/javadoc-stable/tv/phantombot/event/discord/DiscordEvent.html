@@ -79,7 +79,7 @@ loadScripts(document, 'script');</script>
 <section class="class-description" id="class-description">
 <dl class="notes">
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="channel/DiscordChannelEvent.html" title="class in tv.phantombot.event.discord.channel">DiscordChannelEvent</a></code>, <code><a href="reaction/DiscordReactionEvent.html" title="class in tv.phantombot.event.discord.reaction">DiscordReactionEvent</a></code>, <code><a href="role/DiscordRoleEvent.html" title="class in tv.phantombot.event.discord.role">DiscordRoleEvent</a></code>, <code><a href="uservoicechannel/DiscordUserVoiceChannelEvent.html" title="class in tv.phantombot.event.discord.uservoicechannel">DiscordUserVoiceChannelEvent</a></code></dd>
+<dd><code><a href="channel/DiscordChannelEvent.html" title="class in tv.phantombot.event.discord.channel">DiscordChannelEvent</a></code>, <code><a href="reaction/DiscordReactionEvent.html" title="class in tv.phantombot.event.discord.reaction">DiscordReactionEvent</a></code>, <code><a href="role/DiscordRoleEvent.html" title="class in tv.phantombot.event.discord.role">DiscordRoleEvent</a></code>, <code><a href="useraudiochannel/DiscordUserAudioChannelEvent.html" title="class in tv.phantombot.event.discord.useraudiochannel">DiscordUserAudioChannelEvent</a></code></dd>
 </dl>
 <hr>
 <div class="type-signature"><span class="modifiers">public abstract class </span><span class="element-name type-name-label">DiscordEvent</span>
@@ -107,21 +107,21 @@ loadScripts(document, 'script');</script>
 <div class="block">Class constructor for this event.</div>
 </div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.Channel)" class="member-name-link">DiscordEvent</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a>&nbsp;channel)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.AudioChannel)" class="member-name-link">DiscordEvent</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/AudioChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">AudioChannel</a>&nbsp;audiochannel)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Class constructor for this event.</div>
 </div>
 <div class="col-first odd-row-color"><code>protected </code></div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.Channel,discord4j.core.object.entity.Message)" class="member-name-link">DiscordEvent</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a>&nbsp;channel,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message)</code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.Channel)" class="member-name-link">DiscordEvent</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a>&nbsp;channel)</code></div>
 <div class="col-last odd-row-color">
 <div class="block">Class constructor for this event.</div>
 </div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.VoiceChannel)" class="member-name-link">DiscordEvent</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/VoiceChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">VoiceChannel</a>&nbsp;voicechannel)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.Channel,discord4j.core.object.entity.Message)" class="member-name-link">DiscordEvent</a><wbr>(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a>&nbsp;channel,
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a>&nbsp;message)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Class constructor for this event.</div>
 </div>
@@ -150,24 +150,24 @@ loadScripts(document, 'script');</script>
 <div class="block">Method that returns the channel ID.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordChannel()" class="member-name-link">getDiscordChannel</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordAudioChannel()" class="member-name-link">getDiscordAudioChannel</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that returns the channel's object for Discord4J.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordMessage()" class="member-name-link">getDiscordMessage</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method that returns the message object</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordUser()" class="member-name-link">getDiscordUser</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Method that returns the user's object for Discord4J.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordVoiceChannel()" class="member-name-link">getDiscordVoiceChannel</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordChannel()" class="member-name-link">getDiscordChannel</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that returns the channel's object for Discord4J.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/Message.html" title="class or interface in discord4j.core.object.entity" class="external-link">Message</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordMessage()" class="member-name-link">getDiscordMessage</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method that returns the message object</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDiscordUser()" class="member-name-link">getDiscordUser</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Method that returns the user's object for Discord4J.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getDiscriminator()" class="member-name-link">getDiscriminator</a>()</code></div>
@@ -265,10 +265,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="&lt;init&gt;(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.VoiceChannel)">
+<section class="detail" id="&lt;init&gt;(discord4j.core.object.entity.User,discord4j.core.object.entity.channel.AudioChannel)">
 <h3>DiscordEvent</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">DiscordEvent</span><wbr><span class="parameters">(<a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/User.html" title="class or interface in discord4j.core.object.entity" class="external-link">User</a>&nbsp;user,
- <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/VoiceChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">VoiceChannel</a>&nbsp;voicechannel)</span></div>
+ <a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/AudioChannel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">AudioChannel</a>&nbsp;audiochannel)</span></div>
 <div class="block">Class constructor for this event.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -393,9 +393,9 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="getDiscordVoiceChannel()">
-<h3>getDiscordVoiceChannel</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a></span>&nbsp;<span class="element-name">getDiscordVoiceChannel</span>()</div>
+<section class="detail" id="getDiscordAudioChannel()">
+<h3>getDiscordAudioChannel</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://javadoc.io/doc/com.discord4j/discord4j-core/latest/discord4j/core/object/entity/channel/Channel.html" title="class or interface in discord4j.core.object.entity.channel" class="external-link">Channel</a></span>&nbsp;<span class="element-name">getDiscordAudioChannel</span>()</div>
 <div class="block">Method that returns the channel's object for Discord4J.</div>
 <dl class="notes">
 <dt>Returns:</dt>
