@@ -417,7 +417,7 @@
         }
 
         if (!jsOnlyHooks.includes(hookName) && $api.exists(hookName) === false) {
-            Packages.com.gmt2001.Console.err.printlnRhino('[addHook()@init.js:254] Failed to register hook "' + hookName + '" since there is no such event.');
+            Packages.com.gmt2001.Console.err.printlnRhino('[' + findCaller() + '] Failed to register hook "' + hookName + '" since there is no such event.');
         } else if (i !== -1) {
             hooks[hookName].handlers[i].handler = handler;
         } else {
