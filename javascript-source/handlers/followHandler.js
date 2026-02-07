@@ -45,20 +45,33 @@
         }
     }, true);
 
+    function subscribeEventSub() {
+        let subscriptions = [
+            Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelFollow
+        ];
+
+        for (let i in subscriptions) {
+            let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
+            try {
+                newSubscription.create().block();
+            } catch (ex) {
+                $.log.error(ex);
+            }
+        }
+    }
+
+    setInterval(function(){
+        if (Packages.com.gmt2001.twitch.eventsub.EventSub.instance().sessionId() !== null) {
+            subscribeEventSub();
+        }
+    }, 60 * 60 * 1000);
+
+    /*
+     * @event eventSubWelcome
+     */
     $.bind('eventSubWelcome', function (event) {
         if (!event.isReconnect()) {
-            let subscriptions = [
-                Packages.com.gmt2001.twitch.eventsub.subscriptions.channel.ChannelFollow
-            ];
-
-            for (let i in subscriptions) {
-                let newSubscription = new subscriptions[i]($.viewer.broadcaster().id());
-                try {
-                    newSubscription.create().block();
-                } catch (ex) {
-                    $.log.error(ex);
-                }
-            }
+            subscribeEventSub();
         }
     }, true);
 

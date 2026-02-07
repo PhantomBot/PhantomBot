@@ -167,6 +167,16 @@
         }
     }, true);
 
+    setInterval(function(){
+        if (Packages.com.gmt2001.twitch.eventsub.EventSub.instance().sessionId() !== null) {
+            if (!$.twitchcache.isAffiliateOrPartner()) {
+                return;
+            }
+
+            subscribeEventSub();
+        }
+    }, 60 * 60 * 1000);
+
     /*
      * @event eventSubWelcome
      */
