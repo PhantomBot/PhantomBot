@@ -39,7 +39,8 @@ $(function () {
         queue = [],
         queueProcessing = false,
         playTimeout,
-        fadeTime;
+        fadeTime,
+        hasCustomDuration = false;
 
     imgEl.onload = () => printDebug('GIF loaded');
     imgEl.onerror = (e) => printDebug('Error: GIF failed to load: ' + e, true);
@@ -424,6 +425,7 @@ $(function () {
                         break;
                     case 1:
                         gifDuration = (parseInt(value) * 1000);
+                        hasCustomDuration = true;
                         break;
                     case 2:
                         gifVolume = value;
@@ -466,13 +468,16 @@ $(function () {
         }
         setPlayingBit(PLAYBACK_TYPE.GIF);
 
-        gifDuration = gifDuration === null ? 3000 : gifDuration
-        gifDuration -= fadeTime;
-        gifDuration = Math.max((2*fadeTime), gifDuration); //fade-in + fade-out anything less is not making much sense
-        playTimeout = setTimeout(() => {
-            printDebug('Gif complete (duration), after: ' + (gifDuration/1000) + ' seconds');
-            stopAllPlayingMedia();
-        }, gifDuration);
+        // Set playTimeout if we have a duration or the synchronize option is disabled
+        if (hasCustomDuration || getOptionSetting(CONF_STOP_GIF_WITH_AUDIO, 'false') === 'false') {
+            gifDuration = gifDuration === null ? 3000 : gifDuration
+            gifDuration -= fadeTime;
+            gifDuration = Math.max((2*fadeTime), gifDuration); //fade-in + fade-out anything less is not making much sense
+            playTimeout = setTimeout(() => {
+                printDebug('Gif complete (duration), after: ' + (gifDuration/1000) + ' seconds');
+                stopAllPlayingMedia();
+            }, gifDuration);
+        }
         
 
         // If no audio, we're done (gif only)
@@ -510,6 +515,7 @@ $(function () {
     function checkAndClearPlayTimeout() {
         if (!isPlayingAny()) {
             clearTimeout(playTimeout);
+            hasCustomDuration = false;
         }
     }
 
@@ -855,6 +861,7 @@ $(function () {
                 addAlertText(additionalText, additionalCSS)
             }
             duration -= fadeTime;
+            duration = Math.max((2*fadeTime), duration); //fade-in + fade-out anything less is not making much sense
         }
 
         
@@ -973,8 +980,8 @@ $(function () {
     audioEl.onended = () => { 
         printDebug('Audio complete (fully played), after: ' + audioEl.duration + ' seconds');
 
-        if (getOptionSetting(CONF_STOP_GIF_WITH_AUDIO, false) === 'true' && isPlayingBit(PLAYBACK_TYPE.GIF)) {
-            printDebug('Stopping Gif with Audio. StopGifWithAudio is enabled');
+        if (!hasCustomDuration && getOptionSetting(CONF_STOP_GIF_WITH_AUDIO, 'false') === 'true' && isPlayingBit(PLAYBACK_TYPE.GIF)) {
+            printDebug('Gif complete (StopGifWithAudio enabled & Audio fully played), after: ' + audioEl.duration + ' seconds');
             stopAllPlayingMedia();
             return; 
         }
