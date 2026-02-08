@@ -19,7 +19,7 @@
 $(function () {
     const webSocket = getWebSocket(),
         queryMap = getQueryMap(),
-        isDebug = localStorage.getItem('phantombot_alerts_debug') === 'true' || false,
+        isDebug = getOptionSetting('enableDebug', localStorage.getItem('phantombot_alerts_debug') === 'true'),
         imgEl = document.getElementById('alert'),
         audioEl = document.getElementById('alertAudio'),
         videoEl = document.getElementById('alertVideo'),
