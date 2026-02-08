@@ -511,7 +511,7 @@ $(function () {
                 audioEl.removeAttribute('src');
                 audioEl.load();
                 audioEl.volume = 1;
-            } catch (e2) {
+            } catch (e) {
                 printDebug('Error: audio stop failed:' + e, true);
             }
         }
