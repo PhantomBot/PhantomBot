@@ -66,6 +66,7 @@ $(function () {
     const CONF_VIDEO_CLIP_VOLUME = 'videoClipVolume';
     const CONF_GIF_ALERT_VOLUME = 'gifAlertVolume';
     const CONF_FADE_DURTAION = 'fadeDuration';
+    const CONF_STOP_GIF_WITH_AUDIO = 'stopGifWithAudio';
 
     const PROVIDER_TWITCH = 'twitch';
     const PROVIDER_LOCAL = 'local';
@@ -300,7 +301,7 @@ $(function () {
             });
         
         printDebug('Audio autoplay allowed. No user interaction needed');
-        stopMedia();
+        stopAudio();
         audioEl.muted = false;
         audioUnlocked = true;
         unlocking = false;  
@@ -317,7 +318,7 @@ $(function () {
         element.play().catch((e) => {
             printDebug('Error: Failed to play ' + element.src, true);
             printDebug(e, true);
-            stopMedia();
+            stopAllPlayingMedia();
         });
     }
 
@@ -451,7 +452,7 @@ $(function () {
         }
 
         const gifUrl = MEDIA_URL_BASE + encodeURIComponent(gifFile);
-        // pick first candidate (or better: first playable candidate, shown below)
+        // pick first playable candidate
         const audioCandidate = chooseBestCandidate(candidates);
         const audioUrl = audioCandidate
             ? MEDIA_URL_BASE + encodeURIComponent(audioCandidate)
@@ -467,9 +468,10 @@ $(function () {
 
         gifDuration = gifDuration === null ? 3000 : gifDuration
         gifDuration -= fadeTime;
+        gifDuration = Math.max((2*fadeTime), gifDuration); //fade-in + fade-out anything less is not making much sense
         playTimeout = setTimeout(() => {
-            printDebug('Audio complete (duration), after: ' + (gifDuration/1000) + ' seconds');
-            stopMedia();
+            printDebug('Gif complete (duration), after: ' + (gifDuration/1000) + ' seconds');
+            stopAllPlayingMedia();
         }, gifDuration);
         
 
@@ -502,109 +504,153 @@ $(function () {
         });
     }
 
-    async function stopMedia() {
-        if (!isPlayingAny()) {
-            return;
-        }
-
-        let shouldSleep = false;
- 
-        printDebug('Stopping media: (Audio: ' + isPlayingBit(PLAYBACK_TYPE.AUDIO) + ') (Video: ' + isPlayingBit(PLAYBACK_TYPE.VIDEO) + ') (Gif: ' + isPlayingBit(PLAYBACK_TYPE.GIF) + ')');
-
-        if ($('#alert-text').children().length > 0) {
-            removeAlertText();
-            shouldSleep = true;
-        }
-
-        if (isPlayingBit(PLAYBACK_TYPE.GIF)) {
-            try {
-                if (imgEl.classList.contains('fade-in')) {
-                    imgEl.classList.remove('fade-in');
-                    imgEl.classList.add('fade-out');
-                    shouldSleep = true;
-                }
-                if (shouldSleep) {
-                    await sleep(fadeTime);
-                    shouldSleep = false;
-                }
-                imgEl.removeAttribute('src');
-                imgEl.removeAttribute('style')
-                clearPlayingBit(PLAYBACK_TYPE.GIF);
-            } catch (e) {
-              console.warn('Error: gif stop failed:' + e, true);
-            }
-        }
-        
-        if (isPlayingBit(PLAYBACK_TYPE.AUDIO)) {
-            try {
-                if (!audioEl.paused) {
-                    audioEl.pause();
-                }
-                audioEl.removeAttribute('src');
-                audioEl.load();
-                audioEl.volume = 1;
-                clearPlayingBit(PLAYBACK_TYPE.AUDIO);
-            } catch (e) {
-                printDebug('Error: audio stop failed:' + e, true);
-            }
-        }
-        
-        if (isPlayingBit(PLAYBACK_TYPE.VIDEO)) {
-            try {
-                if (videoEl.classList.contains('fade-in')) {
-                    videoEl.classList.remove('fade-in');
-                    videoEl.classList.add('fade-out');
-                    shouldSleep = true;
-                }
-                if (shouldSleep) {
-                    await sleep(fadeTime);
-                }
-                if (!videoEl.paused) {
-                    videoEl.pause();
-                }
-                videoEl.removeAttribute('src');
-                videoEl.removeAttribute('style')
-                videoEl.load();
-                videoEl.volume = 1;
-                clearPlayingBit(PLAYBACK_TYPE.VIDEO);
-            } catch (e) {
-              console.warn('Error: video stop failed:' + e, true);
-            }
-        }
-
-        //Remove timeout only if there is no more media playing
+    /**
+     * Clears the stop timeout if no media is playing anymore.
+     */
+    function checkAndClearPlayTimeout() {
         if (!isPlayingAny()) {
             clearTimeout(playTimeout);
         }
     }
 
-    function handleStopMedia(json) {
-        if (json.stopMedia === 'all') {
-            stopVideo = stopAudio = true;
-            stopMedia();
-        } else {
-            let clearMask = PLAYBACK_TYPE.NONE;
-
-            if (json.stopMedia.indexOf('video') >= 0) {
-                clearMask |= PLAYBACK_TYPE.VIDEO;
-                clearPlayingBit(PLAYBACK_TYPE.VIDEO);
-            }
-            if (son.stopMedia.indexOf('audio') >= 0) {
-                clearMask |= PLAYBACK_TYPE.AUDIO;
-                clearPlayingBit(PLAYBACK_TYPE.AUDIO)
-            }
-
-            //Temporarily fool stopMedia()
-            let tempPlaybackMask = playingMask,
-                tempTimeout = playTimeout;
-            playingMask = clearMask;
-            stopMedia();
-            playingMask = tempPlaybackMask;
-            playTimeout = tempTimeout;
-            if (!isPlayingAny()) {
-                clearTimeout(playTimeout);
-            }
+    /**
+     * Stops the audio playback if it's currently playing.
+     */
+    async function stopAudio() {
+        if (!isPlayingBit(PLAYBACK_TYPE.AUDIO)) {
+            return;
         }
+
+        try {
+            printDebug('Stopping audio');
+
+            if (!audioEl.paused) {
+                audioEl.pause();
+            }
+
+            audioEl.removeAttribute('src');
+            audioEl.load();
+            audioEl.volume = 1;
+            clearPlayingBit(PLAYBACK_TYPE.AUDIO);
+        } catch (e) {
+            printDebug('Error: audio stop failed:' + e, true);
+        }
+
+        checkAndClearPlayTimeout();
+    }
+
+    /**
+     * Stops the GIF playback if it's currently playing.
+     */
+    async function stopGIF() {
+        if (!isPlayingBit(PLAYBACK_TYPE.GIF)) {
+            return;
+        }
+
+        let shouldSleep = false;
+        if ($('#alert-text').children().length > 0) {
+            removeAlertText();
+            shouldSleep = true;
+        }
+
+        try {
+            if (imgEl.classList.contains('fade-in')) {
+                imgEl.classList.remove('fade-in');
+                imgEl.classList.add('fade-out');
+                shouldSleep = true;
+            }
+
+            printDebug('Stopping Gif, shouldSleep: ' + shouldSleep);
+
+            if (shouldSleep) {
+                await sleep(fadeTime);
+            }
+
+            imgEl.removeAttribute('src');
+            imgEl.removeAttribute('style')
+            clearPlayingBit(PLAYBACK_TYPE.GIF);
+        } catch (e) {
+            console.warn('Error: gif stop failed:' + e, true);
+        }
+
+        checkAndClearPlayTimeout();
+    }
+
+    /**
+     * Stops the video playback if it's currently playing.
+     */
+    async function stopVideo() {
+        if (!isPlayingBit(PLAYBACK_TYPE.VIDEO)) {
+            return;
+        }
+
+        let shouldSleep = false;
+        if ($('#alert-text').children().length > 0) {
+            removeAlertText();
+            shouldSleep = true;
+        }
+
+        try {
+            if (videoEl.classList.contains('fade-in')) {
+                videoEl.classList.remove('fade-in');
+                videoEl.classList.add('fade-out');
+                shouldSleep = true;
+            }
+
+            printDebug('Stopping video, shouldSleep: ' + shouldSleep);
+
+            if (shouldSleep) {
+                await sleep(fadeTime);
+            }
+
+            if (!videoEl.paused) {
+                videoEl.pause();
+            }
+
+            videoEl.removeAttribute('src');
+            videoEl.removeAttribute('style')
+            videoEl.load();
+            videoEl.volume = 1;
+            clearPlayingBit(PLAYBACK_TYPE.VIDEO);
+        } catch (e) {
+            console.warn('Error: video stop failed:' + e, true);
+        }
+
+        checkAndClearPlayTimeout();
+    }
+
+    /**
+     * Stops all currently playing media (audio, video, gif).
+     */
+    async function stopAllPlayingMedia() {
+        if (!isPlayingAny()) {
+            return;
+        }
+ 
+        printDebug('Stopping media: (Audio: ' + isPlayingBit(PLAYBACK_TYPE.AUDIO) + ') (Video: ' + isPlayingBit(PLAYBACK_TYPE.VIDEO) + ') (Gif: ' + isPlayingBit(PLAYBACK_TYPE.GIF) + ')');
+
+        await stopGIF(); // wait for the gif to disappear before stopping audio
+        stopAudio();
+        stopVideo();
+    }
+
+    async function handleStopMedia(json) {
+        if (json.stopMedia === 'all') {
+            stopAllPlayingMedia();
+            return;
+        }
+
+        if (json.stopMedia.indexOf('gif') >= 0) {
+            await stopGIF();
+        }
+
+        if (json.stopMedia.indexOf('video') >= 0) {
+            stopVideo();
+        }
+
+        if (json.stopMedia.indexOf('audio') >= 0) {
+            stopAudio();
+        }    
     }
 
     /*
@@ -819,7 +865,7 @@ $(function () {
         if (duration != null && duration > 0) {
             playTimeout = setTimeout(() => {
                 printDebug('Video complete (duration), after: ' + (duration/1000) + ' seconds');
-                stopMedia();
+                stopAllPlayingMedia();
             }, duration);
         }
 
@@ -926,10 +972,17 @@ $(function () {
     setInterval(handleQueue, 5e2);
     audioEl.onended = () => { 
         printDebug('Audio complete (fully played), after: ' + audioEl.duration + ' seconds');
-        stopMedia();
+
+        if (getOptionSetting(CONF_STOP_GIF_WITH_AUDIO, false) === 'true' && isPlayingBit(PLAYBACK_TYPE.GIF)) {
+            printDebug('Stopping Gif with Audio. StopGifWithAudio is enabled');
+            stopAllPlayingMedia();
+            return; 
+        }
+
+        stopAudio();
     };
     videoEl.onended = () => {
         printDebug('Video complete (fully played), after: ' + videoEl.duration + ' seconds');
-        stopMedia();
+        stopVideo();
     };
 });
