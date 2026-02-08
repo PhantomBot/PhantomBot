@@ -34,6 +34,7 @@ $(function () {
     const videoClipVolume = 'videoClipVolume';
     const enableDebug = 'enableDebug';
     const fadeDuration = 'fadeDuration';
+    const enableAutoStopGifAlerts = 'stopGifWithAudio';
 
     // members
     let inputElements = null;
@@ -47,13 +48,13 @@ $(function () {
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable
+                moduleConfigTable, moduleConfigTable
             ],
             keys: [
                 enableAudioHooks, audioHookVolume, enableFlyingEmotes,
                 enableGifAlerts, gifAlertVolume, enableDebug,
                 enableVideoClips, videoClipVolume, flyingEmotesSize,
-                fadeDuration
+                fadeDuration, enableAutoStopGifAlerts
             ]
         }, true, function(config) {
             // handle boolean values
@@ -62,7 +63,8 @@ $(function () {
                 enableFlyingEmotes,
                 enableGifAlerts,
                 enableVideoClips,
-                enableDebug
+                enableDebug,
+                enableAutoStopGifAlerts
             ].forEach((key) => {
                 let inputNode = document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1));
                 // only accept 'true' and 'false' as valid
@@ -125,7 +127,7 @@ $(function () {
     function save() {
         // Collect values from the form with special caution to checkbox elements
         let keysStrings = [audioHookVolume, gifAlertVolume, videoClipVolume, flyingEmotesSize, fadeDuration];
-        let keysCheckboxes = [enableAudioHooks, enableFlyingEmotes, enableGifAlerts, enableVideoClips, enableDebug];
+        let keysCheckboxes = [enableAudioHooks, enableFlyingEmotes, enableGifAlerts, enableVideoClips, enableDebug, enableAutoStopGifAlerts];
         let valuesStrings = keysStrings.map(key => document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1)).value );
         let valuesCheckboxes = keysCheckboxes.map(key => document.getElementById(moduleId + key[0].toUpperCase() + key.slice(1)).checked );
         let keys = keysStrings.concat(keysCheckboxes);
@@ -136,7 +138,7 @@ $(function () {
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
                 moduleConfigTable, moduleConfigTable, moduleConfigTable,
-                moduleConfigTable
+                moduleConfigTable, moduleConfigTable
             ],
             keys: keys,
             values: values
