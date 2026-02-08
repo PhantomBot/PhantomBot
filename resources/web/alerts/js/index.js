@@ -488,8 +488,9 @@ $(function () {
 
         if (stopGif) {
             try {
-                if (imgEl.className = 'fade-in') {
-                    imgEl.className = 'fade-out';
+                if (imgEl.classList.contains('fade-in')) {
+                    imgEl.classList.remove('fade-in');
+                    imgEl.classList.add('fade-out');
                     shouldSleep = true;
                 }
                 if (shouldSleep) {
@@ -518,8 +519,9 @@ $(function () {
         
         if (stopVideo) {
             try {
-                if (videoEl.className = 'fade-in') {
-                    videoEl.className = 'fade-out';
+                if (videoEl.classList.contains('fade-in')) {
+                    videoEl.classList.remove('fade-in');
+                    videoEl.classList.add('fade-out');
                     shouldSleep = true;
                 }
                 if (shouldSleep) {
