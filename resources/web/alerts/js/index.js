@@ -817,7 +817,7 @@ $(function () {
         printDebug('Playing video, duration: ' + videoEl.duration);
 
         if (duration != null && duration > 0) {
-            setTimeout(() => {
+            playTimeout = setTimeout(() => {
                 printDebug('Video complete (duration), after: ' + (duration/1000) + ' seconds');
                 stopMedia();
             }, duration);
