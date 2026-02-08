@@ -502,7 +502,7 @@ $(function () {
     }
 
     async function removeAlertText() {
-        $('#alert-text').fadeOut(fadeTime, function () { //Remove the text with a fade out.
+        $('#alert-text').fadeOut((fadeTime - 10), function () { //Remove the text with a fade out slight earlier than the video/gif to prevent a jump during removal.
             let t = $(this);
             // Remove the p tag
             t.find('p').remove();
